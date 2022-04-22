@@ -1,14 +1,59 @@
-# Project
+# Power Apps Test Engine
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+> This is currently an experimental project.
 
-As the maintainer of this project, please make a few updates:
+Power Apps Test Engine is an open source project that provides a way for makers to run tests authored using Power FX against Canvas apps. These tests are written in our Power FX expression language.
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+The engine uses Playwright to orchestrate the tests.
+
+## Getting Started
+
+To get started with running one of the samples
+```
+# Pull github repo
+git clone https://github.com/microsoft/PowerAppsTestEngine.git
+
+# Change to the PowerAppsTestEngine folder
+cd PowerAppsTestEngine\src\PowerAppsTestEngine
+
+# Build
+dotnet build
+
+# Install required browsers - replace netX with actual output folder name, eg. net6.0.
+pwsh bin\Debug\netX\playwright.ps1 install
+```
+
+Import the solution of the selected sample. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions).
+
+Create a `config.dev.json` inside the `PowerAppsTestEngine` folder. (It should be next to the config.json)
+
+The contents should be a copy of config.json, like this.
+```
+{
+  "environmentId": "",
+  "tenantId": "",
+  "testPlanFile": "",
+  "outputDirectory": ""
+}
+```
+
+Fill in the various properties:
+- environmentId: Environment that you imported the solution to
+- tenantId: Tenant you are in
+- testPlanFile: Path to the `testPlan.fx.yaml` file for the sample that you wish to run. (Eg. `samples\buttonclicker\testPlan.fx.yaml`)
+- outputDirectory: Path to folder you wish the test results to be placed.
+
+For more information about the config and the inputs to the command, please view [this](.\docs\CommandInput.md)
+
+To setup the user environment variables, please view [this](.\docs\Yaml\Users.md). Refer to the user configuration section in your selected sample's `testPlan.fx.yaml`.
+
+Now you should be ready to run the test
+```
+# Run test
+dotnet run
+```
+
+When the run is complete, you should be able to view the test results in the folder you specified earlier.
 
 ## Contributing
 

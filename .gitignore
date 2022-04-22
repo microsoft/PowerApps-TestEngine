@@ -348,3 +348,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+
+# Power Apps Test Engine files
+/src/PowerAppsTestEngine/TestOutput
+/src/PowerAppsTestEngine/config.dev.json

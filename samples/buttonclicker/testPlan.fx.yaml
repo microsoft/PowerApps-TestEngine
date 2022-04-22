@@ -1,0 +1,27 @@
+test:
+  name: "Button Clicker"
+  description: "Verifies that counter increments when the button is clicked"
+  persona: "User1"
+  appLogicalName: "new_buttonclicker_0a877"
+
+  testSteps: |
+    = Screenshot("buttonclicker_loaded.png");
+      // Wait for the label to be set to 0
+      //Wait(Label1.Text = "0");
+      Wait(Label1, "Text", "0");
+      // Click the button
+      Select(Button1);
+      Assert(Text(Label1.Text) = "1", "Counter should be incremented to 1");
+      Screenshot("buttonclicker_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+    - browser: Firefox
+
+environmentVariables:
+  users:
+    - personaName: "User1"
+      emailKey: "user1Email"
+      passwordKey: "user1Password"
