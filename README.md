@@ -11,7 +11,7 @@ The engine uses Playwright to orchestrate the tests.
 To get started with running one of the samples
 ```
 # Pull github repo
-git clone https://github.com/microsoft/PowerAppsTestEngine.git
+git clone https://github.com/microsoft/PowerApps-TestEngine.git
 
 # Change to the PowerAppsTestEngine folder
 cd PowerAppsTestEngine\src\PowerAppsTestEngine
