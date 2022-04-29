@@ -19,8 +19,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// Executes a list of Power FX functions
         /// </summary>
         /// <param name="testSteps">Test steps</param>
-        /// <returns>True if test steps were successfully run.</returns>
-        public bool Execute(string testSteps);
+        /// <returns>Result of the Power FX.</returns>
+        public FormulaValue Execute(string testSteps);
 
         /// <summary>
         /// Updates variables in Power FX engine

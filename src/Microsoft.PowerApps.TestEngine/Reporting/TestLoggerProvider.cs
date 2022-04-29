@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.System;
 
 namespace Microsoft.PowerApps.TestEngine.Reporting
 {
@@ -10,11 +11,22 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     /// </summary>
     public class TestLoggerProvider : ILoggerProvider
     {
-        public static Dictionary<string, TestLogger> TestLoggers { get; set; } = new Dictionary<string, TestLogger>();
+        public static Dictionary<string, ITestLogger> TestLoggers { get; set; } = new Dictionary<string, ITestLogger>();
+        private readonly IFileSystem _fileSystem;
+
+        public TestLoggerProvider(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
 
         public ILogger CreateLogger(string categoryName)
         {
-            var logger = new TestLogger();
+            if (TestLoggers.ContainsKey(categoryName))
+            {
+                return TestLoggers[categoryName];
+            }
+
+            var logger = new TestLogger(_fileSystem);
             TestLoggers.Add(categoryName, logger);
             return logger;
         }

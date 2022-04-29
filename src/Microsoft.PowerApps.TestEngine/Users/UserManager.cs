@@ -3,6 +3,7 @@
 
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 
 namespace Microsoft.PowerApps.TestEngine.Users
@@ -16,14 +17,16 @@ namespace Microsoft.PowerApps.TestEngine.Users
         private readonly ITestState _testState;
         private readonly IUrlMapper _urlMapper;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
+        private readonly IEnvironmentVariable _environmentVariable;
 
         public UserManager(ITestInfraFunctions testInfraFunctions, ITestState testState, IUrlMapper urlMapper,
-            ISingleTestInstanceState singleTestInstanceState)
+            ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
             _urlMapper = urlMapper;
             _singleTestInstanceState = singleTestInstanceState;
+            _environmentVariable = environmentVariable;
         }
 
         public async Task LoginAsUserAsync()
@@ -41,8 +44,23 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             var userConfig = _testState.GetUserConfiguration(testDefinition.Persona);
 
-            var user = Environment.GetEnvironmentVariable(userConfig.EmailKey);
-            var password = Environment.GetEnvironmentVariable(userConfig.PasswordKey);
+            if (userConfig == null)
+            {
+                throw new InvalidOperationException("Cannot find user config for persona");
+            }
+
+            if (string.IsNullOrEmpty(userConfig.EmailKey))
+            {
+                throw new InvalidOperationException("Email key for persona cannot be empty");
+            }
+
+            if (string.IsNullOrEmpty(userConfig.PasswordKey))
+            {
+                throw new InvalidOperationException("Password key for persona cannot be empty");
+            }
+
+            var user = _environmentVariable.GetVariable(userConfig.EmailKey);
+            var password = _environmentVariable.GetVariable(userConfig.PasswordKey);
 
             if (string.IsNullOrEmpty(user))
             {

@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Reporting;
 
 namespace Microsoft.PowerApps.TestEngine
@@ -15,25 +16,52 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly ITestState _state;
         private readonly IServiceProvider _serviceProvider;
         private readonly ITestReporter _testReporter;
+        private readonly IFileSystem _fileSystem;
         private const string DefaultOutputDirectory = "TestOutput";
         private const string DefaultCloud = "Prod";
 
         public TestEngine(ITestState state,
                           IServiceProvider serviceProvider,
-                          ITestReporter testReporter)
+                          ITestReporter testReporter, 
+                          IFileSystem fileSystem)
         {
             _state = state;
             _serviceProvider = serviceProvider;
             _testReporter = testReporter;
+            _fileSystem = fileSystem;
         }
 
-        public async Task RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory = DefaultOutputDirectory, string cloud = DefaultCloud)
+        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory = DefaultOutputDirectory, string cloud = DefaultCloud)
         {
             // Setup state
+            if (string.IsNullOrEmpty(testConfigFile))
+            {
+                throw new ArgumentNullException(nameof(testConfigFile));
+            }
+
+            if (string.IsNullOrEmpty(environmentId))
+            {
+                throw new ArgumentNullException(nameof(environmentId));
+            }
+
+            if (string.IsNullOrEmpty(tenantId))
+            {
+                throw new ArgumentNullException(nameof(tenantId));
+            }
+
             _state.ParseAndSetTestState(testConfigFile);
             _state.SetEnvironment(environmentId);
             _state.SetTenant(tenantId);
-            _state.SetCloud(cloud);
+
+            if (string.IsNullOrEmpty(cloud))
+            {
+                _state.SetCloud(DefaultCloud);
+            }
+            else
+            {
+                _state.SetCloud(cloud);
+            }
+
             if (string.IsNullOrEmpty(outputDirectory))
             {
                 _state.SetOutputDirectory(DefaultOutputDirectory);
@@ -46,8 +74,8 @@ namespace Microsoft.PowerApps.TestEngine
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
             _testReporter.StartTestRun(testRunId);
-            var testRunDirectory = $"{_state.GetOutputDirectory()}/{testRunId.Substring(0, 6)}";
-            Directory.CreateDirectory(testRunDirectory);
+            var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
+            _fileSystem.CreateDirectory(testRunDirectory);
 
             var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
 
@@ -65,10 +93,10 @@ namespace Microsoft.PowerApps.TestEngine
             await Task.WhenAll(allTestRuns.ToArray());
 
             _testReporter.EndTestRun(testRunId);
-            _testReporter.GenerateTestReport(testRunId, testRunDirectory);
+            return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
         }
 
-        public async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestDefinition testDefinition, BrowserConfiguration browserConfig)
+        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestDefinition testDefinition, BrowserConfiguration browserConfig)
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {

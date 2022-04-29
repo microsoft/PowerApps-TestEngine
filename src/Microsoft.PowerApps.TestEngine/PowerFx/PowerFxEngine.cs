@@ -5,9 +5,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core;
+using Microsoft.PowerFx.Core.Public;
 using Microsoft.PowerFx.Core.Public.Values;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
@@ -19,7 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
     {
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly IPowerAppFunctions _powerAppFunctions;
-
+        private readonly IFileSystem _fileSystem;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
 
         private RecalcEngine? Engine { get; set; }
@@ -27,29 +29,31 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
         public PowerFxEngine(ITestInfraFunctions testInfraFunctions, 
                              IPowerAppFunctions powerAppFunctions, 
-                             ISingleTestInstanceState singleTestInstanceState)
+                             ISingleTestInstanceState singleTestInstanceState,
+                             IFileSystem fileSystem)
         {
             _testInfraFunctions = testInfraFunctions;
             _powerAppFunctions = powerAppFunctions;
             _singleTestInstanceState = singleTestInstanceState;
+            _fileSystem = fileSystem;
         }
 
         public void Setup()
         {
             var powerFxConfig = new PowerFxConfig();
-            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState.GetTestResultsDirectory()));
+            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
             powerFxConfig.AddFunction(new WaitFunction());
             powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
             Engine = new RecalcEngine(powerFxConfig);
         }
 
-        public bool Execute(string testSteps)
+        public FormulaValue Execute(string testSteps)
         {
             if (Engine == null)
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");
-                return false;
+                throw new InvalidOperationException("Engine is null, make sure to call Setup first");
             }
 
             // Remove the leading = sign
@@ -58,27 +62,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 testSteps = testSteps.Remove(0, 1);
             }
 
-            var success = true;
-            try
-            {
-                Logger.LogInformation($"Executing {testSteps}");
-                var result = Engine?.Eval(testSteps);
-                if (result != null)
-                {
-                    if (result.GetType().Equals(typeof(BooleanValue)) && ((BooleanValue)result).Value == false)
-                    {
-                        Logger.LogError("Exiting in error");
-                        success = false;
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                success = false;
-                Logger.LogError(ex.Message);
-            }
-
-            return success;
+            Logger.LogInformation($"Executing {testSteps}");
+            return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
         }
 
         public void UpdateVariable(string name, IUntypedObject value)

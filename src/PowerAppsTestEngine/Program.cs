@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
@@ -19,7 +20,7 @@ var serviceProvider = new ServiceCollection()
             loggingBuilder
             .ClearProviders()
             .AddConsole() // TODo: figure out why I can't have both console logging and the test logger at the same time.
-            .AddProvider(new TestLoggerProvider());
+            .AddProvider(new TestLoggerProvider(new FileSystem()));
         })
     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
     .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
@@ -31,6 +32,8 @@ var serviceProvider = new ServiceCollection()
     .AddSingleton<ITestReporter, TestReporter>()
     .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
     .AddScoped<ISingleTestRunner, SingleTestRunner>()
+    .AddSingleton<IFileSystem, FileSystem>()
+    .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
     .AddSingleton<TestEngine>()
     .BuildServiceProvider();
 
@@ -58,5 +61,7 @@ if (inputOptions == null)
 {
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
-    await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
+    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
+
+    Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }

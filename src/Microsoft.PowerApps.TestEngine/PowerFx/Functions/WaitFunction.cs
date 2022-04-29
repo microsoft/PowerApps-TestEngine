@@ -18,47 +18,53 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         {
         }
 
-        public BooleanValue Execute(UntypedObjectValue obj, StringValue propName, FormulaValue val)
+        public BlankValue Execute(UntypedObjectValue obj, StringValue propName, FormulaValue valueToCheck)
         {
-            return FormulaValue.New(Wait(obj, propName, val));
+            Wait(obj, propName, valueToCheck);
+            return FormulaValue.NewBlank();
         }
 
-        private bool Wait(UntypedObjectValue obj, StringValue propName, FormulaValue val)
+        private void Wait(UntypedObjectValue obj, StringValue propName, FormulaValue valueToCheck)
         {
-            IUntypedObject untypedVal = obj.Impl;
-
-            PowerAppControlModel controlModel = (PowerAppControlModel)untypedVal;
-
-            if (controlModel == null)
+            if (obj == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(obj));
             }
 
-            String? propertyValue = null;
-            var text = ((StringValue)val).Value;
+            if (propName == null)
+            {
+                throw new ArgumentNullException(nameof(propName));
+            }
+
+            if (valueToCheck == null)
+            {
+                throw new ArgumentNullException(nameof(valueToCheck));
+            }
+
+            IUntypedObject untypedVal = obj.Impl;
+
+            var controlModel = (PowerAppControlModel)untypedVal;
+            string? propertyValue = null;
+
+            // TODO handle non strings?
+            var text = ((StringValue)valueToCheck).Value;
             while (propertyValue != text)
             {
                 if (!controlModel.TryGetProperty(propName.Value, out IUntypedObject result))
                 {
-                    return false;
+                    throw new InvalidOperationException($"Property does not exist {propName.Value}");
                 }
 
-                PowerAppControlPropertyModel controlPropertyModel = (PowerAppControlPropertyModel)result;
-                if (controlPropertyModel == null)
-                {
-                    return false;
-                }
-
+                var controlPropertyModel = (PowerAppControlPropertyModel)result;
                 propertyValue = controlPropertyModel.GetString();
 
                 if (propertyValue != text)
                 {
+                    // TODO: Do we want to timeout after some amount of time?
                     Thread.Sleep(500);
                 }
 
             }
-
-            return true;
         }
     }
 }

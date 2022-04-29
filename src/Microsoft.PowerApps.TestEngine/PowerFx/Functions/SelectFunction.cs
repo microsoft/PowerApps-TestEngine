@@ -21,29 +21,30 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _powerAppFunctions = powerAppFunctions;
         }
 
-        public BooleanValue Execute(UntypedObjectValue obj)
+        public BlankValue Execute(UntypedObjectValue obj)
         {
-            var select = SelectAsync(obj).GetAwaiter();
-            while (!select.IsCompleted)
-            {
-                System.Threading.Thread.Sleep(500);
-            }
+            SelectAsync(obj).Wait();
 
-            return FormulaValue.New(select.GetResult());
+            return FormulaValue.NewBlank();
         }
 
-        private async Task<bool> SelectAsync(UntypedObjectValue obj)
+        private async Task SelectAsync(UntypedObjectValue obj)
         {
+            if (obj == null)
+            {
+                throw new ArgumentException(nameof(obj));
+            }
+
             IUntypedObject untypedVal = obj.Impl;
 
             var powerAppControlModel = (PowerAppControlModel)untypedVal;
+            var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.Name, null, null);
 
-            if (powerAppControlModel == null)
+            if (!result)
             {
-                return false;
+                throw new Exception($"Unable to select control {powerAppControlModel.Name}");
             }
 
-            return await _powerAppFunctions.SelectControlAsync(powerAppControlModel.Name, null, null);
         }
     }
 }

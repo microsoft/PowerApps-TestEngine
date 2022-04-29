@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.PowerApps.TestEngine.Reporting.Format;
+using Microsoft.PowerApps.TestEngine.System;
 using System.Xml.Serialization;
 
 namespace Microsoft.PowerApps.TestEngine.Reporting
@@ -9,6 +10,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     public class TestReporter : ITestReporter
     {
         private readonly Dictionary<string, TestRun> _testRuns = new();
+        private readonly IFileSystem _fileSystem;
+        private readonly DateTime _defaultDateTime = new DateTime();
+
+        public TestReporter(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
 
         public string CreateTestRun(string testRunName, string testRunUser)
         {
@@ -68,17 +76,47 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         public void StartTestRun(string testRunId)
         {
-            _testRuns[testRunId].Times.Start = DateTime.Now;
+            var testRun = GetTestRun(testRunId);
+
+            if (testRun.Times.Start != _defaultDateTime)
+            {
+                throw new InvalidOperationException("Test run has already started");
+            }
+
+            testRun.Times.Start = DateTime.Now;
         }
 
         public void EndTestRun(string testRunId)
         {
-            _testRuns[testRunId].Times.Finish = DateTime.Now;
-            _testRuns[testRunId].ResultSummary.Outcome = "Completed";
+            var testRun = GetTestRun(testRunId);
+            if (testRun.Times.Start == _defaultDateTime)
+            {
+                throw new InvalidOperationException("Test run has not been started");
+            }
+
+            if (testRun.Times.Finish != _defaultDateTime)
+            {
+                throw new InvalidOperationException("Can't end a test run is already finsihed");
+            }
+
+            testRun.Times.Finish = DateTime.Now;
+            testRun.ResultSummary.Outcome = "Completed";
         }
 
         public string CreateTest(string testRunId, string testName, string testLocation)
         {
+            var testRun = GetTestRun(testRunId);
+
+            if (testRun.Times.Start == _defaultDateTime)
+            {
+                throw new InvalidOperationException("Test run needs to be started");
+            }
+
+            if (testRun.Times.Finish != _defaultDateTime)
+            {
+                throw new InvalidOperationException("Test run is already finished");
+            }
+
             var unitTestDefinition = new UnitTestDefinition
             {
                 Name = testName,
@@ -101,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 TestId = unitTestDefinition.Id,
                 ExecutionId = unitTestDefinition.Execution.Id,
-                TestListId = _testRuns[testRunId].TestLists.TestList.First().Id
+                TestListId = testRun.TestLists.TestList.First().Id
             };
 
             var unitTestResult = new UnitTestResult
@@ -121,24 +159,48 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 }
             };
 
-            _testRuns[testRunId].Definitions.UnitTests.Add(unitTestDefinition);
-            _testRuns[testRunId].TestEntries.Entries.Add(testEntry);
-            _testRuns[testRunId].Results.UnitTestResults.Add(unitTestResult);
-            _testRuns[testRunId].ResultSummary.Counters.Total++;
+            testRun.Definitions.UnitTests.Add(unitTestDefinition);
+            testRun.TestEntries.Entries.Add(testEntry);
+            testRun.Results.UnitTestResults.Add(unitTestResult);
+            testRun.ResultSummary.Counters.Total++;
 
             return unitTestDefinition.Id;
         }
 
         public void StartTest(string testRunId, string testId)
         {
-            var testResult = _testRuns[testRunId].Results.UnitTestResults.Where(x => x.TestId == testId).First();
+            var testRun = GetTestRun(testRunId);
+            var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).FirstOrDefault();
+
+            if (testResult == null)
+            {
+                throw new InvalidOperationException("Test id has to exist");
+            }
+
+            if (testResult.StartTime != _defaultDateTime)
+            {
+                throw new InvalidOperationException("Can't start a test that is already started");
+            }
+
             testResult.StartTime = DateTime.Now;
-            _testRuns[testRunId].ResultSummary.Counters.InProgress++;
+            testRun.ResultSummary.Counters.InProgress++;
         }
 
-        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
+        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string? errorMessage, string? stackTrace)
         {
-            var testResult = _testRuns[testRunId].Results.UnitTestResults.Where(x => x.TestId == testId).First();
+            var testRun = GetTestRun(testRunId);
+            var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
+
+            if (testResult.StartTime == _defaultDateTime)
+            {
+                throw new InvalidOperationException("Can't end a test that isn't started");
+            }
+
+            if (testResult.EndTime != _defaultDateTime)
+            {
+                throw new InvalidOperationException("Can't end a test that is already finished");
+            }
+
             testResult.EndTime = DateTime.Now;
             testResult.Duration = (testResult.EndTime - testResult.StartTime).ToString();
             testResult.Output.StdOut = stdout;
@@ -149,16 +211,16 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                     testResult.ResultFiles.ResultFile.Add(new ResultFile() { Path = additionalFile });
                 }
             }
-            _testRuns[testRunId].ResultSummary.Counters.InProgress--;
-            _testRuns[testRunId].ResultSummary.Counters.Completed++;
+            testRun.ResultSummary.Counters.InProgress--;
+            testRun.ResultSummary.Counters.Completed++;
             if (success)
             {
-                _testRuns[testRunId].ResultSummary.Counters.Passed++;
+                testRun.ResultSummary.Counters.Passed++;
                 testResult.Outcome = "Passed";
             }
             else
             {
-                _testRuns[testRunId].ResultSummary.Counters.Failed++;
+                testRun.ResultSummary.Counters.Failed++;
                 testResult.Outcome = "Failed";
                 testResult.Output.ErrorInfo = new TestErrorInfo();
                 testResult.Output.ErrorInfo.Message = errorMessage;
@@ -168,16 +230,34 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         public string GenerateTestReport(string testRunId, string resultsDirectory)
         {
+            var testRun = GetTestRun(testRunId);
             XmlSerializerNamespaces xsNS = new XmlSerializerNamespaces();
             xsNS.Add("", "http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
             var serializer = new XmlSerializer(typeof(TestRun));
-            var testResultPath = $"{resultsDirectory}/Results_{testRunId}.trx";
-            using (StreamWriter writer = new StreamWriter(testResultPath))
+            var testResultPath = Path.Combine(resultsDirectory, $"Results_{testRunId}.trx");
+            using (var writer = new StringWriter())
             {
-                serializer.Serialize(writer, _testRuns[testRunId], xsNS);
+                serializer.Serialize(writer, testRun, xsNS);
+                _fileSystem.WriteTextToFile(testResultPath, writer.ToString());
             }
 
             return testResultPath;
+        }
+
+        public TestRun GetTestRun(string testRunId)
+        {
+            if (string.IsNullOrEmpty(testRunId))
+            {
+                throw new ArgumentException(nameof(testRunId));
+            }
+
+            if (!_testRuns.ContainsKey(testRunId))
+            {
+                throw new ArgumentException(nameof(testRunId));
+            }
+
+
+            return _testRuns[testRunId];
         }
     }
 }

@@ -16,21 +16,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         private readonly ILogger _logger;
 
-        public AssertFunction(ILogger logger) : base("Assert", FormulaType.Boolean, FormulaType.Boolean, FormulaType.String)
+        public AssertFunction(ILogger logger) : base("Assert", FormulaType.Blank, FormulaType.Boolean, FormulaType.String)
         {
             _logger = logger;
         }
 
-        public BooleanValue Execute(BooleanValue result, StringValue message)
+        public BlankValue Execute(BooleanValue result, StringValue message)
         {
             if (!result.Value)
             {
                 _logger.LogError($"Assert failed: {message.Value}");
+                throw new InvalidOperationException($"Assert failed: {message.Value}");
             } else
             {
                 _logger.LogInformation(message.Value);
             }
-            return BooleanValue.New(result.Value);;
+            return FormulaValue.NewBlank();
         }
     }
 }

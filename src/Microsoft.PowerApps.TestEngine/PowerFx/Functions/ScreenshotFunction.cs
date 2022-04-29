@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Public.Types;
@@ -14,21 +16,47 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// </summary>
     public class ScreenshotFunction : ReflectionFunction
     {
-        private ITestInfraFunctions TestInfraFunctions { get; set; }
-        private string OutputDirectory { get; set; }
+        private readonly ITestInfraFunctions _testInfraFunctions;
+        private readonly ISingleTestInstanceState _singleTestInstanceState;
+        private readonly IFileSystem _fileSystem;
 
-        public ScreenshotFunction(ITestInfraFunctions testInfraFunctions, string outputDirectory) 
-            : base("Screenshot", FormulaType.Boolean, FormulaType.String)
+        public ScreenshotFunction(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem) 
+            : base("Screenshot", FormulaType.Blank, FormulaType.String)
         {
-            TestInfraFunctions = testInfraFunctions;
-            OutputDirectory = outputDirectory;
+            _testInfraFunctions = testInfraFunctions;
+            _singleTestInstanceState = singleTestInstanceState;
+            _fileSystem = fileSystem;
         }
 
-        public BooleanValue Execute(StringValue file)
+        public BlankValue Execute(StringValue file)
         {
-            TestInfraFunctions.ScreenshotAsync($"{OutputDirectory}/{file.Value}").Wait();
+            var testResultDirectory = _singleTestInstanceState.GetTestResultsDirectory();
+            if (!_fileSystem.IsValidFilePath(testResultDirectory))
+            {
+                throw new InvalidOperationException("Test result directory needs to be set");
+            }
 
-            return FormulaValue.New(true);
+            var fileName = file.Value;
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException(nameof(fileName));
+            }
+
+            if (Path.IsPathRooted(fileName))
+            {
+                throw new ArgumentException("Only support relative file paths");
+            }
+
+            if (!fileName.EndsWith(".jpg") && !fileName.EndsWith(".jpeg") && !fileName.EndsWith("png"))
+            {
+                throw new ArgumentException("Only support jpeg and png files");
+            }
+
+            var filePath = Path.Combine(testResultDirectory, fileName);
+            _testInfraFunctions.ScreenshotAsync(filePath).Wait();
+
+            return FormulaValue.NewBlank();
         }
     }
 }
