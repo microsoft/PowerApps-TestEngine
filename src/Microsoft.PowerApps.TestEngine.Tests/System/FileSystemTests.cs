@@ -15,9 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
         [InlineData("C:\\folder", true)]
         [InlineData("", false)]
         [InlineData(null, false)]
-        [InlineData("C:/fold|er", false)]
-        [InlineData("C:/fold\aer", false)]
-        [InlineData("C:/fold\u0001er", false)]
+        [InlineData("C:/fold:er", false)]
         public void IsValidFilePathTest(string filePath, bool expectedResult)
         {
             var fileSystem = new FileSystem();

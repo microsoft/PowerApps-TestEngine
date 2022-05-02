@@ -41,7 +41,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [InlineData("C:\\folder")]
         [InlineData("test.txt")]
         [InlineData("test.img")]
-        [InlineData("C:\\folder\\test.png")]
         public void ScreenshotFunctionThrowsOnInvalidScreenshotNameTest(string screenshotName)
         {
             var testResultDirectory = "C:\\testResults";
@@ -52,6 +51,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
 
+        [Fact]
+        public void ScreenshotFunctionThrowsOnNonRelativeFilePathTest()
+        {
+            var testResultDirectory = "C:\\testResults";
+            MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(testResultDirectory);
+            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
+            var screenshotFunction = new ScreenshotFunction(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object);
+            Assert.Throws<ArgumentException>(() => screenshotFunction.Execute(FormulaValue.New(Path.Combine(Path.GetFullPath(Directory.GetCurrentDirectory()), "screeshot.jpg"))));
+        }
 
         [Theory]
         [InlineData("screenshot.png")]
