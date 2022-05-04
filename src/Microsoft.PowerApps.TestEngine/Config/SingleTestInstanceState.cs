@@ -19,6 +19,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetTestRunId(string testRunId)
         {
+            if (string.IsNullOrEmpty(testRunId))
+            {
+                throw new ArgumentNullException(nameof(testRunId));
+            }
             TestRunId = testRunId;
         }
 
@@ -29,6 +33,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetTestId(string testId)
         {
+            if (string.IsNullOrEmpty(testId))
+            {
+                throw new ArgumentNullException(nameof(testId));
+            }
             TestId = testId;
         }
 
@@ -39,6 +47,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetTestDefinition(TestDefinition testDefinition)
         {
+            if (testDefinition == null)
+            {
+                throw new ArgumentNullException(nameof(testDefinition));
+            }
             TestDefinition = testDefinition;
         }
 
@@ -49,6 +61,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetLogger(ILogger logger)
         {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
             Logger = logger;
         }
 
@@ -59,6 +75,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetTestResultsDirectory(string resultsDirectory)
         {
+            if (string.IsNullOrEmpty(resultsDirectory))
+            {
+                throw new ArgumentNullException(nameof(resultsDirectory));
+            }
             ResultsDirectory = resultsDirectory;
         }
 
@@ -69,6 +89,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetBrowserConfig(BrowserConfiguration browserConfig)
         {
+            if (browserConfig == null)
+            {
+                throw new ArgumentNullException(nameof(browserConfig));
+            }
             BrowserConfig = browserConfig;
         }
 

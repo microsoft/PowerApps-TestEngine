@@ -41,5 +41,12 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// <param name="filePath">Path to check</param>
         /// <returns>True if it is valid</returns>
         public bool IsValidFilePath(string filePath);
+
+        /// <summary>
+        /// Reads all text in a file
+        /// </summary>
+        /// <param name="filePath">File path</param>
+        /// <returns>Text in file</returns>
+        public string ReadAllText(string filePath);
     }
 }

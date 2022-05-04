@@ -28,19 +28,30 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<T> GetPropertyValueFromControlAsync<T>(string controlName, string propertyName, string? parentControlName, int? rowOrColumnNumber)
         {
-            String expression = $"getPropertyValueFromControl(\"{controlName}\", \"{propertyName}\", \"{parentControlName}\", {rowOrColumnNumber})";
+            if (string.IsNullOrEmpty(controlName))
+            {
+                throw new ArgumentNullException(nameof(controlName));
+            }
+
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
+            var expression = $"getPropertyValueFromControl(\"{controlName}\", \"{propertyName}\", \"{parentControlName}\", {rowOrColumnNumber})";
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression, PublishedAppIframeName);
         }
 
         private string GetFilePath(string file)
         {
-            var fullFilePath = $"{Directory.GetCurrentDirectory()}\\{file}";
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var fullFilePath = Path.Combine(currentDirectory, file);
             if (File.Exists(fullFilePath))
             {
                 return fullFilePath;
             }
 
-            return $"{Directory.GetCurrentDirectory()}\\..\\Microsoft.PowerApps.TestEngine\\{file}";
+            return Path.Combine(Directory.GetParent(currentDirectory).FullName, "Microsoft.PowerApps.TestEngine", file);
         }
 
         private async Task<bool> CheckIfAppIsIdleAsync()
@@ -49,7 +60,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 if (!IsPublishedAppTestingJsLoaded)
                 {
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(@"\JS\PublishedAppTesting.js"), PublishedAppIframeName);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
                     IsPublishedAppTestingJsLoaded = true;
                 }
                 var expression = "isAppIdle()";
@@ -66,6 +77,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async Task WaitForAppToBeIdleAsync()
         {
+            // TODO: implement timeout
             var appIsIdle = false;
             while (!appIsIdle)
             {
@@ -88,25 +100,31 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var expression = "JSON.stringify(buildControlObjectModel());";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression, PublishedAppIframeName);
-
-            var jsControlModels = JsonConvert.DeserializeObject<List<JSControlModel>>(controlObjectModelJsonString);
             var controlModels = new List<PowerAppControlModel>();
 
-            if (jsControlModels != null)
+            if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {
-                foreach (var jsControlModel in jsControlModels)
+                var jsControlModels = JsonConvert.DeserializeObject<List<JSControlModel>>(controlObjectModelJsonString);
+
+
+                if (jsControlModels != null)
                 {
-                    if (string.IsNullOrEmpty(jsControlModel.Name) || jsControlModel.Properties == null)
+                    foreach (var jsControlModel in jsControlModels)
                     {
-                        _singleTestInstanceState.GetLogger().LogDebug("Received a control with empty name or null properties");
-                    } 
-                    else
-                    {
-                        var controlModel = new PowerAppControlModel(jsControlModel.Name, jsControlModel.Properties.ToList(), this);
-                        controlModels.Add(controlModel);
+                        if (string.IsNullOrEmpty(jsControlModel.Name) || jsControlModel.Properties == null)
+                        {
+                            _singleTestInstanceState.GetLogger().LogDebug("Received a control with empty name or null properties");
+                        }
+                        else
+                        {
+                            var controlModel = new PowerAppControlModel(jsControlModel.Name, jsControlModel.Properties.ToList(), this);
+                            controlModels.Add(controlModel);
+                        }
                     }
                 }
-            } else
+            }
+
+            if(controlModels.Count == 0)
             {
                 _singleTestInstanceState.GetLogger().LogError("No control model was found");
             }
@@ -117,17 +135,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<bool> SelectControlAsync(string controlName, string? parentControlName, int? rowOrColumnNumber)
         {
+            if (string.IsNullOrEmpty(controlName))
+            {
+                throw new ArgumentNullException(nameof(controlName));
+            }
+
             var expression = $"selectControl(\"{controlName}\", \"{parentControlName}\", {rowOrColumnNumber})";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, PublishedAppIframeName);
         }
 
-        public async Task<bool> CheckIfAppIsLoadingAsync()
+        private async Task<bool> CheckIfAppIsLoadingAsync()
         {
             try
             {
                 if (!IsPlayerJsLoaded)
                 {
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(@"\JS\PlayerTesting.js"), null);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PlayerTesting.js")), null);
                     IsPlayerJsLoaded = true;
                 }
                 var expression = "checkIfAppIsLoading()";
@@ -141,14 +164,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
         }
 
-        public async Task WaitForPowerAppToLoadAsync()
+        private async Task WaitForPowerAppToLoadAsync()
         {
+            // TODO: implement timeout
             while (!IsPowerAppLoaded)
             {
                 var appIsLoading = await CheckIfAppIsLoadingAsync();
                 if (!appIsLoading)
                 {
-                    String expression = "getPublishedAppIframeName()";
+                    var expression = "getPublishedAppIframeName()";
                     PublishedAppIframeName = await _testInfraFunctions.RunJavascriptAsync<string>(expression, null);
                     IsPowerAppLoaded = true;
                 }

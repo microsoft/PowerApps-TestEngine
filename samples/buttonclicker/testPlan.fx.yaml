@@ -1,8 +1,8 @@
 test:
-  name: "Button Clicker"
-  description: "Verifies that counter increments when the button is clicked"
-  persona: "User1"
-  appLogicalName: "new_buttonclicker_0a877"
+  name: Button Clicker
+  description: Verifies that counter increments when the button is clicked
+  persona: User1
+  appLogicalName: new_buttonclicker_0a877
 
   testSteps: |
     = Screenshot("buttonclicker_loaded.png");
@@ -22,6 +22,6 @@ testSettings:
 
 environmentVariables:
   users:
-    - personaName: "User1"
-      emailKey: "user1Email"
-      passwordKey: "user1Password"
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

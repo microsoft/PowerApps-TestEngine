@@ -127,7 +127,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
 
-            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestDefinition>(), It.IsAny<BrowserConfiguration>())).Returns(Task.FromResult(0));
+            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestDefinition>(), It.IsAny<BrowserConfiguration>())).Returns(Task.CompletedTask);
         }
 
         private void Verify(string testConfigFile, string environmentId, string tenantId, string cloud, 

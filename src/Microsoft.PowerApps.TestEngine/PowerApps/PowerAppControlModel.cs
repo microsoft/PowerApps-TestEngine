@@ -53,7 +53,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 var getProperty = PowerAppFunctions.GetPropertyValueFromControlAsync<string>(Name, value, null, null).GetAwaiter();
 
-
+                // TODO: implement timeout
                 while (!getProperty.IsCompleted)
                 {
                     Thread.Sleep(500);

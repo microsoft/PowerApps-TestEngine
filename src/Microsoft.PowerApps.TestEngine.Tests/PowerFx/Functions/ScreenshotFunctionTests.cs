@@ -70,7 +70,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var testResultDirectory = "C:\\testResults";
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(testResultDirectory);
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
-            MockTestInfraFunctions.Setup(x => x.ScreenshotAsync(It.IsAny<string>())).Returns(Task.FromResult(0));
+            MockTestInfraFunctions.Setup(x => x.ScreenshotAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             var screenshotFunction = new ScreenshotFunction(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object);
             screenshotFunction.Execute(FormulaValue.New(screenshotName));
 

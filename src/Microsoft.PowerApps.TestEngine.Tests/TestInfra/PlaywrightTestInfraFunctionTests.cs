@@ -64,7 +64,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var testSettings = new TestSettings()
             {
-                RecordVideo = true
+                RecordVideo = true,
+                Timeout = 15
             };
 
             var testResultsDirectory = "C:\\TestResults";
@@ -89,7 +90,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockSingleTestInstanceState.Verify(x => x.GetBrowserConfig(), Times.Once());
             MockPlaywrightObject.Verify(x => x[browserConfig.Browser], Times.Once());
-            MockBrowserType.Verify(x => x.LaunchAsync(It.Is<BrowserTypeLaunchOptions>(y => y.Headless == false)), Times.Once());
+            MockBrowserType.Verify(x => x.LaunchAsync(It.Is<BrowserTypeLaunchOptions>(y => y.Headless == false && y.Timeout == testSettings.Timeout)), Times.Once());
             MockTestState.Verify(x => x.GetTestSettings(), Times.Once());
 
             if (browserConfig.Device != null)
@@ -151,12 +152,28 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 MockFileSystem.Object, MockPlaywrightObject.Object);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
         }
-        
+
+        [Fact]
+        public async Task SetupAsyncThrowsOnNullTestSettingsTest()
+        {
+            TestSettings testSettings = null;
+            var browserConfig = new BrowserConfiguration()
+            {
+                Browser = "Chromium"
+            };
+            MockSingleTestInstanceState.Setup(x => x.GetBrowserConfig()).Returns(browserConfig);
+
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, MockPlaywrightObject.Object);
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+        }
+
         [Fact]
         public async Task SetupAsyncThrowsOnNullBrowserConfigTest()
         {
             BrowserConfiguration browserConfig = null;
-
             MockSingleTestInstanceState.Setup(x => x.GetBrowserConfig()).Returns(browserConfig);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
@@ -167,7 +184,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Fact]
         public async Task EndTestRunSuccessTest()
         {
-            MockBrowserContext.Setup(x => x.CloseAsync()).Returns(Task.FromResult(0));
+            MockBrowserContext.Setup(x => x.CloseAsync()).Returns(Task.CompletedTask);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
@@ -210,23 +227,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.GoToUrlAsync(url));
-        }
-
-        [Fact]
-        public async Task GoToUrlThrowsOnNullResponseTest()
-        {
-            var urlToVisit = "https://make.powerapps.com";
-            IResponse? response = null;
-
-            MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
-            MockPage.Setup(x => x.GotoAsync(It.IsAny<string>(), It.IsAny<PageGotoOptions>())).Returns(Task.FromResult(response));
-            LoggingTestHelper.SetupMock(MockLogger);
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-
-            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
-                MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.GoToUrlAsync(urlToVisit));
-            LoggingTestHelper.VerifyLogging(MockLogger, (message) => message.Contains(urlToVisit), LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -295,7 +295,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var selector = "[id =\"i0116\"]";
             var value = "hello";
 
-            MockPage.Setup(x => x.FillAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PageFillOptions?>())).Returns(Task.FromResult(0));
+            MockPage.Setup(x => x.FillAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PageFillOptions?>())).Returns(Task.CompletedTask);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, page: MockPage.Object);
@@ -309,7 +309,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         {
             var selector = "[id =\"i0116\"]";
 
-            MockPage.Setup(x => x.ClickAsync(It.IsAny<string>(), It.IsAny<PageClickOptions?>())).Returns(Task.FromResult(0));
+            MockPage.Setup(x => x.ClickAsync(It.IsAny<string>(), It.IsAny<PageClickOptions?>())).Returns(Task.CompletedTask);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, page: MockPage.Object);

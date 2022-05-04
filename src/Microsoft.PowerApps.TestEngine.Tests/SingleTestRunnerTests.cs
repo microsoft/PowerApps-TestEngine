@@ -85,11 +85,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Throws(new Exception("something bad happened"));
             }
 
-            MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.FromResult(0));
-            MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.FromResult(0));
-            MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.FromResult(0));
+            MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.CompletedTask);
 
-            MockUserManager.Setup(x => x.LoginAsUserAsync()).Returns(Task.FromResult(0));
+            MockUserManager.Setup(x => x.LoginAsUserAsync()).Returns(Task.CompletedTask);
 
             MockUrlMapper.Setup(x => x.GenerateAppUrl()).Returns(appUrl);
 

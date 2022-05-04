@@ -9,12 +9,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     public interface IPowerAppFunctions
     {
         /// <summary>
-        /// Wait for the Power App to load.
-        /// </summary>
-        /// <returns>Task</returns>
-        public Task WaitForPowerAppToLoadAsync();
-
-        /// <summary>
         /// Gets the value of a property from a control
         /// </summary>
         /// <typeparam name="T">Type of the property value</typeparam>

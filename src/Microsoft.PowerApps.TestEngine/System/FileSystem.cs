@@ -49,5 +49,9 @@ namespace Microsoft.PowerApps.TestEngine.System
             }
             return true;
         }
+        public string ReadAllText(string filePath)
+        {
+            return File.ReadAllText(filePath);
+        }
     }
 }

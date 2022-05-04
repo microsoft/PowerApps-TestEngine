@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.PowerApps.TestEngine.System;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace Microsoft.PowerApps.TestEngine.Config
@@ -10,13 +11,25 @@ namespace Microsoft.PowerApps.TestEngine.Config
     /// </summary>
     public class YamlTestConfigParser : ITestConfigParser
     {
+        private readonly IFileSystem _fileSystem;
+
+        public YamlTestConfigParser(IFileSystem fileSytem)
+        {
+            _fileSystem = fileSytem;
+        }
+
         public TestPlanDefinition ParseTestConfig(string testConfigFilePath)
         {
+            if (string.IsNullOrEmpty(testConfigFilePath))
+            {
+                throw new ArgumentNullException(nameof(testConfigFilePath));
+            }
+
             var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
 
-            return deserializer.Deserialize<TestPlanDefinition>(File.ReadAllText(testConfigFilePath));
+            return deserializer.Deserialize<TestPlanDefinition>(_fileSystem.ReadAllText(testConfigFilePath));
         }
     }
 }

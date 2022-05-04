@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         public IUntypedObject this[int index] => throw new NotImplementedException();
 
         // TODO: need to set the type correctly for the property
-        public FormulaType Type => ExternalType.String;
+        public FormulaType Type => FormulaType.String;
 
         public string Name { get; set; }
         public string Value { get; set; }
