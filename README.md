@@ -14,7 +14,7 @@ To get started with running one of the samples
 git clone https://github.com/microsoft/PowerApps-TestEngine.git
 
 # Change to the PowerAppsTestEngine folder
-cd PowerAppsTestEngine\src\PowerAppsTestEngine
+cd PowerApps-TestEngine\src\PowerAppsTestEngine
 
 # Build
 dotnet build
