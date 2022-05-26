@@ -1,4 +1,5 @@
 # Power Apps Test Engine
+
 [![CI Build](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml/badge.svg)](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml)
 > This is currently an experimental project.
 
@@ -9,7 +10,12 @@ The engine uses Playwright to orchestrate the tests.
 ## Getting Started
 
 To get started with running one of the samples
-```
+
+### Build locally
+
+Note: You may need to change your `MSBuildSDKsPath` environment variable to point to [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) if it is set to a different .NET Core SDK version.
+
+```bash
 # Pull github repo
 git clone https://github.com/microsoft/PowerApps-TestEngine.git
 
@@ -23,7 +29,13 @@ dotnet build
 pwsh bin\Debug\netX\playwright.ps1 install
 ```
 
-Import the solution of the selected sample. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions).
+### Import a sample solution
+
+Log in to Power Apps with a tenant account (not the Microsoft employee account). To create one, please visit [this](https://cdx.transform.microsoft.com/my-tenants).
+
+Import the solution of the selected sample(`PowerApps-TestEngine\samples\buttonclicker\ButtonClicker_1_0_0_1_managed.zip`). Remember the environment that you imported the solution to. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions).
+
+### Set up the config file
 
 Create a `config.dev.json` inside the `PowerAppsTestEngine` folder. (It should be next to the config.json)
 
@@ -38,14 +50,19 @@ The contents should be a copy of config.json, like this.
 ```
 
 Fill in the various properties:
+
 - environmentId: Environment that you imported the solution to
+  - You can get the `environmentId` by visiting [this](https://make.powerapps.com/). Make sure to select the environment you import the solution to. In the URL, you will be able to find the `environmentId`. (Eg. https://make.powerapps.com/environments/{environmentId}/solutions/)
 - tenantId: Tenant you are in
-- testPlanFile: Path to the `testPlan.fx.yaml` file for the sample that you wish to run. (Eg. `samples\buttonclicker\testPlan.fx.yaml`)
+  - Select the solution imported and visit the `Details` of the solution. `tenantId` can be found in `Web link`.
+- testPlanFile: Path to the `testPlan.fx.yaml` file for the sample that you wish to run. (Eg. `../../samples/buttonclicker/testPlan.fx.yaml`)
 - outputDirectory: Path to folder you wish the test results to be placed.
 
-For more information about the config and the inputs to the command, please view [this](.\docs\CommandInput.md)
+For more information about the config and the inputs to the command, please view [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/CommandInput.md)
 
-To setup the user environment variables, please view [this](.\docs\Yaml\Users.md). Refer to the user configuration section in your selected sample's `testPlan.fx.yaml`.
+To setup the user environment variables, please view [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/Users.md). Refer to the user configuration section in your selected sample's `testPlan.fx.yaml`.
+
+### Run test
 
 Now you should be ready to run the test
 ```
