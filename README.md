@@ -31,9 +31,11 @@ pwsh bin\Debug\netX\playwright.ps1 install
 
 ### Import a sample solution
 
-Log in to Power Apps with a tenant account (not the Microsoft employee account). To create one, please visit [this](https://cdx.transform.microsoft.com/my-tenants).
+Log in to Power Apps with a work or school organization account. The account used cannot have multi-factor authentication enabled for use with Power Apps. For Microsoft employees, you will need to create a test account.
 
-Import the solution of the selected sample(`PowerApps-TestEngine\samples\buttonclicker\ButtonClicker_1_0_0_1_managed.zip`). Remember the environment that you imported the solution to. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions).
+If you need a test tenant, you can create one by visiting [this](https://cdx.transform.microsoft.com/my-tenants).
+
+Import the solution of a sample(Eg. `PowerApps-TestEngine\samples\buttonclicker\ButtonClicker_1_0_0_1_managed.zip`). Remember the environment that you imported the solution to. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions).
 
 ### Set up the config file
 
