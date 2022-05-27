@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private bool IsPowerAppLoaded { get; set; } = false;
         private bool IsPlayerJsLoaded { get; set; } = false;
         private bool IsPublishedAppTestingJsLoaded { get; set; } = false;
-        private string PublishedAppIframeName { get; set; } = "";
+        private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState)
         {
@@ -26,20 +26,21 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public async Task<T> GetPropertyValueFromControlAsync<T>(string controlName, string propertyName, string? parentControlName, int? rowOrColumnNumber)
+        public async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
-            if (string.IsNullOrEmpty(controlName))
+            if (string.IsNullOrEmpty(itemPath.ControlName))
             {
-                throw new ArgumentNullException(nameof(controlName));
+                throw new ArgumentNullException(nameof(itemPath.ControlName));
             }
 
-            if (string.IsNullOrEmpty(propertyName))
+            if (string.IsNullOrEmpty(itemPath.PropertyName))
             {
-                throw new ArgumentNullException(nameof(propertyName));
+                throw new ArgumentNullException(nameof(itemPath.PropertyName));
             }
-
-            var expression = $"getPropertyValueFromControl(\"{controlName}\", \"{propertyName}\", \"{parentControlName}\", {rowOrColumnNumber})";
-            return await _testInfraFunctions.RunJavascriptAsync<T>(expression, PublishedAppIframeName);
+            // TODO: handle galleries and components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+            var expression = $"getPropertyValue({itemPathString})";
+            return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
         }
 
         private string GetFilePath(string file)
@@ -58,18 +59,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             try
             {
-                if (!IsPublishedAppTestingJsLoaded)
+                if (!IsPlayerJsLoaded)
                 {
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
-                    IsPublishedAppTestingJsLoaded = true;
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
+                    IsPlayerJsLoaded = true;
                 }
-                var expression = "isAppIdle()";
-                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, PublishedAppIframeName);
+                var expression = "getAppStatus()";
+                return (await _testInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
             catch (Exception ex)
             {
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
-                IsPublishedAppTestingJsLoaded = false;
+                IsPlayerJsLoaded = false;
                 return false;
             }
 
@@ -91,25 +92,29 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<List<PowerAppControlModel>> LoadPowerAppsObjectModelAsync()
         {
-            await WaitForPowerAppToLoadAsync();
             await WaitForAppToBeIdleAsync();
+
+            if (!IsPublishedAppTestingJsLoaded)
+            {
+                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                IsPublishedAppTestingJsLoaded = true;
+            }
 
             // TODO: add retry logic for changes in DOM model
             // Temporary Hack
             Thread.Sleep(1000);
 
-            var expression = "JSON.stringify(buildControlObjectModel());";
-            var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression, PublishedAppIframeName);
+            var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
+            var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
             var controlModels = new List<PowerAppControlModel>();
 
             if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {
-                var jsControlModels = JsonConvert.DeserializeObject<List<JSControlModel>>(controlObjectModelJsonString);
+                var jsObjectModel = JsonConvert.DeserializeObject<JSObjectModel>(controlObjectModelJsonString);
 
-
-                if (jsControlModels != null)
+                if (jsObjectModel != null && jsObjectModel.Controls != null)
                 {
-                    foreach (var jsControlModel in jsControlModels)
+                    foreach (var jsControlModel in jsObjectModel.Controls)
                     {
                         if (string.IsNullOrEmpty(jsControlModel.Name) || jsControlModel.Properties == null)
                         {
@@ -133,54 +138,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        public async Task<bool> SelectControlAsync(string controlName, string? parentControlName, int? rowOrColumnNumber)
+        public async Task<bool> SelectControlAsync(ItemPath itemPath)
         {
-            if (string.IsNullOrEmpty(controlName))
+            if (string.IsNullOrEmpty(itemPath.ControlName))
             {
-                throw new ArgumentNullException(nameof(controlName));
+                throw new ArgumentNullException(nameof(itemPath.ControlName));
             }
-
-            var expression = $"selectControl(\"{controlName}\", \"{parentControlName}\", {rowOrColumnNumber})";
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, PublishedAppIframeName);
-        }
-
-        private async Task<bool> CheckIfAppIsLoadingAsync()
-        {
-            try
-            {
-                if (!IsPlayerJsLoaded)
-                {
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PlayerTesting.js")), null);
-                    IsPlayerJsLoaded = true;
-                }
-                var expression = "checkIfAppIsLoading()";
-                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, null);
-            }
-            catch (Exception ex)
-            {
-                _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
-                IsPlayerJsLoaded = false;
-                return true;
-            }
-        }
-
-        private async Task WaitForPowerAppToLoadAsync()
-        {
-            // TODO: implement timeout
-            while (!IsPowerAppLoaded)
-            {
-                var appIsLoading = await CheckIfAppIsLoadingAsync();
-                if (!appIsLoading)
-                {
-                    var expression = "getPublishedAppIframeName()";
-                    PublishedAppIframeName = await _testInfraFunctions.RunJavascriptAsync<string>(expression, null);
-                    IsPowerAppLoaded = true;
-                }
-                else
-                {
-                    Thread.Sleep(500);
-                }
-            }
+            // TODO: handle galleries and components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+            var expression = $"select({itemPathString})";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
     }
 }

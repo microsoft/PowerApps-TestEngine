@@ -41,7 +41,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectFunctionTest()
         {
-            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int?>())).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
 
             var powerAppObject = new PowerAppControlModel("Label1", new List<string>() { "Text" }, MockPowerAppFunctions.Object);
             var untypedObject = FormulaValue.New(powerAppObject);
@@ -49,20 +49,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var selectFunction = new SelectFunction(MockPowerAppFunctions.Object);
             var result = selectFunction.Execute(untypedObject);
             Assert.IsType<BlankValue>(result);
-            MockPowerAppFunctions.Verify(x => x.SelectControlAsync(powerAppObject.Name, null, null), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == powerAppObject.Name)), Times.Once());
         }
 
         [Fact]
         public void SelectFunctionFailsTest()
         {
-            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int?>())).Returns(Task.FromResult(false));
+            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
 
             var powerAppObject = new PowerAppControlModel("Label1", new List<string>() { "Text" }, MockPowerAppFunctions.Object);
             var untypedObject = FormulaValue.New(powerAppObject);
 
             var selectFunction = new SelectFunction(MockPowerAppFunctions.Object);
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(untypedObject));
-            MockPowerAppFunctions.Verify(x => x.SelectControlAsync(powerAppObject.Name, null, null), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == powerAppObject.Name)), Times.Once());
         }
     }
 }

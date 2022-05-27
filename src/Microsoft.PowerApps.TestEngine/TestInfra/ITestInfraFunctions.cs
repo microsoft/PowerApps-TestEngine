@@ -64,8 +64,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// </summary>
         /// <typeparam name="T">Expected return type</typeparam>
         /// <param name="jsExpression">Javascript expression to run</param>
-        /// <param name="frameName">Frame name to add the script to. If null, it will be added to the main page.</param>
         /// <returns>Return value of javascript</returns>
-        public Task<T> RunJavascriptAsync<T>(string jsExpression, string? frameName);
+        public Task<T> RunJavascriptAsync<T>(string jsExpression);
     }
 }

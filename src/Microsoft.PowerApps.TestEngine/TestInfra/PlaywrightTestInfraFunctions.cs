@@ -183,17 +183,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
-        public async Task<T> RunJavascriptAsync<T>(string jsExpression, string? frameName)
+        public async Task<T> RunJavascriptAsync<T>(string jsExpression)
         {
             ValidatePage();
-            if (string.IsNullOrEmpty(frameName))
-            {
-                return await Page.EvaluateAsync<T>(jsExpression);
-            }
-            else
-            {
-                return await Page.Frame(frameName).EvaluateAsync<T>(jsExpression);
-            }
+
+            return await Page.EvaluateAsync<T>(jsExpression);
         }
     }
 }

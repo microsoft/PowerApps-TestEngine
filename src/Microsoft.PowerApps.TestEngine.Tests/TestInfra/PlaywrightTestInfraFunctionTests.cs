@@ -256,7 +256,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.FillAsync("[id=\"i0116\"]", "hello"));
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.ClickAsync("[id=\"i0116\"]"));
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.AddScriptTagAsync("script.js", "iframeName"));
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.RunJavascriptAsync<bool>("console.log(\"hi\")", "iframeName"));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.RunJavascriptAsync<bool>("console.log(\"hi\")"));
         }
 
         [Fact]
@@ -354,36 +354,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task RunJavascriptSuccessfulTest()
         {
             var jsExpression = "console.log('hello')";
-            string? frameName = null;
             var expectedResponse = "hello";
 
             MockPage.Setup(x => x.EvaluateAsync<string>(It.IsAny<string>(), It.IsAny<object?>())).Returns(Task.FromResult(expectedResponse));
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, page: MockPage.Object);
-            var result = await playwrightTestInfraFunctions.RunJavascriptAsync<string>(jsExpression, frameName);
+            var result = await playwrightTestInfraFunctions.RunJavascriptAsync<string>(jsExpression);
             Assert.Equal(expectedResponse, result);
 
             MockPage.Verify(x => x.EvaluateAsync<string>(jsExpression, null), Times.Once());
-        }
-
-        [Fact]
-        public async Task RunJavascriptInFrameSuccessfulTest()
-        {
-            var jsExpression = "console.log('hello')";
-            var frameName = "publishedAppFrame";
-            var expectedResponse = "hello";
-
-            MockIFrame.Setup(x => x.EvaluateAsync<string>(It.IsAny<string>(), It.IsAny<object?>())).Returns(Task.FromResult(expectedResponse));
-            MockPage.Setup(x => x.Frame(It.IsAny<string>())).Returns(MockIFrame.Object);
-
-            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
-                MockFileSystem.Object, page: MockPage.Object);
-            var result = await playwrightTestInfraFunctions.RunJavascriptAsync<string>(jsExpression, frameName);
-            Assert.Equal(expectedResponse, result);
-
-            MockIFrame.Verify(x => x.EvaluateAsync<string>(jsExpression, null), Times.Once());
-            MockPage.Verify(x => x.Frame(frameName), Times.Once());
         }
     }
 }

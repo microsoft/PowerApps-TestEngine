@@ -47,11 +47,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             throw new NotImplementedException();
         }
 
+        public ItemPath CreateItemPath()
+        {
+            // TODO: handle components and galleries
+            return new ItemPath
+            {
+                ControlName = Name
+            };
+        }
+
         public bool TryGetProperty(string value, out IUntypedObject result)
         {
             if (Properties.Contains(value))
             {
-                var getProperty = PowerAppFunctions.GetPropertyValueFromControlAsync<string>(Name, value, null, null).GetAwaiter();
+                var itemPath = CreateItemPath();
+                itemPath.PropertyName = value;
+                var getProperty = PowerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath).GetAwaiter();
 
                 // TODO: implement timeout
                 while (!getProperty.IsCompleted)

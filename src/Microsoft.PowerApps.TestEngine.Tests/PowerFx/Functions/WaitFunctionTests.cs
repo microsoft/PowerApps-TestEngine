@@ -45,13 +45,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 PropertyType = "string",
                 PropertyValue = textToWaitFor,
             };
-            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int?>()))
+            var expectedItemPath = new ItemPath
+            {
+                ControlName = "Label1",
+                PropertyName = "Text"
+            };
+            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<ItemPath>()))
                     .Returns(Task.FromResult(JsonConvert.SerializeObject(jsPropertyValueModel)));
 
             var waitFunction = new WaitFunction();
             waitFunction.Execute(FormulaValue.New(powerAppsObject), FormulaValue.New("Text"), FormulaValue.New(textToWaitFor));
             
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControlAsync<string>("Label1", "Text", null, null), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControlAsync<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Once());
         }
 
         [Fact]
@@ -69,7 +74,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 PropertyType = "string",
                 PropertyValue = textToWaitFor,
             };
-            MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int?>()))
+            var expectedItemPath = new ItemPath
+            {
+                ControlName = "Label1",
+                PropertyName = "Text"
+            };
+            MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<ItemPath>()))
                     .Returns(Task.FromResult(JsonConvert.SerializeObject(jsPropertyValueModel)))
                     .Returns(Task.FromResult(JsonConvert.SerializeObject(jsPropertyValueModel)))
                     .Returns(Task.FromResult(JsonConvert.SerializeObject(finalJsPropertyValueModel)));
@@ -77,7 +87,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var waitFunction = new WaitFunction();
             waitFunction.Execute(FormulaValue.New(powerAppsObject), FormulaValue.New("Text"), FormulaValue.New(textToWaitFor));
 
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControlAsync<string>("Label1", "Text", null, null), Times.Exactly(3));
+            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControlAsync<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
         }
     }
 }

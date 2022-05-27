@@ -19,7 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var jsProperty = new JSPropertyValueModel() { PropertyType = "string", PropertyValue = "Hello" };
-            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int?>())).Returns(Task.FromResult(JsonConvert.SerializeObject(jsProperty)));
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<ItemPath>())).Returns(Task.FromResult(JsonConvert.SerializeObject(jsProperty)));
             var name = "Label";
             var properties = new List<string>() { "Text", "X", "Y" };
             var model = new PowerAppControlModel(name, properties, mockPowerAppFunctions.Object);

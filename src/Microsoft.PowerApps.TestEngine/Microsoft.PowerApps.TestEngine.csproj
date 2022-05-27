@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="JS\PlayerTesting.js">
+    <None Update="JS\CanvasAppSdk.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="JS\PublishedAppTesting.js">
