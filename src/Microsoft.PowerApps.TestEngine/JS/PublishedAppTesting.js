@@ -1,15 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-function getContainer() {
-
-    if (window['AppDependencyHandler']) {
-        return AppDependencyHandler.containers[Object.keys(AppDependencyHandler.containers)[0]];
-    }
-
-    return window;
-}
-
 function parseControl(controlName, controlObject) {
     var properties = Object.keys(controlObject.modelProperties);
     var childControls = [];
@@ -24,11 +15,11 @@ function parseControl(controlName, controlObject) {
         });
 
         var managerId = controlObject.controlWidget.replicatedContextManager.managerId;
-        var replicatedContext = getContainer().AppMagic.Controls.GlobalContextManager.bindingContext.replicatedContexts[managerId];
+        var replicatedContext = AppMagic.Controls.GlobalContextManager.bindingContext.replicatedContexts[managerId];
         itemCount = replicatedContext.getBindingContextCount();
     }
 
-    var componentBindingContext = getContainer().AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(controlName);
+    var componentBindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(controlName);
     if (componentBindingContext) {
         var componentChildrenControlContext = componentBindingContext.controlContexts;
         var componentChildrenControlNames = Object.keys(componentChildrenControlContext);
@@ -49,7 +40,7 @@ function parseControl(controlName, controlObject) {
 function buildControlObjectModel() {
 
     var controls = [];
-    var controlContext = getContainer().AppMagic.Controls.GlobalContextManager.bindingContext.controlContexts;
+    var controlContext = AppMagic.Controls.GlobalContextManager.bindingContext.controlContexts;
     var controlNames = Object.keys(controlContext);
     controlNames.forEach((controlName) => {
         var control = controlContext[controlName];
@@ -59,16 +50,22 @@ function buildControlObjectModel() {
     return controls;
 }
 
-function getPropertyValueFromControl(controlName, propertyName, parentControlName, rowOrColumnNumber) {
+function getPropertyValueFromControl(itemPath) {
     var propertyValue = null;
+
+    // TODO: handle galleries and components
+    /*
     if (parentControlName && rowOrColumnNumber) {
-        propertyValue = (getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(parentControlName, getContainer().AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.getPropertyValue("AllItems"))[rowOrColumnNumber][controlName][propertyName];
+        propertyValue = (AppMagic.AuthoringTool.Runtime.getNamedControl(parentControlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.getPropertyValue("AllItems"))[rowOrColumnNumber][controlName][propertyName];
     }
 
     if (parentControlName) {
-        propertyValue = (getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.getPropertyValue(propertyName, getContainer().AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName)));
+        propertyValue = (AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.getPropertyValue(propertyName, AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName)));
+    }*/
+
+    if (!itemPath.childControl && !itemPath.index) {
+        propertyValue = (AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.getPropertyValue(itemPath.propertyName));
     }
-    propertyValue = (getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(controlName, getContainer().AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.getPropertyValue(propertyName));
 
     if (!propertyValue) {
         return JSON.stringify({ propertyValue: null, propertyType: null });
@@ -79,42 +76,38 @@ function getPropertyValueFromControl(controlName, propertyName, parentControlNam
     });
 }
 
-function selectControl(controlName, parentControlName, rowOrColumnNumber) {
+function selectControl(itemPath) {
+    // TODO: handle galleries and components
+    /*
     if (parentControlName && rowOrColumnNumber) {
         // select function is starts with 1, while the C# code indexes from 0
         rowOrColumnNumber++;
-        return getContainer().AppMagic.Functions.select(null, getContainer().AppMagic.Controls.GlobalContextManager.bindingContext, getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(parentControlName), rowOrColumnNumber, getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax._icontrol, getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(getContainer().AppMagic.AuthoringTool.Runtime.getCurrentScreenName()).OpenAjax.uniqueId)
+        return AppMagic.Functions.select(null, AppMagic.Controls.GlobalContextManager.bindingContext, AppMagic.AuthoringTool.Runtime.getNamedControl(parentControlName), rowOrColumnNumber, AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax._icontrol, AppMagic.AuthoringTool.Runtime.getNamedControl(AppMagic.AuthoringTool.Runtime.getCurrentScreenName()).OpenAjax.uniqueId)
     }
 
     if (parentControlName) {
-        var bindingContext = getContainer().AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName);
+        var bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName);
         var buttonWidget = bindingContext.controlContexts[controlName].controlWidget;
         var controlContext = buttonWidget.getOnSelectControlContext(bindingContext);
         buttonWidget.select(controlContext);
         return true;
-    }
-    return getContainer().AppMagic.Functions.select(null, getContainer().AppMagic.Controls.GlobalContextManager.bindingContext, getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(controlName), null, null, getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(getContainer().AppMagic.AuthoringTool.Runtime.getCurrentScreenName()).OpenAjax.uniqueId);
+    } */
+    return AppMagic.Functions.select(null, AppMagic.Controls.GlobalContextManager.bindingContext, AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName), null, null, AppMagic.AuthoringTool.Runtime.getNamedControl(AppMagic.AuthoringTool.Runtime.getCurrentScreenName()).OpenAjax.uniqueId);
 }
 
-function setPropertyValueForControl(controlName, propertyName, value, parentControlName, rowOrColumnNumber) {
+function setPropertyValueForControl(itemPath, value) {
+    // TODO: handle galleries and components
+    /*
     if (parentControlName && rowOrColumnNumber) {
-        var galleryControlOpenAjax = getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(parentControlName).OpenAjax;
+        var galleryControlOpenAjax = AppMagic.AuthoringTool.Runtime.getNamedControl(parentControlName).OpenAjax;
         var replicatedContextManagerId = galleryControlOpenAjax.replicatedContextManager.managerId;
         var galleryBindingContext = galleryControlOpenAjax.replicatedContextManager.authoringAreaBindingContext.parent.replicatedContexts[replicatedContextManagerId].bindingContextAt(rowOrColumnNumber);
-        return getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.setPropertyValueInternal(propertyName, value, galleryBindingContext)
+        return AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.setPropertyValueInternal(propertyName, value, galleryBindingContext)
     }
 
     if (parentControlName) {
 
-        return (getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.setPropertyValueInternal(propertyName, value, getContainer().AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName)));
-    }
-    return getContainer().AppMagic.AuthoringTool.Runtime.getNamedControl(controlName, getContainer().AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(propertyName, value, getContainer().AppMagic.Controls.GlobalContextManager.bindingContext);
-}
-
-function isAppIdle() {
-
-    if (window['UCWorkBlockTracker']) {
-        return UCWorkBlockTracker.isAppIdle();
-    }
-    return true;
+        return (AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.setPropertyValueInternal(propertyName, value, AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName)));
+    }*/
+    return AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, AppMagic.Controls.GlobalContextManager.bindingContext);
 }

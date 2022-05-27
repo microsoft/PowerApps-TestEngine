@@ -38,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             IUntypedObject untypedVal = obj.Impl;
 
             var powerAppControlModel = (PowerAppControlModel)untypedVal;
-            var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.Name, null, null);
+            var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.CreateItemPath());
 
             if (!result)
             {
