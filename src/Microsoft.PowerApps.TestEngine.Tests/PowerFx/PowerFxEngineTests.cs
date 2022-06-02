@@ -94,8 +94,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void ExecuteWithVariablesTest()
         {
-            var label1 = new PowerAppControlModel("Label1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
-            var label2 = new PowerAppControlModel("Label2", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var label1 = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
+            var label2 = new PowerAppControlModel("Label2", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var powerFxExpression = "Concatenate(Text(Label1.Text), Text(Label2.Text))";
             var label1Text = "Hello";
             var label2Text = "World";
@@ -195,7 +195,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
 
-            var button1 = new PowerAppControlModel("Button1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var button1 = new PowerAppControlModel("Button1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
@@ -209,7 +209,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
 
-            var button1 = new PowerAppControlModel("Button1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var button1 = new PowerAppControlModel("Button1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
@@ -220,7 +220,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void ExecuteWaitFunctionTest()
         {
-            var label1 = new PowerAppControlModel("Label1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var label1 = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var label1Text = "1";
             var label1JsProperty = new JSPropertyValueModel()
             {

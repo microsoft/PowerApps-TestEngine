@@ -3,6 +3,7 @@
 
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
 using Microsoft.PowerFx.Core.Public.Values;
 using Moq;
@@ -44,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
 
-            var powerAppObject = new PowerAppControlModel("Label1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var powerAppObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var untypedObject = FormulaValue.New(powerAppObject);
 
             var selectFunction = new SelectFunction(MockPowerAppFunctions.Object);
@@ -58,7 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
 
-            var powerAppObject = new PowerAppControlModel("Label1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var powerAppObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var untypedObject = FormulaValue.New(powerAppObject);
 
             var selectFunction = new SelectFunction(MockPowerAppFunctions.Object);

@@ -76,37 +76,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     new JSControlModel()
                     {
                         Name = "Label1",
-                        Properties = new JSPropertyModel[] 
-                        {
-                            new JSPropertyModel() { PropertyName = "Text", PropertyType = "String" },
-                            new JSPropertyModel() { PropertyName = "Color", PropertyType = "Color" },
-                            new JSPropertyModel() { PropertyName = "X", PropertyType = "Number" },
-                            new JSPropertyModel() { PropertyName = "Y", PropertyType = "Number" }
-                        }
+                        Properties = TestData.CreateSampleJsPropertyModelList()
                     },
                     new JSControlModel()
                     {
                         Name = "Label1",
-                        Properties = new JSPropertyModel[]
-                        {
-                            new JSPropertyModel() { PropertyName = "Text", PropertyType = "String" },
-                            new JSPropertyModel() { PropertyName = "Color", PropertyType = "Color" },
-                            new JSPropertyModel() { PropertyName = "X", PropertyType = "Number" },
-                            new JSPropertyModel() { PropertyName = "Y", PropertyType = "Number" }
-                        },
+                        Properties = TestData.CreateSampleJsPropertyModelList(),
                         ItemCount = 0,
                         IsArray = false
                     },
                     new JSControlModel()
                     {
                         Name = "Gallery1",
-                        Properties = new JSPropertyModel[]
-                        {
-                            new JSPropertyModel() { PropertyName = "Text", PropertyType = "String" },
-                            new JSPropertyModel() { PropertyName = "Color", PropertyType = "Color" },
-                            new JSPropertyModel() { PropertyName = "X", PropertyType = "Number" },
-                            new JSPropertyModel() { PropertyName = "Y", PropertyType = "Number" }
-                        },
+                        Properties = TestData.CreateSampleJsPropertyModelList(),
                         ItemCount = 5,
                         IsArray = true,
                         ChildrenControls = new JSControlModel[]
@@ -114,24 +96,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                             new JSControlModel()
                             {
                                 Name = "Label2",
-                                Properties = new JSPropertyModel[]
-                                {
-                                    new JSPropertyModel() { PropertyName = "Text", PropertyType = "String" },
-                                    new JSPropertyModel() { PropertyName = "Color", PropertyType = "Color" },
-                                    new JSPropertyModel() { PropertyName = "X", PropertyType = "Number" },
-                                    new JSPropertyModel() { PropertyName = "Y", PropertyType = "Number" }
-                                }
+                                Properties = TestData.CreateSampleJsPropertyModelList()
                             },
                             new JSControlModel()
                             {
                                 Name = "Button1",
-                                Properties = new JSPropertyModel[]
-                                {
-                                    new JSPropertyModel() { PropertyName = "Text", PropertyType = "String" },
-                                    new JSPropertyModel() { PropertyName = "Color", PropertyType = "Color" },
-                                    new JSPropertyModel() { PropertyName = "X", PropertyType = "Number" },
-                                    new JSPropertyModel() { PropertyName = "Y", PropertyType = "Number" }
-                                }
+                                Properties = TestData.CreateSampleJsPropertyModelList()
                             }
                         }
                     }

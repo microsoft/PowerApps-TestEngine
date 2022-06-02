@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
 using Moq;
 using Newtonsoft.Json;
@@ -37,12 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var jsProperty = new JSPropertyValueModel() { PropertyValue = "Hello" };
             mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<ItemPath>())).Returns(Task.FromResult(JsonConvert.SerializeObject(jsProperty)));
             var name = "Label";
-            var properties = new Dictionary<string, FormulaType>() 
-            { 
-                { Guid.NewGuid().ToString(), FormulaType.String }, 
-                { Guid.NewGuid().ToString(), FormulaType.Boolean }, 
-                { Guid.NewGuid().ToString(), FormulaType.Number } 
-            };
+            var properties = TestData.CreateRandomPropertiesDictionary();
             var model = new PowerAppControlModel(name, properties, mockPowerAppFunctions.Object);
             Assert.Equal(name, model.Name);
             Assert.Equal(properties, model.Properties);
@@ -84,18 +80,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public void PowerAppControlModelWithArrayTest()
         {
             var propertyValues = new Dictionary<string, string>();
-            var childProperties = new Dictionary<string, FormulaType>()
-            {
-                { Guid.NewGuid().ToString(), FormulaType.String },
-                { Guid.NewGuid().ToString(), FormulaType.Boolean },
-                { Guid.NewGuid().ToString(), FormulaType.Number }
-            };
-            var arrayProperties = new Dictionary<string, FormulaType>()
-            {
-                { Guid.NewGuid().ToString(), FormulaType.String },
-                { Guid.NewGuid().ToString(), FormulaType.Boolean },
-                { Guid.NewGuid().ToString(), FormulaType.Number }
-            };
+            var childProperties = TestData.CreateRandomPropertiesDictionary();
+            var arrayProperties = TestData.CreateRandomPropertiesDictionary();
 
             foreach (var property in childProperties)
             {

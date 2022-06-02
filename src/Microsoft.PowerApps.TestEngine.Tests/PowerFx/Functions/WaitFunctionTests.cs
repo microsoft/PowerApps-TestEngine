@@ -4,6 +4,7 @@
 
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
 using Microsoft.PowerFx.Core.Public.Values;
 using Moq;
@@ -27,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void WaitFunctionThrowsOnInvalidArgumentsTest()
         {
-            var powerAppsObject = new PowerAppControlModel("Label1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var powerAppsObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var waitFunction = new WaitFunction();
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New("1")));
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(FormulaValue.New(new SomeOtherUntypedObject()), null, FormulaValue.New("1")));
@@ -40,7 +41,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionSucceedsTest()
         {
             var textToWaitFor = "1";
-            var powerAppsObject = new PowerAppControlModel("Label1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var powerAppsObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
                 PropertyValue = textToWaitFor,
@@ -63,7 +64,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionWaitsForValueToUpdateTest()
         {
             var textToWaitFor = "1";
-            var powerAppsObject = new PowerAppControlModel("Label1", new Dictionary<string, FormulaType>() { { "Text", FormulaType.String } }, MockPowerAppFunctions.Object);
+            var powerAppsObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
                 PropertyValue = "0",
