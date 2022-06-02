@@ -40,7 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var model = new PowerAppControlModel(name, properties, mockPowerAppFunctions.Object);
             Assert.Equal(name, model.Name);
             Assert.Equal(properties, model.Properties);
-            Assert.Equal(ExternalTypeKind.Array, (model.Type as ExternalType).Kind);
+            Assert.Equal(ExternalTypeKind.Object, (model.Type as ExternalType).Kind);
             Assert.False(model.ItemCount.HasValue);
             Assert.False(model.SelectedIndex.HasValue);
             Assert.Empty(model.ChildControls);
