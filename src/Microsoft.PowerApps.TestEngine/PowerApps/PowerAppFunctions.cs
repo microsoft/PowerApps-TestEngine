@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx.Core.Public.Types;
 using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
@@ -126,6 +127,49 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
+        public FormulaType MapPropertyType(string propertyTypeString)
+        {
+            var propertyType = FormulaType.String;
+
+            switch (propertyTypeString)
+            {
+                case ("Boolean"):
+                    propertyType = FormulaType.Boolean;
+                    break;
+                case ("Number"):
+                    propertyType = FormulaType.Number;
+                    break;
+                case ("String"):
+                    propertyType = FormulaType.String;
+                    break;
+                case ("Time"):
+                    propertyType = FormulaType.Time;
+                    break;
+                case ("Date"):
+                    propertyType = FormulaType.Date;
+                    break;
+                case ("DateTime"):
+                    propertyType = FormulaType.DateTime;
+                    break;
+                case ("DateTimeNoTimeZone"):
+                    propertyType = FormulaType.DateTimeNoTimeZone;
+                    break;
+                case ("Hyperlink"):
+                    propertyType = FormulaType.Hyperlink;
+                    break;
+                case ("Color"):
+                    propertyType = FormulaType.Color;
+                    break;
+                case ("Guid"):
+                    propertyType = FormulaType.Guid;
+                    break;
+                default:
+                    propertyType = FormulaType.String;
+                    break;
+            }
+            return propertyType;
+        }
+
         private PowerAppControlModel? ParseControl(JSControlModel jsControlModel)
         {
             if (string.IsNullOrEmpty(jsControlModel.Name) || jsControlModel.Properties == null)
@@ -135,7 +179,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             else
             {
-                var controlModel = new PowerAppControlModel(jsControlModel.Name, jsControlModel.Properties.ToList(), this);
+                var properties = new Dictionary<string, FormulaType>();
+
+                foreach(var property in jsControlModel.Properties)
+                {
+                    var propertyType = MapPropertyType(property.PropertyType);
+                    properties.Add(property.PropertyName, propertyType);
+                }
+
+                var controlModel = new PowerAppControlModel(jsControlModel.Name, properties, this);
 
                 controlModel.ItemCount = jsControlModel.IsArray ? jsControlModel.ItemCount: null;
 

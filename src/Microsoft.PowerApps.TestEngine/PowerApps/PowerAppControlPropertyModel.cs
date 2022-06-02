@@ -13,16 +13,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     {
         public IUntypedObject this[int index] => throw new NotImplementedException();
 
-        // TODO: need to set the type correctly for the property
-        public FormulaType Type => FormulaType.String;
+        public FormulaType Type => _type;
+
+        private FormulaType _type;
 
         public string Name { get; set; }
         public string Value { get; set; }
 
-        public PowerAppControlPropertyModel(string name, string value)
+        public PowerAppControlPropertyModel(string name, string value, FormulaType type)
         {
             Name = name;
             Value = value;
+            _type = type;
         }
 
         public int GetArrayLength()
