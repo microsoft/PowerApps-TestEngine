@@ -68,6 +68,10 @@ function setPropertyValueForControl(itemPath, value) {
 */
 
 function getAppStatus() {
+    if (typeof AppMagic === "undefined" || typeof AppMagic.Runtime === "undefined"
+        || typeof AppMagic.Runtime.WebPlayerRuntime === "undefined" || typeof AppMagic.Runtime.WebPlayerRuntime._appHostManager === "undefined") {
+        return "Loading";
+    }
     if (AppMagic.Runtime.WebPlayerRuntime._appHostManager._appIsLoading) {
         return "Loading";
     }

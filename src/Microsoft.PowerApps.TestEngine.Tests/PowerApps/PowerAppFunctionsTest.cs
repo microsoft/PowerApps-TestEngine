@@ -7,6 +7,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.PowerFx.Core.Public.Types;
 using Moq;
 using Newtonsoft.Json;
 using System;
@@ -31,36 +32,34 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("Label1", "Text", null, null, "Hello")]
-        [InlineData("Button1", "Text", "Component1", null, "Click Me")]
-        [InlineData("TextInput1", "Text", "Gallery1", 3, "Enter text here")]
-        public async Task GetPropertyValueFromControlAsyncTest(string controlName, string propertyName, string? parentControlName, int? rowOrColumnNumber, string expectedOutput)
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"}", "Text")]
+        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}", "Text")]
+        public async Task GetPropertyValueFromControlAsyncTest(string itemPathString, string expectedOutput)
         {
-            // TODO: handle components and galleries
+            // TODO: handle components and nested galleries
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(It.IsAny<string>())).Returns(Task.FromResult(expectedOutput));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object);
-            var itemPath = new ItemPath
-            {
-                ControlName = controlName,
-                PropertyName = propertyName
-            };
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
             var result = await powerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath);
             Assert.Equal(expectedOutput, result);
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"getPropertyValue({JsonConvert.SerializeObject(itemPath)})"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"getPropertyValue({itemPathString})"), Times.Once());
         }
 
         [Theory]
-        [InlineData("", "Text")]
-        [InlineData(null, "Text")]
-        [InlineData("Label1", "")]
-        [InlineData("Label1", null)]
-        public async Task GetPropertyValueFromControlAsyncThrowsOnInvalidInputTest(string controlName, string propertyName)
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"\",\"index\":1,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":2,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Gallery1\",\"index\":3,\"childControl\":{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Gallery1\",\"index\":4,\"childControl\":{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Gallery1\",\"index\":5,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Gallery1\",\"index\":6,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
+        public async Task GetPropertyValueFromControlAsyncThrowsOnInvalidInputTest(string itemPathString)
         {
-            var itemPath = new ItemPath
-            {
-                ControlName = controlName,
-                PropertyName = propertyName
-            };
+            // TODO: handle components and nested galleries
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object);
             await Assert.ThrowsAsync<ArgumentNullException>(async() => await powerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath));
         }
@@ -68,6 +67,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [Fact]
         public async Task LoadPowerAppsObjectModelAsyncTest()
         {
+            // Handle nested galleries and components
             var jsObjectModel = new JSObjectModel()
             {
                 Controls = new List<JSControlModel>()
@@ -79,9 +79,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     },
                     new JSControlModel()
                     {
+                        Name = "Label1",
+                        Properties = new string[] { "Text", "Color", "X", "Y"},
+                        ItemCount = 0,
+                        IsArray = false
+                    },
+                    new JSControlModel()
+                    {
                         Name = "Gallery1",
                         Properties = new string[] { "AllItems", "X", "Y"},
                         ItemCount = 5,
+                        IsArray = true,
                         ChildrenControls = new JSControlModel[]
                         {
                             new JSControlModel()
@@ -118,6 +126,33 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 {
                     Assert.Contains(jsProperty, model.Properties);
                 }
+                Assert.Equal(jsModel.IsArray ? jsModel.ItemCount : null, model.ItemCount);
+                Assert.Null(model.SelectedIndex);
+                Assert.Equal(jsModel.IsArray, (model.Type as ExternalType).Kind == ExternalTypeKind.Array);
+                Assert.Equal(!jsModel.IsArray, (model.Type as ExternalType).Kind == ExternalTypeKind.Object);
+                Assert.Null(model.ParentControl);
+
+                if (jsModel.ChildrenControls != null)
+                {
+                    Assert.Equal(jsModel.ChildrenControls.Length, model.ChildControls.Count);
+                    foreach (var jsChildModel in jsModel.ChildrenControls)
+                    {
+                        var childModel = model.ChildControls.Where(x => x.Name == jsChildModel.Name).FirstOrDefault();
+                        Assert.NotNull(childModel);
+                        Assert.Equal(jsChildModel.Name, childModel.Name);
+                        Assert.Equal(jsChildModel.Properties?.Count(), childModel.Properties.Count);
+                        foreach (var jsProperty in jsChildModel.Properties)
+                        {
+                            Assert.Contains(jsProperty, childModel.Properties);
+                        }
+                        Assert.Equal(jsChildModel.ItemCount, childModel.ItemCount);
+                        Assert.Null(childModel.SelectedIndex);
+                        Assert.Equal(jsChildModel.IsArray, (childModel.Type as ExternalType).Kind == ExternalTypeKind.Array);
+                        Assert.Equal(!jsChildModel.IsArray, (childModel.Type as ExternalType).Kind == ExternalTypeKind.Object);
+                        Assert.NotNull(childModel.ParentControl);
+                        Assert.Equal(model.Name, childModel.ParentControl.Name);
+                    }
+                }
             }
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Once());
@@ -153,31 +188,31 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
 
         [Theory]
-        [InlineData("Label1", null, null, true)]
-        [InlineData("Button1", "Component1", null, false)]
-        [InlineData("TextInput1", "Gallery1", 3, true)]
-        public async Task SelectControlAsyncTest(string controlName, string? parentControlName, int? rowOrColumnNumber, bool expectedOutput)
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null}", true)]
+        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}", false)]
+        public async Task SelectControlAsyncTest(string itemPathString, bool expectedOutput)
         {
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(expectedOutput));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object);
 
-            // TODO: Handle galleries and components
-            var itemPath = new ItemPath()
-            {
-                ControlName = controlName,
-            };
+            // TODO: Handle nested galleries and components
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
             var result = await powerAppFunctions.SelectControlAsync(itemPath);
             Assert.Equal(expectedOutput, result);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"select({JsonConvert.SerializeObject(itemPath)})"), Times.Once());
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public async Task SelectControlAsyncThrowsOnInvalidInputTest(string controlName)
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"\",\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
+        public async Task SelectControlAsyncThrowsOnInvalidInputTest(string itemPathString)
         {
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object);
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await powerAppFunctions.SelectControlAsync(new ItemPath() {  ControlName = controlName }));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await powerAppFunctions.SelectControlAsync(JsonConvert.DeserializeObject<ItemPath>(itemPathString)));
         }
 
         [Fact]
