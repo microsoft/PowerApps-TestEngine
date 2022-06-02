@@ -28,16 +28,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
-            if (string.IsNullOrEmpty(itemPath.ControlName))
-            {
-                throw new ArgumentNullException(nameof(itemPath.ControlName));
-            }
-
-            if (string.IsNullOrEmpty(itemPath.PropertyName))
-            {
-                throw new ArgumentNullException(nameof(itemPath.PropertyName));
-            }
-            // TODO: handle galleries and components
+            ValidateItemPath(itemPath, true);
+            // TODO: handle nested galleries and components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var expression = $"getPropertyValue({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
@@ -116,13 +108,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 {
                     foreach (var jsControlModel in jsObjectModel.Controls)
                     {
-                        if (string.IsNullOrEmpty(jsControlModel.Name) || jsControlModel.Properties == null)
+                        var controlModel = ParseControl(jsControlModel);
+                        if (controlModel != null)
                         {
-                            _singleTestInstanceState.GetLogger().LogDebug("Received a control with empty name or null properties");
-                        }
-                        else
-                        {
-                            var controlModel = new PowerAppControlModel(jsControlModel.Name, jsControlModel.Properties.ToList(), this);
                             controlModels.Add(controlModel);
                         }
                     }
@@ -138,16 +126,61 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
+        private PowerAppControlModel? ParseControl(JSControlModel jsControlModel)
+        {
+            if (string.IsNullOrEmpty(jsControlModel.Name) || jsControlModel.Properties == null)
+            {
+                _singleTestInstanceState.GetLogger().LogDebug("Received a control with empty name or null properties");
+                return null;
+            }
+            else
+            {
+                var controlModel = new PowerAppControlModel(jsControlModel.Name, jsControlModel.Properties.ToList(), this);
+
+                controlModel.ItemCount = jsControlModel.IsArray ? jsControlModel.ItemCount: null;
+
+                if (jsControlModel.ChildrenControls != null)
+                {
+                    foreach(var childControl in jsControlModel.ChildrenControls)
+                    {
+                        var parsedChildControl = ParseControl(childControl);
+                        controlModel.AddChildControl(parsedChildControl);
+                    }
+                }
+
+                return controlModel;
+            }
+        }
+
         public async Task<bool> SelectControlAsync(ItemPath itemPath)
         {
-            if (string.IsNullOrEmpty(itemPath.ControlName))
-            {
-                throw new ArgumentNullException(nameof(itemPath.ControlName));
-            }
-            // TODO: handle galleries and components
+            ValidateItemPath(itemPath, false);
+            // TODO: handle nested galleries and components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var expression = $"select({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
+        {
+            if(string.IsNullOrEmpty(itemPath.ControlName))
+            {
+                throw new ArgumentNullException(nameof(itemPath.ControlName));
+            }
+
+            if (requirePropertyName && itemPath.ChildControl == null)
+            {
+                if (string.IsNullOrEmpty(itemPath.PropertyName))
+                {
+                    // Property name is only needed on the lowest level control
+                    throw new ArgumentNullException(nameof(itemPath.PropertyName));
+                }
+            }
+
+            if(itemPath.ChildControl != null)
+            {
+                ValidateItemPath(itemPath.ChildControl, requirePropertyName);
+            }
         }
     }
 }

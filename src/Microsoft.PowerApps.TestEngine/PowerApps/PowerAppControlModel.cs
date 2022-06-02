@@ -12,12 +12,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     /// </summary>
     public class PowerAppControlModel : IUntypedObject
     {
-        public IUntypedObject this[int index] => throw new NotImplementedException();
+        public IUntypedObject this[int index] => IsArrayObject() ? CreateControlAtIndex(index) : throw new NotImplementedException();
 
-        public FormulaType Type => ExternalType.ObjectType;
+        public FormulaType Type => IsArrayObject() ? ExternalType.ArrayType : ExternalType.ObjectType;
 
         public string Name { get; set; }
         public List<string> Properties { get; set; }
+        public int? ItemCount { get; set; }
+        public int? SelectedIndex { get; set; }
+        public List<PowerAppControlModel> ChildControls { get; set; }
+
+        public PowerAppControlModel? ParentControl { get; set; }
+
         private IPowerAppFunctions PowerAppFunctions { get; set; }
 
         public PowerAppControlModel(string name, List<string> properties, IPowerAppFunctions powerAppFunctions)
@@ -25,10 +31,57 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             PowerAppFunctions = powerAppFunctions;
             Name = name;
             Properties = properties;
+            ChildControls = new List<PowerAppControlModel>();
+        }
+
+        public PowerAppControlModel(PowerAppControlModel model, int selectedIndex)
+        {
+            Name = model.Name;
+            PowerAppFunctions = model.PowerAppFunctions;
+            Properties = model.Properties;
+            ChildControls = new List<PowerAppControlModel>();
+            ItemCount = model.ItemCount;
+            ParentControl = model.ParentControl;
+            SelectedIndex = selectedIndex;
+        }
+
+        private bool IsArrayObject()
+        {
+            return ItemCount.HasValue && !SelectedIndex.HasValue;
+        }
+
+        private PowerAppControlModel CreateControlAtIndex(int selectedIndex)
+        {
+            if (selectedIndex >= ItemCount)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            var control = new PowerAppControlModel(this, selectedIndex);
+            foreach(var childControl in ChildControls)
+            {
+                // Need to make a copy of each child control for the selected index
+                var newChildControl = new PowerAppControlModel(childControl.Name, new List<string>(childControl.Properties), PowerAppFunctions);
+                newChildControl.ItemCount = childControl.ItemCount;
+                newChildControl.ChildControls = new List<PowerAppControlModel>(childControl.ChildControls);
+                control.AddChildControl(newChildControl);
+            }
+            return control;
+        }
+
+        public void AddChildControl(PowerAppControlModel childControl)
+        {
+            childControl.ParentControl = this;
+            ChildControls.Add(childControl);
         }
 
         public int GetArrayLength()
         {
+            if (ItemCount.HasValue)
+            {
+                return ItemCount.Value;
+            }
+
             throw new NotImplementedException();
         }
 
@@ -47,21 +100,30 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             throw new NotImplementedException();
         }
 
-        public ItemPath CreateItemPath()
+        public ItemPath CreateItemPath(ItemPath? childItemPath = null, string? propertyName = null)
         {
-            // TODO: handle components and galleries
-            return new ItemPath
+            var itemPath = new ItemPath
             {
-                ControlName = Name
+                ControlName = Name,
+                Index = SelectedIndex,
+                ChildControl = childItemPath,
+                PropertyName = propertyName
             };
+
+            if (ParentControl != null)
+            {
+                var parentItemPath = ParentControl.CreateItemPath(itemPath);
+                return parentItemPath;
+            }
+
+            return itemPath;
         }
 
         public bool TryGetProperty(string value, out IUntypedObject result)
         {
             if (Properties.Contains(value))
             {
-                var itemPath = CreateItemPath();
-                itemPath.PropertyName = value;
+                var itemPath = CreateItemPath(propertyName: value);
                 var getProperty = PowerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath).GetAwaiter();
 
                 // TODO: implement timeout
@@ -80,6 +142,24 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
 
             }
+
+            if (ItemCount.HasValue && !SelectedIndex.HasValue)
+            {
+                // This is an array element but the index hasn't been selected
+                // Not able to refernce this
+                result = null;
+                return false;
+            }
+
+            // If it isn't a property value, then see if it's a child control
+            var childControl = ChildControls.FirstOrDefault(x => x.Name == value);
+
+            if (childControl != null)
+            {
+                result = childControl;
+                return true;
+            }
+
             result = null;
             return false;
         }
