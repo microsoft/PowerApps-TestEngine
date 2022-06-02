@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
 using Moq;
 using Newtonsoft.Json;
@@ -14,7 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
     public class PowerAppControlModelTests
     {
-        private void AssertTryGetProperty(PowerAppControlModel model, string propertyToFetch, string? expectedPropertyResult, bool expectedTryGetResult)
+        private void AssertTryGetProperty(PowerAppControlModel model, string propertyToFetch, string? expectedPropertyResult, bool expectedTryGetResult, FormulaType? expectedPropertyType)
         {
             Assert.Equal(expectedTryGetResult, model.TryGetProperty(propertyToFetch, out var property));
             if (expectedPropertyResult != null)
@@ -22,6 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 Assert.NotNull(property);
                 Assert.Equal(propertyToFetch, (property as PowerAppControlPropertyModel).Name);
                 Assert.Equal(expectedPropertyResult, (property as PowerAppControlPropertyModel).Value);
+                Assert.Equal(expectedPropertyType, (property as PowerAppControlPropertyModel).Type);
             }
             else
             {
@@ -33,10 +35,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public void PowerAppControlModelTest()
         {
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
-            var jsProperty = new JSPropertyValueModel() { PropertyType = "string", PropertyValue = "Hello" };
+            var jsProperty = new JSPropertyValueModel() { PropertyValue = "Hello" };
             mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<ItemPath>())).Returns(Task.FromResult(JsonConvert.SerializeObject(jsProperty)));
             var name = "Label";
-            var properties = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var properties = TestData.CreateRandomPropertiesDictionary();
             var model = new PowerAppControlModel(name, properties, mockPowerAppFunctions.Object);
             Assert.Equal(name, model.Name);
             Assert.Equal(properties, model.Properties);
@@ -53,9 +55,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             foreach(var property in properties)
             {
-                AssertTryGetProperty(model, property, jsProperty.PropertyValue, true);
+                AssertTryGetProperty(model, property.Key, jsProperty.PropertyValue, true, property.Value);
             }
-            AssertTryGetProperty(model, "NonExistentProperty", null, false);
+            AssertTryGetProperty(model, "NonExistentProperty", null, false, null);
 
             var itemPath = model.CreateItemPath();
             Assert.NotNull(itemPath);
@@ -78,24 +80,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public void PowerAppControlModelWithArrayTest()
         {
             var propertyValues = new Dictionary<string, string>();
-            var childProperties = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
-            var arrayProperties = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var childProperties = TestData.CreateRandomPropertiesDictionary();
+            var arrayProperties = TestData.CreateRandomPropertiesDictionary();
 
-            foreach(var property in childProperties)
+            foreach (var property in childProperties)
             {
-                propertyValues.Add(property, Guid.NewGuid().ToString());
+                propertyValues.Add(property.Key, Guid.NewGuid().ToString());
             }
 
             foreach (var property in arrayProperties)
             {
-                propertyValues.Add(property, Guid.NewGuid().ToString());
+                propertyValues.Add(property.Key, Guid.NewGuid().ToString());
             }
 
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
 
             foreach(var propertyValue in propertyValues)
             {
-                var jsProperty = new JSPropertyValueModel() { PropertyType = "string", PropertyValue = propertyValue.Value };
+                var jsProperty = new JSPropertyValueModel() { PropertyValue = propertyValue.Value };
                 mockPowerAppFunctions.Setup(
                     x => x.GetPropertyValueFromControlAsync<string>(It.Is<ItemPath>((x) => x.PropertyName == propertyValue.Key || (x.ChildControl != null && x.ChildControl.PropertyName == propertyValue.Key))))
                     .Returns(Task.FromResult(JsonConvert.SerializeObject(jsProperty)));
@@ -119,9 +121,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             foreach (var property in childProperties)
             {
-                AssertTryGetProperty(childModel, property, propertyValues[property], true);
+                AssertTryGetProperty(childModel, property.Key, propertyValues[property.Key], true, property.Value);
             }
-            AssertTryGetProperty(childModel, "NonExistentProperty", null, false);
+            AssertTryGetProperty(childModel, "NonExistentProperty", null, false, null);
 
             var arrayName = "Gallery";
             var arrayModel = new PowerAppControlModel(arrayName, arrayProperties, mockPowerAppFunctions.Object);
@@ -146,20 +148,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             foreach (var property in arrayProperties)
             {
-                AssertTryGetProperty(arrayModel, property, propertyValues[property], true);
+                AssertTryGetProperty(arrayModel, property.Key, propertyValues[property.Key], true, property.Value);
             }
 
             // Unable to fetch non existent properties
-            AssertTryGetProperty(arrayModel, "NonExistentProperty", null, false);
+            AssertTryGetProperty(arrayModel, "NonExistentProperty", null, false, null);
 
             // Unable to fetch child properties from the array model as you have to index into the child
             foreach (var property in childProperties)
             {
-                AssertTryGetProperty(arrayModel, property, null, false);
+                AssertTryGetProperty(arrayModel, property.Key, null, false, null);
             }
 
             // Unable to fetch the child because we haven't indexed into the array model yet
-            AssertTryGetProperty(arrayModel, childModel.Name, null, false);
+            AssertTryGetProperty(arrayModel, childModel.Name, null, false, null);
 
             // Item path tests
 
@@ -186,16 +188,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
                 foreach (var property in arrayProperties)
                 {
-                    AssertTryGetProperty(indexedArrayModel, property, propertyValues[property], true);
+                    AssertTryGetProperty(indexedArrayModel, property.Key, propertyValues[property.Key], true, property.Value);
                 }
 
                 // Unable to fetch non existent properties
-                AssertTryGetProperty(indexedArrayModel, "NonExistentProperty", null, false);
+                AssertTryGetProperty(indexedArrayModel, "NonExistentProperty", null, false, null);
 
                 // Unable to fetch child properties from the array model as you have to index into the child
                 foreach (var property in childProperties)
                 {
-                    AssertTryGetProperty(indexedArrayModel, property, null, false);
+                    AssertTryGetProperty(indexedArrayModel, property.Key, null, false, null);
                 }
 
                 var itemPath = indexedArrayModel.CreateItemPath();
@@ -233,15 +235,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
                 foreach (var property in childProperties)
                 {
-                    AssertTryGetProperty(indexedChildModel, property, propertyValues[property], true);
+                    AssertTryGetProperty(indexedChildModel, property.Key, propertyValues[property.Key], true, property.Value);
 
-                    var childItemPathWithPropertyName = indexedChildModel.CreateItemPath(propertyName: property);
+                    var childItemPathWithPropertyName = indexedChildModel.CreateItemPath(propertyName: property.Key);
                     Assert.NotNull(childItemPathWithPropertyName);
                     Assert.Equal(arrayName, childItemPathWithPropertyName.ControlName);
                     Assert.Equal(i, childItemPathWithPropertyName.Index);
                     Assert.NotNull(childItemPathWithPropertyName.ChildControl);
                     Assert.Equal(childName, childItemPathWithPropertyName.ChildControl.ControlName);
-                    Assert.Equal(childItemPathWithPropertyName.ChildControl.PropertyName, property);
+                    Assert.Equal(childItemPathWithPropertyName.ChildControl.PropertyName, property.Key);
                     Assert.Null(childItemPathWithPropertyName.ChildControl.ChildControl);
                     Assert.False(childItemPathWithPropertyName.ChildControl.Index.HasValue);
                     Assert.Null(childItemPathWithPropertyName.PropertyName);

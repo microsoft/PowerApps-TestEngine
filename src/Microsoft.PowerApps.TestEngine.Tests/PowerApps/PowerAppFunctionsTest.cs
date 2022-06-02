@@ -8,6 +8,7 @@ using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
+using Microsoft.PowerFx.Core.Public.Values;
 using Moq;
 using Newtonsoft.Json;
 using System;
@@ -75,19 +76,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     new JSControlModel()
                     {
                         Name = "Label1",
-                        Properties = new string[] { "Text", "Color", "X", "Y"}
+                        Properties = TestData.CreateSampleJsPropertyModelList()
                     },
                     new JSControlModel()
                     {
                         Name = "Label1",
-                        Properties = new string[] { "Text", "Color", "X", "Y"},
+                        Properties = TestData.CreateSampleJsPropertyModelList(),
                         ItemCount = 0,
                         IsArray = false
                     },
                     new JSControlModel()
                     {
                         Name = "Gallery1",
-                        Properties = new string[] { "AllItems", "X", "Y"},
+                        Properties = TestData.CreateSampleJsPropertyModelList(),
                         ItemCount = 5,
                         IsArray = true,
                         ChildrenControls = new JSControlModel[]
@@ -95,12 +96,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                             new JSControlModel()
                             {
                                 Name = "Label2",
-                                Properties = new string[] { "Text", "Color", "X", "Y"}
+                                Properties = TestData.CreateSampleJsPropertyModelList()
                             },
                             new JSControlModel()
                             {
                                 Name = "Button1",
-                                Properties = new string[] { "Text", "Color", "X", "Y"}
+                                Properties = TestData.CreateSampleJsPropertyModelList()
                             }
                         }
                     }
@@ -124,7 +125,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 Assert.Equal(jsModel.Properties?.Count(), model.Properties.Count);
                 foreach (var jsProperty in jsModel.Properties)
                 {
-                    Assert.Contains(jsProperty, model.Properties);
+                    Assert.Contains(jsProperty.PropertyName, model.Properties.Keys);
+                    Assert.Equal(powerAppFunctions.MapPropertyType(jsProperty.PropertyType), model.Properties[jsProperty.PropertyName]);
                 }
                 Assert.Equal(jsModel.IsArray ? jsModel.ItemCount : null, model.ItemCount);
                 Assert.Null(model.SelectedIndex);
@@ -143,7 +145,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                         Assert.Equal(jsChildModel.Properties?.Count(), childModel.Properties.Count);
                         foreach (var jsProperty in jsChildModel.Properties)
                         {
-                            Assert.Contains(jsProperty, childModel.Properties);
+                            Assert.Contains(jsProperty.PropertyName, childModel.Properties.Keys);
+                            Assert.Equal(powerAppFunctions.MapPropertyType(jsProperty.PropertyType), childModel.Properties[jsProperty.PropertyName]);
                         }
                         Assert.Equal(jsChildModel.ItemCount, childModel.ItemCount);
                         Assert.Null(childModel.SelectedIndex);
@@ -307,6 +310,30 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.Exactly(4));
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "No control model was found", LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public void MapPropertyTypeTest()
+        {
+            var testData = new Dictionary<string, FormulaType>();
+            testData.Add("Boolean", FormulaType.Boolean);
+            testData.Add("Number", FormulaType.Number);
+            testData.Add("String", FormulaType.String);
+            testData.Add("Time", FormulaType.Time);
+            testData.Add("Date", FormulaType.Date);
+            testData.Add("DateTime", FormulaType.DateTime);
+            testData.Add("DateTimeNoTimeZone", FormulaType.DateTimeNoTimeZone);
+            testData.Add("Hyperlink", FormulaType.Hyperlink);
+            testData.Add("Color", FormulaType.Color);
+            testData.Add("Guid", FormulaType.Guid);
+            testData.Add("something random", FormulaType.String);
+
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object);
+
+            foreach(var test in testData)
+            {
+                Assert.Equal(test.Value, powerAppFunctions.MapPropertyType(test.Key));
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var name = "Text";
             var value = "Hello";
-            var model = new PowerAppControlPropertyModel(name, value);
+            var model = new PowerAppControlPropertyModel(name, value, FormulaType.String);
             Assert.Equal(name, model.Name);
             Assert.Equal(value, model.Value);
             Assert.Equal(FormulaType.String, model.Type);
@@ -32,10 +32,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var name = "Count";
             var value = "5";
-            var model = new PowerAppControlPropertyModel(name, value);
+            var model = new PowerAppControlPropertyModel(name, value, FormulaType.Number);
             Assert.Equal(name, model.Name);
             Assert.Equal(value, model.Value);
-            Assert.Equal(FormulaType.String, model.Type);
+            Assert.Equal(FormulaType.Number, model.Type);
             Assert.Throws<NotImplementedException>(() => model.GetArrayLength());
             Assert.Equal(value, model.GetString());
             Assert.Throws<NotImplementedException>(() => model[4]);
@@ -49,10 +49,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var name = "IsSelected";
             var value = "true";
-            var model = new PowerAppControlPropertyModel(name, value);
+            var model = new PowerAppControlPropertyModel(name, value, FormulaType.Boolean);
             Assert.Equal(name, model.Name);
             Assert.Equal(value, model.Value);
-            Assert.Equal(FormulaType.String, model.Type);
+            Assert.Equal(FormulaType.Boolean, model.Type);
             Assert.Throws<NotImplementedException>(() => model.GetArrayLength());
             Assert.Equal(value, model.GetString());
             Assert.Throws<NotImplementedException>(() => model[4]);

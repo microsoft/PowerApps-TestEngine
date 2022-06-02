@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         public FormulaType Type => IsArrayObject() ? ExternalType.ArrayType : ExternalType.ObjectType;
 
         public string Name { get; set; }
-        public List<string> Properties { get; set; }
+        public Dictionary<string, FormulaType> Properties { get; set; }
         public int? ItemCount { get; set; }
         public int? SelectedIndex { get; set; }
         public List<PowerAppControlModel> ChildControls { get; set; }
@@ -26,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private IPowerAppFunctions PowerAppFunctions { get; set; }
 
-        public PowerAppControlModel(string name, List<string> properties, IPowerAppFunctions powerAppFunctions)
+        public PowerAppControlModel(string name, Dictionary<string, FormulaType> properties, IPowerAppFunctions powerAppFunctions)
         {
             PowerAppFunctions = powerAppFunctions;
             Name = name;
@@ -61,7 +61,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             foreach(var childControl in ChildControls)
             {
                 // Need to make a copy of each child control for the selected index
-                var newChildControl = new PowerAppControlModel(childControl.Name, new List<string>(childControl.Properties), PowerAppFunctions);
+                var newChildControl = new PowerAppControlModel(childControl.Name, childControl.Properties, PowerAppFunctions);
                 newChildControl.ItemCount = childControl.ItemCount;
                 newChildControl.ChildControls = new List<PowerAppControlModel>(childControl.ChildControls);
                 control.AddChildControl(newChildControl);
@@ -121,7 +121,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public bool TryGetProperty(string value, out IUntypedObject result)
         {
-            if (Properties.Contains(value))
+            if (Properties.Keys.Contains(value))
             {
                 var itemPath = CreateItemPath(propertyName: value);
                 var getProperty = PowerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath).GetAwaiter();
@@ -137,7 +137,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                 if (jsPropertyValueModel != null)
                 {
-                    result = new PowerAppControlPropertyModel(value, jsPropertyValueModel.PropertyValue);
+                    result = new PowerAppControlPropertyModel(value, jsPropertyValueModel.PropertyValue, Properties[value]);
                     return true;
                 }
 

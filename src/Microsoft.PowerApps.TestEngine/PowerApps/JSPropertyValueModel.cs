@@ -12,10 +12,5 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Gets or sets the property value
         /// </summary>
         public string PropertyValue { get; set; } = "";
-
-        /// <summary>
-        /// Gets or set the type of the value
-        /// </summary>
-        public string PropertyType { get; set; } = "";
     }
 }

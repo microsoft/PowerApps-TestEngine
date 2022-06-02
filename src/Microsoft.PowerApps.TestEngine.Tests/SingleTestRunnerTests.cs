@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Microsoft.PowerFx.Core.Public.Values;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.PowerFx.Core.Public.Types;
 
 namespace Microsoft.PowerApps.TestEngine.Tests
 {
@@ -312,6 +313,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             public List<PowerAppControlModel> powerAppObjectModel;
             public string[] additionalFiles;
 
+            public Dictionary<string, FormulaType> GenerateProperties()
+            {
+                return new Dictionary<string, FormulaType>()
+                { 
+                    { "Text", FormulaType.String },
+                    { "Color", FormulaType.Color },
+                    { "X", FormulaType.Number },
+                    { "Y", FormulaType.Number }
+                };
+
+            }
+
             public TestData(IPowerAppFunctions powerAppFunctions)
             {
                 testRunId = Guid.NewGuid().ToString();
@@ -335,9 +348,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
                 powerAppObjectModel = new List<PowerAppControlModel>()
                 {
-                    new PowerAppControlModel("Label1", new List<string>() { "Text", "Color", "X", "Y"}, powerAppFunctions),
-                    new PowerAppControlModel("Label2", new List<string>() { "Text", "Color", "X", "Y"}, powerAppFunctions),
-                    new PowerAppControlModel("Button1", new List<string>() { "Text", "Color", "X", "Y"}, powerAppFunctions),
+                    new PowerAppControlModel("Label1", GenerateProperties(), powerAppFunctions),
+                    new PowerAppControlModel("Label2", GenerateProperties(), powerAppFunctions),
+                    new PowerAppControlModel("Button1", GenerateProperties(), powerAppFunctions),
                 };
                 additionalFiles = new string[] { };
             }

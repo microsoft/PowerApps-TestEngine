@@ -34,7 +34,46 @@ function parseControl(controlName, controlObject) {
         });
     }
 
-    var controlModel = { name: controlName, properties: properties, childrenControls: childControls, itemCount: itemCount, isArray: isArray };
+    var propertiesList = [];
+    properties.forEach((propertyName) => {
+        var shortPropertyType = controlObject.controlWidget.controlProperties[propertyName].propertyType;
+        // The property type should match types listed here: https://github.com/microsoft/Power-Fx/blob/main/src/libraries/Microsoft.PowerFx.Core/Public/Types/FormulaType.cs
+        var propertyType = "Unknown"; // Default to unknown if we don't know how to map it
+
+        switch (shortPropertyType) {
+            case (AppMagic.Schema.TypeString):
+                propertyType = "String";
+                break;
+            case (AppMagic.Schema.TypeBoolean):
+                propertyType = "Boolean";
+                break;
+            case (AppMagic.Schema.TypeNumber):
+                propertyType = "Number";
+                break;
+            case (AppMagic.Schema.TypeTime):
+                propertyType = "Time";
+                break;
+            case (AppMagic.Schema.TypeDate):
+                propertyType = "Date";
+                break;
+            case (AppMagic.Schema.TypeDateTime):
+                propertyType = "DateTime";
+                break;
+            case (AppMagic.Schema.TypeDateTimeNoTimeZone):
+                propertyType = "DateTimeNoTimeZone";
+                break;
+            case (AppMagic.Schema.TypeHyperlink):
+                propertyType = "Hyperlink";
+                break;
+            case (AppMagic.Schema.TypeGuid):
+                propertyType = "Guid";
+                break;
+        }
+
+        propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+    })
+
+    var controlModel = { name: controlName, properties: propertiesList, childrenControls: childControls, itemCount: itemCount, isArray: isArray };
 
     return controlModel;
 }
@@ -95,11 +134,11 @@ function getPropertyValueFromControl(itemPath) {
     propertyValue = controlAndContext.control.OpenAjax.getPropertyValue(controlAndContext.propertyName, controlAndContext.context);
 
     if (!propertyValue) {
-        return JSON.stringify({ propertyValue: null, propertyType: null });
+        return JSON.stringify({ propertyValue: null });
     }
 
     return JSON.stringify({
-        propertyValue: propertyValue, propertyType: typeof propertyValue
+        propertyValue: propertyValue
     });
 }
 
