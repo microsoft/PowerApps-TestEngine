@@ -30,7 +30,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<IPowerFxEngine> MockPowerFxEngine;
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<IUserManager> MockUserManager;
-        private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<ILoggerProvider> MockLoggerProvider;
         private Mock<ISingleTestInstanceState> MockTestState;
         private Mock<IUrlMapper> MockUrlMapper;
@@ -44,7 +43,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine = new Mock<IPowerFxEngine>(MockBehavior.Strict);
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockUserManager = new Mock<IUserManager>(MockBehavior.Strict);
-            MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockLoggerProvider = new Mock<ILoggerProvider>(MockBehavior.Strict);
             MockTestState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Strict);
@@ -76,7 +74,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockFileSystem.Setup(x => x.GetFiles(It.IsAny<string>())).Returns(additionalFiles);
 
             MockPowerFxEngine.Setup(x => x.Setup());
-            MockPowerFxEngine.Setup(x => x.UpdateVariable(It.IsAny<string>(), It.IsAny<IUntypedObject>()));
+            MockPowerFxEngine.Setup(x => x.UpdatePowerFXModelAsync()).Returns(Task.CompletedTask);
             if (powerFxTestSuccess)
             {
                 MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Returns(FormulaValue.NewBlank());
@@ -93,8 +91,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockUserManager.Setup(x => x.LoginAsUserAsync()).Returns(Task.CompletedTask);
 
             MockUrlMapper.Setup(x => x.GenerateAppUrl()).Returns(appUrl);
-
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(powerAppObjectModel));
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>()));
             TestLoggerProvider.TestLoggers.Add(testId, MockTestLogger.Object);
@@ -113,7 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestState.Verify(x => x.SetBrowserConfig(browserConfig));
         }
 
-        private void VerifySuccessfulTestExecution(string testResultDirectory, string appUrl, List<PowerAppControlModel> powerAppObjectModel)
+        private void VerifySuccessfulTestExecution(string testResultDirectory, string appUrl)
         {
             MockFileSystem.Verify(x => x.CreateDirectory(testResultDirectory), Times.Once());
             MockPowerFxEngine.Verify(x => x.Setup(), Times.Once());
@@ -121,11 +117,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockUserManager.Verify(x => x.LoginAsUserAsync(), Times.Once());
             MockUrlMapper.Verify(x => x.GenerateAppUrl(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl), Times.Once());
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
-            foreach (var control in powerAppObjectModel)
-            {
-                MockPowerFxEngine.Verify(x => x.UpdateVariable(control.Name, control), Times.Once());
-            }
+            MockPowerFxEngine.Verify(x => x.UpdatePowerFXModelAsync(), Times.Once());
             MockTestState.Verify(x => x.GetTestDefinition(), Times.Once());
         }
 
@@ -154,20 +146,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockPowerFxEngine.Object,
                                                         MockTestInfraFunctions.Object,
                                                         MockUserManager.Object,
-                                                        MockPowerAppFunctions.Object,
                                                         MockLoggerProvider.Object,
                                                         MockTestState.Object,
                                                         MockUrlMapper.Object,
                                                         MockFileSystem.Object);
 
-            var testData = new TestData(MockPowerAppFunctions.Object);
+            var testData = new TestData();
 
             SetupMocks(testData.testId, testData.appUrl, testData.powerAppObjectModel, testData.testDefinition, true, additionalFiles);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testDefinition, testData.browserConfig);
 
             VerifyTestStateSetup(testData.testRunId, testData.testDefinition, testData.testId, testData.testResultDirectory, testData.browserConfig);
-            VerifySuccessfulTestExecution(testData.testResultDirectory, testData.appUrl, testData.powerAppObjectModel);
+            VerifySuccessfulTestExecution(testData.testResultDirectory, testData.appUrl);
             VerifyFinallyExecution(testData.testResultDirectory, testData.testDefinition, testData.browserConfig, testData.testRunId, testData.testId, true, additionalFiles, null, null);
         }
 
@@ -178,13 +169,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockPowerFxEngine.Object,
                                                         MockTestInfraFunctions.Object,
                                                         MockUserManager.Object,
-                                                        MockPowerAppFunctions.Object,
                                                         MockLoggerProvider.Object,
                                                         MockTestState.Object,
                                                         MockUrlMapper.Object,
                                                         MockFileSystem.Object);
 
-            var testData = new TestData(MockPowerAppFunctions.Object);
+            var testData = new TestData();
 
             SetupMocks(testData.testId, testData.appUrl, testData.powerAppObjectModel, testData.testDefinition, true, testData.additionalFiles);
 
@@ -198,13 +188,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockPowerFxEngine.Object,
                                                            MockTestInfraFunctions.Object,
                                                            MockUserManager.Object,
-                                                           MockPowerAppFunctions.Object,
                                                            MockLoggerProvider.Object,
                                                            MockTestState.Object,
                                                            MockUrlMapper.Object,
                                                            MockFileSystem.Object);
 
-            var testData = new TestData(MockPowerAppFunctions.Object);
+            var testData = new TestData();
 
             SetupMocks(testData.testId, testData.appUrl, testData.powerAppObjectModel, testData.testDefinition, true, testData.additionalFiles);
 
@@ -273,20 +262,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         [Fact]
-        public async Task LoadPowerAppObjectModelThrowsTest()
+        public async Task UpdatePowerFXModelAsyncThrowsTest()
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Throws(exceptionToThrow);
-            });
-        }
-
-        [Fact]
-        public async Task PowerFxUpdateVariableThrowsTest()
-        {
-            await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
-            {
-                MockPowerFxEngine.Setup(x => x.UpdateVariable(It.IsAny<string>(), It.IsAny<PowerAppControlModel>())).Throws(exceptionToThrow);
+                MockPowerFxEngine.Setup(x => x.UpdatePowerFXModelAsync()).Throws(exceptionToThrow);
             });
         }
 
@@ -313,19 +293,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             public List<PowerAppControlModel> powerAppObjectModel;
             public string[] additionalFiles;
 
-            public Dictionary<string, FormulaType> GenerateProperties()
-            {
-                return new Dictionary<string, FormulaType>()
-                { 
-                    { "Text", FormulaType.String },
-                    { "Color", FormulaType.Color },
-                    { "X", FormulaType.Number },
-                    { "Y", FormulaType.Number }
-                };
-
-            }
-
-            public TestData(IPowerAppFunctions powerAppFunctions)
+            public TestData()
             {
                 testRunId = Guid.NewGuid().ToString();
                 testRunDirectory = "TestRunDirectory";
@@ -345,13 +313,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 testId = Guid.NewGuid().ToString();
                 appUrl = "https://fake-app-url.com";
                 testResultDirectory = Path.Combine(testRunDirectory, $"{testDefinition.Name}_{testId.Substring(0, 6)}");
-
-                powerAppObjectModel = new List<PowerAppControlModel>()
-                {
-                    new PowerAppControlModel("Label1", GenerateProperties(), powerAppFunctions),
-                    new PowerAppControlModel("Label2", GenerateProperties(), powerAppFunctions),
-                    new PowerAppControlModel("Button1", GenerateProperties(), powerAppFunctions),
-                };
                 additionalFiles = new string[] { };
             }
         }

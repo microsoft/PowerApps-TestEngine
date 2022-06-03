@@ -28,5 +28,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// </summary>
         /// <returns>Power Apps object model</returns>
         public Task<List<PowerAppControlModel>> LoadPowerAppsObjectModelAsync();
+
+        /// <summary>
+        /// Gets the number of items in an array
+        /// </summary>
+        /// <param name="itemPath">Path to the item</param>
+        /// <returns>Number of items in the array</returns>
+        public Task<int> GetItemCountAsync(ItemPath itemPath);
     }
 }

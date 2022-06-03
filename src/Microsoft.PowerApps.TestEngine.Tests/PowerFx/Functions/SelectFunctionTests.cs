@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
@@ -26,14 +27,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectFunctionThrowsOnNullObjectTest()
         {
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object);
+            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, () => Task.CompletedTask);
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(null));
         }
 
         [Fact]
         public void SelectFunctionThrowsOnNonPowerAppObjectObjectTest()
         {
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object);
+            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, () => Task.CompletedTask);
 
             var someOtherUntypedObject = new SomeOtherUntypedObject();
             var untypedObject = FormulaValue.New(someOtherUntypedObject);
@@ -48,10 +49,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var powerAppObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var untypedObject = FormulaValue.New(powerAppObject);
 
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object);
+            var mockUpdaterCallCount = 0;
+            var mockUpdater = () => {
+                mockUpdaterCallCount++;
+                return Task.CompletedTask;
+            };
+
+            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, mockUpdater);
             var result = selectFunction.Execute(untypedObject);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == powerAppObject.Name)), Times.Once());
+            Assert.Equal(1, mockUpdaterCallCount);
         }
 
         [Fact]
@@ -62,9 +70,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var powerAppObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
             var untypedObject = FormulaValue.New(powerAppObject);
 
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object);
+            var mockUpdaterCallCount = 0;
+            var mockUpdater = () => {
+                mockUpdaterCallCount++;
+                return Task.CompletedTask;
+            };
+
+            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, mockUpdater);
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(untypedObject));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == powerAppObject.Name)), Times.Once());
+            Assert.Equal(0, mockUpdaterCallCount);
         }
     }
 }

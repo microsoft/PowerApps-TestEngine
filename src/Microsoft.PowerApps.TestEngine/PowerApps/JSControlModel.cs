@@ -24,11 +24,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         public JSControlModel[]? ChildrenControls { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of items if it is an array
-        /// </summary>
-        public int? ItemCount { get; set; }
-
-        /// <summary>
         /// Gets or sets whether this control is of an array type
         /// </summary>
         public bool IsArray { get; set; }

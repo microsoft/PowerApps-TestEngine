@@ -43,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             Assert.Equal(name, model.Name);
             Assert.Equal(properties, model.Properties);
             Assert.Equal(ExternalTypeKind.Object, (model.Type as ExternalType).Kind);
-            Assert.False(model.ItemCount.HasValue);
+            Assert.False(model.IsArray);
             Assert.False(model.SelectedIndex.HasValue);
             Assert.Empty(model.ChildControls);
             Assert.Null(model.ParentControl);
@@ -103,13 +103,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     .Returns(Task.FromResult(JsonConvert.SerializeObject(jsProperty)));
             }
 
+            var arrayItemCount = 5;
+            mockPowerAppFunctions.Setup(x => x.GetItemCountAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(arrayItemCount));
+
 
             var childName = "Label";
             var childModel = new PowerAppControlModel(childName, childProperties, mockPowerAppFunctions.Object);
             Assert.Equal(childName, childModel.Name);
             Assert.Equal(childProperties, childModel.Properties);
             Assert.Equal(ExternalTypeKind.Object, (childModel.Type as ExternalType).Kind);
-            Assert.False(childModel.ItemCount.HasValue);
+            Assert.False(childModel.IsArray);
             Assert.False(childModel.SelectedIndex.HasValue);
             Assert.Empty(childModel.ChildControls);
             Assert.Null(childModel.ParentControl);
@@ -127,21 +130,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             var arrayName = "Gallery";
             var arrayModel = new PowerAppControlModel(arrayName, arrayProperties, mockPowerAppFunctions.Object);
-            var arrayItemCount = 5;
-            arrayModel.ItemCount = arrayItemCount;
+            arrayModel.IsArray = true;
             arrayModel.AddChildControl(childModel);
             Assert.Equal(arrayName, arrayModel.Name);
             Assert.Equal(arrayProperties, arrayModel.Properties);
             Assert.Equal(ExternalTypeKind.Array, (arrayModel.Type as ExternalType).Kind);
-            Assert.Equal(arrayItemCount, arrayModel.ItemCount);
             Assert.False(arrayModel.SelectedIndex.HasValue);
             Assert.Single(arrayModel.ChildControls);
+            Assert.Equal(arrayItemCount, arrayModel.GetArrayLength());
             Assert.Equal(childName, arrayModel.ChildControls[0].Name);
             Assert.Equal(arrayName, arrayModel.ChildControls[0].ParentControl.Name);
             Assert.Null(arrayModel.ParentControl);
             Assert.Equal(arrayItemCount, arrayModel.GetArrayLength());
-            Assert.Throws<IndexOutOfRangeException>(() => arrayModel[arrayItemCount]);
-            Assert.Throws<IndexOutOfRangeException>(() => arrayModel[arrayItemCount + 5]);
             Assert.Throws<NotImplementedException>(() => arrayModel.GetString());
             Assert.Throws<NotImplementedException>(() => arrayModel.GetBoolean());
             Assert.Throws<NotImplementedException>(() => arrayModel.GetDouble());
@@ -172,7 +172,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 Assert.Equal(arrayName, indexedArrayModel.Name);
                 Assert.Equal(arrayProperties, indexedArrayModel.Properties);
                 Assert.Equal(ExternalTypeKind.Object, (indexedArrayModel.Type as ExternalType).Kind);
-                Assert.Equal(arrayItemCount, indexedArrayModel.ItemCount);
+                Assert.True(indexedArrayModel.IsArray);
                 Assert.Equal(i, indexedArrayModel.SelectedIndex);
                 Assert.Single(indexedArrayModel.ChildControls);
                 Assert.Equal(childName, indexedArrayModel.ChildControls[0].Name);
