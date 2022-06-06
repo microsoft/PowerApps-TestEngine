@@ -23,7 +23,6 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly IPowerFxEngine _powerFxEngine;
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly IUserManager _userManager;
-        private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly ILoggerProvider _loggerProvider;
         private readonly ISingleTestInstanceState _testState;
         private readonly IUrlMapper _urlMapper;
@@ -38,7 +37,6 @@ namespace Microsoft.PowerApps.TestEngine
                                 IPowerFxEngine powerFxEngine, 
                                 ITestInfraFunctions testInfraFunctions, 
                                 IUserManager userManager,
-                                IPowerAppFunctions powerAppFunctions,
                                 ILoggerProvider loggerProvider,
                                 ISingleTestInstanceState testState,
                                 IUrlMapper urlMapper,
@@ -48,7 +46,6 @@ namespace Microsoft.PowerApps.TestEngine
             _powerFxEngine = powerFxEngine;
             _testInfraFunctions = testInfraFunctions;
             _userManager = userManager;
-            _powerAppFunctions = powerAppFunctions;
             _loggerProvider = loggerProvider;
             _testState = testState;
             _urlMapper = urlMapper;
@@ -96,11 +93,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateAppUrl());
 
                 // Wait for app to load and load the object model into memory
-                var controlObjectModel = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
-                foreach (var control in controlObjectModel)
-                {
-                    _powerFxEngine.UpdateVariable(control.Name, control);
-                }
+                await _powerFxEngine.UpdatePowerFXModelAsync();
 
                 // Run test
                 _powerFxEngine.Execute(_testState.GetTestDefinition().TestSteps);

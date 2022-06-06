@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public string Name { get; set; }
         public Dictionary<string, FormulaType> Properties { get; set; }
-        public int? ItemCount { get; set; }
+        public bool IsArray { get; set; }
         public int? SelectedIndex { get; set; }
         public List<PowerAppControlModel> ChildControls { get; set; }
 
@@ -40,29 +40,24 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             PowerAppFunctions = model.PowerAppFunctions;
             Properties = model.Properties;
             ChildControls = new List<PowerAppControlModel>();
-            ItemCount = model.ItemCount;
+            IsArray = model.IsArray;
             ParentControl = model.ParentControl;
             SelectedIndex = selectedIndex;
         }
 
         private bool IsArrayObject()
         {
-            return ItemCount.HasValue && !SelectedIndex.HasValue;
+            return IsArray && !SelectedIndex.HasValue;
         }
 
         private PowerAppControlModel CreateControlAtIndex(int selectedIndex)
         {
-            if (selectedIndex >= ItemCount)
-            {
-                throw new IndexOutOfRangeException();
-            }
-
             var control = new PowerAppControlModel(this, selectedIndex);
             foreach(var childControl in ChildControls)
             {
                 // Need to make a copy of each child control for the selected index
                 var newChildControl = new PowerAppControlModel(childControl.Name, childControl.Properties, PowerAppFunctions);
-                newChildControl.ItemCount = childControl.ItemCount;
+                newChildControl.IsArray = childControl.IsArray;
                 newChildControl.ChildControls = new List<PowerAppControlModel>(childControl.ChildControls);
                 control.AddChildControl(newChildControl);
             }
@@ -77,9 +72,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public int GetArrayLength()
         {
-            if (ItemCount.HasValue)
+            if (IsArray)
             {
-                return ItemCount.Value;
+                var itemPath = CreateItemPath();
+                var getItemCount = PowerAppFunctions.GetItemCountAsync(itemPath).GetAwaiter();
+
+                // TODO: implement timeout
+                while (!getItemCount.IsCompleted)
+                {
+                    Thread.Sleep(500);
+                }
+
+                return getItemCount.GetResult();
             }
 
             throw new NotImplementedException();
@@ -143,7 +147,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             }
 
-            if (ItemCount.HasValue && !SelectedIndex.HasValue)
+            if (IsArray && !SelectedIndex.HasValue)
             {
                 // This is an array element but the index hasn't been selected
                 // Not able to refernce this

@@ -189,7 +189,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                 var controlModel = new PowerAppControlModel(jsControlModel.Name, properties, this);
 
-                controlModel.ItemCount = jsControlModel.IsArray ? jsControlModel.ItemCount: null;
+                controlModel.IsArray = jsControlModel.IsArray;
 
                 if (jsControlModel.ChildrenControls != null)
                 {
@@ -233,6 +233,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 ValidateItemPath(itemPath.ChildControl, requirePropertyName);
             }
+        }
+
+        public async Task<int> GetItemCountAsync(ItemPath itemPath)
+        {
+            ValidateItemPath(itemPath, false);
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+            var expression = $"getItemCount({itemPathString})";
+            return await _testInfraFunctions.RunJavascriptAsync<int>(expression);
+
         }
     }
 }

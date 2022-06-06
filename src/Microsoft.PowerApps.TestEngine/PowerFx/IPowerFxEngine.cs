@@ -23,10 +23,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public FormulaValue Execute(string testSteps);
 
         /// <summary>
-        /// Updates variables in Power FX engine
+        /// Updates the Power FX object model
         /// </summary>
-        /// <param name="name">Name of variable</param>
-        /// <param name="value">Variable object</param>
-        public void UpdateVariable(string name, IUntypedObject value);
+        /// <returns>A task</returns>
+        public Task UpdatePowerFXModelAsync();
     }
 }

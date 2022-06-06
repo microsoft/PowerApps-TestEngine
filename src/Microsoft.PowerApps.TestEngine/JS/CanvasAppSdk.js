@@ -63,6 +63,11 @@ function setPropertyValueForControl(itemPath, value) {
     return executePublishedAppScript(script);
 }
 
+function fetchArrayItemCount(itemPath) {
+    var script = `fetchArrayItemCount(${JSON.stringify(itemPath)})`;
+    return executePublishedAppScript(script);
+}
+
 /*
  These are the functions that will be called by the Test Engine
 */
@@ -112,4 +117,8 @@ function select(itemPath) {
 
 function setPropertyValue(itemPath, value) {
     return setPropertyValueForControl(itemPath, value);
+}
+
+function getItemCount(itemPath) {
+    return fetchArrayItemCount(itemPath);
 }

@@ -43,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             var powerFxConfig = new PowerFxConfig();
             powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
             powerFxConfig.AddFunction(new WaitFunction());
-            powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions));
+            powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, UpdatePowerFXModelAsync));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
             Engine = new RecalcEngine(powerFxConfig);
         }
@@ -66,16 +66,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
         }
 
-        public void UpdateVariable(string name, IUntypedObject value)
+        public async Task UpdatePowerFXModelAsync()
         {
             if (Engine == null)
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");
                 throw new InvalidOperationException("Engine is null, make sure to call Setup first");
             }
-            else
+
+            var controlObjectModel = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
+            foreach (var control in controlObjectModel)
             {
-                Engine.UpdateVariable(name, FormulaValue.New(value));
+                Engine.UpdateVariable(control.Name, FormulaValue.New(control));
             }
         }
     }
