@@ -37,6 +37,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var jsProperty = new JSPropertyValueModel() { PropertyValue = "Hello" };
             mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<ItemPath>())).Returns(Task.FromResult(JsonConvert.SerializeObject(jsProperty)));
+            var timeout = 30000;
+            mockPowerAppFunctions.Setup(x => x.GetTimeoutValue()).Returns(timeout);
             var name = "Label";
             var properties = TestData.CreateRandomPropertiesDictionary();
             var model = new PowerAppControlModel(name, properties, mockPowerAppFunctions.Object);
@@ -94,6 +96,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             }
 
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+            var timeout = 30000;
+            mockPowerAppFunctions.Setup(x => x.GetTimeoutValue()).Returns(timeout);
 
             foreach(var propertyValue in propertyValues)
             {

@@ -8,8 +8,6 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions;
-using Microsoft.PowerFx.Core.Public.Types;
 using Microsoft.PowerFx.Core.Public.Values;
 using Moq;
 using Newtonsoft.Json;
@@ -36,6 +34,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockPowerAppFunctions.Setup(x => x.GetTimeoutValue()).Returns(30000);
             LoggingTestHelper.SetupMock(MockLogger);
         }
 

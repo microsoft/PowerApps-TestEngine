@@ -42,7 +42,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             var powerFxConfig = new PowerFxConfig();
             powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
-            powerFxConfig.AddFunction(new WaitFunction());
+            powerFxConfig.AddFunction(new WaitFunction(_powerAppFunctions.GetTimeoutValue()));
             powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, UpdatePowerFXModelAsync));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
             Engine = new RecalcEngine(powerFxConfig);

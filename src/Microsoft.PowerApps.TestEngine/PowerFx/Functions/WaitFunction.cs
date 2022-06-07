@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Public.Types;
@@ -14,8 +15,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// </summary>
     public class WaitFunction : ReflectionFunction
     {
-        public WaitFunction() : base("Wait", FormulaType.Blank, FormulaType.UntypedObject, FormulaType.String, FormulaType.String)
+        private readonly int _timeout;
+        public WaitFunction(int timeout) : base("Wait", FormulaType.Blank, FormulaType.UntypedObject, FormulaType.String, FormulaType.String)
         {
+            _timeout = timeout;
         }
 
         public BlankValue Execute(UntypedObjectValue obj, StringValue propName, FormulaValue valueToCheck)
@@ -48,23 +51,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             // TODO handle non strings?
             var text = ((StringValue)valueToCheck).Value;
-            while (propertyValue != text)
-            {
+
+            PollingHelper.Poll<string>(propertyValue, (x) => x != text, () => {
                 if (!controlModel.TryGetProperty(propName.Value, out IUntypedObject result))
                 {
                     throw new InvalidOperationException($"Property does not exist {propName.Value}");
                 }
-
                 var controlPropertyModel = (PowerAppControlPropertyModel)result;
-                propertyValue = controlPropertyModel.GetString();
+                return controlPropertyModel.GetString();
+            }, true, _timeout);
 
-                if (propertyValue != text)
-                {
-                    // TODO: Do we want to timeout after some amount of time?
-                    Thread.Sleep(500);
-                }
-
-            }
         }
     }
 }

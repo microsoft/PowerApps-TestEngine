@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
 using Microsoft.PowerFx.Core.Public.Values;
 using Newtonsoft.Json;
@@ -77,11 +78,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 var itemPath = CreateItemPath();
                 var getItemCount = PowerAppFunctions.GetItemCountAsync(itemPath).GetAwaiter();
 
-                // TODO: implement timeout
-                while (!getItemCount.IsCompleted)
-                {
-                    Thread.Sleep(500);
-                }
+                PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, false, PowerAppFunctions.GetTimeoutValue());
 
                 return getItemCount.GetResult();
             }
@@ -130,11 +127,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 var itemPath = CreateItemPath(propertyName: value);
                 var getProperty = PowerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath).GetAwaiter();
 
-                // TODO: implement timeout
-                while (!getProperty.IsCompleted)
-                {
-                    Thread.Sleep(500);
-                }
+                PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, false, PowerAppFunctions.GetTimeoutValue());
 
                 string propertyValueJson = getProperty.GetResult();
                 var jsPropertyValueModel = JsonConvert.DeserializeObject<JSPropertyValueModel>(propertyValueJson);
