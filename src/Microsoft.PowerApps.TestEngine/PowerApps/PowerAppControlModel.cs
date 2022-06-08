@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
 using Microsoft.PowerFx.Core.Public.Values;
@@ -27,15 +28,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private IPowerAppFunctions PowerAppFunctions { get; set; }
 
-        public PowerAppControlModel(string name, Dictionary<string, FormulaType> properties, IPowerAppFunctions powerAppFunctions)
+        private ITestState _testState;
+
+        public PowerAppControlModel(string name, Dictionary<string, FormulaType> properties, IPowerAppFunctions powerAppFunctions, ITestState testState)
         {
             PowerAppFunctions = powerAppFunctions;
             Name = name;
             Properties = properties;
             ChildControls = new List<PowerAppControlModel>();
+            _testState = testState;
         }
 
-        public PowerAppControlModel(PowerAppControlModel model, int selectedIndex)
+        public PowerAppControlModel(PowerAppControlModel model, int selectedIndex, ITestState testState)
         {
             Name = model.Name;
             PowerAppFunctions = model.PowerAppFunctions;
@@ -44,6 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             IsArray = model.IsArray;
             ParentControl = model.ParentControl;
             SelectedIndex = selectedIndex;
+            _testState = testState;
         }
 
         private bool IsArrayObject()
@@ -53,11 +58,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private PowerAppControlModel CreateControlAtIndex(int selectedIndex)
         {
-            var control = new PowerAppControlModel(this, selectedIndex);
+            var control = new PowerAppControlModel(this, selectedIndex, _testState);
             foreach(var childControl in ChildControls)
             {
                 // Need to make a copy of each child control for the selected index
-                var newChildControl = new PowerAppControlModel(childControl.Name, childControl.Properties, PowerAppFunctions);
+                var newChildControl = new PowerAppControlModel(childControl.Name, childControl.Properties, PowerAppFunctions, _testState);
                 newChildControl.IsArray = childControl.IsArray;
                 newChildControl.ChildControls = new List<PowerAppControlModel>(childControl.ChildControls);
                 control.AddChildControl(newChildControl);
@@ -78,7 +83,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 var itemPath = CreateItemPath();
                 var getItemCount = PowerAppFunctions.GetItemCountAsync(itemPath).GetAwaiter();
 
-                PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, false, PowerAppFunctions.GetTimeoutValue());
+                PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout());
 
                 return getItemCount.GetResult();
             }
@@ -127,7 +132,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 var itemPath = CreateItemPath(propertyName: value);
                 var getProperty = PowerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath).GetAwaiter();
 
-                PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, false, PowerAppFunctions.GetTimeoutValue());
+                PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout());
 
                 string propertyValueJson = getProperty.GetResult();
                 var jsPropertyValueModel = JsonConvert.DeserializeObject<JSPropertyValueModel>(propertyValueJson);

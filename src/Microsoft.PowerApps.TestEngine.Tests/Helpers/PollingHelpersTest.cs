@@ -27,37 +27,37 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public void PollingSucceedsTest()
         {
-            Assert.True(PollingHelper.Poll(false, conditionToCheck, functionToCall, true, 2000));
+            Assert.True(PollingHelper.Poll(false, conditionToCheck, functionToCall, 2000));
         }
 
         [Fact]
         public void PollingTimeoutTest()
         {
-            Assert.Throws<TimeoutException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, true, 1000));
+            Assert.Throws<TimeoutException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, 1000));
         }
 
         [Fact]
-        public void PollingAsyncSucceedsTest()
+        public async void PollingAsyncSucceedsTest()
         {
-            PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), true, 2000);
+            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 2000);
         }
 
         [Fact]
         public void PollingAsyncTimeoutTest()
         {
-            Assert.ThrowsAsync<TimeoutException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), true, 1000));
+            Assert.ThrowsAsync<TimeoutException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 1000));
         }
 
         [Fact]
         public void PollingThrowsOnInvalidArgumentsTest()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, true, -1000));
+            Assert.Throws<ArgumentOutOfRangeException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, -1000));
         }
 
         [Fact]
         public void PollingAsyncThrowsOnInvalidArgumentsTest()
         {
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), true, -1000));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), -1000));
         }
 
     }

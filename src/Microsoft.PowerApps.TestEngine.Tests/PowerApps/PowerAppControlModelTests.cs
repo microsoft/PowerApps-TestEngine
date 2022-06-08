@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
@@ -35,13 +36,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public void PowerAppControlModelTest()
         {
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+            var mockTestState = new Mock<ITestState>(MockBehavior.Strict);
             var jsProperty = new JSPropertyValueModel() { PropertyValue = "Hello" };
             mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControlAsync<string>(It.IsAny<ItemPath>())).Returns(Task.FromResult(JsonConvert.SerializeObject(jsProperty)));
             var timeout = 30000;
-            mockPowerAppFunctions.Setup(x => x.GetTimeoutValue()).Returns(timeout);
+            mockTestState.Setup(x => x.GetTimeout()).Returns(timeout);
             var name = "Label";
             var properties = TestData.CreateRandomPropertiesDictionary();
-            var model = new PowerAppControlModel(name, properties, mockPowerAppFunctions.Object);
+            var model = new PowerAppControlModel(name, properties, mockPowerAppFunctions.Object, mockTestState.Object);
             Assert.Equal(name, model.Name);
             Assert.Equal(properties, model.Properties);
             Assert.Equal(ExternalTypeKind.Object, (model.Type as ExternalType).Kind);
@@ -96,8 +98,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             }
 
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+            var mockTestState = new Mock<ITestState>(MockBehavior.Strict);
             var timeout = 30000;
-            mockPowerAppFunctions.Setup(x => x.GetTimeoutValue()).Returns(timeout);
+            mockTestState.Setup(x => x.GetTimeout()).Returns(timeout);
 
             foreach(var propertyValue in propertyValues)
             {
@@ -112,7 +115,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
 
             var childName = "Label";
-            var childModel = new PowerAppControlModel(childName, childProperties, mockPowerAppFunctions.Object);
+            var childModel = new PowerAppControlModel(childName, childProperties, mockPowerAppFunctions.Object, mockTestState.Object);
             Assert.Equal(childName, childModel.Name);
             Assert.Equal(childProperties, childModel.Properties);
             Assert.Equal(ExternalTypeKind.Object, (childModel.Type as ExternalType).Kind);
@@ -133,7 +136,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             AssertTryGetProperty(childModel, "NonExistentProperty", null, false, null);
 
             var arrayName = "Gallery";
-            var arrayModel = new PowerAppControlModel(arrayName, arrayProperties, mockPowerAppFunctions.Object);
+            var arrayModel = new PowerAppControlModel(arrayName, arrayProperties, mockPowerAppFunctions.Object, mockTestState.Object);
             arrayModel.IsArray = true;
             arrayModel.AddChildControl(childModel);
             Assert.Equal(arrayName, arrayModel.Name);

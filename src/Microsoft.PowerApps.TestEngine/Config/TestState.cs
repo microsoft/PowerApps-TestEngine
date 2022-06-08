@@ -219,5 +219,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             return TestPlanDefinition?.TestSettings;
         }
+
+        public int GetTimeout()
+        {
+            return GetTestSettings().Timeout;
+        }
     }
 }

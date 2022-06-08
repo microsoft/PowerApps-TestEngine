@@ -35,11 +35,5 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// <param name="itemPath">Path to the item</param>
         /// <returns>Number of items in the array</returns>
         public Task<int> GetItemCountAsync(ItemPath itemPath);
-        
-        /// <summary>
-        /// Gets the value of Timeout in milliseconds.
-        /// </summary>
-        /// <returns>Timeout value</returns>
-        public int GetTimeoutValue();
     }
 }

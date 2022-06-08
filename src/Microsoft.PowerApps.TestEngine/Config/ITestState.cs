@@ -76,9 +76,15 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public UserConfiguration GetUserConfiguration(string persona);
 
         /// <summary>
-        /// Getse the test settings.
+        /// Gets the test settings.
         /// </summary>
         /// <returns>Gets the test settings</returns>
         public TestSettings? GetTestSettings();
+
+        /// <summary>
+        /// Gets the timeout value from the test settings.
+        /// </summary>
+        /// <returns>The timeout value</returns>
+        public int GetTimeout();
     }
 }

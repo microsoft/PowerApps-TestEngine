@@ -59,7 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 }
                 var controlPropertyModel = (PowerAppControlPropertyModel)result;
                 return controlPropertyModel.GetString();
-            }, true, _timeout);
+            }, _timeout);
 
         }
     }

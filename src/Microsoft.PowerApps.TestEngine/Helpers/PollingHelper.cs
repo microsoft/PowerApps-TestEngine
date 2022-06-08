@@ -9,7 +9,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
     /// </summary>
     public class PollingHelper
     {
-        public static T Poll<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T>? functionToCall, bool updateValue, int timeout)
+        public static T Poll<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
         {
             if (timeout < 0)
             {
@@ -21,7 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
             while (conditionToCheck(valueToCheck))
             {
-                if (updateValue)
+                if (functionToCall != null)
                 {
                     valueToCheck = functionToCall();
                 }
@@ -37,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             return valueToCheck;
         }
 
-        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<Task<T>> functionToCall, bool updateValue, int timeout)
+        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout)
         {
             if (timeout < 0)
             {
@@ -49,7 +49,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
             while (conditionToCheck(valueToCheck))
             {
-                if (updateValue)
+                if (functionToCall != null)
                 {
                     valueToCheck = await functionToCall();
                 }

@@ -72,14 +72,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        public int GetTimeoutValue()
-        {
-            return _testState.GetTestSettings().Timeout;
-        }
-
         public async Task<List<PowerAppControlModel>> LoadPowerAppsObjectModelAsync()
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), true, GetTimeoutValue());
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
 
             if (!IsPublishedAppTestingJsLoaded)
             {
@@ -181,7 +176,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     properties.Add(property.PropertyName, propertyType);
                 }
 
-                var controlModel = new PowerAppControlModel(jsControlModel.Name, properties, this);
+                var controlModel = new PowerAppControlModel(jsControlModel.Name, properties, this, _testState);
 
                 controlModel.IsArray = jsControlModel.IsArray;
 
