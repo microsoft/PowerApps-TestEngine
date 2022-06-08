@@ -27,7 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public void PollingSucceedsTest()
         {
-            Assert.True(PollingHelper.Poll(false, conditionToCheck, functionToCall, 2000));
+            Assert.True(PollingHelper.Poll(false, conditionToCheck, functionToCall, 5000));
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public async void PollingAsyncSucceedsTest()
         {
-            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 2000);
+            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 5000);
         }
 
         [Fact]
