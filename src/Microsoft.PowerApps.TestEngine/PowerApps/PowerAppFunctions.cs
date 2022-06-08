@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Core.Public.Types;
 using Newtonsoft.Json;
@@ -16,15 +17,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     {
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
+        private readonly ITestState _testState;
         private bool IsPowerAppLoaded { get; set; } = false;
         private bool IsPlayerJsLoaded { get; set; } = false;
         private bool IsPublishedAppTestingJsLoaded { get; set; } = false;
         private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
 
-        public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState)
+        public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
         {
             _testInfraFunctions = testInfraFunctions;
             _singleTestInstanceState = singleTestInstanceState;
+            _testState = testState;
         }
 
         public async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
@@ -69,23 +72,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        private async Task WaitForAppToBeIdleAsync()
-        {
-            // TODO: implement timeout
-            var appIsIdle = false;
-            while (!appIsIdle)
-            {
-                appIsIdle = await CheckIfAppIsIdleAsync();
-                if (!appIsIdle)
-                {
-                    Thread.Sleep(500);
-                }
-            }
-        }
-
         public async Task<List<PowerAppControlModel>> LoadPowerAppsObjectModelAsync()
         {
-            await WaitForAppToBeIdleAsync();
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
 
             if (!IsPublishedAppTestingJsLoaded)
             {
@@ -187,7 +176,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     properties.Add(property.PropertyName, propertyType);
                 }
 
-                var controlModel = new PowerAppControlModel(jsControlModel.Name, properties, this);
+                var controlModel = new PowerAppControlModel(jsControlModel.Name, properties, this, _testState);
 
                 controlModel.IsArray = jsControlModel.IsArray;
 

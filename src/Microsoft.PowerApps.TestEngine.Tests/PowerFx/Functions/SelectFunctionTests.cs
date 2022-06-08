@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Core.Public.Types;
@@ -18,10 +18,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
     public class SelectFunctionTests
     {
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
+        private Mock<ITestState> MockTestState;
 
         public SelectFunctionTests()
         {
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+            MockTestState = new Mock<ITestState>(MockBehavior.Strict);
         }
 
         [Fact]
@@ -46,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
 
-            var powerAppObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
+            var powerAppObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object, MockTestState.Object);
             var untypedObject = FormulaValue.New(powerAppObject);
 
             var mockUpdaterCallCount = 0;
@@ -67,7 +69,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
 
-            var powerAppObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object);
+            var powerAppObject = new PowerAppControlModel("Label1", TestData.CreateSamplePropertiesDictionary(), MockPowerAppFunctions.Object, MockTestState.Object);
             var untypedObject = FormulaValue.New(powerAppObject);
 
             var mockUpdaterCallCount = 0;

@@ -23,6 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly IFileSystem _fileSystem;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
+        private readonly ITestState _testState;
 
         private RecalcEngine? Engine { get; set; }
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
@@ -30,11 +31,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public PowerFxEngine(ITestInfraFunctions testInfraFunctions, 
                              IPowerAppFunctions powerAppFunctions, 
                              ISingleTestInstanceState singleTestInstanceState,
+                             ITestState testState,
                              IFileSystem fileSystem)
         {
             _testInfraFunctions = testInfraFunctions;
             _powerAppFunctions = powerAppFunctions;
             _singleTestInstanceState = singleTestInstanceState;
+            _testState = testState;
             _fileSystem = fileSystem;
         }
 
@@ -42,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             var powerFxConfig = new PowerFxConfig();
             powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
-            powerFxConfig.AddFunction(new WaitFunction());
+            powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout()));
             powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, UpdatePowerFXModelAsync));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
             Engine = new RecalcEngine(powerFxConfig);
