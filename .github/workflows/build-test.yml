@@ -61,5 +61,5 @@ jobs:
           path: code-coverage-results.md
   yaml_test:
     needs: build
-    uses: ./.github/workflows/yaml_test.yml@main
+    uses: ./.github/workflows/yaml_test.yml
     secrets: inherit
