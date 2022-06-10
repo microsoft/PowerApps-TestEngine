@@ -4,10 +4,11 @@ on:
   workflow_call:
 
 jobs:
-  test:
+  test:    
     name: Pass input and secrets to build_test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest    
     steps:
+      - uses: .github/workflows/build-test.yml
       - name: Integration Test
         env:
             ppuser: '${{ secrets.POWER_PLATFORM_USER }}'
@@ -15,6 +16,7 @@ jobs:
         run: |  
           cd ../../
           cd /home/runner/work/PowerApps-TestEngine/PowerApps-TestEngine
+          cd src/PowerAppsTestEngine
           ls
           npm install -g playwright@1.18.1
           playwright install            
