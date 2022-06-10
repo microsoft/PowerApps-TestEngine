@@ -13,11 +13,7 @@ jobs:
             ppuser: '${{ secrets.POWER_PLATFORM_USER }}'
             pppassword: '${{ secrets.POWER_PLATFORM_PASSWORD }}'
         run: |  
-          pwd
-          cd ../../
-          ls
-          pwd
-          cd PowerApps-TestEngine/PowerApps-TestEngine/src/PowerAppsTestEngine
+          cd ../../PowerApps-TestEngine/PowerApps-TestEngine/src/PowerAppsTestEngine
           pwd
           ls
           npm install -g playwright@1.18.1
