@@ -15,8 +15,9 @@ jobs:
         run: |  
           pwd
           cd ../../
+          ls
           pwd
-          cd src/PowerAppsTestEngine
+          cd ./src/PowerAppsTestEngine
           pwd
           ls
           npm install -g playwright@1.18.1
