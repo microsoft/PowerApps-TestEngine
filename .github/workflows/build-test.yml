@@ -62,4 +62,3 @@ jobs:
   yaml_test:
     needs: build
     uses: ./.github/workflows/yaml_test.yml
-    secrets: inherit
