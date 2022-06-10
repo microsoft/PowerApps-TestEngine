@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Integration Test
-        uses: ./.github/workflows/build_test
         env:
             ppuser: '${{ secrets.POWER_PLATFORM_USER }}'
             pppassword: '${{ secrets.POWER_PLATFORM_PASSWORD }}'
