@@ -8,7 +8,7 @@ jobs:
     name: Pass input and secrets to build_test
     runs-on: ubuntu-latest    
     steps:
-      - uses: .github/workflows/build-test.yml
+      - uses: ./.github/workflows/build-test.yml
       - name: Integration Test
         env:
             ppuser: '${{ secrets.POWER_PLATFORM_USER }}'
