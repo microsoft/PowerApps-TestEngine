@@ -3,8 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Core.Public.Types;
-using Microsoft.PowerFx.Core.Public.Values;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
