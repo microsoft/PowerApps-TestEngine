@@ -40,8 +40,7 @@ jobs:
             user1Password: '${{ secrets.POWER_PLATFORM_PASSWORD }}'
         run: |          
           cd src/PowerAppsTestEngine
-          npm install -g playwright@1.18.1
-          playwright install            
+          pwsh bin\Debug\net6.0\playwright.ps1 install            
           dotnet run -- -e "ceb95cca-da1d-ed58-8af8-117cb4081f16" -t "f2c52b3d-d88e-4892-9785-d5b7c7016725" -i "../../samples/buttonclicker/testPlan.fx.yaml" -o "../../testResults"
           dotnet run -- -e "ceb95cca-da1d-ed58-8af8-117cb4081f16" -t "f2c52b3d-d88e-4892-9785-d5b7c7016725" -i "../../samples/nestedgallery/testPlan.fx.yaml" -o "../../testResults"   
       - name: Test Report
