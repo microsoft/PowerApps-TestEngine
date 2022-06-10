@@ -62,5 +62,5 @@ jobs:
 
   yaml_test:
     needs: build
-    uses: ./yaml_test.yml
+    uses: ./yaml_test.yml@main
     secrets: inherit
