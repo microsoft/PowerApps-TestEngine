@@ -39,7 +39,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, FormulaValue.New("1")));
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), null));
             Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), FormulaValue.New("1")));
-            Assert.Throws<InvalidCastException>(() => waitFunction.Execute(recordValue, FormulaValue.New("NonExistentProperty"), FormulaValue.New("1")));
         }
 
         [Fact]

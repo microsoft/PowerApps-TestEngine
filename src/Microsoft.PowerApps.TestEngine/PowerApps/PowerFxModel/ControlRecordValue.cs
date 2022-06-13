@@ -68,14 +68,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// <returns>True if able to get the field value</returns>
         protected override bool TryGetField(FormulaType fieldType, string fieldName, out FormulaValue result)
         {
-            // Check if the field exists
-            var fieldExists = Type.GetNames().Where(x => x.Name == fieldName).Count() != 0;
-            if (!fieldExists)
-            {
-                result = null;
-                return false;
-            }
-
             if (fieldType is TableType)
             {
                 // This would be if we were referencing a property that could be indexed. Eg. Gallery1.AllItems (fieldName = AllItems)

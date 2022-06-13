@@ -36,9 +36,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
 
             Assert.Equal(propertyValue, (controlRecordValue.GetField("Text") as StringValue).Value);
 
-            // Fetch non existent field
-            Assert.NotNull(controlRecordValue.GetField(Guid.NewGuid().ToString()) as BlankValue);
-
             mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == controlName)), Times.Once());
         }
 
