@@ -15,6 +15,7 @@ using Microsoft.PowerFx.Core.Public.Values;
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
     private readonly IPowerAppFunctions _powerAppFunctions;
+
     /// <summary>
     /// This will allow you to set TextInput.Text
     /// </summary>
