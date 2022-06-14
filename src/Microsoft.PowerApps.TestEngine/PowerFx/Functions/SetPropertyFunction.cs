@@ -4,39 +4,56 @@
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerApps.TestEngine.Helpers;
+using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx;
+using Microsoft.PowerFx.Types;
 using Microsoft.PowerFx.Core.Public.Types;
 using Microsoft.PowerFx.Core.Public.Values;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
+    private readonly IPowerAppFunctions _powerAppFunctions;
     /// <summary>
     /// This will allow you to set TextInput.Text
     /// </summary>
-    public class SetPropertyFunction : ReflectionFunction
+    public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, RecordType recordType) : base("SetProperty", FormulaType.Blank, recordType, FormulaType.String, FormulaType.String)
     {
-        private readonly string _propertyValue;
+        _powerAppFunctions = powerAppFunctions;
+    }
 
-        public SetPropertyFunction() 
-            : base("SetProperty", FormulaType.Blank, FormulaType.String)
+    public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
+    {
+        SetProperty(obj, propName, value);
+        return FormulaValue.NewBlank();
+    }
+
+    private void SetProperty(RecordValue obj, StringValue propName, StringValue value)
+    {
+        if (obj == null)
         {
+            throw new ArgumentException(nameof(obj));
         }
 
-        public BlankValue Execute(UntypedObjectValue obj, StringValue propertyValue)
+        if (propName == null)
         {
-            if (obj == null)
-            {
-                throw new ArgumentNullException(nameof(obj));
-            }
-
-            if (propertyValue == null)
-            {
-                throw new ArgumentNullException(nameof(propertyValue));
-            }
-
-            obj = _propertyValue;
-
-            return FormulaValue.NewBlank();
+            throw new ArgumentException(nameof(propName));
         }
+
+        if (value == null)
+        {
+            throw new ArgumentException(nameof(value));
+        }    
+
+        var controlModel = (ControlRecordValue)obj;
+        string? propertyValue = null;
+
+        // TODO handle non strings?
+        var text = ((StringValue)value).Value;
+
+        PollingHelper.Poll<string>(propertyValue, (x) => x != text, () => {
+            return ((StringValue)controlModel.GetField(propName.Value)).Value;
+        }, _timeout);
     }
 }
