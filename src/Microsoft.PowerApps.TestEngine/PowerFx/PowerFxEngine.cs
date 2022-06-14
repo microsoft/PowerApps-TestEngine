@@ -70,6 +70,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, control.Value.Type));
                 powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout(), control.Value.Type));
+                powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions, control.Value.Type));
             }
 
             powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
