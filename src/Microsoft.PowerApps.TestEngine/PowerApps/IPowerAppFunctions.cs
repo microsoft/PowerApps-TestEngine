@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
@@ -24,6 +25,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// <param name="itemPath">Path to the item</param>
         /// <returns>True if onSelect function was successfully executed.</returns>
         public Task<bool> SelectControlAsync(ItemPath itemPath);
+
+        public Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value);
+
 
         /// <summary>
         /// Loads the object model for Power Apps

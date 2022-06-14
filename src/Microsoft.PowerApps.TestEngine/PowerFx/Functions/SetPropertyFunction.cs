@@ -5,50 +5,55 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Core.Public.Types;
-using Microsoft.PowerFx.Core.Public.Values;
+using Microsoft.PowerApps.TestEngine.Helpers;
+using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
-    private readonly IPowerAppFunctions _powerAppFunctions;
-
     /// <summary>
     /// This will allow you to set TextInput.Text
     /// </summary>
-    public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, RecordType recordType) : base("SetProperty", FormulaType.Blank, recordType, FormulaType.String, FormulaType.String)
+    public class SetPropertyFunction : ReflectionFunction
     {
-        _powerAppFunctions = powerAppFunctions;
-    }
+        private readonly IPowerAppFunctions _powerAppFunctions;
 
-    public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
-    {
-        SetProperty(obj, propName, value);
-        return FormulaValue.NewBlank();
-    }
-
-    private async Task SetProperty(RecordValue obj, StringValue propName, StringValue value)
-    {
-        if (obj == null)
+        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, RecordType recordType) : base("SetProperty", FormulaType.Blank, recordType, FormulaType.String, FormulaType.String)
         {
-            throw new ArgumentException(nameof(obj));
+            _powerAppFunctions = powerAppFunctions;
         }
 
-        if (propName == null)
+        public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
         {
-            throw new ArgumentException(nameof(propName));
+            SetProperty(obj, propName, value);
+            return FormulaValue.NewBlank();
         }
 
-        if (value == null)
+        private async Task SetProperty(RecordValue obj, StringValue propName, StringValue value)
         {
-            throw new ArgumentException(nameof(value));
-        }
+            if (obj == null)
+            {
+                throw new ArgumentException(nameof(obj));
+            }
 
-        var controlModel = (ControlRecordValue)obj;
-        var result = await _powerAppFunctions.SetPropertyValue(controlModel.GetItemPath(propName), value);
+            if (propName == null)
+            {
+                throw new ArgumentException(nameof(propName));
+            }
 
-        if (!result)
-        {
-            throw new Exception($"Unable to set property {controlModel.Name}");
+            if (value == null)
+            {
+                throw new ArgumentException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj; 
+            var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
+
+            if (!result)
+            {
+                throw new Exception($"Unable to set property {controlModel.Name}");
+            }
         }
     }
 }
