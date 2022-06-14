@@ -11,7 +11,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 {
     public class PollingHelpersTests
     {
-        private bool testValue = false;
         Func<bool, bool> conditionToCheck = x => !x;
         Func<bool> functionToCall = () => {
             Thread.Sleep(1000);

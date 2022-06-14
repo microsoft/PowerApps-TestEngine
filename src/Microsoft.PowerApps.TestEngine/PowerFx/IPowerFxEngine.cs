@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerFx.Core.Public.Values;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
 {
@@ -11,11 +11,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
     public interface IPowerFxEngine
     {
         /// <summary>
-        /// Sets up the Power FX engine
-        /// </summary>
-        public void Setup();
-
-        /// <summary>
         /// Executes a list of Power FX functions
         /// </summary>
         /// <param name="testSteps">Test steps</param>
@@ -23,9 +18,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public FormulaValue Execute(string testSteps);
 
         /// <summary>
-        /// Updates the Power FX object model
+        /// Sets up the Power FX engine
         /// </summary>
         /// <returns>A task</returns>
-        public Task UpdatePowerFXModelAsync();
+        public Task SetupAsync();
     }
 }
