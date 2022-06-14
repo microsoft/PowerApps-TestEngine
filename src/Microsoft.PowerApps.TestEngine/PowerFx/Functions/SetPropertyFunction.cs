@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         return FormulaValue.NewBlank();
     }
 
-    private void SetProperty(RecordValue obj, StringValue propName, StringValue value)
+    private async Task SetProperty(RecordValue obj, StringValue propName, StringValue value)
     {
         if (obj == null)
         {
@@ -44,16 +44,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         if (value == null)
         {
             throw new ArgumentException(nameof(value));
-        }    
+        }
 
         var controlModel = (ControlRecordValue)obj;
-        string? propertyValue = null;
+        var result = await _powerAppFunctions.SetPropertyValue(powerAppControlModel.GetItemPath(), value);
 
-        // TODO handle non strings?
-        var text = ((StringValue)value).Value;
-
-        PollingHelper.Poll<string>(propertyValue, (x) => x != text, () => {
-            return ((StringValue)controlModel.GetField(propName.Value)).Value;
-        }, _timeout);
+        if (!result)
+        {
+            throw new Exception($"Unable to select control {controlModel.Name}");
+        }
     }
 }
