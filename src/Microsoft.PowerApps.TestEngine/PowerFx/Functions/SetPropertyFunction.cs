@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         if (!result)
         {
-            throw new Exception($"Unable to select control {controlModel.Name}");
+            throw new Exception($"Unable to set property {controlModel.Name}");
         }
     }
 }
