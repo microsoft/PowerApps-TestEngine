@@ -14,7 +14,7 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
-var serviceProvider = new ServiceCollection()
+using var serviceProvider = new ServiceCollection()
     .AddLogging(loggingBuilder =>
         {
             loggingBuilder
@@ -64,4 +64,6 @@ if (inputOptions == null)
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
+
+
 }
