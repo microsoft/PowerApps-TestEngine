@@ -146,7 +146,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value)
         {
             ValidateItemPath(itemPath, false);

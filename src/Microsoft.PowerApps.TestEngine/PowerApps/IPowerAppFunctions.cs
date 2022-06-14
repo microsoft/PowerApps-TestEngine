@@ -26,8 +26,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// <returns>True if onSelect function was successfully executed.</returns>
         public Task<bool> SelectControlAsync(ItemPath itemPath);
 
+        /// <summary>
+        /// Runs the setPropertyValue function of a control
+        /// </summary>
+        /// <param name="itemPath">Path to the item</param>
+        /// <param name="value">New string we are setting the property to</param>
+        /// <returns>True if setPropertyValue function was successfully executed.</returns>
         public Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value);
-
 
         /// <summary>
         /// Loads the object model for Power Apps
