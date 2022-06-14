@@ -7,7 +7,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerFx.Core.Public.Types;
+using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
 using System;
@@ -34,37 +34,53 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"}", "Text")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}", "Text")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null},\"propertyName\":null}", "Text")]
-        public async Task GetPropertyValueFromControlAsyncTest(string itemPathString, string expectedOutput)
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}", "123")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}", "456")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}", "789")]
+        public void GetPropertyValueFromControlTest(string itemPathString, string expectedOutput)
         {
-            // TODO: handle component
+            // TODO: handle components
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(It.IsAny<string>())).Returns(Task.FromResult(expectedOutput));
+            MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
-            var result = await powerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath);
+            var result = powerAppFunctions.GetPropertyValueFromControl<string>(itemPath);
             Assert.Equal(expectedOutput, result);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"getPropertyValue({itemPathString})"), Times.Once());
         }
 
         [Theory]
-        [InlineData("{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"}")]
-        [InlineData("{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"}")]
-        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"\"}")]
-        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"\",\"index\":1,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":null,\"index\":2,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":3,\"childControl\":{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":4,\"childControl\":{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":\"Text\"},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":5,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":\"\"},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":6,\"childControl\":{\"controlName\":\"Label1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
-        public async Task GetPropertyValueFromControlAsyncThrowsOnInvalidInputTest(string itemPathString)
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":null,\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":null},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":null,\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":null,\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"\"},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":null},\"propertyName\":\"AllItems\"},\"propertyName\":\"Text\"}")]
+        public void GetPropertyValueFromControlThrowsOnInvalidInputTest(string itemPathString)
         {
-            // TODO: handle components and nested galleries
+            // TODO: handle components
+            MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            await Assert.ThrowsAsync<ArgumentNullException>(async() => await powerAppFunctions.GetPropertyValueFromControlAsync<string>(itemPath));
+            Assert.Throws<ArgumentNullException>(() => powerAppFunctions.GetPropertyValueFromControl<string>(itemPath));
         }
 
         [Fact]
@@ -82,31 +98,50 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     },
                     new JSControlModel()
                     {
-                        Name = "Label1",
+                        Name = "Label3",
                         Properties = TestData.CreateSampleJsPropertyModelList(),
-                        IsArray = false
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Label2",
+                        Properties = TestData.CreateSampleJsPropertyModelList()
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Button1",
+                        Properties = TestData.CreateSampleJsPropertyModelList()
                     },
                     new JSControlModel()
                     {
                         Name = "Gallery1",
-                        Properties = TestData.CreateSampleJsPropertyModelList(),
-                        IsArray = true,
-                        ChildrenControls = new JSControlModel[]
-                        {
-                            new JSControlModel()
+                        Properties = TestData.CreateSampleJsPropertyModelList(
+                            new JSPropertyModel[] 
                             {
-                                Name = "Label2",
-                                Properties = TestData.CreateSampleJsPropertyModelList()
-                            },
-                            new JSControlModel()
-                            {
-                                Name = "Button1",
-                                Properties = TestData.CreateSampleJsPropertyModelList()
-                            }
-                        }
+                                new JSPropertyModel() { PropertyName = "AllItems", PropertyType = "*[Button1:v, Label2:v, Label3:v]" },
+                                new JSPropertyModel() { PropertyName = "SelectedItem", PropertyType = "![Button1:v, Label2:v, Label3:v]" }
+                            })
                     }
                 }
             };
+
+            var expectedFormulaTypes = TestData.CreateExpectedFormulaTypesForSampleJsPropertyModelList();
+            var button1RecordType = new RecordType();
+            var label2RecordType = new RecordType();
+            var label3RecordType = new RecordType();
+            foreach(var expectedFormulaType in expectedFormulaTypes)
+            {
+                button1RecordType = button1RecordType.Add(expectedFormulaType.Key, expectedFormulaType.Value);
+                label2RecordType = button1RecordType.Add(expectedFormulaType.Key, expectedFormulaType.Value);
+                label3RecordType = button1RecordType.Add(expectedFormulaType.Key, expectedFormulaType.Value);
+            }
+            expectedFormulaTypes.Add("AllItems", new TableType()
+                                                    .Add(new NamedFormulaType("Button1", button1RecordType))
+                                                    .Add(new NamedFormulaType("Label2", label2RecordType))
+                                                    .Add(new NamedFormulaType("Label3", label3RecordType)));
+            expectedFormulaTypes.Add("SelectedItem", new RecordType()
+                                                    .Add(new NamedFormulaType("Button1", button1RecordType))
+                                                    .Add(new NamedFormulaType("Label2", label2RecordType))
+                                                    .Add(new NamedFormulaType("Label3", label3RecordType)));
 
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
@@ -118,52 +153,27 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             LoggingTestHelper.SetupMock(MockLogger);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             var objectModel = await powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            Assert.Equal(jsObjectModel.Controls.Count, objectModel.Count);
-            foreach(var jsModel in jsObjectModel.Controls)
-            {
-                var model = objectModel.Where(x => x.Name == jsModel.Name).FirstOrDefault();
-                Assert.NotNull(model);
-                Assert.Equal(jsModel.Name, model.Name);
-                Assert.Equal(jsModel.Properties?.Count(), model.Properties.Count);
-                foreach (var jsProperty in jsModel.Properties)
-                {
-                    Assert.Contains(jsProperty.PropertyName, model.Properties.Keys);
-                    Assert.Equal(powerAppFunctions.MapPropertyType(jsProperty.PropertyType), model.Properties[jsProperty.PropertyName]);
-                }
-                Assert.Equal(jsModel.IsArray, model.IsArray);
-                Assert.Null(model.SelectedIndex);
-                Assert.Equal(jsModel.IsArray, (model.Type as ExternalType).Kind == ExternalTypeKind.Array);
-                Assert.Equal(!jsModel.IsArray, (model.Type as ExternalType).Kind == ExternalTypeKind.Object);
-                Assert.Null(model.ParentControl);
-
-                if (jsModel.ChildrenControls != null)
-                {
-                    Assert.Equal(jsModel.ChildrenControls.Length, model.ChildControls.Count);
-                    foreach (var jsChildModel in jsModel.ChildrenControls)
-                    {
-                        var childModel = model.ChildControls.Where(x => x.Name == jsChildModel.Name).FirstOrDefault();
-                        Assert.NotNull(childModel);
-                        Assert.Equal(jsChildModel.Name, childModel.Name);
-                        Assert.Equal(jsChildModel.Properties?.Count(), childModel.Properties.Count);
-                        foreach (var jsProperty in jsChildModel.Properties)
-                        {
-                            Assert.Contains(jsProperty.PropertyName, childModel.Properties.Keys);
-                            Assert.Equal(powerAppFunctions.MapPropertyType(jsProperty.PropertyType), childModel.Properties[jsProperty.PropertyName]);
-                        }
-                        Assert.Equal(jsChildModel.IsArray, childModel.IsArray);
-                        Assert.Null(childModel.SelectedIndex);
-                        Assert.Equal(jsChildModel.IsArray, (childModel.Type as ExternalType).Kind == ExternalTypeKind.Array);
-                        Assert.Equal(!jsChildModel.IsArray, (childModel.Type as ExternalType).Kind == ExternalTypeKind.Object);
-                        Assert.NotNull(childModel.ParentControl);
-                        Assert.Equal(model.Name, childModel.ParentControl.Name);
-                    }
-                }
-            }
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Once());
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), publishedAppIframeName), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, (string)null, LogLevel.Debug, Times.Never());
+
+            Assert.Equal(jsObjectModel.Controls.Count, objectModel.Count);
+            foreach (var jsModel in jsObjectModel.Controls)
+            {
+                var model = objectModel[jsModel.Name];
+                Assert.NotNull(model);
+                Assert.Equal(jsModel.Name, model.Name);
+                foreach (var jsProperty in jsModel.Properties)
+                {
+                    var fieldType = model.Type.GetFieldType(jsProperty.PropertyName);
+                    Assert.NotNull(fieldType);
+
+                    Assert.Equal(expectedFormulaTypes[jsProperty.PropertyName], fieldType);
+                }
+            }
         }
 
         [Theory]
@@ -193,9 +203,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null}", true)]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}", false)]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null},\"propertyName\":null}", true)]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":null}", true)]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}", false)]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}", true)]
         public async Task SelectControlAsyncTest(string itemPathString, bool expectedOutput)
         {
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(expectedOutput));
@@ -209,12 +219,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":null}")]
-        [InlineData("{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"\",\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":null,\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":null,\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":null,\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":null,\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":null},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":null,\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":null},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":null,\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null},\"propertyName\":null}")]
         public async Task SelectControlAsyncThrowsOnInvalidInputTest(string itemPathString)
         {
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
@@ -222,32 +244,46 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null}", 1)]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}", 2)]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null},\"propertyName\":null}", 3)]
-        public async Task GetItemCountAsyncTest(string itemPathString, int expectedOutput)
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":null}", 1)]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}", 2)]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}", 3)]
+        public void GetItemCountTest(string itemPathString, int expectedOutput)
         {
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<int>(It.IsAny<string>())).Returns(Task.FromResult(expectedOutput));
+            MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
 
             // TODO: Handle components
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
-            var result = await powerAppFunctions.GetItemCountAsync(itemPath);
+            var result = powerAppFunctions.GetItemCount(itemPath);
             Assert.Equal(expectedOutput, result);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<int>($"getItemCount({JsonConvert.SerializeObject(itemPath)})"), Times.Once());
         }
 
         [Theory]
-        [InlineData("{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":null}")]
-        [InlineData("{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"\",\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":null,\"index\":2,\"childControl\":{\"controlName\":\"Button1\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":\"\",\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
-        [InlineData("{\"controlName\":\"Gallery1\",\"index\":2,\"childControl\":{\"controlName\":null,\"index\":null,\"childControl\":null,\"propertyName\":null},\"propertyName\":null}")]
-        public async Task GetItemCountAsyncThrowsOnInvalidInputTest(string itemPathString)
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":null,\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":null,\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":null,\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":null},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":null,\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":null,\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":null},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":null,\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"AllItems\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":\"\"},\"propertyName\":null}")]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":{\"controlName\":\"Gallery2\",\"index\":3,\"parentControl\":{\"controlName\":\"Gallery1\",\"index\":2,\"parentControl\":null,\"propertyName\":\"AllItems\"},\"propertyName\":null},\"propertyName\":null}")]
+        public void GetItemCountThrowsOnInvalidInputTest(string itemPathString)
         {
+            MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await powerAppFunctions.GetItemCountAsync(JsonConvert.DeserializeObject<ItemPath>(itemPathString)));
+            Assert.Throws<ArgumentNullException>(() => powerAppFunctions.GetItemCount(JsonConvert.DeserializeObject<ItemPath>(itemPathString)));
         }
 
         [Fact]
@@ -367,30 +403,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             LoggingTestHelper.SetupMock(MockLogger);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<TimeoutException>(async() => {await powerAppFunctions.LoadPowerAppsObjectModelAsync();});
-        }
-
-        [Fact]
-        public void MapPropertyTypeTest()
-        {
-            var testData = new Dictionary<string, FormulaType>();
-            testData.Add("Boolean", FormulaType.Boolean);
-            testData.Add("Number", FormulaType.Number);
-            testData.Add("String", FormulaType.String);
-            testData.Add("Time", FormulaType.Time);
-            testData.Add("Date", FormulaType.Date);
-            testData.Add("DateTime", FormulaType.DateTime);
-            testData.Add("DateTimeNoTimeZone", FormulaType.DateTimeNoTimeZone);
-            testData.Add("Hyperlink", FormulaType.Hyperlink);
-            testData.Add("Color", FormulaType.Color);
-            testData.Add("Guid", FormulaType.Guid);
-            testData.Add("something random", FormulaType.String);
-
-            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-
-            foreach(var test in testData)
-            {
-                Assert.Equal(test.Value, powerAppFunctions.MapPropertyType(test.Key));
-            }
         }
     }
 }

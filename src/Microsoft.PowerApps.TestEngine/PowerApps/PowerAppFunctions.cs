@@ -4,8 +4,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
+using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx.Core.Public.Types;
+using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
@@ -18,10 +19,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
-        private bool IsPowerAppLoaded { get; set; } = false;
         private bool IsPlayerJsLoaded { get; set; } = false;
         private bool IsPublishedAppTestingJsLoaded { get; set; } = false;
         private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
+        private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
         {
@@ -30,13 +31,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _testState = testState;
         }
 
-        public async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
+        private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
             ValidateItemPath(itemPath, true);
             // TODO: handle nested galleries and components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var expression = $"getPropertyValue({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
+        }
+
+        public T GetPropertyValueFromControl<T>(ItemPath itemPath)
+        {
+            var getProperty = GetPropertyValueFromControlAsync<T>(itemPath).GetAwaiter();
+
+            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout());
+
+            return getProperty.GetResult();
         }
 
         private string GetFilePath(string file)
@@ -72,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        public async Task<List<PowerAppControlModel>> LoadPowerAppsObjectModelAsync()
+        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
         {
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
 
@@ -88,7 +98,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
-            var controlModels = new List<PowerAppControlModel>();
+            var controlDictionary = new Dictionary<string, ControlRecordValue>();
 
             if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {
@@ -96,107 +106,41 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                 if (jsObjectModel != null && jsObjectModel.Controls != null)
                 {
-                    foreach (var jsControlModel in jsObjectModel.Controls)
+                    foreach (var control in jsObjectModel.Controls)
                     {
-                        var controlModel = ParseControl(jsControlModel);
-                        if (controlModel != null)
+                        var controlType = new RecordType();
+                        foreach (var property in control.Properties)
                         {
-                            controlModels.Add(controlModel);
+                            if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
+                            {
+                                controlType = controlType.Add(property.PropertyName, formulaType);
+                            }
+                            else
+                            {
+                                _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name}, Skipping property: {property.PropertyName}, with type: {property.PropertyType}");
+                            }
                         }
+
+                        TypeMapping.AddMapping(control.Name, controlType);
+
+                        var controlValue = new ControlRecordValue(controlType, this, control.Name);
+                        controlDictionary.Add(control.Name, controlValue);
                     }
                 }
             }
 
-            if(controlModels.Count == 0)
+            if (controlDictionary.Keys.Count == 0)
             {
                 _singleTestInstanceState.GetLogger().LogError("No control model was found");
             }
+            return controlDictionary;
 
-            return controlModels;
-
-        }
-
-        public FormulaType MapPropertyType(string propertyTypeString)
-        {
-            var propertyType = FormulaType.String;
-
-            switch (propertyTypeString)
-            {
-                case ("Boolean"):
-                    propertyType = FormulaType.Boolean;
-                    break;
-                case ("Number"):
-                    propertyType = FormulaType.Number;
-                    break;
-                case ("String"):
-                    propertyType = FormulaType.String;
-                    break;
-                case ("Time"):
-                    propertyType = FormulaType.Time;
-                    break;
-                case ("Date"):
-                    propertyType = FormulaType.Date;
-                    break;
-                case ("DateTime"):
-                    propertyType = FormulaType.DateTime;
-                    break;
-                case ("DateTimeNoTimeZone"):
-                    propertyType = FormulaType.DateTimeNoTimeZone;
-                    break;
-                case ("Hyperlink"):
-                    propertyType = FormulaType.Hyperlink;
-                    break;
-                case ("Color"):
-                    propertyType = FormulaType.Color;
-                    break;
-                case ("Guid"):
-                    propertyType = FormulaType.Guid;
-                    break;
-                default:
-                    propertyType = FormulaType.String;
-                    break;
-            }
-            return propertyType;
-        }
-
-        private PowerAppControlModel? ParseControl(JSControlModel jsControlModel)
-        {
-            if (string.IsNullOrEmpty(jsControlModel.Name) || jsControlModel.Properties == null)
-            {
-                _singleTestInstanceState.GetLogger().LogDebug("Received a control with empty name or null properties");
-                return null;
-            }
-            else
-            {
-                var properties = new Dictionary<string, FormulaType>();
-
-                foreach(var property in jsControlModel.Properties)
-                {
-                    var propertyType = MapPropertyType(property.PropertyType);
-                    properties.Add(property.PropertyName, propertyType);
-                }
-
-                var controlModel = new PowerAppControlModel(jsControlModel.Name, properties, this, _testState);
-
-                controlModel.IsArray = jsControlModel.IsArray;
-
-                if (jsControlModel.ChildrenControls != null)
-                {
-                    foreach(var childControl in jsControlModel.ChildrenControls)
-                    {
-                        var parsedChildControl = ParseControl(childControl);
-                        controlModel.AddChildControl(parsedChildControl);
-                    }
-                }
-
-                return controlModel;
-            }
         }
 
         public async Task<bool> SelectControlAsync(ItemPath itemPath)
         {
             ValidateItemPath(itemPath, false);
-            // TODO: handle nested galleries and components
+            // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var expression = $"select({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
@@ -209,28 +153,38 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 throw new ArgumentNullException(nameof(itemPath.ControlName));
             }
 
-            if (requirePropertyName && itemPath.ChildControl == null)
+            if (requirePropertyName || itemPath.Index.HasValue)
             {
                 if (string.IsNullOrEmpty(itemPath.PropertyName))
                 {
-                    // Property name is only needed on the lowest level control
+                    // Property name is required on certain functions
+                    // It is also required when accessing elements in a gallery, so if an index is specified, it needs to be there
                     throw new ArgumentNullException(nameof(itemPath.PropertyName));
                 }
             }
 
-            if(itemPath.ChildControl != null)
+            if(itemPath.ParentControl != null)
             {
-                ValidateItemPath(itemPath.ChildControl, requirePropertyName);
+                ValidateItemPath(itemPath.ParentControl, false);
             }
         }
 
-        public async Task<int> GetItemCountAsync(ItemPath itemPath)
+        private async Task<int> GetItemCountAsync(ItemPath itemPath)
         {
             ValidateItemPath(itemPath, false);
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var expression = $"getItemCount({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<int>(expression);
 
+        }
+
+        public int GetItemCount(ItemPath itemPath)
+        {
+            var getItemCount = GetItemCountAsync(itemPath).GetAwaiter();
+
+            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout());
+
+            return getItemCount.GetResult();
         }
     }
 }

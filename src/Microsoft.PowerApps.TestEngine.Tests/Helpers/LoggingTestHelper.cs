@@ -23,10 +23,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 
         public static void VerifyLogging(Mock<ILogger> logger, string expectedMessage, LogLevel? expectedLogLevel, Times? times = null)
         {
-            VerifyLogging(logger, (message) => message.CompareTo(expectedMessage) == 0, expectedLogLevel, times);
+            Func<string, bool> messageValidationFunction = (message) => expectedMessage == null || message.CompareTo(expectedMessage) == 0;
+            VerifyLogging(logger, messageValidationFunction, expectedLogLevel, times);
         }
 
-        public static void VerifyLogging(Mock<ILogger> logger, Func<string, bool> messageValidationFunction, LogLevel? expectedLogLevel, Times? times = null)
+        public static void VerifyLogging(Mock<ILogger> logger, Func<string, bool> messageValidationFunction, LogLevel? expectedLogLevel = null, Times? times = null)
         {
             times ??= Times.Once();
 

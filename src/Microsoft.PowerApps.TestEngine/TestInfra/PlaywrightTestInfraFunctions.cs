@@ -139,7 +139,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 await BrowserContext.CloseAsync();
             }
-
         }
 
         private void ValidatePage()

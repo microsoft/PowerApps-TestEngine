@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
-using Microsoft.PowerFx.Core.Public.Types;
-using Microsoft.PowerFx.Core.Public.Values;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 {

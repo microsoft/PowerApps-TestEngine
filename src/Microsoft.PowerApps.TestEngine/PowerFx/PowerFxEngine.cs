@@ -4,13 +4,15 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core;
 using Microsoft.PowerFx.Core.Public;
-using Microsoft.PowerFx.Core.Public.Values;
+using Microsoft.PowerFx.Types;
+using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
 {
@@ -41,16 +43,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             _fileSystem = fileSystem;
         }
 
-        public void Setup()
-        {
-            var powerFxConfig = new PowerFxConfig();
-            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
-            powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout()));
-            powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, UpdatePowerFXModelAsync));
-            powerFxConfig.AddFunction(new AssertFunction(Logger));
-            Engine = new RecalcEngine(powerFxConfig);
-        }
-
         public FormulaValue Execute(string testSteps)
         {
             if (Engine == null)
@@ -69,18 +61,23 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
         }
 
-        public async Task UpdatePowerFXModelAsync()
+        public async Task SetupAsync()
         {
-            if (Engine == null)
+            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
+            var powerFxConfig = new PowerFxConfig();
+
+            foreach (var control in controlRecordValues)
             {
-                Logger.LogError("Engine is null, make sure to call Setup first");
-                throw new InvalidOperationException("Engine is null, make sure to call Setup first");
+                powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, control.Value.Type));
+                powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout(), control.Value.Type));
             }
 
-            var controlObjectModel = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            foreach (var control in controlObjectModel)
+            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
+            powerFxConfig.AddFunction(new AssertFunction(Logger));
+            Engine = new RecalcEngine(powerFxConfig);
+            foreach (var control in controlRecordValues)
             {
-                Engine.UpdateVariable(control.Name, FormulaValue.New(control));
+                Engine.UpdateVariable(control.Key, control.Value);
             }
         }
     }

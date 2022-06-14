@@ -3,9 +3,9 @@
 
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Core.Public.Types;
-using Microsoft.PowerFx.Core.Public.Values;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
@@ -16,18 +16,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     public class WaitFunction : ReflectionFunction
     {
         private readonly int _timeout;
-        public WaitFunction(int timeout) : base("Wait", FormulaType.Blank, FormulaType.UntypedObject, FormulaType.String, FormulaType.String)
+        public WaitFunction(int timeout, RecordType recordType) : base("Wait", FormulaType.Blank, recordType, FormulaType.String, FormulaType.String)
         {
             _timeout = timeout;
         }
 
-        public BlankValue Execute(UntypedObjectValue obj, StringValue propName, FormulaValue valueToCheck)
+        public BlankValue Execute(RecordValue obj, StringValue propName, FormulaValue valueToCheck)
         {
             Wait(obj, propName, valueToCheck);
             return FormulaValue.NewBlank();
         }
 
-        private void Wait(UntypedObjectValue obj, StringValue propName, FormulaValue valueToCheck)
+        private void Wait(RecordValue obj, StringValue propName, FormulaValue valueToCheck)
         {
             if (obj == null)
             {
@@ -44,23 +44,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 throw new ArgumentNullException(nameof(valueToCheck));
             }
 
-            IUntypedObject untypedVal = obj.Impl;
-
-            var controlModel = (PowerAppControlModel)untypedVal;
+            var controlModel = (ControlRecordValue)obj;
             string? propertyValue = null;
 
             // TODO handle non strings?
             var text = ((StringValue)valueToCheck).Value;
 
             PollingHelper.Poll<string>(propertyValue, (x) => x != text, () => {
-                if (!controlModel.TryGetProperty(propName.Value, out IUntypedObject result))
-                {
-                    throw new InvalidOperationException($"Property does not exist {propName.Value}");
-                }
-                var controlPropertyModel = (PowerAppControlPropertyModel)result;
-                return controlPropertyModel.GetString();
+                return ((StringValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
-
         }
     }
 }

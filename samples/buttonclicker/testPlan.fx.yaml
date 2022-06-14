@@ -11,17 +11,16 @@ test:
       Wait(Label1, "Text", "0");
       // Click the button
       Select(Button1);
-      Assert(Text(Label1.Text) = "1", "Counter should be incremented to 1");
+      Assert(Label1.Text = "1", "Counter should be incremented to 1");
       // Click the button
       Select(Button1);
-      Assert(Text(Label1.Text) = "2", "Counter should be incremented to 2");
+      Assert(Label1.Text = "2", "Counter should be incremented to 2");
       Screenshot("buttonclicker_end.png");
 
 testSettings:
   recordVideo: true
   browserConfigurations:
     - browser: Chromium
-    - browser: Firefox
 
 environmentVariables:
   users:
