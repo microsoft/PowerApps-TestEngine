@@ -152,7 +152,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"setPropertyValue({itemPathString, value})";
+            var expression = $"setPropertyValue({itemPathString}, {value})";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
