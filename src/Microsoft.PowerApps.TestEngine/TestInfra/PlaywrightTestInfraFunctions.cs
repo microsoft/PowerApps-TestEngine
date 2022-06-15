@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
-using System;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -189,7 +188,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task<T> RunJavascriptAsync<T>(string jsExpression)
         {
             ValidatePage();
-            Console.WriteLine(jsExpression);
+
             return await Page.EvaluateAsync<T>(jsExpression);
         }
     }
