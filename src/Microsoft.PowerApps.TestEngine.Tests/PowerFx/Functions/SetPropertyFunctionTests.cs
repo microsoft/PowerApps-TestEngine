@@ -36,11 +36,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
-        public void SetPropertyFunctionThrowsOnNonPowerAppsRecordValuetTest()
+        public void SetPropertyFunctionThrowsOnNonPowerAppsRecordValueTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, recordType);
-
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
 
             Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(someOtherRecordValue, StringValue.New("Test"), StringValue.New("10")));
