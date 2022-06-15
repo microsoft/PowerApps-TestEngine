@@ -48,21 +48,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         private async Task SetProperty(RecordValue obj, StringValue propName, StringValue value)
         {
-            if (obj == null)
-            {
-                throw new ArgumentException(nameof(obj));
-            }
-
-            if (propName == null)
-            {
-                throw new ArgumentException(nameof(propName));
-            }
-
-            if (value == null)
-            {
-                throw new ArgumentException(nameof(value));
-            }
-
             var controlModel = (ControlRecordValue)obj; 
             var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
 
