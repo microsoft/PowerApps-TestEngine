@@ -41,45 +41,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 throw new ArgumentException(nameof(value));
             }
 
-            SetProperty(obj, propName, value);
+            SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
 
         private async Task SetProperty(RecordValue obj, StringValue propName, StringValue value)
         {
-
-            if (obj == null)
-            {
-                throw new ArgumentException(nameof(obj));
-            }
-
-            if (propName == null)
-            {
-                throw new ArgumentException(nameof(propName));
-            }
-
-            if (value == null)
-            {
-                throw new ArgumentException(nameof(value));
-            }
-
-            var controlModel = (ControlRecordValue)obj;
-
-            if (obj == null)
-            {
-                throw new ArgumentException(nameof(obj));
-            }
-
-            if (propName == null)
-            {
-                throw new ArgumentException(nameof(propName));
-            }
-
-            if (value == null)
-            {
-                throw new ArgumentException(nameof(value));
-            }
-
+            var controlModel = (ControlRecordValue)obj; 
             var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
 
             if (!result)
