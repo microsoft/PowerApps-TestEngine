@@ -42,7 +42,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, recordType);
 
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
-            StringValue paramName = "Text";
+            StringValue paramName = new StringValue("Test");
             StringValue paramValue = "10";
 
             Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(someOtherRecordValue, paramName, paramValue));
