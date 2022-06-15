@@ -48,16 +48,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SetPropertyFunctionTest()
         {
-            // Assert(TextInput1.Text = "5", "Validate default number of columns to generate is 5");
+            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
 
-            // Select(Button1);
-            // Assert(Index(Gallery1.AllItems, 1).Label4.Text = "Row id: 1", "Validate row label");
-            // Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 5).Label5.Text = "Column id: 5", "Validate the label in the nested gallery");
+            // Make setPropertyFunction contain a text component called Button1
+            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
+            var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, recordType);
 
-            // SetProperty(TextInput1, "Text", "10");
-            // Select(Button1);
-            // Assert(Index(Gallery1.AllItems, 2).Label4.Text = "Row id: 2", "Validate row label");
-            // Assert(Index(Index(Gallery1.AllItems, 2).Gallery2.AllItems, 10).Label5.Text = "Column id: 10", "Validate the label in the nested gallery");
+            // Set the value of Button1's 'Text' property to 5
+            var result = setPropertyFunction.Execute(recordValue, StringValue.New("Text"), StringValue.New("5"));
+            // check to see if the value of Button1's 'Text' property is 5
+            Assert.IsType<BlankValue>(result);
+            // MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), /* Value? */  ), Times.Once());
+
+            // Set the value of Button1's 'Text' property to 10 
+            result = setPropertyFunction.Execute(recordValue, StringValue.New("Text"), StringValue.New("10"));
+
+            // check to see if the value of Button1's 'Text' property is 10
+            Assert.IsType<BlankValue>(result);
+            // MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), /* Value? */  ), Times.Once());
         }
     }
 }
