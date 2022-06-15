@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, recordType);
-            Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(null));
+            Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(null, null, null));
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, recordType);
 
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
-            Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(someOtherRecordValue));
+            Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(someOtherRecordValue, "Text", "10"));
         }
 
         [Fact]
