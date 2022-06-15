@@ -48,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SetPropertyFunctionTest()
         {
-            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), StringValue)).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
 
             // Make setPropertyFunction contain a text component called Button1
             var recordType = new RecordType().Add("Text", FormulaType.String);
