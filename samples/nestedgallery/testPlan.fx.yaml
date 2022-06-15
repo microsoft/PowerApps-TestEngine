@@ -5,7 +5,19 @@ test:
   appLogicalName: new_nestedgallery_a43df
 
   testSteps: |
-    = SetProperty(TextInput1, "Text", "10");
+    = Screenshot("nestedgallery_loaded.png");
+      Assert(TextInput1.Text = "5", "Validate default number of columns to generate is 5");
+      // Generate 1 row
+      Select(Button1);
+      // Validate that the row was generated with some data
+      Assert(Index(Gallery1.AllItems, 1).Label4.Text = "Row id: 1", "Validate row label");
+      Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 5).Label5.Text = "Column id: 5", "Validate the label in the nested gallery");
+      // Generate a 2nd row
+      SetProperty(TextInput1, "Text", "10");
+      Select(Button1);
+      Assert(Index(Gallery1.AllItems, 2).Label4.Text = "Row id: 2", "Validate row label");
+      Assert(Index(Index(Gallery1.AllItems, 2).Gallery2.AllItems, 10).Label5.Text = "Column id: 10", "Validate the label in the nested gallery");
+      Screenshot("nestedgallery_end.png");
 
 testSettings:
   recordVideo: true
