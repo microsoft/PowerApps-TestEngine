@@ -48,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SetPropertyFunctionTest()
         {
-            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), StringValue.New())).Returns(Task.FromResult(true));
 
             // Make setPropertyFunction contain a text component called Button1
             var recordType = new RecordType().Add("Text", FormulaType.String);
@@ -57,6 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Set the value of Button1's 'Text' property to 5
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("Text"), StringValue.New("5"));
+
             // check to see if the value of Button1's 'Text' property is 5
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), StringValue.New("5")), Times.Once());
