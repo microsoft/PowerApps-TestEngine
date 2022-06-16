@@ -12,9 +12,10 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.Extensions.Logging.Console;
 using PowerAppsTestEngine;
 
-using var serviceProvider = new ServiceCollection()
+var serviceProvider = new ServiceCollection()
     .AddLogging(loggingBuilder =>
         {
             loggingBuilder
@@ -37,8 +38,6 @@ using var serviceProvider = new ServiceCollection()
     .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
     .AddSingleton<TestEngine>()
     .BuildServiceProvider();
-
-
 
 var switchMappings = new Dictionary<string, string>()
 {
