@@ -265,7 +265,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var wrongRecordType = new RecordType().Add("Foo", FormulaType.String);
             var button1 = new ControlRecordValue(wrongRecordType, MockPowerAppFunctions.Object, "Button1");
 
-            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
             var powerFxExpression = "SetProperty(Button1, \"Text\", \"10\")";
