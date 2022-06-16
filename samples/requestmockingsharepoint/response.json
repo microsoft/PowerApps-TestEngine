@@ -1,88 +1,12 @@
 {
     "value": [
         {
-            "@odata.etag": "\"3\"",
-            "ItemInternalId": "2",
-            "ID": 2,
-            "Title": "MockChocolate",
-            "Modified": "2022-06-13T17:35:18Z",
-            "Created": "2022-06-10T18:06:25Z",
-            "Author": {
-                "@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
-                "Claims": "i:0#.f|membership|admin@crm771175.onmicrosoft.com",
-                "DisplayName": "System Administrator",
-                "Email": "admin@CRM771175.OnMicrosoft.com",
-                "Picture": "https://crm771175.sharepoint.com/sites/SimpleApp/_layouts/15/UserPhoto.aspx?Size=L&AccountName=admin@CRM771175.OnMicrosoft.com",
-                "Department": null,
-                "JobTitle": null
-            },
-            "Author#Claims": "i:0#.f|membership|admin@crm771175.onmicrosoft.com",
-            "Editor": {
-                "@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
-                "Claims": "i:0#.f|membership|admin@crm771175.onmicrosoft.com",
-                "DisplayName": "System Administrator",
-                "Email": "admin@CRM771175.OnMicrosoft.com",
-                "Picture": "https://crm771175.sharepoint.com/sites/SimpleApp/_layouts/15/UserPhoto.aspx?Size=L&AccountName=admin@CRM771175.OnMicrosoft.com",
-                "Department": null,
-                "JobTitle": null
-            },
-            "Editor#Claims": "i:0#.f|membership|admin@crm771175.onmicrosoft.com",
-            "{Identifier}": "Lists%252fSimpleApp%252f2_.000",
-            "{IsFolder}": false,
-            "{Thumbnail}": {
-                "Large": null,
-                "Medium": null,
-                "Small": null
-            },
-            "{Link}": "https://crm771175.sharepoint.com/sites/SimpleApp/_layouts/15/listform.aspx?PageType=4&ListId=6e03a26b%2D9730%2D4752%2D93d0%2D469cc364f9e6&ID=2&ContentTypeID=0x0100B36CF030F240BC4F939E52FCFA5852BE",
-            "{Name}": "Chocolate",
-            "{FilenameWithExtension}": "Chocolate",
-            "{Path}": "Lists/SimpleApp/",
-            "{FullPath}": "Lists/SimpleApp/2_.000",
-            "{HasAttachments}": false,
-            "{VersionNumber}": "3.0"
+            "ID": 1,
+            "Title": "MockChocolate"
         },
         {
-            "@odata.etag": "\"3\"",
-            "ItemInternalId": "4",
-            "ID": 4,
-            "Title": "MockStrawberry",
-            "Modified": "2022-06-13T18:50:33Z",
-            "Created": "2022-06-13T15:55:31Z",
-            "Author": {
-                "@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
-                "Claims": "i:0#.f|membership|admin@crm771175.onmicrosoft.com",
-                "DisplayName": "System Administrator",
-                "Email": "admin@CRM771175.OnMicrosoft.com",
-                "Picture": "https://crm771175.sharepoint.com/sites/SimpleApp/_layouts/15/UserPhoto.aspx?Size=L&AccountName=admin@CRM771175.OnMicrosoft.com",
-                "Department": null,
-                "JobTitle": null
-            },
-            "Author#Claims": "i:0#.f|membership|admin@crm771175.onmicrosoft.com",
-            "Editor": {
-                "@odata.type": "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
-                "Claims": "i:0#.f|membership|admin@crm771175.onmicrosoft.com",
-                "DisplayName": "System Administrator",
-                "Email": "admin@CRM771175.OnMicrosoft.com",
-                "Picture": "https://crm771175.sharepoint.com/sites/SimpleApp/_layouts/15/UserPhoto.aspx?Size=L&AccountName=admin@CRM771175.OnMicrosoft.com",
-                "Department": null,
-                "JobTitle": null
-            },
-            "Editor#Claims": "i:0#.f|membership|admin@crm771175.onmicrosoft.com",
-            "{Identifier}": "Lists%252fSimpleApp%252f4_.000",
-            "{IsFolder}": false,
-            "{Thumbnail}": {
-                "Large": null,
-                "Medium": null,
-                "Small": null
-            },
-            "{Link}": "https://crm771175.sharepoint.com/sites/SimpleApp/_layouts/15/listform.aspx?PageType=4&ListId=6e03a26b%2D9730%2D4752%2D93d0%2D469cc364f9e6&ID=4&ContentTypeID=0x0100B36CF030F240BC4F939E52FCFA5852BE",
-            "{Name}": "Strawberry",
-            "{FilenameWithExtension}": "Strawberry",
-            "{Path}": "Lists/SimpleApp/",
-            "{FullPath}": "Lists/SimpleApp/4_.000",
-            "{HasAttachments}": false,
-            "{VersionNumber}": "3.0"
+            "ID": 2,
+            "Title": "MockStrawberry"
         }
     ]
 }
