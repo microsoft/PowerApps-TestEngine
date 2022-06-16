@@ -13,7 +13,7 @@ using Microsoft.PowerFx.Types;
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
     /// <summary>
-    /// This will allow you to set TextInput.Text
+    /// This will allow you to set properties for components
     /// </summary>
     public class SetPropertyFunction : ReflectionFunction
     {
