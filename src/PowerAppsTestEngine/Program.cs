@@ -14,28 +14,9 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
-using var serviceProvider = new ServiceCollection()
-    .AddLogging(loggingBuilder =>
-        {
-            loggingBuilder
-            .ClearProviders()
-            .AddConsole() // TODO: figure out why I can't have both console logging and the test logger at the same time.
-            .AddProvider(new TestLoggerProvider(new FileSystem()));
-        })
-    .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
-    .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
-    .AddScoped<IPowerFxEngine, PowerFxEngine>()
-    .AddScoped<IUserManager, UserManager>()
-    .AddSingleton<ITestState, TestState>()
-    .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
-    .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
-    .AddSingleton<ITestReporter, TestReporter>()
-    .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
-    .AddScoped<ISingleTestRunner, SingleTestRunner>()
-    .AddSingleton<IFileSystem, FileSystem>()
-    .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
-    .AddSingleton<TestEngine>()
-    .BuildServiceProvider();
+var serviceProvider = new ServiceCollection()
+                      .AddLogging()
+                      .BuildServiceProvider();
 
 var logger = serviceProvider.GetService<ILoggerFactory>()
             .CreateLogger<Program>();
