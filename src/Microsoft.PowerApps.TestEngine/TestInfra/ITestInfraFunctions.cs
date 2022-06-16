@@ -17,6 +17,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task SetupAsync();
 
         /// <summary>
+        /// Setup the network request mocking
+        /// </summary>
+        /// <returns>Task</returns>
+        public Task SetupNetworkRequestMockAsync();
+
+        /// <summary>
         /// Navigates to url specified
         /// </summary>
         /// <param name="url">Url to go to</param>
