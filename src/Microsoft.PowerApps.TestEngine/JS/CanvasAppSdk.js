@@ -59,7 +59,7 @@ function selectControl(itemPath) {
 }
 
 function setPropertyValueForControl(itemPath, value) {
-    var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, ${value})`;
+    var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, "${value}")`;
     return executePublishedAppScript(script);
 }
 
