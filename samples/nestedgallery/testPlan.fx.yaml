@@ -11,11 +11,12 @@ test:
       Select(Button1);
       // Validate that the row was generated with some data
       Assert(Index(Gallery1.AllItems, 1).Label4.Text = "Row id: 1", "Validate row label");
-      Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 2).Label5.Text = "Column id: 2", "Validate the label in the nested gallery");
+      Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 5).Label5.Text = "Column id: 5", "Validate the label in the nested gallery");
       // Generate a 2nd row
+      SetProperty(TextInput1, "Text", "10");
       Select(Button1);
       Assert(Index(Gallery1.AllItems, 2).Label4.Text = "Row id: 2", "Validate row label");
-      Assert(Index(Index(Gallery1.AllItems, 2).Gallery2.AllItems, 4).Label5.Text = "Column id: 4", "Validate the label in the nested gallery");
+      Assert(Index(Index(Gallery1.AllItems, 2).Gallery2.AllItems, 10).Label5.Text = "Column id: 10", "Validate the label in the nested gallery");
       // Ensure that selected data is null
       Assert(IsBlank(Label3.Text), "Validate that the selected row is empty");
       Assert(IsBlank(Label8.Text), "Validate that the selected column is empty");
