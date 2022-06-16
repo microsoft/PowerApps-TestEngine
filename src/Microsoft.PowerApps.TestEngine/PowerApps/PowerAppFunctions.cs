@@ -34,7 +34,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
             ValidateItemPath(itemPath, true);
-            // TODO: handle nested galleries and components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var expression = $"getPropertyValue({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
@@ -124,7 +123,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                         TypeMapping.AddMapping(control.Name, controlType);
 
                         var controlValue = new ControlRecordValue(controlType, this, control.Name);
-                        controlDictionary.Add(control.Name, controlValue);
+
+                        if (controlDictionary.ContainsKey(control.Name))
+                        {
+                            // Components get declared twice at the moment so prevent it from throwing.
+                            _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name} already added");
+                        }
+                        else
+                        {
+                            controlDictionary.Add(control.Name, controlValue);
+                        }
                     }
                 }
             }
@@ -140,9 +148,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         public async Task<bool> SelectControlAsync(ItemPath itemPath)
         {
             ValidateItemPath(itemPath, false);
-            // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var expression = $"select({itemPathString})";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value)
+        {
+            ValidateItemPath(itemPath, false);
+            // TODO: handle components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
