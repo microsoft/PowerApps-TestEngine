@@ -79,12 +79,21 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                 result = table;
                 return true;
             }
-            else if (string.IsNullOrEmpty(_name))
+            else if (fieldType is RecordType)
             {
-                // We reach here if we are referencing a child item in a Gallery. Eg. Index(Gallery1.AllItems).Label1 (fieldName = Label1)
                 var recordType = fieldType as RecordType;
-                result = new ControlRecordValue(recordType, _powerAppFunctions, fieldName, _parentItemPath);
-                return true;
+                if (string.IsNullOrEmpty(_name))
+                {
+                    // We reach here if we are referencing a child item in a Gallery. Eg. Index(Gallery1.AllItems).Label1 (fieldName = Label1)
+                    result = new ControlRecordValue(recordType, _powerAppFunctions, fieldName, _parentItemPath);
+                    return true;
+                }
+                else
+                {
+                    // We reach here if we are referencing a child item in a component. Eg. Component1.Label1 (fieldName = Label1)
+                    result = new ControlRecordValue(recordType, _powerAppFunctions, fieldName, GetItemPath());
+                    return true;
+                }
             }
             else
             {
@@ -96,6 +105,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 
                 if (jsPropertyValueModel != null)
                 {
+                    if (fieldType is NumberType)
+                    {
+                        result = NumberValue.New(double.Parse(jsPropertyValueModel.PropertyValue));
+                        return true;
+                    }
                     result = New(jsPropertyValueModel.PropertyValue);
                     return true;
                 }
