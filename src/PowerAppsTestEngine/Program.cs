@@ -19,8 +19,7 @@ using var serviceProvider = new ServiceCollection()
         {
             loggingBuilder
             .ClearProviders()
-            .AddConsole() // TODO: figure out why I can't have both console logging and the test logger at the same time.
-            .AddProvider(new TestLoggerProvider(new FileSystem()));
+            .AddConsole();
         })
     .BuildServiceProvider();
 
