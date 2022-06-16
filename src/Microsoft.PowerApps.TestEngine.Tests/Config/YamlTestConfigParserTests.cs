@@ -22,6 +22,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
   description: Verifies that counter increments when the button is clicked
   persona: User1
   appLogicalName: new_buttonclicker_0a877
+  networkRequestMocks:
+    - requestURL: https://unitedstates-002.azure-apim.net/invoke
+      method: POST
+      headers:
+        x-ms-request-method: PATCH
+        x-ms-request-url: /items/4
+      requestBodyFile: /myFakePayload.json
+      responseDataFile: /myFakeBing.json
 
   testSteps: |
     = Screenshot(""buttonclicker_loaded.png"");
@@ -53,6 +61,12 @@ environmentVariables:
             Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.Test?.Description);
             Assert.Equal("User1", testPlan.Test?.Persona);
             Assert.Equal("new_buttonclicker_0a877", testPlan.Test?.AppLogicalName);
+            Assert.Equal("https://unitedstates-002.azure-apim.net/invoke", testPlan.Test?.NetworkRequestMocks?[0].RequestURL);
+            Assert.Equal("POST", testPlan.Test?.NetworkRequestMocks?[0].Method);
+            Assert.Equal("PATCH", testPlan.Test?.NetworkRequestMocks?[0].Headers?["x-ms-request-method"]);
+            Assert.Equal("/items/4", testPlan.Test?.NetworkRequestMocks?[0].Headers?["x-ms-request-url"]);
+            Assert.Equal("/myFakePayload.json", testPlan.Test?.NetworkRequestMocks?[0].RequestBodyFile);
+            Assert.Equal("/myFakeBing.json", testPlan.Test?.NetworkRequestMocks?[0].ResponseDataFile);
             Assert.False(string.IsNullOrEmpty(testPlan.Test?.TestSteps));
             Assert.True(testPlan.TestSettings?.RecordVideo);
             Assert.Equal(2, testPlan.TestSettings?.BrowserConfigurations?.Count);
