@@ -12,16 +12,33 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.Extensions.Logging.Console;
 using PowerAppsTestEngine;
+
+Console.WriteLine("TEST0");
+Console.Out.WriteLine("TEST1");
 
 var serviceProvider = new ServiceCollection()
     .AddLogging(loggingBuilder =>
         {
-            loggingBuilder.AddConsole();
-        }).BuildServiceProvider();
-
-var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+            loggingBuilder
+            .ClearProviders()
+            .AddConsole() // TODO: figure out why I can't have both console logging and the test logger at the same time.
+            .AddProvider(new TestLoggerProvider(new FileSystem()));
+        })
+    .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
+    .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
+    .AddScoped<IPowerFxEngine, PowerFxEngine>()
+    .AddScoped<IUserManager, UserManager>()
+    .AddSingleton<ITestState, TestState>()
+    .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
+    .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
+    .AddSingleton<ITestReporter, TestReporter>()
+    .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
+    .AddScoped<ISingleTestRunner, SingleTestRunner>()
+    .AddSingleton<IFileSystem, FileSystem>()
+    .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
+    .AddSingleton<TestEngine>()
+    .BuildServiceProvider();
 
 var switchMappings = new Dictionary<string, string>()
 {
@@ -41,7 +58,7 @@ var inputOptions = new ConfigurationBuilder()
 
 if (inputOptions == null)
 {
-    logger.LogInformation("Input options are null");
+    Console.Out.WriteLine("Input options are null");
     return;
 } else
 {
@@ -49,5 +66,5 @@ if (inputOptions == null)
 
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
 
-    logger.LogInformation($"Test results can be found here: {testResult}");
+    Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }
