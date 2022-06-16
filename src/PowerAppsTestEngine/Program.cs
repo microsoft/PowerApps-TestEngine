@@ -14,5 +14,5 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
-Console.WriteLine("TEST0");
-Console.Out.WriteLine("TEST1");
+Console.WriteLine("TEST0".Trim());
+Console.Out.WriteLine("TEST1".Trim());
