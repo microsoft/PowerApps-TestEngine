@@ -1,0 +1,28 @@
+test:
+  name: Simple App
+  description: Verifies that you can mock network requests
+  persona: User1
+  appLogicalName: new_sharepointapp_29d14
+  networkRequestMocks:
+    - requestURL: https://unitedstates-002.azure-apim.net/invoke
+      method: POST
+      headers:
+        x-ms-request-method: GET
+      responseDataFile: ../../samples/requestmockingsharepoint/response.json
+
+  testSteps: |
+    = Screenshot("sharepointapp_loaded.png");
+      Assert(Index(BrowseGallery1.AllItems, 1).Title1.Text = "MockChocolate", "Validate the title in the 1st row of the gallery is from the mock");
+      Assert(Index(BrowseGallery1.AllItems, 2).Title1.Text = "MockStrawberry", "Validate the title in the 2nd row of the gallery is from the mock");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+    - browser: Firefox
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

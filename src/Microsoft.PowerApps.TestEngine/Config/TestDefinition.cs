@@ -34,6 +34,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public string AppLogicalName { get; set; } = "";
 
         /// <summary>
+        /// Gets or sets the network requests to be mocked.
+        /// </summary>
+        public List<NetworkRequestMock>? NetworkRequestMocks { get; set; }
+        /// <summary>
         /// Gets or sets the the Power FX functions describing the steps needed to perform the test.
         /// </summary>
         public string TestSteps { get; set; } = "";
