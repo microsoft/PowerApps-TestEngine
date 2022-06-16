@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 function parseControl(controlName, controlObject) {
+    var propertiesList = [];
     var properties = Object.keys(controlObject.modelProperties);
     var controls = [];
     if (controlObject.controlWidget.replicatedContextManager) {
@@ -23,11 +24,11 @@ function parseControl(controlName, controlObject) {
                 var componentChildControlObject = componentChildrenControlContext[childControlName];
                 var childControlsList = parseControl(childControlName, componentChildControlObject);
                 controls = controls.concat(childControlsList);
+                propertiesList.push({ propertyName: childControlName, propertyType: childControlName });
             }
         });
     }
 
-    var propertiesList = [];
     properties.forEach((propertyName) => {
         var propertyType = controlObject.controlWidget.controlProperties[propertyName].propertyType;
 
@@ -108,21 +109,6 @@ function getPropertyValueFromControl(itemPath) {
 
     var propertyValue = bindingContext.controlContexts[itemPath.controlName].modelProperties[itemPath.propertyName].getValue();
 
-
-    if (itemPath.childControl) {
-        // Components
-
-        // TODO: handle components
-        /*
-        if (parentControlName) {
-            propertyValue = (AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.getPropertyValue(propertyName, AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName)));
-        }*/
-        throw "Not implemented";
-    }
-
-    propertyValue = bindingContext.controlContexts[itemPath.controlName].modelProperties[itemPath.propertyName].getValue();
-
-
     return JSON.stringify({
         propertyValue: propertyValue
     });
@@ -157,14 +143,16 @@ function selectControl(itemPath) {
                 screenId)
         }        
     }
-        /*
-        if (parentControlName) {
-            var bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName);
-            var buttonWidget = bindingContext.controlContexts[controlName].controlWidget;
-            var controlContext = buttonWidget.getOnSelectControlContext(bindingContext);
-            buttonWidget.select(controlContext);
-            return true;
-        } */
+
+    if (itemPath.parentControl) {
+        // Component
+        var bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(itemPath.parentControl.controlName);
+        var buttonWidget = bindingContext.controlContexts[itemPath.controlName].controlWidget;
+        var controlContext = buttonWidget.getOnSelectControlContext(bindingContext);
+        buttonWidget.select(controlContext);
+        return true;
+    }
+
     return AppMagic.Functions.select(null,
         AppMagic.Controls.GlobalContextManager.bindingContext,
         AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName),
