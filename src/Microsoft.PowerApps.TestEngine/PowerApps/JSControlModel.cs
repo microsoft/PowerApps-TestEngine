@@ -17,15 +17,5 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Gets or sets the properties of the control
         /// </summary>
         public JSPropertyModel[]? Properties { get; set; }
-
-        /// <summary>
-        /// Gets or sets children controls
-        /// </summary>
-        public JSControlModel[]? ChildrenControls { get; set; }
-
-        /// <summary>
-        /// Gets or sets whether this control is of an array type
-        /// </summary>
-        public bool IsArray { get; set; }
     }
 }

@@ -21,10 +21,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         [JsonProperty("index")]
         public int? Index { get; set; }
         /// <summary>
-        /// Gets or sets the child control to access. Optional. Used in any nested control scenarios
+        /// Gets or sets the parent control to access. Optional. Used in any nested control scenarios
         /// </summary>
-        [JsonProperty("childControl")]
-        public ItemPath? ChildControl { get; set; }
+        [JsonProperty("parentControl")]
+        public ItemPath? ParentControl { get; set; }
         /// <summary>
         /// Gets or sets the property name of a control. Optional.
         /// </summary>
