@@ -24,8 +24,11 @@ This is used to define one test.
 | requestBodyFile | No | This is a text file with the request body. All text in this file will be read as the request body |
 
 For optional properties, if no value is specified, the routing applies to all. For example, if Method is null, we send back the mock response whatever the method is as long as the other properties all match.
+<<<<<<< HEAD
 
 For Sharepoint/Dataverse/Connector apps, requestURL and Method can be the same for all requests. `x-ms-request-method` and `x-ms-request-url` in  headers may need to be configured in that case to identify different requests.
+=======
+>>>>>>> 99033f1 (Add document and more unit tests)
 ### TestSteps
 
 - This can use any existing [Power FX](https://docs.microsoft.com/en-us/power-platform/power-fx/overview) functions or [specific test functions](../PowerFX/README.md) defined by this framework.
