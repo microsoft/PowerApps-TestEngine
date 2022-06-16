@@ -19,7 +19,6 @@ testSettings:
   recordVideo: true
   browserConfigurations:
     - browser: Chromium
-    - browser: Firefox
 
 environmentVariables:
   users:
