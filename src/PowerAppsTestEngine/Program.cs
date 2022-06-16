@@ -18,26 +18,10 @@ using PowerAppsTestEngine;
 var serviceProvider = new ServiceCollection()
     .AddLogging(loggingBuilder =>
         {
-            loggingBuilder
-            .ClearProviders()
-            .AddConsole()
-            .AddDebug()// TODO: figure out why I can't have both console logging and the test logger at the same time.
-            .AddProvider(new TestLoggerProvider(new FileSystem()));
-        })
-    .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
-    .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
-    .AddScoped<IPowerFxEngine, PowerFxEngine>()
-    .AddScoped<IUserManager, UserManager>()
-    .AddSingleton<ITestState, TestState>()
-    .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
-    .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
-    .AddSingleton<ITestReporter, TestReporter>()
-    .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
-    .AddScoped<ISingleTestRunner, SingleTestRunner>()
-    .AddSingleton<IFileSystem, FileSystem>()
-    .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
-    .AddSingleton<TestEngine>()
-    .BuildServiceProvider();
+            loggingBuilder.AddConsole();
+        }).BuildServiceProvider();
+
+var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
 var switchMappings = new Dictionary<string, string>()
 {
@@ -57,7 +41,7 @@ var inputOptions = new ConfigurationBuilder()
 
 if (inputOptions == null)
 {
-    Console.Out.WriteLine("Input options are null");
+    logger.LogInformation("Input options are null");
     return;
 } else
 {
@@ -65,5 +49,5 @@ if (inputOptions == null)
 
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
 
-    Console.Out.WriteLine($"Test results can be found here: {testResult}");
+    logger.LogInformation($"Test results can be found here: {testResult}");
 }
