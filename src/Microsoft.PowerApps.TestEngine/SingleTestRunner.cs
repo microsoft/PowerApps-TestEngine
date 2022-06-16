@@ -86,6 +86,9 @@ namespace Microsoft.PowerApps.TestEngine
                 // Log in user
                 await _userManager.LoginAsUserAsync();
 
+                // Set up network request mocking if any
+                await _testInfraFunctions.SetupNetworkRequestMockAsync();
+
                 // Navigate to app
                 await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateAppUrl());
 
