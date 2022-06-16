@@ -64,6 +64,4 @@ if (inputOptions == null)
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
-
-
 }
