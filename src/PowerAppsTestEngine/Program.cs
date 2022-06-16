@@ -19,8 +19,8 @@ var serviceProvider = new ServiceCollection()
         {
             loggingBuilder
             .ClearProviders()
-            .AddConsole() // TODO: figure out why I can't have both console logging and the test logger at the same time.
-            .AddProvider(new TestLoggerProvider(new FileSystem()));
+            .AddProvider(new TestLoggerProvider(new FileSystem()))
+            .AddConsole(); // TODO: figure out why I can't have both console logging and the test logger at the same time.
         })
     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
     .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
@@ -64,8 +64,4 @@ if (inputOptions == null)
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
-
-    Console.WriteLine("TEST0");
-    Console.Out.WriteLine("TEST1");
-
 }
