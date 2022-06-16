@@ -68,6 +68,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // check to see if the value of Button1's 'Text' property is 10
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<StringValue>(stringVal => stringVal.Value == "10")), Times.Once());
+
+            // Set the value of Button1's 'Text' property to 'abc'
+            result = setPropertyFunction.Execute(recordValue, StringValue.New("Text"), StringValue.New("abc"));
+
+            // check to see if the value of Button1's 'Text' property is abc
+            Assert.IsType<BlankValue>(result);
+            MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<StringValue>(stringVal => stringVal.Value == "abc")), Times.Once());
         }
     }
 }
