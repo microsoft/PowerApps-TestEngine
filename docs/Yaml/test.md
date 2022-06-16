@@ -10,8 +10,20 @@ This is used to define one test.
 | description | No | Additional information describe what the test does |
 | persona | Yes | This is the user that will be logged in to perform the test. This must match a persona listed in the [Users](./Users.md) section | 
 | appLogicalName | Yes | This is the logical name of the app that is to be launched. It can be obtained from the solution. For canvas apps, you need to add it to a solution to obtain it |
+| networkRequestMocks | No | Defines network request mocks needed for the test |
 | testSteps | Yes | A set of Power FX functions describing the steps needed to perform the test. 
 
+### NetworkRequestMocks
+
+| Property | Required | Description |
+| -- | -- | -- |
+| requestURL | Yes | This is the request URL that will get mock response |
+| responseDataFile | Yes | This is a text file with the mock response content. All text in this file will be read as the response |
+| Method | No | This is the request's method (GET, POST, etc.) |
+| Headers | No | This is a list of header fields in the request in the format of [fieldName : fieldValue] |
+| requestBodyFile | No | This is a text file with the request body. All text in this file will be read as the request body |
+
+For optional properties, if no value is specified, the routing applies to all. For example, if Method is null, we send back the mock response whatever the method is as long as the other properties all match.
 ### TestSteps
 
 - This can use any existing [Power FX](https://docs.microsoft.com/en-us/power-platform/power-fx/overview) functions or [specific test functions](../PowerFX/README.md) defined by this framework.
