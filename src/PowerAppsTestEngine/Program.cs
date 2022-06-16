@@ -38,7 +38,7 @@ using var serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 
 var logger = serviceProvider.GetService<ILoggerFactory>()
-    .CreateLogger();
+            .CreateLogger<Program>();
 
 var switchMappings = new Dictionary<string, string>()
 {
