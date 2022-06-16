@@ -82,6 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             }
 
             MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.CompletedTask);
 
@@ -112,6 +113,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Verify(x => x.SetupAsync(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.SetupAsync(), Times.Once());
             MockUserManager.Verify(x => x.LoginAsUserAsync(), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(), Times.Once());
             MockUrlMapper.Verify(x => x.GenerateAppUrl(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl), Times.Once());
             MockTestState.Verify(x => x.GetTestDefinition(), Times.Once());
@@ -236,6 +238,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockUserManager.Setup(x => x.LoginAsUserAsync()).Throws(exceptionToThrow);
+            });
+        }
+
+        [Fact]
+        public async Task SetupNetworkRequestMockThrowsTest()
+        {
+            await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
+            {
+                MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Throws(exceptionToThrow);
             });
         }
 
