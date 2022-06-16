@@ -13,7 +13,7 @@ using Microsoft.PowerFx.Types;
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
     /// <summary>
-    /// This will allow you to set properties for components
+    /// This will allow you to set properties for controls
     /// </summary>
     public class SetPropertyFunction : ReflectionFunction
     {
