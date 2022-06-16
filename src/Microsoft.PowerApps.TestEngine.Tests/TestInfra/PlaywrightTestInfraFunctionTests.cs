@@ -232,6 +232,27 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         }
 
         [Fact]
+        public async Task SetupNetworkRequestMockAsyncNullMockSkipTest()
+        {
+
+            var testDefinition = new TestDefinition()
+            {
+                Name = "Test1",
+                Description = "First test",
+                AppLogicalName = "logicalAppName1",
+                Persona = "User1",
+                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+            };
+
+            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, browserContext: MockBrowserContext.Object);
+            await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync();
+            MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Never);
+        }
+
+        [Fact]
         public async Task SetupNetworkRequestMockAsyncThrowOnNullRequestURLTest()
         {
             var mock = new NetworkRequestMock()
@@ -263,8 +284,36 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         {
             var mock = new NetworkRequestMock()
             {
-                RequestURL = "",
+                RequestURL = "https://make.powerapps.com",
                 ResponseDataFile = "response.json"
+            };
+
+            var testDefinition = new TestDefinition()
+            {
+                Name = "Test1",
+                Description = "First test",
+                AppLogicalName = "logicalAppName1",
+                Persona = "User1",
+                NetworkRequestMocks = new List<NetworkRequestMock>{mock},
+                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+            };
+
+            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
+            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, browserContext: MockBrowserContext.Object);
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+        }
+
+        [Fact]
+        public async Task SetupNetworkRequestMockAsyncThrowOnEmptyFilePathTest()
+        {
+            var mock = new NetworkRequestMock()
+            {
+                RequestURL = "https://make.powerapps.com",
+                ResponseDataFile = ""
             };
 
             var testDefinition = new TestDefinition()
