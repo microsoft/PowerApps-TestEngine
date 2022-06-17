@@ -11,6 +11,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
     public interface IPowerFxEngine
     {
         /// <summary>
+        /// Set up the Power FX engine
+        /// </summary>
+        public void Setup();
+
+        /// <summary>
         /// Executes a list of Power FX functions
         /// </summary>
         /// <param name="testSteps">Test steps</param>
@@ -18,9 +23,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public FormulaValue Execute(string testSteps);
 
         /// <summary>
-        /// Sets up the Power FX engine
+        /// Update the Power FX object model
         /// </summary>
         /// <returns>A task</returns>
-        public Task SetupAsync();
+        public Task UpdatePowerFxModelAsync();
     }
 }

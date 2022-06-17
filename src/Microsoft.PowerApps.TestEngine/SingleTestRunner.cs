@@ -90,7 +90,8 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateAppUrl());
 
                 // Set up Power Fx
-                await _powerFxEngine.SetupAsync();
+                _powerFxEngine.Setup();
+                await _powerFxEngine.UpdatePowerFxModelAsync();
 
                 // Run test
                 _powerFxEngine.Execute(_testState.GetTestDefinition().TestSteps);

@@ -30,8 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SetPropertyFunctionThrowsOnNullObjectTest()
         {
-            var recordType = new RecordType().Add("Text", FormulaType.String);
-            var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, recordType);
+            var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object);
             Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(null, null, null));
         }
 
@@ -39,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void SetPropertyFunctionThrowsOnNonPowerAppsRecordValueTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, recordType);
+            var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object);
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
 
             Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(someOtherRecordValue, StringValue.New("Test"), StringValue.New("10")));
@@ -53,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Make setPropertyFunction contain a text component called Button1
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
-            var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, recordType);
+            var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object);
 
             // Set the value of Button1's 'Text' property to 5
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("Text"), StringValue.New("5"));

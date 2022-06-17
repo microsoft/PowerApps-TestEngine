@@ -71,7 +71,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
             MockFileSystem.Setup(x => x.GetFiles(It.IsAny<string>())).Returns(additionalFiles);
 
-            MockPowerFxEngine.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
+            MockPowerFxEngine.Setup(x => x.Setup());
+            MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Returns(Task.CompletedTask);
             if (powerFxTestSuccess)
             {
                 MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Returns(FormulaValue.NewBlank());
@@ -109,7 +110,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private void VerifySuccessfulTestExecution(string testResultDirectory, string appUrl)
         {
             MockFileSystem.Verify(x => x.CreateDirectory(testResultDirectory), Times.Once());
-            MockPowerFxEngine.Verify(x => x.SetupAsync(), Times.Once());
+            MockPowerFxEngine.Verify(x => x.Setup(), Times.Once());
+            MockPowerFxEngine.Verify(x => x.UpdatePowerFxModelAsync(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.SetupAsync(), Times.Once());
             MockUserManager.Verify(x => x.LoginAsUserAsync(), Times.Once());
             MockUrlMapper.Verify(x => x.GenerateAppUrl(), Times.Once());
@@ -213,11 +215,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         [Fact]
-        public async Task PowerFxSetupAsyncThrowsTest()
+        public async Task PowerFxSetupThrowsTest()
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockPowerFxEngine.Setup(x => x.SetupAsync()).Throws(exceptionToThrow);
+                MockPowerFxEngine.Setup(x => x.Setup()).Throws(exceptionToThrow);
+            });
+        }
+
+        [Fact]
+        public async Task PowerFxUpdatePowerFxModelAsyncThrowsTest()
+        {
+            await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) => {
+                MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Throws(exceptionToThrow);
             });
         }
 
