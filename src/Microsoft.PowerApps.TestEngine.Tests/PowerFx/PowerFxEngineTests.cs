@@ -155,7 +155,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
-            LoggingTestHelper.VerifyLogging(MockLogger, $"Executing {powerFxExpression}", LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, (message) => message.Contains("Syntax check failed:"), LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -165,7 +165,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
-            LoggingTestHelper.VerifyLogging(MockLogger, $"Executing {powerFxExpression}", LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, (message) => message.Contains("Syntax check failed:"), LogLevel.Error, Times.Once());
         }
 
         [Fact]
