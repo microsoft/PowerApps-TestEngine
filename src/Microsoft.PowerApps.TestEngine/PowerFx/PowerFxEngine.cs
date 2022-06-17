@@ -68,26 +68,34 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 testSteps = testSteps.Remove(0, 1);
             }
 
-            Logger.LogInformation($"Executing {testSteps}");
-
-            try
+            var goStepByStep = false;
+            // Check if the syntax is correct
+            var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+            if (!checkResult.IsSuccess)
             {
+                // If it isn't, we have to go step by step as the object model isn't fully loaded
+                goStepByStep = true;
+                Logger.LogError($"Syntax check failed: {JsonConvert.SerializeObject(checkResult.Errors)}. Switching to step by step");
+            }
+
+            if (goStepByStep)
+            {
+                // TODO: This is a temporary hack to allow for multiple screens
+                // Will need to come up with a better solution
+                var splitSteps = testSteps.Split(';');
+                FormulaValue result = FormulaValue.NewBlank();
+                foreach (var step in splitSteps)
+                {
+                    Logger.LogInformation($"Executing {step}");
+                    result = Engine.Eval(step);
+                }
+                return result;
+            }
+            else
+            {
+                Logger.LogInformation($"Executing {testSteps}");
                 return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
             }
-            catch(Exception e)
-            {
-                Logger.LogError($"Exception caught running all steps together: {e.ToString()}. Switching to step by step");
-            }
-
-            // TODO: This is a temporary hack to allow for multiple screens
-            // Will need to come up with a better solution
-            var splitSteps = testSteps.Split(';');
-            FormulaValue result = FormulaValue.NewBlank();
-            foreach(var step in splitSteps)
-            {
-                result = Engine.Eval(step);
-            }
-            return result;
         }
 
         public async Task UpdatePowerFxModelAsync()
