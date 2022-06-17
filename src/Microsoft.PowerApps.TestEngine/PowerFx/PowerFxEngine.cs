@@ -43,6 +43,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             _fileSystem = fileSystem;
         }
 
+        public void Setup()
+        {
+            var powerFxConfig = new PowerFxConfig();
+            powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
+            powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout()));
+            powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions));
+            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
+            powerFxConfig.AddFunction(new AssertFunction(Logger));
+            Engine = new RecalcEngine(powerFxConfig);
+        }
+
         public FormulaValue Execute(string testSteps)
         {
             if (Engine == null)
@@ -58,24 +69,36 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             Logger.LogInformation($"Executing {testSteps}");
-            return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
-        }
 
-        public async Task SetupAsync()
-        {
-            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            var powerFxConfig = new PowerFxConfig();
-
-            foreach (var control in controlRecordValues)
+            try
             {
-                powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, control.Value.Type));
-                powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout(), control.Value.Type));
-                powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions, control.Value.Type));
+                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+            }
+            catch(Exception e)
+            {
+                Logger.LogError($"Exception caught running all steps together: {e.ToString()}. Switching to step by step");
             }
 
-            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
-            powerFxConfig.AddFunction(new AssertFunction(Logger));
-            Engine = new RecalcEngine(powerFxConfig);
+            // TODO: This is a temporary hack to allow for multiple screens
+            // Will need to come up with a better solution
+            var splitSteps = testSteps.Split(';');
+            FormulaValue result = FormulaValue.NewBlank();
+            foreach(var step in splitSteps)
+            {
+                result = Engine.Eval(step);
+            }
+            return result;
+        }
+
+        public async Task UpdatePowerFxModelAsync()
+        {
+            if (Engine == null)
+            {
+                Logger.LogError("Engine is null, make sure to call Setup first");
+                throw new InvalidOperationException("Engine is null, make sure to call Setup first");
+            }
+
+            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
             foreach (var control in controlRecordValues)
             {
                 Engine.UpdateVariable(control.Key, control.Value);

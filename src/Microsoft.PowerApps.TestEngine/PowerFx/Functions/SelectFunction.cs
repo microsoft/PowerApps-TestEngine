@@ -15,10 +15,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     public class SelectFunction : ReflectionFunction
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
+        private readonly Func<Task> _updateModelFunction;
 
-        public SelectFunction(IPowerAppFunctions powerAppFunctions, RecordType recordType) : base("Select", FormulaType.Blank, recordType)
+        public SelectFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType())
         {
             _powerAppFunctions = powerAppFunctions;
+            _updateModelFunction = updateModelFunction;
         }
 
         public BlankValue Execute(RecordValue obj)
@@ -42,6 +44,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 throw new Exception($"Unable to select control {powerAppControlModel.Name}");
             }
+
+            await _updateModelFunction();
         }
     }
 }

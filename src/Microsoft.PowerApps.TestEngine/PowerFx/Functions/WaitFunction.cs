@@ -16,7 +16,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     public class WaitFunction : ReflectionFunction
     {
         private readonly int _timeout;
-        public WaitFunction(int timeout, RecordType recordType) : base("Wait", FormulaType.Blank, recordType, FormulaType.String, FormulaType.String)
+        public WaitFunction(int timeout) : base("Wait", FormulaType.Blank, new RecordType(), FormulaType.String, FormulaType.String)
         {
             _timeout = timeout;
         }

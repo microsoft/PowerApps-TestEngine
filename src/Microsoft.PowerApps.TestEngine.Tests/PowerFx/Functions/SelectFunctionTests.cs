@@ -30,8 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectFunctionThrowsOnNullObjectTest()
         {
-            var recordType = new RecordType().Add("Text", FormulaType.String);
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, recordType);
+            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, () => Task.CompletedTask);
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(null));
         }
 
@@ -39,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void SelectFunctionThrowsOnNonPowerAppsRecordValuetTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, recordType);
+            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, () => Task.CompletedTask);
 
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(someOtherRecordValue));
@@ -53,10 +52,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
 
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, recordType);
+            var updaterFunctionCallCount = 0;
+            var updaterFunction = () => {
+                updaterFunctionCallCount++;
+                return Task.CompletedTask;
+            };
+            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, updaterFunction);
             var result = selectFunction.Execute(recordValue);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
+            Assert.Equal(1, updaterFunctionCallCount);
         }
 
         [Fact]
@@ -67,9 +72,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
 
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, recordType); 
+            var updaterFunctionCallCount = 0;
+            var updaterFunction = () => {
+                updaterFunctionCallCount++;
+                return Task.CompletedTask;
+            };
+
+            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, updaterFunction); 
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
+            Assert.Equal(0, updaterFunctionCallCount);
         }
     }
 }

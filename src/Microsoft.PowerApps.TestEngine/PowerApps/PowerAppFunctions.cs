@@ -107,23 +107,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 {
                     foreach (var control in jsObjectModel.Controls)
                     {
-                        var controlType = new RecordType();
-                        foreach (var property in control.Properties)
-                        {
-                            if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
-                            {
-                                controlType = controlType.Add(property.PropertyName, formulaType);
-                            }
-                            else
-                            {
-                                _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name}, Skipping property: {property.PropertyName}, with type: {property.PropertyType}");
-                            }
-                        }
-
-                        TypeMapping.AddMapping(control.Name, controlType);
-
-                        var controlValue = new ControlRecordValue(controlType, this, control.Name);
-
                         if (controlDictionary.ContainsKey(control.Name))
                         {
                             // Components get declared twice at the moment so prevent it from throwing.
@@ -131,6 +114,23 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                         }
                         else
                         {
+                            var controlType = new RecordType();
+                            foreach (var property in control.Properties)
+                            {
+                                if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
+                                {
+                                    controlType = controlType.Add(property.PropertyName, formulaType);
+                                }
+                                else
+                                {
+                                    _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name}, Skipping property: {property.PropertyName}, with type: {property.PropertyType}");
+                                }
+                            }
+
+                            TypeMapping.AddMapping(control.Name, controlType);
+
+                            var controlValue = new ControlRecordValue(controlType, this, control.Name);
+
                             controlDictionary.Add(control.Name, controlValue);
                         }
                     }
