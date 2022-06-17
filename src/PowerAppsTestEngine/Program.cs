@@ -19,8 +19,7 @@ var serviceProvider = new ServiceCollection()
         {
             loggingBuilder
             .ClearProviders()
-            .AddProvider(new TestLoggerProvider(new FileSystem()))
-            .AddConsole(); // TODO: figure out why I can't have both console logging and the test logger at the same time.
+            .AddProvider(new TestLoggerProvider(new FileSystem()));
         })
     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
     .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
