@@ -2,9 +2,9 @@
 // Licensed under the MIT license.
 
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Core.Public.Types;
-using Microsoft.PowerFx.Core.Public.Values;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
@@ -17,39 +17,35 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly Func<Task> _updateModelFunction;
 
-        public SelectFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, FormulaType.UntypedObject)
+        public SelectFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType())
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;
         }
 
-        public BlankValue Execute(UntypedObjectValue obj)
+        public BlankValue Execute(RecordValue obj)
         {
             SelectAsync(obj).Wait();
 
             return FormulaValue.NewBlank();
         }
 
-        private async Task SelectAsync(UntypedObjectValue obj)
+        private async Task SelectAsync(RecordValue obj)
         {
             if (obj == null)
             {
                 throw new ArgumentException(nameof(obj));
             }
 
-            IUntypedObject untypedVal = obj.Impl;
-
-            var powerAppControlModel = (PowerAppControlModel)untypedVal;
-            var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.CreateItemPath());
+            var powerAppControlModel = (ControlRecordValue)obj;
+            var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.GetItemPath());
 
             if (!result)
             {
                 throw new Exception($"Unable to select control {powerAppControlModel.Name}");
             }
 
-            // Because clicking a button has side effects, reload the object model
             await _updateModelFunction();
-
         }
     }
 }

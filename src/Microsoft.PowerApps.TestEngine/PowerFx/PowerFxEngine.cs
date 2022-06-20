@@ -4,13 +4,15 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core;
 using Microsoft.PowerFx.Core.Public;
-using Microsoft.PowerFx.Core.Public.Values;
+using Microsoft.PowerFx.Types;
+using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
 {
@@ -44,9 +46,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public void Setup()
         {
             var powerFxConfig = new PowerFxConfig();
-            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
+            powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
             powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout()));
-            powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, UpdatePowerFXModelAsync));
+            powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions));
+            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
             Engine = new RecalcEngine(powerFxConfig);
         }
@@ -66,10 +69,28 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             Logger.LogInformation($"Executing {testSteps}");
-            return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+
+            try
+            {
+                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+            }
+            catch(Exception e)
+            {
+                Logger.LogError($"Exception caught running all steps together: {e.ToString()}. Switching to step by step");
+            }
+
+            // TODO: This is a temporary hack to allow for multiple screens
+            // Will need to come up with a better solution
+            var splitSteps = testSteps.Split(';');
+            FormulaValue result = FormulaValue.NewBlank();
+            foreach(var step in splitSteps)
+            {
+                result = Engine.Eval(step);
+            }
+            return result;
         }
 
-        public async Task UpdatePowerFXModelAsync()
+        public async Task UpdatePowerFxModelAsync()
         {
             if (Engine == null)
             {
@@ -77,10 +98,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 throw new InvalidOperationException("Engine is null, make sure to call Setup first");
             }
 
-            var controlObjectModel = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            foreach (var control in controlObjectModel)
+            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
+            foreach (var control in controlRecordValues)
             {
-                Engine.UpdateVariable(control.Name, FormulaValue.New(control));
+                Engine.UpdateVariable(control.Key, control.Value);
             }
         }
     }

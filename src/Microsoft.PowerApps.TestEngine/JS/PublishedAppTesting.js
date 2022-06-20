@@ -2,19 +2,17 @@
 // Licensed under the MIT license.
 
 function parseControl(controlName, controlObject) {
+    var propertiesList = [];
     var properties = Object.keys(controlObject.modelProperties);
-    var childControls = [];
-    var itemCount = null;
-    var isArray = false;
+    var controls = [];
     if (controlObject.controlWidget.replicatedContextManager) {
         var childrenControlContext = controlObject.controlWidget.replicatedContextManager.authoringAreaBindingContext.controlContexts;
         var childControlNames = Object.keys(childrenControlContext);
         childControlNames.forEach((childControlName) => {
             var childControlObject = childrenControlContext[childControlName];
-            var childControlModel = parseControl(childControlName, childControlObject);
-            childControls.push(childControlModel);
+            var childControlsList = parseControl(childControlName, childControlObject);
+            controls = controls.concat(childControlsList);
         });
-        isArray = true;
     }
 
     var componentBindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(controlName);
@@ -24,54 +22,23 @@ function parseControl(controlName, controlObject) {
         componentChildrenControlNames.forEach((childControlName) => {
             if (childControlName !== controlName) {
                 var componentChildControlObject = componentChildrenControlContext[childControlName];
-                var childControlModel = parseControl(childControlName, componentChildControlObject);
-                childControls.push(childControlModel);
+                var childControlsList = parseControl(childControlName, componentChildControlObject);
+                controls = controls.concat(childControlsList);
+                propertiesList.push({ propertyName: childControlName, propertyType: childControlName });
             }
         });
     }
 
-    var propertiesList = [];
     properties.forEach((propertyName) => {
-        var shortPropertyType = controlObject.controlWidget.controlProperties[propertyName].propertyType;
-        // The property type should match types listed here: https://github.com/microsoft/Power-Fx/blob/main/src/libraries/Microsoft.PowerFx.Core/Public/Types/FormulaType.cs
-        var propertyType = "Unknown"; // Default to unknown if we don't know how to map it
-
-        switch (shortPropertyType) {
-            case (AppMagic.Schema.TypeString):
-                propertyType = "String";
-                break;
-            case (AppMagic.Schema.TypeBoolean):
-                propertyType = "Boolean";
-                break;
-            case (AppMagic.Schema.TypeNumber):
-                propertyType = "Number";
-                break;
-            case (AppMagic.Schema.TypeTime):
-                propertyType = "Time";
-                break;
-            case (AppMagic.Schema.TypeDate):
-                propertyType = "Date";
-                break;
-            case (AppMagic.Schema.TypeDateTime):
-                propertyType = "DateTime";
-                break;
-            case (AppMagic.Schema.TypeDateTimeNoTimeZone):
-                propertyType = "DateTimeNoTimeZone";
-                break;
-            case (AppMagic.Schema.TypeHyperlink):
-                propertyType = "Hyperlink";
-                break;
-            case (AppMagic.Schema.TypeGuid):
-                propertyType = "Guid";
-                break;
-        }
+        var propertyType = controlObject.controlWidget.controlProperties[propertyName].propertyType;
 
         propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
     })
 
-    var controlModel = { name: controlName, properties: propertiesList, childrenControls: childControls, itemCount: itemCount, isArray: isArray };
+    var control = { name: controlName, properties: propertiesList };
+    controls.push(control);
 
-    return controlModel;
+    return controls;
 }
 
 function buildControlObjectModel() {
@@ -81,28 +48,25 @@ function buildControlObjectModel() {
     var controlNames = Object.keys(controlContext);
     controlNames.forEach((controlName) => {
         var control = controlContext[controlName];
-        var controlModel = parseControl(controlName, control);
-        controls.push(controlModel);
+        var controlList = parseControl(controlName, control);
+        controls = controls.concat(controlList);
     });
+
     return controls;
 }
 
-function fetchArrayItemCount(itemPath, replicatedContexts) {
-    if (!replicatedContexts) {
-        // Use global one if not specified
-        replicatedContexts = AppMagic.Controls.GlobalContextManager.bindingContext.replicatedContexts
-    }
-
-    if (itemPath.childControl && itemPath.index != null) {
-        // Nested gallery
-        // Get parent replicated context
-        replicatedContexts = OpenAjax.widget.byId(itemPath.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext.bindingContextAt(itemPath.index).replicatedContexts;
-        return fetchArrayItemCount(itemPath.childControl, replicatedContexts);
-    }
-
-    if (itemPath.childControl) {
+function fetchArrayItemCount(itemPath) {
+    if (itemPath.parentControl && itemPath.parentControl.index === null) {
         // Components do not have an item count
         throw "Not a gallery, no item count available. Most likely a component";
+    }
+
+    var replicatedContexts = AppMagic.Controls.GlobalContextManager.bindingContext.replicatedContexts
+
+    if (itemPath.parentControl && itemPath.parentControl.index !== null) {
+        // Nested gallery - Power Apps only supports one level of nesting so we don't have to go recursively to find it
+        // Get parent replicated context
+        replicatedContexts = OpenAjax.widget.byId(itemPath.parentControl.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext.bindingContextAt(itemPath.parentControl.index).replicatedContexts;
     }
 
     var replicatedContext = OpenAjax.widget.byId(itemPath.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext;
@@ -112,112 +76,89 @@ function fetchArrayItemCount(itemPath, replicatedContexts) {
         throw "Not a gallery, no item count available. Most likely a control";
     }
 
-    // Bottom level gallery
     var managerId = replicatedContext.manager.managerId;
-    return replicatedContexts[managerId].getBindingContextCount();
+    return replicatedContexts[managerId].getBindingContextCount()
 }
 
-function getControlAndContext(itemPath, contextToUse, parentIndex, parentControl) {
-    if (contextToUse === null) {
-        contextToUse = AppMagic.Controls.GlobalContextManager.bindingContext;
+function getBindingContext(itemPath) {
+    var bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext;
+
+    if (itemPath.parentControl) {
+        // Control is inside a component or gallery
+        bindingContext = getBindingContext(itemPath.parentControl);
     }
 
-    if (itemPath.index !== null && itemPath.childControl) {
-        // Gallery
-        var galleryControl = AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, contextToUse);
-        var replicatedContextManagerId = galleryControl.OpenAjax.replicatedContextManager.managerId;
-        var galleryBindingContext = galleryControl.OpenAjax.replicatedContextManager.authoringAreaBindingContext.parent.replicatedContexts[replicatedContextManagerId].bindingContextAt(itemPath.index);
-        parentIndex = itemPath.index;
-        parentControl = galleryControl;
-        return getControlAndContext(itemPath.childControl, galleryBindingContext, parentIndex, parentControl);
-    }
-    else if (itemPath.childControl) {
-        // Component
-    }
-    else {
-        // Just a regular control
-        var control = AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, contextToUse);
-        return {
-            control: control,
-            context: contextToUse,
-            propertyName: itemPath.propertyName,
-            controlName: itemPath.controlName,
-            parentIndex: parentIndex,
-            parentControl: parentControl
-        }
-    }
-}
-
-function getPropertyValueFromControl(itemPath, bindingContext) {
-    var propertyValue = null;
-
-    if (!bindingContext) {
-        // Use global one if not specified
-        bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext
-    }
-
-    if (itemPath.childControl && itemPath.index != null) {
-        // Gallery
+    if (itemPath.index !== null) {
+        // Gallery control
         var managerId = OpenAjax.widget.byId(itemPath.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext.manager.managerId;
-        bindingContext = bindingContext.replicatedContexts[managerId].bindingContextAt(itemPath.index);
-        return getPropertyValueFromControl(itemPath.childControl, bindingContext);
+        return bindingContext.replicatedContexts[managerId].bindingContextAt(itemPath.index);
     }
 
-    if (itemPath.childControl) {
-        // Components
+    var componentBindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(itemPath.controlName);
 
-        // TODO: handle components
-        /*
-        if (parentControlName) {
-            propertyValue = (AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.getPropertyValue(propertyName, AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName)));
-        }*/
-        throw "Not implemented";
+    if (typeof componentBindingContext !== 'undefined') {
+        // Component control
+        return componentBindingContext;
     }
 
-    propertyValue = bindingContext.controlContexts[itemPath.controlName].modelProperties[itemPath.propertyName].getValue();
+    return bindingContext;
+}
 
+function getPropertyValueFromControl(itemPath) {
+    var bindingContext = getBindingContext(itemPath);
+
+    var propertyValue = bindingContext.controlContexts[itemPath.controlName].modelProperties[itemPath.propertyName].getValue();
 
     return JSON.stringify({
         propertyValue: propertyValue
     });
 }
 
-function selectControl(itemPath, bindingContext) {
-
-    if (!bindingContext) {
-        // Use global one if not specified
-        bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext
-    }
-
-
-    if (itemPath.childControl && itemPath.index != null) {
-        // Gallery
-        var managerId = OpenAjax.widget.byId(itemPath.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext.manager.managerId;
-        bindingContext = bindingContext.replicatedContexts[managerId].bindingContextAt(itemPath.index);
-        return selectControl(itemPath.childControl, bindingContext);
-    }
-
-    if (itemPath.childControl) {
-        // Components - TODO
-
-    //    var bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName);
-    //    var buttonWidget = bindingContext.controlContexts[controlName].controlWidget;
-    //    var controlContext = buttonWidget.getOnSelectControlContext(bindingContext);
-    //    buttonWidget.select(controlContext);
-    //    return true;
-        throw "Not implemented";
-    }
-
-
+function selectControl(itemPath) {
     var screenId = AppMagic.AuthoringTool.Runtime.getNamedControl(AppMagic.AuthoringTool.Runtime.getCurrentScreenName()).OpenAjax.uniqueId;
-    var currentControl = bindingContext.controlContexts[itemPath.controlName].controlWidget;
 
-    return AppMagic.Functions.select(null,
-                                    bindingContext,  
-                                    currentControl.control, 
+    if (itemPath.parentControl && itemPath.parentControl.index !== null ) {
+            // Gallery
+        var bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext;
+        if (itemPath.parentControl.parentControl) {
+            // Nested gallery
+            bindingContext = getBindingContext(itemPath.parentControl);
+            var currentControl = bindingContext.controlContexts[itemPath.controlName].controlWidget;
+            return AppMagic.Functions.select(null,
+                                    bindingContext,
+                                    currentControl.control,
                                     null, // row number
                                     null, // child control
-                                    screenId);
+                                    screenId)
+        }
+        else {
+            // One level gallery - the nested gallery approach doesn't work for one level so we have to do it differently
+            // select function is starts with 1, while the C# code indexes from 0
+            rowOrColumnNumber = itemPath.parentControl.index + 1;
+            return AppMagic.Functions.select(null,
+                bindingContext,
+                AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.parentControl.controlName),
+                rowOrColumnNumber,
+                AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName).OpenAjax._icontrol,
+                screenId)
+        }        
+    }
+
+    if (itemPath.parentControl) {
+        // Component
+        var bindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(itemPath.parentControl.controlName);
+        var buttonWidget = bindingContext.controlContexts[itemPath.controlName].controlWidget;
+        var controlContext = buttonWidget.getOnSelectControlContext(bindingContext);
+        buttonWidget.select(controlContext);
+        return true;
+    }
+
+    return AppMagic.Functions.select(null,
+        AppMagic.Controls.GlobalContextManager.bindingContext,
+        AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName),
+        null,
+        null,
+        screenId);
 }
 
 function setPropertyValueForControl(itemPath, value) {

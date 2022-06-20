@@ -80,9 +80,6 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation($"Running test: {testDefinition.Name}");
                 Logger.LogInformation($"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
-                // Set up Power Fx
-                _powerFxEngine.Setup();
-
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
 
@@ -92,8 +89,9 @@ namespace Microsoft.PowerApps.TestEngine
                 // Navigate to app
                 await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateAppUrl());
 
-                // Wait for app to load and load the object model into memory
-                await _powerFxEngine.UpdatePowerFXModelAsync();
+                // Set up Power Fx
+                _powerFxEngine.Setup();
+                await _powerFxEngine.UpdatePowerFxModelAsync();
 
                 // Run test
                 _powerFxEngine.Execute(_testState.GetTestDefinition().TestSteps);
