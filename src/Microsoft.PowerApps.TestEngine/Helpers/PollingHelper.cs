@@ -59,7 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     throw new TimeoutException("Timed operation timed out.");
                 }
 
-                await Task.Delay(500);
+                await Task.Delay(1000);
             }
         }
         
