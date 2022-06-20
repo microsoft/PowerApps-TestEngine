@@ -1,0 +1,20 @@
+test:
+  name: AllControls
+  description: Verifies that functions work with all controls
+  persona: User1
+  appLogicalName: dd78511e-9ad3-47ad-a4bf-fb5f11e07ba7
+
+  testSteps: |
+    = Screenshot("manyscreens_loaded.png");
+      Screenshot("manyscreens_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
