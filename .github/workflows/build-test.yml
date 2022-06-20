@@ -58,7 +58,7 @@ jobs:
         with:
             name: 'Test Run'
             path: |
-                **/TestResults/*.md
+                **/TestResults/*.trx
                 **/Results/
       - name: Copy Coverage report
         run: cp src/TestResults/**/coverage.cobertura.xml coverage.cobertura.xml
