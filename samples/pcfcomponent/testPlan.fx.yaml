@@ -1,0 +1,25 @@
+test:
+  name: PCF Component
+  description: Verifies that you can interact with increment control of the PCF Component
+  persona: User1
+  appLogicalName: new_pcfcomponent_bcc03
+
+  testSteps: |
+    = Screenshot("pcfcomponent_loaded.png");
+      SetProperty(IncrementControl1, "value", 10);
+      Assert(IncrementControl1.value = 10, "Make sure increment control is set to 10");
+      SetProperty(IncrementControl1, "value", 20);
+      Assert(IncrementControl1.value = 20, "Make sure increment control is set to 20");
+      Screenshot("pcfcomponent_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+    - browser: Firefox
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
