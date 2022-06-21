@@ -4,7 +4,11 @@ test:
   persona: User1
   appLogicalName: new_connectorapp_da583
   networkRequestMocks:
+<<<<<<< HEAD
     - requestURL: https://unitedstates-002.azure-apim.net/invoke # requestURL may need change depending on your region
+=======
+    - requestURL: https://unitedstates-002.azure-apim.net/invoke # requestURL may need update if you are not in the US
+>>>>>>> 3952b3e (Change to connector example)
       method: POST
       headers:
         x-ms-request-method: GET
