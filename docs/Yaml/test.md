@@ -17,7 +17,7 @@ This is used to define one test.
 
 | Property | Required | Description |
 | -- | -- | -- |
-| requestURL | Yes | This is the request URL that will get mock response |
+| requestURL | Yes | This is the request URL that will get mock response. Glob patterns are accepted |
 | responseDataFile | Yes | This is a text file with the mock response content. All text in this file will be read as the response |
 | Method | No | This is the request's method (GET, POST, etc.) |
 | Headers | No | This is a list of header fields in the request in the format of [fieldName : fieldValue] |
@@ -26,6 +26,7 @@ This is used to define one test.
 For optional properties, if no value is specified, the routing applies to all. For example, if Method is null, we send back the mock response whatever the method is as long as the other properties all match.
 
 For Sharepoint/Dataverse/Connector apps, requestURL and Method can be the same for all requests. `x-ms-request-method` and `x-ms-request-url` in  headers may need to be configured in that case to identify different requests.
+
 ### TestSteps
 
 - This can use any existing [Power FX](https://docs.microsoft.com/en-us/power-platform/power-fx/overview) functions or [specific test functions](../PowerFX/README.md) defined by this framework.
