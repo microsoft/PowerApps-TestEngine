@@ -138,7 +138,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (!string.IsNullOrEmpty(mock.Method))
             {
-                notMatch = notMatch || !string.Equals(mock.Method, route.Request.Method);
+                notMatch = !string.Equals(mock.Method, route.Request.Method);
             }
 
             if (!string.IsNullOrEmpty(mock.RequestBodyFile))
