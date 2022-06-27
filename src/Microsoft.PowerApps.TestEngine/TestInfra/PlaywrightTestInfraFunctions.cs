@@ -67,7 +67,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             var launchOptions = new BrowserTypeLaunchOptions()
             {
-                Headless = false,
+                Headless = true,
                 Timeout = testSettings.Timeout
             };
 
@@ -96,6 +96,72 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
 
             BrowserContext = await Browser.NewContextAsync(contextOptions);
+        }
+
+        public async Task SetupNetworkRequestMockAsync()
+        {
+
+            var mocks =_singleTestInstanceState.GetTestDefinition().NetworkRequestMocks;
+
+            if (mocks == null || mocks.Count == 0)
+            {
+                return;
+            }
+
+            if (Page == null)
+            {
+                Page = await BrowserContext.NewPageAsync();
+            }
+
+            foreach(var mock in mocks)
+            {
+                
+                if (string.IsNullOrEmpty(mock.RequestURL))
+                {
+                    throw new InvalidOperationException("RequestURL cannot be null");
+                }
+
+                if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
+                {
+                    throw new InvalidOperationException("ResponseDataFile is invalid or missing");
+                }
+
+                await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
+            }
+        }
+
+        public async Task RouteNetworkRequest(IRoute route, NetworkRequestMock mock)
+        {
+            // For optional properties of NetworkRequestMock, if the property is not specified, 
+            // the routing applies to all. Ex: If Method is null, we mock response whatever the method is.
+            bool notMatch = false;
+
+            if (!string.IsNullOrEmpty(mock.Method))
+            {
+                notMatch = !string.Equals(mock.Method, route.Request.Method);
+            }
+
+            if (!string.IsNullOrEmpty(mock.RequestBodyFile))
+            {
+                notMatch = notMatch || !string.Equals(route.Request.PostData, _fileSystem.ReadAllText(mock.RequestBodyFile));
+            }
+
+            if (mock.Headers != null && mock.Headers.Count != 0)
+            {
+                foreach(var header in mock.Headers)
+                {
+                    var requestHeaderValue = await route.Request.HeaderValueAsync(header.Key);
+                    notMatch = notMatch || !string.Equals(header.Value, requestHeaderValue);
+                }
+            }
+
+            if (!notMatch)
+            {
+                await route.FulfillAsync(new RouteFulfillOptions {Path = mock.ResponseDataFile});
+            }
+            else{
+                await route.ContinueAsync();
+            }
         }
 
         public async Task GoToUrlAsync(string url)
