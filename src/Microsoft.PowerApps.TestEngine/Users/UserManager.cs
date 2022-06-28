@@ -74,7 +74,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
             }
 
             var makerPortalUrl = _urlMapper.GenerateLoginUrl();
-            
+
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
 
             await _testInfraFunctions.RunAndWaitForResponseAsync(_testInfraFunctions.FillAsync("[id=\"i0116\"]", user));
