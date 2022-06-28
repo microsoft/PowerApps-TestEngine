@@ -5,8 +5,8 @@ test:
   appLogicalName: dd78511e-9ad3-47ad-a4bf-fb5f11e07ba7
 
   testSteps: |
-    = Screenshot("differenttypes_loaded.png");
-      Screenshot("differenttypes_end.png");
+    = Screenshot("charts_loaded.png");
+      Screenshot("charts_end.png");
 
 testSettings:
   recordVideo: true
