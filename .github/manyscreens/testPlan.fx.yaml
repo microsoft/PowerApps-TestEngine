@@ -1,0 +1,41 @@
+test:
+  name: ManyScreens
+  description: Verifies that you can interact with controls on other screens
+  persona: User1
+  appLogicalName: new_manyscreens_7720b
+
+  testSteps: |
+    = Screenshot("manyscreens_loaded.png");
+      // Navigate to Label Screen
+      Select(Button1);
+      Screenshot("manyscreens_labelscreenloaded.png");
+      Assert(Label1.Text = "Text input", "Label should be set to default value");
+      SetProperty(TextInput1, "Text", "Hello world!");
+      Assert(Label1.Text = "Hello world!", "Label should be updated to the updated text input");
+      // Navigate to Gallery screen
+      Select(Button4);
+      Select(Button2);
+      Screenshot("manyscreens_galleryscreenloaded.png");
+      Assert(Label2.Text = "Lorem ipsum 1", "Label should indicate first item in the gallery");
+      Assert(Index(Gallery1.AllItems, 2).Title1.Text = "Lorem ipsum 2", "Validate the label in the 2nd row of the gallery");
+      Select(Index(Gallery1.AllItems, 2).NextArrow1);
+      Assert(Label2.Text = "Lorem ipsum 2", "Label should be updated to indicate second item in the gallery");
+      // Navigate back home
+      Select(Button5);
+      Screenshot("manyscreens_homescreenloaded.png");
+      // Navigate back to label screen
+      Screenshot("manyscreens_labelscreenloaded2.png");
+      Assert(Label1.Text = "Hello world!", "Label should still say Hello world!");
+      Screenshot("manyscreens_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+  browserPopout: false
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
