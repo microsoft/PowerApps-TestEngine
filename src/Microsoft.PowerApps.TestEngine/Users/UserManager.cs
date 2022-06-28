@@ -78,14 +78,28 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.FillAsync("[id=\"i0116\"]", user);
 
-            await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+            if ( await _testInfraFunctions.CheckInputValueAsync("[id=\"i0116\"]")){
+                await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
 
-            await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
+                await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
 
-            await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+                if (await _testInfraFunctions.CheckInputValueAsync("[id=\"i0118\"]"))
+                {
 
-            // Click No button to indicate we don't want to stay signed in
-            await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
+                    await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+
+                    // Click No button to indicate we don't want to stay signed in
+                    await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
+                }
+                else
+                {
+                    throw new InvalidOperationException("Password cannot be null");
+                }
+            } 
+            else
+            {
+                throw new InvalidOperationException("User email cannot be null");
+            }
         }
     }
 }

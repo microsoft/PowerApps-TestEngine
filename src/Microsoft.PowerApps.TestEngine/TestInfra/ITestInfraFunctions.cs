@@ -50,6 +50,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <returns>Task</returns>
         public Task FillAsync(string selector, string value);
 
+        public Task<bool> CheckInputValueAsync(string selector);
+
         /// <summary>
         /// Clicks an element
         /// </summary>

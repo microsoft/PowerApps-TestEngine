@@ -232,6 +232,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.FillAsync(selector, value);
         }
 
+        public async Task<bool> CheckInputValueAsync(string selector)
+        {
+            return await Page.InputValueAsync(selector) != null;
+        }
+
         public async Task ClickAsync(string selector)
         {
             ValidatePage();
