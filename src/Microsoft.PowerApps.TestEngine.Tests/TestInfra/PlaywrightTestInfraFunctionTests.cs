@@ -458,6 +458,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockPage.Verify(x => x.ClickAsync(selector, null), Times.Once());
         }
 
+        
+        [Fact]
+        public async Task RunAndWaitForResponseAsyncTest()
+        {
+            var selector = "[id =\"i0116\"]";
+            var value = "hello";
+
+            MockPage.Setup(x => x.ClickAsync(It.IsAny<string>(), It.IsAny<PageClickOptions?>())).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.FillAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PageFillOptions?>())).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.RunAndWaitForResponseAsync(It.IsAny<Func<Task>>(), It.IsAny<Func<IResponse, bool>>(), It.IsAny<PageRunAndWaitForResponseOptions?>())).Returns(Task.FromResult(MockResponse.Object));
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, page: MockPage.Object);
+            await playwrightTestInfraFunctions.RunAndWaitForResponseAsync(playwrightTestInfraFunctions.ClickAsync(selector));
+            await playwrightTestInfraFunctions.RunAndWaitForResponseAsync(playwrightTestInfraFunctions.FillAsync(selector, value));
+
+            MockPage.Verify(x => x.RunAndWaitForResponseAsync(It.IsAny<Func<Task>>(), It.IsAny<Func<IResponse, bool>>(), null), Times.Exactly(2));
+        }        
+
         [Fact]
         public async Task AddScriptTagSuccessfulTest()
         {
