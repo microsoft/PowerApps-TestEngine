@@ -1,13 +1,13 @@
 # Import PCF Component
 ## Steps for Import PCF Component
 
-1.Created a new environment
+1.Create a new environment
 
 2.[![Enable the Power Apps component framework feature](https://docs.microsoft.com/en-us/power-apps/developer/component-framework/component-framework-for-canvas-apps#enable-the-power-apps-component-framework-feature)](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml)
 
-2.Imported the solution
+2.Import the solution
 
-3.Played the app
+3.Playe the app
 
 4.Run test for Test Engine
 ## Important
