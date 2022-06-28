@@ -60,6 +60,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockUrlMapper.Setup(x => x.GenerateLoginUrl()).Returns(loginUrl);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.FillAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.CheckInputValueAsync(It.IsAny<string>())).Returns(Task.FromResult<bool>(true));
             MockTestInfraFunctions.Setup(x => x.ClickAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockUrlMapper.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
