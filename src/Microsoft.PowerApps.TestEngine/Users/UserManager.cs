@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.System;
@@ -73,19 +74,19 @@ namespace Microsoft.PowerApps.TestEngine.Users
             }
 
             var makerPortalUrl = _urlMapper.GenerateLoginUrl();
-
+            
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
 
-            await _testInfraFunctions.FillAsync("[id=\"i0116\"]", user);
+            await _testInfraFunctions.RunAndWaitForResponseAsync(_testInfraFunctions.FillAsync("[id=\"i0116\"]", user));
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
-
-            await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
-
+           
+            await _testInfraFunctions.RunAndWaitForResponseAsync(_testInfraFunctions.FillAsync("[id=\"i0118\"]", password));
+        
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
 
             // Click No button to indicate we don't want to stay signed in
-            await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
+            await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");            
         }
     }
 }
