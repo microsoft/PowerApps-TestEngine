@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task FillAsync(string selector, string value);
 
         /// <summary>
-        /// RunAndWaitForResponseAsync
+        /// Run And Wait For Response
         /// </summary>
         /// <param name="task">Task to execute</param>
         /// <returns>Task</returns>

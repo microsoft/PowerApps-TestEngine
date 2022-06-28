@@ -457,7 +457,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockPage.Verify(x => x.ClickAsync(selector, null), Times.Once());
         }
-
         
         [Fact]
         public async Task RunAndWaitForResponseAsyncTest()
