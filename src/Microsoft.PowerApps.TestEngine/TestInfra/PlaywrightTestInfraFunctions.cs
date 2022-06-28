@@ -228,7 +228,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task FillAsync(string selector, string value)
         {
-            ValidatePage();      
+            ValidatePage();  
             await Page.FillAsync(selector, value);
         }
 
