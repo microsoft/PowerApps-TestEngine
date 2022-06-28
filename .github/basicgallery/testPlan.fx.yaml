@@ -1,0 +1,25 @@
+test:
+  name: Basic Gallery
+  description: Verifies that you can interact with controls within a basic gallery
+  persona: User1
+  appLogicalName: new_galleryapp_80360
+
+  testSteps: |
+    = Screenshot("basicgallery_loaded.png");
+      Assert(Label1.Text = "Lorem ipsum 1", "Label should indicate first item in the gallery");
+      Assert(Index(Gallery1.AllItems, 2).Title1.Text = "Lorem ipsum 2", "Validate the label in the 2nd row of the gallery");
+      Select(Index(Gallery1.AllItems, 2).NextArrow1);
+      Assert(Label1.Text = "Lorem ipsum 2", "Label should be updated to indicate second item in the gallery");
+      Screenshot("basicgallery_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+  browserPopout: false
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

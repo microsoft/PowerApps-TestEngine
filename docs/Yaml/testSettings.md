@@ -8,6 +8,7 @@ This is used to define settings for the tests in the test plan
 | -- | -- | -- |
 | browserConfigurations | Yes | A list of browser configurations to be tested. At least one browser must be specified |
 | recordVideo | No | Default is false. If set to true, a video recording of the test is captured |
+| browserPopout | No | Default is true. If set to false, the browser will run in headless mode |
 | enablePowerFxOverlay | No | Default is false. If set to true, an overlay with the currently running Power FX command is placed on the screen |
 | timeout | No | Timeout value in milliseconds. If any operation takes longer than the timeout limit, it will end the test in a failure. Default is 30000 milliseconds(30s) |
 
