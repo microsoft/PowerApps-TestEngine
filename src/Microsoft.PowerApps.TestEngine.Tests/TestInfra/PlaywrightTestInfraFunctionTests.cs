@@ -94,7 +94,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockSingleTestInstanceState.Verify(x => x.GetBrowserConfig(), Times.Once());
             MockPlaywrightObject.Verify(x => x[browserConfig.Browser], Times.Once());
-            MockBrowserType.Verify(x => x.LaunchAsync(It.Is<BrowserTypeLaunchOptions>(y => y.Headless == false && y.Timeout == testSettings.Timeout)), Times.Once());
+            MockBrowserType.Verify(x => x.LaunchAsync(It.Is<BrowserTypeLaunchOptions>(y => y.Headless == true && y.Timeout == testSettings.Timeout)), Times.Once());
             MockTestState.Verify(x => x.GetTestSettings(), Times.Once());
 
             if (browserConfig.Device != null)

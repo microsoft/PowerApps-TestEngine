@@ -22,11 +22,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public bool RecordVideo { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets whether to pop out the browser during test execution.
+        /// Gets or sets whether the browser is in headless mode during test execution.
         /// Default is true.
-        /// If set to false, the browser will run in headless mode.
+        /// If set to false, the browser will pop out.
         /// </summary>
-        public bool BrowserPopout { get; set; } = true;
+        public bool Headless { get; set; } = true;
 
         /// <summary>
         /// Gets or sets whether to show the Power FX command overlay.
