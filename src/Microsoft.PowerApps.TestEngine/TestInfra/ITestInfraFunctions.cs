@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
@@ -50,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <returns>Task</returns>
         public Task FillAsync(string selector, string value);
 
-        public Task<bool> CheckInputValueAsync(string selector);
+        public Task<IJSHandle> WaitForFunctionAsync(string expression, object arg);
 
         /// <summary>
         /// Clicks an element

@@ -232,9 +232,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.FillAsync(selector, value);
         }
 
-        public async Task<bool> CheckInputValueAsync(string selector)
+        public async Task<IJSHandle> WaitForFunctionAsync(string expression, object arg)
         {
-            return await Page.InputValueAsync(selector) != null;
+            return await Page.WaitForFunctionAsync(expression, arg);
         }
 
         public async Task ClickAsync(string selector)
