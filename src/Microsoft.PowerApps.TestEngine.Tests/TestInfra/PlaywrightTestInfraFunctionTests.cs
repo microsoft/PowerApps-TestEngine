@@ -455,7 +455,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 MockFileSystem.Object, page: MockPage.Object);
             await playwrightTestInfraFunctions.ClickAsync(selector);
 
-            MockPage.Verify(x => x.ClickAsync(selector, null), Times.Once());
+            MockPage.Verify(x => x.ClickAsync(selector, It.IsAny<PageClickOptions?>()), Times.Once());
         }
 
         [Fact]
