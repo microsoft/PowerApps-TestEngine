@@ -19,6 +19,12 @@ namespace Microsoft.PowerApps.TestEngine.Users
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IEnvironmentVariable _environmentVariable;
 
+        private const string EmailSelector = "input[type=\"email\"]";
+        private const string PasswordSelector = "input[type=\"password\"]";
+        private const string DisplayNameSelector = "input[id=\"displayName\"]";
+        private const string SubmitButtonSelector = "input[type=\"submit\"]";
+        private const string KeepMeSignedInDescSelector = "[aria-describedby=\"KmsiDescription\"]";
+
         public UserManager(ITestInfraFunctions testInfraFunctions, ITestState testState, IUrlMapper urlMapper,
             ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable)
         {
@@ -76,33 +82,33 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
 
-            var selector = "[id=\"i0116\"]";
-            await _testInfraFunctions.WaitForSelectorAsync(selector);
-            await _testInfraFunctions.FillAsync(selector, user);
+            await _testInfraFunctions.WaitForSelectorAsync(EmailSelector);
+            await _testInfraFunctions.FillAsync(EmailSelector, user);
             // await Task.Delay(500);   
             // Additional check to make sure the username field is not null, returns when the expression returns a truthy value.
-            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
+            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", EmailSelector);
+            
 
-            selector = "[id=\"idSIButton9\"]";
-            await _testInfraFunctions.WaitForSelectorAsync(selector);
-            await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
 
-            selector = "[id=\"displayName\"]";
-            await _testInfraFunctions.WaitForSelectorAsync(selector);
-            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).title != ''", selector);
+            await _testInfraFunctions.WaitForSelectorAsync(SubmitButtonSelector);
+            await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
-            selector = "[id=\"i0118\"]";
-            await _testInfraFunctions.WaitForSelectorAsync(selector);
-            await _testInfraFunctions.FillAsync(selector, password);
+           
+            await _testInfraFunctions.WaitForSelectorAsync(DisplayNameSelector);
+            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).title != ''", DisplayNameSelector);
+
+            
+            await _testInfraFunctions.WaitForSelectorAsync(PasswordSelector);
+            await _testInfraFunctions.FillAsync(PasswordSelector, password);
             // await Task.Delay(500);GetAttributeAsync("src")
             // Additional check to make sure the password field is not null, returns when the expression returns a truthy value.
-            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
+            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", PasswordSelector);
 
-            selector = "[id=\"idSIButton9\"]";
-            await _testInfraFunctions.WaitForSelectorAsync(selector);
-            await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+            
+            await _testInfraFunctions.WaitForSelectorAsync(SubmitButtonSelector);
+            await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
-            selector = "[id=\"idBtn_Back\"]";
+            var selector = "[id=\"idBtn_Back\"]";
             await _testInfraFunctions.WaitForSelectorAsync(selector);
             // Click No button to indicate we don't want to stay signed in
             await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
