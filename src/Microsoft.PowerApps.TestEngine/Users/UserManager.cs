@@ -92,7 +92,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             if( result.EvaluateAsync("selector => document.querySelector(selector).value != ''", selector).ToString().Equals("false") )
             {
-                await LoginAsUserAsync();
+                await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
             }
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
