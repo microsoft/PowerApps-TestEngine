@@ -235,7 +235,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task ClickAsync(string selector)
         {
             ValidatePage();
-            await Page.ClickAsync(selector);
+            await Page.ClickAsync(selector, new PageClickOptions { Delay = 50 });
         }
 
         public async Task AddScriptTagAsync(string scriptTag, string? frameName)
