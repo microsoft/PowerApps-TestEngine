@@ -92,13 +92,17 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             selector = "[id=\"i0116\"]";
 
-            if( _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector)", selector).ToString().Equals("false"))
+            if( _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector)", selector).ToString().Equals("true"))
             {
                 await LoginAsUserAsync();
             }
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
 
+            if (_testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector)", selector).ToString().Equals("true"))
+            {
+                await LoginAsUserAsync();
+            }
             // Click No button to indicate we don't want to stay signed in
             await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
         }
