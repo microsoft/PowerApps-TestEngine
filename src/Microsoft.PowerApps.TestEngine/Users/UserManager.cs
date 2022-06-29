@@ -76,12 +76,12 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
 
-            await _testInfraFunctions.FillAsync("[id=\"i0116\"]", user);
-
-            var selector = "[id=\"i0116\"]";
+            await _testInfraFunctions.FillAsync("[id=\"i0116\"]", user);            
 
             await Task.Delay(500);
 
+            var selector = "[id=\"i0116\"]";
+            // Additional check to make sure the username field is not null, returns when the expression returns a truthy value.
             await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
@@ -91,8 +91,8 @@ namespace Microsoft.PowerApps.TestEngine.Users
             await Task.Delay(500);
 
             selector = "[id=\"i0118\"]";
-
-            var result = await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);            
+            // Additional check to make sure the password field is not null, returns when the expression returns a truthy value.
+            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);            
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
             
