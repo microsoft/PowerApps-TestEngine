@@ -80,8 +80,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.FillAsync(selector, user);            
 
-            // await Task.Delay(500);
-            
+            // await Task.Delay(500);            
             await _testInfraFunctions.WaitForSelectorAsync(selector);
             // Additional check to make sure the username field is not null, returns when the expression returns a truthy value.
             await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
@@ -93,9 +92,12 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.FillAsync(selector, password);
 
-            // await Task.Delay(500);
-
+            // await Task.Delay(500);GetAttributeAsync("src")
+            selector = "[id=\"displayName\"]";
             await _testInfraFunctions.WaitForSelectorAsync(selector);
+            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).title != ''", selector);
+
+            selector = "[id=\"i0118\"]";
             // Additional check to make sure the password field is not null, returns when the expression returns a truthy value.
             await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);            
 
