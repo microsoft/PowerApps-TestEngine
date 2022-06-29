@@ -88,7 +88,12 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             selector = "[id=\"i0118\"]";
 
-            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
+            var result = await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
+
+            if( result.EvaluateAsync("selector => document.querySelector(selector).value != ''", selector).ToString().Equals("false") )
+            {
+                await LoginAsUserAsync();
+            }
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
 
