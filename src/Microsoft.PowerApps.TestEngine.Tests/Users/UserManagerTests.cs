@@ -75,9 +75,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockEnvironmentVariable.Verify(x => x.GetVariable(userConfiguration.PasswordKey), Times.Once());
             MockUrlMapper.Verify(x => x.GenerateLoginUrl(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(loginUrl), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.FillAsync("[type=\"email\"]", email), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.FillAsync("input[type=\"email\"]", email), Times.Once());
             MockTestInfraFunctions.Verify(x => x.ClickAsync("input[type=\"submit\"]"), Times.Exactly(2));
-            MockTestInfraFunctions.Verify(x => x.FillAsync("[type=\"password\"]", password), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.FillAsync("input[type=\"password\"]", password), Times.Once());
             MockTestInfraFunctions.Verify(x => x.ClickAsync("[id=\"idBtn_Back\"]"), Times.Once());
         }
 
