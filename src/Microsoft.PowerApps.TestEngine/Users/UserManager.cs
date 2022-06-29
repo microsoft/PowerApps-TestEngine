@@ -90,9 +90,11 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             var result = await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
 
-            if( result.EvaluateAsync("selector => document.querySelector(selector).value != ''", selector).ToString().Equals("false") )
+            selector = "[id=\"i0116\"]";
+
+            if( _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector)", selector).ToString().Equals("false"))
             {
-                await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
+                await LoginAsUserAsync();
             }
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
