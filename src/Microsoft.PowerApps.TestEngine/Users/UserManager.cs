@@ -75,34 +75,35 @@ namespace Microsoft.PowerApps.TestEngine.Users
             var makerPortalUrl = _urlMapper.GenerateLoginUrl();
 
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
+
             var selector = "[id=\"i0116\"]";
             await _testInfraFunctions.WaitForSelectorAsync(selector);
-
-            await _testInfraFunctions.FillAsync(selector, user);            
-
-            // await Task.Delay(500);            
-
+            await _testInfraFunctions.FillAsync(selector, user);
+            // await Task.Delay(500);   
             // Additional check to make sure the username field is not null, returns when the expression returns a truthy value.
             await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
 
-            await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
-            
-            selector = "[id=\"i0118\"]";
+            selector = "[id=\"idSIButton9\"]";
             await _testInfraFunctions.WaitForSelectorAsync(selector);
+            await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
 
-            await _testInfraFunctions.FillAsync(selector, password);
-
-            // await Task.Delay(500);GetAttributeAsync("src")
             selector = "[id=\"displayName\"]";
+            await _testInfraFunctions.WaitForSelectorAsync(selector);
             await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).title != ''", selector);
 
             selector = "[id=\"i0118\"]";
             await _testInfraFunctions.WaitForSelectorAsync(selector);
+            await _testInfraFunctions.FillAsync(selector, password);
+            // await Task.Delay(500);GetAttributeAsync("src")
             // Additional check to make sure the password field is not null, returns when the expression returns a truthy value.
-            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);            
+            await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
 
+            selector = "[id=\"idSIButton9\"]";
+            await _testInfraFunctions.WaitForSelectorAsync(selector);
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
-            
+
+            selector = "[id=\"idBtn_Back\"]";
+            await _testInfraFunctions.WaitForSelectorAsync(selector);
             // Click No button to indicate we don't want to stay signed in
             await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
         }
