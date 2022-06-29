@@ -237,6 +237,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return await Page.WaitForFunctionAsync(expression, arg);
         }
 
+        public async Task<IElementHandle?> WaitForSelectorAsync(string selector)
+        {
+            return await Page.WaitForSelectorAsync(selector);
+        }
+
         public async Task ClickAsync(string selector)
         {
             ValidatePage();

@@ -59,6 +59,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <returns>Task</returns>
         public Task<IJSHandle> WaitForFunctionAsync(string expression, object arg);
 
+        public Task<IElementHandle?> WaitForSelectorAsync(string selector);
+
         /// <summary>
         /// Clicks an element
         /// </summary>

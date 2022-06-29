@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
-            MockIJSHandle = new Mock<IJSHandle>(MockBehavior.Strict);
+            MockIJSHandle = new Mock<IJSHandle>(MockBehavior.Loose);
         }
 
         [Fact]
