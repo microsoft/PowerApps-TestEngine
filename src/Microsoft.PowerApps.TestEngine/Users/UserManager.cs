@@ -82,22 +82,17 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
 
-            // await _testInfraFunctions.FillAsync("[id=\"i0116\"]", user);
-            await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);
+            await _testInfraFunctions.HandleUserInputScreen(EmailSelector,user);
 
-            // await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             await Task.Delay(500);
 
-            // await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
-            await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
+            await _testInfraFunctions.HandleUserInputScreen(PasswordSelector, password);
 
-            // await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             // Click No button to indicate we don't want to stay signed in
-            // await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
             await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
         }
     }

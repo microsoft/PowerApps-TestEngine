@@ -74,26 +74,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
 
         /// <summary>
-        /// Fills in username and submits
+        /// Fills in user input and submits
         /// </summary>
         /// <param name="selector">Selector to find element</param>
         /// <param name="value">Value to fill in</param>
         /// <returns>Task</returns>
-        public Task HandleUserEmailScreen(string selector, string value);
-
-        /// <summary>
-        /// Fills in password and submits
-        /// </summary>
-        /// <param name="selector">Selector to find element</param>
-        /// <param name="value">Value to fill in</param>
-        /// <returns>Task</returns>
-        public Task HandleUserPasswordScreen(string selector, string value);
-
-        /// <summary>
-        /// Handling keep signed on dialog box
-        /// </summary>
-        /// <param name="selector">Selector to find element</param>
-        /// <returns>Task</returns>
-        public Task HandleKeepSignedOnDialog(string selector);
+        public Task HandleUserInputScreen(string selector, string value);
     }
 }
