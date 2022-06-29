@@ -25,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
 
         public UserManagerTests()
         {
-            MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
+            MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Loose);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
