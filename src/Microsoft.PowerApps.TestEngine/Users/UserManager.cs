@@ -19,6 +19,12 @@ namespace Microsoft.PowerApps.TestEngine.Users
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IEnvironmentVariable _environmentVariable;
 
+        private const string EmailSelector = "input[type=\"email\"]";
+        private const string PasswordSelector = "input[type=\"password\"]";
+        private const string DisplayNameSelector = "input[id=\"displayName\"]";
+        private const string SubmitButtonSelector = "input[type=\"submit\"]";
+        private const string KeepMeSignedInDescSelector = "[aria-describedby=\"KmsiDescription\"]";
+
         public UserManager(ITestInfraFunctions testInfraFunctions, ITestState testState, IUrlMapper urlMapper,
             ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable)
         {
@@ -76,15 +82,20 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
 
-            await _testInfraFunctions.FillAsync("[id=\"i0116\"]", user);
+            // await _testInfraFunctions.FillAsync("[id=\"i0116\"]", user);
+            await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);
 
-            await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+            // await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+            await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
-            await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
+            // await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
+            await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
 
-            await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+            // await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+            await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             // Click No button to indicate we don't want to stay signed in
+            // await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
             await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
         }
     }
