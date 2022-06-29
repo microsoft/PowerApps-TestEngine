@@ -80,29 +80,22 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             var selector = "[id=\"i0116\"]";
 
+            await Task.Delay(500);
+
             await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
 
             await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
 
+            await Task.Delay(500);
+
             selector = "[id=\"i0118\"]";
 
-            var result = await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
-
-            selector = "[id=\"i0116\"]";
-
-            if( _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector)", selector).ToString().Equals("true"))
-            {
-                await LoginAsUserAsync();
-            }
+            var result = await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);            
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
-
-            if (_testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector)", selector).ToString().Equals("true"))
-            {
-                await LoginAsUserAsync();
-            }
+            
             // Click No button to indicate we don't want to stay signed in
             await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
         }
