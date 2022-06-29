@@ -75,23 +75,26 @@ namespace Microsoft.PowerApps.TestEngine.Users
             var makerPortalUrl = _urlMapper.GenerateLoginUrl();
 
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
+            var selector = "[id=\"i0116\"]";
+            await _testInfraFunctions.WaitForSelectorAsync(selector);
 
-            await _testInfraFunctions.FillAsync("[id=\"i0116\"]", user);            
+            await _testInfraFunctions.FillAsync(selector, user);            
 
             // await Task.Delay(500);
-
-            var selector = "[id=\"i0116\"]";
+            
             await _testInfraFunctions.WaitForSelectorAsync(selector);
             // Additional check to make sure the username field is not null, returns when the expression returns a truthy value.
             await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);
 
             await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
+            
+            selector = "[id=\"i0118\"]";
+            await _testInfraFunctions.WaitForSelectorAsync(selector);
 
-            await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
+            await _testInfraFunctions.FillAsync(selector, password);
 
             // await Task.Delay(500);
 
-            selector = "[id=\"i0118\"]";
             await _testInfraFunctions.WaitForSelectorAsync(selector);
             // Additional check to make sure the password field is not null, returns when the expression returns a truthy value.
             await _testInfraFunctions.WaitForFunctionAsync("selector => document.querySelector(selector).value != ''", selector);            
