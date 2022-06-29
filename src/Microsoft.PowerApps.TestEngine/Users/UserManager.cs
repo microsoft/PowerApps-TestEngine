@@ -88,6 +88,8 @@ namespace Microsoft.PowerApps.TestEngine.Users
             // await _testInfraFunctions.ClickAsync("[id=\"idSIButton9\"]");
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
+            await Task.Delay(500);
+
             // await _testInfraFunctions.FillAsync("[id=\"i0118\"]", password);
             await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
 

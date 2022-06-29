@@ -235,7 +235,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task ClickAsync(string selector)
         {
             ValidatePage();
-            await Page.ClickAsync(selector, new PageClickOptions { Delay = 50 });
+            await Page.ClickAsync(selector);
         }
 
         public async Task AddScriptTagAsync(string scriptTag, string? frameName)
@@ -269,7 +269,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task HandleUserPasswordScreen(string selector, string value)
         {
             await Page.Locator(selector).WaitForAsync();
-            await FillAsync(selector,value);
+            await Page.TypeAsync(selector, value, new PageTypeOptions { Delay = 50 });
         }
 
         public async Task HandleKeepSignedOnDialog(string selector)
