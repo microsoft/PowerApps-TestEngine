@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.System;
@@ -20,6 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         private Mock<IUrlMapper> MockUrlMapper;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<IEnvironmentVariable> MockEnvironmentVariable;
+        private Mock<IJSHandle> MockIJSHandle;
 
         public UserManagerTests()
         {
@@ -28,6 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
+            MockIJSHandle = new Mock<IJSHandle>(MockBehavior.Strict);
         }
 
         [Fact]
@@ -60,7 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockUrlMapper.Setup(x => x.GenerateLoginUrl()).Returns(loginUrl);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.FillAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.CheckInputValueAsync(It.IsAny<string>())).Returns(Task.FromResult<bool>(true));
+            MockTestInfraFunctions.Setup(x => x.WaitForFunctionAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult<IJSHandle>(MockIJSHandle.Object));
             MockTestInfraFunctions.Setup(x => x.ClickAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockUrlMapper.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
