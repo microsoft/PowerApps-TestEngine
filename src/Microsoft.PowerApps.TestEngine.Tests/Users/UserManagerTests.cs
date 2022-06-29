@@ -9,7 +9,6 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using Moq;
 using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 

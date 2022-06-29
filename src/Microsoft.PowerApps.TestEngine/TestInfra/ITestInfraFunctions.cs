@@ -51,6 +51,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <returns>Task</returns>
         public Task FillAsync(string selector, string value);
 
+        /// <summary>
+        /// Returns when the expression returns a truthy value
+        /// </summary>
+        /// <param name="expression">JavaScript expression to be evaluated</param>
+        /// <param name="arg">Optional argument to pass to expression</param>
+        /// <returns>Task</returns>
         public Task<IJSHandle> WaitForFunctionAsync(string expression, object arg);
 
         /// <summary>
