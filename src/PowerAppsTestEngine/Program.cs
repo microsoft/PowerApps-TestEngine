@@ -12,7 +12,9 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using PowerAppsTestEngine;
+using System.Reflection.Metadata.Ecma335;
 
 var serviceProvider = new ServiceCollection()
     .AddLogging(loggingBuilder =>
@@ -43,6 +45,15 @@ var switchMappings = new Dictionary<string, string>()
     { "-t", "TenantId" },
     { "-o", "OutputDirectory" }
 };
+
+if (args[0].Equals("convert"))
+{
+    Console.WriteLine(args[0]);
+
+    string InputDir = args[2];
+    CreateYAMLTestPlan.exportYAML(InputDir);
+    return;
+}
 
 var inputOptions = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
