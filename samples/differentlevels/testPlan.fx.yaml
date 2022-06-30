@@ -1,6 +1,6 @@
 test:
-  name: AllControls
-  description: Verifies that functions work with all controls
+  name: DifferentLevels
+  description: Showcases usage of Assert/Wait/Select/SetProperty at every level
   persona: User1
   appLogicalName: cr693_differentlevels_80bae
 
