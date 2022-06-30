@@ -224,5 +224,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             return GetTestSettings().Timeout;
         }
+
+        public int GetWorkers()
+        {
+            return GetTestSettings().Workers;
+        }
     }
 }

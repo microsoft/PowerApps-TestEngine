@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Reporting;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.PowerApps.TestEngine
 {
@@ -79,18 +80,31 @@ namespace Microsoft.PowerApps.TestEngine
 
             var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
 
-            var allTestRuns = new List<Task>();
+            Queue<Task> allTestRuns = new Queue<Task>();
 
-            // TODO: manage number of workers
+            // Manage number of workers
             foreach(var testDefinition in _state.GetTestDefinitions())
             {
                 foreach (var browserConfig in browserConfigurations)
                 {
-                    allTestRuns.Add(RunOneTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig));
+                    allTestRuns.Enqueue(RunOneTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig));
+                    if (allTestRuns.Count >= _state.GetWorkers())
+                    {
+                        var maxTestRuns = new List<Task>();
+                        while (allTestRuns.Count > 0)
+                        {
+                            maxTestRuns.Add(allTestRuns.Dequeue());
+                        }
+                        await Task.WhenAll(maxTestRuns.ToArray());
+                    }
                 }
             }
-
-            await Task.WhenAll(allTestRuns.ToArray());
+            var restTestRuns = new List<Task>();
+            while (allTestRuns.Count > 0)
+            {
+                restTestRuns.Add(allTestRuns.Dequeue());
+            }
+            await Task.WhenAll(restTestRuns.ToArray());
 
             _testReporter.EndTestRun(testRunId);
             return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
