@@ -257,5 +257,19 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             return await Page.EvaluateAsync<T>(jsExpression);
         }
+
+        public async Task HandleUserEmailScreen(string selector, string value)
+        {
+            ValidatePage();
+            await Page.Locator(selector).WaitForAsync(); 
+            await Page.TypeAsync(selector, value, new PageTypeOptions { Delay = 50 });
+            await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
+        }
+
+        public async Task HandleUserPasswordScreen(string selector, string value)
+        {
+            await Page.Locator(selector).WaitForAsync();
+            await Page.FillAsync(selector, value);
+        }
     }
 }
