@@ -90,6 +90,8 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
 
+            await Task.Delay(500);
+
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             // Click No button to indicate we don't want to stay signed in
