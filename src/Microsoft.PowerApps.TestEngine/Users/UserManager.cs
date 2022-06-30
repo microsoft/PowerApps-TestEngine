@@ -21,9 +21,8 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
         private const string EmailSelector = "input[type=\"email\"]";
         private const string PasswordSelector = "input[type=\"password\"]";
-        private const string DisplayNameSelector = "input[id=\"displayName\"]";
         private const string SubmitButtonSelector = "input[type=\"submit\"]";
-        private const string KeepMeSignedInDescSelector = "[aria-describedby=\"KmsiDescription\"]";
+        private const string KeepMeSignedInNoSelector = "[id=\"idBtn_Back\"]";
 
         public UserManager(ITestInfraFunctions testInfraFunctions, ITestState testState, IUrlMapper urlMapper,
             ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable)
@@ -94,7 +93,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             // Click No button to indicate we don't want to stay signed in
-            await _testInfraFunctions.ClickAsync("[id=\"idBtn_Back\"]");
+            await _testInfraFunctions.ClickAsync(KeepMeSignedInNoSelector);
         }
     }
 }
