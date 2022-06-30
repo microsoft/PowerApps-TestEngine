@@ -82,13 +82,13 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
 
-            await _testInfraFunctions.HandleUserInputScreen(EmailSelector,user);
+            await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);
 
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             await Task.Delay(500);
 
-            await _testInfraFunctions.HandleUserInputScreen(PasswordSelector, password);
+            await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
 
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
