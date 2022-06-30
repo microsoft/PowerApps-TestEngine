@@ -86,11 +86,9 @@ namespace Microsoft.PowerApps.TestEngine.Users
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             // Wait for the sliding animation to finish
-            await Task.Delay(500);
+            await Task.Delay(1000);
 
             await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
-
-            await Task.Delay(500);
 
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
