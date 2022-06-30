@@ -74,7 +74,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
 
         /// <summary>
-        /// Fills in user input and submits
+        /// Fills in user email 
         /// </summary>
         /// <param name="selector">Selector to find element</param>
         /// <param name="value">Value to fill in</param>
@@ -82,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task HandleUserEmailScreen(string selector, string value);
 
         /// <summary>
-        /// Fills in password and submits
+        /// Fills in user password
         /// </summary>
         /// <param name="selector">Selector to find element</param>
         /// <param name="value">Value to fill in</param>

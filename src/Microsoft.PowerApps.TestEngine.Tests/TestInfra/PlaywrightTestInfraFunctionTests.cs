@@ -432,7 +432,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Fact]
         public async Task FillAsyncSuccessfulTest()
         {
-            var selector = "[id =\"i0116\"]";
+            var selector = "input[type =\"email\"]";
             var value = "hello";
 
             MockPage.Setup(x => x.FillAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PageFillOptions?>())).Returns(Task.CompletedTask);
@@ -447,7 +447,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Fact]
         public async Task ClickAsyncSuccessfulTest()
         {
-            var selector = "[id =\"i0116\"]";
+            var selector = "input[type =\"email\"]";
 
             MockPage.Setup(x => x.ClickAsync(It.IsAny<string>(), It.IsAny<PageClickOptions?>())).Returns(Task.CompletedTask);
 
