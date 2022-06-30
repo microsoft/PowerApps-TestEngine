@@ -67,7 +67,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             var launchOptions = new BrowserTypeLaunchOptions()
             {
-                Headless = true,
+                Headless = testSettings.Headless,
                 Timeout = testSettings.Timeout
             };
 
