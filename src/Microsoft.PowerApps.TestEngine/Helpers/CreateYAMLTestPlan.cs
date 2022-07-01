@@ -53,9 +53,15 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         class TestSettings
         {
             public bool recordVideo { get; set; }
-            public List<String> browserConfigurations { get; set; }
+            public List<BrowserConfiguration> browserConfigurations { get; set; }
 
         }
+
+        class BrowserConfiguration
+        {
+            public string browser { get; set; }
+        }
+
 
         class EnvironmentVariables
         {
@@ -91,7 +97,6 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             Console.WriteLine("YAML TestPlan Location: " + outputDir);
 
         }
-
 
         private static void readJson(string InputDir)
         {
@@ -151,12 +156,12 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             if (String.IsNullOrEmpty(TestDescription))
                 TestDescription = "Missing Test Name";
 
-            StringBuilder stringBuilder = new StringBuilder("=\n");
+            StringBuilder stringBuilder = new StringBuilder("= \n");
 
             foreach (string step in TestSteps)
             {
-                stringBuilder.Append(step);
-                stringBuilder.Append("\n");
+                stringBuilder.Append(validateStep(step));
+                stringBuilder.Append(";\n");
             }
 
             string formattedTestSteps = stringBuilder.ToString();
@@ -165,18 +170,18 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             {
                 test = new TestDefinition
                 {
-                    name = "AppName - " + TestName, //Test name should be App name plus the Test Case name
+                    name = TestName,
                     description = TestDescription,
                     persona = "User1",
                     appLogicalName = "appLogicalName",
 
-                    testSteps = formattedTestSteps,
+                    testSteps = formattedTestSteps, 
 
                 },
                 testSettings = new TestSettings
                 {
                     recordVideo = true,
-                    browserConfigurations = new List<string>(new String[] { "Edge" })
+                    browserConfigurations = new List<BrowserConfiguration>(new BrowserConfiguration[] { new BrowserConfiguration { browser = "Edge" } })
 
                 },
 
@@ -189,8 +194,6 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
             var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-/*            var yaml = serializer.Serialize(testYAML);
-*/
             try
             {
                 using (var sw = new StreamWriter(outputDir))
@@ -203,6 +206,27 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 Console.WriteLine(e.Message);
             }
 
+        }
+
+        /// <summary>
+        /// Checks if a test step needs to be changed to match Test Engine Syntax
+        /// </summary>
+        /// <param name="step">A Test Step in Test Studio's Power fx syntax</param>
+        /// <returns></returns>
+        private static string validateStep(string step)
+        {
+            string name = step.Split('(')[0];
+
+            Console.WriteLine(name);
+
+            if (name == null)
+            {
+                return step;
+            }
+            string parameters = step.Split('(')[1];
+
+
+            return step;
         }
 
     }
