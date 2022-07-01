@@ -48,9 +48,7 @@ var switchMappings = new Dictionary<string, string>()
 
 if (args[0].Equals("convert"))
 {
-    Console.WriteLine(args[0]);
-
-    string InputDir = args[2];
+    string InputDir = args[1];
     CreateYAMLTestPlan.exportYAML(InputDir);
     return;
 }
