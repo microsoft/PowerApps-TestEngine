@@ -134,15 +134,15 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 if (x["Property"].ToString().Equals("Description"))
                 {
                     string description = x["InvariantScript"].ToString();
-                    TestDescription = description;
+                    TestDescription = description.Replace("\"", "");
                 }
 
                 if (x["Property"].ToString().Equals("DisplayName"))
                 {
                     string caseName = x["InvariantScript"].ToString();
-                    TestName = caseName;
-                }
 
+                    TestName = caseName.Replace("\"", "");
+                }
 
             }
         }
@@ -154,7 +154,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 TestName = "Missing Test Name";
 
             if (String.IsNullOrEmpty(TestDescription))
-                TestDescription = "Missing Test Name";
+                TestDescription = "Missing Test Description";
 
             StringBuilder stringBuilder = new StringBuilder("= \n");
 
