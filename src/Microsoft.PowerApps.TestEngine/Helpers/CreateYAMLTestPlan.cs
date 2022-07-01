@@ -14,7 +14,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 using Microsoft.PowerApps.TestEngine.System;
-
+using System.Text.RegularExpressions;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
@@ -27,6 +27,8 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         private static string? TestName;
 
         private static string? TestDescription;
+
+        private static string[] NoChangeCommands = { "Assert", "Select" };
 
         class TestYAML
         {
@@ -217,13 +219,25 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         {
             string name = step.Split('(')[0];
 
-            Console.WriteLine(name);
-
-            if (name == null)
+            if (NoChangeCommands.Contains(name))
             {
                 return step;
             }
-            string parameters = step.Split('(')[1];
+            string parameters = Regex.Match(step, @"\(.*\)").Groups[0].Value;
+            parameters = parameters.Substring(1, parameters.Length - 2);
+
+            switch (name)
+            {
+                case "SetProperty":
+                    string property = parameters.Split(",")[0];
+                    string value = parameters.Split(",")[1];
+                    step = name + "(" + property.Split(".")[0] + "," + "\"" + property.Split(".")[1] + "\"" + "," + value + ")";
+                    break; 
+                default:
+                    step = "Assert( true," + step + " is not supported )";
+                    break;
+            }
+
 
 
             return step;
