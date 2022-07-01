@@ -13,6 +13,9 @@ using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
+using Microsoft.PowerApps.TestEngine.System;
+
+
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
     public static class CreateYAMLTestPlan
@@ -27,9 +30,9 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
         class TestYAML
         {
-            public test test { get; set; }
-            public TestSettings TestSettings { get; set; }
-            public EnvironmentVariables EnvironmentVariables { get; set; }
+            public TestDefinition test { get; set; }
+            public TestSettings testSettings { get; set; }
+            public EnvironmentVariables environmentVariables { get; set; }
 
         }
 
@@ -70,19 +73,22 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         public static void exportYAML(string dir)
         {
 
-            //Error Handling (valid dir, valid json)
-
             InputDir = dir;
+
+            if (!File.Exists(InputDir))
+            {
+                throw new FileNotFoundException(InputDir + " does not exist");
+            }
 
             readJson(InputDir);
 
-            Console.WriteLine("JSON Location: " + InputDir);
+            Console.WriteLine("Test JSON Location: " + InputDir);
 
             string outputDir = InputDir.Substring(0, InputDir.Length - 4) + "fx.yaml";
 
             writeYaml(outputDir);
 
-            Console.WriteLine(outputDir);
+            Console.WriteLine("YAML TestPlan Location: " + outputDir);
 
         }
 
@@ -92,20 +98,18 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
             JObject jobj;
 
-            try
+            using (StreamReader sr = File.OpenText(InputDir))
+            using (JsonTextReader reader = new JsonTextReader(sr))
             {
-                using (StreamReader sr = File.OpenText(InputDir))
-                using (JsonTextReader reader = new JsonTextReader(sr))
-                {
-                    jobj = (JObject)JToken.ReadFrom(reader);
-                }
-            }
-            catch (Exception e)
-            {
-                return;
+                jobj = (JObject)JToken.ReadFrom(reader);
             }
 
             var topLevelTestSteps = jobj.Root["TopParent"]["Children"][0]["Children"][0]["Rules"];
+
+            if (!topLevelTestSteps.HasValues)
+            {
+                return;
+            }
 
             foreach (var x in topLevelTestSteps)
             {
@@ -169,14 +173,14 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     testSteps = formattedTestSteps,
 
                 },
-                TestSettings = new TestSettings
+                testSettings = new TestSettings
                 {
                     recordVideo = true,
                     browserConfigurations = new List<string>(new String[] { "Edge" })
 
                 },
 
-                EnvironmentVariables = new EnvironmentVariables
+                environmentVariables = new EnvironmentVariables
                 {
                     users = new List<user>(new user[] { new user { personaName = "User1", emailKey = "user1Email", passwordKey = "user1Password" } })
                 }
@@ -185,10 +189,8 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
             var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-            var yaml = serializer.Serialize(testYAML);
-
-            Console.WriteLine(yaml);
-
+/*            var yaml = serializer.Serialize(testYAML);
+*/
             try
             {
                 using (var sw = new StreamWriter(outputDir))
@@ -198,7 +200,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
             }
 
         }
