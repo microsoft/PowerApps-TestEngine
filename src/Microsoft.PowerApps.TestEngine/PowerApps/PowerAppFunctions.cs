@@ -154,13 +154,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         }
 
         public async Task<bool> SetPropertyAsync<T>(ItemPath itemPath, T value)
+            //where
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             
             // Eventually just check if in list of types. Need to add more than these
-            if (typeof(T) == StringValue || typeof(T) == DateValue)
+            if (typeof(T).Equals(typeof(StringValue)))
             {
                 var expression = $"setPropertyValue({itemPathString}, {value.Value})";
             }
