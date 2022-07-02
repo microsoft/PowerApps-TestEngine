@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     /// <summary>
     /// Functions for interacting with the Power App
     /// </summary>
-    public class PowerAppFunctions : IPowerAppFunctions
+    public class PowerAppFunctions: IPowerAppFunctions
     {
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
@@ -153,12 +153,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value)
+        public async Task<bool> SetPropertyAsync<T>(ItemPath itemPath, T value)
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"setPropertyValue({itemPathString}, {value.Value})";
+            
+            // Eventually just check if in list of types. Need to add more than these
+            if (typeof(T) == StringValue || typeof(T) == DateValue)
+            {
+                var expression = $"setPropertyValue({itemPathString}, {value.Value})";
+            }
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 

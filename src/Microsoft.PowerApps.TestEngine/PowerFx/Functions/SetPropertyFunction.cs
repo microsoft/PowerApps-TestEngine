@@ -19,18 +19,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
 
-        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, FormulaType.String)
+        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, FormulaType.Unknown)
         {
             _powerAppFunctions = powerAppFunctions;
         }
 
-        public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
+        public BlankValue Execute<T>(RecordValue obj, StringValue propName, T value)
         {
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
 
-        private async Task SetProperty(RecordValue obj, StringValue propName, StringValue value)
+        private async Task SetProperty<T>(RecordValue obj, StringValue propName, T value)
         {
             if (obj == null)
             {
@@ -45,6 +45,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             if (value == null)
             {
                 throw new ArgumentException(nameof(value));
+            }
+            else
+            {
+                //switch statement checking type of value, and setting last param of base constructor's FormulaType
             }
 
             var controlModel = (ControlRecordValue)obj; 
