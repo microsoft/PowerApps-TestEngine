@@ -11,11 +11,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using System.ComponentModel;
-using Microsoft.PowerFx.Intellisense;
-using Microsoft.VisualBasic;
-using Microsoft.PowerApps.TestEngine.Helpers;
 
 namespace Microsoft.PowerApps.TestEngine.Tests
 {

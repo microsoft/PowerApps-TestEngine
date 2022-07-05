@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Reporting;
-using System.Runtime.InteropServices;
 
 namespace Microsoft.PowerApps.TestEngine
 {
