@@ -15,68 +15,21 @@ using YamlDotNet.Serialization.NamingConventions;
 
 using Microsoft.PowerApps.TestEngine.System;
 using System.Text.RegularExpressions;
+using Microsoft.PowerApps.TestEngine.Config;
 
-namespace Microsoft.PowerApps.TestEngine.Helpers
+namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 {
     public static class CreateYAMLTestPlan
     {
         private static string? InputDir;
 
-        private static List<String> TestSteps = new List<String>();
+        private static List<string> TestSteps = new List<string>();
 
         private static string? TestName;
 
         private static string? TestDescription;
 
         private static string[] NoChangeCommands = { "Assert", "Select" };
-
-        class TestYAML
-        {
-            public TestDefinition test { get; set; }
-            public TestSettings testSettings { get; set; }
-            public EnvironmentVariables environmentVariables { get; set; }
-
-        }
-
-        class TestDefinition
-        {
-            public string name { get; set; }
-            public string description { get; set; }
-
-            public string persona { get; set; }
-
-            public string appLogicalName { get; set; }
-            [YamlMember(ScalarStyle = ScalarStyle.Literal)]
-            public string testSteps { get; set; }
-
-
-        }
-
-        class TestSettings
-        {
-            public bool recordVideo { get; set; }
-            public List<BrowserConfiguration> browserConfigurations { get; set; }
-
-        }
-
-        class BrowserConfiguration
-        {
-            public string browser { get; set; }
-        }
-
-
-        class EnvironmentVariables
-        {
-            public List<user> users { get; set; }
-        }
-
-        class user
-        {
-            public string personaName { get; set; }
-            public string emailKey { get; set; }
-            public string passwordKey { get; set; }
-
-        }
 
         public static void exportYAML(string dir)
         {
@@ -92,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
             Console.WriteLine("Test JSON Location: " + InputDir);
 
-            string outputDir = InputDir.Substring(0, InputDir.Length - 4) + "fx.yaml";
+            var outputDir = InputDir.Substring(0, InputDir.Length - 4) + "fx.yaml";
 
             writeYaml(outputDir);
 
@@ -105,8 +58,8 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
             JObject jobj;
 
-            using (StreamReader sr = File.OpenText(InputDir))
-            using (JsonTextReader reader = new JsonTextReader(sr))
+            using (var sr = File.OpenText(InputDir))
+            using (var reader = new JsonTextReader(sr))
             {
                 jobj = (JObject)JToken.ReadFrom(reader);
             }
@@ -122,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             {
                 if (x["Category"].ToString().Equals("Behavior"))
                 {
-                    string testStep = x["InvariantScript"].ToString();
+                    var testStep = x["InvariantScript"].ToString();
                     if (!string.IsNullOrEmpty(testStep))
                     {
                         TestSteps.Add(testStep);
@@ -135,13 +88,13 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
                 if (x["Property"].ToString().Equals("Description"))
                 {
-                    string description = x["InvariantScript"].ToString();
+                    var description = x["InvariantScript"].ToString();
                     TestDescription = description.Replace("\"", "");
                 }
 
                 if (x["Property"].ToString().Equals("DisplayName"))
                 {
-                    string caseName = x["InvariantScript"].ToString();
+                    var caseName = x["InvariantScript"].ToString();
 
                     TestName = caseName.Replace("\"", "");
                 }
@@ -152,44 +105,44 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         private static void writeYaml(string outputDir)
         {
 
-            if (String.IsNullOrEmpty(TestName))
+            if (string.IsNullOrEmpty(TestName))
                 TestName = "Missing Test Name";
 
-            if (String.IsNullOrEmpty(TestDescription))
+            if (string.IsNullOrEmpty(TestDescription))
                 TestDescription = "Missing Test Description";
 
-            StringBuilder stringBuilder = new StringBuilder("= \n");
+            var stringBuilder = new StringBuilder("= \n");
 
-            foreach (string step in TestSteps)
+            foreach (var step in TestSteps)
             {
                 stringBuilder.Append(validateStep(step));
                 stringBuilder.Append(";\n");
             }
 
-            string formattedTestSteps = stringBuilder.ToString();
+            var formattedTestSteps = stringBuilder.ToString();
 
-            var testYAML = new TestYAML
+            var testYAML = new TestPlanDefinition
             {
-                test = new TestDefinition
+                Test = new ConverterTestDefinition
                 {
-                    name = TestName,
-                    description = TestDescription,
-                    persona = "User1",
-                    appLogicalName = "Replace with appLogicalName",
+                    Name = TestName,
+                    Description = TestDescription,
+                    Persona = "User1",
+                    AppLogicalName = "Replace with appLogicalName",
 
-                    testSteps = formattedTestSteps, 
+                    TestSteps = formattedTestSteps,
 
                 },
-                testSettings = new TestSettings
+                TestSettings = new TestSettings
                 {
-                    recordVideo = true,
-                    browserConfigurations = new List<BrowserConfiguration>(new BrowserConfiguration[] { new BrowserConfiguration { browser = "Chromium" } })
+                    RecordVideo = true,
+                    BrowserConfigurations = new List<BrowserConfiguration>(new BrowserConfiguration[] { new BrowserConfiguration { Browser = "Chromium" } })
 
                 },
 
-                environmentVariables = new EnvironmentVariables
+                EnvironmentVariables = new EnvironmentVariables
                 {
-                    users = new List<user>(new user[] { new user { personaName = "User1", emailKey = "user1Email", passwordKey = "user1Password" } })
+                    Users = new List<UserConfiguration>(new UserConfiguration[] { new UserConfiguration { PersonaName = "User1", EmailKey = "user1Email", PasswordKey = "user1Password" } })
                 }
 
             };
@@ -209,7 +162,6 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             }
 
         }
-
         /// <summary>
         /// Checks if a test step needs to be changed to match Test Engine Syntax
         /// </summary>
@@ -217,28 +169,26 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         /// <returns></returns>
         private static string validateStep(string step)
         {
-            string name = step.Split('(')[0];
+            var name = step.Split('(')[0];
 
             if (NoChangeCommands.Contains(name))
             {
                 return step;
             }
-            string parameters = Regex.Match(step, @"\(.*\)").Groups[0].Value;
+            var parameters = Regex.Match(step, @"\(.*\)").Groups[0].Value;
             parameters = parameters.Substring(1, parameters.Length - 2);
 
             switch (name)
             {
                 case "SetProperty":
-                    string property = parameters.Split(",")[0];
-                    string value = parameters.Split(",")[1];
+                    var property = parameters.Split(",")[0];
+                    var value = parameters.Split(",")[1];
                     step = name + "(" + property.Split(".")[0] + "," + "\"" + property.Split(".")[1] + "\"" + "," + value + ")";
-                    break; 
+                    break;
                 default:
                     step = "Assert( true,\"" + step + " is not supported \")";
                     break;
             }
-
-
 
             return step;
         }

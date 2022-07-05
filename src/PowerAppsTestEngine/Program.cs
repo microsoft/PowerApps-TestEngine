@@ -12,9 +12,9 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.PowerApps.TestEngine.Helpers;
 using PowerAppsTestEngine;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.PowerApps.TestEngine.TestStudioConverter;
 
 var serviceProvider = new ServiceCollection()
     .AddLogging(loggingBuilder =>
