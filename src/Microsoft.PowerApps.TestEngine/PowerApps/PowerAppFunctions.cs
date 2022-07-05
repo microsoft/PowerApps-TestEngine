@@ -153,8 +153,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyAsync<T>(ItemPath itemPath, T value)
-            where T : ValidFormulaValue
+        public async Task<bool> SetPropertyAsync<TValue, TType>(ItemPath itemPath, TValue value)
+            where TValue : PrimitiveValue<TType> 
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components
