@@ -24,18 +24,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _powerAppFunctions = powerAppFunctions;
         }
 
-        public BlankValue Execute<T>(RecordValue obj, StringValue propName, T value)
+        public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
         {
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
 
-        private async Task SetProperty<T>(RecordValue obj, StringValue propName, T value)
+        private async Task SetProperty(RecordValue obj, StringValue propName, NumberValue value)
         {
             if (obj == null)
             {
                 throw new ArgumentException(nameof(obj));
-            }
+            }g
 
             if (propName == null)
             {

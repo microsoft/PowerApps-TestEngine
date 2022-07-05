@@ -193,7 +193,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value)
+        /*public async Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value)
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components
@@ -212,6 +212,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
+        */
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
         {
