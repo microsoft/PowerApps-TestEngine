@@ -21,34 +21,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("myEnvironment", "Prod", "https://make.powerapps.com/environments/myEnvironment/home")]
-        [InlineData("defaultEnvironment", "Test", "https://make.test.powerapps.com/environments/defaultEnvironment/home")]
-        [InlineData("defaultEnvironment", "test", "https://make.test.powerapps.com/environments/defaultEnvironment/home")]
-        [InlineData("myEnvironment", "PROD", "https://make.powerapps.com/environments/myEnvironment/home")]
-        [InlineData("myEnvironment", "prod", "https://make.powerapps.com/environments/myEnvironment/home")]
-        [InlineData("defaultEnvironment", "", "https://make.powerapps.com/environments/defaultEnvironment/home")]
-        [InlineData("defaultEnvironment", null, "https://make.powerapps.com/environments/defaultEnvironment/home")]
-        public void GenerateLoginUrlTest(string environmentId, string? cloud, string expectedLoginUrl)
-        {
-            MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
-            MockTestState.Setup(x => x.GetCloud()).Returns(cloud);
-            var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Equal(expectedLoginUrl, powerAppUrlMapper.GenerateLoginUrl());
-            MockTestState.Verify(x => x.GetEnvironment(), Times.Once());
-            MockTestState.Verify(x => x.GetCloud(), Times.Once());
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void GenerateLoginUrlThrowsOnNoEnvironmentTest(string? environmentId)
-        {
-            MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
-            var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateLoginUrl());
-        }
-
-        [Theory]
         [InlineData("myEnvironment", "Prod", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant")]
         [InlineData("defaultEnvironment", "Test", "defaultApp", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant")]
         [InlineData("defaultEnvironment", "test", "defaultApp", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant")]
@@ -63,7 +35,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(new TestDefinition() { AppLogicalName = appLogicalName });
             MockTestState.Setup(x => x.GetTenant()).Returns(tenantId);
             var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Equal(expectedAppUrl, powerAppUrlMapper.GenerateAppUrl());
+            Assert.Equal(expectedAppUrl, powerAppUrlMapper.GenerateTestUrl());
             MockTestState.Verify(x => x.GetEnvironment(), Times.Once());
             MockTestState.Verify(x => x.GetCloud(), Times.Once());
             MockSingleTestInstanceState.Verify(x => x.GetTestDefinition(), Times.Once());
@@ -83,7 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(new TestDefinition() { AppLogicalName = appLogicalName });
             MockTestState.Setup(x => x.GetTenant()).Returns(tenantId);
             var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateAppUrl());
+            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateTestUrl());
         }
 
         [Fact]
@@ -94,7 +66,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
             MockTestState.Setup(x => x.GetTenant()).Returns("tenantId");
             var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateAppUrl());
+            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateTestUrl());
         }
     }
 }

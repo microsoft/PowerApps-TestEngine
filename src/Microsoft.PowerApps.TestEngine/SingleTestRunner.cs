@@ -83,14 +83,14 @@ namespace Microsoft.PowerApps.TestEngine
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
 
+                // Navigate to test url
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl());
+
                 // Log in user
                 await _userManager.LoginAsUserAsync();
 
                 // Set up network request mocking if any
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
-
-                // Navigate to app
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateAppUrl());
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();
