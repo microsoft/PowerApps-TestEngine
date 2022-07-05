@@ -160,8 +160,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             
-            // Eventually just check if in list of types. Need to add more than these
-            if (typeof(TValue).Equals(typeof(StringValue)) || typeof(TValue).Equals(typeof(DateValue)))
+            if (typeof(TValue).Equals(typeof(StringValue)) ||
+                typeof(TValue).Equals(typeof(DateValue)) ||
+                typeof(TValue).Equals(typeof(NumberValue)) ||
+                typeof(TValue).Equals(typeof(BooleanValue)) ||
+                typeof(TValue).Equals(typeof(TableValue)) ||
+                typeof(TValue).Equals(typeof(RecordValue)))
             {
                 var expression = $"setPropertyValue({itemPathString}, {value.Value})";
                 return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
