@@ -15,7 +15,6 @@ namespace Microsoft.PowerApps.TestEngine.Users
     {
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ITestState _testState;
-        private readonly IUrlMapper _urlMapper;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IEnvironmentVariable _environmentVariable;
 
@@ -24,12 +23,11 @@ namespace Microsoft.PowerApps.TestEngine.Users
         private const string SubmitButtonSelector = "input[type=\"submit\"]";
         private const string KeepMeSignedInNoSelector = "[id=\"idBtn_Back\"]";
 
-        public UserManager(ITestInfraFunctions testInfraFunctions, ITestState testState, IUrlMapper urlMapper,
+        public UserManager(ITestInfraFunctions testInfraFunctions, ITestState testState,
             ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
-            _urlMapper = urlMapper;
             _singleTestInstanceState = singleTestInstanceState;
             _environmentVariable = environmentVariable;
         }
@@ -76,10 +74,6 @@ namespace Microsoft.PowerApps.TestEngine.Users
             {
                 throw new InvalidOperationException("Password cannot be null");
             }
-
-            var makerPortalUrl = _urlMapper.GenerateLoginUrl();
-
-            await _testInfraFunctions.GoToUrlAsync(makerPortalUrl);
 
             await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);
 

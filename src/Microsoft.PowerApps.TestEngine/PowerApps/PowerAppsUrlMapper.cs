@@ -19,36 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public string GenerateLoginUrl()
-        {
-            var environment = _testState.GetEnvironment();
-            if (string.IsNullOrEmpty(environment))
-            {
-                throw new InvalidOperationException("Environment cannot be empty");
-            }
-
-            var cloud = _testState.GetCloud();
-            
-            if (cloud == null)
-            {
-                cloud = "";
-            }
-
-            // TODO: implement the other clouds
-            switch(cloud.ToLower())
-            {
-                case "test":
-                    return $"https://make.test.powerapps.com/environments/{environment}/home";
-                case "prod":
-                    return $"https://make.powerapps.com/environments/{environment}/home";
-                default:
-                    // TODO: determine what happens on default
-                    return $"https://make.powerapps.com/environments/{environment}/home";
-            }
-
-        }
-
-        public string GenerateAppUrl()
+        public string GenerateTestUrl()
         {
             var environment = _testState.GetEnvironment();
             if (string.IsNullOrEmpty(environment))

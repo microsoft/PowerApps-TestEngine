@@ -9,15 +9,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     public interface IUrlMapper
     {
         /// <summary>
-        /// Generates url for login
+        /// Generates url for the test
         /// </summary>
-        /// <returns>Login url</returns>
-        public string GenerateLoginUrl();
-
-        /// <summary>
-        /// Generates the app url
-        /// </summary>
-        /// <returns>App url</returns>
-        public string GenerateAppUrl();
+        /// <returns>Test url</returns>
+        public string GenerateTestUrl();
     }
 }
