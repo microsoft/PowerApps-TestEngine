@@ -51,9 +51,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 //switch statement checking type of value, and setting last param of base constructor's FormulaType
             }
 
-            var controlModel = (ControlRecordValue)obj;
-            var valueType = value.GetType();
-            var result = await _powerAppFunctions.SetPropertyAsync<valueType>(controlModel.GetItemPath(propName.Value), value);
+            var controlModel = (ControlRecordValue)obj; 
+            var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
 
             if (!result)
             {

@@ -153,27 +153,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyAsync<TValue, TType>(ItemPath itemPath, TValue value)
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value)
             where TValue : PrimitiveValue<TType>
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            
-            if (typeof(TValue).Equals(typeof(StringValue)) ||
-                typeof(TValue).Equals(typeof(DateValue)) ||
-                typeof(TValue).Equals(typeof(NumberValue)) ||
-                typeof(TValue).Equals(typeof(BooleanValue)) ||
-                typeof(TValue).Equals(typeof(TableValue)) ||
-                typeof(TValue).Equals(typeof(RecordValue)))
-            {
-                var expression = $"setPropertyValue({itemPathString}, {value.Value})";
-                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
-            }
-            else
-            {
-                throw new ArgumentException("Can only use SetProperty on supported types.");
-            }
+
+            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
