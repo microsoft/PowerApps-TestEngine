@@ -175,7 +175,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     name = TestName,
                     description = TestDescription,
                     persona = "User1",
-                    appLogicalName = "appLogicalName",
+                    appLogicalName = "Replace with appLogicalName",
 
                     testSteps = formattedTestSteps, 
 
@@ -183,7 +183,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 testSettings = new TestSettings
                 {
                     recordVideo = true,
-                    browserConfigurations = new List<BrowserConfiguration>(new BrowserConfiguration[] { new BrowserConfiguration { browser = "Edge" } })
+                    browserConfigurations = new List<BrowserConfiguration>(new BrowserConfiguration[] { new BrowserConfiguration { browser = "Chromium" } })
 
                 },
 
@@ -234,7 +234,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     step = name + "(" + property.Split(".")[0] + "," + "\"" + property.Split(".")[1] + "\"" + "," + value + ")";
                     break; 
                 default:
-                    step = "Assert( true," + step + " is not supported )";
+                    step = "Assert( true,\"" + step + " is not supported \")";
                     break;
             }
 
