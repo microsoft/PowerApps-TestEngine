@@ -161,11 +161,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             
             // Eventually just check if in list of types. Need to add more than these
-            if (typeof(TValue).Equals(typeof(StringValue)))
+            if (typeof(TValue).Equals(typeof(StringValue)) || typeof(TValue).Equals(typeof(DateValue)))
             {
                 var expression = $"setPropertyValue({itemPathString}, {value.Value})";
+                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            else
+            {
+                throw new ArgumentException("Can only use SetProperty on supported types.");
+            }
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
