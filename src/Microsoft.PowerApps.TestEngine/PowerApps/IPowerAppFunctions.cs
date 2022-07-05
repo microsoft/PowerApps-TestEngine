@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// <param name="itemPath">Path to the item</param>
         /// <param name="value">New value we are setting the property to</param>
         /// <returns>True if setPropertyValue function was successfully executed.</returns>
-        public Task<bool> SetPropertyAsync<T>(ItemPath itemPath, T value) where T : PrimitiveValue;
+        public Task<bool> SetPropertyAsync<T>(ItemPath itemPath, T value) where T : ValidFormulaValue;
 
         /// <summary>
         /// Loads the object model for Power Apps
