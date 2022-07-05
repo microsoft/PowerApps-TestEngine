@@ -10,7 +10,7 @@ This is used to define settings for the tests in the test plan
 | recordVideo | No | Default is false. If set to true, a video recording of the test is captured |
 | enablePowerFxOverlay | No | Default is false. If set to true, an overlay with the currently running Power FX command is placed on the screen |
 | timeout | No | Timeout value in milliseconds. If any operation takes longer than the timeout limit, it will end the test in a failure. Default is 30000 milliseconds(30s) |
-
+| workers | No |  Default is 10. Handle a max number of tests being run in parallel |
 ### Browser configuration
 
 | Property | Required | Description |
