@@ -46,11 +46,14 @@ var switchMappings = new Dictionary<string, string>()
     { "-o", "OutputDirectory" }
 };
 
-if (args[0].Equals("convert"))
+if (args.Length > 0)
 {
-    string InputDir = args[1];
-    CreateYAMLTestPlan.exportYAML(InputDir);
-    return;
+    if (args[0].Equals("convert"))
+    {
+        string InputDir = args[1];
+        CreateYAMLTestPlan.exportYAML(InputDir);
+        return;
+    }
 }
 
 var inputOptions = new ConfigurationBuilder()
