@@ -46,6 +46,8 @@ testSettings:
     browserConfigurations:
         - browser: Chromium
         - browser: Firefox
+    headless: false
+    enablePowerFxOverlay: false
 
 environmentVariables:
     users:
@@ -69,6 +71,8 @@ environmentVariables:
             Assert.Equal("/myFakeBing.json", testPlan.Test?.NetworkRequestMocks?[0].ResponseDataFile);
             Assert.False(string.IsNullOrEmpty(testPlan.Test?.TestSteps));
             Assert.True(testPlan.TestSettings?.RecordVideo);
+            Assert.False(testPlan.TestSettings?.Headless);
+            Assert.False(testPlan.TestSettings?.EnablePowerFxOverlay);
             Assert.Equal(2, testPlan.TestSettings?.BrowserConfigurations?.Count);
             Assert.Equal("Chromium", testPlan.TestSettings?.BrowserConfigurations?[0].Browser);
             Assert.Equal("Firefox", testPlan.TestSettings?.BrowserConfigurations?[1].Browser);

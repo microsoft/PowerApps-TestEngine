@@ -59,7 +59,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.PasswordKey)).Returns(password);
             MockUrlMapper.Setup(x => x.GenerateLoginUrl()).Returns(loginUrl);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.FillAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.HandleUserEmailScreen(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.HandleUserPasswordScreen(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.ClickAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockUrlMapper.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
@@ -71,9 +72,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockEnvironmentVariable.Verify(x => x.GetVariable(userConfiguration.PasswordKey), Times.Once());
             MockUrlMapper.Verify(x => x.GenerateLoginUrl(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(loginUrl), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.FillAsync("[id=\"i0116\"]", email), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.ClickAsync("[id=\"idSIButton9\"]"), Times.Exactly(2));
-            MockTestInfraFunctions.Verify(x => x.FillAsync("[id=\"i0118\"]", password), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.HandleUserEmailScreen("input[type=\"email\"]", email), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.ClickAsync("input[type=\"submit\"]"), Times.Exactly(2));
+            MockTestInfraFunctions.Verify(x => x.HandleUserPasswordScreen("input[type=\"password\"]", password), Times.Once());
             MockTestInfraFunctions.Verify(x => x.ClickAsync("[id=\"idBtn_Back\"]"), Times.Once());
         }
 
