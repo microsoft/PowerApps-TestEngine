@@ -154,7 +154,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         }
 
         public async Task<bool> SetPropertyAsync<TValue, TType>(ItemPath itemPath, TValue value)
-            where TValue : PrimitiveValue<TType> 
+            where TValue : PrimitiveValue<TType>
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components

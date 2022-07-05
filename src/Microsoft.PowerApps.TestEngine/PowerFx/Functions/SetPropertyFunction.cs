@@ -52,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             }
 
             var controlModel = (ControlRecordValue)obj; 
-            var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
+            var result = await _powerAppFunctions.SetPropertyAsync<typeof(value).GetType()>(controlModel.GetItemPath(propName.Value), value);
 
             if (!result)
             {
