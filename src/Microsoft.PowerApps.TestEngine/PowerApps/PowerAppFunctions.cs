@@ -154,7 +154,56 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         }
 
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value)
-            where TValue : PrimitiveValue<TType>
+        {
+            ValidateItemPath(itemPath, false);
+            // TODO: handle components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+
+            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, NumberValue value)
+        {
+            ValidateItemPath(itemPath, false);
+            // TODO: handle components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+
+            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, BooleanValue value)
+        {
+            ValidateItemPath(itemPath, false);
+            // TODO: handle components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+
+            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, DateValue value)
+        {
+            ValidateItemPath(itemPath, false);
+            // TODO: handle components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+
+            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value)
+        {
+            ValidateItemPath(itemPath, false);
+            // TODO: handle components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+
+            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, RecordValue value)
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components
