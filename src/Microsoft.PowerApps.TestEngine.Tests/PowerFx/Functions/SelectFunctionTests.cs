@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectFunctionThrowsOnNullObjectTest()
         {
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, () => Task.CompletedTask);
+            var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, () => Task.CompletedTask);
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(null));
         }
 
@@ -38,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void SelectFunctionThrowsOnNonPowerAppsRecordValuetTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, () => Task.CompletedTask);
+            var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, () => Task.CompletedTask);
 
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(someOtherRecordValue));
@@ -57,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 updaterFunctionCallCount++;
                 return Task.CompletedTask;
             };
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, updaterFunction);
+            var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction);
             var result = selectFunction.Execute(recordValue);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
@@ -78,7 +78,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 return Task.CompletedTask;
             };
 
-            var selectFunction = new SelectFunction(MockPowerAppFunctions.Object, updaterFunction); 
+            var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction); 
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
             Assert.Equal(0, updaterFunctionCallCount);
