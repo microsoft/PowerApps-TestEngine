@@ -77,7 +77,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
                 goStepByStep = true;
-                Logger.LogError($"Syntax check failed: {JsonConvert.SerializeObject(checkResult.Errors)}. Switching to step by step");
+                Logger.LogError($"Syntax check failed. Switching to step by step");
             }
 
             if (goStepByStep)
