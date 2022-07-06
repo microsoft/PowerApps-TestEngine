@@ -119,7 +119,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.GetOutputDirectory()).Returns(outputDirectory);
             MockState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockState.Setup(x => x.GetTestDefinitions()).Returns(testDefinitions);
-            MockState.Setup(x => x.GetWorkers()).Returns(testSettings.Workers);
+            MockState.Setup(x => x.GetWorkers()).Returns(testSettings.WorkerCount);
 
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(testRunId);
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));

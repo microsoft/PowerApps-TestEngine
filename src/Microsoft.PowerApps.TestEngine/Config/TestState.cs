@@ -227,7 +227,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public int GetWorkers()
         {
-            return GetTestSettings().Workers;
+            return GetTestSettings().WorkerCount;
         }
     }
 }

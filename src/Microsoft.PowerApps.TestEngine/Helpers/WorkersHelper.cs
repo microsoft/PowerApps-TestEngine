@@ -15,8 +15,8 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         private readonly IServiceProvider _serviceProvider;
         public int TotalTestRun(string testRunId, string testRunDirectory, List<TestDefinition> testDefinitions, TestSettings testSettings)
         {
-            int workers = testSettings.Workers;
-            if (workers < 0)
+            int workerCount = testSettings.WorkerCount;
+            if (workerCount < 0)
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 foreach (var eachBrowserConfig in browserConfigurations)
                 {
                     allTestRuns.Enqueue(RunOneTestAsync(testRunId, testRunDirectory, eachTestDefinition, eachBrowserConfig));
-                    if (allTestRuns.Count >= workers)
+                    if (allTestRuns.Count >= workerCount)
                     {
                         var maxTestRuns = new List<Task>();
                         while (allTestRuns.Count > 0)

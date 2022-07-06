@@ -15,7 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         string testRunDirectory = Path.Combine("TestOutput", Guid.NewGuid().ToString().Substring(0, 6));
         TestSettings testSettings = new TestSettings()
         {
-            Workers = 2,
+            WorkerCount = 2,
             BrowserConfigurations = new List<BrowserConfiguration>()
                 {
                     new BrowserConfiguration()

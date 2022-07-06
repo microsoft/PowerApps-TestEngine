@@ -43,6 +43,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Number of workers. Default is 10.
         /// </summary>
-        public int Workers { get; set; } = 10;
+        public int WorkerCount { get; set; } = 10;
     }
 }
