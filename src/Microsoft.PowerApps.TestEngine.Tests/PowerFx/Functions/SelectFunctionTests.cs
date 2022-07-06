@@ -180,5 +180,56 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Once());
             Assert.Equal(0, updaterFunctionCallCount);
         }
+
+        [Fact]
+        public void SelectGalleryTest()
+        {
+            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            var parentRecordType = new RecordType().Add("Gallery1", new RecordType());
+            var childRecordType = new RecordType().Add("Button1", new RecordType());
+
+            var updaterFunctionCallCount = 0;
+            var updaterFunction = () => {
+                updaterFunctionCallCount++;
+                return Task.CompletedTask;
+            };
+
+            // Select gallery item using oneparam select function
+            // `Select(Index(Gallery1.AllItems, 1).Button1);`
+            var parentItemPath = new ItemPath()
+            {
+                ControlName = "Gallery1",
+                Index = 0,
+                ParentControl = null,
+                PropertyName = "AllItems"
+            };
+            var itemPath = new ItemPath()
+            {
+                ControlName = "Button1",
+                Index = null,
+                ParentControl = parentItemPath,
+                PropertyName = null
+            };
+
+            var recordType = new RecordType().Add("Button1", new RecordType());
+            var powerAppControlModel = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1", parentItemPath);
+
+            var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction);
+            var result = selectFunction.Execute(powerAppControlModel);
+            Assert.IsType<BlankValue>(result);
+
+            // Select gallery item using threeparams select function
+            // `Select(Gallery1, 1, Button1);`
+            var parentValue = new ControlRecordValue(parentRecordType, MockPowerAppFunctions.Object, "Gallery1");
+            var rowOrColumn = NumberValue.New(1.0);
+            var childValue = new ControlRecordValue(childRecordType, MockPowerAppFunctions.Object, "Button1");
+
+            var selectthreeParamsFunction = new SelectThreeParamsFunction(MockPowerAppFunctions.Object, updaterFunction);
+            result = selectthreeParamsFunction.Execute(parentValue, rowOrColumn, childValue);
+            Assert.IsType<BlankValue>(result);
+
+            MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Exactly(2));
+            Assert.Equal(2, updaterFunctionCallCount);
+        }
     }
 }
