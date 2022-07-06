@@ -51,7 +51,11 @@ if (args.Length > 0)
     if (args[0].Equals("convert"))
     {
         string InputDir = args[1];
-        CreateYAMLTestPlan.exportYAML(InputDir);
+
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
+        ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
+        CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger);
+        converter.exportYAML(InputDir);
         return;
     }
 }

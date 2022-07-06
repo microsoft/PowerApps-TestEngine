@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -14,13 +15,14 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 using Microsoft.PowerApps.TestEngine.System;
-using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 
 namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 {
-    public static class CreateYAMLTestPlan
+    public class CreateYAMLTestPlan
     {
+        private readonly ILogger<CreateYAMLTestPlan> _logger;
         private static string? InputDir;
 
         private static List<string> TestSteps = new List<string>();
@@ -31,7 +33,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private static string[] NoChangeCommands = { "Assert", "Select" };
 
-        public static void exportYAML(string dir)
+        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger)
+        {
+            _logger = logger;
+        }
+
+        public void exportYAML(string dir)
         {
 
             InputDir = dir;
@@ -43,17 +50,17 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             readJson(InputDir);
 
-            Console.WriteLine("Test JSON Location: " + InputDir);
+            _logger.LogInformation($"Test JSON Location: {InputDir}");
 
             var outputDir = InputDir.Substring(0, InputDir.Length - 4) + "fx.yaml";
 
             writeYaml(outputDir);
 
-            Console.WriteLine("YAML TestPlan Location: " + outputDir);
+            _logger.LogInformation($"YAML TestPlan Location: {outputDir}");
 
         }
 
-        private static void readJson(string InputDir)
+        private void readJson(string InputDir)
         {
 
             JObject jobj;
@@ -102,7 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
         }
 
-        private static void writeYaml(string outputDir)
+        private void writeYaml(string outputDir)
         {
 
             if (string.IsNullOrEmpty(TestName))
@@ -160,33 +167,56 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             {
                 Console.WriteLine(e.Message);
             }
-
         }
         /// <summary>
         /// Checks if a test step needs to be changed to match Test Engine Syntax
         /// </summary>
         /// <param name="step">A Test Step in Test Studio's Power fx syntax</param>
         /// <returns></returns>
-        private static string validateStep(string step)
+        private string validateStep(string step)
         {
-            var name = step.Split('(')[0];
+            var identifier = step.Split('(')[0];
 
-            if (NoChangeCommands.Contains(name))
+            if (NoChangeCommands.Contains(identifier))
             {
                 return step;
             }
             var parameters = Regex.Match(step, @"\(.*\)").Groups[0].Value;
             parameters = parameters.Substring(1, parameters.Length - 2);
 
-            switch (name)
+            switch (identifier)
             {
                 case "SetProperty":
-                    var property = parameters.Split(",")[0];
-                    var value = parameters.Split(",")[1];
-                    step = name + "(" + property.Split(".")[0] + "," + "\"" + property.Split(".")[1] + "\"" + "," + value + ")";
-                    break;
+                    // SetProperty(IncrementControl1.value, 10) --> SetProperty(IncrementControl1, "value", 10)
+                    var parametersSplit = parameters.Split(new[] {','}, 2);
+
+                    if(parametersSplit.Length < 2)
+                    {
+                        step = "Assert( true,\"" + step + " incorrect Test Studio syntax \")";
+                        _logger.LogWarning($"{step} incorrect syntax");
+                        break;
+                    }
+
+                    var property = parametersSplit[0];
+                    var value = parametersSplit[1];
+
+                    var propertySplitArray = property.Split(".");
+
+                    if (propertySplitArray.Length > 1)
+                    {
+                        step = identifier + "(" + propertySplitArray[0] + "," + "\"" + propertySplitArray[1] + "\"" + "," + value + ")";
+                        break;
+                    }
+                    else
+                    {
+                        step = "Assert( true,\"" + step + " missing property \")";
+                        _logger.LogWarning($"{step} has a missing property");
+                        break;
+                    }
+
                 default:
                     step = "Assert( true,\"" + step + " is not supported \")";
+                    _logger.LogWarning($"{step} is not supported");
                     break;
             }
 
