@@ -10,8 +10,6 @@ test:
       Assert(Index(Gallery1.AllItems, 2).Title1.Text = "Lorem ipsum 2", "Validate the label in the 2nd row of the gallery");
       Select(Index(Gallery1.AllItems, 2).NextArrow1);
       Assert(Label1.Text = "Lorem ipsum 2", "Label should be updated to indicate second item in the gallery");
-      Select(Gallery1, 2, NextArrow1);
-      Assert(Label1.Text = "Lorem ipsum 2", "Label should be updated to indicate third item in the gallery");
       // Using the test studio syntax to select gallery item
       Select(Gallery1, 3, NextArrow1);
       Assert(Label1.Text = "Lorem ipsum 3", "Label should be updated to indicate third item in the gallery");
