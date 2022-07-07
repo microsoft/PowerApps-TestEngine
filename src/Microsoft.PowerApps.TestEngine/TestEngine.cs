@@ -77,8 +77,15 @@ namespace Microsoft.PowerApps.TestEngine
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
 
-            var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
+            await RunWorkerCountTestAsync(testRunId, testRunDirectory);
 
+            _testReporter.EndTestRun(testRunId);
+            return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
+        }
+
+        public async Task RunWorkerCountTestAsync(string testRunId, string testRunDirectory)
+        {
+            var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
             Queue<Task> allTestRuns = new Queue<Task>();
 
             // Manage number of workers
@@ -98,17 +105,8 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                 }
             }
-            var restTestRuns = new List<Task>();
-            while (allTestRuns.Count > 0)
-            {
-                restTestRuns.Add(allTestRuns.Dequeue());
-            }
-            await Task.WhenAll(restTestRuns.ToArray());
-
-            _testReporter.EndTestRun(testRunId);
-            return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
+            await Task.WhenAll(allTestRuns.ToArray());
         }
-
         private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestDefinition testDefinition, BrowserConfiguration browserConfig)
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())

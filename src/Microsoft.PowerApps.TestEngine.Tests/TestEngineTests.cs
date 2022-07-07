@@ -38,6 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             var testSettings = new TestSettings()
             {
+                WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
                     new BrowserConfiguration()
@@ -75,6 +76,55 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Assert.Equal(expectedTestReportPath, testReportPath);
 
             Verify(testConfigFile, environmentId, tenantId, expectedCloud, expectedOutputDirectory, testRunId, testRunDirectory, testDefinitions, testSettings);
+        }
+
+        [Fact]
+        public async Task RunWorkerCountWithDefaultParamsTest()
+        {
+            var testSettings = new TestSettings()
+            {
+                WorkerCount = 2,
+                BrowserConfigurations = new List<BrowserConfiguration>()
+                {
+                    new BrowserConfiguration()
+                    {
+                        Browser = "Chromium"
+                    }
+                }
+            };
+            var testDefinitions = new List<TestDefinition>()
+            {
+                new TestDefinition()
+                {
+                    Name = "Test1",
+                    Description = "First test",
+                    AppLogicalName = "logicalAppName1",
+                    Persona = "User1",
+                    TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                }
+            };
+            var testConfigFile = "C:\\testPlan.fx.yaml";
+            var environmentId = "defaultEnviroment";
+            var tenantId = "tenantId";
+            var testRunId = Guid.NewGuid().ToString();
+            var expectedOutputDirectory = "TestOutput";
+            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var expectedCloud = "Prod";
+
+            var expectedTestReportPath = "C:\\test.trx";
+
+            SetupMocks(expectedOutputDirectory, testSettings, testDefinitions, testRunId, expectedTestReportPath);
+
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object);
+            await testEngine.RunWorkerCountTestAsync(testRunId, testRunDirectory);
+
+            foreach (var testDefinition in testDefinitions)
+            {
+                foreach (var browserConfig in testSettings.BrowserConfigurations)
+                {
+                    MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig), Times.Once());
+                }
+            }
         }
 
         [Theory]
@@ -130,6 +180,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestDefinition>(), It.IsAny<BrowserConfiguration>())).Returns(Task.CompletedTask);
         }
+
 
         private void Verify(string testConfigFile, string environmentId, string tenantId, string cloud, 
             string outputDirectory, string testRunId, string testRunDirectory, List<TestDefinition> testDefinitions, TestSettings testSettings)
