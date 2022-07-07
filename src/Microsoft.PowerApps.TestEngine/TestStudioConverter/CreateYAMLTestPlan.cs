@@ -23,6 +23,8 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
     public class CreateYAMLTestPlan
     {
         private readonly ILogger<CreateYAMLTestPlan> _logger;
+        private readonly IFileSystem _fileSystem;
+
         private static string? InputDir;
 
         private static List<string> TestSteps = new List<string>();
@@ -36,6 +38,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger)
         {
             _logger = logger;
+            _fileSystem = new FileSystem();
+        }
+
+        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger, IFileSystem fileSystem) : this(logger)
+        {
+            _fileSystem = fileSystem;
         }
 
         public void exportYAML(string dir)
@@ -43,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             InputDir = dir;
 
-            if (!File.Exists(InputDir))
+            if (!_fileSystem.IsValidFilePath(InputDir))
             {
                 throw new FileNotFoundException(InputDir + " does not exist");
             }
@@ -63,18 +71,13 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         private void readJson(string InputDir)
         {
 
-            JObject jobj;
+            JObject jobj = JObject.Parse(_fileSystem.ReadAllText(InputDir));
 
-            using (var sr = File.OpenText(InputDir))
-            using (var reader = new JsonTextReader(sr))
+            JToken? topLevelTestSteps = jobj.Root["TopParent"]?["Children"]?[0]?["Children"]?[0]?["Rules"];
+
+            if (topLevelTestSteps == null)
             {
-                jobj = (JObject)JToken.ReadFrom(reader);
-            }
-
-            var topLevelTestSteps = jobj.Root["TopParent"]["Children"][0]["Children"][0]["Rules"];
-
-            if (!topLevelTestSteps.HasValues)
-            {
+                _logger.LogError("Missing Test Steps");
                 return;
             }
 
@@ -82,14 +85,14 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             {
                 if (x["Category"].ToString().Equals("Behavior"))
                 {
-                    var testStep = x["InvariantScript"].ToString();
+                    var testStep = x["InvariantScript"]?.ToString();
                     if (!string.IsNullOrEmpty(testStep))
                     {
                         TestSteps.Add(testStep);
                     }
                     else
                     {
-                        Console.WriteLine("Empty");
+                        _logger.LogWarning("");
                     }
                 }
 
@@ -120,10 +123,17 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             var stringBuilder = new StringBuilder("= \n");
 
-            foreach (var step in TestSteps)
+            if (TestSteps.Count < 1)
             {
-                stringBuilder.Append(validateStep(step));
-                stringBuilder.Append(";\n");
+                _logger.LogWarning("Empty Test Steps");
+            }
+            else
+            {
+                foreach (var step in TestSteps)
+                {
+                    stringBuilder.Append(validateStep(step));
+                    stringBuilder.Append(";\n");
+                }
             }
 
             var formattedTestSteps = stringBuilder.ToString();
@@ -165,7 +175,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.LogError(e.Message);
             }
         }
         /// <summary>
@@ -187,7 +197,9 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             switch (identifier)
             {
                 case "SetProperty":
-                    // SetProperty(IncrementControl1.value, 10) --> SetProperty(IncrementControl1, "value", 10)
+                    // Expected Test Studio syntax sample:  SetProperty(IncrementControl1.value, 10)
+                    // Resulting Test Engine syntax sample: SetProperty(IncrementControl1, "value", 10)
+                    
                     var parametersSplit = parameters.Split(new[] {','}, 2);
 
                     if(parametersSplit.Length < 2)
@@ -223,5 +235,9 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             return step;
         }
 
+        public List<string> GetTestSteps()
+        {
+            return TestSteps;
+        }
     }
 }
