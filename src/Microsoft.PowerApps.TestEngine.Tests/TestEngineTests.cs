@@ -103,13 +103,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
                 }
             };
-            var testConfigFile = "C:\\testPlan.fx.yaml";
-            var environmentId = "defaultEnviroment";
-            var tenantId = "tenantId";
+           
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = "TestOutput";
             var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
-            var expectedCloud = "Prod";
 
             var expectedTestReportPath = "C:\\test.trx";
 
