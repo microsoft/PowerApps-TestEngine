@@ -10,7 +10,7 @@
 
 This is the same functionality as the Power Apps [Select function](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/functions/function-select).
 
-In case of nested gallery, use Index() with the select function. 
+In case of nested gallery, use Index() within the select function. 
 ## Example
 `Select(Button1)`
 
