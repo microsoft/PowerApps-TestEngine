@@ -46,7 +46,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public void Setup()
         {
             var powerFxConfig = new PowerFxConfig();
-            powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
+            powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
+            powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
+            powerFxConfig.AddFunction(new SelectThreeParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
             powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout()));
             powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions));
             powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
