@@ -113,7 +113,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             SetupMocks(expectedOutputDirectory, testSettings, testDefinitions, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object);
-            await testEngine.RunWorkerCountTestAsync(testRunId, testRunDirectory);
+            await testEngine.RunTestByWorkerCountAsync(testRunId, testRunDirectory);
 
             foreach (var testDefinition in testDefinitions)
             {
@@ -166,7 +166,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.GetOutputDirectory()).Returns(outputDirectory);
             MockState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockState.Setup(x => x.GetTestDefinitions()).Returns(testDefinitions);
-            MockState.Setup(x => x.GetWorkers()).Returns(testSettings.WorkerCount);
+            MockState.Setup(x => x.GetWorkerCount()).Returns(testSettings.WorkerCount);
 
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(testRunId);
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));

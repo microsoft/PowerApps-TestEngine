@@ -91,6 +91,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets the number of workers from the test settings.
         /// </summary>
         /// <returns>Number of workers</returns>
-        public int GetWorkers();
+        public int GetWorkerCount();
     }
 }

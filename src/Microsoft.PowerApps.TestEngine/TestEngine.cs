@@ -77,31 +77,27 @@ namespace Microsoft.PowerApps.TestEngine
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
 
-            await RunWorkerCountTestAsync(testRunId, testRunDirectory);
+            await RunTestByWorkerCountAsync(testRunId, testRunDirectory);
 
             _testReporter.EndTestRun(testRunId);
             return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
         }
 
-        public async Task RunWorkerCountTestAsync(string testRunId, string testRunDirectory)
+        public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory)
         {
             var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
-            Queue<Task> allTestRuns = new Queue<Task>();
+            var allTestRuns = new List<Task>();
 
             // Manage number of workers
-            foreach(var testDefinition in _state.GetTestDefinitions())
+            foreach (var testDefinition in _state.GetTestDefinitions())
             {
                 foreach (var browserConfig in browserConfigurations)
                 {
-                    allTestRuns.Enqueue(RunOneTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig));
-                    if (allTestRuns.Count >= _state.GetWorkers())
+                    allTestRuns.Add(RunOneTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig));
+                    if (allTestRuns.Count >= _state.GetWorkerCount())
                     {
-                        var maxTestRuns = new List<Task>();
-                        while (allTestRuns.Count > 0)
-                        {
-                            maxTestRuns.Add(allTestRuns.Dequeue());
-                        }
-                        await Task.WhenAll(maxTestRuns.ToArray());
+                        await Task.WhenAll(allTestRuns.ToArray());
+                        allTestRuns.Clear();
                     }
                 }
             }
