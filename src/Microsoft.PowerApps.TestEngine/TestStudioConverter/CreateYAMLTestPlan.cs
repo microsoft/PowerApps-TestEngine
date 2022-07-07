@@ -29,6 +29,8 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private static List<string> TestSteps = new List<string>();
 
+        private static string? YamlTestPlan;
+
         private static string? TestName;
 
         private static string? TestDescription;
@@ -166,17 +168,11 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-            try
-            {
-                using (var sw = new StreamWriter(outputDir))
-                {
-                    serializer.Serialize(sw, testYAML);
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-            }
+            var result = serializer.Serialize(testYAML);
+
+            YamlTestPlan = result;
+
+            _fileSystem.WriteTextToFile(outputDir, result);
         }
         /// <summary>
         /// Checks if a test step needs to be changed to match Test Engine Syntax
@@ -238,6 +234,11 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         public List<string> GetTestSteps()
         {
             return TestSteps;
+        }
+
+        public string GetYamlTestPlan()
+        {
+            return YamlTestPlan;
         }
     }
 }
