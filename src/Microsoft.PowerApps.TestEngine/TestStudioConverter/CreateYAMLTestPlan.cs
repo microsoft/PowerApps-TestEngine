@@ -236,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             return TestSteps;
         }
 
-        public string GetYamlTestPlan()
+        public string? GetYamlTestPlan()
         {
             return YamlTestPlan;
         }

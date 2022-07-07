@@ -235,10 +235,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
         }
 
         [Fact]
-        public void CheckIfOutputYamlTest()
+        public void CheckOutputYamlTest()
         {
 
-            var testJson = @"{
+            var buttonClickerTestJson = @"{
     ""TopParent"": {
         ""Type"": ""ControlInfo"",
         ""Name"": ""Test_7F478737223C4B69"",
@@ -448,16 +448,15 @@ environmentVariables:
             var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
 
             var jsonFilePath = "test.json";
-            mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJson);
+            mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(buttonClickerTestJson);
             mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
             mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
-            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, mockFileIO.Object);
 
+            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, mockFileIO.Object);
             converter.exportYAML(jsonFilePath);
 
-            string actualTestPlan = converter.GetYamlTestPlan();
+            string? actualTestPlan = converter.GetYamlTestPlan();
 
-            Console.WriteLine(actualTestPlan);
             Assert.NotNull(actualTestPlan);
             Assert.Equal(actualTestPlan, expectedYamlTestPlan);
 
