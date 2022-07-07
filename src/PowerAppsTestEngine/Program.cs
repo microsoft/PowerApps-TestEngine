@@ -46,7 +46,7 @@ var switchMappings = new Dictionary<string, string>()
     { "-o", "OutputDirectory" }
 };
 
-if (args.Length > 0)
+if (args.Length > 1)
 {
     if (args[0].Equals("convert"))
     {
