@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private static List<string> TestSteps = new List<string>();
 
-        private static string? YamlTestPlan;
+        private TestPlanDefinition? YamlTestPlan;
 
         private static string? TestName;
 
@@ -169,8 +169,8 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
             var result = serializer.Serialize(testYAML);
-
-            YamlTestPlan = result;
+            
+            YamlTestPlan = testYAML;
 
             _fileSystem.WriteTextToFile(outputDir, result);
         }
@@ -236,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             return TestSteps;
         }
 
-        public string? GetYamlTestPlan()
+        public TestPlanDefinition? GetYamlTestPlan()
         {
             return YamlTestPlan;
         }
