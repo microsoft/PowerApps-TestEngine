@@ -64,6 +64,8 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             var user = _environmentVariable.GetVariable(userConfig.EmailKey);
             var password = _environmentVariable.GetVariable(userConfig.PasswordKey);
+            //var user = "PApps_TestEngineUser@pappsscenario01.onmicrosoft.com";
+            //var password = "z(4=vQR\"aDzQsU~6";
 
             if (string.IsNullOrEmpty(user))
             {
