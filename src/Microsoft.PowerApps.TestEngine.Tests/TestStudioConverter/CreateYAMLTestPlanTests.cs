@@ -15,7 +15,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
 {
     public class CreateYAMLTestPlanTests
     {
-
         [Fact]
         public void ValidFileTest()
         {
@@ -30,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
         }
 
         [Fact]
-        public void ExtractTestStepsFromJsonTest()
+        public void CheckTestStepsAndYamlTest()
         {
             var testJson = @"{
     ""TopParent"": {
@@ -207,6 +206,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
         ]
     }
 }";
+
             List<string> expectedTestSteps = new List<string>(new string[] { 
                 "SetProperty(IncrementControl1.value, 10)",
                 "Assert(IncrementControl1.value = 10, \"Make sure increment control is set to 10\")",
@@ -214,11 +214,38 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
                 "Assert(IncrementControl1.value = 20, \"Make sure increment control is set to 10\")",
             });
 
+            var expectedYamlTestPlan = @"test:
+  name: Case
+  description: Missing Test Description
+  persona: User1
+  appLogicalName: Replace with appLogicalName
+  networkRequestMocks: 
+  testSteps: |
+    = 
+    SetProperty(IncrementControl1,""value"", 10);
+    Assert(IncrementControl1.value = 10, ""Make sure increment control is set to 10"");
+    SetProperty(IncrementControl1,""value"", 20);
+    Assert(IncrementControl1.value = 20, ""Make sure increment control is set to 10"");
+testSettings:
+  browserConfigurations:
+  - browser: Chromium
+    device: 
+    screenWidth: 
+    screenHeight: 
+  recordVideo: true
+  enablePowerFxOverlay: false
+  timeout: 30000
+environmentVariables:
+  users:
+  - personaName: User1
+    emailKey: user1Email
+    passwordKey: user1Password
+";
+
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
             ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
-            
 
-            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
+            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Loose);
 
             var jsonFilePath = "test.json";
             mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJson);
@@ -229,15 +256,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
             converter.exportYAML(jsonFilePath);
 
             List<string> actualTestSteps = converter.GetTestSteps();
+            string? actualTestPlan = converter.GetYamlTestPlan();
+
             Assert.NotNull(actualTestSteps);
             Assert.Equal(expectedTestSteps, actualTestSteps);
+            Assert.NotNull(actualTestPlan);
+            Assert.Equal(actualTestPlan, expectedYamlTestPlan);
+
         }
 
         [Fact]
-        public void CheckOutputYamlTest()
+        public void EmptyTestStepsTest()
         {
-
-            var buttonClickerTestJson = @"{
+            var testJsonWithoutSteps = @"{
     ""TopParent"": {
         ""Type"": ""ControlInfo"",
         ""Name"": ""Test_7F478737223C4B69"",
@@ -273,7 +304,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
         ""Children"": [
             {
                 ""Type"": ""ControlInfo"",
-                ""Name"": ""cb660790-1ecb-41c2-9d83-70d552470fef"",
+                ""Name"": ""a2788d19-22e2-4a03-b8ba-3ebc4aad96b5"",
                 ""HasDynamicProperties"": false,
                 ""Template"": {
                     ""Id"": ""http://microsoft.com/appmagic/testsuite"",
@@ -319,11 +350,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
                     ""Description""
                 ],
                 ""IsLocked"": false,
-                ""ControlUniqueId"": ""6"",
+                ""ControlUniqueId"": ""5"",
                 ""Children"": [
                     {
                         ""Type"": ""ControlInfo"",
-                        ""Name"": ""af545162-4e0b-4831-af15-c0d878f34474"",
+                        ""Name"": ""e8b0a102-2096-4cfc-a6a4-c4b4030ec8c9"",
                         ""HasDynamicProperties"": false,
                         ""Template"": {
                             ""Id"": ""http://microsoft.com/appmagic/testcase"",
@@ -345,7 +376,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
                         ""PersistMetaDataIDKey"": false,
                         ""IsFromScreenLayout"": false,
                         ""StyleName"": """",
-                        ""Parent"": ""cb660790-1ecb-41c2-9d83-70d552470fef"",
+                        ""Parent"": ""a2788d19-22e2-4a03-b8ba-3ebc4aad96b5"",
                         ""IsDataControl"": true,
                         ""AllowAccessToGlobals"": true,
                         ""IsGroupControl"": false,
@@ -360,37 +391,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
                             {
                                 ""Property"": ""Description"",
                                 ""Category"": ""Data"",
-                                ""InvariantScript"": ""\""Test to check if a button click will increase the value of text\"""",
+                                ""InvariantScript"": ""\""\"""",
                                 ""RuleProviderType"": ""Unknown""
                             },
                             {
                                 ""Property"": ""TestStepsMetadata"",
                                 ""Category"": ""Data"",
-                                ""InvariantScript"": ""\""[{\""\""Description\""\"":\""\""Click Button\""\"",\""\""Rule\""\"":\""\""Step1\""\"",\""\""ScreenId\""\"":null},{\""\""Description\""\"":\""\""Check if value has increased\""\"",\""\""Rule\""\"":\""\""Step2\""\"",\""\""ScreenId\""\"":\""\""3\""\""},{\""\""Description\""\"":\""\""Click Button\""\"",\""\""Rule\""\"":\""\""Step3\""\"",\""\""ScreenId\""\"":null},{\""\""Description\""\"":\""\""Check if value has increased\""\"",\""\""Rule\""\"":\""\""Step4\""\"",\""\""ScreenId\""\"":null}]\"""",
-                                ""RuleProviderType"": ""Unknown""
-                            },
-                            {
-                                ""Property"": ""Step1"",
-                                ""Category"": ""Behavior"",
-                                ""InvariantScript"": ""Select(Button1)"",
-                                ""RuleProviderType"": ""Unknown""
-                            },
-                            {
-                                ""Property"": ""Step2"",
-                                ""Category"": ""Behavior"",
-                                ""InvariantScript"": ""Assert(Text(Label1.Text) = \""1\"", \""Wrong Counter Value. Value Should be 1\"")"",
-                                ""RuleProviderType"": ""Unknown""
-                            },
-                            {
-                                ""Property"": ""Step3"",
-                                ""Category"": ""Behavior"",
-                                ""InvariantScript"": ""Select(Button1)"",
-                                ""RuleProviderType"": ""Unknown""
-                            },
-                            {
-                                ""Property"": ""Step4"",
-                                ""Category"": ""Behavior"",
-                                ""InvariantScript"": ""Assert(Text(Label1.Text) = \""2\"", \""Wrong Counter Value. Value Should be 2\"")"",
+                                ""InvariantScript"": ""\""[{\""\""Description\""\"":\""\""SetProperty(IncrementControl1, 10)\""\"",\""\""Rule\""\"":\""\""Step1\""\"",\""\""ScreenId\""\"":null},{\""\""Description\""\"":\""\""Assert(In)\""\"",\""\""Rule\""\"":\""\""Step2\""\"",\""\""ScreenId\""\"":null},{\""\""Description\""\"":\""\""SetProperty(IncrementControl1.value, 20)\""\"",\""\""Rule\""\"":\""\""Step3\""\"",\""\""ScreenId\""\"":null},{\""\""Description\""\"":\""\""Assert(IncrementControl1.value = 20, \\\""\""Make sure increment control is set to 10\\\""\"")\""\"",\""\""Rule\""\"":\""\""Step4\""\"",\""\""ScreenId\""\"":null}]\"""",
                                 ""RuleProviderType"": ""Unknown""
                             }
                         ],
@@ -404,7 +411,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
                             ""Step4""
                         ],
                         ""IsLocked"": false,
-                        ""ControlUniqueId"": ""7"",
+                        ""ControlUniqueId"": ""6"",
                         ""Children"": []
                     }
                 ]
@@ -413,52 +420,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
     }
 }";
 
-            var expectedYamlTestPlan = @"test:
-  name: Case
-  description: Test to check if a button click will increase the value of text
-  persona: User1
-  appLogicalName: Replace with appLogicalName
-  networkRequestMocks: 
-  testSteps: |
-    = 
-    Select(Button1);
-    Assert(Text(Label1.Text) = ""1"", ""Wrong Counter Value. Value Should be 1"");
-    Select(Button1);
-    Assert(Text(Label1.Text) = ""2"", ""Wrong Counter Value. Value Should be 2"");
-testSettings:
-  browserConfigurations:
-  - browser: Chromium
-    device: 
-    screenWidth: 
-    screenHeight: 
-  recordVideo: true
-  enablePowerFxOverlay: false
-  timeout: 30000
-environmentVariables:
-  users:
-  - personaName: User1
-    emailKey: user1Email
-    passwordKey: user1Password
-";
-
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
             ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
 
-            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
+
+            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Loose);
+            
+            mockFileIO.Reset();
 
             var jsonFilePath = "test.json";
-            mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(buttonClickerTestJson);
+            mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJsonWithoutSteps);
             mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
             mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
+            CreateYAMLTestPlan emptyConverter = new CreateYAMLTestPlan(logger, mockFileIO.Object);
 
-            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, mockFileIO.Object);
-            converter.exportYAML(jsonFilePath);
+            emptyConverter.exportYAML(jsonFilePath);
 
-            string? actualTestPlan = converter.GetYamlTestPlan();
 
-            Assert.NotNull(actualTestPlan);
-            Assert.Equal(actualTestPlan, expectedYamlTestPlan);
-
+            List<string> emptyTestSteps = emptyConverter.GetTestSteps();
+            Assert.Empty(emptyTestSteps);
         }
     }
 }
