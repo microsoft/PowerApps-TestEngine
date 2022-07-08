@@ -10,6 +10,10 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using Xunit;
 using Microsoft.PowerApps.TestEngine.System;
+using YamlDotNet;
+using YamlDotNet.Core;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
 {
@@ -239,13 +243,12 @@ environmentVariables:
   users:
   - personaName: User1
     emailKey: user1Email
-    passwordKey: user1Password
-";
+    passwordKey: user1Password";
 
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
             ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
 
-            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Loose);
+            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
 
             var jsonFilePath = "test.json";
             mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJson);
@@ -256,12 +259,17 @@ environmentVariables:
             converter.exportYAML(jsonFilePath);
 
             List<string> actualTestSteps = converter.GetTestSteps();
-            string? actualTestPlan = converter.GetYamlTestPlan();
+            TestPlanDefinition? actualTestPlan = converter.GetYamlTestPlan();
 
-            Assert.NotNull(actualTestSteps);
             Assert.Equal(expectedTestSteps, actualTestSteps);
-            Assert.NotNull(actualTestPlan);
-            Assert.Equal(actualTestPlan, expectedYamlTestPlan);
+
+            var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+
+            var expectedTestObject = deserializer.Deserialize<TestPlanDefinition>(expectedYamlTestPlan);
+    
+            Assert.Equal(expectedTestObject.ToString(), actualTestPlan?.ToString());
 
         }
 
@@ -424,7 +432,7 @@ environmentVariables:
             ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
 
 
-            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Loose);
+            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
             
             mockFileIO.Reset();
 
