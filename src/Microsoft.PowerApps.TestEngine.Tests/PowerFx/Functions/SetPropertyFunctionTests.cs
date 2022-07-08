@@ -28,13 +28,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
-        public void SetPropertyFunctionThrowsOnNullObjectTest()
-        {
-            var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, FormulaType.String);
-            Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute<null>(null, null, null));
-        }
-
-        [Fact]
         public void SetPropertyFunctionThrowsOnNonPowerAppsRecordValueTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
