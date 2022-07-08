@@ -36,19 +36,24 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue value)
         {
+            if (value == null)
+            {
+                throw new ArgumentException("Cannot execute SetProperty on an unsupported type");
+            }
+
             switch (value)
             {
-                case StringValue:
-                    SetProperty(obj, propName, value as StringValue).Wait();
+                case StringValue s:
+                    SetProperty(obj, propName, s).Wait();
                     break;
-                case NumberValue:
-                    SetProperty(obj, propName, value as NumberValue).Wait();
+                case NumberValue n:
+                    SetProperty(obj, propName, n).Wait();
                     break;
-                case BooleanValue:
-                    SetProperty(obj, propName, value as BooleanValue).Wait();
+                case BooleanValue b:
+                    SetProperty(obj, propName, b).Wait();
                     break;
-                case DateValue:
-                    SetProperty(obj, propName, value as DateValue).Wait();
+                case DateValue d:
+                    SetProperty(obj, propName, d).Wait();
                     break;
                 default:
                     throw new ArgumentException("Cannot execute SetProperty on an unsupported type");
