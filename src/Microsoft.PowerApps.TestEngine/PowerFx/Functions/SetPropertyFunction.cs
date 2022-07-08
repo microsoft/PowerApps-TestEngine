@@ -26,41 +26,51 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public static void RegisterAll(IPowerAppFunctions powerAppFunctions, PowerFxConfig powerFxConfig)
         {
-            powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.String));
             powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.Number));
+            powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.String));
             powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.Boolean));
             powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.Date));
             //Record
             //Table
         }
 
-        public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue value)
+        public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
         {
-            if (value == null)
-            {
-                throw new ArgumentException("Cannot execute SetProperty on an unsupported type");
-            }
-
-            switch (value)
-            {
-                case StringValue s:
-                    SetProperty(obj, propName, s).Wait();
-                    break;
-                case NumberValue n:
-                    SetProperty(obj, propName, n).Wait();
-                    break;
-                case BooleanValue b:
-                    SetProperty(obj, propName, b).Wait();
-                    break;
-                case DateValue d:
-                    SetProperty(obj, propName, d).Wait();
-                    break;
-                default:
-                    throw new ArgumentException("Cannot execute SetProperty on an unsupported type");
-            }
- 
+            SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+        
+        /*
+        public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, TableValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+        */
 
         private async Task SetProperty(RecordValue obj, StringValue propName, NumberValue value)
         {
