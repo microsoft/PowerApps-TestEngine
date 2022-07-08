@@ -36,10 +36,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue value)
         {
-            if (typeof(TValue) == StringValue ||
-                typeof(TValue) == NumberValue ||
-                typeof(TValue) == BooleanValue ||
-                typeof(TValue) == DateValue)
+            if (TValue is StringValue ||
+                TValue is  NumberValue ||
+                TValue is BooleanValue ||
+                TValue is DateValue)
             {
                 SetProperty(obj, propName, value).Wait();
                 return FormulaValue.NewBlank();
