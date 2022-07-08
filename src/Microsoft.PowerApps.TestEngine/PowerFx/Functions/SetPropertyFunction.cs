@@ -36,22 +36,28 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue value)
         {
-            if (typeof(TValue) == typeof(StringValue) ||
-                typeof(TValue) == typeof(NumberValue) ||
-                typeof(TValue) == typeof(BooleanValue) ||
-                typeof(TValue) == typeof(DateValue))
+            switch (value)
             {
-                SetProperty(obj, propName, value).Wait();
-                return FormulaValue.NewBlank();
+                case StringValue s:
+                    SetProperty(obj, propName, s).Wait();
+                    break;
+                case NumberValue n:
+                    SetProperty(obj, propName, n).Wait();
+                    break;
+                case BooleanValue b:
+                    SetProperty(obj, propName, b).Wait();
+                    break;
+                case DateValue d:
+                    SetProperty(obj, propName, d).Wait();
+                    break;
+                case null:
+                    throw new ArgumentNullException("Cannot execute SetProperty on a null type");
+                    break;
+                default:
+                    throw new ArgumentException("Cannot execute SetProperty on an unsupported type");
             }
-            else if (typeof(TValue) == null)
-            {
-                throw ArgumentNullException("Cannot execute SetProperty on a null type");
-            }
-            else
-            {
-                throw ArgumentException("Cannot execute SetProperty on an unsupported type");
-            }
+ 
+            return FormulaValue.NewBlank();
         }
 
         private async Task SetProperty(RecordValue obj, StringValue propName, NumberValue value)
