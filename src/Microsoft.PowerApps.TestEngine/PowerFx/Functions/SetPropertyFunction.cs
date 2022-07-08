@@ -19,9 +19,19 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
 
-        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions) : base("SetProperty", FormulaType.Blank)
+        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType) : base("SetProperty", FormulaType.Blank, , new RecordType(), FormulaType.String, formulaType)
         {
             _powerAppFunctions = powerAppFunctions;
+        }
+
+        public static void RegisterAll(IPowerAppFunctions powerAppFunctions)
+        {
+            SetPropertyFunction(powerAppFunctions, FormulaType.String);
+            SetPropertyFunction(powerAppFunctions, FormulaType.Number);
+            SetPropertyFunction(powerAppFunctions, FormulaType.Boolean);
+            SetPropertyFunction(powerAppFunctions, FormulaType.Date);
+            //Record
+            //Table
         }
 
         public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
