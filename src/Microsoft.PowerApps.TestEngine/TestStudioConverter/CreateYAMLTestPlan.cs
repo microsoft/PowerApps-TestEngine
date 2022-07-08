@@ -94,7 +94,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                     }
                     else
                     {
-                        _logger.LogWarning("");
+                        _logger.LogWarning("Missing Test Step");
                     }
                 }
 
