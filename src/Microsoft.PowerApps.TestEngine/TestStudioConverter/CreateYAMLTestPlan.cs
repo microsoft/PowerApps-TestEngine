@@ -55,7 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             if (!_fileSystem.IsValidFilePath(InputDir))
             {
-                throw new FileNotFoundException(InputDir + " does not exist");
+                throw new DirectoryNotFoundException(InputDir + " is not a valid file path");
             }
 
             readJson(InputDir);
