@@ -34,43 +34,25 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             //Table
         }
 
-        public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
+        public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue value)
         {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
+            if (typeof(TValue) == StringValue ||
+                typeof(TValue) == NumberValue ||
+                typeof(TValue) == BooleanValue ||
+                typeof(TValue) == DateValue)
+            {
+                SetProperty(obj, propName, value).Wait();
+                return FormulaValue.NewBlank();
+            }
+            else if (typeof(TValue) == null)
+            {
+                throw ArgumentNullException("Cannot execute SetProperty on a null type");
+            }
+            else
+            {
+                throw ArgumentException("Cannot execute SetProperty on an unsupported type");
+            }
         }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-        
-        /*
-        public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, TableValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-        */
 
         private async Task SetProperty(RecordValue obj, StringValue propName, NumberValue value)
         {
