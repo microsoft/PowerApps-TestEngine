@@ -31,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void SetPropertyFunctionThrowsOnNullObjectTest()
         {
             var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, FormulaType.String);
-            Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute<null>(null, null, null));
+            Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(null, null, null));
         }
 
         [Fact]

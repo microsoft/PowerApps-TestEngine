@@ -34,7 +34,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             //Table
         }
 
-        public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue value)
+        public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue? value)
         {
             switch (value)
             {
