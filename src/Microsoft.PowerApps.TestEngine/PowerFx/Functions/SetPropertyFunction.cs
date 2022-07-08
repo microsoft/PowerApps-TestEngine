@@ -19,7 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
 
-        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType) : base("SetProperty", FormulaType.Blank, , new RecordType(), FormulaType.String, formulaType)
+        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
         {
             _powerAppFunctions = powerAppFunctions;
         }
