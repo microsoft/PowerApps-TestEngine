@@ -24,12 +24,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _powerAppFunctions = powerAppFunctions;
         }
 
-        public static void RegisterAll(IPowerAppFunctions powerAppFunctions)
+        public static void RegisterAll(IPowerAppFunctions powerAppFunctions, PowerFxConfig powerFxConfig)
         {
-            SetPropertyFunction(powerAppFunctions, FormulaType.String);
-            SetPropertyFunction(powerAppFunctions, FormulaType.Number);
-            SetPropertyFunction(powerAppFunctions, FormulaType.Boolean);
-            SetPropertyFunction(powerAppFunctions, FormulaType.Date);
+            powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.String));
+            powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.Number));
+            powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.Boolean));
+            powerFxConfig.AddFunction(new SetPropertyFunction(powerAppFunctions, FormulaType.Date));
             //Record
             //Table
         }
