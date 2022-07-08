@@ -24,11 +24,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         {
             if (!result.Value)
             {
-                _logger.LogError($"Assert failed: Assert Function is failed");
-                throw new InvalidOperationException($"Assert failed: Assert Function is failed");
+                _logger.LogError($"Assert failed: Assert Function failure");
+                throw new InvalidOperationException($"Assert failed: Assert Function failure");
             } else
             {
-                _logger.LogInformation("Assert Function is successed");
+                _logger.LogInformation("Assert Function success");
             }
             return FormulaValue.NewBlank();
         }
