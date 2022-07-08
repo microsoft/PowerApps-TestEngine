@@ -17,17 +17,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
     {
 
         [Fact]
-        public void ValidDirectoryTest()
+        public void ValidFileTest()
         {
-            var InputDir = " ";
+            var InputDir = "path/to/nothing/that/exists/test.json";
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
             ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
             CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger);
 
-            Assert.Throws<FileNotFoundException>(
+            Assert.Throws<DirectoryNotFoundException>(
                 () => converter.exportYAML(InputDir)
             );
-            
         }
 
         [Fact]
