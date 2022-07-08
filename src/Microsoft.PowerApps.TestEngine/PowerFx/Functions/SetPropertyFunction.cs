@@ -34,7 +34,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             //Table
         }
 
-        public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue? value)
+        public BlankValue Execute<TValue>(RecordValue obj, StringValue propName, TValue value)
         {
             switch (value)
             {
@@ -49,9 +49,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                     break;
                 case DateValue d:
                     SetProperty(obj, propName, d).Wait();
-                    break;
-                case null:
-                    throw new ArgumentNullException("Cannot execute SetProperty on a null type");
                     break;
                 default:
                     throw new ArgumentException("Cannot execute SetProperty on an unsupported type");
