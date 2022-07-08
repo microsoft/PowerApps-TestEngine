@@ -38,17 +38,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         {
             switch (value)
             {
-                case StringValue s:
-                    SetProperty(obj, propName, value).Wait();
+                case StringValue:
+                    SetProperty(obj, propName, value as StringValue).Wait();
                     break;
-                case NumberValue n:
-                    SetProperty(obj, propName, value).Wait();
+                case NumberValue:
+                    SetProperty(obj, propName, value as NumberValue).Wait();
                     break;
-                case BooleanValue b:
-                    SetProperty(obj, propName, value).Wait();
+                case BooleanValue:
+                    SetProperty(obj, propName, value as BooleanValue).Wait();
                     break;
-                case DateValue d:
-                    SetProperty(obj, propName, value).Wait();
+                case DateValue:
+                    SetProperty(obj, propName, value as DateValue).Wait();
                     break;
                 default:
                     throw new ArgumentException("Cannot execute SetProperty on an unsupported type");
