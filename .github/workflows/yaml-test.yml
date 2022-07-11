@@ -3,10 +3,18 @@ name: YAML Integration Tests
 on:
   workflow_call:
     inputs:
-      testrun:
+      environmentId:
         required: true
         type: string
-
+      tenantId:
+        required: true
+        type: string
+      testPlanFile:
+        required: true
+        type: string
+      outputDirectory:
+        required: true
+        type: string
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -23,7 +31,7 @@ jobs:
           cd src/PowerAppsTestEngine
           npm install -g playwright@1.22.0
           playwright install  
-          ${{ inputs.testrun }}
+          dotnet run -- -e ${{ inputs.environmentId}} -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
       - name: Sample Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
