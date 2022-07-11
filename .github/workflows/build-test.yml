@@ -63,5 +63,5 @@ jobs:
     needs: build
     uses: ./.github/workflows/yaml-test.yml
     with: 
-       parameter: ${{fromJson([{\"environmentId:\" \"ceb95cca-da1d-ed58-8af8-117cb4081f16\", \"tenantId:\" \"f2c52b3d-d88e-4892-9785-d5b7c7016725\", \"testPlanFile:\" \"../../samples/nestedgallery/testPlan.fx.yaml\", \"outputDirectory:\" \"../../TestResults\")}}       
+       parameter: ${{fromJson([{\"environmentId:\" \"ceb95cca-da1d-ed58-8af8-117cb4081f16\", \"tenantId:\" \"f2c52b3d-d88e-4892-9785-d5b7c7016725\", \"testPlanFile:\" \"../../samples/nestedgallery/testPlan.fx.yaml\", \"outputDirectory:\" \"../../TestResults\"}])}}       
     secrets: inherit
