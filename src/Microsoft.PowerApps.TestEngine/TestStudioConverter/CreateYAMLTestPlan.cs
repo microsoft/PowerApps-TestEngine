@@ -25,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         private readonly ILogger<CreateYAMLTestPlan> _logger;
         private readonly IFileSystem _fileSystem;
 
-        private static string? InputDir;
+        private string? InputDir;
 
         private static List<string> TestSteps = new List<string>();
 
@@ -37,22 +37,24 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private static string[] NoChangeCommands = { "Assert", "Select" };
 
-        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger)
+        const string SetProperty = "SetProperty";
+
+        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger, string dir)
         {
             _logger = logger;
             _fileSystem = new FileSystem();
+            InputDir = dir;
         }
 
-        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger, IFileSystem fileSystem) : this(logger)
+        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger, string dir, IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
+            _logger = logger;
+            InputDir = dir;
         }
 
-        public void exportYAML(string dir)
+        public void exportYAML()
         {
-
-            InputDir = dir;
-
             if (!_fileSystem.IsValidFilePath(InputDir))
             {
                 throw new DirectoryNotFoundException(InputDir + " is not a valid file path");
@@ -63,16 +65,13 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             _logger.LogInformation($"Test JSON Location: {InputDir}");
 
             var outputDir = InputDir.Substring(0, InputDir.Length - 4) + "fx.yaml";
-
-            writeYaml(outputDir);
-
             _logger.LogInformation($"YAML TestPlan Location: {outputDir}");
+            writeYaml(outputDir);
 
         }
 
         private void readJson(string InputDir)
         {
-
             JObject jobj = JObject.Parse(_fileSystem.ReadAllText(InputDir));
 
             JToken? topLevelTestSteps = jobj.Root["TopParent"]?["Children"]?[0]?["Children"]?[0]?["Rules"];
@@ -83,11 +82,11 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 return;
             }
 
-            foreach (var x in topLevelTestSteps)
+            foreach (var topLevelTestStep in topLevelTestSteps)
             {
-                if (x["Category"].ToString().Equals("Behavior"))
+                if ((topLevelTestStep["Category"]??=false).ToString().Equals("Behavior"))
                 {
-                    var testStep = x["InvariantScript"]?.ToString();
+                    var testStep = topLevelTestStep["InvariantScript"]?.ToString();
                     if (!string.IsNullOrEmpty(testStep))
                     {
                         TestSteps.Add(testStep);
@@ -98,17 +97,17 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                     }
                 }
 
-                if (x["Property"].ToString().Equals("Description"))
+                if ((topLevelTestStep["Property"]??=false).ToString().Equals("Description"))
                 {
-                    var description = x["InvariantScript"].ToString();
-                    TestDescription = description.Replace("\"", "");
+                    var description = topLevelTestStep["InvariantScript"]?.ToString();
+                    TestDescription = description?.Replace("\"", "");
                 }
 
-                if (x["Property"].ToString().Equals("DisplayName"))
+                if ((topLevelTestStep["Property"]??=false).ToString().Equals("DisplayName"))
                 {
-                    var caseName = x["InvariantScript"].ToString();
+                    var caseName = topLevelTestStep["InvariantScript"]?.ToString();
 
-                    TestName = caseName.Replace("\"", "");
+                    TestName = caseName?.Replace("\"", "");
                 }
 
             }
@@ -116,7 +115,6 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private void writeYaml(string outputDir)
         {
-
             if (string.IsNullOrEmpty(TestName))
                 TestName = "Missing Test Name";
 
@@ -125,7 +123,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             var stringBuilder = new StringBuilder("= \n");
 
-            if (TestSteps.Count < 1)
+            if (TestSteps.Count == 0)
             {
                 _logger.LogWarning("Empty Test Steps");
             }
@@ -192,7 +190,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             switch (identifier)
             {
-                case "SetProperty":
+                case SetProperty:
                     // Expected Test Studio syntax sample:  SetProperty(IncrementControl1.value, 10)
                     // Resulting Test Engine syntax sample: SetProperty(IncrementControl1, "value", 10)
                     

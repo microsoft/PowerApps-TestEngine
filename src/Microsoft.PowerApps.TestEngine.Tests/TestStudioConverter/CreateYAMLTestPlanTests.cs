@@ -25,10 +25,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
             var InputDir = "path/to/nothing/that/exists/test.json";
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
             ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
-            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger);
+            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, InputDir);
 
             Assert.Throws<DirectoryNotFoundException>(
-                () => converter.exportYAML(InputDir)
+                () => converter.exportYAML()
             );
         }
 
@@ -254,9 +254,9 @@ environmentVariables:
             mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJson);
             mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
             mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
-            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, mockFileIO.Object);
+            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, jsonFilePath, mockFileIO.Object);
             
-            converter.exportYAML(jsonFilePath);
+            converter.exportYAML();
 
             List<string> actualTestSteps = converter.GetTestSteps();
             TestPlanDefinition? actualTestPlan = converter.GetYamlTestPlan();
@@ -440,9 +440,9 @@ environmentVariables:
             mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJsonWithoutSteps);
             mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
             mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
-            CreateYAMLTestPlan emptyConverter = new CreateYAMLTestPlan(logger, mockFileIO.Object);
+            CreateYAMLTestPlan emptyConverter = new CreateYAMLTestPlan(logger, jsonFilePath, mockFileIO.Object);
 
-            emptyConverter.exportYAML(jsonFilePath);
+            emptyConverter.exportYAML();
 
 
             List<string> emptyTestSteps = emptyConverter.GetTestSteps();
