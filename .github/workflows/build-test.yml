@@ -63,7 +63,7 @@ jobs:
     needs: build
     uses: ./.github/workflows/yaml-test.yml
     with: 
-      testrun: 
+      testrun: |
           dotnet run -- -e "ceb95cca-da1d-ed58-8af8-117cb4081f16" -t "f2c52b3d-d88e-4892-9785-d5b7c7016725" -i "../../samples/nestedgallery/testPlan.fx.yaml" -o "../../TestResults"
           dotnet run -- -e "ceb95cca-da1d-ed58-8af8-117cb4081f16" -t "f2c52b3d-d88e-4892-9785-d5b7c7016725" -i "../../samples/basicgallery/testPlan.fx.yaml" -o "../../TestResults"
           dotnet run -- -e "ceb95cca-da1d-ed58-8af8-117cb4081f16" -t "f2c52b3d-d88e-4892-9785-d5b7c7016725" -i "../../samples/buttonclicker/testPlan.fx.yaml" -o "../../TestResults"          
