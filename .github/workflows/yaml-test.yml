@@ -3,7 +3,7 @@ name: YAML Integration Tests
 on:
   workflow_call:
     inputs:
-      paramter:
+      parameter:
         required: true
         type: string
       environmentId:
