@@ -15,6 +15,9 @@ test:
       // Click the button
       Select(Button1);
       Assert(Label1.Text = "2", "Counter should be incremented to 2");
+      // Click the button
+      Select(Button1);
+      Assert(Label1.Text = "3");
       Screenshot("buttonclicker_end.png");
 
 testSettings:
