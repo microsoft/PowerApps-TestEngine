@@ -37,7 +37,7 @@ jobs:
           cd src/PowerAppsTestEngine
           npm install -g playwright@1.22.0
           playwright install  
-          $s = ${{ inputs.parameters}}
+          $s = '${{ inputs.parameters}}'
           $splitArr = $s -split '='
           $pr = @{$splitArr[0].trim() = $splitArr[1].trim()}
 
