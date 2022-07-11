@@ -39,9 +39,9 @@ jobs:
           playwright install  
           $s = ${{ inputs.parameters}}
           $splitArr = $s -split '='
-          $ht = @{$splitArr[0].trim() = $splitArr[1].trim()}
+          $pr = @{$splitArr[0].trim() = $splitArr[1].trim()}
 
-          dotnet run -- -e ${{ $ht["environmentId"]}} -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
+          dotnet run -- -e $pr["environmentId"] -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
       - name: Sample Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
