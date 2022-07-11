@@ -36,9 +36,8 @@ jobs:
         run: |           
           cd src/PowerAppsTestEngine
           npm install -g playwright@1.22.0
-          playwright install  
-          $s = '${{ inputs.parameters}}'
-          $splitArr = $s -split '='
+          playwright install
+          $splitArr = '${{ inputs.parameters}}' -split '='
           $pr = @{$splitArr[0].trim() = $splitArr[1].trim()}
 
           dotnet run -- -e $pr["environmentId"] -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
