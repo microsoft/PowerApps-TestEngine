@@ -22,7 +22,7 @@ jobs:
           cd src/PowerAppsTestEngine
           npm install -g playwright@1.22.0
           playwright install  
-          dotnet run -- -e ${{ inputs.parameter.environmentId}} -t ${{ inputs.parameter.tenantId}} -i ${{ inputs.parameter.testPlanFile}} -o ${{ inputs.parameter.outputDirectory}}; 
+          dotnet run -- -e ${{ inputs.parameter[0]}} -t ${{ inputs.parameter[1]}} -i ${{ inputs.parameter[2]}} -o ${{ inputs.parameter[3]}}; 
       - name: Sample Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
