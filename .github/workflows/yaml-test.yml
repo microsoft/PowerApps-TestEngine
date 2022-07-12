@@ -43,6 +43,7 @@ jobs:
           for n in ${s[@]}; 
             do
                 echo $n
+                echo "next"
             done
           dotnet run -- -e ${{ inputs.environmentId}} -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
       - name: Sample Test Report
