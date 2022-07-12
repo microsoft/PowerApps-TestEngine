@@ -15,8 +15,8 @@ test:
       // Set input fields
       SetProperty(TextInput1, "Default", "Good job!");
       SetProperty(Rating1, "Default", 5);
-      SetProperty(Image1, "Visible", false);
-      // SetProperty(DatePicker1, "DefaultDate", Date(2040, 01, 01));
+      SetProperty(Toggle1, "Default", true);
+      SetProperty(DatePicker1, "DefaultDate", Date(2040, 01, 01));
 
       // Confirm that they were set to the correct value
       // Assert(TextInput1.Default = "Good job!", "Validate comment box was changed.");
@@ -25,7 +25,7 @@ test:
       // Assert(DatePicker1.DefaultDate = "01/01/2040", "Validate date was changed");
 
       // Push the submit button
-      // Select(Button1);
+      Select(Button1);
       Screenshot("differentvariabletypes_end.png");
 
 testSettings:
