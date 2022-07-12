@@ -193,17 +193,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        /*public async Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value)
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, RecordValue value)
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
 
-            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
+            var expression = $"setPropertyValue({itemPathString}, \"{value.GetField("Value")}\")";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyAsync(ItemPath itemPath, RecordValue value)
+        /*public async Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value)
         {
             ValidateItemPath(itemPath, false);
             // TODO: handle components

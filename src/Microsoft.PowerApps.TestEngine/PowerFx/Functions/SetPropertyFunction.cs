@@ -181,17 +181,50 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    /*
+
     class SetPropertyFunctionRecord : SetPropertyFunction
     {
-        public SetPropertyFunctionRecord(RecordValue powerAppFunctions) : base(powerAppFunctions, FormulaType.Record)
+        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new RecordType())
         {
+        }
+        
+        public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+
+        private async Task SetProperty(RecordValue obj, StringValue propName, RecordValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj; 
+            var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
+
+            if (!result)
+            {
+                throw new Exception($"Unable to set property {controlModel.Name}");
+            }
         }
     }
 
+    /*
     class SetPropertyFunctionTable : SetPropertyFunction
     {
-        public SetPropertyFunctionTable(RecordValue powerAppFunctions) : base(powerAppFunctions, FormulaType.Table)
+        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new TableType())
         {
         }
     }
@@ -205,7 +238,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions));
             powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions));
             powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions));
-            //Record
+            powerFxConfig.AddFunction(new SetPropertyFunctionRecord(powerAppFunctions));
             //Table
         }
     }
