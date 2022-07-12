@@ -42,7 +42,7 @@ jobs:
           IFS='}' read -ra testplans <<< "${{ inputs.parameter }}"
           for $testplan in "${s[@]}" 
             do
-               echo $n
+               echo $testplan
                echo "next"
             done
           dotnet run -- -e ${{ inputs.environmentId}} -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
