@@ -6,19 +6,18 @@ namespace Microsoft.PowerApps.TestEngine.Config
     /// <summary>
     /// Defines one test
     /// </summary>
-    public class TestDefinition
+    public class TestSuiteDefinition
     {
         /// <summary>
-        /// Gets or sets the name of the test.
-        /// It will be used in reporting success and failure.
+        /// Gets or sets the name of the test suite.
         /// </summary>
-        public string Name { get; set; } = "";
+        public string TestSuiteName { get; set; } = "";
 
         /// <summary>
-        /// Gets or sets the additional information that describes what the test does.
+        /// Gets or sets the additional information that describes what the test suite does.
         /// Optional.
         /// </summary>
-        public string Description { get; set; } = "";
+        public string TestSuiteDescription { get; set; } = "";
 
         /// <summary>
         /// Gets or sets the user that will be logged in to perform the test.
@@ -38,8 +37,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         public List<NetworkRequestMock>? NetworkRequestMocks { get; set; }
         /// <summary>
-        /// Gets or sets the the Power FX functions describing the steps needed to perform the test.
+        /// Gets or sets the test cases to be executed.
         /// </summary>
-        public string TestSteps { get; set; } = "";
+        public List<TestCase> TestCases { get; set; } = new List<TestCase>();
     }
 }

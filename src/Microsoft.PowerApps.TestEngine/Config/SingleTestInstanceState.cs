@@ -11,7 +11,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class SingleTestInstanceState : ISingleTestInstanceState
     {
         private ILogger Logger { get; set; }
-        private TestDefinition TestDefinition { get; set; }
+        private TestSuiteDefinition TestSuiteDefinition { get; set; }
         private string TestRunId { get; set; }
         private string TestId { get; set; }
         private string ResultsDirectory { get; set; }
@@ -45,18 +45,18 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return TestId;
         }
 
-        public void SetTestDefinition(TestDefinition testDefinition)
+        public void SetTestSuiteDefinition(TestSuiteDefinition testSuiteDefinition)
         {
-            if (testDefinition == null)
+            if (testSuiteDefinition == null)
             {
-                throw new ArgumentNullException(nameof(testDefinition));
+                throw new ArgumentNullException(nameof(testSuiteDefinition));
             }
-            TestDefinition = testDefinition;
+            TestSuiteDefinition = testSuiteDefinition;
         }
 
-        public TestDefinition GetTestDefinition()
+        public TestSuiteDefinition GetTestSuiteDefinition()
         {
-            return TestDefinition;
+            return TestSuiteDefinition;
         }
 
         public void SetLogger(ILogger logger)

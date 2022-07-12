@@ -9,9 +9,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestPlanDefinition
     {
         /// <summary>
-        /// Gets or sets the test definition.
+        /// Gets or sets the definition of the test suite.
         /// </summary>
-        public TestDefinition? Test { get; set; }
+        public TestSuiteDefinition? Test { get; set; }
 
         /// <summary>
         /// Gets or sets the test settings.

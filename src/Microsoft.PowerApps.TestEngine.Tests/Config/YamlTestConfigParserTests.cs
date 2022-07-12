@@ -5,6 +5,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Moq;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Config
@@ -18,8 +19,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
 
             var yamlFile = @"test:
-  name: Button Clicker
-  description: Verifies that counter increments when the button is clicked
+  testSuiteName: Button Clicker
+  testSuiteDescription: Verifies that counter increments when the button is clicked
   persona: User1
   appLogicalName: new_buttonclicker_0a877
   networkRequestMocks:
@@ -31,15 +32,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
       requestBodyFile: /myFakePayload.json
       responseDataFile: /myFakeBing.json
 
-  testSteps: |
-    = Screenshot(""buttonclicker_loaded.png"");
-            // Wait for the label to be set to 0
-            //Wait(Label1.Text = ""0"");
-            Wait(Label1, ""Text"", ""0"");
-            // Click the button
-            Select(Button1);
-            Assert(Text(Label1.Text) = ""1"", ""Counter should be incremented to 1"");
-            Screenshot(""buttonclicker_end.png"");
+  testCases:
+    - testCaseName: Case1
+      testCaseDescription: Optional
+      testSteps: |
+        = Screenshot(""buttonclicker_loaded.png"");
+          // Wait for the label to be set to 0
+          //Wait(Label1.Text = ""0"");
+          Wait(Label1, ""Text"", ""0"");
+          // Click the button
+          Select(Button1);
+          Assert(Text(Label1.Text) = ""1"", ""Counter should be incremented to 1"");
+          Screenshot(""buttonclicker_end.png"");
 
 testSettings:
     recordVideo: true
@@ -59,8 +63,8 @@ environmentVariables:
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
             var testPlan = parser.ParseTestConfig(filePath);
             Assert.NotNull(testPlan);
-            Assert.Equal("Button Clicker", testPlan.Test?.Name);
-            Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.Test?.Description);
+            Assert.Equal("Button Clicker", testPlan.Test?.TestSuiteName);
+            Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.Test?.TestSuiteDescription);
             Assert.Equal("User1", testPlan.Test?.Persona);
             Assert.Equal("new_buttonclicker_0a877", testPlan.Test?.AppLogicalName);
             Assert.Equal("https://unitedstates-002.azure-apim.net/invoke", testPlan.Test?.NetworkRequestMocks?[0].RequestURL);
@@ -69,7 +73,10 @@ environmentVariables:
             Assert.Equal("/items/4", testPlan.Test?.NetworkRequestMocks?[0].Headers?["x-ms-request-url"]);
             Assert.Equal("/myFakePayload.json", testPlan.Test?.NetworkRequestMocks?[0].RequestBodyFile);
             Assert.Equal("/myFakeBing.json", testPlan.Test?.NetworkRequestMocks?[0].ResponseDataFile);
-            Assert.False(string.IsNullOrEmpty(testPlan.Test?.TestSteps));
+            Assert.True(testPlan.Test?.TestCases?.Count > 0);
+            Assert.Equal("Case1", testPlan.Test?.TestCases[0].TestCaseName);
+            Assert.Equal("Optional", testPlan.Test?.TestCases[0].TestCaseDescription);
+            Assert.False(string.IsNullOrEmpty(testPlan.Test?.TestCases[0].TestSteps));
             Assert.True(testPlan.TestSettings?.RecordVideo);
             Assert.False(testPlan.TestSettings?.Headless);
             Assert.False(testPlan.TestSettings?.EnablePowerFxOverlay);

@@ -8,6 +8,7 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,6 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         private Mock<ITestState> MockTestState;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<IEnvironmentVariable> MockEnvironmentVariable;
+        private TestSuiteDefinition TestSuiteDefinition;
 
         public UserManagerTests()
         {
@@ -26,20 +28,27 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
+            TestSuiteDefinition = new TestSuiteDefinition()
+            {
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
+                AppLogicalName = "logicalAppName1",
+                Persona = "User1",
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
+            };
         }
 
         [Fact]
         public async Task LoginAsUserSuccessTest()
         {
-            var testDefinition = new TestDefinition()
-            {
-                Name = "Test1",
-                Description = "First test",
-                AppLogicalName = "logicalAppName1",
-                Persona = "User1",
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-            };
-
             var userConfiguration = new UserConfiguration()
             {
                 PersonaName = "User1",
@@ -50,7 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             var email = "someone@example.com";
             var password = "myPassword1234";
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.EmailKey)).Returns(email);
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.PasswordKey)).Returns(password);
@@ -62,7 +71,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
             await userManager.LoginAsUserAsync();
 
-            MockSingleTestInstanceState.Verify(x => x.GetTestDefinition(), Times.Once());
+            MockSingleTestInstanceState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
             MockTestState.Verify(x => x.GetUserConfiguration(userConfiguration.PersonaName), Times.Once());
             MockEnvironmentVariable.Verify(x => x.GetVariable(userConfiguration.EmailKey), Times.Once());
             MockEnvironmentVariable.Verify(x => x.GetVariable(userConfiguration.PasswordKey), Times.Once());
@@ -75,9 +84,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [Fact]
         public async Task LoginUserAsyncThrowsOnNullTestDefinitionTest()
         {
-            TestDefinition testDefinition = null;
+            TestSuiteDefinition testSuiteDefinition = null;
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync());
@@ -88,16 +97,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [InlineData("")]
         public async Task LoginUserAsyncThrowsOnInvalidPersonaTest(string? persona)
         {
-            var testDefinition = new TestDefinition()
+            var testSuiteDefinition = new TestSuiteDefinition()
             {
-                Name = "Test1",
-                Description = "First test",
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = persona,
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
             };
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync());
@@ -106,18 +123,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [Fact]
         public async Task LoginUserAsyncThrowsOnNullUserConfigTest()
         {
-            var testDefinition = new TestDefinition()
-            {
-                Name = "Test1",
-                Description = "First test",
-                AppLogicalName = "logicalAppName1",
-                Persona = "User1",
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-            };
-
             UserConfiguration userConfiguration = null;
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
@@ -131,15 +139,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [InlineData("user1Email", "")]
         public async Task LoginUserAsyncThrowsOnInvalidUserConfigTest(string? emailKey, string? passwordKey)
         {
-            var testDefinition = new TestDefinition()
-            {
-                Name = "Test1",
-                Description = "First test",
-                AppLogicalName = "logicalAppName1",
-                Persona = "User1",
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-            };
-
             UserConfiguration userConfiguration = new UserConfiguration()
             {
                 PersonaName = "User1",
@@ -147,7 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
                 PasswordKey = passwordKey
             };
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
@@ -161,15 +160,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [InlineData("someone@example.com", "")]
         public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string? email, string? password)
         {
-            var testDefinition = new TestDefinition()
-            {
-                Name = "Test1",
-                Description = "First test",
-                AppLogicalName = "logicalAppName1",
-                Persona = "User1",
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-            };
-
             UserConfiguration userConfiguration = new UserConfiguration()
             {
                 PersonaName = "User1",
@@ -177,7 +167,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
                 PasswordKey = "user1Password"
             };
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.EmailKey)).Returns(email);
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.PasswordKey)).Returns(password);
