@@ -1,0 +1,35 @@
+test:
+  name: Container
+  description: Verifies that you can interact with control in the container
+  persona: User1
+  appLogicalName: new_container_1b4be
+
+  testSteps: |
+    = Screenshot("Container_loaded.png");
+      // Controls inside container
+      Select(Button1);
+      Assert(Label2.Text = "1", "Counter should be incremented to 1");
+      Select(Button1);
+      Assert(Label2.Text = "2", "Counter should be incremented to 2");
+      // containers inside components
+      Select(Component1_1.Button2);
+      Assert(Component1_1.Label1.Text = "1", "Counter should be incremented to 1");
+      Select(Component1_1.Button2);
+      Assert(Component1_1.Label1.Text = "2", "Counter should be incremented to 2");
+      //containers inside galleries
+      Select(Gallery1, 1, NextArrow1);
+      Assert(Label7.Text = "Lorem ipsum 1", "Label should be updated to indicate first item in the gallery");
+      Select(Gallery1, 2, NextArrow1);
+      Assert(Label7.Text = "Lorem ipsum 2", "Label should be updated to indicate second item in the gallery");
+      Screenshot("Container_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
