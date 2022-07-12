@@ -65,7 +65,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    class SetPropertyFunctionString : SetPropertyFunction
+    public class SetPropertyFunctionString : SetPropertyFunction
     {
         public SetPropertyFunctionString(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.String)
         {
