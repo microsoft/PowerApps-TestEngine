@@ -52,7 +52,9 @@ jobs:
                         IFS=':' read -ra value <<< "$arg"
                         outputDir=${value[1]}
                     fi                                                         
-                 done 
+                 done
+               echo ${tenantId}
+               echo "next Tenant"
                dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
             done
           
