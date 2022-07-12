@@ -153,6 +153,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
+        {
+            ValidateItemPath(itemPath, false);
+            // TODO: handle components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+
+            var expression = $"setPropertyValue({itemPathString})";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value)
         {
             ValidateItemPath(itemPath, false);
