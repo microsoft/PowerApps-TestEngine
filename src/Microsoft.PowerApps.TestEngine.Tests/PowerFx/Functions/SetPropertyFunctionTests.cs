@@ -31,10 +31,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void SetPropertyFunctionThrowsOnNonPowerAppsRecordValueTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var SetPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, FormulaType.String);
+            var SetPropertyFunctionString = new SetPropertyFunctionString(MockPowerAppFunctions.Object);
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
 
-            Assert.ThrowsAny<Exception>(() => SetPropertyFunction.Execute(someOtherRecordValue, StringValue.New("Test"), StringValue.New("10")));
+            Assert.ThrowsAny<Exception>(() => SetPropertyFunctionString.Execute(someOtherRecordValue, StringValue.New("Test"), StringValue.New("10")));
         }
 
         [Fact]
@@ -45,24 +45,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Make setPropertyFunction contain a text component called Button1
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
-            var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, FormulaType.String);
+            var setPropertyFunctionString = new SetPropertyFunctionString(MockPowerAppFunctions.Object);
 
             // Set the value of Button1's 'Text' property to 5
-            var result = setPropertyFunction.Execute(recordValue, StringValue.New("Text"), StringValue.New("5"));
+            var result = setPropertyFunctionString.Execute(recordValue, StringValue.New("Text"), StringValue.New("5"));
 
             // check to see if the value of Button1's 'Text' property is 5
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<StringValue>(stringVal => stringVal.Value == "5")), Times.Once());
 
             // Set the value of Button1's 'Text' property to 10 
-            result = setPropertyFunction.Execute(recordValue, StringValue.New("Text"), StringValue.New("10"));
+            result = setPropertyFunctionString.Execute(recordValue, StringValue.New("Text"), StringValue.New("10"));
 
             // check to see if the value of Button1's 'Text' property is 10
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<StringValue>(stringVal => stringVal.Value == "10")), Times.Once());
 
             // Set the value of Button1's 'Text' property to 'abc'
-            result = setPropertyFunction.Execute(recordValue, StringValue.New("Text"), StringValue.New("abc"));
+            result = setPropertyFunctionString.Execute(recordValue, StringValue.New("Text"), StringValue.New("abc"));
 
             // check to see if the value of Button1's 'Text' property is abc
             Assert.IsType<BlankValue>(result);
