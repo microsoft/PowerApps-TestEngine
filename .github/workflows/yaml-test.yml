@@ -45,12 +45,12 @@ jobs:
                echo $testplan
                echo "args"
                IFS=',' read -ra args <<< "$testplan"
+               envId=''
+               tenantId=''
+               testPlanFile=''
+               outputDir=''
                for arg in "${args[@]}" 
-                 do
-                    envId=''
-                    tenantId=''
-                    testPlanFile=''
-                    outputDir=''
+                 do                    
                     if [[ $arg == *"environmentId"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
                         for index in "${!value[@]}" 
@@ -90,13 +90,13 @@ jobs:
                               break
                             fi  
                           done
-                    fi
-                    echo $envId
-                    echo $tenantId
-                    echo $testPlanFile
-                    echo $outputDir
-                    dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};                     
+                    fi                                                         
                  done
+               echo $envId
+               echo $tenantId
+               echo $testPlanFile
+               echo $outputDir  
+               dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
                echo "NEW"
             done
           
