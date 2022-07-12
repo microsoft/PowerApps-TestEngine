@@ -38,43 +38,19 @@ jobs:
                  do      
                     if [[ $arg == *"environmentId"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
-                        for index in "${!value[@]}" 
-                          do
-                            if [[ $index == 1 ]]; then
-                              envId=${value[$index]} 
-                              break
-                            fi  
-                          done
+                        envId=${value[1]}
                     fi
                     if [[ $arg == *"tenantId"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
-                        for index in "${!value[@]}" 
-                          do
-                            if [[ $index == 1 ]]; then
-                              tenantId=${value[$index]} 
-                              break
-                            fi  
-                          done
+                        tenantId=${value[1]}
                     fi
                     if [[ $arg == *"testPlanFile"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
-                        for index in "${!value[@]}" 
-                          do
-                            if [[ $index == 1 ]]; then
-                              testPlanFile=${value[$index]} 
-                              break
-                            fi  
-                          done
+                        testPlanFile=${value[1]}
                     fi
                     if [[ $arg == *"outputDirectory"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
-                        for index in "${!value[@]}" 
-                          do
-                            if [[ $index == 1 ]]; then
-                              outputDir=${value[$index]} 
-                              break
-                            fi  
-                          done
+                        outputDir=${value[1]}
                     fi                                                         
                  done 
                dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
