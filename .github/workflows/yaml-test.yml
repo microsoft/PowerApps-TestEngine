@@ -56,7 +56,7 @@ jobs:
                      done
                    echo ${tenantId}
                    echo "next Tenant"
-                   dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
+                   dotnet run -- -e "${envId}" -t "${tenantId}" -i "${testPlanFile}" -o "${outputDir}";  
                fi
             done
           
