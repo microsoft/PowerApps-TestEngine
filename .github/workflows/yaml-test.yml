@@ -39,7 +39,8 @@ jobs:
           npm install -g playwright@1.22.0
           playwright install  
           echo ${{ inputs.parameter }}
-          s=${{ inputs.parameter }}
+          $input=${{ inputs.parameter }}
+          IFS='}' read -ra s <<< "$input"
           for n in ${s[@]}; 
             do
                 echo $n
