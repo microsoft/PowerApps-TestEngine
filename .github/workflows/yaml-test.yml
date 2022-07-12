@@ -40,7 +40,7 @@ jobs:
           playwright install  
           echo ${{ inputs.parameter }}
           IFS='}' read -ra testplans <<< "${{ inputs.parameter }}"
-          for testplan in "${s[@]}" 
+          for testplan in "${testplans[@]}" 
             do
                echo $testplan
                echo "next"
