@@ -39,7 +39,7 @@ jobs:
           npm install -g playwright@1.22.0
           playwright install  
           echo ${{ inputs.parameter }}
-          IFS='}' read -ra s <<< "${{ inputs.parameter }}"
+          IFS='}' read -ra s <<< ${{ inputs.parameter }}
           for n in ${s[@]}; 
             do
                 echo $n
