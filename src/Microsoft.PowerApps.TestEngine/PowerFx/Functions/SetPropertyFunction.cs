@@ -23,7 +23,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         {
             _powerAppFunctions = powerAppFunctions;
         }
-
     }
 
     class SetPropertyFunctionNumber : SetPropertyFunction

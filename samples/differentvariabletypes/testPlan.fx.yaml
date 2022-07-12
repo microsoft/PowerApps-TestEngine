@@ -25,7 +25,7 @@ test:
       // Assert(DatePicker1.DefaultDate = "01/01/2040", "Validate date was changed");
 
       // Push the submit button
-      Select(Button1);
+      // Select(Button1);
       Screenshot("differentvariabletypes_end.png");
 
 testSettings:
