@@ -13,12 +13,13 @@ test:
       // Wait(DatePicker1, "DefaultDate", "01/01/2030");
       
       // Set input fields
-      // SetProperty(TextInput1, "Default", "Good job!");
-      // SetProperty(Rating1, "Default", 5);
-      // SetProperty(Toggle1, "Default", true);
-      // SetProperty(DatePicker1, "DefaultDate", Date(2040, 01, 01));
-      SetProperty(Dropdown1, "Default", {Value:"Wednesday"});
-      // SetProperty(ComboBox1, "SelectedItems", Table({Value:"February"},{Value:"March"}));
+      SetProperty(TextInput1, "Default", "Good job!");
+      SetProperty(Rating1, "Default", 5);
+      SetProperty(Toggle1, "Default", true);
+      SetProperty(DatePicker1, "DefaultDate", Date(2040, 01, 01));
+      SetProperty(Dropdown1, "Default", {'Value':"Wednesday"});
+      SetProperty(Dropdown1, "Selected", {'Value':"Wednesday"});
+      SetProperty(ComboBox1, "SelectedItems", Table({Value:"February"},{Value:"March"}));
 
       // Confirm that they were set to the correct value
       // Assert(TextInput1.Default = "Good job!", "Validate comment box was changed.");

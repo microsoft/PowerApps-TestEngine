@@ -266,10 +266,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         public static void RegisterAll(this PowerFxConfig powerFxConfig, IPowerAppFunctions powerAppFunctions)
         {
-            //powerFxConfig.AddFunction(new SetPropertyFunctionNumber(powerAppFunctions));
+        powerFxConfig.AddFunction(new SetPropertyFunctionNumber(powerAppFunctions));
         powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions));
-       //     powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions));
-       //     powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions));
+        powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions));
+        powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions));
         powerFxConfig.AddFunction(new SetPropertyFunctionRecord(powerAppFunctions));
         powerFxConfig.AddFunction(new SetPropertyFunctionTable(powerAppFunctions));
         }
