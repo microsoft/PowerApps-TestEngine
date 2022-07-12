@@ -37,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         public Task<bool> SetPropertyAsync(ItemPath itemPath, BooleanValue value);
         public Task<bool> SetPropertyAsync(ItemPath itemPath, DateValue value);
         public Task<bool> SetPropertyAsync(ItemPath itemPath, RecordValue value);
-        // public Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value);
+        public Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value);
 
         /// <summary>
         /// Loads the object model for Power Apps
