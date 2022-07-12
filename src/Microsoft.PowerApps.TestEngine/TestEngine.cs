@@ -77,25 +77,32 @@ namespace Microsoft.PowerApps.TestEngine
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
 
-            var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
-
-            var allTestRuns = new List<Task>();
-
-            // TODO: manage number of workers
-            foreach(var testDefinition in _state.GetTestDefinitions())
-            {
-                foreach (var browserConfig in browserConfigurations)
-                {
-                    allTestRuns.Add(RunOneTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig));
-                }
-            }
-
-            await Task.WhenAll(allTestRuns.ToArray());
+            await RunTestByWorkerCountAsync(testRunId, testRunDirectory);
 
             _testReporter.EndTestRun(testRunId);
             return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
         }
 
+        public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory)
+        {
+            var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
+            var allTestRuns = new List<Task>();
+
+            // Manage number of workers
+            foreach (var testDefinition in _state.GetTestDefinitions())
+            {
+                foreach (var browserConfig in browserConfigurations)
+                {
+                    allTestRuns.Add(RunOneTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig));
+                    if (allTestRuns.Count >= _state.GetWorkerCount())
+                    {
+                        await Task.WhenAll(allTestRuns.ToArray());
+                        allTestRuns.Clear();
+                    }
+                }
+            }
+            await Task.WhenAll(allTestRuns.ToArray());
+        }
         private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestDefinition testDefinition, BrowserConfiguration browserConfig)
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())

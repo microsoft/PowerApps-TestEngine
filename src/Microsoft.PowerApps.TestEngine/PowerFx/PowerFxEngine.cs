@@ -46,12 +46,19 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public void Setup()
         {
             var powerFxConfig = new PowerFxConfig();
-            powerFxConfig.AddFunction(new SelectFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
+            powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
+            powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
+            powerFxConfig.AddFunction(new SelectThreeParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
             powerFxConfig.AddFunction(new WaitFunction(_testState.GetTimeout()));
             powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
+<<<<<<< HEAD
             powerFxConfig.AddFunction(new AssertFunction(Logger));
 
             SetPropertyRegisterExtensions.RegisterAll(powerFxConfig, _powerAppFunctions);
+=======
+            powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
+            powerFxConfig.AddFunction(new AssertFunction(Logger));           
+>>>>>>> 1717c085b54dbd7de9351f352787bdf6c68639cb
             Engine = new RecalcEngine(powerFxConfig);
         }
 
@@ -76,7 +83,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
                 goStepByStep = true;
-                Logger.LogError($"Syntax check failed: {JsonConvert.SerializeObject(checkResult.Errors)}. Switching to step by step");
+                Logger.LogError($"Syntax check failed. Switching to step by step");
             }
 
             if (goStepByStep)

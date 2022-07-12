@@ -9,15 +9,15 @@ using Microsoft.PowerFx.Types;
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
     /// <summary>
-    /// This is the same functionality as the Power Apps Select function.
+    /// This is the same functionality as the Power Apps Select function With a Param
     /// https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/functions/function-select
     /// </summary>
-    public class SelectFunction : ReflectionFunction
+    public class SelectOneParamFunction : ReflectionFunction
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly Func<Task> _updateModelFunction;
 
-        public SelectFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType())
+        public SelectOneParamFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType())
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;
