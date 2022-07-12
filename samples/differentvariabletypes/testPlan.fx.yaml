@@ -1,0 +1,40 @@
+test:
+  name: DifferentVariableTypes
+  description: Showcases usage of Assert/Wait/SetProperty with multiple types
+  persona: User1
+  appLogicalName: cr693_differentvariabletypes_09b4b
+
+  testSteps: |
+    = Screenshot("differentvariabletypes_loaded.png");
+      // Wait for default values to load
+      Wait(TextInput1, "Default", "Comments");
+      Wait(Rating1, "Default", 3);
+      Wait(Image1, "Visible", true);
+      Wait(DatePicker1, "DefaultDate", "01/01/2030");
+      
+      // Set input fields
+      SetProperty(TextInput1, "Default", "Good job!");
+      SetProperty(Rating1, "Default", 5);
+      SetProperty(Image1, "Visible", false);
+      SetProperty(DatePicker1, "DefaultDate", "01/01/2040");
+
+      // Confirm that they were set to the correct value
+      Assert(TextInput1.Default = "Good job!", "Validate comment box was changed.");
+      Assert(Rating1.Default = 5, "Validate rating was changed.");
+      Assert(Image1.Visible = false, "Validate image is no longer visible");
+      Assert(DatePicker1.DefaultDate = "01/01/2040", "Validate date was changed");
+
+      // Push the submit button
+      Select(Button1);
+      Screenshot("differentvariabletypes_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
