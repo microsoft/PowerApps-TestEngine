@@ -16,7 +16,7 @@ test:
       SetProperty(TextInput1, "Default", "Good job!");
       SetProperty(Rating1, "Default", 5);
       SetProperty(Image1, "Visible", false);
-      SetProperty(DatePicker1, "DefaultDate", "01/01/2040");
+      SetProperty(DatePicker1, "DefaultDate", Date(2040, 01, 01));
 
       // Confirm that they were set to the correct value
       // Assert(TextInput1.Default = "Good job!", "Validate comment box was changed.");
