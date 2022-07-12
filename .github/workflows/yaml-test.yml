@@ -43,9 +43,26 @@ jobs:
           for testplan in "${testplans[@]}" 
             do
                echo $testplan
-               echo "next"
+               echo "args"
+               IFS=',' read -ra args <<< "$testplan"
+               for arg in "${args[@]}" 
+                 do
+                    envId=''
+                    tenantId=''
+                    testPlanFile=''
+                    outputDir=''
+                    if [[ $arg == *"environmentId"* ]]; then
+                        IFS=':' read -ra value <<< "$arg"
+                        for index in "${!value[@]}" 
+                          do
+                            envId=${value[$index]}
+                            break
+                          done
+                    dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};                     
+                 done
+               echo "NEW"
             done
-          dotnet run -- -e ${{ inputs.environmentId}} -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
+          
       - name: Sample Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
