@@ -39,17 +39,17 @@ jobs:
                     IFS=':' read -ra value <<< "$arg"
                     for index in "${!value[@]}" 
                       do
-                        if [[ ${value[0] == *"environmentId"* ]]; then
-                          envId=${value[1]} 
+                        if [[ ${value[index] == *"environmentId"* ]]; then
+                          envId=${value[index+1]} 
                         fi 
-                        if [[ ${value[0] == *"tenantId"* ]]; then
-                          tenantId=${value[1]} 
+                        if [[ ${value[index] == *"tenantId"* ]]; then
+                          tenantId=${value[index+1]} 
                         fi 
-                        if [[ ${value[0] == *"testPlanFile"* ]]; then
-                          testPlanFile=${value[1]} 
+                        if [[ ${value[index] == *"testPlanFile"* ]]; then
+                          testPlanFile=${value[index+1]} 
                         fi 
-                        if [[ ${value[0] == *"outputDirectory"* ]]; then
-                          outputDir=${value[1]} 
+                        if [[ ${value[index] == *"outputDirectory"* ]]; then
+                          outputDir=${value[index+1]} 
                         fi 
                       done                                                                       
                  done 
