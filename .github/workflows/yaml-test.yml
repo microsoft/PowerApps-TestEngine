@@ -3,19 +3,7 @@ name: YAML Integration Tests
 on:
   workflow_call:
     inputs:
-      parameter:
-        required: true
-        type: string
-      environmentId:
-        required: true
-        type: string
-      tenantId:
-        required: true
-        type: string
-      testPlanFile:
-        required: true
-        type: string
-      outputDirectory:
+      parameters:
         required: true
         type: string
 jobs:
@@ -38,12 +26,9 @@ jobs:
           cd src/PowerAppsTestEngine
           npm install -g playwright@1.22.0
           playwright install  
-          echo ${{ inputs.parameter }}
-          IFS='}' read -ra testplans <<< "${{ inputs.parameter }}"
+          IFS='}' read -ra testplans <<< "${{ inputs.parameters }}"
           for testplan in "${testplans[@]}" 
             do
-               echo $testplan
-               echo "args"
                IFS=',' read -ra args <<< "$testplan"
                envId=''
                tenantId=''
@@ -91,13 +76,8 @@ jobs:
                             fi  
                           done
                     fi                                                         
-                 done
-               echo $envId
-               echo $tenantId
-               echo $testPlanFile
-               echo $outputDir  
+                 done 
                dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
-               echo "NEW"
             done
           
       - name: Sample Test Report
