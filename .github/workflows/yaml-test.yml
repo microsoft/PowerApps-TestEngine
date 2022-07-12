@@ -53,7 +53,7 @@ jobs:
                         outputDir=${value[1]}
                     fi                                                         
                     done
-                if [[-n "${envId}"] && [-n "${envId}] && [-n "${envId}] && [-n "${envId}] ]; then                   
+                if [[-n "${envId}"] && [-n "${tenantId}"] && [-n "${testPlanFile}"] && [-n "${outputDir}"] ]; then                   
                     dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
                 fi
             done
