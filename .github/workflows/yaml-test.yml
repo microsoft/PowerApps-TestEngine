@@ -55,9 +55,13 @@ jobs:
                         IFS=':' read -ra value <<< "$arg"
                         for index in "${!value[@]}" 
                           do
-                            envId=${value[$index]}
-                            break
+                            if [[ $index == 1 ]]; then
+                              envId=${value[$index]} 
+                              break
+                            fi  
                           done
+                    fi
+                    echo $envId
                     dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};                     
                  done
                echo "NEW"
