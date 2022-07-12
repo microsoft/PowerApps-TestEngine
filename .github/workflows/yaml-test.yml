@@ -3,10 +3,10 @@ name: YAML Integration Tests
 on:
   workflow_call:
     inputs:
-      parameters:
+      parameter:
         required: true
         type: string
-      parameter:
+      parameters:
         required: true
         type: string
       environmentId:
@@ -29,6 +29,10 @@ jobs:
         dotnet-version: ['6.0.x']
     steps:
       - uses: actions/checkout@v2
+      - uses: jungwinter/split@v2
+        id: split
+        with:
+          msg: '/release split v1.0.0'
       - name: Integration Test
         env:
             user1Email: '${{ secrets.POWER_PLATFORM_USER }}'
@@ -36,11 +40,9 @@ jobs:
         run: |           
           cd src/PowerAppsTestEngine
           npm install -g playwright@1.22.0
-          playwright install
-          $splitArr = '${{ inputs.parameters}}' -split '='
-          $pr = @{$splitArr[0].trim() = $splitArr[1].trim()}
-
-          dotnet run -- -e $pr["environmentId"] -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
+          playwright install  
+          echo ${{ inputs.parameters }}
+          dotnet run -- -e ${{ inputs.environmentId}} -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
       - name: Sample Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
