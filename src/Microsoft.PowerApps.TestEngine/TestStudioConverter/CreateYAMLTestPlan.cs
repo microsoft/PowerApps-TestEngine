@@ -73,7 +73,6 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         private void readJson(string InputDir)
         {
             JObject jobj = JObject.Parse(_fileSystem.ReadAllText(InputDir));
-
             JToken? topLevelTestSteps = jobj.Root["TopParent"]?["Children"]?[0]?["Children"]?[0]?["Rules"];
 
             if (topLevelTestSteps == null)
@@ -146,17 +145,13 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                     Description = TestDescription,
                     Persona = "User1",
                     AppLogicalName = "Replace with appLogicalName",
-
                     TestSteps = formattedTestSteps,
-
                 },
                 TestSettings = new TestSettings
                 {
                     RecordVideo = true,
                     BrowserConfigurations = new List<BrowserConfiguration>(new BrowserConfiguration[] { new BrowserConfiguration { Browser = "Chromium" } })
-
                 },
-
                 EnvironmentVariables = new EnvironmentVariables
                 {
                     Users = new List<UserConfiguration>(new UserConfiguration[] { new UserConfiguration { PersonaName = "User1", EmailKey = "user1Email", PasswordKey = "user1Password" } })
@@ -165,11 +160,8 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             };
 
             var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
-
             var result = serializer.Serialize(testYAML);
-            
             YamlTestPlan = testYAML;
-
             _fileSystem.WriteTextToFile(outputDir, result);
         }
         /// <summary>

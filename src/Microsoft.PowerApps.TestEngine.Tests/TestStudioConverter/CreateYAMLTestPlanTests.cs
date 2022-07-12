@@ -268,7 +268,6 @@ environmentVariables:
             .Build();
 
             var expectedTestObject = deserializer.Deserialize<TestPlanDefinition>(expectedYamlTestPlan);
-    
             Assert.Equal(expectedTestObject.ToString(), actualTestPlan?.ToString());
 
         }
@@ -443,7 +442,6 @@ environmentVariables:
             CreateYAMLTestPlan emptyConverter = new CreateYAMLTestPlan(logger, jsonFilePath, mockFileIO.Object);
 
             emptyConverter.exportYAML();
-
 
             List<string> emptyTestSteps = emptyConverter.GetTestSteps();
             Assert.Empty(emptyTestSteps);
