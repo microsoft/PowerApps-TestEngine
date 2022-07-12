@@ -39,6 +39,11 @@ jobs:
           npm install -g playwright@1.22.0
           playwright install  
           echo ${{ inputs.parameter }}
+          s=${{ inputs.parameter }}
+          for n in ${s[@]}; 
+            do
+                echo $n
+            done
           dotnet run -- -e ${{ inputs.environmentId}} -t ${{ inputs.tenantId}} -i ${{ inputs.testPlanFile}} -o ${{ inputs.outputDirectory}}; 
       - name: Sample Test Report
         uses: dorny/test-reporter@v1
