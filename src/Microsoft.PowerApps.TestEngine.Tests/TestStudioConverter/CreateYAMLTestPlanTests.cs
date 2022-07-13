@@ -158,7 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
                             {
                                 ""Property"": ""Description"",
                                 ""Category"": ""Data"",
-                                ""InvariantScript"": ""\""\"""",
+                                ""InvariantScript"": ""\""Missing Test Description\"""",
                                 ""RuleProviderType"": ""Unknown""
                             },
                             {
@@ -211,25 +211,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
     }
 }";
 
-            List<string> expectedTestSteps = new List<string>(new string[] { 
-                "SetProperty(IncrementControl1.value, 10)",
-                "Assert(IncrementControl1.value = 10, \"Make sure increment control is set to 10\")",
-                "SetProperty(IncrementControl1.value, 20)",
-                "Assert(IncrementControl1.value = 20, \"Make sure increment control is set to 10\")",
-            });
-
             var expectedYamlTestPlan = @"test:
-  name: Case
-  description: Missing Test Description
+  testSuiteName: Suite
+  testSuiteDescription: 
   persona: User1
   appLogicalName: Replace with appLogicalName
   networkRequestMocks: 
-  testSteps: |
-    = 
-    SetProperty(IncrementControl1,""value"", 10);
-    Assert(IncrementControl1.value = 10, ""Make sure increment control is set to 10"");
-    SetProperty(IncrementControl1,""value"", 20);
-    Assert(IncrementControl1.value = 20, ""Make sure increment control is set to 10"");
+  testCases:
+    - testCaseName: Case
+      testCaseDescription: Missing Test Description
+      testSteps: |
+        = 
+        SetProperty(IncrementControl1,""value"", 10);
+        Assert(IncrementControl1.value = 10, ""Make sure increment control is set to 10"");
+        SetProperty(IncrementControl1,""value"", 20);
+        Assert(IncrementControl1.value = 20, ""Make sure increment control is set to 10"");
 testSettings:
   browserConfigurations:
   - browser: Chromium
@@ -258,10 +254,11 @@ environmentVariables:
             
             converter.exportYAML();
 
-            List<string> actualTestSteps = converter.GetTestSteps();
+            List<TestCase> actualTestCases = converter.GetTestCases();
             TestPlanDefinition? actualTestPlan = converter.GetYamlTestPlan();
 
-            Assert.Equal(expectedTestSteps, actualTestSteps);
+            Assert.Equal("Case", actualTestCases[0].TestCaseName);
+            Assert.Equal("Missing Test Description", actualTestCases[0].TestCaseDescription);
 
             var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -443,8 +440,8 @@ environmentVariables:
 
             emptyConverter.exportYAML();
 
-            List<string> emptyTestSteps = emptyConverter.GetTestSteps();
-            Assert.Empty(emptyTestSteps);
+            List<TestCase> emptyTestCases = emptyConverter.GetTestCases();
+            Assert.Empty(emptyTestCases[0].TestSteps);
         }
     }
 }
