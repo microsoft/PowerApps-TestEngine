@@ -37,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             return valueToCheck;
         }
 
-        public static T Poll<T>(Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
+        public static void Poll<T>(Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
         {
             if (timeout < 0)
             {
@@ -61,8 +61,6 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
                 Thread.Sleep(500);
             }
-            
-            return functionToCall();
         }
 
         public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout)
