@@ -17,8 +17,8 @@ jobs:
             user1Password: '${{ secrets.POWER_PLATFORM_PASSWORD }}'
         run: |   
           cd src/PowerAppsTestEngine
-          npm install -g playwright@1.22.0
-          playwright install  
+          dotnet build
+          pwsh bin/Debug/net6.0/playwright.ps1 install
           IFS='}' read -ra testplans <<< "${{ inputs.parameters }}"      # separate the parameters to testplans
           for testplan in "${testplans[@]}" 
             do
