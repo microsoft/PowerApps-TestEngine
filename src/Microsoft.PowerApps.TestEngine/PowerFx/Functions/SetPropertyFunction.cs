@@ -154,7 +154,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             return FormulaValue.NewBlank();
         }
 
-         private async Task SetProperty(RecordValue obj, StringValue propName, DateValue value)
+        private async Task SetProperty(RecordValue obj, StringValue propName, DateValue value)
         {
             if (obj == null)
             {

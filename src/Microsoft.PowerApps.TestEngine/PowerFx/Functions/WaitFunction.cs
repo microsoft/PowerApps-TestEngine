@@ -15,19 +15,26 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// </summary>
     public class WaitFunction : ReflectionFunction
     {
-        private readonly int _timeout;
-        public WaitFunction(int timeout) : base("Wait", FormulaType.Blank, new RecordType(), FormulaType.String, FormulaType.String)
+        protected readonly int _timeout;
+        public WaitFunction(int timeout, FormulaType formulaType) : base("Wait", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
         {
             _timeout = timeout;
         }
+    }
 
-        public BlankValue Execute(RecordValue obj, StringValue propName, FormulaValue valueToCheck)
+    class WaitFunctionNumber : WaitFunction
+    {
+        public WaitFunctionNumber(int timeout) : base(timeout, FormulaType.Number)
         {
-            Wait(obj, propName, valueToCheck);
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
+        {
+            Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
-        private void Wait(RecordValue obj, StringValue propName, FormulaValue valueToCheck)
+        private void Wait(RecordValue obj, StringValue propName, NumberValue value)
         {
             if (obj == null)
             {
@@ -39,20 +46,27 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 throw new ArgumentNullException(nameof(propName));
             }
 
-            if (valueToCheck == null)
+            if (value == null)
             {
-                throw new ArgumentNullException(nameof(valueToCheck));
+                throw new ArgumentNullException(nameof(value));
             }
 
             var controlModel = (ControlRecordValue)obj;
-            string? propertyValue = null;
 
-            // TODO handle non strings?
-            var text = ((StringValue)valueToCheck).Value;
-
-            PollingHelper.Poll<string>(propertyValue, (x) => x != text, () => {
-                return ((StringValue)controlModel.GetField(propName.Value)).Value;
+            PollingHelper.Poll<double>((x) => x != value.Value, () => {
+                return ((NumberValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
+        }
+    }
+
+    public static class WaitRegisterExtensions
+    {
+        public static void RegisterAll(this PowerFxConfig powerFxConfig, int timeout)
+        {
+        powerFxConfig.AddFunction(new WaitFunctionNumber(timeout));
+        // powerFxConfig.AddFunction(new WaitFunctionString(timeout));
+        // powerFxConfig.AddFunction(new WaitFunctionBoolean(timeout));
+        // powerFxConfig.AddFunction(new WaitFunctionDate(timeout);
         }
     }
 }
