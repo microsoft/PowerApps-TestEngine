@@ -110,6 +110,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         result = NumberValue.New(double.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
+                    else if (fieldType is BooleanType)
+                    {
+                        result = BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue));
+                        return true;
+                    }
+                    else if (fieldType is DateTimeType)
+                    {
+                        result = DateTimeValue.New(DateTime.Parse(jsPropertyValueModel.PropertyValue));
+                        return true;
+                    }
+
                     result = New(jsPropertyValueModel.PropertyValue);
                     return true;
                 }

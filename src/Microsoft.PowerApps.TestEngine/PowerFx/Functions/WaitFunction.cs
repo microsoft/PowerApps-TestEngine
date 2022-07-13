@@ -133,6 +133,43 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
+    class WaitFunctionDate : WaitFunction
+    {
+        public WaitFunctionDate(int timeout) : base(timeout, FormulaType.Date)
+        {
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
+        {
+            Wait(obj, propName, value);
+            return FormulaValue.NewBlank();
+        }
+
+        private void Wait(RecordValue obj, StringValue propName, DateValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentNullException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj;
+
+            PollingHelper.Poll<DateTime>((x) => x != value.Value, () => {
+                return ((DateValue)controlModel.GetField(propName.Value)).Value;
+            }, _timeout);
+        }
+    }
+
     public static class WaitRegisterExtensions
     {
         public static void RegisterAll(this PowerFxConfig powerFxConfig, int timeout)
@@ -140,7 +177,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         powerFxConfig.AddFunction(new WaitFunctionNumber(timeout));
         powerFxConfig.AddFunction(new WaitFunctionString(timeout));
         powerFxConfig.AddFunction(new WaitFunctionBoolean(timeout));
-        // powerFxConfig.AddFunction(new WaitFunctionDate(timeout);
+        powerFxConfig.AddFunction(new WaitFunctionDate(timeout));
         }
     }
 }

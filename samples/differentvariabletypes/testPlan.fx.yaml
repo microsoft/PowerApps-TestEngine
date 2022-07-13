@@ -7,10 +7,10 @@ test:
   testSteps: |
     = Screenshot("differentvariabletypes_loaded.png");
       // Wait for default values to load
-      Wait(TextInput1, "Default", "Comments");
+      //Wait(TextInput1, "Default", "Comments");
       Wait(Rating1, "Default", 3);
       Wait(Image1, "Visible", true);
-      // Wait(DatePicker1, "DefaultDate", "01/01/2030");
+      // Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
       
       // Set input fields
       SetProperty(TextInput1, "Default", "Good job!");
