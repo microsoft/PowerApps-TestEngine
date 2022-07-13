@@ -9,16 +9,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dotnet-version: ['6.0.x']
     steps:
       - uses: actions/checkout@v2
       - name: Integration Test
         env:
             user1Email: '${{ secrets.POWER_PLATFORM_USER }}'
             user1Password: '${{ secrets.POWER_PLATFORM_PASSWORD }}'
-        run: |           
+        run: |   
           cd src/PowerAppsTestEngine
           npm install -g playwright@1.22.0
           playwright install  
@@ -49,7 +46,7 @@ jobs:
                         outputDir=${value[1]}
                     fi                                                         
                     done
-                if [[ -n "${envId}" && -n "${tenantId}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then                   
+                if [[ -n "${envId}" && -n "${tenantId}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then                  
                     dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
                 fi
             done          
