@@ -5,6 +5,7 @@ using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -117,7 +118,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                     }
                     else if (fieldType is DateTimeType)
                     {
-                        result = DateTimeValue.New(DateTime.Parse(jsPropertyValueModel.PropertyValue));
+                        var milliseconds = double.Parse(jsPropertyValueModel.PropertyValue);
+                        var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
+                        result = DateTimeValue.New(trueDateTime);
                         return true;
                     }
 

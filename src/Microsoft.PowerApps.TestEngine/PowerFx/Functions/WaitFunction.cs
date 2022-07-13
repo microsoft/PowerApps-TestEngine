@@ -165,7 +165,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             var controlModel = (ControlRecordValue)obj;
 
             PollingHelper.Poll<DateTime>((x) => x != value.Value, () => {
-                return ((DateValue)controlModel.GetField(propName.Value)).Value;
+                return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
         }
     }

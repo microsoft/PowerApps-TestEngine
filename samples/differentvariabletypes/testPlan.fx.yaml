@@ -10,7 +10,7 @@ test:
       //Wait(TextInput1, "Default", "Comments");
       Wait(Rating1, "Default", 3);
       Wait(Image1, "Visible", true);
-      // Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+      Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
       
       // Set input fields
       SetProperty(TextInput1, "Default", "Good job!");
