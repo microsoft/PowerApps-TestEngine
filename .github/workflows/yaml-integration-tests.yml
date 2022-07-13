@@ -31,25 +31,25 @@ jobs:
                     do      
                     if [[ $arg == *"environmentId"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
-                        if [ -n "${value[1]} ]; then
+                        if [ -n "${value[1]}" ]; then
                             envId=${value[1]}
                         fi
                     fi
                     if [[ $arg == *"tenantId"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
-                        if [ -n "${value[1]} ]; then
+                        if [ -n "${value[1]}" ]; then
                             tenantId=${value[1]}
                         fi
                     fi
                     if [[ $arg == *"testPlanFile"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
-                        if [ -n "${value[1]} ]; then
+                        if [ -n "${value[1]}" ]; then
                             testPlanFile=${value[1]}
                         fi
                     fi
                     if [[ $arg == *"outputDirectory"* ]]; then
                         IFS=':' read -ra value <<< "$arg"
-                        if [ -n "${value[1]} ]; then
+                        if [ -n "${value[1]}" ]; then
                             outputDir=${value[1]}
                         fi
                     fi                                                                
