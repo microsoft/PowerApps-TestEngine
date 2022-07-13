@@ -9,7 +9,7 @@ test:
       // Wait for default values to load
       Wait(TextInput1, "Default", "Comments");
       Wait(Rating1, "Default", 3);
-      // Wait(Image1, "Visible", true);
+      Wait(Image1, "Visible", true);
       // Wait(DatePicker1, "DefaultDate", "01/01/2030");
       
       // Set input fields
