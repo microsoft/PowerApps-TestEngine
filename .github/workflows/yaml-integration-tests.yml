@@ -19,10 +19,10 @@ jobs:
           cd src/PowerAppsTestEngine
           npm install -g playwright@1.22.0
           playwright install  
-          IFS='}' read -ra testplans <<< "${{ inputs.parameters }}"
+          IFS='}' read -ra testplans <<< "${{ inputs.parameters }}"      # separate the parameters to testplans
           for testplan in "${testplans[@]}" 
             do
-                IFS=',' read -ra args <<< "$testplan"
+                IFS=',' read -ra args <<< "$testplan"                    # separate the testplan arguments to args
                 envId=''
                 tenantId=''
                 testPlanFile=''
@@ -54,7 +54,7 @@ jobs:
                         fi
                     fi                                                                
                     done
-                if [[ -n "${envId}" && -n "${tenantId}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then                  
+                if [[ -n "${envId}" && -n "${tenantId}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then     # null checks on args             
                     dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
                 fi
             done          
