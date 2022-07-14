@@ -11,7 +11,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Gets or sets the definition of the test suite.
         /// </summary>
-        public TestSuiteDefinition? Test { get; set; }
+        public TestSuiteDefinition? TestSuite { get; set; }
 
         /// <summary>
         /// Gets or sets the test settings.

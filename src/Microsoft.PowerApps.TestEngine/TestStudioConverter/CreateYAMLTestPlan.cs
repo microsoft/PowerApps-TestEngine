@@ -172,7 +172,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             var testYAML = new TestPlanDefinition
             {
-                Test = new ConverterTestDefinition
+                TestSuite = new ConverterTestDefinition
                 {
                     TestSuiteName = TestSuiteName,
                     TestSuiteDescription = TestSuiteDescription,

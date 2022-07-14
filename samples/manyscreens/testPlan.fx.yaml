@@ -1,4 +1,4 @@
-test:
+testSuite:
   testSuiteName: ManyScreens
   testSuiteDescription: Verifies that you can interact with controls on other screens
   persona: User1

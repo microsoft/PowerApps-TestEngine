@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
 
-            var yamlFile = @"test:
+            var yamlFile = @"testSuite:
   testSuiteName: Button Clicker
   testSuiteDescription: Verifies that counter increments when the button is clicked
   persona: User1
@@ -63,20 +63,20 @@ environmentVariables:
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
             var testPlan = parser.ParseTestConfig(filePath);
             Assert.NotNull(testPlan);
-            Assert.Equal("Button Clicker", testPlan.Test?.TestSuiteName);
-            Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.Test?.TestSuiteDescription);
-            Assert.Equal("User1", testPlan.Test?.Persona);
-            Assert.Equal("new_buttonclicker_0a877", testPlan.Test?.AppLogicalName);
-            Assert.Equal("https://unitedstates-002.azure-apim.net/invoke", testPlan.Test?.NetworkRequestMocks?[0].RequestURL);
-            Assert.Equal("POST", testPlan.Test?.NetworkRequestMocks?[0].Method);
-            Assert.Equal("PATCH", testPlan.Test?.NetworkRequestMocks?[0].Headers?["x-ms-request-method"]);
-            Assert.Equal("/items/4", testPlan.Test?.NetworkRequestMocks?[0].Headers?["x-ms-request-url"]);
-            Assert.Equal("/myFakePayload.json", testPlan.Test?.NetworkRequestMocks?[0].RequestBodyFile);
-            Assert.Equal("/myFakeBing.json", testPlan.Test?.NetworkRequestMocks?[0].ResponseDataFile);
-            Assert.True(testPlan.Test?.TestCases?.Count > 0);
-            Assert.Equal("Case1", testPlan.Test?.TestCases[0].TestCaseName);
-            Assert.Equal("Optional", testPlan.Test?.TestCases[0].TestCaseDescription);
-            Assert.False(string.IsNullOrEmpty(testPlan.Test?.TestCases[0].TestSteps));
+            Assert.Equal("Button Clicker", testPlan.TestSuite?.TestSuiteName);
+            Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.TestSuite?.TestSuiteDescription);
+            Assert.Equal("User1", testPlan.TestSuite?.Persona);
+            Assert.Equal("new_buttonclicker_0a877", testPlan.TestSuite?.AppLogicalName);
+            Assert.Equal("https://unitedstates-002.azure-apim.net/invoke", testPlan.TestSuite?.NetworkRequestMocks?[0].RequestURL);
+            Assert.Equal("POST", testPlan.TestSuite?.NetworkRequestMocks?[0].Method);
+            Assert.Equal("PATCH", testPlan.TestSuite?.NetworkRequestMocks?[0].Headers?["x-ms-request-method"]);
+            Assert.Equal("/items/4", testPlan.TestSuite?.NetworkRequestMocks?[0].Headers?["x-ms-request-url"]);
+            Assert.Equal("/myFakePayload.json", testPlan.TestSuite?.NetworkRequestMocks?[0].RequestBodyFile);
+            Assert.Equal("/myFakeBing.json", testPlan.TestSuite?.NetworkRequestMocks?[0].ResponseDataFile);
+            Assert.True(testPlan.TestSuite?.TestCases?.Count > 0);
+            Assert.Equal("Case1", testPlan.TestSuite?.TestCases[0].TestCaseName);
+            Assert.Equal("Optional", testPlan.TestSuite?.TestCases[0].TestCaseDescription);
+            Assert.False(string.IsNullOrEmpty(testPlan.TestSuite?.TestCases[0].TestSteps));
             Assert.True(testPlan.TestSettings?.RecordVideo);
             Assert.False(testPlan.TestSettings?.Headless);
             Assert.False(testPlan.TestSettings?.EnablePowerFxOverlay);

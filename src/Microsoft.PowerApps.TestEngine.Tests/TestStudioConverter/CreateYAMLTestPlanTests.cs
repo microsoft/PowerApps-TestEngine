@@ -211,7 +211,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
     }
 }";
 
-            var expectedYamlTestPlan = @"test:
+            var expectedYamlTestPlan = @"testSuite:
   testSuiteName: Suite
   testSuiteDescription: 
   persona: User1

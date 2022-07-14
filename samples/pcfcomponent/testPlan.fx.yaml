@@ -1,4 +1,4 @@
-test:
+testSuite:
   testSuiteName: PCF Component
   testSuiteDescription: Verifies that you can interact with increment control of the PCF Component
   persona: User1

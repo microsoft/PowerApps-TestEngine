@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
-                testSuiteLogger.LogInformation($"Running test: {testSuiteDefinition.TestSuiteName}");
+                testSuiteLogger.LogInformation($"Running testSuite: {testSuiteDefinition.TestSuiteName}");
                 testSuiteLogger.LogInformation($"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
                 // Set up test infra

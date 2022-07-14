@@ -27,7 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public TestSuiteDefinition GetTestSuiteDefinition()
         {
-            return TestPlanDefinition?.Test;
+            return TestPlanDefinition?.TestSuite;
         }
 
         public List<TestCase> GetTestCases()
@@ -43,21 +43,21 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
 
             TestPlanDefinition = _testConfigParser.ParseTestConfig(testConfigFile);
-            if (TestPlanDefinition.Test != null)
+            if (TestPlanDefinition.TestSuite != null)
             {
-                TestCases = TestPlanDefinition.Test.TestCases;
+                TestCases = TestPlanDefinition.TestSuite.TestCases;
 
-                if (string.IsNullOrEmpty(TestPlanDefinition.Test.TestSuiteName))
+                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.TestSuiteName))
                 {
                     throw new InvalidOperationException("Missing test suite name from test suite definition");
                 }
 
-                if (string.IsNullOrEmpty(TestPlanDefinition.Test.Persona))
+                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Persona))
                 {
                     throw new InvalidOperationException("Missing persona from test suite definition");
                 }
 
-                if (string.IsNullOrEmpty(TestPlanDefinition.Test.AppLogicalName))
+                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName))
                 {
                     throw new InvalidOperationException("Missing app logical name from test suite definition");
                 }
@@ -135,7 +135,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 }
             }
 
-            if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.Test?.Persona).FirstOrDefault() == null)
+            if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
             {
                 throw new InvalidOperationException("Persona specified in test is not listed in environment variables");
             }

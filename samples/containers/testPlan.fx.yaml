@@ -1,4 +1,4 @@
-test:
+testSuite:
   testSuiteName: Container
   testSuiteDescription: Verifies that you can interact with control in the container
   persona: User1

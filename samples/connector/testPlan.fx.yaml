@@ -1,4 +1,4 @@
-test:
+testSuite:
   testSuiteName: Connector App
   testSuiteDescription: Verifies that you can mock network requests
   persona: User1

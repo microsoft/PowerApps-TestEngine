@@ -1,4 +1,4 @@
-test:
+testSuite:
   testSuiteName: Basic Gallery
   testSuiteDescription: Verifies that you can interact with controls within a basic gallery
   persona: User1

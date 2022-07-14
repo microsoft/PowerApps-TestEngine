@@ -1,4 +1,4 @@
-test:
+testSuite:
   testSuiteName: Calculator
   testSuiteDescription: Verifies that the calculator app works. The calculator is a component.
   persona: User1
