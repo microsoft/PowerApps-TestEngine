@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
+using YamlDotNet.Core;
+using YamlDotNet.Serialization;
 namespace Microsoft.PowerApps.TestEngine.Config
 {
     /// <summary>
@@ -23,6 +24,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Gets or sets the the Power FX functions describing the steps needed to perform the test.
         /// </summary>
+        [YamlMember (ScalarStyle = ScalarStyle.Literal)]
         public string TestSteps { get; set; } = "";
     }
 }
