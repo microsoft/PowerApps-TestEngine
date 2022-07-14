@@ -82,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             Assert.NotNull(testSuiteDefinitions);
             Assert.Equal(testPlanDefinition.Test, testSuiteDefinitions);
 
-             var testCases = state.GetTestCases();
+            var testCases = state.GetTestCases();
             Assert.NotNull(testCases);
             Assert.Single(testCases);
             Assert.Equal(testPlanDefinition.Test.TestCases[0], testCases[0]);
@@ -200,7 +200,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
         }
 
-        
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -273,7 +272,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
-            testPlanDefinition.TestSettings.BrowserConfigurations.Add(new BrowserConfiguration() { 
+            testPlanDefinition.TestSettings.BrowserConfigurations.Add(new BrowserConfiguration()
+            {
                 Browser = "Chromium",
                 ScreenWidth = screenWidth,
                 ScreenHeight = screenHeight

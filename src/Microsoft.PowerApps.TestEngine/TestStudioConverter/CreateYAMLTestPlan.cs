@@ -86,7 +86,6 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 if ((testSuiteProperty["Property"] ??= false).ToString().Equals("DisplayName"))
                 {
                     var suiteName = testSuiteProperty["InvariantScript"]?.ToString();
-
                     TestSuiteName = suiteName?.Replace("\"", "");
                 }
             }
