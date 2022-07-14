@@ -118,9 +118,19 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                     }
                     else if (fieldType is DateTimeType)
                     {
-                        var milliseconds = double.Parse(jsPropertyValueModel.PropertyValue);
-                        var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
-                        result = DateTimeValue.New(trueDateTime);
+                        Console.WriteLine(propertyValueJson);
+                        double milliseconds;
+                        
+                        if(double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
+                        {
+                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
+                            result = DateTimeValue.New(trueDateTime);
+                        }
+                        else
+                        {
+                            result = DateTimeValue.New(DateTime.Parse(jsPropertyValueModel.PropertyValue));
+                        }
+
                         return true;
                     }
 
