@@ -110,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine
             Console.WriteLine("I broke this");
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
-                string singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
+                var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
                 await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig);
             }
         }
