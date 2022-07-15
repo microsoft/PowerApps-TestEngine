@@ -15,7 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// <summary>
     /// This will allow you to set properties for controls
     /// </summary>
-    protected class SetPropertyFunction : ReflectionFunction
+    public class SetPropertyFunction : ReflectionFunction
     {
         protected readonly IPowerAppFunctions _powerAppFunctions;
 
