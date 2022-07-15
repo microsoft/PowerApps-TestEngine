@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
-        public void WaitFunctionThrowsOnInvalidArgumentsTest()
+        public void WaitFunctionStringThrowsOnInvalidArgumentsTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var waitFunction = new WaitFunctionString(Timeout);
@@ -39,6 +39,43 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, FormulaValue.New("1")));
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), null));
             Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), FormulaValue.New("1")));
+        }
+
+        [Fact]
+        public void WaitFunctionNumberThrowsOnInvalidArgumentsTest()
+        {
+            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var waitFunction = new WaitFunctionNumber(Timeout);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New(1)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, FormulaValue.New(1)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), null));
+            Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), FormulaValue.New(1)));
+        }
+
+        [Fact]
+        public void WaitFunctionBooleanThrowsOnInvalidArgumentsTest()
+        {
+            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var waitFunction = new WaitFunctionBoolean(Timeout);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New(false)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, FormulaValue.New(false)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), null));
+            Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), FormulaValue.New(false)));
+        }
+
+        [Fact]
+        public void WaitFunctionDateThrowsOnInvalidArgumentsTest()
+        {
+            var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
+            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var waitFunction = new WaitFunctionDate(Timeout);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New(dateTime)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, FormulaValue.New(dateTime)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), null));
+            Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.New("Text"), FormulaValue.New(dateTime)));
         }
 
         [Fact]
