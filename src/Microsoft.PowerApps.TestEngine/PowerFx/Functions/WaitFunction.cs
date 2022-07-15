@@ -13,7 +13,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// This will wait for the property of the control to equal the specified value.
     /// TODO: Future intended function is of this format: `Wait(boolean expression)`. This is pending some improvements in Power FX to be available.
     /// </summary>
-    public class WaitFunction : ReflectionFunction
+    protected class WaitFunction : ReflectionFunction
     {
         protected readonly int _timeout;
         public WaitFunction(int timeout, FormulaType formulaType) : base("Wait", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
@@ -22,7 +22,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    class WaitFunctionNumber : WaitFunction
+    public class WaitFunctionNumber : WaitFunction
     {
         public WaitFunctionNumber(int timeout) : base(timeout, FormulaType.Number)
         {
@@ -59,7 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    class WaitFunctionString : WaitFunction
+    public class WaitFunctionString : WaitFunction
     {
         public WaitFunctionString(int timeout) : base(timeout, FormulaType.String)
         {
@@ -96,7 +96,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    class WaitFunctionBoolean : WaitFunction
+    public class WaitFunctionBoolean : WaitFunction
     {
         public WaitFunctionBoolean(int timeout) : base(timeout, FormulaType.Boolean)
         {
@@ -133,7 +133,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    class WaitFunctionDate : WaitFunction
+    public class WaitFunctionDate : WaitFunction
     {
         public WaitFunctionDate(int timeout) : base(timeout, FormulaType.Date)
         {
