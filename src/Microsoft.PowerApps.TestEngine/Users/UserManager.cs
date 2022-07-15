@@ -34,18 +34,18 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
         public async Task LoginAsUserAsync()
         {
-            var testDefinition = _singleTestInstanceState.GetTestDefinition();
-            if (testDefinition == null)
+            var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
+            if (testSuiteDefinition == null)
             {
                 throw new InvalidOperationException("Test definition cannot be null");
             }
 
-            if (string.IsNullOrEmpty(testDefinition.Persona))
+            if (string.IsNullOrEmpty(testSuiteDefinition.Persona))
             {
                 throw new InvalidOperationException("Persona cannot be empty");
             }
 
-            var userConfig = _testState.GetUserConfiguration(testDefinition.Persona);
+            var userConfig = _testState.GetUserConfiguration(testSuiteDefinition.Persona);
 
             if (userConfig == null)
             {

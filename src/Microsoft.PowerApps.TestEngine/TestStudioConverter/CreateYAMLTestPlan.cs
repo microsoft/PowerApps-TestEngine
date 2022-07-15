@@ -1,16 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using YamlDotNet;
-using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -27,13 +20,13 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private string? InputDir;
 
-        private static List<string> TestSteps = new List<string>();
+        public List<TestCase> TestCases = new List<TestCase>();
 
         private TestPlanDefinition? YamlTestPlan;
 
-        private static string? TestName;
+        private static string? TestSuiteName;
 
-        private static string? TestDescription;
+        private static string? TestSuiteDescription;
 
         private static string[] NoChangeCommands = { "Assert", "Select" };
 
@@ -73,79 +66,119 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         private void readJson(string InputDir)
         {
             JObject jobj = JObject.Parse(_fileSystem.ReadAllText(InputDir));
-            JToken? topLevelTestSteps = jobj.Root["TopParent"]?["Children"]?[0]?["Children"]?[0]?["Rules"];
 
-            if (topLevelTestSteps == null)
+            // Read test suite information
+            JToken? testSuiteProperties = jobj.Root["TopParent"]?["Children"]?[0]?["Rules"];
+            if (testSuiteProperties == null || testSuiteProperties.Count() == 0)
             {
-                _logger.LogError("Missing Test Steps");
+                _logger.LogError("Missing Test Suite Information");
                 return;
             }
 
-            foreach (var topLevelTestStep in topLevelTestSteps)
+            foreach (var testSuiteProperty in testSuiteProperties)
             {
-                if ((topLevelTestStep["Category"]??=false).ToString().Equals("Behavior"))
+                if ((testSuiteProperty["Property"] ??= false).ToString().Equals("Description"))
                 {
-                    var testStep = topLevelTestStep["InvariantScript"]?.ToString();
-                    if (!string.IsNullOrEmpty(testStep))
-                    {
-                        TestSteps.Add(testStep);
-                    }
-                    else
-                    {
-                        _logger.LogWarning("Missing Test Step");
-                    }
+                    var description = testSuiteProperty["InvariantScript"]?.ToString();
+                    TestSuiteDescription = description?.Replace("\"", "");
                 }
 
-                if ((topLevelTestStep["Property"]??=false).ToString().Equals("Description"))
+                if ((testSuiteProperty["Property"] ??= false).ToString().Equals("DisplayName"))
                 {
-                    var description = topLevelTestStep["InvariantScript"]?.ToString();
-                    TestDescription = description?.Replace("\"", "");
+                    var suiteName = testSuiteProperty["InvariantScript"]?.ToString();
+                    TestSuiteName = suiteName?.Replace("\"", "");
                 }
-
-                if ((topLevelTestStep["Property"]??=false).ToString().Equals("DisplayName"))
-                {
-                    var caseName = topLevelTestStep["InvariantScript"]?.ToString();
-
-                    TestName = caseName?.Replace("\"", "");
-                }
-
             }
+
+            // Read test cases
+            JToken? testCaseList = jobj.Root["TopParent"]?["Children"]?[0]?["Children"];
+            if (testCaseList == null || testCaseList.Count() == 0)
+            {
+                _logger.LogError("Missing Test Cases");
+                return;
+            }
+
+            foreach (var testCase in testCaseList)
+            {
+                TestCase testCaseObj = new TestCase();
+                List<string> testSteps = new List<string>();
+                var testCaseProperties = testCase["Rules"];
+
+                if (testCaseProperties == null || testCaseProperties.Count() == 0)
+                {
+                    _logger.LogError("Missing Test Case Information");
+                    return;
+                }
+
+                foreach (var testCaseProperty in testCaseProperties)
+                {
+                    if ((testCaseProperty["Category"] ??= false).ToString().Equals("Behavior"))
+                    {
+                        var testStep = testCaseProperty["InvariantScript"]?.ToString();
+                        if (!string.IsNullOrEmpty(testStep))
+                        {
+                            testSteps.Add(testStep);
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Missing Test Step");
+                        }
+                    }
+
+                    if ((testCaseProperty["Property"] ??= false).ToString().Equals("Description"))
+                    {
+                        var description = testCaseProperty["InvariantScript"]?.ToString();
+                        testCaseObj.TestCaseDescription = description?.Replace("\"", "");
+                    }
+
+                    if ((testCaseProperty["Property"] ??= false).ToString().Equals("DisplayName"))
+                    {
+                        var caseName = testCaseProperty["InvariantScript"]?.ToString();
+
+                        testCaseObj.TestCaseName = caseName?.Replace("\"", "");
+                    }
+                }
+
+                testCaseObj.TestSteps = combineTestSteps(testSteps);
+                TestCases.Add(testCaseObj);
+            }
+        }
+
+        private string combineTestSteps(List<string> testSteps)
+        {
+            if (testSteps.Count == 0)
+            {
+                _logger.LogWarning("Empty Test Steps");
+                return "";
+            }
+
+            var stringBuilder = new StringBuilder("= \n");
+            foreach (var step in testSteps)
+            {
+                stringBuilder.Append(validateStep(step));
+                stringBuilder.Append(";\n");
+            }
+
+            return stringBuilder.ToString();
         }
 
         private void writeYaml(string outputDir)
         {
-            if (string.IsNullOrEmpty(TestName))
-                TestName = "Missing Test Name";
+            if (string.IsNullOrEmpty(TestSuiteName))
+                TestSuiteName = "Missing Test Name";
 
-            if (string.IsNullOrEmpty(TestDescription))
-                TestDescription = "Missing Test Description";
-
-            var stringBuilder = new StringBuilder("= \n");
-
-            if (TestSteps.Count == 0)
-            {
-                _logger.LogWarning("Empty Test Steps");
-            }
-            else
-            {
-                foreach (var step in TestSteps)
-                {
-                    stringBuilder.Append(validateStep(step));
-                    stringBuilder.Append(";\n");
-                }
-            }
-
-            var formattedTestSteps = stringBuilder.ToString();
+            if (string.IsNullOrEmpty(TestSuiteDescription))
+                TestSuiteDescription = "Missing Test Description";
 
             var testYAML = new TestPlanDefinition
             {
-                Test = new ConverterTestDefinition
+                TestSuite = new ConverterTestDefinition
                 {
-                    Name = TestName,
-                    Description = TestDescription,
+                    TestSuiteName = TestSuiteName,
+                    TestSuiteDescription = TestSuiteDescription,
                     Persona = "User1",
                     AppLogicalName = "Replace with appLogicalName",
-                    TestSteps = formattedTestSteps,
+                    TestCases = TestCases
                 },
                 TestSettings = new TestSettings
                 {
@@ -185,10 +218,10 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 case SetProperty:
                     // Expected Test Studio syntax sample:  SetProperty(IncrementControl1.value, 10)
                     // Resulting Test Engine syntax sample: SetProperty(IncrementControl1, "value", 10)
-                    
-                    var parametersSplit = parameters.Split(new[] {','}, 2);
 
-                    if(parametersSplit.Length < 2)
+                    var parametersSplit = parameters.Split(new[] { ',' }, 2);
+
+                    if (parametersSplit.Length < 2)
                     {
                         step = "Assert( true,\"" + step + " incorrect Test Studio syntax \")";
                         _logger.LogWarning($"{step} incorrect syntax");
@@ -221,9 +254,9 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             return step;
         }
 
-        public List<string> GetTestSteps()
+        public List<TestCase> GetTestCases()
         {
-            return TestSteps;
+            return TestCases;
         }
 
         public TestPlanDefinition? GetYamlTestPlan()

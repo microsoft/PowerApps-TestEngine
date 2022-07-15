@@ -89,26 +89,23 @@ namespace Microsoft.PowerApps.TestEngine
             var allTestRuns = new List<Task>();
 
             // Manage number of workers
-            foreach (var testDefinition in _state.GetTestDefinitions())
+            foreach (var browserConfig in browserConfigurations)
             {
-                foreach (var browserConfig in browserConfigurations)
+                allTestRuns.Add(RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig));
+                if (allTestRuns.Count >= _state.GetWorkerCount())
                 {
-                    allTestRuns.Add(RunOneTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig));
-                    if (allTestRuns.Count >= _state.GetWorkerCount())
-                    {
-                        await Task.WhenAll(allTestRuns.ToArray());
-                        allTestRuns.Clear();
-                    }
+                    await Task.WhenAll(allTestRuns.ToArray());
+                    allTestRuns.Clear();
                 }
             }
             await Task.WhenAll(allTestRuns.ToArray());
         }
-        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestDefinition testDefinition, BrowserConfiguration browserConfig)
+        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig)
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
-                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig);
+                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig);
             }
         }
     }

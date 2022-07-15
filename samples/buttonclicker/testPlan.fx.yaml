@@ -1,24 +1,26 @@
-test:
-  name: Button Clicker
-  description: Verifies that counter increments when the button is clicked
+testSuite:
+  testSuiteName: Button Clicker
+  testSuiteDescription: Verifies that counter increments when the button is clicked
   persona: User1
   appLogicalName: new_buttonclicker_0a877
 
-  testSteps: |
-    = Screenshot("buttonclicker_loaded.png");
-      // Wait for the label to be set to 0
-      //Wait(Label1.Text = "0");
-      Wait(Label1, "Text", "0");
-      // Click the button
-      Select(Button1);
-      Assert(Label1.Text = "1", "Counter should be incremented to 1");
-      // Click the button
-      Select(Button1);
-      Assert(Label1.Text = "2", "Counter should be incremented to 2");
-      // Click the button
-      Select(Button1);
-      Assert(Label1.Text = "3");
-      Screenshot("buttonclicker_end.png");
+  testCases:
+    - testCaseName: Case1
+      testCaseDescription: Wait for the label to be set to 0
+      testSteps: |
+        = Screenshot("buttonclicker_loaded.png");
+          //Wait(Label1.Text = "0");
+          Wait(Label1, "Text", "0");
+    - testCaseName: Case2
+      testCaseDescription: Click the button
+      testSteps: |
+          = Select(Button1);
+            Assert(Label1.Text = "1", "Counter should be incremented to 1");
+            Select(Button1);
+            Assert(Label1.Text = "2", "Counter should be incremented to 2");
+            Select(Button1);
+            Assert(Label1.Text = "3");
+            Screenshot("buttonclicker_end.png");
 
 testSettings:
   recordVideo: true

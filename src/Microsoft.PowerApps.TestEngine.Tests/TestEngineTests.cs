@@ -47,15 +47,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     }
                 }
             };
-            var testDefinitions = new List<TestDefinition>()
+            var testSuiteDefinition = new TestSuiteDefinition()
             {
-                new TestDefinition()
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
+                AppLogicalName = "logicalAppName1",
+                Persona = "User1",
+                TestCases = new List<TestCase>()
                 {
-                    Name = "Test1",
-                    Description = "First test",
-                    AppLogicalName = "logicalAppName1",
-                    Persona = "User1",
-                    TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
                 }
             };
             var testConfigFile = "C:\\testPlan.fx.yaml";
@@ -68,14 +73,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var expectedTestReportPath = "C:\\test.trx";
 
-            SetupMocks(expectedOutputDirectory, testSettings, testDefinitions, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object);
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId);
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile, environmentId, tenantId, expectedCloud, expectedOutputDirectory, testRunId, testRunDirectory, testDefinitions, testSettings);
+            Verify(testConfigFile, environmentId, tenantId, expectedCloud, expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         [Fact]
@@ -92,15 +97,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     }
                 }
             };
-            var testDefinitions = new List<TestDefinition>()
+            var testSuiteDefinition = new TestSuiteDefinition()
             {
-                new TestDefinition()
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
+                AppLogicalName = "logicalAppName1",
+                Persona = "User1",
+                TestCases = new List<TestCase>()
                 {
-                    Name = "Test1",
-                    Description = "First test",
-                    AppLogicalName = "logicalAppName1",
-                    Persona = "User1",
-                    TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
                 }
             };
            
@@ -110,23 +120,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var expectedTestReportPath = "C:\\test.trx";
 
-            SetupMocks(expectedOutputDirectory, testSettings, testDefinitions, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object);
             await testEngine.RunTestByWorkerCountAsync(testRunId, testRunDirectory);
 
-            foreach (var testDefinition in testDefinitions)
+            foreach (var browserConfig in testSettings.BrowserConfigurations)
             {
-                foreach (var browserConfig in testSettings.BrowserConfigurations)
-                {
-                    MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig), Times.Once());
-                }
+                MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig), Times.Once());
             }
         }
 
         [Theory]
         [ClassData(typeof(TestDataGenerator))]
-        public async Task TestEngineTest(string outputDirectory, string cloud, TestSettings testSettings, List<TestDefinition> testDefinitions)
+        public async Task TestEngineTest(string outputDirectory, string cloud, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition)
         {
             var testConfigFile = "C:\\testPlan.fx.yaml";
             var environmentId = "defaultEnviroment";
@@ -146,17 +153,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var expectedTestReportPath = "C:\\test.trx";
 
-            SetupMocks(expectedOutputDirectory, testSettings, testDefinitions, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object);
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, cloud);
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile, environmentId, tenantId, expectedCloud, expectedOutputDirectory, testRunId, testRunDirectory, testDefinitions, testSettings);
+            Verify(testConfigFile, environmentId, tenantId, expectedCloud, expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
-        private void SetupMocks(string outputDirectory, TestSettings testSettings, List<TestDefinition> testDefinitions, string testRunId, string testReportPath)
+        private void SetupMocks(string outputDirectory, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition, string testRunId, string testReportPath)
         {
             MockState.Setup(x => x.ParseAndSetTestState(It.IsAny<string>()));
             MockState.Setup(x => x.SetEnvironment(It.IsAny<string>()));
@@ -165,7 +172,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.SetOutputDirectory(It.IsAny<string>()));
             MockState.Setup(x => x.GetOutputDirectory()).Returns(outputDirectory);
             MockState.Setup(x => x.GetTestSettings()).Returns(testSettings);
-            MockState.Setup(x => x.GetTestDefinitions()).Returns(testDefinitions);
+            MockState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockState.Setup(x => x.GetWorkerCount()).Returns(testSettings.WorkerCount);
 
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(testRunId);
@@ -175,12 +182,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
 
-            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestDefinition>(), It.IsAny<BrowserConfiguration>())).Returns(Task.CompletedTask);
+            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestSuiteDefinition>(), It.IsAny<BrowserConfiguration>())).Returns(Task.CompletedTask);
         }
 
 
         private void Verify(string testConfigFile, string environmentId, string tenantId, string cloud, 
-            string outputDirectory, string testRunId, string testRunDirectory, List<TestDefinition> testDefinitions, TestSettings testSettings)
+            string outputDirectory, string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, TestSettings testSettings)
         {
             MockState.Verify(x => x.ParseAndSetTestState(testConfigFile), Times.Once());
             MockState.Verify(x => x.SetEnvironment(environmentId), Times.Once());
@@ -193,12 +200,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockFileSystem.Verify(x => x.CreateDirectory(testRunDirectory), Times.Once());
 
-            foreach (var testDefinition in testDefinitions)
+            foreach (var browserConfig in testSettings.BrowserConfigurations)
             {
-                foreach (var browserConfig in testSettings.BrowserConfigurations)
-                {
-                    MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig), Times.Once());
-                }
+                MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig), Times.Once());
             }
 
             MockTestReporter.Verify(x => x.EndTestRun(testRunId), Times.Once());
@@ -216,7 +220,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId));
         }
 
-        class TestDataGenerator : TheoryData<string, string, TestSettings, List<TestDefinition>>
+        class TestDataGenerator : TheoryData<string, string, TestSettings, TestSuiteDefinition>
         {
             public TestDataGenerator()
             {
@@ -233,15 +237,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                             }
                         }
                     },
-                    new List<TestDefinition>()
+                    new TestSuiteDefinition()
                     {
-                        new TestDefinition()
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
                         {
-                            Name = "Test1",
-                            Description = "First test",
-                            AppLogicalName = "logicalAppName1",
-                            Persona = "User1",
-                            TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            new TestCase
+                            {
+                                TestCaseName = "Test Case Name",
+                                TestCaseDescription = "Test Case Description",
+                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            }
                         }
                     });
 
@@ -258,15 +267,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                             }
                         }
                     },
-                    new List<TestDefinition>()
+                    new TestSuiteDefinition()
                     {
-                        new TestDefinition()
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
                         {
-                            Name = "Test1",
-                            Description = "First test",
-                            AppLogicalName = "logicalAppName1",
-                            Persona = "User1",
-                            TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            new TestCase
+                            {
+                                TestCaseName = "Test Case Name",
+                                TestCaseDescription = "Test Case Description",
+                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            }
                         }
                     });
 
@@ -283,15 +297,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                             }
                         }
                     },
-                    new List<TestDefinition>()
+                    new TestSuiteDefinition()
                     {
-                        new TestDefinition()
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
                         {
-                            Name = "Test1",
-                            Description = "First test",
-                            AppLogicalName = "logicalAppName1",
-                            Persona = "User1",
-                            TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            new TestCase
+                            {
+                                TestCaseName = "Test Case Name",
+                                TestCaseDescription = "Test Case Description",
+                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            }
                         }
                     });
 
@@ -317,15 +336,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                             }
                         }
                     },
-                    new List<TestDefinition>()
+                    new TestSuiteDefinition()
                     {
-                        new TestDefinition()
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
                         {
-                            Name = "Test1",
-                            Description = "First test",
-                            AppLogicalName = "logicalAppName1",
-                            Persona = "User1",
-                            TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            new TestCase
+                            {
+                                TestCaseName = "Test Case Name",
+                                TestCaseDescription = "Test Case Description",
+                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            }
                         }
                     });
 
@@ -342,23 +366,26 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                             }
                         }
                     },
-                    new List<TestDefinition>()
+                    new TestSuiteDefinition()
                     {
-                        new TestDefinition()
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
                         {
-                            Name = "Test1",
-                            Description = "First test",
-                            AppLogicalName = "logicalAppName1",
-                            Persona = "User1",
-                            TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-                        },
-                        new TestDefinition()
-                        {
-                            Name = "Test2",
-                            Description = "Second test",
-                            AppLogicalName = "logicalAppName2",
-                            Persona = "User2",
-                            TestSteps = "Assert(2 + 1 = 3, \"2 + 1 should be 3 \")"
+                            new TestCase
+                            {
+                                TestCaseName = "Test1",
+                                TestCaseDescription = "First test",
+                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            },
+                            new TestCase
+                            {
+                                TestCaseName = "Test2",
+                                TestCaseDescription = "Second test",
+                                TestSteps = "Assert(2 + 1 = 3, \"2 + 1 should be 3 \")"
+                            }
                         }
                     });
 
@@ -384,23 +411,26 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                             }
                         }
                     },
-                    new List<TestDefinition>()
+                    new TestSuiteDefinition()
                     {
-                        new TestDefinition()
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
                         {
-                            Name = "Test1",
-                            Description = "First test",
-                            AppLogicalName = "logicalAppName1",
-                            Persona = "User1",
-                            TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-                        },
-                        new TestDefinition()
-                        {
-                            Name = "Test2",
-                            Description = "Second test",
-                            AppLogicalName = "logicalAppName2",
-                            Persona = "User2",
-                            TestSteps = "Assert(2 + 1 = 3, \"2 + 1 should be 3 \")"
+                            new TestCase
+                            {
+                                TestCaseName = "Test1",
+                                TestCaseDescription = "First test",
+                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            },
+                            new TestCase
+                            {
+                                TestCaseName = "Test2",
+                                TestCaseDescription = "Second test",
+                                TestSteps = "Assert(2 + 1 = 3, \"2 + 1 should be 3 \")"
+                            }
                         }
                     });
             }

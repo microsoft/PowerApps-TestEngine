@@ -207,17 +207,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 ResponseDataFile = "response.json"
             };
 
-            var testDefinition = new TestDefinition()
+            var testSuiteDefinition = new TestSuiteDefinition()
             {
-                Name = "Test1",
-                Description = "First test",
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
                 NetworkRequestMocks = new List<NetworkRequestMock>{mock},
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
             };
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             MockPage.Setup(x => x.RouteAsync(mock.RequestURL, It.IsAny<Action<IRoute>>(), It.IsAny<PageRouteOptions>())).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
@@ -235,16 +243,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task SetupNetworkRequestMockAsyncNullMockSkipTest()
         {
 
-            var testDefinition = new TestDefinition()
+            var testSuiteDefinition = new TestSuiteDefinition()
             {
-                Name = "Test1",
-                Description = "First test",
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
             };
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
@@ -261,17 +277,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 ResponseDataFile = "response.json"
             };
 
-            var testDefinition = new TestDefinition()
+            var testSuiteDefinition = new TestSuiteDefinition()
             {
-                Name = "Test1",
-                Description = "First test",
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
                 NetworkRequestMocks = new List<NetworkRequestMock>{mock},
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
             };
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
@@ -288,17 +312,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 ResponseDataFile = "response.json"
             };
 
-            var testDefinition = new TestDefinition()
+            var testSuiteDefinition = new TestSuiteDefinition()
             {
-                Name = "Test1",
-                Description = "First test",
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
                 NetworkRequestMocks = new List<NetworkRequestMock>{mock},
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
             };
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
 
@@ -316,17 +348,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 ResponseDataFile = ""
             };
 
-            var testDefinition = new TestDefinition()
+            var testSuiteDefinition = new TestSuiteDefinition()
             {
-                Name = "Test1",
-                Description = "First test",
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
                 NetworkRequestMocks = new List<NetworkRequestMock>{mock},
-                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
             };
 
-            MockSingleTestInstanceState.Setup(x => x.GetTestDefinition()).Returns(testDefinition);
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,

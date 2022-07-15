@@ -15,10 +15,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public void ParseAndSetTestState(string testConfigFile);
 
         /// <summary>
-        /// Gets all the test defined for the test run.
+        /// Gets the test suite defined for the test run.
         /// </summary>
-        /// <returns>List of test definitions</returns>
-        public List<TestDefinition> GetTestDefinitions();
+        /// <returns>The test suite for test</returns>
+        public TestSuiteDefinition GetTestSuiteDefinition();
+
+        /// <summary>
+        /// Gets all the test cases defined for the test run.
+        /// </summary>
+        /// <returns>List of test cases</returns>
+        public List<TestCase> GetTestCases();
 
         /// <summary>
         /// Set the environment id the apps should be opened in.

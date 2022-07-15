@@ -1,34 +1,36 @@
-test:
-  name: Nested Gallery
-  description: Verifies that you can interact with controls within a nested gallery
+testSuite:
+  testSuiteName: Nested Gallery
+  testSuiteDescription: Verifies that you can interact with controls within a nested gallery
   persona: User1
   appLogicalName: new_nestedgallery_a43df
 
-  testSteps: |
-    = Screenshot("nestedgallery_loaded.png");
-      Assert(TextInput1.Text = "5", "Validate default number of columns to generate is 5");
-      // Generate 1 row
-      Select(Button1);
-      // Validate that the row was generated with some data
-      Assert(Index(Gallery1.AllItems, 1).Label4.Text = "Row id: 1", "Validate row label");
-      Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 5).Label5.Text = "Column id: 5", "Validate the label in the nested gallery");
-      // Generate a 2nd row
-      SetProperty(TextInput1, "Text", "10");
-      Select(Button1);
-      Assert(Index(Gallery1.AllItems, 2).Label4.Text = "Row id: 2", "Validate row label");
-      Assert(Index(Index(Gallery1.AllItems, 2).Gallery2.AllItems, 10).Label5.Text = "Column id: 10", "Validate the label in the nested gallery");
-      // Ensure that selected data is null
-      Assert(IsBlank(Label3.Text), "Validate that the selected row is empty");
-      Assert(IsBlank(Label8.Text), "Validate that the selected column is empty");
-      // Click 2nd row in the gallery
-      Select(Index(Gallery1.AllItems, 2).Icon2);
-      Assert(Label3.Text = "2", "Validate that the selected row is updated");
-      Assert(Label8.Text = "0", "Validate that the selected column is reset");
-      // Click 4th column in 1st row in the gallery
-      Select(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 4).Icon3);
-      Assert(Label3.Text = "1", "Validate that the selected row is updated");
-      Assert(Label8.Text = "4", "Validate that the selected column is updated");
-      Screenshot("nestedgallery_end.png");
+  testCases:
+    - testCaseName: Case1
+      testSteps: |
+        = Screenshot("nestedgallery_loaded.png");
+          Assert(TextInput1.Text = "5", "Validate default number of columns to generate is 5");
+          // Generate 1 row
+          Select(Button1);
+          // Validate that the row was generated with some data
+          Assert(Index(Gallery1.AllItems, 1).Label4.Text = "Row id: 1", "Validate row label");
+          Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 5).Label5.Text = "Column id: 5", "Validate the label in the nested gallery");
+          // Generate a 2nd row
+          SetProperty(TextInput1, "Text", "10");
+          Select(Button1);
+          Assert(Index(Gallery1.AllItems, 2).Label4.Text = "Row id: 2", "Validate row label");
+          Assert(Index(Index(Gallery1.AllItems, 2).Gallery2.AllItems, 10).Label5.Text = "Column id: 10", "Validate the label in the nested gallery");
+          // Ensure that selected data is null
+          Assert(IsBlank(Label3.Text), "Validate that the selected row is empty");
+          Assert(IsBlank(Label8.Text), "Validate that the selected column is empty");
+          // Click 2nd row in the gallery
+          Select(Index(Gallery1.AllItems, 2).Icon2);
+          Assert(Label3.Text = "2", "Validate that the selected row is updated");
+          Assert(Label8.Text = "0", "Validate that the selected column is reset");
+          // Click 4th column in 1st row in the gallery
+          Select(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 4).Icon3);
+          Assert(Label3.Text = "1", "Validate that the selected row is updated");
+          Assert(Label8.Text = "4", "Validate that the selected column is updated");
+          Screenshot("nestedgallery_end.png");
 
 testSettings:
   recordVideo: true

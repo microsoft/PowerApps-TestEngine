@@ -34,16 +34,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public string GetTestId();
 
         /// <summary>
-        /// Sets the test definition for this instance.
+        /// Sets the test suite definition for this instance.
         /// </summary>
-        /// <param name="testDefinition">Test definition</param>
-        public void SetTestDefinition(TestDefinition testDefinition);
+        /// <param name="testSuiteDefinition">Test suite definition</param>
+        public void SetTestSuiteDefinition(TestSuiteDefinition testSuiteDefinition);
 
         /// <summary>
-        /// Gets the test definition for this instance.
+        /// Gets the test suite definition for this instance.
         /// </summary>
-        /// <returns>Test definition</returns>
-        public TestDefinition GetTestDefinition();
+        /// <returns>Test suite definition</returns>
+        public TestSuiteDefinition GetTestSuiteDefinition();
 
         /// <summary>
         /// Sets the logger for this instance.
