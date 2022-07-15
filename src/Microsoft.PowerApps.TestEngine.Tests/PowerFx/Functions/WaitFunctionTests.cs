@@ -74,8 +74,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.NewDateOnly(dateTime)));
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, FormulaValue.NewDateOnly(dateTime)));
-            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.NewDateOnly("Text"), null));
-            Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.NewDateOnly("Text"), FormulaValue.New(dateTime)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.NewDateOnly(dateTime), null));
+            Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), FormulaValue.NewDateOnly(dateTime), FormulaValue.New(dateTime)));
         }
 
         [Fact]
