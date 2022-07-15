@@ -162,7 +162,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
-                PropertyValue = valueToWaitFor,
+                PropertyValue = (string)valueToWaitFor,
             };
             var expectedItemPath = new ItemPath
             {
