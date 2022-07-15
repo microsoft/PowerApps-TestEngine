@@ -27,13 +27,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 throw new InvalidOperationException("Environment cannot be empty");
             }
 
-            var testDefinition = _singleTestInstanceState.GetTestDefinition();
-            if (testDefinition == null)
+            var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
+            if (testSuiteDefinition == null)
             {
                 throw new InvalidOperationException("Test definition must be specified");
             }
 
-            var appLogicalName = testDefinition.AppLogicalName;
+            var appLogicalName = testSuiteDefinition.AppLogicalName;
             if (string.IsNullOrEmpty(appLogicalName))
             {
                 throw new InvalidOperationException("App logical name cannot be empty");

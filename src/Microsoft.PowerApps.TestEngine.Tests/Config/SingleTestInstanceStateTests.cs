@@ -24,9 +24,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             state.SetTestId(testId);
             Assert.Equal(testId, state.GetTestId());
 
-            var testDefinition = new TestDefinition();
-            state.SetTestDefinition(testDefinition);
-            Assert.Equal(testDefinition, state.GetTestDefinition());
+            var testSuiteDefinition = new TestSuiteDefinition();
+            state.SetTestSuiteDefinition(testSuiteDefinition);
+            Assert.Equal(testSuiteDefinition, state.GetTestSuiteDefinition());
 
             var logger = new Mock<ILogger>(MockBehavior.Strict);
             state.SetLogger(logger.Object);
@@ -72,7 +72,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetTestDefinitionThrowsOnNullInput()
         {
             var state = new SingleTestInstanceState();
-            Assert.Throws<ArgumentNullException>(() => state.SetTestDefinition(null));
+            Assert.Throws<ArgumentNullException>(() => state.SetTestSuiteDefinition(null));
         }
 
         [Fact]

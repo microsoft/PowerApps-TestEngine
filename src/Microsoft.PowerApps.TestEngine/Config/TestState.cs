@@ -10,8 +10,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
     {
         private readonly ITestConfigParser _testConfigParser;
         private TestPlanDefinition? TestPlanDefinition { get; set; }
-        private List<TestDefinition> TestDefinitions { get; set; } = new List<TestDefinition>();
-
+        private List<TestCase> TestCases { get; set; } = new List<TestCase>();
         private string? EnvironmentId { get; set; }
         private string? Cloud { get; set; }
 
@@ -26,9 +25,14 @@ namespace Microsoft.PowerApps.TestEngine.Config
             _testConfigParser = testConfigParser;
         }
 
-        public List<TestDefinition> GetTestDefinitions()
+        public TestSuiteDefinition GetTestSuiteDefinition()
         {
-            return TestDefinitions;
+            return TestPlanDefinition?.TestSuite;
+        }
+
+        public List<TestCase> GetTestCases()
+        {
+            return TestCases;
         }
 
         public void ParseAndSetTestState(string testConfigFile)
@@ -39,43 +43,41 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
 
             TestPlanDefinition = _testConfigParser.ParseTestConfig(testConfigFile);
-            if (TestPlanDefinition.Test != null)
+            if (TestPlanDefinition.TestSuite != null)
             {
-                TestDefinitions.Add(TestPlanDefinition.Test);
+                TestCases = TestPlanDefinition.TestSuite.TestCases;
+
+                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.TestSuiteName))
+                {
+                    throw new InvalidOperationException("Missing test suite name from test suite definition");
+                }
+
+                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Persona))
+                {
+                    throw new InvalidOperationException("Missing persona from test suite definition");
+                }
+
+                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName))
+                {
+                    throw new InvalidOperationException("Missing app logical name from test suite definition");
+                }
             }
 
-            if (TestDefinitions.Count == 0)
+            if (TestCases.Count == 0)
             {
-                throw new InvalidOperationException("Must be at least one test definition");
+                throw new InvalidOperationException("Must be at least one test case");
             }
 
-            var personasReferenced = new List<string>();
-
-            foreach(var testDefinition in TestDefinitions)
+            foreach(var testCase in TestCases)
             {
-                if (string.IsNullOrEmpty(testDefinition.Name))
+                if (string.IsNullOrEmpty(testCase.TestCaseName))
                 {
-                    throw new InvalidOperationException("Missing name from test definition");
+                    throw new InvalidOperationException("Missing test case name from test definition");
                 }
 
-                if (string.IsNullOrEmpty(testDefinition.Persona))
+                if (string.IsNullOrEmpty(testCase.TestSteps))
                 {
-                    throw new InvalidOperationException("Missing persona from test definition");
-                }
-
-                if (!personasReferenced.Contains(testDefinition.Persona))
-                {
-                    personasReferenced.Add(testDefinition.Persona);
-                }
-
-                if (string.IsNullOrEmpty(testDefinition.AppLogicalName))
-                {
-                    throw new InvalidOperationException("Missing app logical name from test definition");
-                }
-
-                if (string.IsNullOrEmpty(testDefinition.TestSteps))
-                {
-                    throw new InvalidOperationException("Missing test steps from test definition");
+                    throw new InvalidOperationException("Missing test steps from test case");
                 }
             }
 
@@ -133,12 +135,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 }
             }
 
-            foreach(var referencedPersona in personasReferenced)
+            if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
             {
-                if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == referencedPersona).FirstOrDefault() == null)
-                {
-                    throw new InvalidOperationException("Persona specified in test is not listed in environment variables");
-                }
+                throw new InvalidOperationException("Persona specified in test is not listed in environment variables");
             }
 
             IsValid = true;
