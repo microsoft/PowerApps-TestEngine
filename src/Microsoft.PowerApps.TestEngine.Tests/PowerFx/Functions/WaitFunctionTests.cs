@@ -145,7 +145,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 PropertyName = "Text"
             };
             MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
-                    .Returns(JsonConvert.SerializeObject(jsPropertyValueModel));
+                    .Returns(false);
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionBoolean(Timeout);
