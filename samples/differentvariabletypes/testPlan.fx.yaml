@@ -1,32 +1,57 @@
-test:
-  name: DifferentVariableTypes
-  description: Showcases usage of Assert/Wait/SetProperty with multiple types
+testSuite:
+  testSuiteName: DifferentVariableTypes
+  testSuiteDescription: Showcases usage of Assert/Wait/SetProperty with multiple types
   persona: User1
   appLogicalName: cr693_differentvariabletypes_09b4b
 
-  testSteps: |
-    = Screenshot("differentvariabletypes_loaded.png");
-      // Wait for default values to load
-      Wait(TextInput1, "Default", "Comments");
-      Wait(Rating1, "Default", 3);
-      Wait(Image1, "Visible", true);
-      Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
-      
-      // Set input fields
-      SetProperty(TextInput1, "Default", "Good job!");
-      SetProperty(Rating1, "Default", 5);
-      SetProperty(Toggle1, "Default", true);
-      SetProperty(DatePicker1, "DefaultDate", Date(2040, 01, 01));
+  testCases:
+    - testCaseName: String_Case
+      testSteps: |
+        = Screenshot("stringtype_loaded.png");
 
-      // Confirm that they were set to the correct value
-      Assert(TextInput1.Default = "Good job!", "Validate comment box was changed.");
-      Assert(Rating1.Default = 5, "Validate rating was changed.");
-      Assert(Toggle1.Default = true, "Validate toggle is now on");
-      Assert(DatePicker1.DefaultDate = Date(2040, 01, 01), "Validate date was changed");
+          // Wait for default values to load
+          Wait(TextInput1, "Default", "Comments");
+          
+          // Set input fields
+          SetProperty(TextInput1, "Default", "Good job!");
 
-      // Push the submit button
-      // Select(Button1);
-      Screenshot("differentvariabletypes_end.png");
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Default = "Good job!", "Validate comment box was changed.");
+
+          Screenshot("stringtype_end.png");
+    - testCaseName: Number_Case
+      testSteps: |
+        = Screenshot("numbertype_loaded.png");
+
+          Wait(Rating1, "Default", 3);
+
+          SetProperty(Rating1, "Default", 5);
+
+          Assert(Rating1.Default = 5, "Validate rating was changed.");
+
+          Screenshot("numbertype_end.png");
+    - testCaseName: Boolean_Case
+      testSteps: |
+        = Screenshot("booleantype_loaded.png");
+
+          Wait(Image1, "Visible", true);
+
+          SetProperty(Toggle1, "Default", true);
+
+          Assert(Toggle1.Default = true, "Validate toggle is now on");
+
+          Screenshot("booleantype_end.png");
+    - testCaseName: Date_Case
+      testSteps: |
+        = Screenshot("datetype_loaded.png");
+
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          SetProperty(DatePicker1, "DefaultDate", Date(2040, 01, 01));
+
+          Assert(DatePicker1.DefaultDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("datetype_end.png");
 
 testSettings:
   recordVideo: true
