@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
             _testReporter.StartTestRun(testRunId);
-            string testRunDirectory = null;// Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
+            string testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
 
             await RunTestByWorkerCountAsync(testRunId, testRunDirectory);
@@ -110,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine
             Console.WriteLine("I broke this");
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
-                var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
+                string singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
                 await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testDefinition, browserConfig);
             }
         }
