@@ -33,6 +33,7 @@ namespace Microsoft.PowerApps.TestEngine
 
         public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory = DefaultOutputDirectory, string cloud = DefaultCloud)
         {
+            Console.WriteLine("I broke this");
             // Setup state
             if (string.IsNullOrEmpty(testConfigFile))
             {
@@ -85,6 +86,7 @@ namespace Microsoft.PowerApps.TestEngine
 
         public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory)
         {
+            Console.WriteLine("I broke this");
             var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
             var allTestRuns = new List<Task>();
 
@@ -105,6 +107,7 @@ namespace Microsoft.PowerApps.TestEngine
         }
         private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestDefinition testDefinition, BrowserConfiguration browserConfig)
         {
+            Console.WriteLine("I broke this");
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
