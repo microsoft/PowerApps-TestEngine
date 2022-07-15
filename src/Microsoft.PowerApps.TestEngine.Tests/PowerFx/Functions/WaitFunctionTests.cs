@@ -72,10 +72,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var waitFunction = new WaitFunctionDate(Timeout);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
-            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), DateTimeValue.New(dateTime)));
-            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, DateTimeValue.New(dateTime)));
-            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), DateTimeValue.New("Text"), null));
-            Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), DateTimeValue.New("Text"), FormulaValue.New(dateTime)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), DateValue.New(dateTime)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, DateValue.New(dateTime)));
+            Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), DateValue.New("Text"), null));
+            Assert.Throws<InvalidCastException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), DateValue.New("Text"), FormulaValue.New(dateTime)));
         }
 
         [Fact]
