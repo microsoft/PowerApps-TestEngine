@@ -149,7 +149,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionBoolean(Timeout);
-            waitFunction.Execute(recordValue, FormulaValue.New("Text"), BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue)));
+            waitFunction.Execute(recordValue, FormulaValue.New("Text"), BooleanValue.New(false));
             
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Once());
         }
