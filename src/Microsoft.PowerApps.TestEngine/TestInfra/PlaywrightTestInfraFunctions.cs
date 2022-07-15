@@ -101,7 +101,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task SetupNetworkRequestMockAsync()
         {
 
-            var mocks =_singleTestInstanceState.GetTestDefinition().NetworkRequestMocks;
+            var mocks =_singleTestInstanceState.GetTestSuiteDefinition().NetworkRequestMocks;
 
             if (mocks == null || mocks.Count == 0)
             {

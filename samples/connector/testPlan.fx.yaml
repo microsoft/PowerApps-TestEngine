@@ -1,6 +1,6 @@
-test:
-  name: Connector App
-  description: Verifies that you can mock network requests
+testSuite:
+  testSuiteName: Connector App
+  testSuiteDescription: Verifies that you can mock network requests
   persona: User1
   appLogicalName: new_connectorapp_da583
   networkRequestMocks:
@@ -10,13 +10,14 @@ test:
         x-ms-request-method: GET
       responseDataFile: ../../samples/connector/response.json
 
-  testSteps: |
-    = Screenshot("connectorapp_loaded.png");
-      // Fill in a city name and do the search
-      SetProperty(TextInput1, "Text", "Atlanta");
-      Select(Button1);
-      Assert(Label4.Text = "You are seeing the mock response", "Validate the output is from the mock");
-      Screenshot("connectorapp_end.png");
+  testCases:
+    - testCaseName: Fill in a city name and do the search
+      testSteps: |
+        = Screenshot("connectorapp_loaded.png");
+          SetProperty(TextInput1, "Text", "Atlanta");
+          Select(Button1);
+          Assert(Label4.Text = "You are seeing the mock response", "Validate the output is from the mock");
+          Screenshot("connectorapp_end.png");
 
 testSettings:
   recordVideo: true

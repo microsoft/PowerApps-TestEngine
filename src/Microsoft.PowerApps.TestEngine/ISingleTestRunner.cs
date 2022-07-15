@@ -15,9 +15,9 @@ namespace Microsoft.PowerApps.TestEngine
         /// </summary>
         /// <param name="testRunId">Test run id</param>
         /// <param name="testRunDirectory">Directory for test run</param>
-        /// <param name="testDefinition">Definition of test</param>
+        /// <param name="testSuiteDefinition">Definition of test suite</param>
         /// <param name="browserConfig">Brower to run test on</param>
         /// <returns>Task</returns>
-        public Task RunTestAsync(string testRunId, string testRunDirectory, TestDefinition testDefinition, BrowserConfiguration browserConfig);
+        public Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig);
     }
 }
