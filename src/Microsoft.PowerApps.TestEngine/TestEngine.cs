@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
             _testReporter.StartTestRun(testRunId);
-            var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
+            string testRunDirectory = null;// Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
 
             await RunTestByWorkerCountAsync(testRunId, testRunDirectory);
