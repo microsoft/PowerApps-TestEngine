@@ -25,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    class SetPropertyFunctionNumber : SetPropertyFunction
+    public class SetPropertyFunctionNumber : SetPropertyFunction
     {
         public SetPropertyFunctionNumber(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Number)
         {
@@ -103,7 +103,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    class SetPropertyFunctionBoolean : SetPropertyFunction
+    public class SetPropertyFunctionBoolean : SetPropertyFunction
     {
         public SetPropertyFunctionBoolean(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Boolean)
         {
@@ -142,7 +142,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    class SetPropertyFunctionDate : SetPropertyFunction
+    public class SetPropertyFunctionDate : SetPropertyFunction
     {
         public SetPropertyFunctionDate(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Date)
         {

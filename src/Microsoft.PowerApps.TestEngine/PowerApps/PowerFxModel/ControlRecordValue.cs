@@ -118,9 +118,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                     }
                     else if (fieldType is DateTimeType)
                     {
-                        Console.WriteLine(propertyValueJson);
                         double milliseconds;
                         
+                        // Sometimes dates come in the UTC Timestamp format
+                        // The compiler does not understand this, so we have to manually convert it into a DateTime
                         if(double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
                             var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();

@@ -33,7 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionThrowsOnInvalidArgumentsTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var waitFunction = new WaitFunction(Timeout);
+            var waitFunction = new WaitFunctionString(Timeout);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New("1")));
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(new SomeOtherRecordValue(recordType), null, FormulaValue.New("1")));
@@ -60,7 +60,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                     .Returns(JsonConvert.SerializeObject(jsPropertyValueModel));
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
-            var waitFunction = new WaitFunction(Timeout);
+            var waitFunction = new WaitFunctionString(Timeout);
             waitFunction.Execute(recordValue, FormulaValue.New("Text"), FormulaValue.New(textToWaitFor));
             
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Once());
@@ -91,7 +91,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                     .Returns(JsonConvert.SerializeObject(finalJsPropertyValueModel));
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
-            var waitFunction = new WaitFunction(Timeout);
+            var waitFunction = new WaitFunctionString(Timeout);
             waitFunction.Execute(recordValue, FormulaValue.New("Text"), FormulaValue.New(textToWaitFor));
 
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
@@ -113,7 +113,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                     .Returns(JsonConvert.SerializeObject(jsPropertyValueModel));
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
-            var waitFunction = new WaitFunction(300); // each trial has 500ms in between
+            var waitFunction = new WaitFunctionString(300); // each trial has 500ms in between
             Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("Text"), FormulaValue.New(textToWaitFor)));
         }
     }
