@@ -118,7 +118,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                     }
                     else if (fieldType is DateTimeType)
                     {
-                        Console.WriteLine(propertyValueJson);
                         double milliseconds;
                         
                         // Sometimes dates come in the UTC Timestamp format
