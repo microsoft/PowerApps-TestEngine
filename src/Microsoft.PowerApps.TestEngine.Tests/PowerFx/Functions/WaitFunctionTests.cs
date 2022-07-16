@@ -355,12 +355,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
-                PropertyValue = "false",
+                PropertyValue = BooleanValue.New(false),
             };
             
-
-           var jsPropertyValueModel.PropertyValue = BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue));
-
 
             MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
                     .Returns(JsonConvert.SerializeObject(jsPropertyValueModel))
