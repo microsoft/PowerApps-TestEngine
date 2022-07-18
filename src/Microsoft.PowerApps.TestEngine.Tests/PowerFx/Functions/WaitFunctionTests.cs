@@ -333,14 +333,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var valueToWaitFor = 1;
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
-            var jsPropertyValueModel = new JSPropertyValueModel()
-            {
-                PropertyValue = "0",
-            };
-            MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
-                    .Returns(JsonConvert.SerializeObject(jsPropertyValueModel))
-                    .Returns(JsonConvert.SerializeObject(jsPropertyValueModel))
-                    .Returns(JsonConvert.SerializeObject(jsPropertyValueModel));
+
+            MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControl<double>(It.IsAny<ItemPath>()))
+                    .Returns(0)
+                    .Returns(0)
+                    .Returns(0);
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionNumber(300); // each trial has 500ms in between
@@ -355,7 +352,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
-                PropertyValue = BooleanValue.New(false),
+                PropertyValue = "false",
             };
             
 
