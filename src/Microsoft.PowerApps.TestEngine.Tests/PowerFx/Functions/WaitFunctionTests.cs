@@ -334,7 +334,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var recordType = new RecordType().Add("Text", FormulaType.Number);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
 
-            MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControl<double>(It.IsAny<ItemPath>()))
+            MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControl<int>(It.IsAny<ItemPath>()))
                     .Returns(0)
                     .Returns(0)
                     .Returns(0);
