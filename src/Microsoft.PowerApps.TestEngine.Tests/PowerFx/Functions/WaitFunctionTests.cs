@@ -376,7 +376,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionDateTimeoutTest()
         {
             var valueToWaitFor =  new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = new RecordType().Add("Text", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
