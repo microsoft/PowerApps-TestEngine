@@ -8,6 +8,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
     /// </summary>
     public interface ITestConfigParser
     {
-        public TestPlanDefinition ParseTestConfig(string testConfigFilePath);
+        public T ParseTestConfig<T>(string testConfigFilePath);
     }
 }

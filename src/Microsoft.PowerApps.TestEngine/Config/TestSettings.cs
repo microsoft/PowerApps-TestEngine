@@ -9,6 +9,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestSettings
     {
         /// <summary>
+        /// Gets or sets the file path to a separate file with test settings.
+        /// </summary>
+        public string? FilePath { get; set; }
+
+        /// <summary>
         /// Gets or sets the list of browser configurations to be tested.
         /// At least one browser must be specified.
         /// </summary>
