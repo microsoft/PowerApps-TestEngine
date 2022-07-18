@@ -44,7 +44,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void WaitFunctionNumberThrowsOnInvalidArgumentsTest()
         {
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = new RecordType().Add("Text", FormulaType.Number);
             var waitFunction = new WaitFunctionNumber(Timeout);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New(1)));
@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void WaitFunctionBooleanThrowsOnInvalidArgumentsTest()
         {
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = new RecordType().Add("Text", FormulaType.Boolean);
             var waitFunction = new WaitFunctionBoolean(Timeout);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New(false)));
@@ -69,7 +69,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionDateThrowsOnInvalidArgumentsTest()
         {
             var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = new RecordType().Add("Text", FormulaType.Date);
             var waitFunction = new WaitFunctionDate(Timeout);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.NewDateOnly(dateTime)));
