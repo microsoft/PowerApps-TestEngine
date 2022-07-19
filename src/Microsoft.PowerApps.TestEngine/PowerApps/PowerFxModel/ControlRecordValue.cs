@@ -116,7 +116,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         result = BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
-                    
                     else if (fieldType is DateTimeType)
                     {
                         double milliseconds;
