@@ -37,6 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             return valueToCheck;
         }
 
+        // Poll created for types that cannot have an initial value, because said type cannot be null
         public static void Poll<T>(Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
         {
             if (timeout < 0)

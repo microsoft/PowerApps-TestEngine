@@ -10,35 +10,35 @@ testSuite:
         = Screenshot("stringtype_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Default", "Comments");
+          Wait(TextInput1, "Text", "Comments");
           
           // Set input fields
-          SetProperty(TextInput1, "Default", "Good job!");
+          SetProperty(TextInput1, "Text", "Good job!");
 
           // Confirm that they were set to the correct value
-          Assert(TextInput1.Default = "Good job!", "Validate comment box was changed.");
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
 
           Screenshot("stringtype_end.png");
     - testCaseName: Number_Case
       testSteps: |
         = Screenshot("numbertype_loaded.png");
 
-          Wait(Rating1, "Default", 3);
+          Wait(Rating1, "Value", 3);
 
-          SetProperty(Rating1, "Default", 5);
+          SetProperty(Rating1, "Value", 5);
 
-          Assert(Rating1.Default = 5, "Validate rating was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
 
           Screenshot("numbertype_end.png");
     - testCaseName: Boolean_Case
       testSteps: |
         = Screenshot("booleantype_loaded.png");
 
-          Wait(Image1, "Visible", true);
+          Wait(Toggle1, "Value", false);
 
-          SetProperty(Toggle1, "Default", true);
+          SetProperty(Toggle1, "Value", true);
 
-          Assert(Toggle1.Default = true, "Validate toggle is now on");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
 
           Screenshot("booleantype_end.png");
     - testCaseName: Date_Case

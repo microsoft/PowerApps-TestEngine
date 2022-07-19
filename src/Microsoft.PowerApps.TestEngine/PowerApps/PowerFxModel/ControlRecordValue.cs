@@ -119,14 +119,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                     else if (fieldType is DateTimeType)
                     {
                         double milliseconds;
-                        
-                        // Sometimes dates come in the UTC Timestamp format
-                        // The compiler does not understand this, so we have to manually convert it into a DateTime
+
+                        // When converted from DateTime to a string, a value from Wait() gets roundtripped into a UTC Timestamp format
+                        // The compiler does not register this format as a valid DateTime format
+                        // Because of this, we have to manually convert it into a DateTime
                         if(double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
                             var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
                             result = DateTimeValue.New(trueDateTime);
                         }
+                        // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
+                        // This allows us to just parse it back into a datetime, without having to manually convert it back
                         else
                         {
                             result = DateTimeValue.New(DateTime.Parse(jsPropertyValueModel.PropertyValue));
@@ -134,6 +137,30 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 
                         return true;
                     }
+                    /* TODO: When .Date and .DateTime not ambiguous, uncomment
+                     * Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
+                    else if (fieldType is DateType)
+                    {
+                        double milliseconds;
+
+                        // When converted from DateTime to a string, a value from Wait() gets roudntripped into a UTC Timestamp format
+                        // The compiler does not register this format as a valid DateTime format
+                        // Because of this, we have to manually convert it into a DateTime
+                        if (double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
+                        {
+                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
+                            result = DateValue.NewDateOnly(trueDateTime);
+                        }
+                        // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
+                        // This allows us to just parse it back into a datetime, without having to manually convert it back
+                        else
+                        {
+                            result = DateValue.NewDateOnly(DateTime.Parse(jsPropertyValueModel.PropertyValue));
+                        }
+
+                        return true;
+                    }
+                    */
 
                     result = New(jsPropertyValueModel.PropertyValue);
                     return true;
