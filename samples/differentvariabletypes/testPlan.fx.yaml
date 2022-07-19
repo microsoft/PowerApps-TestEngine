@@ -9,7 +9,7 @@ testSuite:
       testSteps: |
         = Screenshot("stringtype_loaded.png");
 
-          // Wait for initial values to load
+          // Wait for default values to load
           Wait(TextInput1, "Text", "Comments");
           
           // Set input fields
@@ -45,11 +45,11 @@ testSuite:
       testSteps: |
         = Screenshot("datetype_loaded.png");
 
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
 
-          SetProperty(DatePicker1, "SelectedDate", Date(2040, 01, 01));
+          SetProperty(DatePicker1, "DefaultDate", Date(2040, 01, 01));
 
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          Assert(DatePicker1.DefaultDate = Date(2040, 01, 01), "Validate date was changed");
 
           Screenshot("datetype_end.png");
 
