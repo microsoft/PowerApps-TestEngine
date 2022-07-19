@@ -42,7 +42,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 throw new ArgumentNullException(nameof(testConfigFile));
             }
 
-            TestPlanDefinition = _testConfigParser.ParseTestConfig(testConfigFile);
+            TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile);
             if (TestPlanDefinition.TestSuite != null)
             {
                 TestCases = TestPlanDefinition.TestSuite.TestCases;
@@ -85,6 +85,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
             {
                 throw new InvalidOperationException("Missing test settings from test plan");
             }
+            else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings.FilePath))
+            {
+                TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath);
+            }
 
             if (TestPlanDefinition.TestSettings.BrowserConfigurations == null 
                 || TestPlanDefinition.TestSettings.BrowserConfigurations.Count == 0)
@@ -109,6 +113,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
             if (TestPlanDefinition.EnvironmentVariables == null)
             {
                 throw new InvalidOperationException("Missing environment variables from test plan");
+            }
+            else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
+            {
+                TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath);
             }
 
             if (TestPlanDefinition.EnvironmentVariables.Users == null
