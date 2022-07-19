@@ -132,7 +132,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             }, _timeout);
         }
     }
-
+/* Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
     public class WaitFunctionDateTime : WaitFunction
     {
         public WaitFunctionDateTime(int timeout) : base(timeout, FormulaType.DateTime)
@@ -169,8 +169,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             }, _timeout);
         }
     }
-
-    /* Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
+*/
     public class WaitFunctionDate : WaitFunction
     {
         public WaitFunctionDate(int timeout) : base(timeout, FormulaType.Date)
@@ -203,11 +202,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             var controlModel = (ControlRecordValue)obj;
 
             PollingHelper.Poll<DateTime>((x) => x != value.Value, () => {
-                return ((DateValue)controlModel.GetField(propName.Value)).Value;
+                return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
         }
     }
-*/
 
     public static class WaitRegisterExtensions
     {
@@ -216,8 +214,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             powerFxConfig.AddFunction(new WaitFunctionNumber(timeout));
             powerFxConfig.AddFunction(new WaitFunctionString(timeout));
             powerFxConfig.AddFunction(new WaitFunctionBoolean(timeout));
-            powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout));
-            //powerFxConfig.AddFunction(new WaitFunctionDate(timeout));
+            // powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout));
+            powerFxConfig.AddFunction(new WaitFunctionDate(timeout));
         }
     }
 }
