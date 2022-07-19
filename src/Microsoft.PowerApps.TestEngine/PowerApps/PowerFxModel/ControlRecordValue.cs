@@ -138,7 +138,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 
                         return true;
                     }
-                    /* Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
+                    /* TODO: When .Date and .DateTime not ambiguous, uncomment
+                     * Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
                     else if (fieldType is DateType)
                     {
                         double milliseconds;
