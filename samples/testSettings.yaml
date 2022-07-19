@@ -1,0 +1,3 @@
+recordVideo: true
+browserConfigurations:
+  - browser: Chromium

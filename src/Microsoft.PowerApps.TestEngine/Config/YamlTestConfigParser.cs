@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             _fileSystem = fileSytem;
         }
 
-        public TestPlanDefinition ParseTestConfig(string testConfigFilePath)
+        public T ParseTestConfig<T>(string testConfigFilePath)
         {
             if (string.IsNullOrEmpty(testConfigFilePath))
             {
@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
 
-            return deserializer.Deserialize<TestPlanDefinition>(_fileSystem.ReadAllText(testConfigFilePath));
+            return deserializer.Deserialize<T>(_fileSystem.ReadAllText(testConfigFilePath));
         }
     }
 }
