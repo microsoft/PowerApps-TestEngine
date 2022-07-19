@@ -8,6 +8,7 @@ using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
@@ -180,6 +181,31 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var itemPathString = JsonConvert.SerializeObject(itemPath);
 
             var expression = $"setPropertyValue({itemPathString}, \"{objectValue}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value)
+        {
+            ValidateItemPath(itemPath, false);
+            // TODO: handle components
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+            JsonValue[] jsonArr = new JsonValue[value.Rows.Count()];
+
+            var index = 0;
+            foreach (var row in value.Rows)
+            {
+                if (row.IsValue)
+                {
+                    var recordValue = row.Value.GetField("Value");
+                    var val = recordValue.GetType().GetProperty("Value")?.GetValue(recordValue, null)?.ToString();
+                    if(val != null)
+                    {
+                        jsonArr[index++] = new JsonValue(val);
+                    }                    
+                }
+            }
+            var checkVal = JsonConvert.SerializeObject(jsonArr);
+            var expression = $"setPropertyValue({itemPathString},{checkVal})";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
