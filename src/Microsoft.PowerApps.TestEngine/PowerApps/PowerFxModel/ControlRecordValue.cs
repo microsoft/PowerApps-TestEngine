@@ -120,13 +120,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                     {
                         double milliseconds;
                         
-                        // Sometimes dates come in the UTC Timestamp format
-                        // The compiler does not understand this, so we have to manually convert it into a DateTime
+                        // When converted from DateTime to a string, a value from Wait() gets roudntripped into a UTC Timestamp format
+                        // The compiler does not register this format as a valid DateTime format
+                        // Because of this, we have to manually convert it into a DateTime
                         if(double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
                             var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
                             result = DateTimeValue.New(trueDateTime);
                         }
+                        // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
+                        // This allows us to just parse it back into a datetime, without having to manually convert it back
                         else
                         {
                             result = DateTimeValue.New(DateTime.Parse(jsPropertyValueModel.PropertyValue));
