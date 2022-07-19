@@ -121,7 +121,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                     {
                         double milliseconds;
 
-                        // When converted from DateTime to a string, a value from Wait() gets roudntripped into a UTC Timestamp format
+                        // When converted from DateTime to a string, a value from Wait() gets roundtripped into a UTC Timestamp format
                         // The compiler does not register this format as a valid DateTime format
                         // Because of this, we have to manually convert it into a DateTime
                         if(double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))

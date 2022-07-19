@@ -186,7 +186,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
 
         private void Wait(RecordValue obj, StringValue propName, DateValue value)
-       {
+        {
             if (obj == null)
             {
                 throw new ArgumentNullException(nameof(obj));
