@@ -183,7 +183,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
         {
             if(string.IsNullOrEmpty(itemPath.ControlName))
