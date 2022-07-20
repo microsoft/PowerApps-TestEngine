@@ -210,7 +210,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
         }
 
-        
         [Fact]
         public void WaitFunctionNumberWaitsForValueToUpdateTest()
         {
@@ -242,7 +241,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
         }
 
-        
         [Fact]
         public void WaitFunctionBooleanWaitsForValueToUpdateTest()
         {
@@ -273,7 +271,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
         }
-
         
         [Fact]
         public void WaitFunctionDateWaitsForValueToUpdateTest()
@@ -326,7 +323,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("Text"), FormulaValue.New(valueToWaitFor)));
         }
 
-
         [Fact]
         public void WaitFunctionNumberTimeoutTest()
         {
@@ -370,7 +366,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var waitFunction = new WaitFunctionBoolean(300); // each trial has 500ms in between
             Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("Text"), FormulaValue.New(valueToWaitFor)));
         }
-
 
         [Fact]
         public void WaitFunctionDateTimeoutTest()
