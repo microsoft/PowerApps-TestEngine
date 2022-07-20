@@ -93,7 +93,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             // TODO: add retry logic for changes in DOM model
             // Temporary Hack
-            Thread.Sleep(1000);
+            Thread.Sleep(10000);
 
             var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
