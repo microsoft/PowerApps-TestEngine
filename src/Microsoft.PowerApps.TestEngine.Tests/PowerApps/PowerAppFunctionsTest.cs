@@ -81,7 +81,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     throw new ArgumentException("SetProperty must be on valid type.");
             }
 
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setProperty({JsonConvert.SerializeObject(itemPath)}, {objectValue})"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{objectValue}\")"), Times.Once());
         }
 
         [Theory]
