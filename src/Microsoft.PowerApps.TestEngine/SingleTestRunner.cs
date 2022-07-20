@@ -109,11 +109,22 @@ namespace Microsoft.PowerApps.TestEngine
                     _testState.SetTestResultsDirectory(testCaseResultDirectory);
                     _fileSystem.CreateDirectory(testCaseResultDirectory);
 
-                    Logger.LogInformation($"Running test case: {testCase.TestCaseName}");
-                    
                     try
                     {
+                        if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
+                        {
+                            Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
+                            _powerFxEngine.Execute(testSuiteDefinition.OnTestCaseStart);
+                        }
+
+                        Logger.LogInformation($"Running test case: {testCase.TestCaseName}");
                         _powerFxEngine.Execute(testCase.TestSteps);
+
+                        if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
+                        {
+                            Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
+                            _powerFxEngine.Execute(testSuiteDefinition.OnTestCaseComplete);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -142,6 +153,12 @@ namespace Microsoft.PowerApps.TestEngine
                         var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
                         _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
                     }
+                }
+
+                if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestSuiteComplete))
+                {
+                    testSuiteLogger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteDefinition.TestSuiteName}");
+                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
                 }
             }
             catch (Exception ex)

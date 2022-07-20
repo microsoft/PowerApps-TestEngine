@@ -28,6 +28,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private static string? TestSuiteDescription;
 
+        private static string? OnTestCaseStart;
+
+        private static string? OnTestCaseComplete;
+
+        private static string? OnTestSuiteComplete;
+
         private static string[] NoChangeCommands = { "Assert", "Select" };
 
         const string SetProperty = "SetProperty";
@@ -142,6 +148,32 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 testCaseObj.TestSteps = combineTestSteps(testSteps);
                 TestCases.Add(testCaseObj);
             }
+
+            // Read OnTestCaseStart, OnTestCaseComplete, OnTestSuiteComplete
+            JToken? overallProperties = jobj.Root["TopParent"]?["Rules"];
+            if (overallProperties != null && overallProperties.Count() > 0)
+            {
+                foreach (var overallProperty in overallProperties)
+                {
+                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestStart"))
+                    {
+                        var script = overallProperty["InvariantScript"]?.ToString();
+                        OnTestCaseStart = combineTestSteps(script?.Split(";\r\n").ToList());
+                    }
+
+                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestComplete"))
+                    {
+                        var script = overallProperty["InvariantScript"]?.ToString();
+                        OnTestCaseComplete = combineTestSteps(script?.Split(";\r\n").ToList());
+                    }
+
+                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestSuiteComplete"))
+                    {
+                        var script = overallProperty["InvariantScript"]?.ToString();
+                        OnTestSuiteComplete = combineTestSteps(script?.Split(";\r\n").ToList());
+                    }
+                }
+            }
         }
 
         private string combineTestSteps(List<string> testSteps)
@@ -177,6 +209,9 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                     TestSuiteName = TestSuiteName,
                     TestSuiteDescription = TestSuiteDescription,
                     Persona = "User1",
+                    OnTestCaseStart = OnTestCaseStart,
+                    OnTestCaseComplete = OnTestCaseComplete,
+                    OnTestSuiteComplete = OnTestSuiteComplete,
                     AppLogicalName = "Replace with appLogicalName",
                     TestCases = TestCases
                 },
