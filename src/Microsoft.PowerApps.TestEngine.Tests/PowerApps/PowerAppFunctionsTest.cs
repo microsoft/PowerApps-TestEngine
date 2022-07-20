@@ -15,6 +15,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.PowerFx;
+using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.PowerFx.Types;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
@@ -31,6 +43,45 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+        }
+
+
+        [Fact]
+        public async Task SetPropertyAsyncTest()
+        {
+            string itemPathString = "{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}";
+            FormulaValue value = StringValue.New("A");
+            bool expectedOutput = true;
+
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(expectedOutput));
+
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+            var result = await powerAppFunctions.SetPropertyAsync(itemPath, value);
+
+            Assert.Equal(expectedOutput, result);
+
+            Object? objectValue = null;
+
+            switch (value.Type)
+            {
+                case (NumberType):
+                    objectValue = ((NumberValue)value).Value;
+                    break;
+                case (StringType):
+                    objectValue = ((StringValue)value).Value;
+                    break;
+                case (BooleanType):
+                    objectValue = ((BooleanValue)value).Value;
+                    break;
+                case (DateType):
+                    objectValue = ((DateValue)value).Value;
+                    break;
+                default:
+                    throw new ArgumentException("SetProperty must be on valid type.");
+            }
+
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setProperty({JsonConvert.SerializeObject(itemPath)}, {objectValue})"), Times.Once());
         }
 
         [Theory]
