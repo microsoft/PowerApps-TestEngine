@@ -163,7 +163,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     objectValue = ((NumberValue)value).Value;
                     break;
                 case (StringType):
-                    objectValue = ((NumberValue)value).Value;
+                    objectValue = ((StringValue)value).Value;
                     break;
                 case (BooleanType):
                     objectValue = ((BooleanValue)value).Value;
