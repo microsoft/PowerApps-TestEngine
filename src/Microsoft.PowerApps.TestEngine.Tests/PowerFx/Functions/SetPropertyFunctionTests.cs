@@ -69,7 +69,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<StringValue>(stringVal => stringVal.Value == "abc")), Times.Once());
         }
 
-
         [Fact]
         public void SetPropertyNumberFunctionTest()
         {
