@@ -46,13 +46,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
 
-        [Fact]
-        public async Task SetPropertyAsyncTest()
+        [Theory]
+        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}", StringValue.New("A"), true)]
+        [InlineData("{\"controlName\":\"Rating1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Value\"}", NumberValue.New(5), true)]
+        [InlineData("{\"controlName\":\"Toggle1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Value\"}", BooleanValue.New(true), true)]
+        [InlineData("{\"controlName\":\"DatePicker1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"DefaultDate\"}", DateValue.New(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime()), true)]
+        public async Task SetPropertyAsyncTest(string itemPathString, FormulaValue value, bool expectedOutput)
         {
-            string itemPathString = "{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}";
-            FormulaValue value = StringValue.New("A");
-            bool expectedOutput = true;
-
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(expectedOutput));
 
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
@@ -77,11 +77,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 case (DateType):
                     objectValue = ((DateValue)value).Value;
                     break;
-                default:
-                    throw new ArgumentException("SetProperty must be on valid type.");
             }
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{objectValue}\")"), Times.Once());
+        }
+
+        [Fact]
+        public async Task SetPropertyAsyncThrowsOnInvalidFormulaValueTest()
+        {
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}");
+            Guid guid = new Guid("a");
+
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            await Assert.ThrowsAsync<ArgumentException>(async () => await powerAppFunctions.SetPropertyAsync(itemPath, GuidValue.New(guid)));
         }
 
         [Theory]
