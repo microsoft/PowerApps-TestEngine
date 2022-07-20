@@ -88,6 +88,9 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             // Click No button to indicate we don't want to stay signed in
             await _testInfraFunctions.ClickAsync(KeepMeSignedInNoSelector);
+
+            // Wait for the navigation to finish
+            await Task.Delay(1000);
         }
     }
 }
