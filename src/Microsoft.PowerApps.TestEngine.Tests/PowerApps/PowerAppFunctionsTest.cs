@@ -93,17 +93,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
             string itemPathString = "{\"controlName\":\"DatePicker1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"DefaultDate\"}";
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
-            var result = await powerAppFunctions.SetPropertyAsync(itemPath, DateValue.New(dt));
+            var result = await powerAppFunctions.SetPropertyAsync(itemPath, DateValue.NewDateOnly(dt));
 
             Assert.Equal(true, result);
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{(DateValue.New(dt)).Value}\")"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{((DateValue)DateValue.NewDateOnly(dt)).Value}\")"), Times.Once());
         }
 
         [Fact]
         public async Task SetPropertyAsyncThrowsOnInvalidFormulaValueTest()
         {
             var itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}");
-            Guid guid = new Guid("a");
+            Guid guid = new Guid("00000000-0000-0000-0000-000000000001");
 
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<ArgumentException>(async () => await powerAppFunctions.SetPropertyAsync(itemPath, GuidValue.New(guid)));
