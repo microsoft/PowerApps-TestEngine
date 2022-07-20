@@ -36,6 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         private Mock<ITestState> MockTestState;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<ILogger> MockLogger;
+        
 
         public PowerAppFunctionsTest()
         {
@@ -45,41 +46,57 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
         }
 
-
-        [Theory]
-        [InlineData("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}", StringValue.New("A"), true)]
-        [InlineData("{\"controlName\":\"Rating1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Value\"}", NumberValue.New(5), true)]
-        [InlineData("{\"controlName\":\"Toggle1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Value\"}", BooleanValue.New(true), true)]
-        [InlineData("{\"controlName\":\"DatePicker1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"DefaultDate\"}", DateValue.New(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime()), true)]
-        public async Task SetPropertyAsyncTest(string itemPathString, FormulaValue value, bool expectedOutput)
+        [Fact]
+        public async Task SetPropertyStringAsyncTest()
         {
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(expectedOutput));
-
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            string itemPathString = "{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}";
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
-            var result = await powerAppFunctions.SetPropertyAsync(itemPath, value);
+            var result = await powerAppFunctions.SetPropertyAsync(itemPath, StringValue.New("A"));
 
-            Assert.Equal(expectedOutput, result);
+            Assert.Equal(true, result);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{(StringValue.New("A")).Value}\")"), Times.Once());
+        }
 
-            Object? objectValue = null;
+        [Fact]
+        public async Task SetPropertyNumberAsyncTest()
+        {
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            string itemPathString = "{\"controlName\":\"Rating1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Value\"}";
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+            var result = await powerAppFunctions.SetPropertyAsync(itemPath, NumberValue.New(5));
 
-            switch (value.Type)
-            {
-                case (NumberType):
-                    objectValue = ((NumberValue)value).Value;
-                    break;
-                case (StringType):
-                    objectValue = ((StringValue)value).Value;
-                    break;
-                case (BooleanType):
-                    objectValue = ((BooleanValue)value).Value;
-                    break;
-                case (DateType):
-                    objectValue = ((DateValue)value).Value;
-                    break;
-            }
+            Assert.Equal(true, result);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{(NumberValue.New(5)).Value}\")"), Times.Once());
+        }
 
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{objectValue}\")"), Times.Once());
+        [Fact]
+        public async Task SetPropertyBooleanAsyncTest()
+        {
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            string itemPathString = "{\"controlName\":\"Toggle1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Value\"}";
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+            var result = await powerAppFunctions.SetPropertyAsync(itemPath, BooleanValue.New(true));
+
+            Assert.Equal(true, result);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{(BooleanValue.New(true)).Value}\")"), Times.Once());
+        }
+
+        [Fact]
+        public async Task SetPropertyDateAsyncTest()
+        {
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
+            string itemPathString = "{\"controlName\":\"DatePicker1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"DefaultDate\"}";
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+            var result = await powerAppFunctions.SetPropertyAsync(itemPath, DateValue.New(dt));
+
+            Assert.Equal(true, result);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString}, \"{(DateValue.New(dt)).Value}\")"), Times.Once());
         }
 
         [Fact]

@@ -172,7 +172,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     objectValue = ((DateValue)value).Value;
                     break;
                 default:
-                    throw new ArgumentException("SetProperty must be on valid type.");
+                    throw new ArgumentException("SetProperty must be a valid type.");
             }
 
             ValidateItemPath(itemPath, false);
