@@ -76,21 +76,14 @@ namespace Microsoft.PowerApps.TestEngine.Users
             }
 
             await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);
-
-            await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
-
-            // Wait for the sliding animation to finish
-            await Task.Delay(1000);
+            // await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
-
-            await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
+            // await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             // Click No button to indicate we don't want to stay signed in
             await _testInfraFunctions.ClickAsync(KeepMeSignedInNoSelector);
 
-            // Wait for the navigation to finish
-            await Task.Delay(1000);
         }
     }
 }
