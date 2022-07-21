@@ -60,12 +60,11 @@ function selectControl(itemPath) {
 
 function interactWithControl(itemPath, value) {
     var script = "";
-    if (isArray(Object.values(value))) {
-        var values = Object.values(value);
+    if (isArray(Object.values(value))) {        
         var valuesJsonArr = [];
-        var i = 0;
+        var values = Object.values(value);
         for (var index in values) {
-            valuesJsonArr[`${i++}`] = `${JSON.stringify(values[index])}`;
+            valuesJsonArr[`${index}`] = `${JSON.stringify(values[index])}`;
         }
         var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
         script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
