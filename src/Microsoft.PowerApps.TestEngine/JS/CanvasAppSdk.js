@@ -77,7 +77,7 @@ function interactWithControl(itemPath, value) {
 
 function setPropertyValueForControl(itemPath, value) {    
     if (typeof value == "object") {
-        interactWithControl(itemPath,value);
+        return interactWithControl(itemPath,value);
     } 
     var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, "${value}")`;
     return executePublishedAppScript(script);
