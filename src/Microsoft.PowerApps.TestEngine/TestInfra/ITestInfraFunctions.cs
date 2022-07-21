@@ -88,5 +88,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="value">Value to fill in</param>
         /// <returns>Task</returns>
         public Task HandleUserPasswordScreen(string selector, string value);
+
+
+        public Task HandleKeepSignedInNoScreen(string selector);
     }
 }
