@@ -138,8 +138,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         }
 
                         return true;
-                    }
-                    */
+                    } */
                     else if (fieldType is DateType)
                     {
                         double milliseconds;
