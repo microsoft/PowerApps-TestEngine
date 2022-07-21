@@ -228,7 +228,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!result)
             {
-                throw new Exception($"Unable to set property {powerAppControlModel}");
+              throw new Exception($"Unable to set property {powerAppControlModel}");
             }
         }
     }

@@ -172,6 +172,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 case (DateType):
                     objectValue = ((DateValue)value).Value;
                     break;
+                case (TableType):
+                    return await SetPropertyTableAsync(itemPath, (TableValue)value);
                 default:
                     throw new ArgumentException("SetProperty must be a valid type.");
             }
@@ -184,12 +186,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyAsync(ItemPath itemPath, TableValue value)
+        public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, TableValue value)
         {
             ValidateItemPath(itemPath, false);
-            // TODO: handle components
+
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            JsonValue[] jsonArr = new JsonValue[value.Rows.Count()];
+            RecordValueObject[] jsonArr = new RecordValueObject[value.Rows.Count()];
 
             var index = 0;
             foreach (var row in value.Rows)
@@ -200,13 +202,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     var val = recordValue.GetType().GetProperty("Value")?.GetValue(recordValue, null)?.ToString();
                     if(val != null)
                     {
-                        jsonArr[index++] = new JsonValue(val);
+                        jsonArr[index++] = new RecordValueObject(val);
                     }                    
                 }
             }
             var checkVal = JsonConvert.SerializeObject(jsonArr);
-            var expression = $"setPropertyValue({itemPathString},{checkVal})";
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);            
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
