@@ -9,14 +9,10 @@ using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Types;
 using Moq;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 {
@@ -104,7 +100,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Set the value of Toggle1's 'Value' property to true
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), BooleanValue.New(true));
 
-            // check to see if the value of Toggle1's 'Value' property is tru
+            // check to see if the value of Toggle1's 'Value' property is true
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<BooleanValue>(boolVal => boolVal.Value == true)), Times.Once());
         }
