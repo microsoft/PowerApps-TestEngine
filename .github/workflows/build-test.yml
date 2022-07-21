@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: ['6.0.x']
+        dotnet-version: ["6.0.x"]
 
     steps:
       - uses: actions/checkout@v2
@@ -36,12 +36,12 @@ jobs:
           dotnet test --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
+        if: success() || failure() # run this step even if previous step failed
         with:
-          name: DotNet Tests          # Name of the check run which will be created
+          name: DotNet Tests # Name of the check run which will be created
           path: |
             **/*.trx
-          reporter: dotnet-trx        # Format of test results
+          reporter: dotnet-trx # Format of test results
       - name: Copy Coverage report
         run: cp src/TestResults/**/coverage.cobertura.xml coverage.cobertura.xml
       - name: Code coverage report
@@ -62,12 +62,13 @@ jobs:
   yaml-integration-tests:
     needs: build
     uses: ./.github/workflows/yaml-integration-tests.yml
-    with: 
-       parameters: 
-         '[{ "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16","tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/basicgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/buttonclicker/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/calculator/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'     
+    with:
+      parameters:
+        '[{ "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16","tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+        { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/basicgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+        { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/buttonclicker/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+        { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/calculator/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+        { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/differentvariabletypes/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+        { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+        { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'
     secrets: inherit
