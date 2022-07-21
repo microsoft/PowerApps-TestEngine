@@ -71,16 +71,16 @@ function interactWithControl(itemPath, value) {
         script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
     } else {
         var valueJson = `{"${itemPath.propertyName}":${value}}`;
-        script = `interactWithControl(${JSON.stringify(itemPath)}, ${value})`;
+        script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
     }
     return executePublishedAppScript(script);
 }
 
 function setPropertyValueForControl(itemPath, value) {    
     if (typeof value == "object") {
-        setPropertyRecordOrTableValueForControl(itemPath,value);
+        interactWithControl(itemPath,value);
     } 
-    var script = `interactWithControl(${JSON.stringify(itemPath)}, "${value}")`;
+    var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, "${value}")`;
     return executePublishedAppScript(script);
 }
 
