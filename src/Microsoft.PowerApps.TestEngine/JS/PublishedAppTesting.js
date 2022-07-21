@@ -177,3 +177,7 @@ function setPropertyValueForControl(itemPath, value) {
     }*/
     return AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, AppMagic.Controls.GlobalContextManager.bindingContext);
 }
+
+function interactWithControl(itemPath, value) {
+    return AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.interactWithControlAsync(AppMagic.Controls.GlobalContextManager.bindingContext.controlContexts[itemPath.controlName], value);
+}

@@ -58,14 +58,41 @@ function selectControl(itemPath) {
     return executePublishedAppScript(script);
 }
 
-function setPropertyValueForControl(itemPath, value) {
-    var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, "${value}")`;
+function interactWithControl(itemPath, value) {
+    var script = "";
+    if (isArray(Object.values(value))) {
+        var values = Object.values(value);
+        var valuesJsonArr = [];
+        var i = 0;
+        for (var index in values) {
+            valuesJsonArr[`${i++}`] = `${JSON.stringify(values[index])}`;
+        }
+        var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
+        script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
+    } else {
+        var valueJson = `{"${itemPath.propertyName}":${value}}`;
+        script = `interactWithControl(${JSON.stringify(itemPath)}, ${value})`;
+    }
     return executePublishedAppScript(script);
 }
+
+function setPropertyValueForControl(itemPath, value) {    
+    if (typeof value == "object") {
+        setPropertyRecordOrTableValueForControl(itemPath,value);
+    } 
+    var script = `interactWithControl(${JSON.stringify(itemPath)}, "${value}")`;
+    return executePublishedAppScript(script);
+}
+
+
 
 function fetchArrayItemCount(itemPath) {
     var script = `fetchArrayItemCount(${JSON.stringify(itemPath)})`;
     return executePublishedAppScript(script);
+}
+
+function isArray(myArray) {
+    return myArray.constructor === Array;
 }
 
 /*
@@ -109,7 +136,6 @@ function buildObjectModel() {
 function getPropertyValue(itemPath) {
     return getPropertyValueFromPublishedApp(itemPath)
 }
-
 
 function select(itemPath) {
     return selectControl(itemPath)
