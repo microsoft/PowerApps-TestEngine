@@ -268,8 +268,16 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task HandleUserPasswordScreen(string selector, string value)
         {
+            ValidatePage();
             await Page.Locator(selector).WaitForAsync();
             await Page.FillAsync(selector, value);
+        }
+
+        public async Task HandleKeepSignedInNoScreen(string selector)
+        {
+            ValidatePage();
+            await Page.ClickAsync(selector);
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
     }
 }

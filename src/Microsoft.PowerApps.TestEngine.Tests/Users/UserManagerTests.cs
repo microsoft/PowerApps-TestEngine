@@ -66,6 +66,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.HandleUserEmailScreen(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.HandleUserPasswordScreen(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.HandleKeepSignedInNoScreen(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.ClickAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
@@ -78,7 +79,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockTestInfraFunctions.Verify(x => x.HandleUserEmailScreen("input[type=\"email\"]", email), Times.Once());
             MockTestInfraFunctions.Verify(x => x.ClickAsync("input[type=\"submit\"]"), Times.Exactly(2));
             MockTestInfraFunctions.Verify(x => x.HandleUserPasswordScreen("input[type=\"password\"]", password), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.ClickAsync("[id=\"idBtn_Back\"]"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.HandleKeepSignedInNoScreen("[id=\"idBtn_Back\"]"), Times.Once());
         }
 
         [Fact]

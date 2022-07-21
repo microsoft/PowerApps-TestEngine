@@ -116,6 +116,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         result = BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
+                    /* TODO: When .Date and .DateTime not ambiguous, uncomment
+                     * Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
                     else if (fieldType is DateTimeType)
                     {
                         double milliseconds;
@@ -136,14 +138,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         }
 
                         return true;
-                    }
-                    /* TODO: When .Date and .DateTime not ambiguous, uncomment
-                     * Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
+                    } */
                     else if (fieldType is DateType)
                     {
                         double milliseconds;
 
-                        // When converted from DateTime to a string, a value from Wait() gets roudntripped into a UTC Timestamp format
+                        // When converted from Date to a string, a value from Wait() gets roudntripped into a UTC Timestamp format
                         // The compiler does not register this format as a valid DateTime format
                         // Because of this, we have to manually convert it into a DateTime
                         if (double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
@@ -152,7 +152,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                             result = DateValue.NewDateOnly(trueDateTime);
                         }
                         // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
-                        // This allows us to just parse it back into a datetime, without having to manually convert it back
+                        // This allows us to just parse it back into a DateTime, without having to manually convert it back
+                        // We then use said DateTime to create the DateValue
                         else
                         {
                             result = DateValue.NewDateOnly(DateTime.Parse(jsPropertyValueModel.PropertyValue));
@@ -160,7 +161,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 
                         return true;
                     }
-                    */
 
                     result = New(jsPropertyValueModel.PropertyValue);
                     return true;
