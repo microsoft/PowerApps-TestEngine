@@ -116,10 +116,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var setPropertyFunction = new SetPropertyFunctionDate(MockPowerAppFunctions.Object);
 
             // Set the value of DatePicker1's 'Value' property to the datetime (01/01/2030)
-            var dt = new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
-            var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), FormulaValue.NewDateOnly(dt));
+            var dt = new DateTime(2030, 1, 1, 0, 0, 0);
+            var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), FormulaValue.NewDateOnly(dt.Date));
 
-            // check to see if the value of DatePicker1's 'Value' property is the correct datetime (01/01/2030)
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<DateValue>(dateVal => dateVal.Value == dt)), Times.Once());
         }
