@@ -158,7 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionDateSucceedsTest()
         {
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("SelectedDate", FormulaType.DateTime);
+            var recordType = new RecordType().Add("SelectedDate", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -276,7 +276,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionDateWaitsForValueToUpdateTest()
         {
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("Text", FormulaType.DateTime);
+            var recordType = new RecordType().Add("Text", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -371,7 +371,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionDateTimeoutTest()
         {
             var value =  new DateTime(2030, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("Text", FormulaType.DateTime);
+            var recordType = new RecordType().Add("Text", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
