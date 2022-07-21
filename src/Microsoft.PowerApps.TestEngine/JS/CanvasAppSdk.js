@@ -84,15 +84,13 @@ function setPropertyValueForControl(itemPath, value) {
     return executePublishedAppScript(script);
 }
 
-
-
 function fetchArrayItemCount(itemPath) {
     var script = `fetchArrayItemCount(${JSON.stringify(itemPath)})`;
     return executePublishedAppScript(script);
 }
 
-function isArray(myArray) {
-    return myArray.constructor === Array;
+function isArray(obj) {
+    return obj.constructor === Array;
 }
 
 /*
