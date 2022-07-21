@@ -58,8 +58,7 @@ testSuite:
         
           SetProperty(ComboBox1,"SelectedItems", Table({Value:"1"},{Value:"2"}));
           
-          Screenshot("tabletype_end.png");
-    
+          Screenshot("tabletype_end.png");    
 
 testSettings:
   recordVideo: true
