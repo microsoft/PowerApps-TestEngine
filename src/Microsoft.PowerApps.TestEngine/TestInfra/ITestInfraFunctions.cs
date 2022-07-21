@@ -89,7 +89,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <returns>Task</returns>
         public Task HandleUserPasswordScreen(string selector, string value);
 
-
+        // <summary>
+        /// Handles the page asking whether to stay signed in
+        /// </summary>
+        /// <param name="selector">Selector to find element</param>
+        /// <returns>Task</returns>
         public Task HandleKeepSignedInNoScreen(string selector);
     }
 }
