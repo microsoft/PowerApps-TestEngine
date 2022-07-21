@@ -276,8 +276,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionDateWaitsForValueToUpdateTest()
         {
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("Text", FormulaType.Date);
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
+            var recordType = new RecordType().Add("SelectedDate", FormulaType.Date);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
                 PropertyValue = "0",
@@ -288,8 +288,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             };
             var expectedItemPath = new ItemPath
             {
-                ControlName = "Label1",
-                PropertyName = "Text"
+                ControlName = "DatePicker1",
+                PropertyName = "SelectedDate"
             };
             MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
                     .Returns(JsonConvert.SerializeObject(jsPropertyValueModel))
@@ -298,7 +298,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDate(Timeout);
-            waitFunction.Execute(recordValue, FormulaValue.New("Text"),  FormulaValue.NewDateOnly(value.Date));
+            waitFunction.Execute(recordValue, FormulaValue.New("SelectedDate"), FormulaValue.NewDateOnly(value.Date));
 
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
         }
@@ -371,8 +371,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionDateTimeoutTest()
         {
             var value =  new DateTime(2030, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("Text", FormulaType.Date);
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
+            var recordType = new RecordType().Add("SelectedDate", FormulaType.Date);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
                 PropertyValue = "0",
@@ -384,7 +384,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDate(300); // each trial has 500ms in between
-            Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("Text"), FormulaValue.NewDateOnly(value.Date)));
+            Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("SelectedDate"), FormulaValue.NewDateOnly(value.Date)));
         }
     }
 }
