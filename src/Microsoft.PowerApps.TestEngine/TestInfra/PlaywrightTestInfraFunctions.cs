@@ -203,7 +203,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             if (BrowserContext != null)
             {
-                await Task.Delay(500);
                 await BrowserContext.CloseAsync();
             }
         }
