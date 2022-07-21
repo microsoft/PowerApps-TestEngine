@@ -52,6 +52,14 @@ testSuite:
           Assert(DatePicker1.DefaultDate = Date(2040, 01, 01), "Validate date was changed");
 
           Screenshot("datetype_end.png");
+    - testCaseName: Table_Case
+      testSteps: |
+        = Screenshot("tabletype_loaded.png");
+        
+          SetProperty(ComboBox1,"SelectedItems", Table({Value:"1"},{Value:"2"}));
+          
+          Screenshot("tabletype_end.png");
+    
 
 testSettings:
   recordVideo: true
