@@ -181,6 +181,46 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
+    public class SetPropertyFunctionRecordType : SetPropertyFunction
+    {
+        public SetPropertyFunctionRecordType(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new RecordType())
+        {
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+
+        private async Task SetProperty(RecordValue obj, StringValue propName, RecordValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj;
+            var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
+
+            if (!result)
+            {
+                throw new Exception($"Unable to set property {controlModel.Name}");
+            }
+        }
+    }
+
+
     public static class SetPropertyRegisterExtensions
     {
         public static void RegisterAll(this PowerFxConfig powerFxConfig, IPowerAppFunctions powerAppFunctions)
@@ -189,6 +229,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions));
         powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions));
         powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions));
+        powerFxConfig.AddFunction(new SetPropertyFunctionRecordType(powerAppFunctions));
         }
     }
 }
