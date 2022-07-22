@@ -103,6 +103,58 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
+    public class SetPropertyFunctionRecordType: SetPropertyFunction
+    {
+        public SetPropertyFunctionRecordType(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new RecordType())
+        {
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+
+        private async Task SetProperty(RecordValue obj, StringValue propName, RecordValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentException(nameof(value));
+            }
+            var controlName = obj.GetType().GetProperty("Name")?.GetValue(obj, null)?.ToString();
+
+            var itemPath = new ItemPath()
+            {
+                ControlName = controlName,
+                Index = null,
+                ParentControl = null,
+                PropertyName = (string)propName.Value
+            };
+
+            //var recordType = new RecordType().Add(controlName, new RecordType());
+
+            //var controlTableSource = new ControlTableSource(_powerAppFunctions, itemPath, recordType);
+
+            //var powerAppControlModel = new ControlTableValue(recordType, controlTableSource, _powerAppFunctions);
+            var result = await _powerAppFunctions.SetPropertyAsync(itemPath, value);
+
+            if (!result)
+            {
+                throw new Exception($"Unable to set property {"qq"}");
+            }
+        }
+    }
+
     public class SetPropertyFunctionTable : SetPropertyFunction
     {
         public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new TableType())
@@ -143,7 +195,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             var recordType = new RecordType().Add(controlName, new RecordType());
 
-            var controlTableSource = new ControlTableSource(_powerAppFunctions,itemPath, recordType);
+            var controlTableSource = new ControlTableSource(_powerAppFunctions, itemPath, recordType);
 
             var powerAppControlModel = new ControlTableValue(recordType, controlTableSource, _powerAppFunctions);
             var result = await _powerAppFunctions.SetPropertyAsync(itemPath, value);
@@ -163,6 +215,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions));
         powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions));
         powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions));
+        powerFxConfig.AddFunction(new SetPropertyFunctionRecordType(powerAppFunctions));
         powerFxConfig.AddFunction(new SetPropertyFunctionTable(powerAppFunctions));
         }
     }
