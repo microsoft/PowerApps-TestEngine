@@ -58,7 +58,27 @@ function selectControl(itemPath) {
     return executePublishedAppScript(script);
 }
 
-function setPropertyValueForControl(itemPath, value) {
+function interactWithControl(itemPath, value) {
+    var script = "";
+    if (isArray(Object.values(value))) {        
+        var valuesJsonArr = [];
+        var values = Object.values(value);
+        for (var index in values) {
+            valuesJsonArr[`${index}`] = `${JSON.stringify(values[index])}`;
+        }
+        var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
+        script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
+    } else {
+        var valueJson = `{"${itemPath.propertyName}":${value}}`;
+        script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
+    }
+    return executePublishedAppScript(script);
+}
+
+function setPropertyValueForControl(itemPath, value) {    
+    if (typeof value == "object") {
+        return interactWithControl(itemPath,value);
+    } 
     var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, "${value}")`;
     return executePublishedAppScript(script);
 }
@@ -66,6 +86,10 @@ function setPropertyValueForControl(itemPath, value) {
 function fetchArrayItemCount(itemPath) {
     var script = `fetchArrayItemCount(${JSON.stringify(itemPath)})`;
     return executePublishedAppScript(script);
+}
+
+function isArray(obj) {
+    return obj.constructor === Array;
 }
 
 /*
@@ -109,7 +133,6 @@ function buildObjectModel() {
 function getPropertyValue(itemPath) {
     return getPropertyValueFromPublishedApp(itemPath)
 }
-
 
 function select(itemPath) {
     return selectControl(itemPath)

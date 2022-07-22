@@ -123,5 +123,34 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<DateValue>(dateVal => dateVal.Value == dt)), Times.Once());
         }
+
+        [Fact]
+        public void SetPropertyTableFunctionTest()
+        {
+            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<TableValue>())).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>())).Returns(2);
+                   
+            var setPropertyFunction = new SetPropertyFunctionTable(MockPowerAppFunctions.Object);
+            var control1Name = Guid.NewGuid().ToString();
+            var control2Name = Guid.NewGuid().ToString();
+            var control1Type = new RecordType().Add("Value", FormulaType.String);
+            var control2Type = new RecordType().Add("Value", FormulaType.String);
+            var tableType = new TableType().Add(new NamedFormulaType(control1Name, control1Type,"2")).Add(new NamedFormulaType(control2Name, control2Type,"3"));
+            var itemPath = new ItemPath()
+            {
+                ControlName = "ComboBox1",
+                PropertyName = "SelectedItems"
+            };
+
+            var recordType = tableType.ToRecord();
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "ComboBox1");
+            var tableSource = new ControlTableSource(MockPowerAppFunctions.Object, itemPath, recordType);
+            var tableValue = new ControlTableValue(recordType, tableSource, MockPowerAppFunctions.Object);
+            var result = setPropertyFunction.Execute(recordValue, StringValue.New("SelectedItems"), tableValue);
+
+            Assert.IsType<BlankValue>(result);
+            Assert.Equal(2, tableSource.Count);
+            MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<TableValue>(tableVal => tableVal.Count() == 2)), Times.Once());
+        }
     }
 }
