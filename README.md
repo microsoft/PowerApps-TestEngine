@@ -35,7 +35,7 @@ Log in to Power Apps with a work or school organization account. The account use
 
 If you need a test tenant, you can create one by visiting [this](https://cdx.transform.microsoft.com/my-tenants).
 
-Import the solution of a sample(Eg. `PowerApps-TestEngine\samples\buttonclicker\ButtonClicker_1_0_0_1_managed.zip`). Remember the environment that you imported the solution to. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions).
+Import the solution of a sample(Eg. `PowerApps-TestEngine\samples\buttonclicker\ButtonClicker_1_0_0_1_managed.zip`). Remember the environment that you imported the solution to. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions). Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/tree/main/samples) for more sample solutions.
 
 ### Set up the config file
 
