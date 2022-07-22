@@ -183,4 +183,3 @@ function interactWithControl(itemPath, value) {
 
     return e._value;
 }
-
