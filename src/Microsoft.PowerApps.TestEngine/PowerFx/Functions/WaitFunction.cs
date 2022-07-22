@@ -204,9 +204,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             var controlModel = (ControlRecordValue)obj;
             
-            // TODO: When .Date and .DateTime not ambiguous, change DateTimeValue casting to DateValue
             PollingHelper.Poll<DateTime>((x) => x != value.Value, () => {
-                return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
+                return ((DateValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
         }
     }
