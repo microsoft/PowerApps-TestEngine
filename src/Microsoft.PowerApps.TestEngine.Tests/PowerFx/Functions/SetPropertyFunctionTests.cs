@@ -132,7 +132,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Make setPropertyFunction contain a component called Dropdown1
             var recordType = new RecordType().Add("Selected", new RecordType());
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Dropdown1");
-            var setPropertyFunction = new SetPropertyFunctionRecordType(MockPowerAppFunctions.Object);
+            var setPropertyFunction = new SetPropertyFunctionRecord(MockPowerAppFunctions.Object);
 
             // Set the value of Dropdown1's 'Selected' property to {"Value":"1"}
             var pair = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("1"));
