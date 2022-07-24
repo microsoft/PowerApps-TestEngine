@@ -198,7 +198,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             RecordValueObject json = new RecordValueObject(val);
             var checkVal = JsonConvert.SerializeObject(json);
             var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
-            //var expression = "setPropertyValue({\"controlName\":\"Dropdown1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Selected\"},{\"Selected\":[{\"Value\":\"5\"}]})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }

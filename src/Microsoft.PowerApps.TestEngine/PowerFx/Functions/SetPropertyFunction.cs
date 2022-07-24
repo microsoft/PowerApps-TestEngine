@@ -103,7 +103,20 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    public class SetPropertyFunctionRecordType: SetPropertyFunction
+    public class SetPropertyFunctionRecordType : SetPropertyFunction
+    {
+        public SetPropertyFunctionRecordType(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new RecordType())
+        {
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.NewBlank();
+        }
+    }
+
+    /*public class SetPropertyFunctionRecordType: SetPropertyFunction
     {
         public SetPropertyFunctionRecordType(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new RecordType())
         {
@@ -153,7 +166,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 throw new Exception($"Unable to set property {"qq"}");
             }
         }
-    }
+    }*/
 
     public class SetPropertyFunctionTable : SetPropertyFunction
     {
