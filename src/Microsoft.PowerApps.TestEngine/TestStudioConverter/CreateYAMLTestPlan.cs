@@ -85,14 +85,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             {
                 if ((testSuiteProperty["Property"] ??= false).ToString().Equals("Description"))
                 {
-                    var description = testSuiteProperty["InvariantScript"]?.ToString();
-                    TestSuiteDescription = description?.Replace("\"", "");
+                    TestSuiteDescription = extractScripts(testSuiteProperty);
                 }
 
                 if ((testSuiteProperty["Property"] ??= false).ToString().Equals("DisplayName"))
                 {
-                    var suiteName = testSuiteProperty["InvariantScript"]?.ToString();
-                    TestSuiteName = suiteName?.Replace("\"", "");
+                    TestSuiteName = extractScripts(testSuiteProperty);
                 }
             }
 
@@ -133,15 +131,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
                     if ((testCaseProperty["Property"] ??= false).ToString().Equals("Description"))
                     {
-                        var description = testCaseProperty["InvariantScript"]?.ToString();
-                        testCaseObj.TestCaseDescription = description?.Replace("\"", "");
+                        testCaseObj.TestCaseDescription = extractScripts(testCaseProperty);
                     }
 
                     if ((testCaseProperty["Property"] ??= false).ToString().Equals("DisplayName"))
                     {
-                        var caseName = testCaseProperty["InvariantScript"]?.ToString();
-
-                        testCaseObj.TestCaseName = caseName?.Replace("\"", "");
+                        testCaseObj.TestCaseName = extractScripts(testCaseProperty);
                     }
                 }
 
@@ -157,22 +152,42 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 {
                     if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestStart"))
                     {
-                        var script = overallProperty["InvariantScript"]?.ToString();
-                        OnTestCaseStart = combineTestSteps(script?.Split(";\r\n").ToList());
+                        OnTestCaseStart = extractScripts(overallProperty, true);
                     }
 
                     if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestComplete"))
                     {
-                        var script = overallProperty["InvariantScript"]?.ToString();
-                        OnTestCaseComplete = combineTestSteps(script?.Split(";\r\n").ToList());
+                        OnTestCaseComplete = extractScripts(overallProperty, true);
                     }
 
                     if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestSuiteComplete"))
                     {
-                        var script = overallProperty["InvariantScript"]?.ToString();
-                        OnTestSuiteComplete = combineTestSteps(script?.Split(";\r\n").ToList());
+                        OnTestSuiteComplete = extractScripts(overallProperty, true);
                     }
                 }
+            }
+        }
+
+        private string extractScripts(JToken input, bool convertToList = false)
+        {
+            if (input == null)
+            {
+                return "";
+            }
+
+            var script = input["InvariantScript"]?.ToString();
+
+            if (string.IsNullOrEmpty(script))
+            {
+                return "";
+            }
+            else if (convertToList)
+            {
+                return combineTestSteps(script.Split(";\r\n").ToList());
+            }
+            else
+            {
+                return script.Replace("\"", "");
             }
         }
 
