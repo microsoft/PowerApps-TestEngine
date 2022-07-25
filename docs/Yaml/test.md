@@ -12,6 +12,9 @@ This is used to define one test.
 | appLogicalName | Yes | This is the logical name of the app that is to be launched. It can be obtained from the solution. For canvas apps, you need to add it to a solution to obtain it |
 | networkRequestMocks | No | Defines network request mocks needed for the test |
 | testCases | Yes | Defines test cases in the test suite. Test cases contained in test suites are run sequentially. The app state is persisted across all test cases in a suite |
+| onTestCaseStart | No | Defines the steps that need to be triggered for every test case in a suite before the case begins executing |
+| onTestCaseComplete | No | Defines the steps that need to be triggered for every test case in a suite after the case finishes executing |
+| onTestSuiteComplete | No | Defines the steps that need to be triggered after the suite finishes executing |
 
 ### NetworkRequestMocks
 

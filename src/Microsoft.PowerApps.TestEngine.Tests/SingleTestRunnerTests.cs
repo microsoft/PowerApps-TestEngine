@@ -314,6 +314,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     TestSuiteDescription = "First test",
                     AppLogicalName = "logicalAppName1",
                     Persona = "User1",
+                    OnTestCaseStart = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")",
+                    OnTestCaseComplete = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")",
+                    OnTestSuiteComplete = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")",
                     TestCases = new List<TestCase>()
                     {
                         new TestCase
