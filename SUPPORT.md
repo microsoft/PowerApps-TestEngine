@@ -10,4 +10,4 @@ For help and/or questions about this project, please create an issue and mark it
 
 ## Microsoft Support Policy
 
-Support for this **PROJECT or PRODUCT** is limited to the resources listed above.
+Support for this project is limited to the resources listed above.
