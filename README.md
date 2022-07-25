@@ -35,7 +35,7 @@ Log in to Power Apps with a work or school organization account. The account use
 
 If you need a test tenant, you can create one by visiting [this](https://cdx.transform.microsoft.com/my-tenants).
 
-Import the solution of a sample(Eg. `PowerApps-TestEngine\samples\buttonclicker\ButtonClicker_1_0_0_1_managed.zip`). Remember the environment that you imported the solution to. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions). Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/tree/main/samples) for more sample solutions.
+Import the solution of a sample(Eg. `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_2.zip`). Remember the environment that you imported the solution to. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions). Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/tree/main/samples) for more sample solutions.
 
 ### Set up the config file
 
@@ -57,7 +57,7 @@ Fill in the various properties:
   - You can get the `environmentId` by visiting [this](https://make.powerapps.com/). Make sure to select the environment you import the solution to. In the URL, you will be able to find the `environmentId`. (Eg. https://make.powerapps.com/environments/{environmentId}/solutions/)
 - tenantId: Tenant you are in
   - Select the solution imported and visit the `Details` of the solution. `tenantId` can be found in `Web link`.
-- testPlanFile: Path to the `testPlan.fx.yaml` file for the sample that you wish to run. (Eg. `../../samples/buttonclicker/testPlan.fx.yaml`)
+- testPlanFile: Path to the `testPlan.fx.yaml` file for the sample that you wish to run. (Eg. `../../samples/basicgallery/testPlan.fx.yaml`)
 - outputDirectory: Path to folder you wish the test results to be placed.
 
 For more information about the config and the inputs to the command, please view [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/CommandInput.md)
