@@ -58,10 +58,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         /// <summary>
         /// How verbose the logging should be.
-        /// none = outputs nothing
-        /// basic = outputs minimal information
-        /// debug = outputs above + debugging logs
-        /// verbose = outputs above + PowerApp/File/Program/System specifics
+        /// - None: Outputs no information
+        /// - Basic: Outputs simple information, such as progress updates
+        /// - Debug: Outputs the above, and the debugging logs
+        /// - Verbose: Outputs the above, and PowerApp/File/Program/System specifics
         /// </summary>
         public LoggingLevel LoggingLevel { get; set; } = LoggingLevel.none;
     }
