@@ -134,12 +134,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Dropdown1");
             var setPropertyFunction = new SetPropertyFunctionRecord(MockPowerAppFunctions.Object);
 
-            // Set the value of Dropdown1's 'Selected' property to {"Value":"1"}
+            // Set the value of Dropdown1's 'Selected' property to {"Value":"2"}
             var pair = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
             var nameValue = new NamedValue(pair);
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("Selected"), RecordValue.NewRecordFromFields(nameValue));
 
-            // check to see if the value of Dropdown1's 'Selected' property is "1"
+            // check to see if the value of Dropdown1's 'Selected' property is "2"
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<RecordValue>(recordVal => ((StringValue)recordVal.GetField("Value")).Value == "2")), Times.Once());
         }
