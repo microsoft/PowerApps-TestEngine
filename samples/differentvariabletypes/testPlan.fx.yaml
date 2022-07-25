@@ -2,7 +2,7 @@ testSuite:
   testSuiteName: DifferentVariableTypes
   testSuiteDescription: Showcases usage of Assert/Wait/SetProperty with multiple types
   persona: User1
-  appLogicalName: new_differentvariabletypes_62195
+  appLogicalName: cr693_differentvariabletypes_09b4b
 
   testCases:
     - testCaseName: String_Case
@@ -52,13 +52,6 @@ testSuite:
           Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
 
           Screenshot("datetype_end.png");
-    - testCaseName: Record_Case
-      testSteps: |
-        = Screenshot("recordtype_loaded.png");
-        
-          SetProperty(Dropdown1, "Selected", {Value:"2"});
-          
-          Screenshot("recordtype_end.png");      
     - testCaseName: Table_Case
       testSteps: |
         = Screenshot("tabletype_loaded.png");
