@@ -1,0 +1,72 @@
+testSuite:
+  testSuiteName: DifferentVariableTypes
+  testSuiteDescription: Showcases usage of Assert/Wait/SetProperty with multiple types
+  persona: User1
+  appLogicalName: cr693_differentvariabletypes_09b4b
+
+  testCases:
+    - testCaseName: String_Case
+      testSteps: |
+        = Screenshot("stringtype_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          
+          // Set input fields
+          SetProperty(TextInput1, "Text", "Good job!");
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+
+          Screenshot("stringtype_end.png");
+    - testCaseName: Number_Case
+      testSteps: |
+        = Screenshot("numbertype_loaded.png");
+
+          Wait(Rating1, "Value", 3);
+
+          SetProperty(Rating1, "Value", 5);
+
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+
+          Screenshot("numbertype_end.png");
+    - testCaseName: Boolean_Case
+      testSteps: |
+        = Screenshot("booleantype_loaded.png");
+
+          Wait(Toggle1, "Value", false);
+
+          SetProperty(Toggle1, "Value", true);
+
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+
+          Screenshot("booleantype_end.png");
+    - testCaseName: Date_Case
+      testSteps: |
+        = Screenshot("datetype_loaded.png");
+
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+
+          SetProperty(DatePicker1, "SelectedDate", Date(2040, 01, 01));
+
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("datetype_end.png");
+    - testCaseName: Table_Case
+      testSteps: |
+        = Screenshot("tabletype_loaded.png");
+        
+          SetProperty(ComboBox1,"SelectedItems", Table({Value:"1"},{Value:"2"}));
+          
+          Screenshot("tabletype_end.png");    
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

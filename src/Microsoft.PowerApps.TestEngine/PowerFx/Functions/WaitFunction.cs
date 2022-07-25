@@ -15,19 +15,26 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// </summary>
     public class WaitFunction : ReflectionFunction
     {
-        private readonly int _timeout;
-        public WaitFunction(int timeout) : base("Wait", FormulaType.Blank, new RecordType(), FormulaType.String, FormulaType.String)
+        protected readonly int _timeout;
+        public WaitFunction(int timeout, FormulaType formulaType) : base("Wait", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
         {
             _timeout = timeout;
         }
+    }
 
-        public BlankValue Execute(RecordValue obj, StringValue propName, FormulaValue valueToCheck)
+    public class WaitFunctionNumber : WaitFunction
+    {
+        public WaitFunctionNumber(int timeout) : base(timeout, FormulaType.Number)
         {
-            Wait(obj, propName, valueToCheck);
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
+        {
+            Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
-        private void Wait(RecordValue obj, StringValue propName, FormulaValue valueToCheck)
+        private void Wait(RecordValue obj, StringValue propName, NumberValue value)
         {
             if (obj == null)
             {
@@ -39,20 +46,180 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 throw new ArgumentNullException(nameof(propName));
             }
 
-            if (valueToCheck == null)
+            if (value == null)
             {
-                throw new ArgumentNullException(nameof(valueToCheck));
+                throw new ArgumentNullException(nameof(value));
             }
 
             var controlModel = (ControlRecordValue)obj;
-            string? propertyValue = null;
 
-            // TODO handle non strings?
-            var text = ((StringValue)valueToCheck).Value;
+            PollingHelper.Poll<double>((x) => x != value.Value, () => {
+                return ((NumberValue)controlModel.GetField(propName.Value)).Value;
+            }, _timeout);
+        }
+    }
 
-            PollingHelper.Poll<string>(propertyValue, (x) => x != text, () => {
+    public class WaitFunctionString : WaitFunction
+    {
+        public WaitFunctionString(int timeout) : base(timeout, FormulaType.String)
+        {
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
+        {
+            Wait(obj, propName, value);
+            return FormulaValue.NewBlank();
+        }
+
+        private void Wait(RecordValue obj, StringValue propName, StringValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentNullException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj;
+
+            PollingHelper.Poll<string>((x) => x != value.Value, () => {
                 return ((StringValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
+        }
+    }
+
+    public class WaitFunctionBoolean : WaitFunction
+    {
+        public WaitFunctionBoolean(int timeout) : base(timeout, FormulaType.Boolean)
+        {
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
+        {
+            Wait(obj, propName, value);
+            return FormulaValue.NewBlank();
+        }
+
+        private void Wait(RecordValue obj, StringValue propName, BooleanValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentNullException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj;
+
+            PollingHelper.Poll<bool>((x) => x != value.Value, () => {
+                return ((BooleanValue)controlModel.GetField(propName.Value)).Value;
+            }, _timeout);
+        }
+    }
+
+    /* TODO: When .Date and .DateTime not ambiguous, uncomment
+     * Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
+    public class WaitFunctionDateTime : WaitFunction
+    {
+        public WaitFunctionDateTime(int timeout) : base(timeout, FormulaType.DateTime)
+        {
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, DateTimeValue value)
+        {
+            Wait(obj, propName, value);
+            return FormulaValue.NewBlank();
+        }
+
+        private void Wait(RecordValue obj, StringValue propName, DateTimeValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentNullException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj;
+
+            PollingHelper.Poll<DateTime>((x) => x != value.Value, () => {
+                return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
+            }, _timeout);
+        }
+    }
+    */
+
+    public class WaitFunctionDate : WaitFunction
+    {
+        public WaitFunctionDate(int timeout) : base(timeout, FormulaType.Date)
+        {
+        }
+
+        public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
+        {
+            Wait(obj, propName, value);
+            return FormulaValue.NewBlank();
+        }
+
+        private void Wait(RecordValue obj, StringValue propName, DateValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentNullException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj;
+            
+            PollingHelper.Poll<DateTime>((x) => x != value.Value, () => {
+                return ((DateValue)controlModel.GetField(propName.Value)).Value;
+            }, _timeout);
+        }
+    }
+
+    public static class WaitRegisterExtensions
+    {
+        public static void RegisterAll(this PowerFxConfig powerFxConfig, int timeout)
+        {
+            powerFxConfig.AddFunction(new WaitFunctionNumber(timeout));
+            powerFxConfig.AddFunction(new WaitFunctionString(timeout));
+            powerFxConfig.AddFunction(new WaitFunctionBoolean(timeout));
+            // TODO: When .Date and .DateTime not ambiguous, uncomment
+            // powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout));
+            powerFxConfig.AddFunction(new WaitFunctionDate(timeout));
         }
     }
 }

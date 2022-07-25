@@ -8,13 +8,14 @@ using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
     /// <summary>
     /// Functions for interacting with the Power App
     /// </summary>
-    public class PowerAppFunctions : IPowerAppFunctions
+    public class PowerAppFunctions: IPowerAppFunctions
     {
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
@@ -153,13 +154,62 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyAsync(ItemPath itemPath, StringValue value)
+        public async Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
         {
+            Object? objectValue = null;
+
+            switch (value.Type)
+            {
+                case (NumberType):
+                    objectValue = ((NumberValue)value).Value;
+                    break;
+                case (StringType):
+                    objectValue = ((StringValue)value).Value;
+                    break;
+                case (BooleanType):
+                    objectValue = ((BooleanValue)value).Value;
+                    break;
+                case (DateType):
+                    objectValue = ((DateValue)value).Value;
+                    break;
+                case (TableType):
+                    return await SetPropertyTableAsync(itemPath, (TableValue)value);
+                default:
+                    throw new ArgumentException("SetProperty must be a valid type.");
+            }
+
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"setPropertyValue({itemPathString}, \"{value.Value}\")";
+
+            var expression = $"setPropertyValue({itemPathString}, \"{objectValue}\")";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, TableValue value)
+        {
+            ValidateItemPath(itemPath, false);
+
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+            RecordValueObject[] jsonArr = new RecordValueObject[value.Rows.Count()];
+
+            var index = 0;
+            foreach (var row in value.Rows)
+            {
+                if (row.IsValue)
+                {
+                    var recordValue = row.Value.GetField("Value");
+                    var val = recordValue.GetType().GetProperty("Value")?.GetValue(recordValue, null)?.ToString();
+                    if(val != null)
+                    {
+                        jsonArr[index++] = new RecordValueObject(val);
+                    }                    
+                }
+            }
+            var checkVal = JsonConvert.SerializeObject(jsonArr);
+            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);            
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
