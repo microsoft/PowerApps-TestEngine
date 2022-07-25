@@ -127,8 +127,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         // Because of this, we have to manually convert it into a DateTime
                         if(double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
-                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
-                            result = DateTimeValue.New(trueDateTime);
+                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
+                            result = DateTimeValue.New(trueDateTime.Date);
                         }
                         // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
                         // This allows us to just parse it back into a datetime, without having to manually convert it back
@@ -148,8 +148,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         // Because of this, we have to manually convert it into a DateTime
                         if (double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
-                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(milliseconds).ToLocalTime();
-                            result = DateValue.NewDateOnly(trueDateTime);
+                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
+                            result = DateValue.NewDateOnly(trueDateTime.Date);
                         }
                         // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
                         // This allows us to just parse it back into a DateTime, without having to manually convert it back
