@@ -98,5 +98,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <returns>Number of workers</returns>
         public int GetWorkerCount();
+
+        /// <summary>
+        /// How verbose the logging should be.
+        /// </summary>
+        /// <returns>How verbose the logging is</returns>
+        public LoggingLevel GetLoggingLevel();
     }
 }

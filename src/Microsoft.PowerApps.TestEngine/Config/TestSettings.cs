@@ -3,6 +3,12 @@
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
+    
+    /// <summary>
+    ///  The possible settings for the logging level parameter.
+    /// </summary>
+    public enum LoggingLevel { none, basic, debug, verbose};
+
     /// <summary>
     /// Defines settings for tests in the test plan.
     /// </summary>
@@ -49,5 +55,14 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Number of workers. Default is 10.
         /// </summary>
         public int WorkerCount { get; set; } = 10;
+
+        /// <summary>
+        /// How verbose the logging should be.
+        /// none = outputs nothing
+        /// basic = outputs minimal information
+        /// debug = outputs above + debugging logs
+        /// verbose = outputs above + PowerApp/File/Program/System specifics
+        /// </summary>
+        public LoggingLevel LoggingLevel { get; set; } = LoggingLevel.none;
     }
 }
