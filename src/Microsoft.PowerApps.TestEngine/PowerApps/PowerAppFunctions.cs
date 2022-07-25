@@ -172,6 +172,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 case (DateType):
                     objectValue = ((DateValue)value).Value;
                     break;
+                case (RecordType):
+                    return await SetPropertyTableAsync(itemPath, (RecordValue)value);
                 case (TableType):
                     return await SetPropertyTableAsync(itemPath, (TableValue)value);
                 default:
@@ -183,6 +185,20 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var itemPathString = JsonConvert.SerializeObject(itemPath);
 
             var expression = $"setPropertyValue({itemPathString}, \"{objectValue}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+        }
+
+        public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, RecordValue value)
+        {
+            ValidateItemPath(itemPath, false);
+
+            var itemPathString = JsonConvert.SerializeObject(itemPath);
+            var recordValue = value.GetField("Value");
+            var val = recordValue.GetType().GetProperty("Value")?.GetValue(recordValue, null)?.ToString();
+            RecordValueObject json = new RecordValueObject(val);
+            var checkVal = JsonConvert.SerializeObject(json);
+            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
