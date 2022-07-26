@@ -74,6 +74,9 @@ if (inputOptions == null)
     .AddSingleton<TestEngine>()
     .BuildServiceProvider();
 
+    // Issue: logging is being set above, but can only get config later
+    // Config tells us how much to log
+
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
