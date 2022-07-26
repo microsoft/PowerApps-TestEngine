@@ -117,20 +117,23 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 Logger.LogInformation($"Executing {testSteps}");
                 FormulaValue result = FormulaValue.NewBlank();
                 int currentRetry = 0;
-                for ( ;currentRetry<retryCount; currentRetry++)
+                for (; ;)
                 {
                     try
                     {
                         result = Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
                         break;
                     }
-                    catch (ArgumentException e)
+                    catch (Exception e)
                     {
                         Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry+1} to run");
-                    }
-                    catch (AggregateException e)
-                    {
-                        Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
+                        currentRetry++;
+                        if (currentRetry > retryCount)
+                        {
+                            // If this is not a transient error 
+                            // or we should not retry re-throw the exception. 
+                            throw;
+                        }
                     }
 
                     // Wait to retry the operation.
