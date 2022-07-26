@@ -24,7 +24,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [Fact]
         public void BeginScopeTest()
         {
-            var testLogger = new TestLogger(MockFileSystem.Object);
+            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
             Assert.Null(testLogger.BeginScope("hello"));
             Assert.Null(testLogger.BeginScope(new Dictionary<string, string>()));
         }
@@ -39,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [InlineData(LogLevel.Warning, true)]
         public void IsEnabledTest(LogLevel level, bool shouldBeEnabled)
         {
-            var testLogger = new TestLogger(MockFileSystem.Object);
+            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
             Assert.Equal(shouldBeEnabled, testLogger.IsEnabled(level));
         }
 
@@ -47,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         public void WriteToLogsFileThrowsOnInvalidPathTest()
         {
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
-            var testLogger = new TestLogger(MockFileSystem.Object);
+            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
             Assert.Throws<ArgumentException>(() => testLogger.WriteToLogsFile(""));
             MockFileSystem.Verify(x => x.IsValidFilePath(""), Times.Once());
         }
@@ -57,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
             MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>()));
-            var testLogger = new TestLogger(MockFileSystem.Object);
+            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
 
             var debugLogs = new List<string>();
             var logs = new List<string>();
@@ -95,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [InlineData(LogLevel.Warning, true, true)]
         public void LogTest(LogLevel level, bool shouldBeInDebugLogs, bool shouldBeInLogs)
         {
-            var testLogger = new TestLogger(MockFileSystem.Object);
+            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
 
             var expectedMessages = new List<string>();
 

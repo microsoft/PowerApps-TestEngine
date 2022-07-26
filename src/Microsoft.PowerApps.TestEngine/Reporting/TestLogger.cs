@@ -39,7 +39,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 throw new ArgumentException(nameof(directoryPath));
             }
 
-
             _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), Logs.ToArray());
 
             if (_engineLoggingLevel <= LogLevel.Debug) {
