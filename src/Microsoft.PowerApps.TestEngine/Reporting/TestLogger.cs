@@ -39,8 +39,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 throw new ArgumentException(nameof(directoryPath));
             }
 
+
             _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), Logs.ToArray());
-            _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.ToArray());
+
+            if (_engineLoggingLevel <= LogLevel.Debug) {
+                _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.ToArray());
+            }
         }
 
         public void Log<TState>(LogLevel messageLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
