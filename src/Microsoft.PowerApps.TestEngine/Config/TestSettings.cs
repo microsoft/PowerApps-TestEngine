@@ -56,6 +56,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// How verbose the logging should be.
         /// </summary>
-        public LogLevel EngineLoggingLevel { get; set; } = LogLevel.Information;
+        public LogLevel EngineLoggingLevel { get; set; } = LogLevel.Error;
     }
 }

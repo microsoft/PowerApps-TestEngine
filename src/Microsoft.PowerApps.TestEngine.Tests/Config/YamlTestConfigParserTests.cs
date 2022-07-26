@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Moq;
@@ -52,6 +53,7 @@ testSettings:
         - browser: Firefox
     headless: false
     enablePowerFxOverlay: false
+    engineLoggingLevel: LogLevel.Debug
 
 environmentVariables:
     users:
@@ -83,6 +85,7 @@ environmentVariables:
             Assert.Equal(2, testPlan.TestSettings?.BrowserConfigurations?.Count);
             Assert.Equal("Chromium", testPlan.TestSettings?.BrowserConfigurations?[0].Browser);
             Assert.Equal("Firefox", testPlan.TestSettings?.BrowserConfigurations?[1].Browser);
+            Assert.Equal("LogLevel.Debug", testPlan.TestSettings?.EngineLoggingLevel.ToString());
             Assert.Single(testPlan.EnvironmentVariables?.Users);
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);

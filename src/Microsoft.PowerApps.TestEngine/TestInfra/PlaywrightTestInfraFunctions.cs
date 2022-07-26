@@ -40,7 +40,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task SetupAsync()
         {
-
             var browserConfig = _singleTestInstanceState.GetBrowserConfig();
 
             if (browserConfig == null)

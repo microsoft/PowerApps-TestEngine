@@ -1,3 +1,4 @@
 recordVideo: true
+engineLoggingLevel: Information
 browserConfigurations:
   - browser: Chromium

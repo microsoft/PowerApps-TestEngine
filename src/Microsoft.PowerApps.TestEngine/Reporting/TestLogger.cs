@@ -14,6 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         private readonly IFileSystem _fileSystem;
         private readonly LogLevel _engineLoggingLevel;
         public List<string> Logs { get; set; } = new List<string>();
+        public List<string> DebugLogs { get; set; } = new List<string>();
 
         public TestLogger(IFileSystem fileSystem, LogLevel engineLoggingLevel)
         {
@@ -39,6 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }
 
             _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), Logs.ToArray());
+            _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.ToArray());
         }
 
         public void Log<TState>(LogLevel messageLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
@@ -46,9 +48,15 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             var logString = $"[{messageLevel}] - [{eventId}]: {formatter(state, exception)}{Environment.NewLine}";
 
              if(messageLevel >= _engineLoggingLevel){
+
+                if (messageLevel > LogLevel.Debug)
+                {
+                    Logs.Add(logString);
+                }
+
+                DebugLogs.Add(logString);
                 Console.Out.WriteLine(logString);
-                Logs.Add(logString);
-              }
+            }
         }
     }
 }
