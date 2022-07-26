@@ -89,6 +89,61 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 await Task.Delay(1000);
             }
         }
+
+        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T, Task<T>>? functionToCall, int timeout)
+        {
+            Console.WriteLine("---- PollAsync ----");
+            
+            if (timeout < 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var valueToCheck = initialValue;
+            DateTime startTime = DateTime.Now;
+
+            while (conditionToCheck(valueToCheck))
+            {
+                if (functionToCall != null)
+                {
+                    valueToCheck = await functionToCall(valueToCheck);
+                }
+
+                if (IsTimeout(startTime, timeout))
+                {
+                    throw new TimeoutException("Timed operation timed out.");
+                }
+
+                Thread.Sleep(500);
+            }
+        }
+        
+        public static async Task<T> PollAsyncReturnObject<T>(T inputObject, Func<T, bool> conditionToCheck, Func<T, Task<T>>? functionToCall, int timeout)
+        {
+            if (timeout < 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            DateTime startTime = DateTime.Now;
+
+            while (conditionToCheck(inputObject))
+            {
+                if (functionToCall != null)
+                {
+                    await functionToCall(inputObject);
+                }
+
+                if (IsTimeout(startTime, timeout))
+                {
+                    throw new TimeoutException("Timed operation timed out.");
+                }
+
+                Thread.Sleep(500);
+            }
+            
+            return inputObject;
+        }
         
         private static bool IsTimeout(DateTime startTime, int timeout)
         {

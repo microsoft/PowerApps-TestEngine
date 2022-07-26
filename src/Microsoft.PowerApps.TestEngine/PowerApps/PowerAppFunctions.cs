@@ -82,24 +82,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
+        private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
-
-            if (!IsPublishedAppTestingJsLoaded)
-            {
-                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
-                IsPublishedAppTestingJsLoaded = true;
-            }
-
-            // TODO: add retry logic for changes in DOM model
-            // Temporary Hack
-            Thread.Sleep(1000);
-
             var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
-            var controlDictionary = new Dictionary<string, ControlRecordValue>();
-
             if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {
                 var jsObjectModel = JsonConvert.DeserializeObject<JSObjectModel>(controlObjectModelJsonString);
@@ -138,12 +124,77 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
             }
 
-            if (controlDictionary.Keys.Count == 0)
-            {
-                _singleTestInstanceState.GetLogger().LogError("No control model was found");
-            }
-            return controlDictionary;
+             _singleTestInstanceState.GetLogger().LogInformation("------------------- controlDictionary.ToString() --------------------");
+             _singleTestInstanceState.GetLogger().LogInformation(string.Join(", ", controlDictionary.Select(pair => $"{pair.Key}\n")));
 
+             return controlDictionary;
+        }
+
+        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
+        {
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
+
+            if (!IsPublishedAppTestingJsLoaded)
+            {
+                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                IsPublishedAppTestingJsLoaded = true;
+            }
+
+            var controlDictionary = new Dictionary<string, ControlRecordValue>();
+            await PollingHelper.PollAsync<Dictionary<string, ControlRecordValue>>(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout);
+
+
+            // TODO: add retry logic for changes in DOM model
+            // Temporary Hack
+            // Thread.Sleep(1000);
+
+            // var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
+            // var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
+            // var controlDictionary = new Dictionary<string, ControlRecordValue>();
+
+            // if (!string.IsNullOrEmpty(controlObjectModelJsonString))
+            // {
+            //     var jsObjectModel = JsonConvert.DeserializeObject<JSObjectModel>(controlObjectModelJsonString);
+
+            //     if (jsObjectModel != null && jsObjectModel.Controls != null)
+            //     {
+            //         foreach (var control in jsObjectModel.Controls)
+            //         {
+            //             if (controlDictionary.ContainsKey(control.Name))
+            //             {
+            //                 // Components get declared twice at the moment so prevent it from throwing.
+            //                 _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name} already added");
+            //             }
+            //             else
+            //             {
+            //                 var controlType = new RecordType();
+            //                 foreach (var property in control.Properties)
+            //                 {
+            //                     if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
+            //                     {
+            //                         controlType = controlType.Add(property.PropertyName, formulaType);
+            //                     }
+            //                     else
+            //                     {
+            //                         _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name}, Skipping property: {property.PropertyName}, with type: {property.PropertyType}");
+            //                     }
+            //                 }
+
+            //                 TypeMapping.AddMapping(control.Name, controlType);
+
+            //                 var controlValue = new ControlRecordValue(controlType, this, control.Name);
+
+            //                 controlDictionary.Add(control.Name, controlValue);
+            //             }
+            //         }
+            //     }
+            // }
+
+            // if (controlDictionary.Keys.Count == 0)
+            // {
+            //     _singleTestInstanceState.GetLogger().LogError("No control model was found");
+            // }
+            return controlDictionary;
         }
 
         public async Task<bool> SelectControlAsync(ItemPath itemPath)
