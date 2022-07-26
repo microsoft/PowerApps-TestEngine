@@ -26,6 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly IFileSystem _fileSystem;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
+        private int retryCount = 3;
 
         private RecalcEngine? Engine { get; set; }
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
@@ -88,17 +89,51 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 // Will need to come up with a better solution
                 var splitSteps = testSteps.Split(';');
                 FormulaValue result = FormulaValue.NewBlank();
+                
                 foreach (var step in splitSteps)
                 {
+                    int currentRetry = 0;
                     Logger.LogInformation($"Executing {step}");
-                    result = Engine.Eval(step);
+                    for ( ;currentRetry<retryCount; currentRetry++)
+                    {
+                        try
+                        {
+                            result = Engine.Eval(step);
+                            break;
+                        }
+                        catch (ArgumentException e) when (e.ParamName == "locale")
+                        {
+                            Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry+1} to run");
+                        }
+
+                        // Wait to retry the operation.
+                        Thread.Sleep(1000);
+                    }
                 }
                 return result;
             }
             else
             {
                 Logger.LogInformation($"Executing {testSteps}");
-                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+                FormulaValue result = FormulaValue.NewBlank();
+                int currentRetry = 0;
+                for ( ;currentRetry<retryCount; currentRetry++)
+                {
+                    try
+                    {
+                        result = Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+                        break;
+                    }
+                    catch (ArgumentException e) when (e.ParamName == "locale")
+                    {
+                        Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry+1} to run");
+                    }
+
+                    // Wait to retry the operation.
+                    Thread.Sleep(1000);
+                }
+                return result;
+                // return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
             }
         }
 
