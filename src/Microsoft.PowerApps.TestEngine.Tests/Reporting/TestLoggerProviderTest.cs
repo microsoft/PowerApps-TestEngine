@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         public void CreateLoggerTest()
         {
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
-            var testLoggerProvider = new TestLoggerProvider(mockFileSystem.Object);
+            var testLoggerProvider = new TestLoggerProvider(mockFileSystem.Object, Extensions.Logging.LogLevel.Debug);
 
             var category = Guid.NewGuid().ToString();
             var logger = testLoggerProvider.CreateLogger(category);
