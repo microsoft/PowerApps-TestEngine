@@ -74,8 +74,11 @@ if (inputOptions == null)
     .AddSingleton<TestEngine>()
     .BuildServiceProvider();
 
-    // Issue: logging is being set above, but can only get config later
-    // Config tells us how much to log
+    // Issue: Config tells us what logging settings we're supposed to set
+    // However, logging settings are being set above, and we don't have the config yet
+    // Yet, We can only get the config by first setting the above. But need the config to accurately set the above
+    // Seems like chicken/egg problem
+
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
