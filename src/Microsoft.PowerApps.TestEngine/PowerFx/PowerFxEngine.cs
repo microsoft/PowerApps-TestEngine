@@ -124,9 +124,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                         result = Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
                         break;
                     }
-                    catch (ArgumentException e) when (e.ParamName == "locale")
+                    catch (ArgumentException e)
                     {
                         Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry+1} to run");
+                    }
+                    catch (AggregateException e)
+                    {
+                        Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
                     }
 
                     // Wait to retry the operation.
