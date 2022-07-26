@@ -38,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public async void PollingAsyncSucceedsTest()
         {
-            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 5000);
+            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 10000);
         }
 
         [Fact]
