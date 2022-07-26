@@ -95,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [InlineData(LogLevel.Warning, true, true)]
         public void LogTest(LogLevel level, bool shouldBeInDebugLogs, bool shouldBeInLogs)
         {
-            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
+            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Trace);
 
             var expectedMessages = new List<string>();
 
