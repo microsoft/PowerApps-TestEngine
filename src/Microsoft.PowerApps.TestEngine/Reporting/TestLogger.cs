@@ -44,7 +44,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             var logString = $"[{logLevel}] - [{eventId}]: {formatter(state, exception)}{Environment.NewLine}";
-            
+
             Console.Out.WriteLine(logString);
             
             if (logLevel <= LogLevel.Debug)

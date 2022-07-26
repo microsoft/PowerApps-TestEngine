@@ -103,6 +103,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// How verbose the logging should be.
         /// </summary>
         /// <returns>How verbose the logging is</returns>
-        public LoggingLevel GetLoggingLevel();
+        public EngineLoggingLevel GetEngineLoggingLevel();
     }
 }

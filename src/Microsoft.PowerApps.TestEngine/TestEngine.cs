@@ -72,7 +72,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
 
             // Set up test reporting
-            LoggingLevel currLoggingLevel = _state.GetLoggingLevel();
+            EngineLoggingLevel currLoggingLevel = _state.GetEngineLoggingLevel();
 
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
             _testReporter.StartTestRun(testRunId);

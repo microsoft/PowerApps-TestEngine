@@ -7,7 +7,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
     /// <summary>
     ///  The possible settings for the logging level parameter.
     /// </summary>
-    public enum LoggingLevel { none, basic, debug, verbose};
+    public enum EngineLoggingLevel { none, basic, debug, verbose};
 
     /// <summary>
     /// Defines settings for tests in the test plan.
@@ -63,6 +63,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// - Debug: Outputs the above, and the debugging logs
         /// - Verbose: Outputs the above, and PowerApp/File/Program/System specifics
         /// </summary>
-        public LoggingLevel LoggingLevel { get; set; } = LoggingLevel.none;
+        public EngineLoggingLevel EngineLoggingLevel { get; set; } = EngineLoggingLevel.none;
     }
 }

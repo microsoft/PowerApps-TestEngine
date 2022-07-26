@@ -227,9 +227,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return TestPlanDefinition?.TestSettings;
         }
 
-        public LoggingLevel GetLoggingLevel()
+        public EngineLoggingLevel GetEngineLoggingLevel()
         {
-            return GetTestSettings().LoggingLevel;
+            return GetTestSettings().EngineLoggingLevel;
         }
 
         public int GetTimeout()
