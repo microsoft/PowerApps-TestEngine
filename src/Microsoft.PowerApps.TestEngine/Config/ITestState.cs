@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+
 namespace Microsoft.PowerApps.TestEngine.Config
 {
     /// <summary>
@@ -103,6 +105,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// How verbose the logging should be.
         /// </summary>
         /// <returns>How verbose the logging is</returns>
-        public EngineLoggingLevel GetEngineLoggingLevel();
+        public LogLevel GetEngineLoggingLevel();
     }
 }

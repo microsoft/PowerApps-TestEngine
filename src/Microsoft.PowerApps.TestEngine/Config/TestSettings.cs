@@ -1,14 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+
 namespace Microsoft.PowerApps.TestEngine.Config
 {
     
-    /// <summary>
-    ///  The possible settings for the logging level parameter.
-    /// </summary>
-    public enum EngineLoggingLevel { none, basic, debug, verbose};
-
     /// <summary>
     /// Defines settings for tests in the test plan.
     /// </summary>
@@ -58,11 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         /// <summary>
         /// How verbose the logging should be.
-        /// - None: Outputs no information
-        /// - Basic: Outputs simple information, such as progress updates
-        /// - Debug: Outputs the above, and the debugging logs
-        /// - Verbose: Outputs the above, and PowerApp/File/Program/System specifics
         /// </summary>
-        public EngineLoggingLevel EngineLoggingLevel { get; set; } = EngineLoggingLevel.none;
+        public LogLevel EngineLoggingLevel { get; set; } = LogLevel.Information;
     }
 }

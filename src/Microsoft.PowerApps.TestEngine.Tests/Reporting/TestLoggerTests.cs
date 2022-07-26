@@ -59,27 +59,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>()));
             var testLogger = new TestLogger(MockFileSystem.Object);
 
-            var debugLogs = new List<string>();
             var logs = new List<string>();
-
-            for(var i = 0; i < 10; i++)
-            {
-                debugLogs.Add($"Logging: {i}");
-            }
 
             for (var i = 0; i < 10; i++)
             {
-                debugLogs.Add($"Logging: {i + 10}");
                 logs.Add($"Logging: {i + 10}");
             }
 
-            testLogger.DebugLogs = debugLogs;
             testLogger.Logs = logs;
 
             var directoryPath = "C:\\Logs";
             testLogger.WriteToLogsFile(directoryPath);
             MockFileSystem.Verify(x => x.IsValidFilePath(directoryPath), Times.Once());
-            MockFileSystem.Verify(x => x.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), debugLogs.ToArray()), Times.Once());
             MockFileSystem.Verify(x => x.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), logs.ToArray()), Times.Once());
         }
 
@@ -109,7 +100,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             foreach(var message in expectedMessages)
             {
-                Assert.Equal(shouldBeInDebugLogs, testLogger.DebugLogs.Contains(message));
                 Assert.Equal(shouldBeInLogs, testLogger.Logs.Contains(message));
             }
         }

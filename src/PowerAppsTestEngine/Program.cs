@@ -52,12 +52,17 @@ if (inputOptions == null)
     return;
 } else
 {
+    // Get logging level before setting logger
+    TestState tempState = new TestState(new YamlTestConfigParser(new FileSystem()));
+    tempState.ParseAndSetTestState(inputOptions.TestPlanFile);
+    LogLevel engineLoggingLevel = tempState.GetEngineLoggingLevel();
+
+    // Set serviceProvider & Logger
     var serviceProvider = new ServiceCollection()
-    .AddLogging(loggingBuilder =>
-    {
+    .AddLogging(loggingBuilder => {
         loggingBuilder
         .ClearProviders()
-        .AddProvider(new TestLoggerProvider(new FileSystem()));
+        .AddProvider(new TestLoggerProvider(new FileSystem(), engineLoggingLevel));
     })
     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
     .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
@@ -73,12 +78,6 @@ if (inputOptions == null)
     .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
     .AddSingleton<TestEngine>()
     .BuildServiceProvider();
-
-    // Issue: Config tells us what logging settings we're supposed to set
-    // However, logging settings are being set above, and we don't have the config yet
-    // Yet, We can only get the config by first setting the above. But need the config to accurately set the above
-    // Seems like chicken/egg problem
-
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
