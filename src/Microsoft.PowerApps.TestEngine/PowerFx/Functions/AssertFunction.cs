@@ -25,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             if (!result.Value)
             {
                 _logger.LogError($"Assert failed: {message.Value}");
-                throw new InvalidOperationException($"Assert failed: {message.Value}");
+                throw new InvalidOperationException();
             } else
             {
                 _logger.LogInformation(message.Value);
