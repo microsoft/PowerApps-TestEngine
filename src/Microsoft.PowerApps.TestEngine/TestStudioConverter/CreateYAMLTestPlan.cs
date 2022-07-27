@@ -28,6 +28,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private static string? TestSuiteDescription;
 
+        private static string? OnTestCaseStart;
+
+        private static string? OnTestCaseComplete;
+
+        private static string? OnTestSuiteComplete;
+
         private static string[] NoChangeCommands = { "Assert", "Select" };
 
         const string SetProperty = "SetProperty";
@@ -79,14 +85,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             {
                 if ((testSuiteProperty["Property"] ??= false).ToString().Equals("Description"))
                 {
-                    var description = testSuiteProperty["InvariantScript"]?.ToString();
-                    TestSuiteDescription = description?.Replace("\"", "");
+                    TestSuiteDescription = extractScripts(testSuiteProperty);
                 }
 
                 if ((testSuiteProperty["Property"] ??= false).ToString().Equals("DisplayName"))
                 {
-                    var suiteName = testSuiteProperty["InvariantScript"]?.ToString();
-                    TestSuiteName = suiteName?.Replace("\"", "");
+                    TestSuiteName = extractScripts(testSuiteProperty);
                 }
             }
 
@@ -127,20 +131,63 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
                     if ((testCaseProperty["Property"] ??= false).ToString().Equals("Description"))
                     {
-                        var description = testCaseProperty["InvariantScript"]?.ToString();
-                        testCaseObj.TestCaseDescription = description?.Replace("\"", "");
+                        testCaseObj.TestCaseDescription = extractScripts(testCaseProperty);
                     }
 
                     if ((testCaseProperty["Property"] ??= false).ToString().Equals("DisplayName"))
                     {
-                        var caseName = testCaseProperty["InvariantScript"]?.ToString();
-
-                        testCaseObj.TestCaseName = caseName?.Replace("\"", "");
+                        testCaseObj.TestCaseName = extractScripts(testCaseProperty);
                     }
                 }
 
                 testCaseObj.TestSteps = combineTestSteps(testSteps);
                 TestCases.Add(testCaseObj);
+            }
+
+            // Read OnTestCaseStart, OnTestCaseComplete, OnTestSuiteComplete
+            JToken? overallProperties = jobj.Root["TopParent"]?["Rules"];
+            if (overallProperties != null && overallProperties.Count() > 0)
+            {
+                foreach (var overallProperty in overallProperties)
+                {
+                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestStart"))
+                    {
+                        OnTestCaseStart = extractScripts(overallProperty, true);
+                    }
+
+                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestComplete"))
+                    {
+                        OnTestCaseComplete = extractScripts(overallProperty, true);
+                    }
+
+                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestSuiteComplete"))
+                    {
+                        OnTestSuiteComplete = extractScripts(overallProperty, true);
+                    }
+                }
+            }
+        }
+
+        private string extractScripts(JToken input, bool convertToList = false)
+        {
+            if (input == null)
+            {
+                return "";
+            }
+
+            var script = input["InvariantScript"]?.ToString();
+
+            if (string.IsNullOrEmpty(script))
+            {
+                return "";
+            }
+            else if (convertToList)
+            {
+                return combineTestSteps(script.Split(";\r\n").ToList());
+            }
+            else
+            {
+                return script.Replace("\"", "");
             }
         }
 
@@ -177,6 +224,9 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                     TestSuiteName = TestSuiteName,
                     TestSuiteDescription = TestSuiteDescription,
                     Persona = "User1",
+                    OnTestCaseStart = OnTestCaseStart,
+                    OnTestCaseComplete = OnTestCaseComplete,
+                    OnTestSuiteComplete = OnTestSuiteComplete,
                     AppLogicalName = "Replace with appLogicalName",
                     TestCases = TestCases
                 },
