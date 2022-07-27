@@ -173,7 +173,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     objectValue = ((DateValue)value).Value;
                     break;
                 case (RecordType):
-                    return await SetPropertyTableAsync(itemPath, (RecordValue)value);
+                    return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
                 case (TableType):
                     return await SetPropertyTableAsync(itemPath, (TableValue)value);
                 default:
@@ -188,7 +188,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, RecordValue value)
+        public async Task<bool> SetPropertyRecordAsync(ItemPath itemPath, RecordValue value)
         {
             ValidateItemPath(itemPath, false);
 
