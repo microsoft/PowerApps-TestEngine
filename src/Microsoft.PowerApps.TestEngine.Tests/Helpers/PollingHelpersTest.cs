@@ -11,8 +11,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 {
     public class PollingHelpersTests
     {
-        Func<bool, bool> conditionToCheck = x => !x;
-        Func<bool> functionToCall = () => {
+        private int _enoughRuntime = 5000;
+        private int _notEnoughRuntime = 1000;
+        private int _invalidRuntime = -1000;
+
+        private Func<bool, bool> conditionToCheck = x => !x;
+        private Func<bool> functionToCall = () => {
             Thread.Sleep(1000);
             return true;
         };
@@ -26,37 +30,37 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public void PollingSucceedsTest()
         {
-            Assert.True(PollingHelper.Poll(false, conditionToCheck, functionToCall, 5000));
+            Assert.True(PollingHelper.Poll(false, conditionToCheck, functionToCall, _enoughRuntime));
         }
 
         [Fact]
         public void PollingTimeoutTest()
         {
-            Assert.Throws<TimeoutException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, 1000));
+            Assert.Throws<TimeoutException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, _notEnoughRuntime));
         }
 
-        // [Fact]
-        // public async void PollingAsyncSucceedsTest()
-        // {
-        //     await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 10000);
-        // }
+        [Fact]
+        public async void PollingAsyncSucceedsTest()
+        {
+            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _enoughRuntime);
+        }
 
         [Fact]
         public void PollingAsyncTimeoutTest()
         {
-            Assert.ThrowsAsync<TimeoutException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 1000));
+            Assert.ThrowsAsync<TimeoutException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _notEnoughRuntime));
         }
 
         [Fact]
         public void PollingThrowsOnInvalidArgumentsTest()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, -1000));
+            Assert.Throws<ArgumentOutOfRangeException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, _invalidRuntime));
         }
 
         [Fact]
         public void PollingAsyncThrowsOnInvalidArgumentsTest()
         {
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), -1000));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _invalidRuntime));
         }
 
     }

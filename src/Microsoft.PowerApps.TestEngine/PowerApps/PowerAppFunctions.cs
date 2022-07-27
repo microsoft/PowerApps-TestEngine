@@ -8,7 +8,6 @@ using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
-using System.Text.Json.Nodes;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
@@ -124,10 +123,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
             }
 
-             _singleTestInstanceState.GetLogger().LogInformation("------------------- controlDictionary.ToString() --------------------");
-             _singleTestInstanceState.GetLogger().LogInformation(string.Join(", ", controlDictionary.Select(pair => $"{pair.Key}\n")));
-
-             return controlDictionary;
+            return controlDictionary;
         }
 
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
@@ -141,59 +137,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
-            await PollingHelper.PollAsync<Dictionary<string, ControlRecordValue>>(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout);
+            _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout);
+            _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
-
-            // TODO: add retry logic for changes in DOM model
-            // Temporary Hack
-            // Thread.Sleep(1000);
-
-            // var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
-            // var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
-            // var controlDictionary = new Dictionary<string, ControlRecordValue>();
-
-            // if (!string.IsNullOrEmpty(controlObjectModelJsonString))
-            // {
-            //     var jsObjectModel = JsonConvert.DeserializeObject<JSObjectModel>(controlObjectModelJsonString);
-
-            //     if (jsObjectModel != null && jsObjectModel.Controls != null)
-            //     {
-            //         foreach (var control in jsObjectModel.Controls)
-            //         {
-            //             if (controlDictionary.ContainsKey(control.Name))
-            //             {
-            //                 // Components get declared twice at the moment so prevent it from throwing.
-            //                 _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name} already added");
-            //             }
-            //             else
-            //             {
-            //                 var controlType = new RecordType();
-            //                 foreach (var property in control.Properties)
-            //                 {
-            //                     if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
-            //                     {
-            //                         controlType = controlType.Add(property.PropertyName, formulaType);
-            //                     }
-            //                     else
-            //                     {
-            //                         _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name}, Skipping property: {property.PropertyName}, with type: {property.PropertyType}");
-            //                     }
-            //                 }
-
-            //                 TypeMapping.AddMapping(control.Name, controlType);
-
-            //                 var controlValue = new ControlRecordValue(controlType, this, control.Name);
-
-            //                 controlDictionary.Add(control.Name, controlValue);
-            //             }
-            //         }
-            //     }
-            // }
-
-            // if (controlDictionary.Keys.Count == 0)
-            // {
-            //     _singleTestInstanceState.GetLogger().LogError("No control model was found");
-            // }
             return controlDictionary;
         }
 

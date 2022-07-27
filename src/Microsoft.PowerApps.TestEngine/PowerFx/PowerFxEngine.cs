@@ -26,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly IFileSystem _fileSystem;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
-        private int retryCount = 2;
+        private int _retryLimit = 2;
 
         private RecalcEngine? Engine { get; set; }
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
@@ -74,12 +74,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 {
                     Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
                     currentRetry++;
-                    if (currentRetry > retryCount)
+                    if (currentRetry > _retryLimit)
                     {
-                        // If this is not a transient error 
-                        // or we should not retry re-throw the exception. 
+                        // Re-throw the exception. 
                         throw;
                     }
+
                     // Wait to retry the operation.
                     Thread.Sleep(1000);
                     await UpdatePowerFxModelAsync();
