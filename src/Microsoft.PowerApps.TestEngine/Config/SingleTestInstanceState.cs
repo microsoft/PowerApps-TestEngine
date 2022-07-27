@@ -22,7 +22,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             if (string.IsNullOrEmpty(testRunId))
             {
                 GetLogger().LogCritical("Test Run ID '" + nameof(testRunId) + "' cannot be set to a null value.");
-                throw new ArgumentNullException(nameof(testRunId));
+                throw new ArgumentNullException();
             }
             TestRunId = testRunId;
         }
@@ -37,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             if (string.IsNullOrEmpty(testId))
             {
                 GetLogger().LogCritical("Test ID '" + nameof(testId) + "' cannot be set to a null value.");
-                throw new ArgumentNullException(nameof(testId));
+                throw new ArgumentNullException();
             }
             TestId = testId;
         }
@@ -52,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             if (testSuiteDefinition == null)
             {
                 GetLogger().LogCritical("Test Suite Definition '" + nameof(testSuiteDefinition) + "' cannot be set to a null value.");
-                throw new ArgumentNullException(nameof(testSuiteDefinition));
+                throw new ArgumentNullException();
             }
             TestSuiteDefinition = testSuiteDefinition;
         }
@@ -81,7 +81,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             if (string.IsNullOrEmpty(resultsDirectory))
             {
                 GetLogger().LogCritical("Results Directory '" + nameof(resultsDirectory) + "' cannot set to a null value.");
-                throw new ArgumentNullException(nameof(resultsDirectory));
+                throw new ArgumentNullException();
             }
             ResultsDirectory = resultsDirectory;
         }
@@ -96,7 +96,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             if (browserConfig == null)
             {
                 GetLogger().LogCritical("Results Directory '" + nameof(browserConfig) + "' cannot be set to a null value.");
-                throw new ArgumentNullException(nameof(browserConfig));
+                throw new ArgumentNullException();
             }
             BrowserConfig = browserConfig;
         }
