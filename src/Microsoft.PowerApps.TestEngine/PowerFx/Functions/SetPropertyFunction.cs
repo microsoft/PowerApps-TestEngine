@@ -19,7 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     public class SetPropertyFunction : ReflectionFunction
     {
         protected readonly IPowerAppFunctions _powerAppFunctions;
-        private readonly ILogger _logger;
+        protected readonly ILogger _logger;
         
         public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType, ILogger logger) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
         {
@@ -49,7 +49,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!result)
             {
-                throw new Exception($"Unable to set property {controlModel.Name}");
+                _logger.LogError("Unable to set property with SetProperty function.");
+                _logger.LogDebug("Error occurred on DataType of type " + value.GetType());
+                _logger.LogTrace("Property name: " + controlModel.Name);
+                _logger.LogTrace("Property attempted being set to: " + value);
+
+                throw new Exception();
             }
         }
     }
@@ -62,6 +67,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
         {
+            _logger.LogInformation("Executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -75,6 +81,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
         {
+            _logger.LogInformation("Executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -88,6 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
         {
+            _logger.LogInformation("Executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -101,6 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
         {
+            _logger.LogInformation("Executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -114,6 +123,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
         {
+            _logger.LogInformation("Executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -127,6 +137,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, TableValue value)
         {
+            _logger.LogInformation("Executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -166,7 +177,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!result)
             {
-              throw new Exception($"Unable to set property {powerAppControlModel}");
+                _logger.LogError("Unable to set property with SetProperty function.");
+                _logger.LogDebug("Error occurred on DataType of type " + value.GetType());
+                _logger.LogTrace("Property name: " + powerAppControlModel);
+                _logger.LogTrace("Property attempted being set to: " + value);
+
+                throw new Exception();
             }
         }
     }
