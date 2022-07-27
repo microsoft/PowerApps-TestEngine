@@ -31,8 +31,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private RecalcEngine? Engine { get; set; }
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
 
-        public PowerFxEngine(ITestInfraFunctions testInfraFunctions, 
-                             IPowerAppFunctions powerAppFunctions, 
+        public PowerFxEngine(ITestInfraFunctions testInfraFunctions,
+                             IPowerAppFunctions powerAppFunctions,
                              ISingleTestInstanceState singleTestInstanceState,
                              ITestState testState,
                              IFileSystem fileSystem)
@@ -75,10 +75,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var goStepByStep = false;
             // Check if the syntax is correct
-            var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
-            if (!checkResult.IsSuccess)
+            try
             {
-                // If it isn't, we have to go step by step as the object model isn't fully loaded
+                var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+                if (!checkResult.IsSuccess)
+                {
+                    // If it isn't, we have to go step by step as the object model isn't fully loaded
+                    goStepByStep = true;
+                    Logger.LogError($"Syntax check failed. Switching to step by step");
+                }
+            } catch (ArgumentException e)
+            {
                 goStepByStep = true;
                 Logger.LogError($"Syntax check failed. Switching to step by step");
             }
@@ -89,21 +96,28 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 // Will need to come up with a better solution
                 var splitSteps = testSteps.Split(';');
                 FormulaValue result = FormulaValue.NewBlank();
-                
+
                 foreach (var step in splitSteps)
                 {
                     int currentRetry = 0;
                     Logger.LogInformation($"Executing {step}");
-                    for ( ;currentRetry<retryCount; currentRetry++)
+                    for (; ; )
                     {
                         try
                         {
                             result = Engine.Eval(step);
                             break;
                         }
-                        catch (ArgumentException e) when (e.ParamName == "locale")
+                        catch (Exception e)
                         {
-                            Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry+1} to run");
+                            Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
+                            currentRetry++;
+                            if (currentRetry > retryCount)
+                            {
+                                // If this is not a transient error 
+                                // or we should not retry re-throw the exception. 
+                                throw;
+                            }
                         }
 
                         // Wait to retry the operation.
@@ -117,7 +131,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 Logger.LogInformation($"Executing {testSteps}");
                 FormulaValue result = FormulaValue.NewBlank();
                 int currentRetry = 0;
-                for (; ;)
+                for (; ; )
                 {
                     try
                     {
@@ -126,7 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     }
                     catch (Exception e)
                     {
-                        Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry+1} to run");
+                        Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
                         currentRetry++;
                         if (currentRetry > retryCount)
                         {
