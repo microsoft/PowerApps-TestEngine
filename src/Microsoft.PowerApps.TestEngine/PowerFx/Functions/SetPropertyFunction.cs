@@ -9,6 +9,7 @@ using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx.Types;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
@@ -18,10 +19,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     public class SetPropertyFunction : ReflectionFunction
     {
         protected readonly IPowerAppFunctions _powerAppFunctions;
-
-        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
+        private readonly ILogger _logger;
+        
+        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType, ILogger logger) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
         {
             _powerAppFunctions = powerAppFunctions;
+            _logger = logger;
         }
 
         protected async Task SetProperty(RecordValue obj, StringValue propName, FormulaValue value)
@@ -53,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionNumber : SetPropertyFunction
     {
-        public SetPropertyFunctionNumber(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Number)
+        public SetPropertyFunctionNumber(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, FormulaType.Number, logger)
         {
         }
 
@@ -66,7 +69,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionString : SetPropertyFunction
     {
-        public SetPropertyFunctionString(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.String)
+        public SetPropertyFunctionString(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, FormulaType.String, logger)
         {
         }
 
@@ -79,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionBoolean : SetPropertyFunction
     {
-        public SetPropertyFunctionBoolean(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Boolean)
+        public SetPropertyFunctionBoolean(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, FormulaType.Boolean, logger)
         {
         }
 
@@ -92,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionDate : SetPropertyFunction
     {
-        public SetPropertyFunctionDate(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Date)
+        public SetPropertyFunctionDate(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, FormulaType.Date, logger)
         {
         }
 
@@ -105,7 +108,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionRecord : SetPropertyFunction
     {
-        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new RecordType())
+        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, new RecordType(), logger)
         {
         }
 
@@ -118,7 +121,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionTable : SetPropertyFunction
     {
-        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new TableType())
+        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, new TableType(), logger)
         {
         }
 
@@ -170,14 +173,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public static class SetPropertyRegisterExtensions
     {
-        public static void RegisterAll(this PowerFxConfig powerFxConfig, IPowerAppFunctions powerAppFunctions)
+        public static void RegisterAll(this PowerFxConfig powerFxConfig, IPowerAppFunctions powerAppFunctions, ILogger logger)
         {
-        powerFxConfig.AddFunction(new SetPropertyFunctionNumber(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionRecord(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionTable(powerAppFunctions));
+        powerFxConfig.AddFunction(new SetPropertyFunctionNumber(powerAppFunctions, logger));
+        powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions, logger));
+        powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions, logger));
+        powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions, logger));
+        powerFxConfig.AddFunction(new SetPropertyFunctionRecord(powerAppFunctions, logger));
+        powerFxConfig.AddFunction(new SetPropertyFunctionTable(powerAppFunctions, logger));
         }
     }
 }
