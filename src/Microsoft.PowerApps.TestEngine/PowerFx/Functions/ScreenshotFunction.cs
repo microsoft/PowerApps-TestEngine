@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
+using System.IO;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
@@ -18,13 +20,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger _logger;
 
-        public ScreenshotFunction(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem) 
+        public ScreenshotFunction(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ILogger logger) 
             : base("Screenshot", FormulaType.Blank, FormulaType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _singleTestInstanceState = singleTestInstanceState;
             _fileSystem = fileSystem;
+            _logger = logger;
         }
 
         public BlankValue Execute(StringValue file)
@@ -32,24 +36,31 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             var testResultDirectory = _singleTestInstanceState.GetTestResultsDirectory();
             if (!_fileSystem.IsValidFilePath(testResultDirectory))
             {
-                throw new InvalidOperationException("Test result directory needs to be set");
+                _logger.LogError("Test result directory needs to be set.");
+                throw new InvalidOperationException();
             }
 
             var fileName = file.Value;
 
             if (string.IsNullOrEmpty(fileName))
             {
-                throw new ArgumentException(nameof(fileName));
+                _logger.LogError("File must exist and cannot be empty.");
+                _logger.LogTrace("File Name: " + nameof(fileName));
+                throw new ArgumentException();
             }
 
             if (Path.IsPathRooted(fileName))
             {
-                throw new ArgumentException("Only support relative file paths");
+                _logger.LogError("Only support relative file paths");
+                throw new ArgumentException();
             }
 
             if (!fileName.EndsWith(".jpg") && !fileName.EndsWith(".jpeg") && !fileName.EndsWith("png"))
             {
-                throw new ArgumentException("Only support jpeg and png files");
+                _logger.LogError("Only support jpeg and png files");
+                _logger.LogDebug("File extension: " + Path.GetExtension(fileName));
+                _logger.LogTrace("File name: " + fileName);
+                throw new ArgumentException();
             }
 
             var filePath = Path.Combine(testResultDirectory, fileName);
