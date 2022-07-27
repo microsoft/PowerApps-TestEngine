@@ -177,7 +177,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 case (TableType):
                     return await SetPropertyTableAsync(itemPath, (TableValue)value);
                 default:
-                    throw new ArgumentException("SetProperty must be a valid type.");
+                    _singleTestInstanceState.GetLogger().LogError("SetProperty must be a valid type.");
+                    throw new ArgumentException();
             }
 
             ValidateItemPath(itemPath, false);
@@ -232,6 +233,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             if(string.IsNullOrEmpty(itemPath.ControlName))
             {
+                _singleTestInstanceState.GetLogger().LogError("ItemPath's ControlName '" + nameof(itemPath.ControlName) + "' has a null value.");
                 throw new ArgumentNullException(nameof(itemPath.ControlName));
             }
 
@@ -241,6 +243,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 {
                     // Property name is required on certain functions
                     // It is also required when accessing elements in a gallery, so if an index is specified, it needs to be there
+                    _singleTestInstanceState.GetLogger().LogError("ItemPath's PropertyName '" + nameof(itemPath.PropertyName) + "' has a null value.");
                     throw new ArgumentNullException(nameof(itemPath.PropertyName));
                 }
             }

@@ -21,6 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(testRunId))
             {
+                GetLogger().LogCritical("Test Run ID '" + nameof(testRunId) + "' cannot be set to a null value.");
                 throw new ArgumentNullException(nameof(testRunId));
             }
             TestRunId = testRunId;
@@ -35,6 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(testId))
             {
+                GetLogger().LogCritical("Test ID '" + nameof(testId) + "' cannot be set to a null value.");
                 throw new ArgumentNullException(nameof(testId));
             }
             TestId = testId;
@@ -49,6 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (testSuiteDefinition == null)
             {
+                GetLogger().LogCritical("Test Suite Definition '" + nameof(testSuiteDefinition) + "' cannot be set to a null value.");
                 throw new ArgumentNullException(nameof(testSuiteDefinition));
             }
             TestSuiteDefinition = testSuiteDefinition;
@@ -63,7 +66,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (logger == null)
             {
-                throw new ArgumentNullException(nameof(logger));
+                throw new ArgumentNullException("Logger '" + nameof(logger) + "cannot be set to a null value.");
             }
             Logger = logger;
         }
@@ -77,6 +80,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(resultsDirectory))
             {
+                GetLogger().LogCritical("Results Directory '" + nameof(resultsDirectory) + "' cannot set to a null value.");
                 throw new ArgumentNullException(nameof(resultsDirectory));
             }
             ResultsDirectory = resultsDirectory;
@@ -91,6 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (browserConfig == null)
             {
+                GetLogger().LogCritical("Results Directory '" + nameof(browserConfig) + "' cannot be set to a null value.");
                 throw new ArgumentNullException(nameof(browserConfig));
             }
             BrowserConfig = browserConfig;
