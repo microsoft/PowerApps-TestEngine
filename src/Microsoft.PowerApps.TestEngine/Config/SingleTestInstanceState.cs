@@ -99,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (browserConfig == null)
             {
-                GetLogger().LogCritical("Browser Config '" + nameof(browserConfig) + "' cannot be set to a null value.");
+                GetLogger().LogCritical("Browser Config cannot be set to a null value.");
                 GetLogger().LogTrace("Browser Config: " + nameof(browserConfig));
                 throw new ArgumentNullException();
             }
