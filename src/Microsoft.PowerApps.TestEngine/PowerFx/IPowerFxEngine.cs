@@ -15,6 +15,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         public void Setup();
 
+        public Task ExecuteWithRetryAsync(string testSteps);
+
         /// <summary>
         /// Executes a list of Power FX functions
         /// </summary>

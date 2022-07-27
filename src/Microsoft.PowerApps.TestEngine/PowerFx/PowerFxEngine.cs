@@ -26,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly IFileSystem _fileSystem;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
-        private int retryCount = 3;
+        private int retryCount = 2;
 
         private RecalcEngine? Engine { get; set; }
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
@@ -59,6 +59,34 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             Engine = new RecalcEngine(powerFxConfig);
         }
 
+        public async Task ExecuteWithRetryAsync(string testSteps)
+        {
+            int currentRetry = 0;
+            FormulaValue result = FormulaValue.NewBlank();
+            for (; ; )
+            {
+                try
+                {
+                    result = Execute(testSteps);
+                    break;
+                }
+                catch (Exception e) when (e.Message.Contains("locale"))
+                {
+                    Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
+                    currentRetry++;
+                    if (currentRetry > retryCount)
+                    {
+                        // If this is not a transient error 
+                        // or we should not retry re-throw the exception. 
+                        throw;
+                    }
+                    // Wait to retry the operation.
+                    Thread.Sleep(1000);
+                    await UpdatePowerFxModelAsync();
+                }
+            }
+        }
+
         public FormulaValue Execute(string testSteps)
         {
             if (Engine == null)
@@ -75,17 +103,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var goStepByStep = false;
             // Check if the syntax is correct
-            try
+            var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+            if (!checkResult.IsSuccess)
             {
-                var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
-                if (!checkResult.IsSuccess)
-                {
-                    // If it isn't, we have to go step by step as the object model isn't fully loaded
-                    goStepByStep = true;
-                    Logger.LogError($"Syntax check failed. Switching to step by step");
-                }
-            } catch (ArgumentException e)
-            {
+                // If it isn't, we have to go step by step as the object model isn't fully loaded
                 goStepByStep = true;
                 Logger.LogError($"Syntax check failed. Switching to step by step");
             }
@@ -96,65 +117,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 // Will need to come up with a better solution
                 var splitSteps = testSteps.Split(';');
                 FormulaValue result = FormulaValue.NewBlank();
-
                 foreach (var step in splitSteps)
                 {
-                    int currentRetry = 0;
                     Logger.LogInformation($"Executing {step}");
-                    for (; ; )
-                    {
-                        try
-                        {
-                            result = Engine.Eval(step);
-                            break;
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
-                            currentRetry++;
-                            if (currentRetry > retryCount)
-                            {
-                                // If this is not a transient error 
-                                // or we should not retry re-throw the exception. 
-                                throw;
-                            }
-                        }
-
-                        // Wait to retry the operation.
-                        Thread.Sleep(1000);
-                    }
+                    result = Engine.Eval(step);
                 }
                 return result;
             }
             else
             {
                 Logger.LogInformation($"Executing {testSteps}");
-                FormulaValue result = FormulaValue.NewBlank();
-                int currentRetry = 0;
-                for (; ; )
-                {
-                    try
-                    {
-                        result = Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
-                        currentRetry++;
-                        if (currentRetry > retryCount)
-                        {
-                            // If this is not a transient error 
-                            // or we should not retry re-throw the exception. 
-                            throw;
-                        }
-                    }
-
-                    // Wait to retry the operation.
-                    Thread.Sleep(1000);
-                }
-                return result;
-                // return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
             }
         }
 
