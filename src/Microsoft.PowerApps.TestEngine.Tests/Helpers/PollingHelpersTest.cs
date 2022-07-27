@@ -35,11 +35,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             Assert.Throws<TimeoutException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, 1000));
         }
 
-        [Fact]
-        public async void PollingAsyncSucceedsTest()
-        {
-            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 10000);
-        }
+        // [Fact]
+        // public async void PollingAsyncSucceedsTest()
+        // {
+        //     await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), 10000);
+        // }
 
         [Fact]
         public void PollingAsyncTimeoutTest()
