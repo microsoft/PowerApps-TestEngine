@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
@@ -35,33 +36,6 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             }
             
             return valueToCheck;
-        }
-
-        // Poll created for types that cannot have an initial value, because said type cannot be null
-        public static void Poll<T>(Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
-        {
-            if (timeout < 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
-            DateTime startTime = DateTime.Now;
-            bool conditional = true;
-
-            while (conditional)
-            {
-                if (functionToCall != null)
-                {
-                    conditional = conditionToCheck(functionToCall());
-                }
-
-                if (IsTimeout(startTime, timeout))
-                {
-                    throw new TimeoutException("Timed operation timed out.");
-                }
-
-                Thread.Sleep(500);
-            }
         }
 
         public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout)
