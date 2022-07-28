@@ -63,7 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             int currentRetry = 0;
             FormulaValue result = FormulaValue.NewBlank();
-            for (; ; )
+            while (currentRetry <= _retryLimit)
             {
                 try
                 {
