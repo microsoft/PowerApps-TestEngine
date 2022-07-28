@@ -29,6 +29,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         protected async Task SetProperty(RecordValue obj, StringValue propName, FormulaValue value)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing SetProperty function.");
+
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
@@ -44,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 throw new Exception();
             }
 
-            _logger.LogDebug("Successfully finished executing SetProperty function.");
+            _logger.LogInformation("Successfully finished executing SetProperty function.");
         }
 
     }
@@ -57,7 +60,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
         {
-            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -71,7 +73,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
         {
-            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -85,7 +86,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
         {
-            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -99,7 +99,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
         {
-            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -113,7 +112,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
         {
-            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -127,13 +125,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, TableValue value)
         {
-            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
 
         private async Task SetProperty(RecordValue obj, StringValue propName, TableValue value)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing SetProperty function.");
+
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlName = obj.GetType().GetProperty("Name")?.GetValue(obj, null)?.ToString();
@@ -163,6 +163,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
                 throw new Exception();
             }
+
+            _logger.LogInformation("Successfully finished executing SetProperty function.");
         }
     }
 

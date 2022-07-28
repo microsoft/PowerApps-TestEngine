@@ -33,6 +33,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(StringValue file)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Screenshot function.");
+
             var testResultDirectory = _singleTestInstanceState.GetTestResultsDirectory();
             if (!_fileSystem.IsValidFilePath(testResultDirectory))
             {
@@ -65,6 +68,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             var filePath = Path.Combine(testResultDirectory, fileName);
             _testInfraFunctions.ScreenshotAsync(filePath).Wait();
+
+            _logger.LogInformation("Successfully finished executing Screenshot function.");
 
             return FormulaValue.NewBlank();
         }

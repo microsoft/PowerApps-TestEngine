@@ -157,7 +157,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
         {
             Object? objectValue = null;
-
+            
             switch (value.Type)
             {
                 case (NumberType):
@@ -178,6 +178,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     return await SetPropertyTableAsync(itemPath, (TableValue)value);
                 default:
                     _singleTestInstanceState.GetLogger().LogError("SetProperty must be a valid type.");
+                    _singleTestInstanceState.GetLogger().LogDebug($"Your type is: {value.Type}. This type is not valid.");
                     throw new ArgumentException();
             }
 

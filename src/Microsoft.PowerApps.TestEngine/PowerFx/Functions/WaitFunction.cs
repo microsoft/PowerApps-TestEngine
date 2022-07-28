@@ -64,13 +64,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
         {
-            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, NumberValue value)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Wait function.");
+
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
@@ -79,7 +81,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 return ((NumberValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 
-            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
+            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
         }
     }
 
@@ -91,13 +93,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
         {
-            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, StringValue value)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Wait function.");
+
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
@@ -106,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 return ((StringValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 
-            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
+            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
         }
     }
 
@@ -118,13 +122,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
         {
-            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, BooleanValue value)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Wait function.");
+
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
@@ -133,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 return ((BooleanValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 
-            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
+            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
         }
     }
 
@@ -147,13 +153,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, DateTimeValue value)
         {
-            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, DateTimeValue value)
         {
+            _logger.LogInformationg("------------------------------\n\n" +
+    "Executing Wait function.");
+
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
@@ -162,7 +170,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 
-            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
+            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
         }
     }
     */
@@ -175,13 +183,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
         {
-            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, DateValue value)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Wait function.");
+
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
@@ -190,7 +200,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 return ((DateValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 
-            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
+            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
         }
     }
 

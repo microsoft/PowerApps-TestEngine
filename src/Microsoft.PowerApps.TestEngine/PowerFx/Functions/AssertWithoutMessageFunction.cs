@@ -22,14 +22,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(BooleanValue result)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Assert function.");
+
             if (!result.Value)
             {
-                _logger.LogError($"Assert failed: Assert Function failure");
+                _logger.LogError("Assert failed. Property is not equal to the specified value.");
                 throw new InvalidOperationException();
-            } else
-            {
-                _logger.LogInformation("Assert Function success");
             }
+
+            _logger.LogInformation("Successfully finished executing Assert function.");
+
             return FormulaValue.NewBlank();
         }
     }

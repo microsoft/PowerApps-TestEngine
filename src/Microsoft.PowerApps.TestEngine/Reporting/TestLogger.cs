@@ -50,7 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             var logString = "";
 
-            if (messageLevel >= LogLevel.Warning && messageLevel <= LogLevel.Critical )
+            if (messageLevel >= LogLevel.Warning && messageLevel <= LogLevel.Critical)
             {
                 if (eventId == 0)
                 {

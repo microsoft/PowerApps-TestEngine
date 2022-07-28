@@ -97,7 +97,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
             else
             {
-                Logger.LogTrace($"Attempting:\n\n{{\n {testSteps} \n}}");
+                Logger.LogTrace($"Attempting:\n\n{{\n{testSteps}}}");
                 return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
             }
         }
