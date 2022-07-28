@@ -120,7 +120,7 @@ namespace Microsoft.PowerApps.TestEngine
                             _powerFxEngine.Execute(testSuiteDefinition.OnTestCaseStart);
                         }
 
-                        Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
+                        Logger.LogInformation($"---------------------------------------------------------------------------\n" +
                             $"RUNNING TEST CASE: {testCase.TestCaseName}" +
                             $"\n---------------------------------------------------------------------------");
                         _powerFxEngine.Execute(testCase.TestSteps);
