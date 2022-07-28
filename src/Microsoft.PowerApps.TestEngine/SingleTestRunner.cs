@@ -75,6 +75,7 @@ namespace Microsoft.PowerApps.TestEngine
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
+
                 testSuiteLogger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteDefinition.TestSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n" +
@@ -123,6 +124,7 @@ namespace Microsoft.PowerApps.TestEngine
                         Logger.LogInformation($"---------------------------------------------------------------------------\n" +
                             $"RUNNING TEST CASE: {testCase.TestCaseName}" +
                             $"\n---------------------------------------------------------------------------");
+
                         _powerFxEngine.Execute(testCase.TestSteps);
 
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
