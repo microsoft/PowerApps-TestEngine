@@ -75,8 +75,11 @@ namespace Microsoft.PowerApps.TestEngine
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
-                testSuiteLogger.LogInformation($"Running testSuite: {testSuiteDefinition.TestSuiteName}");
-                testSuiteLogger.LogInformation($"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
+                testSuiteLogger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
+                    $"RUNNING TEST SUITE: {testSuiteDefinition.TestSuiteName}" +
+                    $"\n---------------------------------------------------------------------------\n\n" +
+                    $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
+                
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
@@ -117,7 +120,9 @@ namespace Microsoft.PowerApps.TestEngine
                             _powerFxEngine.Execute(testSuiteDefinition.OnTestCaseStart);
                         }
 
-                        Logger.LogInformation($"Running test case: {testCase.TestCaseName}");
+                        Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
+                            $"RUNNING TEST CASE: {testCase.TestCaseName}" +
+                            $"\n---------------------------------------------------------------------------");
                         _powerFxEngine.Execute(testCase.TestSteps);
 
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))

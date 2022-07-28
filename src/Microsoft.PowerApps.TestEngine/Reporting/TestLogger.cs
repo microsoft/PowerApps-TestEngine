@@ -48,7 +48,21 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         public void Log<TState>(LogLevel messageLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            var logString = $"[{messageLevel}] - [{eventId}]: {formatter(state, exception)}{Environment.NewLine}";
+            var logString = "";
+
+            if (messageLevel >= LogLevel.Warning && messageLevel <= LogLevel.Critical )
+            {
+                if (eventId == 0)
+                {
+                    logString += $"[{messageLevel}]: ";
+                }
+                else
+                {
+                    logString += $"[{messageLevel}] - [{eventId}]: ";
+                }
+            }
+
+            logString += $"{formatter(state, exception)}{Environment.NewLine}";
 
              if(messageLevel >= _engineLoggingLevel){
 

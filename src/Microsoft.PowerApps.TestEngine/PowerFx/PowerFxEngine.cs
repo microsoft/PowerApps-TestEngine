@@ -79,7 +79,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
                 goStepByStep = true;
-                Logger.LogError($"Syntax check failed. Switching to step by step");
+                Logger.LogWarning($"Syntax check failed. Now attempting to execute lines step by step");
             }
 
             if (goStepByStep)
@@ -90,14 +90,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 FormulaValue result = FormulaValue.NewBlank();
                 foreach (var step in splitSteps)
                 {
-                    Logger.LogInformation($"Executing {step}");
+                    Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
                     result = Engine.Eval(step);
                 }
                 return result;
             }
             else
             {
-                Logger.LogInformation($"Executing {testSteps}");
+                Logger.LogTrace($"Attempting:\n\n{{\n {testSteps} \n}}");
                 return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
             }
         }

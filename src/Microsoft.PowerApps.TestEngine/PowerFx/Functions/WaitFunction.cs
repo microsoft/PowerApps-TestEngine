@@ -24,50 +24,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _logger = logger;
         }
 
-        protected void NullCheck(RecordValue obj, StringValue propName, FormulaValue value)
-        {
-            bool encounteredError = false;
-
-            if (obj == null)
-            {
-                _logger.LogError("Object cannot be null.");
-                encounteredError = true;
-            }
-
-            if (propName == null)
-            {
-                _logger.LogError("Property name cannot be null.");
-                encounteredError = true;
-            }
-            else
-            {
-                _logger.LogTrace("Property name: " + propName);
-            }
-
-            if (value == null)
-            {
-                _logger.LogError("Property cannot be set to a null value.");
-                encounteredError = true;
-            }
-            else
-            {
-                _logger.LogDebug("Error occurred on DataType of type " + value.GetType());
-                _logger.LogTrace("Property attempted being set to: " + value);
-            }
-
-            if (encounteredError == true)
-            {
-                throw new ArgumentNullException();
-            }
-        }
-
         protected void PollingCondition<T>(Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
         {
-            _logger.LogInformation("Checking if condition is met, before timing out.");
+            _logger.LogDebug("Checking if Wait function's condition is met.");
 
             if (timeout < 0)
             {
-                _logger.LogError("Timeout cannot be less than zero.");
+                _logger.LogCritical("The timeout TestSetting cannot be less than zero.");
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -83,8 +46,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 
                 if ((DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout))
                 {
+                    _logger.LogError("Wait function timed out.");
                     _logger.LogDebug("Timeout duration set to " + timeout);
-                    _logger.LogError("Timed operation timed out.");
                     throw new TimeoutException();
                 }
 
@@ -101,20 +64,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
         {
-            _logger.LogInformation("Executing Wait function.");
+            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, NumberValue value)
         {
-            NullCheck(obj, propName, value);
+            NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
 
             PollingCondition<double>((x) => x != value.Value, () => {
                 return ((NumberValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
+
+            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
         }
     }
 
@@ -126,20 +91,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
         {
-            _logger.LogInformation("Executing Wait function.");
+            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, StringValue value)
         {
-            NullCheck(obj, propName, value);
+            NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
 
             PollingCondition<string>((x) => x != value.Value, () => {
                 return ((StringValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
+
+            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
         }
     }
 
@@ -151,20 +118,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
         {
-            _logger.LogInformation("Executing Wait function.");
+            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, BooleanValue value)
         {
-            NullCheck(obj, propName, value);
+            NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
 
             PollingCondition<bool>((x) => x != value.Value, () => {
                 return ((BooleanValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
+
+            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
         }
     }
 
@@ -178,20 +147,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, DateTimeValue value)
         {
-            _logger.LogInformation("Executing Wait function.");
+            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, DateTimeValue value)
         {
-            NullCheck(obj, propName, value);
+            NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
 
             PollingCondition<DateTime>((x) => x != value.Value, () => {
                 return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
+
+            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
         }
     }
     */
@@ -204,20 +175,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
         {
-            _logger.LogInformation("Executing Wait function.");
+            _logger.LogDebug("Now executing Wait function.");
             Wait(obj, propName, value);
             return FormulaValue.NewBlank();
         }
 
         private void Wait(RecordValue obj, StringValue propName, DateValue value)
         {
-            NullCheck(obj, propName, value);
+            NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
             
             PollingCondition<DateTime>((x) => x != value.Value, () => {
                 return ((DateValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
+
+            _logger.LogDebug("Successfully finished executing wait function, condition was met.");
         }
     }
 

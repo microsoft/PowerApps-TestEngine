@@ -29,20 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         protected async Task SetProperty(RecordValue obj, StringValue propName, FormulaValue value)
         {
-            if (obj == null)
-            {
-                throw new ArgumentException(nameof(obj));
-            }
-
-            if (propName == null)
-            {
-                throw new ArgumentException(nameof(propName));
-            }
-
-            if (value == null)
-            {
-                throw new ArgumentException(nameof(value));
-            }
+            NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
             var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
@@ -52,11 +39,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 _logger.LogError("Unable to set property with SetProperty function.");
                 _logger.LogDebug("Error occurred on DataType of type " + value.GetType());
                 _logger.LogTrace("Property name: " + propName);
-                _logger.LogTrace("Property attempted being set to: " + value);
+                _logger.LogTrace("Attempting to set property to: " + value);
 
                 throw new Exception();
             }
+
+            _logger.LogDebug("Successfully finished executing SetProperty function.");
         }
+
     }
 
     public class SetPropertyFunctionNumber : SetPropertyFunction
@@ -67,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
         {
-            _logger.LogInformation("Executing SetProperty function.");
+            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -81,7 +71,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
         {
-            _logger.LogInformation("Executing SetProperty function.");
+            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -95,7 +85,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
         {
-            _logger.LogInformation("Executing SetProperty function.");
+            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -109,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
         {
-            _logger.LogInformation("Executing SetProperty function.");
+            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -123,7 +113,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
         {
-            _logger.LogInformation("Executing SetProperty function.");
+            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
@@ -137,27 +127,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, StringValue propName, TableValue value)
         {
-            _logger.LogInformation("Executing SetProperty function.");
+            _logger.LogDebug("Now executing SetProperty function.");
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.NewBlank();
         }
 
         private async Task SetProperty(RecordValue obj, StringValue propName, TableValue value)
         {
-            if (obj == null)
-            {
-                throw new ArgumentException(nameof(obj));
-            }
+            NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
-            if (propName == null)
-            {
-                throw new ArgumentException(nameof(propName));
-            }
-
-            if (value == null)
-            {
-                throw new ArgumentException(nameof(value));
-            }
             var controlName = obj.GetType().GetProperty("Name")?.GetValue(obj, null)?.ToString();
 
             var itemPath = new ItemPath()
