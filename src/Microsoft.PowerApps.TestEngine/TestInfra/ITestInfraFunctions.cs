@@ -72,6 +72,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="jsExpression">Javascript expression to run</param>
         /// <returns>Return value of javascript</returns>
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
+        public Task<T> RunJavascriptAsync<T>(string jsExpression, string[] arguments);
 
         /// <summary>
         /// Fills in user email 
