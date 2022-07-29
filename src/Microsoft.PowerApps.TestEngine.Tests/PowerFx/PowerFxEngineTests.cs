@@ -9,7 +9,6 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
@@ -154,7 +153,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
+            Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression));
         }
 
         [Fact]
@@ -163,7 +162,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
+            Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression));
         }
 
         [Fact]
@@ -207,9 +206,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
+            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.IsType<BlankValue>(result);
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Exactly(2));
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Exactly(3));
         }
 
         [Fact]
@@ -259,6 +259,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
+            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
@@ -304,6 +305,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
+            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());

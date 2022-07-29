@@ -8,7 +8,6 @@ using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
-using System.Text.Json.Nodes;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
@@ -82,24 +81,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
+        private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
-
-            if (!IsPublishedAppTestingJsLoaded)
-            {
-                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
-                IsPublishedAppTestingJsLoaded = true;
-            }
-
-            // TODO: add retry logic for changes in DOM model
-            // Temporary Hack
-            Thread.Sleep(1000);
-
             var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
-            var controlDictionary = new Dictionary<string, ControlRecordValue>();
-
             if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {
                 var jsObjectModel = JsonConvert.DeserializeObject<JSObjectModel>(controlObjectModelJsonString);
@@ -138,12 +123,25 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
             }
 
-            if (controlDictionary.Keys.Count == 0)
-            {
-                _singleTestInstanceState.GetLogger().LogError("No control model was found");
-            }
             return controlDictionary;
+        }
 
+        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
+        {
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
+
+            if (!IsPublishedAppTestingJsLoaded)
+            {
+                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                IsPublishedAppTestingJsLoaded = true;
+            }
+
+            var controlDictionary = new Dictionary<string, ControlRecordValue>();
+            _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout);
+            _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
+
+            return controlDictionary;
         }
 
         public async Task<bool> SelectControlAsync(ItemPath itemPath)
@@ -173,7 +171,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     objectValue = ((DateValue)value).Value;
                     break;
                 case (RecordType):
-                    return await SetPropertyTableAsync(itemPath, (RecordValue)value);
+                    return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
                 case (TableType):
                     return await SetPropertyTableAsync(itemPath, (TableValue)value);
                 default:
@@ -190,7 +188,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, RecordValue value)
+        public async Task<bool> SetPropertyRecordAsync(ItemPath itemPath, RecordValue value)
         {
             ValidateItemPath(itemPath, false);
 
