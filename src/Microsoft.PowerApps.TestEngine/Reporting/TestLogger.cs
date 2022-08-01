@@ -64,7 +64,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             logString += $"{formatter(state, exception)}{Environment.NewLine}";
 
-             if(messageLevel >= _engineLoggingLevel){
+            if(messageLevel >= _engineLoggingLevel){
 
                 if (messageLevel > LogLevel.Debug)
                 {

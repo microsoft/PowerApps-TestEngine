@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
         public AssertFunctionTests()
         {
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var message = "This should succeed";
             var result = assertFunction.Execute(BooleanValue.New(true), StringValue.New(message));
             Assert.IsType<BlankValue>(result);
-            LoggingTestHelper.VerifyLogging(MockLogger, message, LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, message, LogLevel.Trace, Times.Once());
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var assertFunction = new AssertFunction(MockLogger.Object);
             var message = "This should fail";
             Assert.Throws<InvalidOperationException>(() => assertFunction.Execute(BooleanValue.New(false), StringValue.New(message)));
-            LoggingTestHelper.VerifyLogging(MockLogger, $"Assert failed: {message}", LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Assert failed. Property is not equal to the specified value.", LogLevel.Error, Times.Once());
         }
     }
 }

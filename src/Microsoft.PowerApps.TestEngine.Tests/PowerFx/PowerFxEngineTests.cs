@@ -71,11 +71,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute("1+1");
             Assert.Equal(2, ((NumberValue)result).Value);
-            LoggingTestHelper.VerifyLogging(MockLogger, "Executing 1+1", LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Once());
 
             result = powerFxEngine.Execute("=1+1");
             Assert.Equal(2, ((NumberValue)result).Value);
-            LoggingTestHelper.VerifyLogging(MockLogger, "Executing 1+1", LogLevel.Information, Times.Exactly(2));
+            LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Exactly(2));
         }
 
         [Fact]
@@ -86,11 +86,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.Equal("helloworld", ((StringValue)result).Value);
-            LoggingTestHelper.VerifyLogging(MockLogger, $"Executing {powerFxExpression}", LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
 
             result = powerFxEngine.Execute($"={powerFxExpression}");
             Assert.Equal("helloworld", ((StringValue)result).Value);
-            LoggingTestHelper.VerifyLogging(MockLogger, $"Executing {powerFxExpression}", LogLevel.Information, Times.Exactly(2));
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
         }
 
         [Fact]
@@ -135,13 +135,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
-            LoggingTestHelper.VerifyLogging(MockLogger, $"Executing {powerFxExpression}", LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Once());
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Once());
 
             result = powerFxEngine.Execute($"={powerFxExpression}");
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
-            LoggingTestHelper.VerifyLogging(MockLogger, $"Executing {powerFxExpression}", LogLevel.Information, Times.Exactly(2));
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Exactly(2));
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Exactly(2));
         }
