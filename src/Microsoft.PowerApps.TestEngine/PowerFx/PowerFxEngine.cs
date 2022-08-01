@@ -47,9 +47,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public void Setup()
         {
             var powerFxConfig = new PowerFxConfig();
-            powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
-            powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
-            powerFxConfig.AddFunction(new SelectThreeParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
+            powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new SelectThreeParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem, Logger));
             powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
@@ -92,7 +92,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             if (Engine == null)
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");
-                throw new InvalidOperationException("Engine is null, make sure to call Setup first");
+                throw new InvalidOperationException();
             }
 
             // Remove the leading = sign

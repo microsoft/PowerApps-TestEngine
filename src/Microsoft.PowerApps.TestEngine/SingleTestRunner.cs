@@ -59,7 +59,8 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 // It is unclear what side effects show up if you run this multiple times especially relating to the logging
                 // So throwing if it is run more than once.
-                throw new InvalidOperationException("This test can only be run once");
+                Logger.LogError("This test can only be run once.");
+                throw new InvalidOperationException();
             }
 
             var testSuiteLogger = _loggerProvider.CreateLogger(testRunId);
@@ -86,7 +87,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupAsync();
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl());
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(Logger));
 
                 // Log in user
                 await _userManager.LoginAsUserAsync();

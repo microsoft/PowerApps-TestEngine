@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
@@ -19,30 +20,34 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public string GenerateTestUrl()
+        public string GenerateTestUrl(ILogger logger)
         {
             var environment = _testState.GetEnvironment();
             if (string.IsNullOrEmpty(environment))
             {
-                throw new InvalidOperationException("Environment cannot be empty");
+                logger.LogCritical("Environment cannot be empty.");
+                throw new InvalidOperationException();
             }
 
             var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
             if (testSuiteDefinition == null)
             {
-                throw new InvalidOperationException("Test definition must be specified");
+                logger.LogCritical("Test definition must be specified.");
+                throw new InvalidOperationException();
             }
 
             var appLogicalName = testSuiteDefinition.AppLogicalName;
             if (string.IsNullOrEmpty(appLogicalName))
             {
-                throw new InvalidOperationException("App logical name cannot be empty");
+                logger.LogCritical("App logical name cannot be empty.");
+                throw new InvalidOperationException("");
             }
 
             var tenantId = _testState.GetTenant();
             if (string.IsNullOrEmpty(tenantId))
             {
-                throw new InvalidOperationException("Tenant cannot be empty");
+                logger.LogCritical("Tenant cannot be empty.");
+                throw new InvalidOperationException();
             }
 
             var cloud = _testState.GetCloud();

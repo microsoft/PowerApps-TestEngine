@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx;
@@ -16,11 +18,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly Func<Task> _updateModelFunction;
+        private readonly ILogger _logger;
 
-        public SelectTwoParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType(), FormulaType.Number)
+        public SelectTwoParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, new RecordType(), FormulaType.Number)
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;
+            _logger = logger;
         }
 
         public BlankValue Execute(RecordValue obj, NumberValue rowOrColumn)
@@ -32,15 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         private async Task SelectAsync(RecordValue obj, NumberValue rowOrColumn)
         {
-            if (obj == null)
-            {
-                throw new ArgumentException(nameof(obj));
-            }
-
-            if (rowOrColumn == null)
-            {
-                throw new ArgumentException(nameof(rowOrColumn));
-            }
+            NullCheckHelper.NullCheck(obj, rowOrColumn, _logger);
 
             var controlName = obj.GetType().GetProperty("Name")?.GetValue(obj, null)?.ToString();
 
@@ -59,7 +55,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!result)
             {
-                throw new Exception($"Unable to select control {powerAppControlModel.Name}");
+                _logger.LogError("Unable to select control");
+                _logger.LogTrace($"Control name: {powerAppControlModel.Name}");
+                throw new Exception();
             }
 
             await _updateModelFunction();
