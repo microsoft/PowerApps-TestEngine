@@ -175,8 +175,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 case (TableType):
                     return await SetPropertyTableAsync(itemPath, (TableValue)value);
                 default:
-                    _singleTestInstanceState.GetLogger().LogError("SetProperty must be a valid type.");
-                    _singleTestInstanceState.GetLogger().LogDebug($"Your type is: {value.Type}. This type is not valid.");
                     throw new ArgumentException();
             }
 
