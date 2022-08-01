@@ -28,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
-            MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
+            MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Loose);
             MockLogger = new Mock<ILogger>(MockBehavior.Loose);
             JsObjectModel = new JSObjectModel()
             {

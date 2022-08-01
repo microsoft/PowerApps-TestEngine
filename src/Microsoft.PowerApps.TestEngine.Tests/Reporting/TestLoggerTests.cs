@@ -86,14 +86,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
 
         [Theory]
-        [InlineData(LogLevel.Critical, true, true)]
-        [InlineData(LogLevel.Debug, true, false)]
-        [InlineData(LogLevel.Error, true, true)]
-        [InlineData(LogLevel.Information, true, true)]
-        [InlineData(LogLevel.None, true, true)]
-        [InlineData(LogLevel.Trace, true, false)]
         [InlineData(LogLevel.Warning, true, true)]
-        public void LogTest(LogLevel level, bool shouldBeInDebugLogs, bool shouldBeInLogs)
+        [InlineData(LogLevel.Critical, true, true)]
+        [InlineData(LogLevel.Error, true, true)]
+        public void LogTestLevel(LogLevel level, bool shouldBeInDebugLogs, bool shouldBeInLogs)
         {
             var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Trace);
 
@@ -103,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             {
                 var id = Guid.NewGuid();
                 var stringFormat = "Id: {0}";
-                expectedMessages.Add($"[{level}] - [0]: {String.Format(stringFormat, id)}{Environment.NewLine}");
+                expectedMessages.Add($"[{level}]: {String.Format(stringFormat, id)}{Environment.NewLine}");
                 testLogger.Log(level, stringFormat, id);
             }
 
@@ -113,5 +109,34 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 Assert.Equal(shouldBeInLogs, testLogger.Logs.Contains(message));
             }
         }
+
+
+
+        [Theory]
+        [InlineData(LogLevel.Trace, true, false)]
+        [InlineData(LogLevel.Debug, true, false)]
+        [InlineData(LogLevel.Information, true, true)]
+        [InlineData(LogLevel.None, true, true)]
+        public void LogTest(LogLevel level, bool shouldBeInDebugLogs, bool shouldBeInLogs)
+        {
+            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Trace);
+
+            var expectedMessages = new List<string>();
+
+            for (var i = 0; i < 5; i++)
+            {
+                var id = Guid.NewGuid();
+                var stringFormat = "Id: {0}";
+                expectedMessages.Add($"{String.Format(stringFormat, id)}{Environment.NewLine}");
+                testLogger.Log(level, stringFormat, id);
+            }
+
+            foreach (var message in expectedMessages)
+            {
+                Assert.Equal(shouldBeInDebugLogs, testLogger.DebugLogs.Contains(message));
+                Assert.Equal(shouldBeInLogs, testLogger.Logs.Contains(message));
+            }
+        }
+
     }
 }
