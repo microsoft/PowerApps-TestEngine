@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
@@ -10,19 +9,6 @@ using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
-using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
-using Microsoft.PowerApps.TestEngine.PowerFx;
-using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
-using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerFx.Types;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,6 +22,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         private Mock<ITestState> MockTestState;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<ILogger> MockLogger;
+        private JSObjectModel JsObjectModel;
 
         public PowerAppFunctionsTest()
         {
@@ -43,6 +30,71 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            JsObjectModel = new JSObjectModel()
+            {
+                Controls = new List<JSControlModel>()
+                {
+                    new JSControlModel()
+                    {
+                        Name = "Label1",
+                        Properties = TestData.CreateSampleJsPropertyModelList()
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Label3",
+                        Properties = TestData.CreateSampleJsPropertyModelList(),
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Label2",
+                        Properties = TestData.CreateSampleJsPropertyModelList()
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Button1",
+                        Properties = TestData.CreateSampleJsPropertyModelList()
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Button2",
+                        Properties = TestData.CreateSampleJsPropertyModelList()
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Button3",
+                        Properties = TestData.CreateSampleJsPropertyModelList()
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Gallery1",
+                        Properties = TestData.CreateSampleJsPropertyModelList(
+                            new JSPropertyModel[]
+                            {
+                                new JSPropertyModel() { PropertyName = "AllItems", PropertyType = "*[Button1:v, Label2:v, Label3:v]" },
+                                new JSPropertyModel() { PropertyName = "SelectedItem", PropertyType = "![Button1:v, Label2:v, Label3:v]" }
+                            })
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Component1",
+                        Properties = TestData.CreateSampleJsPropertyModelList(
+                            new JSPropertyModel[]
+                            {
+                                new JSPropertyModel() { PropertyName = "Button2", PropertyType = "Button2" },
+                            })
+                    },
+                    new JSControlModel()
+                    {
+                        Name = "Gallery2",
+                        Properties = TestData.CreateSampleJsPropertyModelList(
+                            new JSPropertyModel[]
+                            {
+                                new JSPropertyModel() { PropertyName = "AllItems2", PropertyType = "*[Gallery1:v, Button3:v]" },
+                                new JSPropertyModel() { PropertyName = "SelectedItem2", PropertyType = "![Gallery1:v, Button3:v]" }
+                            })
+                    },
+                }
+            };
         }
 
         [Fact]
@@ -166,72 +218,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [Fact]
         public async Task LoadPowerAppsObjectModelAsyncTest()
         {
-            var jsObjectModel = new JSObjectModel()
-            {
-                Controls = new List<JSControlModel>()
-                {
-                    new JSControlModel()
-                    {
-                        Name = "Label1",
-                        Properties = TestData.CreateSampleJsPropertyModelList()
-                    },
-                    new JSControlModel()
-                    {
-                        Name = "Label3",
-                        Properties = TestData.CreateSampleJsPropertyModelList(),
-                    },
-                    new JSControlModel()
-                    {
-                        Name = "Label2",
-                        Properties = TestData.CreateSampleJsPropertyModelList()
-                    },
-                    new JSControlModel()
-                    {
-                        Name = "Button1",
-                        Properties = TestData.CreateSampleJsPropertyModelList()
-                    },
-                    new JSControlModel()
-                    {
-                        Name = "Button2",
-                        Properties = TestData.CreateSampleJsPropertyModelList()
-                    },
-                    new JSControlModel()
-                    {
-                        Name = "Button3",
-                        Properties = TestData.CreateSampleJsPropertyModelList()
-                    },
-                    new JSControlModel()
-                    {
-                        Name = "Gallery1",
-                        Properties = TestData.CreateSampleJsPropertyModelList(
-                            new JSPropertyModel[] 
-                            {
-                                new JSPropertyModel() { PropertyName = "AllItems", PropertyType = "*[Button1:v, Label2:v, Label3:v]" },
-                                new JSPropertyModel() { PropertyName = "SelectedItem", PropertyType = "![Button1:v, Label2:v, Label3:v]" }
-                            })
-                    },
-                    new JSControlModel()
-                    {
-                        Name = "Component1",
-                        Properties = TestData.CreateSampleJsPropertyModelList(
-                            new JSPropertyModel[]
-                            {
-                                new JSPropertyModel() { PropertyName = "Button2", PropertyType = "Button2" },
-                            })
-                    },
-                    new JSControlModel()
-                    {
-                        Name = "Gallery2",
-                        Properties = TestData.CreateSampleJsPropertyModelList(
-                            new JSPropertyModel[]
-                            {
-                                new JSPropertyModel() { PropertyName = "AllItems2", PropertyType = "*[Gallery1:v, Button3:v]" },
-                                new JSPropertyModel() { PropertyName = "SelectedItem2", PropertyType = "![Gallery1:v, Button3:v]" }
-                            })
-                    },
-                }
-            };
-
             var expectedFormulaTypes = TestData.CreateExpectedFormulaTypesForSampleJsPropertyModelList();
             var button1RecordType = new RecordType();
             var label2RecordType = new RecordType();
@@ -267,7 +253,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("getAppStatus()")).Returns(Task.FromResult("Idle"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult(JsonConvert.SerializeObject(jsObjectModel)));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult(JsonConvert.SerializeObject(JsObjectModel)));
             var testSettings = new TestSettings(){Timeout = 30000};
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
@@ -278,10 +264,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), publishedAppIframeName), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, (string)null, LogLevel.Debug, Times.Never());
+            LoggingTestHelper.VerifyLogging(MockLogger, (string)null, LogLevel.Debug, Times.Exactly(2));
 
-            Assert.Equal(jsObjectModel.Controls.Count, objectModel.Count);
-            foreach (var jsModel in jsObjectModel.Controls)
+            Assert.Equal(JsObjectModel.Controls.Count, objectModel.Count);
+            foreach (var jsModel in JsObjectModel.Controls)
             {
                 var model = objectModel[jsModel.Name];
                 Assert.NotNull(model);
@@ -348,18 +334,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("getAppStatus()")).Returns(Task.FromResult("Idle"));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult(jsObjectModelString));
-            var testSettings = new TestSettings(){Timeout = 30000};
+            var testSettings = new TestSettings(){Timeout = 3000};
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var objectModel = await powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            Assert.Empty(objectModel);
+            await Assert.ThrowsAsync<TimeoutException>(async() => {await powerAppFunctions.LoadPowerAppsObjectModelAsync();});
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Once());
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), publishedAppIframeName), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "No control model was found", LogLevel.Error, Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
         [Theory]
@@ -463,18 +448,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("Loading"))
                 .Returns(Task.FromResult("Idle"));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult("{}"));
-            var testSettings = new TestSettings(){Timeout = 30000};
+            var testSettings = new TestSettings(){Timeout = 3000};
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var objectModel = await powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            Assert.Empty(objectModel);
+            await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Once());
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), publishedAppIframeName), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.Exactly(3));
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "No control model was found", LogLevel.Error, Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.AtLeast(3));
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
         [Fact]
@@ -489,18 +473,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("Loading"))
                 .Returns(Task.FromResult("Idle"));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult("{}"));
-            var testSettings = new TestSettings(){Timeout = 30000};
+            var testSettings = new TestSettings(){Timeout = 5000};
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var objectModel = await powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            Assert.Empty(objectModel);
+            await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Exactly(2));
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), publishedAppIframeName), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.Exactly(4));
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "No control model was found", LogLevel.Error, Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.AtLeast(4));
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
         [Fact]
@@ -514,18 +497,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("Busy"))
                 .Returns(Task.FromResult("Idle"));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult("{}"));
-            var testSettings = new TestSettings(){Timeout = 30000};
+            var testSettings = new TestSettings(){Timeout = 3000};
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var objectModel = await powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            Assert.Empty(objectModel);
+            await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Once());
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), publishedAppIframeName), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.Exactly(3));
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "No control model was found", LogLevel.Error, Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.AtLeast(3));
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
         [Fact]
@@ -544,14 +526,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var objectModel = await powerAppFunctions.LoadPowerAppsObjectModelAsync();
-            Assert.Empty(objectModel);
+            await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Exactly(2));
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), publishedAppIframeName), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.Exactly(4));
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "No control model was found", LogLevel.Error, Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("getAppStatus()"), Times.AtLeast(4));
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
         [Fact]

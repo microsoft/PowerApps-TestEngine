@@ -114,16 +114,16 @@ namespace Microsoft.PowerApps.TestEngine
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
                         {
                             Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
-                            _powerFxEngine.Execute(testSuiteDefinition.OnTestCaseStart);
+                            await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
                         }
 
                         Logger.LogInformation($"Running test case: {testCase.TestCaseName}");
-                        _powerFxEngine.Execute(testCase.TestSteps);
+                        await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps);
 
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
                         {
                             Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
-                            _powerFxEngine.Execute(testSuiteDefinition.OnTestCaseComplete);
+                            await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                         }
                     }
                     catch (Exception ex)
