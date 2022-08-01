@@ -139,7 +139,7 @@ function select(itemPath) {
 }
 
 function setPropertyValue(itemPath, value) {
-    var obj = JSON.parse(unescape(itemPath));
+    var obj = JSON.parse(itemPath));
     return setPropertyValueForControl(obj, value);
 }
 

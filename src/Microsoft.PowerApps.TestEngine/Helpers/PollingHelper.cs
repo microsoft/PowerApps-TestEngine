@@ -40,10 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         // Poll created for types that cannot have an initial value, because said type cannot be null
         public static void Poll<T>(Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
         {
-            if (timeout < 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            ValidateTimeoutValue(timeout);
 
             DateTime startTime = DateTime.Now;
             bool conditional = true;
@@ -66,10 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
         public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout)
         {
-            if (timeout < 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            ValidateTimeoutValue(timeout);
 
             var valueToCheck = initialValue;
             DateTime startTime = DateTime.Now;
@@ -89,10 +83,41 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 await Task.Delay(1000);
             }
         }
-        
+
+        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T, Task<T>>? functionToCall, int timeout)
+        {
+            ValidateTimeoutValue(timeout);
+
+            var valueToCheck = initialValue;
+            DateTime startTime = DateTime.Now;
+
+            while (conditionToCheck(valueToCheck))
+            {
+                if (functionToCall != null)
+                {
+                    valueToCheck = await functionToCall(valueToCheck);
+                }
+
+                if (IsTimeout(startTime, timeout))
+                {
+                    throw new TimeoutException("Timed operation timed out.");
+                }
+
+                await Task.Delay(1000);
+            }
+        }
+
         private static bool IsTimeout(DateTime startTime, int timeout)
         {
             return (DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout);
+        }
+
+        private static void ValidateTimeoutValue(int timeout)
+        {
+            if (timeout < 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
         }
 
     }

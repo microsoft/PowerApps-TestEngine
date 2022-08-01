@@ -16,6 +16,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public void Setup();
 
         /// <summary>
+        /// Executes testSteps with retry
+        /// </summary>
+        /// <param name="testSteps">Test steps</param>
+        /// <returns>A task</returns>
+        public Task ExecuteWithRetryAsync(string testSteps);
+
+        /// <summary>
         /// Executes a list of Power FX functions
         /// </summary>
         /// <param name="testSteps">Test steps</param>

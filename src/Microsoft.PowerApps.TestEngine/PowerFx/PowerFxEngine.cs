@@ -26,12 +26,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly IFileSystem _fileSystem;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
+        private int _retryLimit = 2;
 
         private RecalcEngine? Engine { get; set; }
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
 
-        public PowerFxEngine(ITestInfraFunctions testInfraFunctions, 
-                             IPowerAppFunctions powerAppFunctions, 
+        public PowerFxEngine(ITestInfraFunctions testInfraFunctions,
+                             IPowerAppFunctions powerAppFunctions,
                              ISingleTestInstanceState singleTestInstanceState,
                              ITestState testState,
                              IFileSystem fileSystem)
@@ -56,6 +57,34 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             WaitRegisterExtensions.RegisterAll(powerFxConfig, _testState.GetTimeout());
 
             Engine = new RecalcEngine(powerFxConfig);
+        }
+
+        public async Task ExecuteWithRetryAsync(string testSteps)
+        {
+            int currentRetry = 0;
+            FormulaValue result = FormulaValue.NewBlank();
+            while (currentRetry <= _retryLimit)
+            {
+                try
+                {
+                    result = Execute(testSteps);
+                    break;
+                }
+                catch (Exception e) when (e.Message.Contains("locale"))
+                {
+                    Logger.LogDebug($"Got {e.Message} in attempt No.{currentRetry + 1} to run");
+                    currentRetry++;
+                    if (currentRetry > _retryLimit)
+                    {
+                        // Re-throw the exception. 
+                        throw;
+                    }
+
+                    // Wait to retry the operation.
+                    Thread.Sleep(1000);
+                    await UpdatePowerFxModelAsync();
+                }
+            }
         }
 
         public FormulaValue Execute(string testSteps)

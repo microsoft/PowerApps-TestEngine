@@ -65,6 +65,8 @@ testSuite:
         
           SetProperty(ComboBox1,"SelectedItems", Table({Value:"1"},{Value:"2"}));
           
+          SetProperty(ListBox1,"SelectedItems", Table({Value:"1"},{Value:"3"}));
+          
           Screenshot("tabletype_end.png");    
 
 testSettings:
