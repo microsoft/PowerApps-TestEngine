@@ -87,13 +87,13 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupAsync(Logger);
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(Logger));
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(Logger), Logger);
 
                 // Log in user
                 await _userManager.LoginAsUserAsync(Logger);
 
                 // Set up network request mocking if any
-                await _testInfraFunctions.SetupNetworkRequestMockAsync();
+                await _testInfraFunctions.SetupNetworkRequestMockAsync(Logger);
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();

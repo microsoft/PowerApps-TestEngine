@@ -40,7 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             if (string.IsNullOrEmpty(appLogicalName))
             {
                 logger.LogCritical("App logical name cannot be empty.");
-                throw new InvalidOperationException("");
+                throw new InvalidOperationException();
             }
 
             var tenantId = _testState.GetTenant();
