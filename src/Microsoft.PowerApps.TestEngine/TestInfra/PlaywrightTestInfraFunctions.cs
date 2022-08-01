@@ -38,19 +38,21 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             BrowserContext = browserContext;
         }
 
-        public async Task SetupAsync()
+        public async Task SetupAsync(ILogger logger)
         {
 
             var browserConfig = _singleTestInstanceState.GetBrowserConfig();
 
             if (browserConfig == null)
             {
-                throw new InvalidOperationException("Browser config cannot be null");
+                logger.LogCritical("Browser config cannot be null");
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(browserConfig.Browser))
             {
-                throw new InvalidOperationException("Browser cannot be null");
+                logger.LogCritical("Browser cannot be null");
+                throw new InvalidOperationException();
             }
 
             if (PlaywrightObject == null)
@@ -62,7 +64,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (testSettings == null)
             {
-                throw new InvalidOperationException("Test settings cannot be null");
+                logger.LogCritical("Test settings cannot be null.");
+                throw new InvalidOperationException();
             }
 
             var launchOptions = new BrowserTypeLaunchOptions()
@@ -98,7 +101,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             BrowserContext = await Browser.NewContextAsync(contextOptions);
         }
 
-        public async Task SetupNetworkRequestMockAsync()
+        public async Task SetupNetworkRequestMockAsync(ILogger logger)
         {
 
             var mocks =_singleTestInstanceState.GetTestSuiteDefinition().NetworkRequestMocks;
@@ -118,11 +121,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 
                 if (string.IsNullOrEmpty(mock.RequestURL))
                 {
-                    throw new InvalidOperationException("RequestURL cannot be null");
+                    logger.LogCritical("RequestURL cannot be null");
+                    throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
                 {
+                    logger.LogCritical("ResponseDataFile is invalid or missing");
                     throw new InvalidOperationException("ResponseDataFile is invalid or missing");
                 }
 

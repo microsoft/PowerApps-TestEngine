@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.System;
@@ -22,6 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
         private const string PasswordSelector = "input[type=\"password\"]";
         private const string SubmitButtonSelector = "input[type=\"submit\"]";
         private const string KeepMeSignedInNoSelector = "[id=\"idBtn_Back\"]";
+        
 
         public UserManager(ITestInfraFunctions testInfraFunctions, ITestState testState,
             ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable)
@@ -32,34 +34,39 @@ namespace Microsoft.PowerApps.TestEngine.Users
             _environmentVariable = environmentVariable;
         }
 
-        public async Task LoginAsUserAsync()
+        public async Task LoginAsUserAsync(ILogger logger)
         {
             var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
             if (testSuiteDefinition == null)
             {
-                throw new InvalidOperationException("Test definition cannot be null");
+                logger.LogCritical("Test definition cannot be null");
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(testSuiteDefinition.Persona))
             {
-                throw new InvalidOperationException("Persona cannot be empty");
+                logger.LogCritical("Persona cannot be empty");
+                throw new InvalidOperationException();
             }
 
             var userConfig = _testState.GetUserConfiguration(testSuiteDefinition.Persona);
 
             if (userConfig == null)
             {
-                throw new InvalidOperationException("Cannot find user config for persona");
+                logger.LogCritical("Cannot find user config for persona");
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(userConfig.EmailKey))
             {
-                throw new InvalidOperationException("Email key for persona cannot be empty");
+                logger.LogCritical("Email key for persona cannot be empty");
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(userConfig.PasswordKey))
             {
-                throw new InvalidOperationException("Password key for persona cannot be empty");
+                logger.LogCritical("Password key for persona cannot be empty");
+                throw new InvalidOperationException();
             }
 
             var user = _environmentVariable.GetVariable(userConfig.EmailKey);
@@ -67,12 +74,14 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             if (string.IsNullOrEmpty(user))
             {
-                throw new InvalidOperationException("User email cannot be null");
+                logger.LogCritical(("User email cannot be null"));
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                throw new InvalidOperationException("Password cannot be null");
+                logger.LogCritical("Password cannot be null");
+                throw new InvalidOperationException();
             }
 
             await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);
