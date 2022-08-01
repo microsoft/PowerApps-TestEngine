@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             Timeout = 30000;
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
         }
 
         [Fact]

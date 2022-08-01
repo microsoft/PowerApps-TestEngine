@@ -27,7 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
         }
 
         [Fact]
