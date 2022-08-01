@@ -128,7 +128,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
                 {
                     logger.LogCritical("ResponseDataFile is invalid or missing");
-                    throw new InvalidOperationException("ResponseDataFile is invalid or missing");
+                    throw new InvalidOperationException();
                 }
 
                 await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
@@ -169,21 +169,24 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
-        public async Task GoToUrlAsync(string url)
+        public async Task GoToUrlAsync(string url, ILogger logger)
         {
             if (string.IsNullOrEmpty(url))
             {
-                throw new InvalidOperationException("Url cannot be null or empty");
+                logger.LogError("Url cannot be null or empty");
+                throw new InvalidOperationException();
             }
 
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
             {
-                throw new InvalidOperationException("Url is invalid");
+                logger.LogError("Url is invalid");
+                throw new InvalidOperationException();
             }
 
             if (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp)
             {
-                throw new InvalidOperationException("Url must be http/https");
+                logger.LogError("Url must be http/https");
+                throw new InvalidOperationException();
             }
 
             if (Page == null)
@@ -199,8 +202,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             //(From playwright https://playwright.dev/dotnet/docs/api/class-page#page-goto)
             if (response != null && !response.Ok )
             {
-                _singleTestInstanceState.GetLogger().LogError($"Error navigating to page: {url}, response is: {response?.Status}");
-                throw new InvalidOperationException("Go to url failed");
+                _singleTestInstanceState.GetLogger().LogError($"Error navigating to page.");
+                _singleTestInstanceState.GetLogger().LogTrace($"Page is {url}, response is {response?.Status}");
+                throw new InvalidOperationException();
             }
         }
 
