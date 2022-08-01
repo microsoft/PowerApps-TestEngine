@@ -184,6 +184,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var expression = $"setPropertyValue({itemPathString}, \"{objectValue}\")";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
+
         public async Task<bool> SetPropertyDateAsync(ItemPath itemPath, DateValue value)
         {
             ValidateItemPath(itemPath, false);
