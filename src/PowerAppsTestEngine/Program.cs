@@ -50,19 +50,41 @@ if (inputOptions == null)
 {
     Console.Out.WriteLine("Input options are null");
     return;
-} else
+}
+else
 {
-    // Get logging level before setting logger
+    // Get EngineLoggingLevel from testSettings
     TestState tempState = new TestState(new YamlTestConfigParser(new FileSystem()));
-    tempState.ParseAndSetTestState(inputOptions.TestPlanFile);
+    TestLoggerProvider tempLoggerProvider = new TestLoggerProvider(new FileSystem());
+    tempLoggerProvider.SetEngineLoggingLevel(LogLevel.Error);
+    ILoggerFactory tempLoggerFactory = LoggerFactory.Create(tempLoggingBuilder => {
+        tempLoggingBuilder
+        .ClearProviders()
+        .AddProvider(tempLoggerProvider);
+    });
+    ILogger tempLogger = tempLoggerFactory.CreateLogger("Suite");
+    tempState.ParseAndSetTestState(inputOptions.TestPlanFile, tempLogger);
     LogLevel engineLoggingLevel = tempState.GetEngineLoggingLevel();
+
+
+    // Set provider & logger
+    TestState state = new TestState(new YamlTestConfigParser(new FileSystem()));
+    TestLoggerProvider loggerProvider = new TestLoggerProvider(new FileSystem());
+    loggerProvider.SetEngineLoggingLevel(engineLoggingLevel);
+    ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder => {
+        loggingBuilder
+        .ClearProviders()
+        .AddProvider(loggerProvider);
+    });
+    ILogger logger = loggerFactory.CreateLogger("Suite");
+    state.ParseAndSetTestState(inputOptions.TestPlanFile, logger);
 
     // Set serviceProvider & Logger
     var serviceProvider = new ServiceCollection()
     .AddLogging(loggingBuilder => {
         loggingBuilder
         .ClearProviders()
-        .AddProvider(new TestLoggerProvider(new FileSystem(), engineLoggingLevel));
+        .AddProvider(loggerProvider);
     })
     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
     .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
@@ -81,7 +103,7 @@ if (inputOptions == null)
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
-    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
+    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, logger, inputOptions.OutputDirectory);
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }
