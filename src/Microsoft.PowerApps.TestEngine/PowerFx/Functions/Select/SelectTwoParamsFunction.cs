@@ -49,7 +49,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             };
 
             var recordType = new RecordType().Add(controlName, new RecordType());
-            var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, controlName);
+            var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, _logger, controlName);
             
             var result = await _powerAppFunctions.SelectControlAsync(itemPath);
 

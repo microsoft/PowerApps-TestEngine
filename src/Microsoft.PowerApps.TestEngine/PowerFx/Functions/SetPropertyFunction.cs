@@ -148,9 +148,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             var recordType = new RecordType().Add(controlName, new RecordType());
 
-            var controlTableSource = new ControlTableSource(_powerAppFunctions, itemPath, recordType);
+            var controlTableSource = new ControlTableSource(_powerAppFunctions, itemPath, recordType, _logger);
 
-            var powerAppControlModel = new ControlTableValue(recordType, controlTableSource, _powerAppFunctions);
+            var powerAppControlModel = new ControlTableValue(recordType, controlTableSource, _powerAppFunctions, _logger);
             var result = await _powerAppFunctions.SetPropertyAsync(itemPath, value);
 
             if (!result)

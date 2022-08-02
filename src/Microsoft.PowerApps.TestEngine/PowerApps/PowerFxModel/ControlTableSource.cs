@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerFx.Types;
 using System;
 using System.Collections;
@@ -20,10 +21,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         private readonly ItemPath _itemPath;
         public RecordType RecordType { get; set; }
 
-        public ControlTableSource(IPowerAppFunctions powerAppFunctions, ItemPath itemPath, RecordType recordType)
+        private readonly ILogger _logger;
+
+        public ControlTableSource(IPowerAppFunctions powerAppFunctions, ItemPath itemPath, RecordType recordType, ILogger logger)
         {
             _powerAppFunctions = powerAppFunctions;
             _itemPath = itemPath;
+            _logger = logger;
             RecordType = recordType;
         }
 
@@ -41,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         public int Count {
             get {
                 // Always have to go fetch the count as it could dynamically change
-                return _powerAppFunctions.GetItemCount(_itemPath);
+                return _powerAppFunctions.GetItemCount(_itemPath, _logger);
             }
         }
 

@@ -39,11 +39,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
         }
 
-        public T GetPropertyValueFromControl<T>(ItemPath itemPath)
+        public T GetPropertyValueFromControl<T>(ItemPath itemPath, ILogger logger)
         {
             var getProperty = GetPropertyValueFromControlAsync<T>(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout());
+            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout(), logger);
 
             return getProperty.GetResult();
         }
@@ -81,7 +81,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
+        private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary, ILogger logger)
         {
             var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
@@ -115,7 +115,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                             TypeMapping.AddMapping(control.Name, controlType);
 
-                            var controlValue = new ControlRecordValue(controlType, this, control.Name);
+                            var controlValue = new ControlRecordValue(controlType, this, logger, control.Name);
 
                             controlDictionary.Add(control.Name, controlValue);
                         }
@@ -126,9 +126,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return controlDictionary;
         }
 
-        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
+        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync(ILogger logger)
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, logger);
 
             if (!IsPublishedAppTestingJsLoaded)
             {
@@ -138,7 +138,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout);
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x, logger), _testState.GetTestSettings().Timeout, logger);
             _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;
@@ -262,11 +262,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        public int GetItemCount(ItemPath itemPath)
+        public int GetItemCount(ItemPath itemPath, ILogger logger)
         {
             var getItemCount = GetItemCountAsync(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout());
+            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), logger);
 
             return getItemCount.GetResult();
         }

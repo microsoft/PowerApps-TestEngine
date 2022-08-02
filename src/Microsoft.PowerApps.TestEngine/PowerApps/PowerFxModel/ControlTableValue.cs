@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerFx.Types;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
     public class ControlTableValue : CollectionTableValue<ControlTableRowSchema>
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
-        public ControlTableValue(RecordType recordType, IEnumerable<ControlTableRowSchema> source, IPowerAppFunctions powerAppFunctions) : base(recordType, source)
+        private readonly ILogger _logger;
+        public ControlTableValue(RecordType recordType, IEnumerable<ControlTableRowSchema> source, IPowerAppFunctions powerAppFunctions, ILogger logger) : base(recordType, source)
         {
             _powerAppFunctions = powerAppFunctions;
+            _logger = logger;
         }
 
         protected override DValue<RecordValue> Marshal(ControlTableRowSchema item)
         {
-            var recordValue = new ControlRecordValue(item.RecordType, _powerAppFunctions, parentItemPath: item.ItemPath);
+            var recordValue = new ControlRecordValue(item.RecordType, _powerAppFunctions, _logger, parentItemPath: item.ItemPath);
             return DValue<RecordValue>.Of(recordValue);
         }
     }

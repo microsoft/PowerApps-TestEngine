@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 {
@@ -21,19 +22,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly string _name;
         private readonly ItemPath _parentItemPath;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Creates a ControlRecordValue
         /// </summary>
         /// <param name="type">Record type for the control record value</param>
         /// <param name="powerAppFunctions">Power App functions so that the property values can be fetched</param>
+        /// <param name="logger">Our logger object</param>
         /// <param name="name">Name of the control</param>
         /// <param name="parentItemPath">Path to the parent control</param>
-        public ControlRecordValue(RecordType type, IPowerAppFunctions powerAppFunctions, string name = null, ItemPath parentItemPath = null) : base(type)
+        public ControlRecordValue(RecordType type, IPowerAppFunctions powerAppFunctions, ILogger logger, string name = null, ItemPath parentItemPath = null) : base(type)
         {
             _powerAppFunctions = powerAppFunctions;
             _parentItemPath = parentItemPath;
             _name = name;
+            _logger = logger;
         }
 
         /// <summary>
@@ -75,8 +79,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                 var tableType = fieldType as TableType;
                 var recordType = tableType.ToRecord();
                 // Create indexable table source
-                var tableSource = new ControlTableSource(_powerAppFunctions, GetItemPath(fieldName), recordType);
-                var table = new ControlTableValue(recordType, tableSource, _powerAppFunctions);
+                var tableSource = new ControlTableSource(_powerAppFunctions, GetItemPath(fieldName), recordType, _logger);
+                var table = new ControlTableValue(recordType, tableSource, _powerAppFunctions, _logger);
                 result = table;
                 return true;
             }
@@ -86,13 +90,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                 if (string.IsNullOrEmpty(_name))
                 {
                     // We reach here if we are referencing a child item in a Gallery. Eg. Index(Gallery1.AllItems).Label1 (fieldName = Label1)
-                    result = new ControlRecordValue(recordType, _powerAppFunctions, fieldName, _parentItemPath);
+                    result = new ControlRecordValue(recordType, _powerAppFunctions, _logger, fieldName, _parentItemPath);
                     return true;
                 }
                 else
                 {
                     // We reach here if we are referencing a child item in a component. Eg. Component1.Label1 (fieldName = Label1)
-                    result = new ControlRecordValue(recordType, _powerAppFunctions, fieldName, GetItemPath());
+                    result = new ControlRecordValue(recordType, _powerAppFunctions, _logger, fieldName, GetItemPath());
                     return true;
                 }
             }
@@ -101,7 +105,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                 // We reach here if we are referencing a terminating property of a control, Eg. Label1.Text (fieldName = Text)
                 var itemPath = GetItemPath(fieldName);
 
-                var propertyValueJson = _powerAppFunctions.GetPropertyValueFromControl<string>(itemPath);
+                var propertyValueJson = _powerAppFunctions.GetPropertyValueFromControl<string>(itemPath, _logger);
                 var jsPropertyValueModel = JsonConvert.DeserializeObject<JSPropertyValueModel>(propertyValueJson);
 
                 if (jsPropertyValueModel != null)

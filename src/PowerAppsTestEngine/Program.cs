@@ -52,27 +52,18 @@ if (inputOptions == null)
     return;
 } else
 {
-    // Get EngineLoggingLevel from testSettings
-    TestState state = new TestState(new YamlTestConfigParser(new FileSystem()));
-    LogLevel engineLoggingLevel = state.GetEngineLoggingLevel();
-
-    // Set Logger Provider
-    TestLoggerProvider loggerProvider = new TestLoggerProvider(new FileSystem());
-    loggerProvider.SetEngineLoggingLevel(engineLoggingLevel);
-
-    // Add logging to factory
-    ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder => {
-        loggingBuilder
-        .ClearProviders()
-        .AddProvider(loggerProvider);
-    });
-
-    // Create logger
-    ILogger logger =  loggerFactory.CreateLogger("Suite");
-    state.ParseAndSetTestState(inputOptions.TestPlanFile, logger);
+    // Get logging level before setting logger
+    TestState tempState = new TestState(new YamlTestConfigParser(new FileSystem()));
+    tempState.ParseAndSetTestState(inputOptions.TestPlanFile);
+    LogLevel engineLoggingLevel = tempState.GetEngineLoggingLevel();
 
     // Set serviceProvider & Logger
     var serviceProvider = new ServiceCollection()
+    .AddLogging(loggingBuilder => {
+        loggingBuilder
+        .ClearProviders()
+        .AddProvider(new TestLoggerProvider(new FileSystem(), engineLoggingLevel));
+    })
     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
     .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
     .AddScoped<IPowerFxEngine, PowerFxEngine>()

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx.Types;
 
@@ -17,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// <typeparam name="T">Type of the property value</typeparam>
         /// <param name="itemPath">Path to the item</param>
         /// <returns>Property value</returns>
-        public T GetPropertyValueFromControl<T>(ItemPath itemPath);
+        public T GetPropertyValueFromControl<T>(ItemPath itemPath, ILogger logger);
 
         /// <summary>
         /// Runs the onSelect function of a control
@@ -38,13 +39,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Loads the object model for Power Apps
         /// </summary>
         /// <returns>Power Apps object model</returns>
-        public Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync();
+        public Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync(ILogger logger);
 
         /// <summary>
         /// Gets the number of items in an array
         /// </summary>
         /// <param name="itemPath">Path to the item</param>
         /// <returns>Number of items in the array</returns>
-        public int GetItemCount(ItemPath itemPath);
+        public int GetItemCount(ItemPath itemPath, ILogger logger);
     }
 }
