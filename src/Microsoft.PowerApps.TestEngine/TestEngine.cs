@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Reporting;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine
 {
@@ -31,56 +32,62 @@ namespace Microsoft.PowerApps.TestEngine
             _fileSystem = fileSystem;
         }
 
-        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory = DefaultOutputDirectory, string cloud = DefaultCloud)
+        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, ILogger logger, string outputDirectory = DefaultOutputDirectory, string cloud = DefaultCloud)
         {
             // Setup state
             if (string.IsNullOrEmpty(testConfigFile))
             {
-                throw new ArgumentNullException(nameof(testConfigFile));
+                logger.LogCritical("Test Config File cannot be null nor empty.");
+                logger.LogTrace("Test Config File: " + nameof(testConfigFile));
+                throw new ArgumentNullException();
             }
 
             if (string.IsNullOrEmpty(environmentId))
             {
-                throw new ArgumentNullException(nameof(environmentId));
+                logger.LogCritical("Environment ID cannot be null nor empty.");
+                logger.LogTrace("Environment ID: " + nameof(environmentId));
+                throw new ArgumentNullException();
             }
 
             if (string.IsNullOrEmpty(tenantId))
             {
-                throw new ArgumentNullException(nameof(tenantId));
+                logger.LogCritical("Tenant ID cannot be null nor empty.");
+                logger.LogTrace("Tenant ID: " + nameof(tenantId));
+                throw new ArgumentNullException();
             }
 
-            _state.ParseAndSetTestState(testConfigFile);
-            _state.SetEnvironment(environmentId);
-            _state.SetTenant(tenantId);
+            _state.ParseAndSetTestState(testConfigFile, logger);
+            _state.SetEnvironment(environmentId, logger);
+            _state.SetTenant(tenantId, logger);
 
             if (string.IsNullOrEmpty(cloud))
             {
-                _state.SetCloud(DefaultCloud);
+                _state.SetCloud(DefaultCloud, logger);
             }
             else
             {
-                _state.SetCloud(cloud);
+                _state.SetCloud(cloud, logger);
             }
 
             if (string.IsNullOrEmpty(outputDirectory))
             {
-                _state.SetOutputDirectory(DefaultOutputDirectory);
+                _state.SetOutputDirectory(DefaultOutputDirectory, logger);
             }
             else
             {
-                _state.SetOutputDirectory(outputDirectory);
+                _state.SetOutputDirectory(outputDirectory, logger);
             }
 
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
-            _testReporter.StartTestRun(testRunId);
+            _testReporter.StartTestRun(testRunId, logger);
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
 
             await RunTestByWorkerCountAsync(testRunId, testRunDirectory);
 
-            _testReporter.EndTestRun(testRunId);
-            return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
+            _testReporter.EndTestRun(testRunId, logger);
+            return _testReporter.GenerateTestReport(testRunId, testRunDirectory, logger);
         }
 
         public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory)

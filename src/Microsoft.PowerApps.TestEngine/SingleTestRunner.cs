@@ -103,8 +103,8 @@ namespace Microsoft.PowerApps.TestEngine
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
                     TestSuccess = true;
-                    var testId = _testReporter.CreateTest(testRunId, $"{testCase.TestCaseName}", "TODO");
-                    _testReporter.StartTest(testRunId, testId);
+                    var testId = _testReporter.CreateTest(testRunId, $"{testCase.TestCaseName}", "TODO", Logger);
+                    _testReporter.StartTest(testRunId, testId, Logger);
                     _testState.SetTestId(testId);
 
                     Logger = _loggerProvider.CreateLogger(testId);
@@ -159,7 +159,7 @@ namespace Microsoft.PowerApps.TestEngine
                         }
 
                         var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
-                        _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
+                        _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace, Logger);
                     }
                 }
 

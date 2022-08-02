@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.System;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -18,11 +19,13 @@ namespace Microsoft.PowerApps.TestEngine.Config
             _fileSystem = fileSytem;
         }
 
-        public T ParseTestConfig<T>(string testConfigFilePath)
+        public T ParseTestConfig<T>(string testConfigFilePath, ILogger logger)
         {
             if (string.IsNullOrEmpty(testConfigFilePath))
             {
-                throw new ArgumentNullException(nameof(testConfigFilePath));
+                logger.LogCritical("Missing test config file path.");
+                logger.LogTrace("Test Config File Path: " + nameof(testConfigFilePath));
+                throw new ArgumentNullException();
             }
 
             var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()

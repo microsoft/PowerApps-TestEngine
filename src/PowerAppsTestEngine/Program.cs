@@ -54,7 +54,7 @@ if (inputOptions == null)
 {
     // Get logging level before setting logger
     TestState tempState = new TestState(new YamlTestConfigParser(new FileSystem()));
-    tempState.ParseAndSetTestState(inputOptions.TestPlanFile);
+    tempState.ParseAndSetTestState(inputOptions.TestPlanFile, logger);
     LogLevel engineLoggingLevel = tempState.GetEngineLoggingLevel();
 
     // Set serviceProvider & Logger
@@ -81,7 +81,7 @@ if (inputOptions == null)
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
-    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
+    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, logger, inputOptions.OutputDirectory);
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }

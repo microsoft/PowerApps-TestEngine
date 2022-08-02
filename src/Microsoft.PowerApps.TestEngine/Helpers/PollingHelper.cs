@@ -10,12 +10,9 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
     /// </summary>
     public class PollingHelper
     {
-        public static T Poll<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
+        public static T Poll<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout, ILogger logger)
         {
-            if (timeout < 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            ValidateTimeoutValue(timeout, logger);
 
             var valueToCheck = initialValue;
             DateTime startTime = DateTime.Now;
@@ -29,7 +26,9 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
                 if (IsTimeout(startTime, timeout))
                 {
-                    throw new TimeoutException("Timed operation timed out.");
+                    logger.LogError("Waiting timed out.");
+                    logger.LogDebug("Timeout duration set to " + timeout);
+                    throw new TimeoutException();
                 }
 
                 Thread.Sleep(500);
@@ -38,9 +37,9 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             return valueToCheck;
         }
 
-        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout)
+        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout, ILogger logger)
         {
-            ValidateTimeoutValue(timeout);
+            ValidateTimeoutValue(timeout, logger);
 
             var valueToCheck = initialValue;
             DateTime startTime = DateTime.Now;
@@ -54,16 +53,18 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
                 if (IsTimeout(startTime, timeout))
                 {
-                    throw new TimeoutException("Timed operation timed out.");
+                    logger.LogError("Waiting timed out.");
+                    logger.LogDebug("Timeout duration set to " + timeout);
+                    throw new TimeoutException();
                 }
 
                 await Task.Delay(1000);
             }
         }
 
-        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T, Task<T>>? functionToCall, int timeout)
+        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T, Task<T>>? functionToCall, int timeout, ILogger logger)
         {
-            ValidateTimeoutValue(timeout);
+            ValidateTimeoutValue(timeout, logger);
 
             var valueToCheck = initialValue;
             DateTime startTime = DateTime.Now;
@@ -77,7 +78,9 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
                 if (IsTimeout(startTime, timeout))
                 {
-                    throw new TimeoutException("Timed operation timed out.");
+                    logger.LogError("Waiting timed out.");
+                    logger.LogDebug("Timeout duration set to " + timeout);
+                    throw new TimeoutException();
                 }
 
                 await Task.Delay(1000);
@@ -89,10 +92,11 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             return (DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout);
         }
 
-        private static void ValidateTimeoutValue(int timeout)
+        private static void ValidateTimeoutValue(int timeout, ILogger logger)
         {
             if (timeout < 0)
             {
+                logger.LogCritical("The timeout TestSetting cannot be less than zero.");
                 throw new ArgumentOutOfRangeException();
             }
         }

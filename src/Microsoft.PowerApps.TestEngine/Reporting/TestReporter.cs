@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Reporting.Format;
 using Microsoft.PowerApps.TestEngine.System;
 using System.Xml.Serialization;
@@ -74,47 +75,52 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             return testRun.Id;
         }
 
-        public void StartTestRun(string testRunId)
+        public void StartTestRun(string testRunId, ILogger logger)
         {
-            var testRun = GetTestRun(testRunId);
+            var testRun = GetTestRun(testRunId, logger);
 
             if (testRun.Times.Start != _defaultDateTime)
             {
-                throw new InvalidOperationException("Test run has already started");
+                logger.LogError("Test run has already started");
+                throw new InvalidOperationException();
             }
 
             testRun.Times.Start = DateTime.Now;
         }
 
-        public void EndTestRun(string testRunId)
+        public void EndTestRun(string testRunId, ILogger logger)
         {
-            var testRun = GetTestRun(testRunId);
+            var testRun = GetTestRun(testRunId, logger);
             if (testRun.Times.Start == _defaultDateTime)
             {
-                throw new InvalidOperationException("Test run has not been started");
+                logger.LogError("Test run has not been started");
+                throw new InvalidOperationException();
             }
 
             if (testRun.Times.Finish != _defaultDateTime)
             {
-                throw new InvalidOperationException("Can't end a test run is already finsihed");
+                logger.LogError("Can't end a test run is already finsihed");
+                throw new InvalidOperationException();
             }
 
             testRun.Times.Finish = DateTime.Now;
             testRun.ResultSummary.Outcome = "Completed";
         }
 
-        public string CreateTest(string testRunId, string testName, string testLocation)
+        public string CreateTest(string testRunId, string testName, string testLocation, ILogger logger)
         {
-            var testRun = GetTestRun(testRunId);
+            var testRun = GetTestRun(testRunId, logger);
 
             if (testRun.Times.Start == _defaultDateTime)
             {
-                throw new InvalidOperationException("Test run needs to be started");
+                logger.LogError("Test run needs to be started");
+                throw new InvalidOperationException();
             }
 
             if (testRun.Times.Finish != _defaultDateTime)
             {
-                throw new InvalidOperationException("Test run is already finished");
+                logger.LogError("Test run is already finished");
+                throw new InvalidOperationException();
             }
 
             var unitTestDefinition = new UnitTestDefinition
@@ -167,38 +173,42 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             return unitTestDefinition.Id;
         }
 
-        public void StartTest(string testRunId, string testId)
+        public void StartTest(string testRunId, string testId, ILogger logger)
         {
-            var testRun = GetTestRun(testRunId);
+            var testRun = GetTestRun(testRunId, logger);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).FirstOrDefault();
 
             if (testResult == null)
             {
-                throw new InvalidOperationException("Test id has to exist");
+                logger.LogError("Test id has to exist");
+                throw new InvalidOperationException();
             }
 
             if (testResult.StartTime != _defaultDateTime)
             {
-                throw new InvalidOperationException("Can't start a test that is already started");
+                logger.LogError("Can't start a test that is already started");
+                throw new InvalidOperationException();
             }
 
             testResult.StartTime = DateTime.Now;
             testRun.ResultSummary.Counters.InProgress++;
         }
 
-        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string? errorMessage, string? stackTrace)
+        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string? errorMessage, string? stackTrace, ILogger logger)
         {
-            var testRun = GetTestRun(testRunId);
+            var testRun = GetTestRun(testRunId, logger);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
 
             if (testResult.StartTime == _defaultDateTime)
             {
-                throw new InvalidOperationException("Can't end a test that isn't started");
+                logger.LogError("Can't end a test that isn't started");
+                throw new InvalidOperationException();
             }
 
             if (testResult.EndTime != _defaultDateTime)
             {
-                throw new InvalidOperationException("Can't end a test that is already finished");
+                logger.LogError("Can't end a test that is already finished");
+                throw new InvalidOperationException();
             }
 
             testResult.EndTime = DateTime.Now;
@@ -228,9 +238,9 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }
         }
 
-        public string GenerateTestReport(string testRunId, string resultsDirectory)
+        public string GenerateTestReport(string testRunId, string resultsDirectory, ILogger logger)
         {
-            var testRun = GetTestRun(testRunId);
+            var testRun = GetTestRun(testRunId, logger);
             XmlSerializerNamespaces xsNS = new XmlSerializerNamespaces();
             xsNS.Add("", "http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
             var serializer = new XmlSerializer(typeof(TestRun));
@@ -244,18 +254,21 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             return testResultPath;
         }
 
-        public TestRun GetTestRun(string testRunId)
+        public TestRun GetTestRun(string testRunId, ILogger logger)
         {
             if (string.IsNullOrEmpty(testRunId))
             {
-                throw new ArgumentException(nameof(testRunId));
+                logger.LogError("Test run id cannot be null nor empty.");
+                logger.LogTrace("Test run id: " + nameof(testRunId));
+                throw new ArgumentException();
             }
 
             if (!_testRuns.ContainsKey(testRunId))
             {
-                throw new ArgumentException(nameof(testRunId));
+                logger.LogError("Test run id does not exist.");
+                logger.LogTrace("Test run id: " + nameof(testRunId));
+                throw new ArgumentException();
             }
-
 
             return _testRuns[testRunId];
         }
