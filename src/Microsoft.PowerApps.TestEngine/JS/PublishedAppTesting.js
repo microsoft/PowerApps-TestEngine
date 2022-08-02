@@ -180,6 +180,6 @@ function setPropertyValueForControl(itemPath, value) {
 
 function interactWithControl(itemPath, value) {
     var e = AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.interactWithControlAsync(AppMagic.Controls.GlobalContextManager.bindingContext.controlContexts[itemPath.controlName], value).then(() => true,() => false);
-    
+
     return e._value;
 }
