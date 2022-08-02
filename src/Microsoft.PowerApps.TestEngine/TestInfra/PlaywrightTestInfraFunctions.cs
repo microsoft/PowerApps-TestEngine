@@ -46,13 +46,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (browserConfig == null)
             {
                 logger.LogCritical("Browser config cannot be null");
-                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(browserConfig.Browser))
             {
                 logger.LogCritical("Browser cannot be null");
-                throw new InvalidOperationException();
             }
 
             if (PlaywrightObject == null)
@@ -65,7 +63,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (testSettings == null)
             {
                 logger.LogCritical("Test settings cannot be null.");
-                throw new InvalidOperationException();
             }
 
             var launchOptions = new BrowserTypeLaunchOptions()
@@ -122,13 +119,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 if (string.IsNullOrEmpty(mock.RequestURL))
                 {
                     logger.LogCritical("RequestURL cannot be null");
-                    throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
                 {
                     logger.LogCritical("ResponseDataFile is invalid or missing");
-                    throw new InvalidOperationException();
                 }
 
                 await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
@@ -174,19 +169,16 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (string.IsNullOrEmpty(url))
             {
                 logger.LogError("Url cannot be null or empty");
-                throw new InvalidOperationException();
             }
 
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
             {
                 logger.LogError("Url is invalid");
-                throw new InvalidOperationException();
             }
 
             if (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp)
             {
                 logger.LogError("Url must be http/https");
-                throw new InvalidOperationException();
             }
 
             if (Page == null)

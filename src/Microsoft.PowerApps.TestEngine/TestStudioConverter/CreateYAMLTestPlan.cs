@@ -58,7 +58,6 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             {
                 _logger.LogCritical("Found invalid file path.");
                 _logger.LogTrace($"File path: {InputDir}");
-                throw new DirectoryNotFoundException();
             }
 
             readJson(InputDir);

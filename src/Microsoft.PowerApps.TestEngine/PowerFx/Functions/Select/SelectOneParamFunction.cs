@@ -39,7 +39,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 _logger.LogError($"Object cannot be null.");
                 _logger.LogTrace($"Object name: '{obj}'");
-                throw new ArgumentException();
             }
 
             var powerAppControlModel = (ControlRecordValue)obj;
@@ -49,7 +48,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 _logger.LogError($"Unable to select control");
                 _logger.LogTrace($"Control name: {powerAppControlModel.Name}");
-                throw new Exception();
             }
 
             await _updateModelFunction();

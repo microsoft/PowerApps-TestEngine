@@ -31,7 +31,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             if (timeout < 0)
             {
                 _logger.LogCritical("The timeout TestSetting cannot be less than zero.");
-                throw new ArgumentOutOfRangeException();
             }
 
             DateTime startTime = DateTime.Now;
@@ -48,7 +47,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 {
                     _logger.LogError("Wait function timed out.");
                     _logger.LogDebug("Timeout duration set to " + timeout);
-                    throw new TimeoutException();
                 }
 
                 Thread.Sleep(500);

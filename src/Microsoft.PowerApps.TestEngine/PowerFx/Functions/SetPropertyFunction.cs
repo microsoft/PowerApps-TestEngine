@@ -43,8 +43,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 _logger.LogDebug("Error occurred on DataType of type " + value.GetType());
                 _logger.LogTrace("Property name: " + propName);
                 _logger.LogTrace("Attempting to set property to: " + value);
-
-                throw new Exception();
             }
 
             _logger.LogInformation("Successfully finished executing SetProperty function.");
@@ -160,8 +158,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 _logger.LogTrace("Property name: " + propName);
                 _logger.LogTrace("Property attempted being set to: " + value);
                 _logger.LogTrace(powerAppControlModel.ToString());
-
-                throw new Exception();
             }
 
             _logger.LogInformation("Successfully finished executing SetProperty function.");

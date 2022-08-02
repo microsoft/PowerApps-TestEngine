@@ -92,7 +92,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             if (Engine == null)
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");
-                throw new InvalidOperationException();
             }
 
             // Remove the leading = sign
@@ -136,7 +135,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             if (Engine == null)
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");
-                throw new InvalidOperationException();
             }
 
             var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync(Logger);
