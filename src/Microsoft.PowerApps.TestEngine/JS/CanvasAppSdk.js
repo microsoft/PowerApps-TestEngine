@@ -79,7 +79,7 @@ function setPropertyValueForControl(itemPath, value) {
     if (typeof value == "object") {
         return interactWithControl(itemPath,value);
     } 
-    var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, "${value}")`;
+    var script = `setPropertyValueForControl(${itemPath}, "${value}")`;
     return executePublishedAppScript(script);
 }
 
@@ -139,8 +139,7 @@ function select(itemPath) {
 }
 
 function setPropertyValue(itemPath, value) {
-    var obj = JSON.parse(itemPath);
-    return setPropertyValueForControl(obj, value);
+    return setPropertyValueForControl(itemPath, value);
 }
 
 function getItemCount(itemPath) {
