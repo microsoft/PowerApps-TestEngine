@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
+using Microsoft.PowerApps.TestEngine.Helpers;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -39,119 +41,126 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void ParseAndSetTestState(string testConfigFile, ILogger logger)
         {
-            if (string.IsNullOrEmpty(testConfigFile))
+            try
             {
-                logger.LogTrace("Test Config File: " + nameof(testConfigFile));
-                logger.LogError("Missing test config file.");
-            }
-
-            TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile, logger);
-            if (TestPlanDefinition.TestSuite != null)
-            {
-                TestCases = TestPlanDefinition.TestSuite.TestCases;
-
-                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.TestSuiteName))
+                if (string.IsNullOrEmpty(testConfigFile))
                 {
-                    logger.LogError("Missing test suite name from test suite definition");
+                    logger.LogTrace("Test Config File: " + nameof(testConfigFile));
+                    logger.LogError("Missing test config file.");
                 }
 
-                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Persona))
+                TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile, logger);
+                if (TestPlanDefinition.TestSuite != null)
                 {
-                    logger.LogError("Missing persona from test suite definition");
+                    TestCases = TestPlanDefinition.TestSuite.TestCases;
+
+                    if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.TestSuiteName))
+                    {
+                        logger.LogError("Missing test suite name from test suite definition");
+                    }
+
+                    if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Persona))
+                    {
+                        logger.LogError("Missing persona from test suite definition");
+                    }
+
+                    if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName))
+                    {
+                        logger.LogError("Missing app logical name from test suite definition");
+                    }
                 }
 
-                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName))
+                if (TestCases.Count == 0)
                 {
-                    logger.LogError("Missing app logical name from test suite definition");
-                }
-            }
-
-            if (TestCases.Count == 0)
-            {
-                logger.LogError("Must be at least one test case");
-            }
-
-            foreach(var testCase in TestCases)
-            {
-                if (string.IsNullOrEmpty(testCase.TestCaseName))
-                {
-                    logger.LogError("Missing test case name from test definition");
+                    logger.LogError("Must be at least one test case");
                 }
 
-                if (string.IsNullOrEmpty(testCase.TestSteps))
+                foreach (var testCase in TestCases)
                 {
-                    logger.LogError("Missing test steps from test case");
-                }
-            }
+                    if (string.IsNullOrEmpty(testCase.TestCaseName))
+                    {
+                        logger.LogError("Missing test case name from test definition");
+                    }
 
-            if (TestPlanDefinition.TestSettings == null)
-            {
-                logger.LogError("Missing test settings from test plan");
-            }
-            else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings.FilePath))
-            {
-                TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath, logger);
-            }
-
-            if (TestPlanDefinition.TestSettings.BrowserConfigurations == null 
-                || TestPlanDefinition.TestSettings.BrowserConfigurations.Count == 0)
-            {
-                logger.LogError("Missing browser configuration from test plan");
-            }
-
-            foreach (var browserConfig in TestPlanDefinition.TestSettings.BrowserConfigurations)
-            {
-                if (string.IsNullOrWhiteSpace(browserConfig.Browser))
-                {
-                    logger.LogError("Missing browser from browser configuration");
+                    if (string.IsNullOrEmpty(testCase.TestSteps))
+                    {
+                        logger.LogError("Missing test steps from test case");
+                    }
                 }
 
-                if (browserConfig.ScreenWidth == null && browserConfig.ScreenHeight != null
-                    || browserConfig.ScreenHeight == null && browserConfig.ScreenWidth != null)
+                if (TestPlanDefinition.TestSettings == null)
                 {
-                    logger.LogError("Screen width and height both need to be specified or not specified");
+                    logger.LogError("Missing test settings from test plan");
                 }
-            }
-
-            if (TestPlanDefinition.EnvironmentVariables == null)
-            {
-                logger.LogError("Missing environment variables from test plan");
-            }
-            else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
-            {
-                TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath, logger);
-            }
-
-            if (TestPlanDefinition.EnvironmentVariables.Users == null
-                || TestPlanDefinition.EnvironmentVariables.Users.Count == 0)
-            {
-                logger.LogError("At least one user must be specified");
-            }
-
-            foreach(var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
-            {
-                if (string.IsNullOrEmpty(userConfig.PersonaName))
+                else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings.FilePath))
                 {
-                    logger.LogError("Missing persona name");
+                    TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath, logger);
                 }
 
-                if (string.IsNullOrEmpty(userConfig.EmailKey))
+                if (TestPlanDefinition.TestSettings.BrowserConfigurations == null
+                    || TestPlanDefinition.TestSettings.BrowserConfigurations.Count == 0)
                 {
-                    logger.LogError("Missing email key");
+                    logger.LogError("Missing browser configuration from test plan");
                 }
 
-                if (string.IsNullOrEmpty(userConfig.PasswordKey))
+                foreach (var browserConfig in TestPlanDefinition.TestSettings.BrowserConfigurations)
                 {
-                    logger.LogError("Missing password key");
+                    if (string.IsNullOrWhiteSpace(browserConfig.Browser))
+                    {
+                        logger.LogError("Missing browser from browser configuration");
+                    }
+
+                    if (browserConfig.ScreenWidth == null && browserConfig.ScreenHeight != null
+                        || browserConfig.ScreenHeight == null && browserConfig.ScreenWidth != null)
+                    {
+                        logger.LogError("Screen width and height both need to be specified or not specified");
+                    }
                 }
+
+                if (TestPlanDefinition.EnvironmentVariables == null)
+                {
+                    logger.LogError("Missing environment variables from test plan");
+                }
+                else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
+                {
+                    TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath, logger);
+                }
+
+                if (TestPlanDefinition.EnvironmentVariables.Users == null
+                    || TestPlanDefinition.EnvironmentVariables.Users.Count == 0)
+                {
+                    logger.LogError("At least one user must be specified");
+                }
+
+                foreach (var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
+                {
+                    if (string.IsNullOrEmpty(userConfig.PersonaName))
+                    {
+                        logger.LogError("Missing persona name");
+                    }
+
+                    if (string.IsNullOrEmpty(userConfig.EmailKey))
+                    {
+                        logger.LogError("Missing email key");
+                    }
+
+                    if (string.IsNullOrEmpty(userConfig.PasswordKey))
+                    {
+                        logger.LogError("Missing password key");
+                    }
+                }
+
+                if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
+                {
+                    logger.LogError("Persona specified in test is not listed in environment variables");
+                }
+
+                IsValid = true;
             }
-
-            if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
+            catch (Exception)
             {
-                logger.LogError("Persona specified in test is not listed in environment variables");
+                Environment.Exit(0);
             }
-
-            IsValid = true;
         }
 
         public void SetEnvironment(string environmentId, ILogger logger)

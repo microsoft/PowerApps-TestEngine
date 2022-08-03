@@ -10,6 +10,7 @@ using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using Newtonsoft.Json;
+using Microsoft.PowerApps.TestEngine.Helpers;
 
 namespace Microsoft.PowerApps.TestEngine
 {
@@ -63,17 +64,19 @@ namespace Microsoft.PowerApps.TestEngine
             }
 
             var testSuiteLogger = _loggerProvider.CreateLogger(testRunId);
-            _testState.SetLogger(testSuiteLogger);
-
-            _testState.SetTestSuiteDefinition(testSuiteDefinition);
-            _testState.SetTestRunId(testRunId);
-            _testState.SetBrowserConfig(browserConfig);
+            
 
             var testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfig.Browser}");
-            _testState.SetTestResultsDirectory(testResultDirectory);
+            
 
             try
             {
+                _testState.SetTestSuiteDefinition(testSuiteDefinition);
+                _testState.SetTestRunId(testRunId);
+                _testState.SetBrowserConfig(browserConfig);
+                _testState.SetLogger(testSuiteLogger);
+                _testState.SetTestResultsDirectory(testResultDirectory);
+
                 _fileSystem.CreateDirectory(testResultDirectory);
 
                 testSuiteLogger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
@@ -135,7 +138,7 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError(ex.ToString());
+                        Logger.LogCritical(ex.ToString());
                         TestException = ex;
                         TestSuccess = false;
                     }
@@ -171,7 +174,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
             catch (Exception ex)
             {
-                testSuiteLogger.LogError(ex.ToString());
+                testSuiteLogger.LogCritical(ex.ToString());
                 TestException = ex;
             }
             finally
