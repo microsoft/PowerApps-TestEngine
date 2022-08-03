@@ -39,9 +39,7 @@ function executePublishedAppScript(scriptToExecute) {
         catch(err) {
             Cordova.exec(function() {}, function() {}, '${testEnginePluginName}', 'processResult', ['${callbackId}', {successful: false, message: err}])
         }`)
-    var pr = completeablePromise.promise
-    console.log(pr);
-    return pr;
+    return completeablePromise.promise;
 }
 
 function getOngoingActionsInPublishedApp() {
@@ -86,7 +84,6 @@ function setPropertyValueForControl(itemPath, value) {
         return interactWithControl(itemPath,value);
     } 
     var script = `setPropertyValueForControl(${itemPath}, "${value}")`;
-    console.log(script);
     return executePublishedAppScript(script);
 }
 
@@ -146,7 +143,7 @@ function select(itemPath) {
 }
 
 function setPropertyValue(itemPath, value) {
-    var obj = JSON.parse(unescape(itemPath));
+    var obj = unescape(itemPath);
     console.log(obj);
     console.log(value);
     return setPropertyValueForControl(obj, value);
