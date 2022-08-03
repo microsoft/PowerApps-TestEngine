@@ -27,9 +27,7 @@ class TestEnginePlugin {
 
 function executePublishedAppScript(scriptToExecute) {
     var callbackId = Core.Utility.generate128BitUUID();
-    console.log(callbackId);
     var completeablePromise = Core.Promise.createCompletablePromise();
-    console.log(completeablePromise);
     callbackDictionary[callbackId] = completeablePromise;
     AppMagic.Runtime.WebPlayerRuntime._appHostManager._apiHandler.invokeScriptAsync(`
         try {
@@ -78,8 +76,6 @@ function interactWithControl(itemPath, value) {
 }
 
 function setPropertyValueForControl(itemPath, value) {    
-    console.log(itemPath);
-    console.log(value);
     if (typeof value == "object") {
         return interactWithControl(itemPath,value);
     } 
@@ -143,10 +139,7 @@ function select(itemPath) {
 }
 
 function setPropertyValue(itemPath, value) {
-    var obj = unescape(itemPath);
-    console.log(obj);
-    console.log(value);
-    return setPropertyValueForControl(obj, value);
+    return setPropertyValueForControl(unescape(itemPath), value);
 }
 
 function getItemCount(itemPath) {
