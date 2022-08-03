@@ -77,7 +77,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             if (messageLevel == LogLevel.Critical || messageLevel == LogLevel.Error)
             {
-                throw new Exception();
+                Environment.Exit(0);
             }
         }
     }
