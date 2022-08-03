@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SetPropertyFunctionThrowsOnNonPowerAppsRecordValueTest()
         {
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var SetPropertyFunctionString = new SetPropertyFunctionString(MockPowerAppFunctions.Object);
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
 
@@ -43,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
 
             // Make setPropertyFunction contain a text component called Button1
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
             var setPropertyFunctionString = new SetPropertyFunctionString(MockPowerAppFunctions.Object);
 
@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<NumberValue>())).Returns(Task.FromResult(true));
 
             // Make setPropertyFunction contain a component called Rating1
-            var recordType = new RecordType().Add("Value", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Value", FormulaType.Number);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Rating1");
             var setPropertyFunction = new SetPropertyFunctionNumber(MockPowerAppFunctions.Object);
 
@@ -93,7 +93,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<BooleanValue>())).Returns(Task.FromResult(true));
 
             // Make setPropertyFunction contain a component called Toggle1
-            var recordType = new RecordType().Add("Value", FormulaType.Boolean);
+            var recordType = RecordType.Empty().Add("Value", FormulaType.Boolean);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Toggle1");
             var setPropertyFunction = new SetPropertyFunctionBoolean(MockPowerAppFunctions.Object);
 
@@ -111,7 +111,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<DateValue>())).Returns(Task.FromResult(true));
 
             // Make setPropertyFunction contain a component called DatePicker1
-            var recordType = new RecordType().Add("Value", FormulaType.Date);
+            var recordType = RecordType.Empty().Add("Value", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
             var setPropertyFunction = new SetPropertyFunctionDate(MockPowerAppFunctions.Object);
 
@@ -130,7 +130,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<RecordValue>())).Returns(Task.FromResult(true));
 
             // Make setPropertyFunction contain a component called Dropdown1
-            var recordType = new RecordType().Add("Selected", new RecordType());
+            var recordType = RecordType.Empty().Add("Selected", RecordType.Empty());
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Dropdown1");
             var setPropertyFunction = new SetPropertyFunctionRecord(MockPowerAppFunctions.Object);
 
@@ -154,9 +154,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var setPropertyFunction = new SetPropertyFunctionTable(MockPowerAppFunctions.Object);
             var control1Name = Guid.NewGuid().ToString();
             var control2Name = Guid.NewGuid().ToString();
-            var control1Type = new RecordType().Add("Value", FormulaType.String);
-            var control2Type = new RecordType().Add("Value", FormulaType.String);
-            var tableType = new TableType().Add(new NamedFormulaType(control1Name, control1Type,"2")).Add(new NamedFormulaType(control2Name, control2Type,"3"));
+            var control1Type = RecordType.Empty().Add("Value", FormulaType.String);
+            var control2Type = RecordType.Empty().Add("Value", FormulaType.String);
+            var tableType = TableType.Empty().Add(new NamedFormulaType(control1Name, control1Type,"2")).Add(new NamedFormulaType(control2Name, control2Type,"3"));
             var itemPath = new ItemPath()
             {
                 ControlName = "ComboBox1",

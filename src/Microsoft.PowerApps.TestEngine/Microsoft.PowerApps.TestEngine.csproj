@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0-preview.3.22175.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0-preview.3.22175.4" />
     <PackageReference Include="Microsoft.Playwright" Version="1.21.0" />
-    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="0.2.2-preview.20220603-307223" />
+    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="0.2.2-preview.20220802-315097" />	
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>

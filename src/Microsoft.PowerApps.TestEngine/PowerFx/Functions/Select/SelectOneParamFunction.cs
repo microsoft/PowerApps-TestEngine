@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly Func<Task> _updateModelFunction;
 
-        public SelectOneParamFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType())
+        public SelectOneParamFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, RecordType.Empty())
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;

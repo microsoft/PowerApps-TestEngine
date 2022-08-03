@@ -100,7 +100,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                         }
                         else
                         {
-                            var controlType = new RecordType();
+                            var controlType = RecordType.Empty();
                             foreach (var property in control.Properties)
                             {
                                 if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))

@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly Func<Task> _updateModelFunction;
 
-        public SelectTwoParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType(), FormulaType.Number)
+        public SelectTwoParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, RecordType.Empty(), FormulaType.Number)
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;
@@ -52,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 PropertyName = "AllItems"
             };
 
-            var recordType = new RecordType().Add(controlName, new RecordType());
+            var recordType = RecordType.Empty().Add(controlName, RecordType.Empty());
             var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, controlName);
             
             var result = await _powerAppFunctions.SelectControlAsync(itemPath);

@@ -19,7 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         protected readonly IPowerAppFunctions _powerAppFunctions;
 
-        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
+        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType) : base("SetProperty", FormulaType.Blank, RecordType.Empty(), FormulaType.String, formulaType)
         {
             _powerAppFunctions = powerAppFunctions;
         }
@@ -105,7 +105,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionRecord : SetPropertyFunction
     {
-        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new RecordType())
+        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, RecordType.Empty())
         {
         }
 
@@ -118,7 +118,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionTable : SetPropertyFunction
     {
-        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, new TableType())
+        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, TableType.Empty())
         {
         }
 
@@ -154,7 +154,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 PropertyName = (string)propName.Value
             };
 
-            var recordType = new RecordType().Add(controlName, new RecordType());
+            var recordType = RecordType.Empty().Add(controlName, RecordType.Empty());
 
             var controlTableSource = new ControlTableSource(_powerAppFunctions, itemPath, recordType);
 
