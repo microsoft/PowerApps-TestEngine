@@ -39,29 +39,29 @@ namespace Microsoft.PowerApps.TestEngine.Users
             var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
             if (testSuiteDefinition == null)
             {
-                logger.LogCritical("Test definition cannot be null");
+                logger.LogError("Test definition cannot be null");
             }
 
             if (string.IsNullOrEmpty(testSuiteDefinition.Persona))
             {
-                logger.LogCritical("Persona cannot be empty");
+                logger.LogError("Persona cannot be empty");
             }
 
             var userConfig = _testState.GetUserConfiguration(testSuiteDefinition.Persona, logger);
 
             if (userConfig == null)
             {
-                logger.LogCritical("Cannot find user config for persona");
+                logger.LogError("Cannot find user config for persona");
             }
 
             if (string.IsNullOrEmpty(userConfig.EmailKey))
             {
-                logger.LogCritical("Email key for persona cannot be empty");
+                logger.LogError("Email key for persona cannot be empty");
             }
 
             if (string.IsNullOrEmpty(userConfig.PasswordKey))
             {
-                logger.LogCritical("Password key for persona cannot be empty");
+                logger.LogError("Password key for persona cannot be empty");
             }
 
             var user = _environmentVariable.GetVariable(userConfig.EmailKey);
@@ -69,12 +69,12 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             if (string.IsNullOrEmpty(user))
             {
-                logger.LogCritical(("User email cannot be null"));
+                logger.LogError(("User email cannot be null"));
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                logger.LogCritical("Password cannot be null");
+                logger.LogError("Password cannot be null");
             }
 
             await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);

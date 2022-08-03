@@ -21,7 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(testRunId))
             {
-                GetLogger().LogCritical("Test Run ID cannot be set to a null value.");
+                GetLogger().LogError("Test Run ID cannot be set to a null value.");
                 GetLogger().LogTrace("Test Run ID: " + nameof(testRunId));
             }
             TestRunId = testRunId;
@@ -36,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(testId))
             {
-                GetLogger().LogCritical("Test ID cannot be set to a null value.");
+                GetLogger().LogError("Test ID cannot be set to a null value.");
                 GetLogger().LogTrace("Test ID: " + nameof(testId));
             }
             TestId = testId;
@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (testSuiteDefinition == null)
             {
-                GetLogger().LogCritical("Test Suite Definition cannot be set to a null value.");
+                GetLogger().LogError("Test Suite Definition cannot be set to a null value.");
                 GetLogger().LogTrace("Test Suite Definition: " + nameof(testSuiteDefinition));
             }
             TestSuiteDefinition = testSuiteDefinition;
@@ -80,7 +80,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(resultsDirectory))
             {
-                GetLogger().LogCritical("Results Directory cannot set to a null value.");
+                GetLogger().LogError("Results Directory cannot set to a null value.");
                 GetLogger().LogTrace("Results Directory: " + nameof(resultsDirectory));
             }
             ResultsDirectory = resultsDirectory;
@@ -95,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (browserConfig == null)
             {
-                GetLogger().LogCritical("Browser Config cannot be set to a null value.");
+                GetLogger().LogError("Browser Config cannot be set to a null value.");
                 GetLogger().LogTrace("Browser Config: " + nameof(browserConfig));
             }
             BrowserConfig = browserConfig;

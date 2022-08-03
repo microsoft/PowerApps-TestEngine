@@ -45,12 +45,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (browserConfig == null)
             {
-                logger.LogCritical("Browser config cannot be null");
+                logger.LogError("Browser config cannot be null");
             }
 
             if (string.IsNullOrEmpty(browserConfig.Browser))
             {
-                logger.LogCritical("Browser cannot be null");
+                logger.LogError("Browser cannot be null");
             }
 
             if (PlaywrightObject == null)
@@ -62,7 +62,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (testSettings == null)
             {
-                logger.LogCritical("Test settings cannot be null.");
+                logger.LogError("Test settings cannot be null.");
             }
 
             var launchOptions = new BrowserTypeLaunchOptions()
@@ -118,12 +118,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 
                 if (string.IsNullOrEmpty(mock.RequestURL))
                 {
-                    logger.LogCritical("RequestURL cannot be null");
+                    logger.LogError("RequestURL cannot be null");
                 }
 
                 if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
                 {
-                    logger.LogCritical("ResponseDataFile is invalid or missing");
+                    logger.LogError("ResponseDataFile is invalid or missing");
                 }
 
                 await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));

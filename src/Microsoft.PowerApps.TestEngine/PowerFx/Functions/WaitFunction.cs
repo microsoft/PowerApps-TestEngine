@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (timeout < 0)
             {
-                _logger.LogCritical("The timeout TestSetting cannot be less than zero.");
+                _logger.LogError("The timeout TestSetting cannot be less than zero.");
             }
 
             DateTime startTime = DateTime.Now;
