@@ -91,6 +91,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                 if (jsObjectModel != null && jsObjectModel.Controls != null)
                 {
+                    _singleTestInstanceState.GetLogger().LogDebug("Listing all skipped properties for each control.");
+
                     foreach (var control in jsObjectModel.Controls)
                     {
                         if (controlDictionary.ContainsKey(control.Name))
@@ -101,6 +103,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                         else
                         {
                             var controlType = new RecordType();
+                            var skipMessage = $"Control: {control.Name}";
+                            bool everSkipped = false;
+
                             foreach (var property in control.Properties)
                             {
                                 if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
@@ -109,8 +114,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                                 }
                                 else
                                 {
-                                    _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name}, Skipping property: {property.PropertyName}, with type: {property.PropertyType}");
+                                    everSkipped = true; 
+                                    skipMessage += $"\nProperty: {property.PropertyName}, of type: {property.PropertyType}";
                                 }
+                            }
+
+                            if (everSkipped)
+                            {
+                                _singleTestInstanceState.GetLogger().LogDebug(skipMessage);
                             }
 
                             TypeMapping.AddMapping(control.Name, controlType);
