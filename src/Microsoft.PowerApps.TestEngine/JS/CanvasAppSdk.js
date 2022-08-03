@@ -76,6 +76,8 @@ function interactWithControl(itemPath, value) {
 }
 
 function setPropertyValueForControl(itemPath, value) {    
+    console.log(itemPath);
+    console.log(value);
     if (typeof value == "object") {
         return interactWithControl(itemPath,value);
     } 
@@ -139,7 +141,11 @@ function select(itemPath) {
 }
 
 function setPropertyValue(itemPath, value) {
-    return setPropertyValueForControl(itemPath, value);
+    var obj = JSON.parse(unescape(itemPath));
+    console.log(obj);
+    console.log(value);
+    var value = "hi%22%29%3B%20alert%28%22Hello%2";
+    return setPropertyValueForControl(obj, value);
 }
 
 function getItemCount(itemPath) {
