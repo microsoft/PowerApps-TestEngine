@@ -29,6 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 _logger.LogTrace($"{message.Value}");
                 _logger.LogError("Assert failed. Property is not equal to the specified value.");
+                throw new InvalidOperationException();
             } 
   
             _logger.LogTrace(message.Value);

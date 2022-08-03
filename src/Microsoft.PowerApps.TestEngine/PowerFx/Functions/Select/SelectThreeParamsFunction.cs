@@ -64,6 +64,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             { 
                 _logger.LogTrace($"Control name: {powerAppControlModel.Name}");
                 _logger.LogError("Unable to select control");
+                throw new Exception();
             }
 
             await _updateModelFunction();

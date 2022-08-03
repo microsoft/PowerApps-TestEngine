@@ -74,11 +74,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 DebugLogs.Add(logString);
                 Console.Out.WriteLine(logString);
             }
-
-            if (messageLevel == LogLevel.Critical || messageLevel == LogLevel.Error)
-            {
-                Environment.Exit(0);
-            }
         }
     }
 }

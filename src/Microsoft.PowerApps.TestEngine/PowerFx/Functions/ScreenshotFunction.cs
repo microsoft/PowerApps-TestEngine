@@ -40,6 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             if (!_fileSystem.IsValidFilePath(testResultDirectory))
             {
                 _logger.LogError("Test result directory needs to be set.");
+                throw new InvalidOperationException();
             }
 
             var fileName = file.Value;
@@ -48,11 +49,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 _logger.LogTrace("File Name: " + nameof(fileName));
                 _logger.LogError("File must exist and cannot be empty.");
+                throw new ArgumentException();
             }
 
             if (Path.IsPathRooted(fileName))
             {
                 _logger.LogError("Only support relative file paths");
+                throw new ArgumentException();
             }
 
             if (!fileName.EndsWith(".jpg") && !fileName.EndsWith(".jpeg") && !fileName.EndsWith("png"))
@@ -60,6 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 _logger.LogDebug("File extension: " + Path.GetExtension(fileName));
                 _logger.LogTrace("File name: " + fileName);
                 _logger.LogError("Only support jpeg and png files");
+                throw new ArgumentException();
             }
 
             var filePath = Path.Combine(testResultDirectory, fileName);

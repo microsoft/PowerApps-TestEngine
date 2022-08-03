@@ -60,6 +60,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // It is unclear what side effects show up if you run this multiple times especially relating to the logging
                 // So throwing if it is run more than once.
                 Logger.LogError("This test can only be run once.");
+                throw new InvalidOperationException();
             }
 
             var testSuiteLogger = _loggerProvider.CreateLogger(testRunId);

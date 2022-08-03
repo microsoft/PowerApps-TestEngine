@@ -10,7 +10,7 @@ testSuite:
         = Screenshot("stringtype_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
+          Wait(TextInput1, "Text", "Commesnts");
           
           // Set input fields
           SetProperty(TextInput1, "Text", "Good job!");

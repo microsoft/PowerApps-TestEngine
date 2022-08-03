@@ -29,6 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     logger.LogDebug("Timeout duration was set to " + timeout);
                     logger.LogDebug("Make sure the function & property you're using is supported by TestEngine.");
                     logger.LogError("Waiting timed out.");
+                    throw new TimeoutException();
                 }
 
                 Thread.Sleep(500);
@@ -56,6 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     logger.LogDebug("Timeout duration was set to " + timeout);
                     logger.LogDebug("Make sure the function & property you're using is supported by TestEngine.");
                     logger.LogError("Waiting timed out.");
+                    throw new TimeoutException();
                 }
 
                 await Task.Delay(1000);
@@ -81,6 +83,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     logger.LogDebug("Timeout duration was set to " + timeout);
                     logger.LogDebug("Make sure the function & property you're using is supported by TestEngine.");
                     logger.LogError("Waiting timed out.");
+                    throw new TimeoutException();
                 }
 
                 await Task.Delay(1000);
@@ -97,6 +100,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             if (timeout < 0)
             {
                 logger.LogError("The timeout TestSetting cannot be less than zero.");
+                throw new ArgumentOutOfRangeException();
             }
         }
 

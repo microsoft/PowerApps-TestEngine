@@ -243,6 +243,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 _singleTestInstanceState.GetLogger().LogTrace("ItemPath's ControlName: " + nameof(itemPath.ControlName));
                 _singleTestInstanceState.GetLogger().LogError("ItemPath's ControlName has a null value.");
+                throw new ArgumentNullException();
             }
 
             if (requirePropertyName || itemPath.Index.HasValue)
@@ -253,6 +254,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     // It is also required when accessing elements in a gallery, so if an index is specified, it needs to be there
                     _singleTestInstanceState.GetLogger().LogTrace("ItemPath's PropertyName: '" + nameof(itemPath.PropertyName));
                     _singleTestInstanceState.GetLogger().LogError("ItemPath's PropertyName has a null value.");
+                    throw new ArgumentNullException();
                 }
             }
 

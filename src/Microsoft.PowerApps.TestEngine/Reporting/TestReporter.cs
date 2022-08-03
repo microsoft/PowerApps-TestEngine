@@ -82,6 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testRun.Times.Start != _defaultDateTime)
             {
                 logger.LogError("Test run has already started");
+                throw new InvalidOperationException();
             }
 
             testRun.Times.Start = DateTime.Now;
@@ -93,11 +94,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testRun.Times.Start == _defaultDateTime)
             {
                 logger.LogError("Test run has not been started");
+                throw new InvalidOperationException();
             }
 
             if (testRun.Times.Finish != _defaultDateTime)
             {
                 logger.LogError("Can't end a test run is already finsihed");
+                throw new InvalidOperationException();
             }
 
             testRun.Times.Finish = DateTime.Now;
@@ -111,11 +114,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testRun.Times.Start == _defaultDateTime)
             {
                 logger.LogError("Test run needs to be started");
+                throw new InvalidOperationException();
             }
 
             if (testRun.Times.Finish != _defaultDateTime)
             {
                 logger.LogError("Test run is already finished");
+                throw new InvalidOperationException();
             }
 
             var unitTestDefinition = new UnitTestDefinition
@@ -176,11 +181,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testResult == null)
             {
                 logger.LogError("Test id has to exist");
+                throw new InvalidOperationException();
             }
 
             if (testResult.StartTime != _defaultDateTime)
             {
                 logger.LogError("Can't start a test that is already started");
+                throw new InvalidOperationException();
             }
 
             testResult.StartTime = DateTime.Now;
@@ -195,11 +202,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testResult.StartTime == _defaultDateTime)
             {
                 logger.LogError("Can't end a test that isn't started");
+                throw new InvalidOperationException();
             }
 
             if (testResult.EndTime != _defaultDateTime)
             {
                 logger.LogError("Can't end a test that is already finished");
+                throw new InvalidOperationException();
             }
 
             testResult.EndTime = DateTime.Now;
@@ -251,12 +260,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 logger.LogTrace("Test run id: " + nameof(testRunId));
                 logger.LogError("Test run id cannot be null nor empty.");
+                throw new ArgumentException();
             }
 
             if (!_testRuns.ContainsKey(testRunId))
             {
                 logger.LogTrace("Test run id: " + nameof(testRunId));
                 logger.LogError("Test run id does not exist.");
+                throw new ArgumentException();
             }
 
             return _testRuns[testRunId];

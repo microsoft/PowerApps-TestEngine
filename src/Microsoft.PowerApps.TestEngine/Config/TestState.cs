@@ -43,6 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             {
                 logger.LogTrace("Test Config File: " + nameof(testConfigFile));
                 logger.LogError("Missing test config file.");
+                throw new ArgumentNullException();
             }
 
             TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile, logger);
@@ -53,22 +54,26 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.TestSuiteName))
                 {
                     logger.LogError("Missing test suite name from test suite definition");
+                    throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Persona))
                 {
                     logger.LogError("Missing persona from test suite definition");
+                    throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName))
                 {
                     logger.LogError("Missing app logical name from test suite definition");
+                    throw new InvalidOperationException();
                 }
             }
 
             if (TestCases.Count == 0)
             {
                 logger.LogError("Must be at least one test case");
+                throw new InvalidOperationException();
             }
 
             foreach(var testCase in TestCases)
@@ -76,17 +81,20 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 if (string.IsNullOrEmpty(testCase.TestCaseName))
                 {
                     logger.LogError("Missing test case name from test definition");
+                    throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(testCase.TestSteps))
                 {
                     logger.LogError("Missing test steps from test case");
+                    throw new InvalidOperationException();
                 }
             }
 
             if (TestPlanDefinition.TestSettings == null)
             {
                 logger.LogError("Missing test settings from test plan");
+                throw new InvalidOperationException();
             }
             else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings.FilePath))
             {
@@ -97,6 +105,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 || TestPlanDefinition.TestSettings.BrowserConfigurations.Count == 0)
             {
                 logger.LogError("Missing browser configuration from test plan");
+                throw new InvalidOperationException();
             }
 
             foreach (var browserConfig in TestPlanDefinition.TestSettings.BrowserConfigurations)
@@ -104,18 +113,21 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 if (string.IsNullOrWhiteSpace(browserConfig.Browser))
                 {
                     logger.LogError("Missing browser from browser configuration");
+                    throw new InvalidOperationException();
                 }
 
                 if (browserConfig.ScreenWidth == null && browserConfig.ScreenHeight != null
                     || browserConfig.ScreenHeight == null && browserConfig.ScreenWidth != null)
                 {
                     logger.LogError("Screen width and height both need to be specified or not specified");
+                    throw new InvalidOperationException();
                 }
             }
 
             if (TestPlanDefinition.EnvironmentVariables == null)
             {
                 logger.LogError("Missing environment variables from test plan");
+                throw new InvalidOperationException();
             }
             else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
             {
@@ -126,6 +138,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 || TestPlanDefinition.EnvironmentVariables.Users.Count == 0)
             {
                 logger.LogError("At least one user must be specified");
+                throw new InvalidOperationException();
             }
 
             foreach(var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
@@ -133,22 +146,26 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 if (string.IsNullOrEmpty(userConfig.PersonaName))
                 {
                     logger.LogError("Missing persona name");
+                    throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(userConfig.EmailKey))
                 {
                     logger.LogError("Missing email key");
+                    throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(userConfig.PasswordKey))
                 {
                     logger.LogError("Missing password key");
+                    throw new InvalidOperationException();
                 }
             }
 
             if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
             {
                 logger.LogError("Persona specified in test is not listed in environment variables");
+                throw new InvalidOperationException();
             }
 
             IsValid = true;
@@ -160,6 +177,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             {
                 logger.LogTrace("Environment: " + nameof(environmentId));
                 logger.LogError("Environment cannot be null nor empty.");
+                throw new ArgumentNullException();
             }
             EnvironmentId = environmentId;
         }
@@ -175,6 +193,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             {
                 logger.LogTrace("Cloud: " + nameof(cloud));
                 logger.LogError("Cloud cannot be null nor empty.");
+                throw new ArgumentNullException();
             }
             // TODO: validate clouds
             Cloud = cloud;
@@ -191,6 +210,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             {
                 logger.LogTrace("Tenant: " + nameof(tenantId));
                 logger.LogError("Tenant cannot be null nor empty.");
+                throw new ArgumentNullException();
             }
             TenantId = tenantId;
         }
@@ -205,6 +225,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             {
                 logger.LogTrace("Output directory: " + nameof(outputDirectory));
                 logger.LogError("Output directory cannot be null nor empty.");
+                throw new ArgumentNullException();
             }
             OutputDirectory = outputDirectory;
         }
@@ -218,6 +239,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             if (!IsValid)
             {
                 logger.LogError("TestPlanDefinition is not valid");
+                throw new InvalidOperationException();
             }
 
             var userConfiguration = TestPlanDefinition?.EnvironmentVariables?.Users?.Where(x => x.PersonaName == persona).FirstOrDefault();
@@ -226,6 +248,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             {
                 logger.LogTrace($"Persona: {persona}");
                 logger.LogError("Unable to find user configuration for persona.");
+                throw new InvalidOperationException();
             }
 
             return userConfiguration;

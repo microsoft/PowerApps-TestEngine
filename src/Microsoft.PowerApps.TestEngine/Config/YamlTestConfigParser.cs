@@ -25,6 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             {
                 logger.LogTrace("Test Config File Path: " + nameof(testConfigFilePath));
                 logger.LogError("Missing test config file path.");
+                throw new ArgumentNullException();
             }
 
             var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()

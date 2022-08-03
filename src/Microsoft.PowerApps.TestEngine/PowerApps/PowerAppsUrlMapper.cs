@@ -26,24 +26,28 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             if (string.IsNullOrEmpty(environment))
             {
                 logger.LogError("Environment cannot be empty.");
+                throw new InvalidOperationException();
             }
 
             var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
             if (testSuiteDefinition == null)
             {
                 logger.LogError("Test definition must be specified.");
+                throw new InvalidOperationException();
             }
 
             var appLogicalName = testSuiteDefinition.AppLogicalName;
             if (string.IsNullOrEmpty(appLogicalName))
             {
                 logger.LogError("App logical name cannot be empty.");
+                throw new InvalidOperationException();
             }
 
             var tenantId = _testState.GetTenant();
             if (string.IsNullOrEmpty(tenantId))
             {
                 logger.LogError("Tenant cannot be empty.");
+                throw new InvalidOperationException();
             }
 
             var cloud = _testState.GetCloud();

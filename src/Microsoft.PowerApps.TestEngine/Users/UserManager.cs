@@ -40,11 +40,13 @@ namespace Microsoft.PowerApps.TestEngine.Users
             if (testSuiteDefinition == null)
             {
                 logger.LogError("Test definition cannot be null");
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(testSuiteDefinition.Persona))
             {
                 logger.LogError("Persona cannot be empty");
+                throw new InvalidOperationException();
             }
 
             var userConfig = _testState.GetUserConfiguration(testSuiteDefinition.Persona, logger);
@@ -52,16 +54,19 @@ namespace Microsoft.PowerApps.TestEngine.Users
             if (userConfig == null)
             {
                 logger.LogError("Cannot find user config for persona");
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(userConfig.EmailKey))
             {
                 logger.LogError("Email key for persona cannot be empty");
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(userConfig.PasswordKey))
             {
                 logger.LogError("Password key for persona cannot be empty");
+                throw new InvalidOperationException();
             }
 
             var user = _environmentVariable.GetVariable(userConfig.EmailKey);
@@ -70,11 +75,13 @@ namespace Microsoft.PowerApps.TestEngine.Users
             if (string.IsNullOrEmpty(user))
             {
                 logger.LogError(("User email cannot be null"));
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(password))
             {
                 logger.LogError("Password cannot be null");
+                throw new InvalidOperationException();
             }
 
             await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);

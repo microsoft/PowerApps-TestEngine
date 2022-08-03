@@ -28,6 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             if (!result.Value)
             {
                 _logger.LogError("Assert failed. Property is not equal to the specified value.");
+                throw new InvalidOperationException();
             }
 
             _logger.LogInformation("Successfully finished executing Assert function.");
