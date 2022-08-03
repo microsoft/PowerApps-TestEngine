@@ -27,7 +27,9 @@ class TestEnginePlugin {
 
 function executePublishedAppScript(scriptToExecute) {
     var callbackId = Core.Utility.generate128BitUUID();
+    console.log(callbackId);
     var completeablePromise = Core.Promise.createCompletablePromise();
+    console.log(completeablePromise);
     callbackDictionary[callbackId] = completeablePromise;
     AppMagic.Runtime.WebPlayerRuntime._appHostManager._apiHandler.invokeScriptAsync(`
         try {
@@ -37,7 +39,9 @@ function executePublishedAppScript(scriptToExecute) {
         catch(err) {
             Cordova.exec(function() {}, function() {}, '${testEnginePluginName}', 'processResult', ['${callbackId}', {successful: false, message: err}])
         }`)
-    return completeablePromise.promise;
+    var pr = completeablePromise.promise
+    console.log(pr);
+    return pr;
 }
 
 function getOngoingActionsInPublishedApp() {
@@ -82,6 +86,7 @@ function setPropertyValueForControl(itemPath, value) {
         return interactWithControl(itemPath,value);
     } 
     var script = `setPropertyValueForControl(${itemPath}, "${value}")`;
+    console.log(script);
     return executePublishedAppScript(script);
 }
 
@@ -144,7 +149,6 @@ function setPropertyValue(itemPath, value) {
     var obj = JSON.parse(unescape(itemPath));
     console.log(obj);
     console.log(value);
-    var value = "hi%22%29%3B%20alert%28%22Hello%2";
     return setPropertyValueForControl(obj, value);
 }
 
