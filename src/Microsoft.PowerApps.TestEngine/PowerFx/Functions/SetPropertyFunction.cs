@@ -39,10 +39,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!result)
             {
-                _logger.LogError("Unable to set property with SetProperty function.");
                 _logger.LogDebug("Error occurred on DataType of type " + value.GetType());
                 _logger.LogTrace("Property name: " + propName);
                 _logger.LogTrace("Attempting to set property to: " + value);
+                _logger.LogError("Unable to set property with SetProperty function.");
             }
 
             _logger.LogInformation("Successfully finished executing SetProperty function.");
@@ -153,11 +153,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!result)
             {
-                _logger.LogError("Unable to set property with SetProperty function.");
                 _logger.LogDebug("Error occurred on DataType of type " + value.GetType());
                 _logger.LogTrace("Property name: " + propName);
                 _logger.LogTrace("Property attempted being set to: " + value);
                 _logger.LogTrace(powerAppControlModel.ToString());
+                _logger.LogError("Unable to set property with SetProperty function.");
             }
 
             _logger.LogInformation("Successfully finished executing SetProperty function.");

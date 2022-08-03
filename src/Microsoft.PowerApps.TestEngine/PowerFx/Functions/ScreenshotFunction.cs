@@ -46,8 +46,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (string.IsNullOrEmpty(fileName))
             {
-                _logger.LogError("File must exist and cannot be empty.");
                 _logger.LogTrace("File Name: " + nameof(fileName));
+                _logger.LogError("File must exist and cannot be empty.");
             }
 
             if (Path.IsPathRooted(fileName))
@@ -57,9 +57,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!fileName.EndsWith(".jpg") && !fileName.EndsWith(".jpeg") && !fileName.EndsWith("png"))
             {
-                _logger.LogError("Only support jpeg and png files");
                 _logger.LogDebug("File extension: " + Path.GetExtension(fileName));
                 _logger.LogTrace("File name: " + fileName);
+                _logger.LogError("Only support jpeg and png files");
             }
 
             var filePath = Path.Combine(testResultDirectory, fileName);

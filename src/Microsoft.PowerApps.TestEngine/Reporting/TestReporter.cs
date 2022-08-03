@@ -249,14 +249,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             if (string.IsNullOrEmpty(testRunId))
             {
-                logger.LogError("Test run id cannot be null nor empty.");
                 logger.LogTrace("Test run id: " + nameof(testRunId));
+                logger.LogError("Test run id cannot be null nor empty.");
             }
 
             if (!_testRuns.ContainsKey(testRunId))
             {
-                logger.LogError("Test run id does not exist.");
                 logger.LogTrace("Test run id: " + nameof(testRunId));
+                logger.LogError("Test run id does not exist.");
             }
 
             return _testRuns[testRunId];

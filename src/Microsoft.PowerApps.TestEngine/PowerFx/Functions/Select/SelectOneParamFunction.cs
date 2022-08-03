@@ -37,8 +37,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         {
             if (obj == null)
             {
-                _logger.LogError($"Object cannot be null.");
                 _logger.LogTrace($"Object name: '{obj}'");
+                _logger.LogError($"Object cannot be null.");
             }
 
             var powerAppControlModel = (ControlRecordValue)obj;
@@ -46,8 +46,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!result)
             {
-                _logger.LogError($"Unable to select control");
                 _logger.LogTrace($"Control name: {powerAppControlModel.Name}");
+                _logger.LogError($"Unable to select control");
             }
 
             await _updateModelFunction();

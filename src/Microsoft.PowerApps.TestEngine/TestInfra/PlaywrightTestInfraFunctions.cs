@@ -194,9 +194,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             //(From playwright https://playwright.dev/dotnet/docs/api/class-page#page-goto)
             if (response != null && !response.Ok )
             {
-                _singleTestInstanceState.GetLogger().LogError($"Error navigating to page.");
                 _singleTestInstanceState.GetLogger().LogTrace($"Page is {url}, response is {response?.Status}");
-                throw new InvalidOperationException();
+                _singleTestInstanceState.GetLogger().LogError($"Error navigating to page.");
             }
         }
 

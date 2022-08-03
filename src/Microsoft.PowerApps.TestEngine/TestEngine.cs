@@ -37,20 +37,20 @@ namespace Microsoft.PowerApps.TestEngine
             // Setup state
             if (string.IsNullOrEmpty(testConfigFile))
             {
-                logger.LogError("Test Config File cannot be null nor empty.");
                 logger.LogTrace("Test Config File: " + nameof(testConfigFile));
+                logger.LogError("Test Config File cannot be null nor empty.");
             }
 
             if (string.IsNullOrEmpty(environmentId))
             {
-                logger.LogError("Environment ID cannot be null nor empty.");
                 logger.LogTrace("Environment ID: " + nameof(environmentId));
+                logger.LogError("Environment ID cannot be null nor empty.");
             }
 
             if (string.IsNullOrEmpty(tenantId))
             {
-                logger.LogError("Tenant ID cannot be null nor empty.");
                 logger.LogTrace("Tenant ID: " + nameof(tenantId));
+                logger.LogError("Tenant ID cannot be null nor empty.");
             }
 
             _state.ParseAndSetTestState(testConfigFile, logger);

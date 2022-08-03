@@ -61,9 +61,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.GetItemPath());
 
             if (!result)
-            {
-                _logger.LogError("Unable to select control");
+            { 
                 _logger.LogTrace($"Control name: {powerAppControlModel.Name}");
+                _logger.LogError("Unable to select control");
             }
 
             await _updateModelFunction();
