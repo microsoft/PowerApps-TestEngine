@@ -70,6 +70,7 @@ jobs:
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/containers/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/differentvariabletypes/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/differentvariabletypes/testPlanForScriptInjection.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16","tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'     
     secrets: inherit
