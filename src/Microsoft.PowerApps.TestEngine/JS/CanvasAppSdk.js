@@ -139,8 +139,6 @@ function select(itemPath) {
 }
 
 function setPropertyValue(itemPath, value) {
-    console.log(itemPath);
-    console.log(value);
     return setPropertyValueForControl(unescape(itemPath), value);
 }
 
