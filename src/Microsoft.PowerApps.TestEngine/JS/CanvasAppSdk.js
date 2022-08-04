@@ -79,7 +79,8 @@ function setPropertyValueForControl(itemPath, value) {
     if (typeof value == "object") {
         return interactWithControl(itemPath,value);
     } 
-    var script = `setPropertyValueForControl(${itemPath}, "${value}")`;
+    var unescapePath = unescape(itemPath);
+    var script = `setPropertyValueForControl(${unescapePath}, "${value}")`;
     return executePublishedAppScript(script);
 }
 
@@ -139,7 +140,7 @@ function select(itemPath) {
 }
 
 function setPropertyValue(itemPath, value) {
-    return setPropertyValueForControl(unescape(itemPath), value);
+    return setPropertyValueForControl(itemPath, value);
 }
 
 function getItemCount(itemPath) {
