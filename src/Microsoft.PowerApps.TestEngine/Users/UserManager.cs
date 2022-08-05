@@ -49,7 +49,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
                 throw new InvalidOperationException();
             }
 
-            var userConfig = _testState.GetUserConfiguration(testSuiteDefinition.Persona, logger);
+            var userConfig = _testState.GetUserConfiguration(testSuiteDefinition.Persona);
 
             if (userConfig == null)
             {

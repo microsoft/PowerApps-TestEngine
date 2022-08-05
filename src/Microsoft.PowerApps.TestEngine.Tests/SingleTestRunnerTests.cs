@@ -53,9 +53,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             LoggingTestHelper.SetupMock(MockLogger);
 
-            MockTestReporter.Setup(x => x.CreateTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), MockLogger.Object)).Returns(testId);
-            MockTestReporter.Setup(x => x.StartTest(It.IsAny<string>(), It.IsAny<string>(), MockLogger.Object));
-            MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string?>(), It.IsAny<string?>(), MockLogger.Object));
+            MockTestReporter.Setup(x => x.CreateTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(testId);
+            MockTestReporter.Setup(x => x.StartTest(It.IsAny<string>(), It.IsAny<string>()));
+            MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string?>(), It.IsAny<string?>()));
 
             MockLoggerProvider.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
@@ -116,8 +116,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockUrlMapper.Verify(x => x.GenerateTestUrl(MockLogger.Object), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl, MockLogger.Object), Times.Once());
             MockTestState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
-            MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteDefinition.TestCases[0].TestCaseName, "TODO", MockLogger.Object), Times.Once());
-            MockTestReporter.Verify(x => x.StartTest(testRunId, testId, MockLogger.Object), Times.Once());
+            MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteDefinition.TestCases[0].TestCaseName, "TODO"), Times.Once());
+            MockTestReporter.Verify(x => x.StartTest(testRunId, testId), Times.Once());
             MockTestState.Verify(x => x.SetTestId(testId), Times.Once());
             MockLoggerProvider.Verify(x => x.CreateLogger(testId), Times.Once());
             MockTestState.Verify(x => x.SetLogger(MockLogger.Object), Times.Exactly(2));
@@ -130,7 +130,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 additionalFilesList = additionalFiles.ToList();
             }
-            MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(testSuiteDefinition.TestCases[0].TestCaseName) && x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage, stackTrace, MockLogger.Object), Times.Once());
+            MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(testSuiteDefinition.TestCases[0].TestCaseName) && x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage, stackTrace), Times.Once());
         }
 
         private void VerifyFinallyExecution(string testResultDirectory)

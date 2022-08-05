@@ -63,7 +63,7 @@ environmentVariables:
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
-            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath, MockLogger.Object);
+            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath);
             Assert.NotNull(testPlan);
             Assert.Equal("Button Clicker", testPlan.TestSuite?.TestSuiteName);
             Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.TestSuite?.TestSuiteDescription);
@@ -107,7 +107,7 @@ environmentVariables:
 
             var filePath = "environmentVariables.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(environmentVariablesFile);
-            var environmentVariables = parser.ParseTestConfig<EnvironmentVariables>(filePath, MockLogger.Object);
+            var environmentVariables = parser.ParseTestConfig<EnvironmentVariables>(filePath);
             Assert.NotNull(environmentVariables);
             Assert.Single(environmentVariables.Users);
             Assert.Equal("User1", environmentVariables.Users[0].PersonaName);
@@ -131,7 +131,7 @@ enablePowerFxOverlay: false";
 
             var filePath = "testSettings.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
-            var testSettings = parser.ParseTestConfig<TestSettings>(filePath, MockLogger.Object);
+            var testSettings = parser.ParseTestConfig<TestSettings>(filePath);
             Assert.NotNull(testSettings);
             Assert.True(testSettings.RecordVideo);
             Assert.False(testSettings.Headless);
@@ -149,7 +149,7 @@ enablePowerFxOverlay: false";
             Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
-            Assert.Throws<ArgumentNullException>(() => parser.ParseTestConfig<TestPlanDefinition>(filePath, MockLogger.Object));
+            Assert.Throws<ArgumentNullException>(() => parser.ParseTestConfig<TestPlanDefinition>(filePath));
         }
     }
 }
