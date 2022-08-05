@@ -15,6 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         [Fact]
         public void TableSourceTest()
         {
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var itemPath = new ItemPath()
             {
@@ -23,9 +24,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             };
 
             var itemCount = 3;
-            mockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>())).Returns(itemCount);
+            mockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>(), MockLogger.Object)).Returns(itemCount);
             var recordType = new RecordType().Add("Label1", new RecordType().Add("Text", FormulaType.String));
-            var controlTableSource = new ControlTableSource(mockPowerAppFunctions.Object, itemPath, recordType);
+            var controlTableSource = new ControlTableSource(mockPowerAppFunctions.Object, itemPath, recordType, MockLogger.Object);
             Assert.Equal(itemCount, controlTableSource.Count);
 
             for(var i = 0; i < itemCount; i++)

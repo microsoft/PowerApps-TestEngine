@@ -145,7 +145,6 @@ namespace Microsoft.PowerApps.TestEngine
                         {
                             var testLogger = TestLoggerProvider.TestLoggers[testId];
                             testLogger.WriteToLogsFile(testCaseResultDirectory);
-                            testLogger.WriteToLogsFile(testResultDirectory);
                         }
 
                         var additionalFiles = new List<string>();

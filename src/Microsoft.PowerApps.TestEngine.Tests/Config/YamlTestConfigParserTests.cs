@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         {
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
-
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var yamlFile = @"testSuite:
   testSuiteName: Button Clicker
   testSuiteDescription: Verifies that counter increments when the button is clicked
@@ -63,7 +63,7 @@ environmentVariables:
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
-            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath);
+            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath, MockLogger.Object);
             Assert.NotNull(testPlan);
             Assert.Equal("Button Clicker", testPlan.TestSuite?.TestSuiteName);
             Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.TestSuite?.TestSuiteDescription);
@@ -96,6 +96,7 @@ environmentVariables:
         [Fact]
         public void YamlTestConfigParserParseEnvironmentVariablesTest()
         {
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
 
@@ -106,7 +107,7 @@ environmentVariables:
 
             var filePath = "environmentVariables.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(environmentVariablesFile);
-            var environmentVariables = parser.ParseTestConfig<EnvironmentVariables>(filePath);
+            var environmentVariables = parser.ParseTestConfig<EnvironmentVariables>(filePath, MockLogger.Object);
             Assert.NotNull(environmentVariables);
             Assert.Single(environmentVariables.Users);
             Assert.Equal("User1", environmentVariables.Users[0].PersonaName);
@@ -117,6 +118,7 @@ environmentVariables:
         [Fact]
         public void YamlTestConfigParserParseTestSettingsTest()
         {
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
 
@@ -129,7 +131,7 @@ enablePowerFxOverlay: false";
 
             var filePath = "testSettings.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
-            var testSettings = parser.ParseTestConfig<TestSettings>(filePath);
+            var testSettings = parser.ParseTestConfig<TestSettings>(filePath, MockLogger.Object);
             Assert.NotNull(testSettings);
             Assert.True(testSettings.RecordVideo);
             Assert.False(testSettings.Headless);
@@ -144,9 +146,10 @@ enablePowerFxOverlay: false";
         [InlineData(null)]
         public void YamlTestConfigParserThrowsOnNullArguments(string? filePath)
         {
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
-            Assert.Throws<ArgumentNullException>(() => parser.ParseTestConfig<TestPlanDefinition>(filePath));
+            Assert.Throws<ArgumentNullException>(() => parser.ParseTestConfig<TestPlanDefinition>(filePath, MockLogger.Object));
         }
     }
 }

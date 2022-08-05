@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+using Castle.Core.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Moq;
 using System;
@@ -13,9 +15,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
     {
         private Mock<ITestConfigParser> MockTestConfigParser;
         private List<TestCase> TestCases = new List<TestCase>();
+        private Mock<Microsoft.Extensions.Logging.ILogger> MockLogger;
 
         public TestStateTests()
         {
+            MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             MockTestConfigParser = new Mock<ITestConfigParser>(MockBehavior.Strict);
             var testCase = new TestCase
             {
@@ -109,8 +113,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
 
             var testPlanDefinition = GenerateTestPlanDefinition();
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            state.ParseAndSetTestState(testConfigFile);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            state.ParseAndSetTestState(testConfigFile, MockLogger.Object);
 
             var testSuiteDefinitions = state.GetTestSuiteDefinition();
             Assert.NotNull(testSuiteDefinitions);
@@ -125,23 +129,23 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             Assert.NotNull(testSettings);
             Assert.Equal(testPlanDefinition.TestSettings, testSettings);
 
-            var userConfiguration = state.GetUserConfiguration("User1");
+            var userConfiguration = state.GetUserConfiguration("User1", MockLogger.Object);
             Assert.Equal(testPlanDefinition.EnvironmentVariables.Users[0], userConfiguration);
 
-            Assert.Throws<InvalidOperationException>(() => state.GetUserConfiguration("NonExistentUser"));
+            Assert.Throws<InvalidOperationException>(() => state.GetUserConfiguration("NonExistentUser", MockLogger.Object));
 
             var environmentId = Guid.NewGuid().ToString();
             var tenantId = Guid.NewGuid().ToString();
             var cloud = "Prod";
             var outputDirectory = Guid.NewGuid().ToString();
 
-            state.SetEnvironment(environmentId);
+            state.SetEnvironment(environmentId, MockLogger.Object);
             Assert.Equal(environmentId, state.GetEnvironment());
-            state.SetTenant(tenantId);
+            state.SetTenant(tenantId, MockLogger.Object);
             Assert.Equal(tenantId, state.GetTenant());
-            state.SetCloud(cloud);
+            state.SetCloud(cloud, MockLogger.Object);
             Assert.Equal(cloud, state.GetCloud());
-            state.SetOutputDirectory(outputDirectory);
+            state.SetOutputDirectory(outputDirectory, MockLogger.Object);
             Assert.Equal(outputDirectory, state.GetOutputDirectory());
         }
 
@@ -160,19 +164,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             testPlanDefinition.TestSettings.FilePath = testSettingsFile;
             testPlanDefinition.EnvironmentVariables.FilePath = environmentVariablesFile;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestSettings>(It.IsAny<string>())).Returns(testSettings);
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<EnvironmentVariables>(It.IsAny<string>())).Returns(environmentVariables);
-            state.ParseAndSetTestState(testConfigFile);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestSettings>(It.IsAny<string>(), MockLogger.Object)).Returns(testSettings);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<EnvironmentVariables>(It.IsAny<string>(), MockLogger.Object)).Returns(environmentVariables);
+            state.ParseAndSetTestState(testConfigFile, MockLogger.Object);
 
             var actualTestSettings = state.GetTestSettings();
             Assert.NotNull(actualTestSettings);
             Assert.Equal(testSettings, actualTestSettings);
 
-            var userConfiguration = state.GetUserConfiguration("User1");
+            var userConfiguration = state.GetUserConfiguration("User1", MockLogger.Object);
             Assert.Equal(environmentVariables.Users[0], userConfiguration);
 
-            Assert.Throws<InvalidOperationException>(() => state.GetUserConfiguration("NonExistentUser"));
+            Assert.Throws<InvalidOperationException>(() => state.GetUserConfiguration("NonExistentUser", MockLogger.Object));
         }
 
         [Theory]
@@ -181,7 +185,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void ParseAndSetTestStateThrowsOnInvalidTestConfigFile(string? testConfigPath)
         {
             var state = new TestState(MockTestConfigParser.Object);
-            Assert.Throws<ArgumentNullException>(() => state.ParseAndSetTestState(testConfigPath));
+            Assert.Throws<ArgumentNullException>(() => state.ParseAndSetTestState(testConfigPath, MockLogger.Object));
         }
 
         [Fact]
@@ -192,8 +196,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite = null;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -206,8 +210,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.TestSuiteName = testName;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -220,8 +224,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.Persona = persona;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -234,8 +238,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.AppLogicalName = appLogicalName;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -246,8 +250,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.TestCases = new List<TestCase>();
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -260,8 +264,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.TestCases[0].TestCaseName = testCaseName;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -274,8 +278,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.TestCases[0].TestSteps = testSteps;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -286,8 +290,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSettings = null;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -298,8 +302,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSettings.BrowserConfigurations = null;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -310,8 +314,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSettings.BrowserConfigurations = new List<BrowserConfiguration>();
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -324,8 +328,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSettings.BrowserConfigurations.Add(new BrowserConfiguration() { Browser = browser });
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -343,8 +347,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
                 ScreenHeight = screenHeight
             });
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -355,8 +359,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables = null;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -367,8 +371,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users = null;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -379,8 +383,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users = new List<UserConfiguration>();
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -393,8 +397,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users[0].PersonaName = personaName;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -407,8 +411,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users[0].EmailKey = emailKey;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -421,8 +425,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users[0].PasswordKey = passwordKey;
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -433,8 +437,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.Persona = Guid.NewGuid().ToString();
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
-            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -443,7 +447,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetEnvironmentThrowsOnNullInput(string environment)
         {
             var state = new TestState(MockTestConfigParser.Object);
-            Assert.Throws<ArgumentNullException>(() => state.SetEnvironment(environment));
+            Assert.Throws<ArgumentNullException>(() => state.SetEnvironment(environment, MockLogger.Object));
         }
 
         [Theory]
@@ -452,7 +456,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetCloudThrowsOnNullInput(string cloud)
         {
             var state = new TestState(MockTestConfigParser.Object);
-            Assert.Throws<ArgumentNullException>(() => state.SetCloud(cloud));
+            Assert.Throws<ArgumentNullException>(() => state.SetCloud(cloud, MockLogger.Object));
         }
 
         [Theory]
@@ -461,7 +465,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetTenantThrowsOnNullInput(string tenant)
         {
             var state = new TestState(MockTestConfigParser.Object);
-            Assert.Throws<ArgumentNullException>(() => state.SetTenant(tenant));
+            Assert.Throws<ArgumentNullException>(() => state.SetTenant(tenant, MockLogger.Object));
         }
 
         [Theory]
@@ -470,7 +474,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetOutputDirectoryThrowsOnNullInput(string outputDirectory)
         {
             var state = new TestState(MockTestConfigParser.Object);
-            Assert.Throws<ArgumentNullException>(() => state.SetOutputDirectory(outputDirectory));
+            Assert.Throws<ArgumentNullException>(() => state.SetOutputDirectory(outputDirectory, MockLogger.Object));
         }
     }
 }
