@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Extensions.Logging;
-
 namespace Microsoft.PowerApps.TestEngine.Config
 {
     /// <summary>
@@ -10,6 +8,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
     /// </summary>
     public interface ITestConfigParser
     {
-        public T ParseTestConfig<T>(string testConfigFilePath, ILogger logger);
+        public T ParseTestConfig<T>(string testConfigFilePath);
     }
 }

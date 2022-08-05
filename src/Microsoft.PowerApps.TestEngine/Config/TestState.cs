@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Extensions.Logging;
-
 namespace Microsoft.PowerApps.TestEngine.Config
 {
     /// <summary>
@@ -37,147 +35,127 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return TestCases;
         }
 
-        public void ParseAndSetTestState(string testConfigFile, ILogger logger)
+        public void ParseAndSetTestState(string testConfigFile)
         {
             if (string.IsNullOrEmpty(testConfigFile))
             {
-                logger.LogTrace("Test Config File: " + nameof(testConfigFile));
-                logger.LogError("Missing test config file.");
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(testConfigFile));
             }
 
-            TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile, logger);
+            TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile);
             if (TestPlanDefinition.TestSuite != null)
             {
                 TestCases = TestPlanDefinition.TestSuite.TestCases;
 
                 if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.TestSuiteName))
                 {
-                    logger.LogError("Missing test suite name from test suite definition");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing test suite name from test suite definition");
                 }
 
                 if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Persona))
                 {
-                    logger.LogError("Missing persona from test suite definition");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing persona from test suite definition");
                 }
 
                 if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName))
                 {
-                    logger.LogError("Missing app logical name from test suite definition");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing app logical name from test suite definition");
                 }
             }
 
             if (TestCases.Count == 0)
             {
-                logger.LogError("Must be at least one test case");
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Must be at least one test case");
             }
 
-            foreach(var testCase in TestCases)
+            foreach (var testCase in TestCases)
             {
                 if (string.IsNullOrEmpty(testCase.TestCaseName))
                 {
-                    logger.LogError("Missing test case name from test definition");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing test case name from test definition");
                 }
 
                 if (string.IsNullOrEmpty(testCase.TestSteps))
                 {
-                    logger.LogError("Missing test steps from test case");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing test steps from test case");
                 }
             }
 
             if (TestPlanDefinition.TestSettings == null)
             {
-                logger.LogError("Missing test settings from test plan");
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Missing test settings from test plan");
             }
             else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings.FilePath))
             {
-                TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath, logger);
+                TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath);
             }
 
-            if (TestPlanDefinition.TestSettings.BrowserConfigurations == null 
+            if (TestPlanDefinition.TestSettings.BrowserConfigurations == null
                 || TestPlanDefinition.TestSettings.BrowserConfigurations.Count == 0)
             {
-                logger.LogError("Missing browser configuration from test plan");
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Missing browser configuration from test plan");
             }
 
             foreach (var browserConfig in TestPlanDefinition.TestSettings.BrowserConfigurations)
             {
                 if (string.IsNullOrWhiteSpace(browserConfig.Browser))
                 {
-                    logger.LogError("Missing browser from browser configuration");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing browser from browser configuration");
                 }
 
                 if (browserConfig.ScreenWidth == null && browserConfig.ScreenHeight != null
                     || browserConfig.ScreenHeight == null && browserConfig.ScreenWidth != null)
                 {
-                    logger.LogError("Screen width and height both need to be specified or not specified");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Screen width and height both need to be specified or not specified");
                 }
             }
 
             if (TestPlanDefinition.EnvironmentVariables == null)
             {
-                logger.LogError("Missing environment variables from test plan");
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Missing environment variables from test plan");
             }
             else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
             {
-                TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath, logger);
+                TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath);
             }
 
             if (TestPlanDefinition.EnvironmentVariables.Users == null
                 || TestPlanDefinition.EnvironmentVariables.Users.Count == 0)
             {
-                logger.LogError("At least one user must be specified");
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("At least one user must be specified");
             }
 
-            foreach(var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
+            foreach (var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
             {
                 if (string.IsNullOrEmpty(userConfig.PersonaName))
                 {
-                    logger.LogError("Missing persona name");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing persona name");
                 }
 
                 if (string.IsNullOrEmpty(userConfig.EmailKey))
                 {
-                    logger.LogError("Missing email key");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing email key");
                 }
 
                 if (string.IsNullOrEmpty(userConfig.PasswordKey))
                 {
-                    logger.LogError("Missing password key");
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Missing password key");
                 }
             }
 
             if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
             {
-                logger.LogError("Persona specified in test is not listed in environment variables");
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Persona specified in test is not listed in environment variables");
             }
 
             IsValid = true;
         }
 
-        public void SetEnvironment(string environmentId, ILogger logger)
+        public void SetEnvironment(string environmentId)
         {
             if (string.IsNullOrEmpty(environmentId))
             {
-                logger.LogTrace("Environment: " + nameof(environmentId));
-                logger.LogError("Environment cannot be null nor empty.");
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(environmentId));
             }
             EnvironmentId = environmentId;
         }
@@ -187,13 +165,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return EnvironmentId;
         }
 
-        public void SetCloud(string cloud, ILogger logger)
+        public void SetCloud(string cloud)
         {
             if (string.IsNullOrEmpty(cloud))
             {
-                logger.LogTrace("Cloud: " + nameof(cloud));
-                logger.LogError("Cloud cannot be null nor empty.");
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(cloud));
             }
             // TODO: validate clouds
             Cloud = cloud;
@@ -204,13 +180,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return Cloud;
         }
 
-        public void SetTenant(string tenantId, ILogger logger)
+        public void SetTenant(string tenantId)
         {
             if (string.IsNullOrEmpty(tenantId))
             {
-                logger.LogTrace("Tenant: " + nameof(tenantId));
-                logger.LogError("Tenant cannot be null nor empty.");
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(tenantId));
             }
             TenantId = tenantId;
         }
@@ -219,13 +193,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             return TenantId;
         }
-        public void SetOutputDirectory(string outputDirectory, ILogger logger)
+        public void SetOutputDirectory(string outputDirectory)
         {
             if (string.IsNullOrEmpty(outputDirectory))
             {
-                logger.LogTrace("Output directory: " + nameof(outputDirectory));
-                logger.LogError("Output directory cannot be null nor empty.");
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(outputDirectory));
             }
             OutputDirectory = outputDirectory;
         }
@@ -234,21 +206,18 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return OutputDirectory;
         }
 
-        public UserConfiguration GetUserConfiguration(string persona, ILogger logger)
+        public UserConfiguration GetUserConfiguration(string persona)
         {
             if (!IsValid)
             {
-                logger.LogError("TestPlanDefinition is not valid");
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("TestPlanDefinition is not valid");
             }
 
             var userConfiguration = TestPlanDefinition?.EnvironmentVariables?.Users?.Where(x => x.PersonaName == persona).FirstOrDefault();
 
             if (userConfiguration == null)
             {
-                logger.LogTrace($"Persona: {persona}");
-                logger.LogError("Unable to find user configuration for persona.");
-                throw new InvalidOperationException();
+                throw new InvalidOperationException($"Unable to find user configuration for persona: {persona}");
             }
 
             return userConfiguration;
@@ -256,11 +225,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public TestSettings? GetTestSettings()
         {
             return TestPlanDefinition?.TestSettings;
-        }
-
-        public LogLevel GetEngineLoggingLevel()
-        {
-            return GetTestSettings().EngineLoggingLevel;
         }
 
         public int GetTimeout()

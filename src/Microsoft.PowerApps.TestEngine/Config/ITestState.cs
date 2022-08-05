@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Parses and sets up the test state.
         /// </summary>
         /// <param name="testConfigFile">Config file for test</param>
-        public void ParseAndSetTestState(string testConfigFile, ILogger logger);
+        public void ParseAndSetTestState(string testConfigFile);
 
         /// <summary>
         /// Gets the test suite defined for the test run.
@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Set the environment id the apps should be opened in.
         /// </summary>
         /// <param name="environmentId">Environment id</param>
-        public void SetEnvironment(string environmentId, ILogger logger);
+        public void SetEnvironment(string environmentId);
 
         /// <summary>
         /// Gets the environment id the apps should be opened in.
@@ -44,7 +44,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Set the cloud the app should be opened in.
         /// </summary>
         /// <param name="cloud">Cloud</param>
-        public void SetCloud(string cloud, ILogger logger);
+        public void SetCloud(string cloud);
 
         /// <summary>
         /// Gets the cloud the app should be opened in.
@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Sets the tenant the app should be opened in.
         /// </summary>
         /// <param name="tenantId">Tenant id</param>
-        public void SetTenant(string tenantId, ILogger logger);
+        public void SetTenant(string tenantId);
 
         /// <summary>
         /// Gets the tenant the app should be opened in.
@@ -68,7 +68,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Sets the directory that all test outputs should be placed in.
         /// </summary>
         /// <param name="outputDirectory">Output directory</param>
-        public void SetOutputDirectory(string outputDirectory, ILogger logger);
+        public void SetOutputDirectory(string outputDirectory);
 
         /// <summary>
         /// Gets the directory that all tests outputs should be placed in.
@@ -81,7 +81,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <param name="persona">Persona</param>
         /// <returns>User configuration</returns>
-        public UserConfiguration GetUserConfiguration(string persona, ILogger logger);
+        public UserConfiguration GetUserConfiguration(string persona);
 
         /// <summary>
         /// Gets the test settings.
@@ -100,11 +100,5 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <returns>Number of workers</returns>
         public int GetWorkerCount();
-
-        /// <summary>
-        /// How verbose the logging should be.
-        /// </summary>
-        /// <returns>How verbose the logging is</returns>
-        public LogLevel GetEngineLoggingLevel();
     }
 }

@@ -22,13 +22,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// Starts a test run. This records the start time of the test run.
         /// </summary>
         /// <param name="testRunId">Test run id</param>
-        public void StartTestRun(string testRunId, ILogger logger);
+        public void StartTestRun(string testRunId);
 
         /// <summary>
         /// Ends a test run
         /// </summary>
         /// <param name="testRunId">Test run id</param>
-        public void EndTestRun(string testRunId, ILogger logger);
+        public void EndTestRun(string testRunId);
 
         /// <summary>
         /// Creates a test in a test run
@@ -37,14 +37,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="testName">Name of test</param>
         /// <param name="testLocation">Location of test file</param>
         /// <returns>Test id</returns>
-        public string CreateTest(string testRunId, string testName, string testLocation, ILogger logger);
+        public string CreateTest(string testRunId, string testName, string testLocation);
 
         /// <summary>
         /// Starts test. This records the start time of the test.
         /// </summary>
         /// <param name="testRunId">Test run id</param>
         /// <param name="testId">Test id</param>
-        public void StartTest(string testRunId, string testId, ILogger logger);
+        public void StartTest(string testRunId, string testId);
 
         /// <summary>
         /// End test.
@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="additionalFiles">Any additional test files</param>
         /// <param name="errorMessage">Error message if test was unsuccessful</param>
         /// <param name="stackTrace">Stack trace if test was unsuccessful</param>
-        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string? errorMessage, string? stackTrace, ILogger logger);
+        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string? errorMessage, string? stackTrace);
 
         /// <summary>
         /// Generate test report
@@ -64,6 +64,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="testRunId">Test run id</param>
         /// <param name="resultsDirectory">Directory to place the test report</param>
         /// <returns>Path to test report</returns>
-        public string GenerateTestReport(string testRunId, string resultsDirectory, ILogger logger);
+        public string GenerateTestReport(string testRunId, string resultsDirectory);
     }
 }
