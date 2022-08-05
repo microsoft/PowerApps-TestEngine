@@ -67,7 +67,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             var launchOptions = new BrowserTypeLaunchOptions()
             {
-                Headless = testSettings.Headless,
+                Headless = false,
                 Timeout = testSettings.Timeout
             };
 
@@ -263,12 +263,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             ValidatePage();
             var santizedArguments = new string[arguments.Length];
-                       for (int i = 0; i < arguments.Length; i++)
-                       { // encode and add to sanitizedArguments 
-                           var argument = arguments[i];
-                           var encode = Uri.EscapeDataString(argument);
-                           santizedArguments[i] = encode;
-                       }
+            for (int i = 0; i < arguments.Length; i++)
+            { // encode and add to sanitizedArguments 
+                var argument = arguments[i];
+                var encode = Uri.EscapeDataString(argument);
+                santizedArguments[i] = encode;
+            }
             return await Page.EvaluateAsync<T>(jsExpression, santizedArguments);
         }
 
