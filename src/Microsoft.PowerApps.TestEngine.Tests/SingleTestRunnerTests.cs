@@ -37,16 +37,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
         public SingleTestRunnerTests()
         {
-            MockTestReporter = new Mock<ITestReporter>(MockBehavior.Loose);
-            MockPowerFxEngine = new Mock<IPowerFxEngine>(MockBehavior.Loose);
-            MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Loose);
-            MockUserManager = new Mock<IUserManager>(MockBehavior.Loose);
-            MockLoggerProvider = new Mock<ILoggerProvider>(MockBehavior.Loose);
-            MockTestState = new Mock<ISingleTestInstanceState>(MockBehavior.Loose);
-            MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Loose);
-            MockFileSystem = new Mock<IFileSystem>(MockBehavior.Loose);
+            MockTestReporter = new Mock<ITestReporter>(MockBehavior.Strict);
+            MockPowerFxEngine = new Mock<IPowerFxEngine>(MockBehavior.Strict);
+            MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
+            MockUserManager = new Mock<IUserManager>(MockBehavior.Strict);
+            MockLoggerProvider = new Mock<ILoggerProvider>(MockBehavior.Strict);
+            MockTestState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
+            MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Strict);
+            MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Loose);
-            MockTestLogger = new Mock<ITestLogger>(MockBehavior.Loose);
+            MockTestLogger = new Mock<ITestLogger>(MockBehavior.Strict);
         }
 
         private void SetupMocks(string testRunId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles)

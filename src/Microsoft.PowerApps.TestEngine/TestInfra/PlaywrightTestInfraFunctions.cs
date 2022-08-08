@@ -204,6 +204,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 _singleTestInstanceState.GetLogger().LogTrace($"Page is {url}, response is {response?.Status}");
                 _singleTestInstanceState.GetLogger().LogError($"Error navigating to page.");
+                throw new InvalidOperationException();
             }
         }
 
