@@ -136,6 +136,7 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                     catch (Exception ex)
                     {
+                        Logger.LogError(ex.ToString());
                         TestException = ex;
                         TestSuccess = false;
                     }
@@ -170,6 +171,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
             catch (Exception ex)
             {
+                testSuiteLogger.LogError(ex.ToString());
                 TestException = ex;
             }
             finally
