@@ -81,14 +81,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>())).Throws(new Exception("something bad happened"));
             }
 
-            MockTestInfraFunctions.Setup(x => x.SetupAsync(MockLogger.Object)).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync(MockLogger.Object)).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>(), MockLogger.Object)).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>(), It.IsAny<ILogger>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.CompletedTask);
 
-            MockUserManager.Setup(x => x.LoginAsUserAsync(MockLogger.Object)).Returns(Task.CompletedTask);
+            MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
 
-            MockUrlMapper.Setup(x => x.GenerateTestUrl(MockLogger.Object)).Returns(appUrl);
+            MockUrlMapper.Setup(x => x.GenerateTestUrl(It.IsAny<ILogger>())).Returns(appUrl);
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>()));
             TestLoggerProvider.TestLoggers.Add(testRunId, MockTestLogger.Object);
@@ -110,17 +110,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             MockPowerFxEngine.Verify(x => x.Setup(), Times.Once());
             MockPowerFxEngine.Verify(x => x.UpdatePowerFxModelAsync(), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.SetupAsync(MockLogger.Object), Times.Once());
-            MockUserManager.Verify(x => x.LoginAsUserAsync(MockLogger.Object), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(MockLogger.Object), Times.Once());
-            MockUrlMapper.Verify(x => x.GenerateTestUrl(MockLogger.Object), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl, MockLogger.Object), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.SetupAsync(It.IsAny<ILogger>()), Times.Once());
+            MockUserManager.Verify(x => x.LoginAsUserAsync(It.IsAny<ILogger>()), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>()), Times.Once());
+            MockUrlMapper.Verify(x => x.GenerateTestUrl(It.IsAny<ILogger>()), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl, It.IsAny<ILogger>()), Times.Once());
             MockTestState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
             MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteDefinition.TestCases[0].TestCaseName, "TODO"), Times.Once());
             MockTestReporter.Verify(x => x.StartTest(testRunId, testId), Times.Once());
             MockTestState.Verify(x => x.SetTestId(testId), Times.Once());
             MockLoggerProvider.Verify(x => x.CreateLogger(testId), Times.Once());
-            MockTestState.Verify(x => x.SetLogger(MockLogger.Object), Times.Exactly(2));
+            MockTestState.Verify(x => x.SetLogger(It.IsAny<ILogger>()), Times.Exactly(2));
             MockTestState.Verify(x => x.SetTestResultsDirectory(testResultDirectory), Times.Once());
             MockFileSystem.Verify(x => x.CreateDirectory(testResultDirectory), Times.Once());
             MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory), Times.Once());
@@ -242,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.SetupAsync(MockLogger.Object)).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
@@ -251,7 +251,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUserManager.Setup(x => x.LoginAsUserAsync(MockLogger.Object)).Throws(exceptionToThrow);
+                MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
@@ -260,7 +260,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync(MockLogger.Object)).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
@@ -269,7 +269,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUrlMapper.Setup(x => x.GenerateTestUrl(MockLogger.Object)).Throws(exceptionToThrow);
+                MockUrlMapper.Setup(x => x.GenerateTestUrl(It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
@@ -278,7 +278,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>(), MockLogger.Object)).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>(), It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
