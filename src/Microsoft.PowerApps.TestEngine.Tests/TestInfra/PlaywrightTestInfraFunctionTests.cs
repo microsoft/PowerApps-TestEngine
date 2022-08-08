@@ -45,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockResponse = new Mock<IResponse>(MockBehavior.Strict);
             MockRequest = new Mock<IRequest>(MockBehavior.Strict);
             MockRoute = new Mock<IRoute>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockIFrame = new Mock<IFrame>(MockBehavior.Strict);
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
