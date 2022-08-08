@@ -1,4 +1,3 @@
 recordVideo: true
-engineLoggingLevel: Trace
 browserConfigurations:
   - browser: Chromium
