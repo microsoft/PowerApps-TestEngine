@@ -12,10 +12,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
     {
         private ILogger? Logger { get; set; }
         private TestSuiteDefinition? TestSuiteDefinition { get; set; }
-        private string TestRunId { get; set; }
-        private string TestId { get; set; }
-        private string ResultsDirectory { get; set; }
-        private BrowserConfiguration BrowserConfig { get; set; }
+        private string? TestRunId { get; set; }
+        private string? TestId { get; set; }
+        private string? ResultsDirectory { get; set; }
+        private BrowserConfiguration? BrowserConfig { get; set; }
 
         public void SetTestRunId(string testRunId)
         {
@@ -30,7 +30,15 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public string GetTestRunId()
         {
-            return TestRunId;
+            if (TestRunId != null)
+            {
+                return TestRunId;
+            }
+            else
+            {
+                GetLogger().LogError("Cannot get Test Run ID as it is set to a null value.");
+                throw new ArgumentNullException();
+            }
         }
 
         public void SetTestId(string testId)
@@ -46,7 +54,15 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public string GetTestId()
         {
-            return TestId;
+            if (TestId != null)
+            {
+                return TestId;
+            }
+            else
+            {
+                GetLogger().LogError("Cannot get Test ID as it is set to a null value.");
+                throw new ArgumentNullException();
+            }
         }
 
         public void SetTestSuiteDefinition(TestSuiteDefinition testSuiteDefinition)
@@ -62,7 +78,15 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public TestSuiteDefinition GetTestSuiteDefinition()
         {
-            return TestSuiteDefinition;
+            if (TestSuiteDefinition != null)
+            {
+                return TestSuiteDefinition;
+            }
+            else
+            {
+                GetLogger().LogError("Cannot get TestSuiteDefinition as it is set to a null value.");
+                throw new ArgumentNullException();
+            }
         }
 
         public void SetLogger(ILogger logger)
@@ -76,7 +100,15 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public ILogger GetLogger()
         {
-            return Logger;
+            if (Logger != null)
+            {
+                return Logger;
+            }
+            else
+            {
+                GetLogger().LogError("Cannot get Logger as it is set to a null value.");
+                throw new ArgumentNullException();
+            }
         }
 
         public void SetTestResultsDirectory(string resultsDirectory)
@@ -92,7 +124,15 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public string GetTestResultsDirectory()
         {
-            return ResultsDirectory;
+            if (ResultsDirectory != null)
+            {
+                return ResultsDirectory;
+            }
+            else
+            {
+                GetLogger().LogError("Cannot get ResultsDirectory as it is set to a null value.");
+                throw new ArgumentNullException();
+            }
         }
 
         public void SetBrowserConfig(BrowserConfiguration browserConfig)
@@ -108,7 +148,15 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public BrowserConfiguration GetBrowserConfig()
         {
-            return BrowserConfig;
+            if (BrowserConfig != null)
+            {
+                return BrowserConfig;
+            }
+            else
+            {
+                GetLogger().LogError("Cannot get BrowserConfig as it is set to a null value.");
+                throw new ArgumentNullException();
+            }
         }
     }
 }
