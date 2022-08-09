@@ -184,17 +184,28 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 throw new ArgumentNullException("Test Run Times cannot be null.");
             }
-            else if (testRun.TestEntries == null)
+            
+            if (testRun.TestEntries == null)
             {
                 throw new ArgumentNullException("Test Run TestEntries cannot be null.");
             }
-            else if (testRun.Results == null)
+            
+            if (testRun.Results == null)
             {
                 throw new ArgumentNullException("Test Run Results cannot be null.");
             }
-            else if (testRun.ResultSummary == null)
+            else if (testRun.Results.UnitTestResults == null)
+            {
+                throw new ArgumentNullException("Test Run Results UnitTestResults cannot be null.");
+            }
+
+            if (testRun.ResultSummary == null)
             {
                 throw new ArgumentNullException("Test Run ResultSummary cannot be null.");
+            }
+            else if (testRun.ResultSummary.Counters == null)
+            {
+                throw new ArgumentNullException("Test Run ResultSummary Counters cannot be null.");
             }
 
             testRun.Definitions.UnitTests.Add(unitTestDefinition);
@@ -212,6 +223,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testRun.Results == null)
             {
                 throw new ArgumentNullException("Test Run Results cannot be null.");
+            }
+            else if (testRun.Results.UnitTestResults == null)
+            {
+                throw new ArgumentNullException("Test Run Results UnitTestResults cannot be null.");
             }
 
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).FirstOrDefault();
@@ -232,6 +247,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 throw new ArgumentNullException("Test Run ResultSummary cannot be null.");
             }
+            else if (testRun.ResultSummary.Counters == null)
+            {
+                throw new ArgumentNullException("Test Run ResultSummary Counters cannot be null.");
+            }
 
             testRun.ResultSummary.Counters.InProgress++;
         }
@@ -243,6 +262,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testRun.Results == null)
             {
                 throw new ArgumentNullException("Test Run Results cannot be null.");
+            }
+            else if (testRun.Results.UnitTestResults == null)
+            {
+                throw new ArgumentNullException("Test Run Results UnitTestResults cannot be null.");
             }
 
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
@@ -269,6 +292,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 throw new ArgumentNullException("Test Result ResultFiles cannot be null.");
             }
+            else if (testResult.ResultFiles.ResultFile == null)
+            {
+                throw new ArgumentNullException("Test Result ResultFiles' ResultFile cannot be null.");
+            }
 
             testResult.Output.StdOut = stdout;
             if (additionalFiles != null)
@@ -282,6 +309,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testRun.ResultSummary == null)
             {
                 throw new ArgumentNullException("Test Run ResultSummary cannot be null.");
+            }
+            else if (testRun.ResultSummary.Counters == null)
+            {
+                throw new ArgumentNullException("Test Run ResultSummary Counters cannot be null.");
             }
 
             testRun.ResultSummary.Counters.InProgress--;

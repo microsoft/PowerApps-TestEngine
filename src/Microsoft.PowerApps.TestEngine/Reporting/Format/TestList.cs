@@ -8,8 +8,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class TestList
     {
         [XmlAttribute(AttributeName = "name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [XmlAttribute(AttributeName = "id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
     }
 }
