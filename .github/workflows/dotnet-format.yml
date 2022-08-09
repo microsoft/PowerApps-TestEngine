@@ -26,4 +26,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run dotnet format
-        run: dotnet format '.\' --folder --check --verbosity diagnostic
+        run: dotnet format '.\src' --folder --check --verbosity diagnostic
