@@ -118,10 +118,23 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                             var controlType = new RecordType();
                             var skipMessage = $"Control: {control.Name}";
                             bool everSkipped = false;
+                            var controlProperties = control.Properties;
 
-                            foreach (var property in control.Properties)
+                            if (controlProperties == null)
                             {
-                                if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
+                                throw new ArgumentNullException("Control's properties cannot be null.");
+                            }
+
+                            foreach (var property in controlProperties)
+                            {
+                                var propertyType = property.PropertyType;
+
+                                if (propertyType == null)
+                                {
+                                    throw new ArgumentNullException("Property Type cannot be null");
+                                }
+
+                                if (TypeMapping.TryGetType(propertyType, out var formulaType))
                                 {
                                     controlType = controlType.Add(property.PropertyName, formulaType);
                                 }
@@ -137,11 +150,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                                 _singleTestInstanceState.GetLogger().LogTrace(skipMessage);
                             }
 
-                            TypeMapping.AddMapping(control.Name, controlType);
+                            if (controlName == null)
+                            {
+                                throw new ArgumentNullException("Control name cannot be null");
+                            }
+
+                            TypeMapping.AddMapping(controlName, controlType);
 
                             var controlValue = new ControlRecordValue(controlType, this, logger, control.Name);
 
-                            controlDictionary.Add(control.Name, controlValue);
+                            controlDictionary.Add(controlName, controlValue);
                         }
                     }
                 }
@@ -152,7 +170,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync(ILogger logger)
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, logger);
+            var testSettings = _testState.GetTestSettings();
+
+            if (testSettings == null)
+            {
+                throw new ArgumentNullException("TestState TestSettings cannot be null.");
+            }
+
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), testSettings.Timeout, logger);
 
             if (!IsPublishedAppTestingJsLoaded)
             {
@@ -162,7 +187,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x, logger), _testState.GetTestSettings().Timeout, logger);
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x, logger), testSettings.Timeout, logger);
             _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;

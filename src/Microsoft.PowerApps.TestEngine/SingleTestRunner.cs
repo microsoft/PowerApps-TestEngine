@@ -162,8 +162,22 @@ namespace Microsoft.PowerApps.TestEngine
                             }
                         }
 
+                        var testExceptionMessage = TestException?.Message;
+
+                        if (testExceptionMessage == null)
+                        {
+                            throw new ArgumentNullException("TestException's message cannot be null.");
+                        }
+
+                        var testExceptionStackTrace = TestException?.StackTrace;
+
+                        if (testExceptionStackTrace == null)
+                        {
+                            throw new ArgumentNullException("TestException's StackTrace cannot be null.");
+                        }
+
                         var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
-                        _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
+                        _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, testExceptionMessage, testExceptionStackTrace);
                     }
                 }
 

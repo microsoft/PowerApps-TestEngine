@@ -92,7 +92,20 @@ namespace Microsoft.PowerApps.TestEngine
 
         public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory)
         {
-            var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
+            var stateTestSettings = _state.GetTestSettings();
+
+            if (stateTestSettings == null)
+            {
+                throw new ArgumentNullException("State's TestSettings cannot be null.");
+            }
+
+            var browserConfigurations = stateTestSettings.BrowserConfigurations;
+
+            if (browserConfigurations == null)
+            {
+                throw new ArgumentNullException("State's Browser Configuration cannot be null.");
+            }
+            
             var allTestRuns = new List<Task>();
 
             // Manage number of workers
