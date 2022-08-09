@@ -12,12 +12,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     public class TestLogger : ITestLogger
     {
         private readonly IFileSystem _fileSystem;
+        private readonly LogLevel _engineLoggingLevel;
         public List<string> Logs { get; set; } = new List<string>();
         public List<string> DebugLogs { get; set; } = new List<string>();
 
-        public TestLogger(IFileSystem fileSystem)
+        public TestLogger(IFileSystem fileSystem, LogLevel engineLoggingLevel)
         {
             _fileSystem = fileSystem;
+            _engineLoggingLevel = engineLoggingLevel;
         }
 
         public IDisposable BeginScope<TState>(TState state)
@@ -38,23 +40,39 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }
 
             _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), Logs.ToArray());
-            _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.ToArray());
+
+            if (_engineLoggingLevel <= LogLevel.Debug) {
+                _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.ToArray());
+            }
         }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        public void Log<TState>(LogLevel messageLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            var logString = $"[{logLevel}] - [{eventId}]: {formatter(state, exception)}{Environment.NewLine}";
-            
-            Console.Out.WriteLine(logString);
-            
-            if (logLevel <= LogLevel.Debug)
+            var logString = "";
+
+            if (messageLevel >= LogLevel.Warning && messageLevel <= LogLevel.Critical)
             {
-                DebugLogs.Add(logString);
+                if (eventId == 0)
+                {
+                    logString += $"[{messageLevel}]: ";
+                }
+                else
+                {
+                    logString += $"[{messageLevel}] - [{eventId}]: ";
+                }
             }
-            else
+
+            logString += $"{formatter(state, exception)}{Environment.NewLine}";
+
+            if(messageLevel >= _engineLoggingLevel)
             {
+                if (messageLevel > LogLevel.Debug)
+                {
+                    Logs.Add(logString);
+                }
+
                 DebugLogs.Add(logString);
-                Logs.Add(logString);
+                Console.Out.WriteLine(logString);
             }
         }
     }

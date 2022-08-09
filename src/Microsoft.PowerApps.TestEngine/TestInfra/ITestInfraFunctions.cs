@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
@@ -14,20 +15,20 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Setup the test infrastructure
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupAsync();
+        public Task SetupAsync(ILogger logger);
 
         /// <summary>
         /// Setup the network request mocking
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupNetworkRequestMockAsync();
+        public Task SetupNetworkRequestMockAsync(ILogger logger);
 
         /// <summary>
         /// Navigates to url specified
         /// </summary>
         /// <param name="url">Url to go to</param>
         /// <returns>Task</returns>
-        public Task GoToUrlAsync(string url);
+        public Task GoToUrlAsync(string url, ILogger logger);
 
         /// <summary>
         /// Ends the test run

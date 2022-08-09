@@ -39,11 +39,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
         }
 
-        public T GetPropertyValueFromControl<T>(ItemPath itemPath)
+        public T GetPropertyValueFromControl<T>(ItemPath itemPath, ILogger logger)
         {
             var getProperty = GetPropertyValueFromControlAsync<T>(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout());
+            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout(), logger);
 
             return getProperty.GetResult();
         }
@@ -81,7 +81,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
+        private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary, ILogger logger)
         {
             var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
@@ -91,16 +91,21 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                 if (jsObjectModel != null && jsObjectModel.Controls != null)
                 {
+                    _singleTestInstanceState.GetLogger().LogTrace("Listing all skipped properties for each control.");
+
                     foreach (var control in jsObjectModel.Controls)
                     {
                         if (controlDictionary.ContainsKey(control.Name))
                         {
                             // Components get declared twice at the moment so prevent it from throwing.
-                            _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name} already added");
+                            _singleTestInstanceState.GetLogger().LogTrace($"Control: {control.Name} already added");
                         }
                         else
                         {
                             var controlType = new RecordType();
+                            var skipMessage = $"Control: {control.Name}";
+                            bool everSkipped = false;
+
                             foreach (var property in control.Properties)
                             {
                                 if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
@@ -109,13 +114,19 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                                 }
                                 else
                                 {
-                                    _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name}, Skipping property: {property.PropertyName}, with type: {property.PropertyType}");
+                                    everSkipped = true; 
+                                    skipMessage += $"\nProperty: {property.PropertyName}, of type: {property.PropertyType}";
                                 }
+                            }
+
+                            if (everSkipped)
+                            {
+                                _singleTestInstanceState.GetLogger().LogTrace(skipMessage);
                             }
 
                             TypeMapping.AddMapping(control.Name, controlType);
 
-                            var controlValue = new ControlRecordValue(controlType, this, control.Name);
+                            var controlValue = new ControlRecordValue(controlType, this, logger, control.Name);
 
                             controlDictionary.Add(control.Name, controlValue);
                         }
@@ -126,9 +137,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return controlDictionary;
         }
 
-        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
+        public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync(ILogger logger)
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout);
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, logger);
 
             if (!IsPublishedAppTestingJsLoaded)
             {
@@ -138,7 +149,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout);
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x, logger), _testState.GetTestSettings().Timeout, logger);
             _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;
@@ -155,7 +166,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
         {
             Object? objectValue = null;
-
+            
             switch (value.Type)
             {
                 case (NumberType):
@@ -242,7 +253,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             if(string.IsNullOrEmpty(itemPath.ControlName))
             {
-                throw new ArgumentNullException(nameof(itemPath.ControlName));
+                _singleTestInstanceState.GetLogger().LogTrace("ItemPath's ControlName: " + nameof(itemPath.ControlName));
+                _singleTestInstanceState.GetLogger().LogError("ItemPath's ControlName has a null value.");
+                throw new ArgumentNullException();
             }
 
             if (requirePropertyName || itemPath.Index.HasValue)
@@ -251,7 +264,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 {
                     // Property name is required on certain functions
                     // It is also required when accessing elements in a gallery, so if an index is specified, it needs to be there
-                    throw new ArgumentNullException(nameof(itemPath.PropertyName));
+                    _singleTestInstanceState.GetLogger().LogTrace("ItemPath's PropertyName: '" + nameof(itemPath.PropertyName));
+                    _singleTestInstanceState.GetLogger().LogError("ItemPath's PropertyName has a null value.");
+                    throw new ArgumentNullException();
                 }
             }
 
@@ -270,11 +285,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         }
 
-        public int GetItemCount(ItemPath itemPath)
+        public int GetItemCount(ItemPath itemPath, ILogger logger)
         {
             var getItemCount = GetItemCountAsync(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout());
+            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), logger);
 
             return getItemCount.GetResult();
         }

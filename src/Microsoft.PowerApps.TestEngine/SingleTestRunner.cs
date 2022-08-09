@@ -59,7 +59,7 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 // It is unclear what side effects show up if you run this multiple times especially relating to the logging
                 // So throwing if it is run more than once.
-                throw new InvalidOperationException("This test can only be run once");
+                throw new InvalidOperationException("This test can only be run once.");
             }
 
             var testSuiteLogger = _loggerProvider.CreateLogger(testRunId);
@@ -75,20 +75,24 @@ namespace Microsoft.PowerApps.TestEngine
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
-                testSuiteLogger.LogInformation($"Running testSuite: {testSuiteDefinition.TestSuiteName}");
-                testSuiteLogger.LogInformation($"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
+
+                testSuiteLogger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
+                    $"RUNNING TEST SUITE: {testSuiteDefinition.TestSuiteName}" +
+                    $"\n---------------------------------------------------------------------------\n\n" +
+                    $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
+                
 
                 // Set up test infra
-                await _testInfraFunctions.SetupAsync();
+                await _testInfraFunctions.SetupAsync(Logger);
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl());
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(Logger), Logger);
 
                 // Log in user
-                await _userManager.LoginAsUserAsync();
+                await _userManager.LoginAsUserAsync(Logger);
 
                 // Set up network request mocking if any
-                await _testInfraFunctions.SetupNetworkRequestMockAsync();
+                await _testInfraFunctions.SetupNetworkRequestMockAsync(Logger);
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();
@@ -117,7 +121,10 @@ namespace Microsoft.PowerApps.TestEngine
                             await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
                         }
 
-                        Logger.LogInformation($"Running test case: {testCase.TestCaseName}");
+                        Logger.LogInformation($"---------------------------------------------------------------------------\n" +
+                            $"RUNNING TEST CASE: {testCase.TestCaseName}" +
+                            $"\n---------------------------------------------------------------------------");
+
                         await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps);
 
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))

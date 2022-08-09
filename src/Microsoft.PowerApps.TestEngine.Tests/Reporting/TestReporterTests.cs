@@ -13,6 +13,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 {
@@ -20,10 +21,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
     {
         private Mock<IFileSystem> MockFileSystem;
         private readonly DateTime DefaultDateTime = new DateTime();
+        private Mock<ILogger> MockLogger;
 
         public TestReporterTests()
         {
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
         }
 
         [Theory]

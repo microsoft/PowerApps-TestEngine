@@ -7,6 +7,7 @@ using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerFx.Types;
 using Moq;
 using System;
@@ -20,18 +21,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
     {
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<ITestState> MockTestState;
+        private Mock<ILogger> MockLogger;
 
         public SetPropertyFunctionTests()
         {
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
         }
 
         [Fact]
         public void SetPropertyFunctionThrowsOnNonPowerAppsRecordValueTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var SetPropertyFunctionString = new SetPropertyFunctionString(MockPowerAppFunctions.Object);
+            var SetPropertyFunctionString = new SetPropertyFunctionString(MockPowerAppFunctions.Object, MockLogger.Object);
             var someOtherRecordValue = new SomeOtherRecordValue(recordType);
 
             Assert.ThrowsAny<Exception>(() => SetPropertyFunctionString.Execute(someOtherRecordValue, StringValue.New("Test"), StringValue.New("10")));
@@ -44,8 +47,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Make setPropertyFunction contain a text component called Button1
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
-            var setPropertyFunctionString = new SetPropertyFunctionString(MockPowerAppFunctions.Object);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Button1");
+            var setPropertyFunctionString = new SetPropertyFunctionString(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Button1's 'Text' property to 5
             var result = setPropertyFunctionString.Execute(recordValue, StringValue.New("Text"), StringValue.New("5"));
@@ -76,8 +79,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Make setPropertyFunction contain a component called Rating1
             var recordType = new RecordType().Add("Value", FormulaType.Number);
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Rating1");
-            var setPropertyFunction = new SetPropertyFunctionNumber(MockPowerAppFunctions.Object);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Rating1");
+            var setPropertyFunction = new SetPropertyFunctionNumber(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Rating1's 'Value' property to 5
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), NumberValue.New(5));
@@ -94,8 +97,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Make setPropertyFunction contain a component called Toggle1
             var recordType = new RecordType().Add("Value", FormulaType.Boolean);
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Toggle1");
-            var setPropertyFunction = new SetPropertyFunctionBoolean(MockPowerAppFunctions.Object);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Toggle1");
+            var setPropertyFunction = new SetPropertyFunctionBoolean(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Toggle1's 'Value' property to true
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), BooleanValue.New(true));
@@ -112,8 +115,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Make setPropertyFunction contain a component called DatePicker1
             var recordType = new RecordType().Add("Value", FormulaType.Date);
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
-            var setPropertyFunction = new SetPropertyFunctionDate(MockPowerAppFunctions.Object);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "DatePicker1");
+            var setPropertyFunction = new SetPropertyFunctionDate(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of DatePicker1's 'Value' property to the datetime (01/01/2030)
             var dt = new DateTime(2030, 1, 1, 0, 0, 0);
@@ -131,8 +134,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Make setPropertyFunction contain a component called Dropdown1
             var recordType = new RecordType().Add("Selected", new RecordType());
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Dropdown1");
-            var setPropertyFunction = new SetPropertyFunctionRecord(MockPowerAppFunctions.Object);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Dropdown1");
+            var setPropertyFunction = new SetPropertyFunctionRecord(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Dropdown1's 'Selected' property to {"Value":"2"}
             var pair = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
@@ -149,9 +152,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void SetPropertyTableFunctionTest()
         {
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<TableValue>())).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>())).Returns(2);
+            MockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>(), MockLogger.Object)).Returns(2);
                    
-            var setPropertyFunction = new SetPropertyFunctionTable(MockPowerAppFunctions.Object);
+            var setPropertyFunction = new SetPropertyFunctionTable(MockPowerAppFunctions.Object, MockLogger.Object);
             var control1Name = Guid.NewGuid().ToString();
             var control2Name = Guid.NewGuid().ToString();
             var control1Type = new RecordType().Add("Value", FormulaType.String);
@@ -164,9 +167,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             };
 
             var recordType = tableType.ToRecord();
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "ComboBox1");
-            var tableSource = new ControlTableSource(MockPowerAppFunctions.Object, itemPath, recordType);
-            var tableValue = new ControlTableValue(recordType, tableSource, MockPowerAppFunctions.Object);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "ComboBox1");
+            var tableSource = new ControlTableSource(MockPowerAppFunctions.Object, itemPath, recordType, MockLogger.Object);
+            var tableValue = new ControlTableValue(recordType, tableSource, MockPowerAppFunctions.Object, MockLogger.Object);
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("SelectedItems"), tableValue);
 
             Assert.IsType<BlankValue>(result);

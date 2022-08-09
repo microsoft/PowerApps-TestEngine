@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
@@ -21,13 +22,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ISingleTestRunner> MockSingleTestRunner;
         private IServiceProvider ServiceProvider;
+        private Mock<ILogger> MockLogger;
 
         public TestEngineTests()
         {
             MockState = new Mock<ITestState>(MockBehavior.Strict);
             MockTestReporter = new Mock<ITestReporter>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
-            MockSingleTestRunner = new Mock<ISingleTestRunner>(MockBehavior.Strict); 
+            MockSingleTestRunner = new Mock<ISingleTestRunner>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
             ServiceProvider = new ServiceCollection()
                             .AddSingleton(MockSingleTestRunner.Object)
                             .BuildServiceProvider();

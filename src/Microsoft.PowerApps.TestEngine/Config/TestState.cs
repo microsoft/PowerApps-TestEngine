@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+
 namespace Microsoft.PowerApps.TestEngine.Config
 {
     /// <summary>
@@ -68,7 +70,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 throw new InvalidOperationException("Must be at least one test case");
             }
 
-            foreach(var testCase in TestCases)
+            foreach (var testCase in TestCases)
             {
                 if (string.IsNullOrEmpty(testCase.TestCaseName))
                 {
@@ -90,7 +92,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath);
             }
 
-            if (TestPlanDefinition.TestSettings.BrowserConfigurations == null 
+            if (TestPlanDefinition.TestSettings.BrowserConfigurations == null
                 || TestPlanDefinition.TestSettings.BrowserConfigurations.Count == 0)
             {
                 throw new InvalidOperationException("Missing browser configuration from test plan");
@@ -125,7 +127,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 throw new InvalidOperationException("At least one user must be specified");
             }
 
-            foreach(var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
+            foreach (var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
             {
                 if (string.IsNullOrEmpty(userConfig.PersonaName))
                 {
@@ -235,6 +237,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int GetWorkerCount()
         {
             return GetTestSettings().WorkerCount;
+        }
+
+        public LogLevel GetEngineLoggingLevel()
+        {
+            return GetTestSettings().EngineLoggingLevel;
         }
     }
 }

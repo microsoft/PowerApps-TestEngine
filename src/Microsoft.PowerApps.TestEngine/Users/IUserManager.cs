@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+
 namespace Microsoft.PowerApps.TestEngine.Users
 {
     /// <summary>
@@ -12,6 +14,6 @@ namespace Microsoft.PowerApps.TestEngine.Users
         /// Log in as user for currently running test
         /// </summary>
         /// <returns>Task</returns>
-        public Task LoginAsUserAsync();
+        public Task LoginAsUserAsync(ILogger logger);
     }
 }

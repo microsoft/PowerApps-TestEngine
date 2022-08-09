@@ -22,7 +22,7 @@ namespace Microsoft.PowerApps.TestEngine
 
         public TestEngine(ITestState state,
                           IServiceProvider serviceProvider,
-                          ITestReporter testReporter, 
+                          ITestReporter testReporter,
                           IFileSystem fileSystem)
         {
             _state = state;

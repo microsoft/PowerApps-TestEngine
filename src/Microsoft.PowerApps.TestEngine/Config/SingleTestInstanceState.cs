@@ -21,7 +21,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(testRunId))
             {
-                throw new ArgumentNullException(nameof(testRunId));
+                GetLogger().LogTrace("Test Run ID: " + nameof(testRunId));
+                GetLogger().LogError("Test Run ID cannot be set to a null value.");
+                throw new ArgumentNullException();
             }
             TestRunId = testRunId;
         }
@@ -35,7 +37,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(testId))
             {
-                throw new ArgumentNullException(nameof(testId));
+                GetLogger().LogTrace("Test ID: " + nameof(testId));
+                GetLogger().LogError("Test ID cannot be set to a null value.");
+                throw new ArgumentNullException();
             }
             TestId = testId;
         }
@@ -49,7 +53,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (testSuiteDefinition == null)
             {
-                throw new ArgumentNullException(nameof(testSuiteDefinition));
+                GetLogger().LogTrace("Test Suite Definition: " + nameof(testSuiteDefinition));
+                GetLogger().LogError("Test Suite Definition cannot be set to a null value.");
+                throw new ArgumentNullException();
             }
             TestSuiteDefinition = testSuiteDefinition;
         }
@@ -63,7 +69,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (logger == null)
             {
-                throw new ArgumentNullException(nameof(logger));
+                throw new ArgumentNullException("Logger '" + nameof(logger) + "' cannot be set to a null value.");
             }
             Logger = logger;
         }
@@ -77,7 +83,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (string.IsNullOrEmpty(resultsDirectory))
             {
-                throw new ArgumentNullException(nameof(resultsDirectory));
+                GetLogger().LogTrace("Results Directory: " + nameof(resultsDirectory));
+                GetLogger().LogError("Results Directory cannot set to a null value.");
+                throw new ArgumentNullException();
             }
             ResultsDirectory = resultsDirectory;
         }
@@ -91,7 +99,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (browserConfig == null)
             {
-                throw new ArgumentNullException(nameof(browserConfig));
+                GetLogger().LogTrace("Browser Config: " + nameof(browserConfig));
+                GetLogger().LogError("Browser Config cannot be set to a null value.");
+                throw new ArgumentNullException();
             }
             BrowserConfig = browserConfig;
         }

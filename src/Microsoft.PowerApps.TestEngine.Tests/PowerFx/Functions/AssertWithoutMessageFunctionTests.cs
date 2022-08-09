@@ -27,7 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var assertWithoutMessageFunction = new AssertWithoutMessageFunction(MockLogger.Object);
             var result = assertWithoutMessageFunction.Execute(BooleanValue.New(true));
             Assert.IsType<BlankValue>(result);
-            LoggingTestHelper.VerifyLogging(MockLogger, "Assert Function success", LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Successfully finished executing Assert function.", LogLevel.Information, Times.Once());
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             LoggingTestHelper.SetupMock(MockLogger);
             var assertWithoutMessageFunction = new AssertWithoutMessageFunction(MockLogger.Object);
             Assert.Throws<InvalidOperationException>(() => assertWithoutMessageFunction.Execute(BooleanValue.New(false)));
-            LoggingTestHelper.VerifyLogging(MockLogger, $"Assert failed: Assert Function failure", LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Assert failed. Property is not equal to the specified value.", LogLevel.Error, Times.Once());
         }
     }
 }

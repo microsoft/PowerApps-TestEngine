@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
@@ -12,6 +13,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Generates url for the test
         /// </summary>
         /// <returns>Test url</returns>
-        public string GenerateTestUrl();
+        public string GenerateTestUrl(ILogger Logger);
     }
 }

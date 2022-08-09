@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Moq;
@@ -17,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         {
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
-
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var yamlFile = @"testSuite:
   testSuiteName: Button Clicker
   testSuiteDescription: Verifies that counter increments when the button is clicked
@@ -52,6 +53,7 @@ testSettings:
         - browser: Firefox
     headless: false
     enablePowerFxOverlay: false
+    engineLoggingLevel: Debug
 
 environmentVariables:
     users:
@@ -83,6 +85,7 @@ environmentVariables:
             Assert.Equal(2, testPlan.TestSettings?.BrowserConfigurations?.Count);
             Assert.Equal("Chromium", testPlan.TestSettings?.BrowserConfigurations?[0].Browser);
             Assert.Equal("Firefox", testPlan.TestSettings?.BrowserConfigurations?[1].Browser);
+            Assert.Equal("Debug", testPlan.TestSettings?.EngineLoggingLevel.ToString());
             Assert.Single(testPlan.EnvironmentVariables?.Users);
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);
@@ -93,6 +96,7 @@ environmentVariables:
         [Fact]
         public void YamlTestConfigParserParseEnvironmentVariablesTest()
         {
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
 
@@ -114,6 +118,7 @@ environmentVariables:
         [Fact]
         public void YamlTestConfigParserParseTestSettingsTest()
         {
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
 
@@ -141,6 +146,7 @@ enablePowerFxOverlay: false";
         [InlineData(null)]
         public void YamlTestConfigParserThrowsOnNullArguments(string? filePath)
         {
+            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
             Assert.Throws<ArgumentNullException>(() => parser.ParseTestConfig<TestPlanDefinition>(filePath));

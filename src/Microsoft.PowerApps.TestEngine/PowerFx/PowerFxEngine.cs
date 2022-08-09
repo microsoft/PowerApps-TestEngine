@@ -47,14 +47,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public void Setup()
         {
             var powerFxConfig = new PowerFxConfig();
-            powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
-            powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
-            powerFxConfig.AddFunction(new SelectThreeParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync()));
-            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem));
+            powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new SelectThreeParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem, Logger));
             powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
-            SetPropertyRegisterExtensions.RegisterAll(powerFxConfig, _powerAppFunctions);
-            WaitRegisterExtensions.RegisterAll(powerFxConfig, _testState.GetTimeout());
+            SetPropertyRegisterExtensions.RegisterAll(powerFxConfig, _powerAppFunctions, Logger);
+            WaitRegisterExtensions.RegisterAll(powerFxConfig, _testState.GetTimeout(), Logger);
 
             Engine = new RecalcEngine(powerFxConfig);
         }
@@ -92,7 +92,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             if (Engine == null)
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");
-                throw new InvalidOperationException("Engine is null, make sure to call Setup first");
+                throw new InvalidOperationException();
             }
 
             // Remove the leading = sign
@@ -108,7 +108,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
                 goStepByStep = true;
-                Logger.LogError($"Syntax check failed. Switching to step by step");
+                Logger.LogWarning($"Syntax check failed. Now attempting to execute lines step by step");
             }
 
             if (goStepByStep)
@@ -119,14 +119,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 FormulaValue result = FormulaValue.NewBlank();
                 foreach (var step in splitSteps)
                 {
-                    Logger.LogInformation($"Executing {step}");
+                    Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
                     result = Engine.Eval(step);
                 }
                 return result;
             }
             else
             {
-                Logger.LogInformation($"Executing {testSteps}");
+                Logger.LogTrace($"Attempting:\n\n{{\n{testSteps}}}");
                 return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
             }
         }
@@ -136,10 +136,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             if (Engine == null)
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");
-                throw new InvalidOperationException("Engine is null, make sure to call Setup first");
+                throw new InvalidOperationException();
             }
 
-            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
+            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync(Logger);
             foreach (var control in controlRecordValues)
             {
                 Engine.UpdateVariable(control.Key, control.Value);
