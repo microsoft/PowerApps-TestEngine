@@ -81,14 +81,10 @@ namespace Microsoft.PowerApps.TestEngine
                     $"\n---------------------------------------------------------------------------\n\n" +
                     $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
-<<<<<<< HEAD
-
                 if (Logger == null)
                 {
                     throw new ArgumentNullException("Logger cannot be null.");
                 }
-=======
->>>>>>> 0e8d7934241fda6063d76295e6538e84fc048280
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync(Logger);

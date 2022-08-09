@@ -229,7 +229,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-<<<<<<< HEAD
             var objectValueString = objectValue.ToString();
 
             if (objectValueString == null)
@@ -238,9 +237,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
 
             var argument = new string[]{itemPathString, objectValueString};
-=======
-            var argument = new string[] { itemPathString, objectValue.ToString() };
->>>>>>> 0e8d7934241fda6063d76295e6538e84fc048280
+
             var expression = "([itemPathString, objectValue]) => setPropertyValue(itemPathString, objectValue)";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, argument);
         }
