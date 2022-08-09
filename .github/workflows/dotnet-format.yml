@@ -1,10 +1,13 @@
 name: dotnet format
 
 on:
+  workflow_dispatch:
   push:
-    paths:
-      - "**.cs"
-      - ".editorconfig"
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   check-format:
@@ -14,7 +17,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.x'
+          dotnet-version: '6.0.x'
 
       - name: Install dotnet-format tool
         run: dotnet tool install -g dotnet-format
