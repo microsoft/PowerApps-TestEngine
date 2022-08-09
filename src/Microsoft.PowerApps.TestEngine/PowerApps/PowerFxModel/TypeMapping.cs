@@ -76,7 +76,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// <param name="typeString">String representation of the type</param>
         /// <param name="formulaType">Power FX type</param>
         /// <returns>True if type was found</returns>
-        public bool TryGetType(string typeString, out FormulaType formulaType)
+        public bool TryGetType(string typeString, out FormulaType? formulaType)
         {
             if (string.IsNullOrEmpty(typeString))
             {
