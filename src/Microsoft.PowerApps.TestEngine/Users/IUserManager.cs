@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.Users
 {

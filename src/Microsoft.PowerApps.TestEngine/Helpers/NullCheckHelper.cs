@@ -1,17 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
 using Microsoft.Extensions.Logging;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
-using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
     /// <summary>
-    /// A helper class to do time checking and throw exception when timeout.
+    /// A helper class to check if TestEngine parameters are null.
     /// </summary>
     public class NullCheckHelper
     {

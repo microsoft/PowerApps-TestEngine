@@ -7,7 +7,6 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
-using System.IO;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {

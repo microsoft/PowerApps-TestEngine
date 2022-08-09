@@ -185,7 +185,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 case (TableType):
                     return await SetPropertyTableAsync(itemPath, (TableValue)value);
                 default:
-                    throw new ArgumentException();
+                    throw new ArgumentException("SetProperty must be a valid type.");
             }
 
             ValidateItemPath(itemPath, false);
