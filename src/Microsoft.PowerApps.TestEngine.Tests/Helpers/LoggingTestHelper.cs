@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => true),
                     It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)));
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
         }
 
         public static void VerifyLogging(Mock<ILogger> logger, string expectedMessage, LogLevel? expectedLogLevel, Times? times = null)
