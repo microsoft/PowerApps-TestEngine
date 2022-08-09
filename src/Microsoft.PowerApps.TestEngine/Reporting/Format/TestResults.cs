@@ -8,6 +8,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class TestResults
     {
         [XmlElement(ElementName = "UnitTestResult")]
-        public List<UnitTestResult> UnitTestResults { get; set; }
+        public List<UnitTestResult>? UnitTestResults { get; set; }
     }
 }

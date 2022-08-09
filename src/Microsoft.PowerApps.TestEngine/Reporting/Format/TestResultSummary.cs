@@ -8,10 +8,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class TestResultSummary
     {
         [XmlAttribute(AttributeName = "outcome")]
-        public string Outcome { get; set; }
+        public string? Outcome { get; set; }
         [XmlElement(ElementName = "Counters")]
-        public TestCounters Counters { get; set; }
+        public TestCounters? Counters { get; set; }
         [XmlElement(ElementName = "Output")]
-        public TestOutput Output {get; set; }
+        public TestOutput? Output {get; set; }
     }
 }

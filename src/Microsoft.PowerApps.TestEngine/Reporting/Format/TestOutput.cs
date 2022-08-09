@@ -8,9 +8,9 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class TestOutput
     {
         [XmlElement(ElementName = "StdOut")]
-        public string StdOut { get; set; }
+        public string? StdOut { get; set; }
 
         [XmlElement(ElementName = "ErrorInfo")]
-        public TestErrorInfo ErrorInfo { get; set; }
+        public TestErrorInfo? ErrorInfo { get; set; }
     }
 }
