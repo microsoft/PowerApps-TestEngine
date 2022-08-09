@@ -16,27 +16,7 @@ using PowerAppsTestEngine;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.PowerApps.TestEngine.TestStudioConverter;
 
-var serviceProvider = new ServiceCollection()
-    .AddLogging(loggingBuilder =>
-    {
-        loggingBuilder
-        .ClearProviders()
-        .AddProvider(new TestLoggerProvider(new FileSystem()));
-    })
-    .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
-    .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
-    .AddScoped<IPowerFxEngine, PowerFxEngine>()
-    .AddScoped<IUserManager, UserManager>()
-    .AddSingleton<ITestState, TestState>()
-    .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
-    .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
-    .AddSingleton<ITestReporter, TestReporter>()
-    .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
-    .AddScoped<ISingleTestRunner, SingleTestRunner>()
-    .AddSingleton<IFileSystem, FileSystem>()
-    .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
-    .AddSingleton<TestEngine>()
-    .BuildServiceProvider();
+
 
 var switchMappings = new Dictionary<string, string>()
 {
@@ -75,6 +55,54 @@ if (inputOptions == null)
 }
 else
 {
+    // Get EngineLoggingLevel from testSettings
+    TestState tempState = new TestState(new YamlTestConfigParser(new FileSystem()));
+    TestLoggerProvider tempLoggerProvider = new TestLoggerProvider(new FileSystem());
+    tempLoggerProvider.SetEngineLoggingLevel(LogLevel.Error);
+    ILoggerFactory tempLoggerFactory = LoggerFactory.Create(tempLoggingBuilder => {
+        tempLoggingBuilder
+        .ClearProviders()
+        .AddProvider(tempLoggerProvider);
+    });
+    ILogger tempLogger = tempLoggerFactory.CreateLogger("Suite");
+    tempState.ParseAndSetTestState(inputOptions.TestPlanFile);
+    LogLevel engineLoggingLevel = tempState.GetEngineLoggingLevel();
+
+    // Set provider & logger
+    TestState state = new TestState(new YamlTestConfigParser(new FileSystem()));
+    TestLoggerProvider loggerProvider = new TestLoggerProvider(new FileSystem());
+    loggerProvider.SetEngineLoggingLevel(engineLoggingLevel);
+    ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder => {
+        loggingBuilder
+        .ClearProviders()
+        .AddProvider(loggerProvider);
+    });
+    ILogger logger = loggerFactory.CreateLogger("Suite");
+    state.ParseAndSetTestState(inputOptions.TestPlanFile);
+
+    // Set serviceProvider & Logger
+    var serviceProvider = new ServiceCollection()
+    .AddLogging(loggingBuilder => {
+        loggingBuilder
+        .ClearProviders()
+        .AddProvider(loggerProvider);
+    })
+    .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
+    .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
+    .AddScoped<IPowerFxEngine, PowerFxEngine>()
+    .AddScoped<IUserManager, UserManager>()
+    .AddSingleton<ITestState, TestState>()
+    .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
+    .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
+    .AddSingleton<ITestReporter, TestReporter>()
+    .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
+    .AddScoped<ISingleTestRunner, SingleTestRunner>()
+    .AddSingleton<IFileSystem, FileSystem>()
+    .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
+    .AddSingleton<TestEngine>()
+    .BuildServiceProvider();
+
+
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);

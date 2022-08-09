@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+
 namespace Microsoft.PowerApps.TestEngine.Config
 {
     /// <summary>
@@ -235,6 +237,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int GetWorkerCount()
         {
             return GetTestSettings().WorkerCount;
+        }
+
+        public LogLevel GetEngineLoggingLevel()
+        {
+            return GetTestSettings().EngineLoggingLevel;
         }
     }
 }

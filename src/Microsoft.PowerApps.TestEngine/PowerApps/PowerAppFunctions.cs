@@ -91,14 +91,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                 if (jsObjectModel != null && jsObjectModel.Controls != null)
                 {
-                    _singleTestInstanceState.GetLogger().LogDebug("Listing all skipped properties for each control.");
+                    _singleTestInstanceState.GetLogger().LogTrace("Listing all skipped properties for each control.");
 
                     foreach (var control in jsObjectModel.Controls)
                     {
                         if (controlDictionary.ContainsKey(control.Name))
                         {
                             // Components get declared twice at the moment so prevent it from throwing.
-                            _singleTestInstanceState.GetLogger().LogDebug($"Control: {control.Name} already added");
+                            _singleTestInstanceState.GetLogger().LogTrace($"Control: {control.Name} already added");
                         }
                         else
                         {
@@ -121,7 +121,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                             if (everSkipped)
                             {
-                                _singleTestInstanceState.GetLogger().LogDebug(skipMessage);
+                                _singleTestInstanceState.GetLogger().LogTrace(skipMessage);
                             }
 
                             TypeMapping.AddMapping(control.Name, controlType);
