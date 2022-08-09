@@ -57,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             if (InputDir == null)
             {
                 _logger.LogError("Input directory cannot be null.");
-                throw new DirectoryNotFoundException();
+                throw new ArgumentNullException();
             }
             else if (!_fileSystem.IsValidFilePath(InputDir))
             {

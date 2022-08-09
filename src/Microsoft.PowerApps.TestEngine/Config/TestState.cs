@@ -33,12 +33,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
             if (testSuite == null)
             {
-                throw new InvalidOperationException("Missing test suite");
+                throw new ArgumentNullException("Missing test suite");
             }
-            else
-            {
-                return testSuite;
-            }
+
+            return testSuite;
         }
 
         public List<TestCase> GetTestCases()
@@ -237,54 +235,51 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             var testSettings = TestPlanDefinition?.TestSettings;
 
-            if (testSettings != null)
+            if (testSettings == null)
             {
-                return testSettings;
                 
+                throw new ArgumentNullException("Missing test settings.");
+
             }
-            else
-            {
-                throw new InvalidOperationException("Missing test settings.");
-            }
+
+            return testSettings;
         }
 
         public int GetTimeout()
         {
             var testSettings = GetTestSettings();
-            if (testSettings != null)
+
+            if (testSettings == null)
             {
-                return testSettings.Timeout;
+                
+                throw new ArgumentNullException("Missing test settings.");
             }
-            else
-            {
-                throw new InvalidOperationException("Missing test settings.");
-            }
+
+            return testSettings.Timeout;
         }
 
         public int GetWorkerCount()
         {
             var testSettings = GetTestSettings();
-            if (testSettings != null)
+
+            if (testSettings == null)
             {
-                return testSettings.WorkerCount;
+                throw new ArgumentNullException("Missing test settings.");
             }
-            else
-            {
-                throw new InvalidOperationException("Missing test settings.");
-            }
+
+            return testSettings.WorkerCount;
         }
 
         public LogLevel GetEngineLoggingLevel()
         {
             var testSettings = GetTestSettings();
-            if (testSettings != null)
+
+            if (testSettings == null)
             {
-                return testSettings.EngineLoggingLevel;
+                throw new ArgumentNullException("Missing test settings.");
             }
-            else
-            {
-                throw new InvalidOperationException("Missing test settings.");
-            }
+
+            return testSettings.EngineLoggingLevel;
         }
     }
 }
