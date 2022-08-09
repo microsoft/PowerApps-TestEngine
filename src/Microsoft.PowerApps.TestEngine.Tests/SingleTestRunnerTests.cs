@@ -1,23 +1,23 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerFx;
+using Microsoft.PowerApps.TestEngine.Reporting;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerApps.TestEngine.Users;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerFx;
-using Microsoft.PowerApps.TestEngine.Reporting;
-using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.PowerFx.Types;
-using Moq;
 using Xunit;
+using Microsoft.PowerFx.Types;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 
 namespace Microsoft.PowerApps.TestEngine.Tests
 {
@@ -143,7 +143,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [InlineData("Null additional files", null)]
         [InlineData("No additional files", new string[] { })]
         [InlineData("Some additional files", new string[] { "/logs.txt", "/screenshot1.png", "/screenshot2.png" })]
-        public async Task SingleTestRunnerSuccessTest(string[]? additionalFiles)
+        public async Task SingleTestRunnerSuccessTest(string testName, string[]? additionalFiles)
         {
             // testName param is present but not used because InlineData requires a primitive parameter as the first one, you can't just use an array
             var singleTestRunner = new SingleTestRunner(MockTestReporter.Object,
@@ -232,8 +232,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task PowerFxUpdatePowerFxModelAsyncThrowsTest()
         {
-            await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
-            {
+            await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) => {
                 MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Throws(exceptionToThrow);
             });
         }
