@@ -1,16 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerFx.Types;
-using Newtonsoft.Json;
 using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Helpers;
+using Microsoft.PowerFx.Types;
+using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 {
@@ -43,8 +43,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// <summary>
         /// Gets the name of the control
         /// </summary>
-        public string Name {
-            get {
+        public string Name
+        {
+            get
+            {
                 return _name;
             }
         }

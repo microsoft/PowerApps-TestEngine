@@ -2,9 +2,9 @@
 // Licensed under the MIT license.
 
 
+using System;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx.Types;
-using System;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 {

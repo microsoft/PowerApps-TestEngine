@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Types;
 using Moq;
-using System;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions

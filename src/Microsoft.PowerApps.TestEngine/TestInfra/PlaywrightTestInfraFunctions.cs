@@ -104,7 +104,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task SetupNetworkRequestMockAsync(ILogger logger)
         {
 
-            var mocks =_singleTestInstanceState.GetTestSuiteDefinition().NetworkRequestMocks;
+            var mocks = _singleTestInstanceState.GetTestSuiteDefinition().NetworkRequestMocks;
 
             if (mocks == null || mocks.Count == 0)
             {
@@ -116,9 +116,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 Page = await BrowserContext.NewPageAsync();
             }
 
-            foreach(var mock in mocks)
+            foreach (var mock in mocks)
             {
-                
+
                 if (string.IsNullOrEmpty(mock.RequestURL))
                 {
                     logger.LogError("RequestURL cannot be null");
@@ -153,7 +153,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (mock.Headers != null && mock.Headers.Count != 0)
             {
-                foreach(var header in mock.Headers)
+                foreach (var header in mock.Headers)
                 {
                     var requestHeaderValue = await route.Request.HeaderValueAsync(header.Key);
                     notMatch = notMatch || !string.Equals(header.Value, requestHeaderValue);
@@ -162,9 +162,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (!notMatch)
             {
-                await route.FulfillAsync(new RouteFulfillOptions {Path = mock.ResponseDataFile});
+                await route.FulfillAsync(new RouteFulfillOptions { Path = mock.ResponseDataFile });
             }
-            else{
+            else
+            {
                 await route.ContinueAsync();
             }
         }
@@ -200,7 +201,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             // The response might be null because "The method either throws an error or returns a main resource response.
             // The only exceptions are navigation to about:blank or navigation to the same URL with a different hash, which would succeed and return null."
             //(From playwright https://playwright.dev/dotnet/docs/api/class-page#page-goto)
-            if (response != null && !response.Ok )
+            if (response != null && !response.Ok)
             {
                 _singleTestInstanceState.GetLogger().LogTrace($"Page is {url}, response is {response?.Status}");
                 _singleTestInstanceState.GetLogger().LogError($"Error navigating to page.");
@@ -284,7 +285,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task HandleUserEmailScreen(string selector, string value)
         {
             ValidatePage();
-            await Page.Locator(selector).WaitForAsync(); 
+            await Page.Locator(selector).WaitForAsync();
             await Page.TypeAsync(selector, value, new PageTypeOptions { Delay = 50 });
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
         }

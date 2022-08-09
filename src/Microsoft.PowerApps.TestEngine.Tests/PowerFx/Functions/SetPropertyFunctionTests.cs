@@ -1,18 +1,18 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.Extensions.Logging;
 using Microsoft.PowerFx.Types;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
@@ -153,13 +153,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<TableValue>())).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>(), MockLogger.Object)).Returns(2);
-                   
+
             var setPropertyFunction = new SetPropertyFunctionTable(MockPowerAppFunctions.Object, MockLogger.Object);
             var control1Name = Guid.NewGuid().ToString();
             var control2Name = Guid.NewGuid().ToString();
             var control1Type = new RecordType().Add("Value", FormulaType.String);
             var control2Type = new RecordType().Add("Value", FormulaType.String);
-            var tableType = new TableType().Add(new NamedFormulaType(control1Name, control1Type,"2")).Add(new NamedFormulaType(control2Name, control2Type,"3"));
+            var tableType = new TableType().Add(new NamedFormulaType(control1Name, control1Type, "2")).Add(new NamedFormulaType(control2Name, control2Type, "3"));
             var itemPath = new ItemPath()
             {
                 ControlName = "ComboBox1",

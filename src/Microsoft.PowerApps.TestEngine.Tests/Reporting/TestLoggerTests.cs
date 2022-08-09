@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
@@ -95,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             var expectedMessages = new List<string>();
 
-            for(var i =0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 var id = Guid.NewGuid();
                 var stringFormat = "Id: {0}";
@@ -103,7 +103,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 testLogger.Log(level, stringFormat, id);
             }
 
-            foreach(var message in expectedMessages)
+            foreach (var message in expectedMessages)
             {
                 Assert.Equal(shouldBeInDebugLogs, testLogger.DebugLogs.Contains(message));
                 Assert.Equal(shouldBeInLogs, testLogger.Logs.Contains(message));

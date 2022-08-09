@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
-    
+
     /// <summary>
     /// Defines settings for tests in the test plan.
     /// </summary>

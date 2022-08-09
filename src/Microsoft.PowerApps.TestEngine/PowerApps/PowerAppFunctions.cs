@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     /// <summary>
     /// Functions for interacting with the Power App
     /// </summary>
-    public class PowerAppFunctions: IPowerAppFunctions
+    public class PowerAppFunctions : IPowerAppFunctions
     {
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
@@ -114,7 +114,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                                 }
                                 else
                                 {
-                                    everSkipped = true; 
+                                    everSkipped = true;
                                     skipMessage += $"\nProperty: {property.PropertyName}, of type: {property.PropertyType}";
                                 }
                             }
@@ -166,7 +166,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
         {
             Object? objectValue = null;
-            
+
             switch (value.Type)
             {
                 case (NumberType):
@@ -191,7 +191,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var argument = new string[]{itemPathString, objectValue.ToString()};
+            var argument = new string[] { itemPathString, objectValue.ToString() };
             var expression = "([itemPathString, objectValue]) => setPropertyValue(itemPathString, objectValue)";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, argument);
         }
@@ -237,21 +237,21 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 {
                     var recordValue = row.Value.GetField("Value");
                     var val = recordValue.GetType().GetProperty("Value")?.GetValue(recordValue, null)?.ToString();
-                    if(val != null)
+                    if (val != null)
                     {
                         jsonArr[index++] = new RecordValueObject(val);
-                    }                    
+                    }
                 }
             }
             var checkVal = JsonConvert.SerializeObject(jsonArr);
             var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
 
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);            
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
         {
-            if(string.IsNullOrEmpty(itemPath.ControlName))
+            if (string.IsNullOrEmpty(itemPath.ControlName))
             {
                 _singleTestInstanceState.GetLogger().LogTrace("ItemPath's ControlName: " + nameof(itemPath.ControlName));
                 _singleTestInstanceState.GetLogger().LogError("ItemPath's ControlName has a null value.");
@@ -270,7 +270,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
             }
 
-            if(itemPath.ParentControl != null)
+            if (itemPath.ParentControl != null)
             {
                 ValidateItemPath(itemPath.ParentControl, false);
             }

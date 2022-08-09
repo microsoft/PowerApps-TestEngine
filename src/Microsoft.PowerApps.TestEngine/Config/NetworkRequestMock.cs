@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 namespace Microsoft.PowerApps.TestEngine.Config
@@ -23,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Gets or sets the request's headers.
         /// </summary>
-        public IDictionary<string,string>? Headers { get; set; }
+        public IDictionary<string, string>? Headers { get; set; }
         /// <summary>
         /// Gets or sets the request's payload.
         /// </summary>

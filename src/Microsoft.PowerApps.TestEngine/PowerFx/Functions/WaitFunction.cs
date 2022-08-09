@@ -43,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 {
                     conditional = conditionToCheck(functionToCall());
                 }
-                
+
                 if ((DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout))
                 {
                     _logger.LogDebug("Timeout duration set to " + timeout);
@@ -77,7 +77,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             var controlModel = (ControlRecordValue)obj;
 
-            PollingCondition<double>((x) => x != value.Value, () => {
+            PollingCondition<double>((x) => x != value.Value, () =>
+            {
                 return ((NumberValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 
@@ -106,7 +107,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             var controlModel = (ControlRecordValue)obj;
 
-            PollingCondition<string>((x) => x != value.Value, () => {
+            PollingCondition<string>((x) => x != value.Value, () =>
+            {
                 return ((StringValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 
@@ -135,7 +137,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             var controlModel = (ControlRecordValue)obj;
 
-            PollingCondition<bool>((x) => x != value.Value, () => {
+            PollingCondition<bool>((x) => x != value.Value, () =>
+            {
                 return ((BooleanValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 
@@ -195,8 +198,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
-            
-            PollingCondition<DateTime>((x) => x != value.Value, () => {
+
+            PollingCondition<DateTime>((x) => x != value.Value, () =>
+            {
                 return ((DateValue)controlModel.GetField(propName.Value)).Value;
             }, _timeout);
 

@@ -1,16 +1,16 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.Reporting;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Reporting;
+using Microsoft.PowerApps.TestEngine.System;
+using Moq;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests
@@ -116,7 +116,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     }
                 }
             };
-           
+
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = "TestOutput";
             var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
@@ -189,7 +189,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
 
-        private void Verify(string testConfigFile, string environmentId, string tenantId, string cloud, 
+        private void Verify(string testConfigFile, string environmentId, string tenantId, string cloud,
             string outputDirectory, string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, TestSettings testSettings)
         {
             MockState.Verify(x => x.ParseAndSetTestState(testConfigFile), Times.Once());

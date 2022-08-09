@@ -1,6 +1,9 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
@@ -8,14 +11,11 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Types;
 using Moq;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 {
-    public class ScreenshotFunctionTests 
+    public class ScreenshotFunctionTests
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;

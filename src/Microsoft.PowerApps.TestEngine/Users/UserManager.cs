@@ -23,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
         private const string PasswordSelector = "input[type=\"password\"]";
         private const string SubmitButtonSelector = "input[type=\"submit\"]";
         private const string KeepMeSignedInNoSelector = "[id=\"idBtn_Back\"]";
-        
+
 
         public UserManager(ITestInfraFunctions testInfraFunctions, ITestState testState,
             ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable)
@@ -84,7 +84,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
                 throw new InvalidOperationException();
             }
 
-            await _testInfraFunctions.HandleUserEmailScreen(EmailSelector,user);
+            await _testInfraFunctions.HandleUserEmailScreen(EmailSelector, user);
 
             await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 

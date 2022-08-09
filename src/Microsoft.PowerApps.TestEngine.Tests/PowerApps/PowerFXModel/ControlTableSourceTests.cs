@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx.Types;
 using Moq;
-using System;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var controlTableSource = new ControlTableSource(mockPowerAppFunctions.Object, itemPath, recordType, MockLogger.Object);
             Assert.Equal(itemCount, controlTableSource.Count);
 
-            for(var i = 0; i < itemCount; i++)
+            for (var i = 0; i < itemCount; i++)
             {
                 var row = controlTableSource[i];
                 Assert.Equal(i, row.ItemPath.Index);

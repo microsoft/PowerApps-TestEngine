@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Extensions.Logging;
-using Castle.Core.Logging;
-using Microsoft.PowerApps.TestEngine.Config;
-using Moq;
 using System;
 using System.Collections.Generic;
+using Castle.Core.Logging;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Config;
+using Moq;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Config

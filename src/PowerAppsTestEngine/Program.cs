@@ -1,20 +1,20 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerApps.TestEngine.TestStudioConverter;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.PowerApps.TestEngine.TestStudioConverter;
 
 
 
@@ -59,7 +59,8 @@ else
     TestState tempState = new TestState(new YamlTestConfigParser(new FileSystem()));
     TestLoggerProvider tempLoggerProvider = new TestLoggerProvider(new FileSystem());
     tempLoggerProvider.SetEngineLoggingLevel(LogLevel.Error);
-    ILoggerFactory tempLoggerFactory = LoggerFactory.Create(tempLoggingBuilder => {
+    ILoggerFactory tempLoggerFactory = LoggerFactory.Create(tempLoggingBuilder =>
+    {
         tempLoggingBuilder
         .ClearProviders()
         .AddProvider(tempLoggerProvider);
@@ -72,7 +73,8 @@ else
     TestState state = new TestState(new YamlTestConfigParser(new FileSystem()));
     TestLoggerProvider loggerProvider = new TestLoggerProvider(new FileSystem());
     loggerProvider.SetEngineLoggingLevel(engineLoggingLevel);
-    ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder => {
+    ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder =>
+    {
         loggingBuilder
         .ClearProviders()
         .AddProvider(loggerProvider);
@@ -82,7 +84,8 @@ else
 
     // Set serviceProvider & Logger
     var serviceProvider = new ServiceCollection()
-    .AddLogging(loggingBuilder => {
+    .AddLogging(loggingBuilder =>
+    {
         loggingBuilder
         .ClearProviders()
         .AddProvider(loggerProvider);

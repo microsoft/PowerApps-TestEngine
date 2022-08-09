@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Extensions.Logging;
-using Microsoft.PowerFx.Types;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 {
@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         }
 
         public ControlTableRowSchema this[int index] => new ControlTableRowSchema(
-                                                        RecordType, 
+                                                        RecordType,
                                                         new ItemPath()
                                                         {
                                                             // Make a copy of item path so the index can be set correctly
@@ -42,8 +42,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                                                             ParentControl = _itemPath.ParentControl
                                                         });
 
-        public int Count {
-            get {
+        public int Count
+        {
+            get
+            {
                 // Always have to go fetch the count as it could dynamically change
                 return _powerAppFunctions.GetItemCount(_itemPath, _logger);
             }
@@ -51,7 +53,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 
         public IEnumerator<ControlTableRowSchema> GetEnumerator()
         {
-            for(var i = 0; i < Count; i++)
+            for (var i = 0; i < Count; i++)
             {
                 yield return this[i];
             }
