@@ -26,4 +26,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run dotnet format
-        run: dotnet format '.\src\Microsoft.PowerApps.TestEngine' --verify-no-changes
+        run: dotnet format '.\src\Microsoft.PowerApps.TestEngine' --verify-no-changes --severity error
