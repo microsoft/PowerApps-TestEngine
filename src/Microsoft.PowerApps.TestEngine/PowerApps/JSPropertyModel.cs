@@ -5,7 +5,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
     public class JSPropertyModel
     {
-        public string PropertyName { get; set; }
-        public string PropertyType { get; set; }
+        public string? PropertyName { get; set; }
+        public string? PropertyType { get; set; }
     }
 }

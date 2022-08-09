@@ -8,8 +8,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class TestErrorInfo
     {
         [XmlElement(ElementName = "Message")]
-        public string Message { get; set; }
+        public string? Message { get; set; }
         [XmlElement(ElementName = "StackTrace")]
-        public string StackTrace { get; set; }
+        public string? StackTrace { get; set; }
     }
 }

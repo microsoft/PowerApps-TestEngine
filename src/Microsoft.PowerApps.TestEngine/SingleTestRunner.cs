@@ -80,7 +80,12 @@ namespace Microsoft.PowerApps.TestEngine
                     $"RUNNING TEST SUITE: {testSuiteDefinition.TestSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n" +
                     $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
-                
+
+
+                if (Logger == null)
+                {
+                    throw new ArgumentNullException("Logger cannot be null.");
+                }
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync(Logger);

@@ -57,7 +57,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 return fullFilePath;
             }
 
-            return Path.Combine(Directory.GetParent(currentDirectory).FullName, "Microsoft.PowerApps.TestEngine", file);
+            var parentDirectory = Directory.GetParent(currentDirectory);
+
+            if (parentDirectory == null)
+            {
+                throw new ArgumentNullException("Parent directory cannot be null.");
+            }
+
+            return Path.Combine(parentDirectory.FullName, "Microsoft.PowerApps.TestEngine", file);
         }
 
         private async Task<bool> CheckIfAppIsIdleAsync()
@@ -95,7 +102,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                     foreach (var control in jsObjectModel.Controls)
                     {
-                        if (controlDictionary.ContainsKey(control.Name))
+                        var controlName = control.Name;
+
+                        if (controlName == null)
+                        {
+                            throw new ArgumentNullException("Control name cannot be null");
+                        }
+                        else if (controlDictionary.ContainsKey(controlName))
                         {
                             // Components get declared twice at the moment so prevent it from throwing.
                             _singleTestInstanceState.GetLogger().LogTrace($"Control: {control.Name} already added");

@@ -156,11 +156,23 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 throw new ArgumentNullException("Test Run TestLists cannot be null.");
             }
 
+            if (testRun.TestLists.TestList == null)
+            {
+                throw new ArgumentNullException("TestRun TestList cannot be null.");
+            }
+
+            var firstId = testRun.TestLists.TestList.First().Id;
+
+            if (firstId == null)
+            {
+                throw new ArgumentNullException("TestRun TestList ID cannot be null.");
+            }
+
             var testEntry = new TestEntry
             {
                 TestId = unitTestDefinition.Id,
                 ExecutionId = unitTestDefinition.Execution.Id,
-                TestListId = testRun.TestLists.TestList.First().Id
+                TestListId = firstId
             };
 
             var unitTestResult = new UnitTestResult
@@ -184,12 +196,20 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 throw new ArgumentNullException("Test Run Times cannot be null.");
             }
-            
+            else if (testRun.Definitions.UnitTests == null)
+            {
+                throw new ArgumentNullException("Test Run Times cannot be null.");
+            }
+
             if (testRun.TestEntries == null)
             {
                 throw new ArgumentNullException("Test Run TestEntries cannot be null.");
             }
-            
+            else if (testRun.TestEntries.Entries == null)
+            {
+                throw new ArgumentNullException("Test Run TestEntries Entries cannot be null.");
+            }
+
             if (testRun.Results == null)
             {
                 throw new ArgumentNullException("Test Run Results cannot be null.");

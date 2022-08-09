@@ -8,10 +8,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class TestEntry
     {
         [XmlAttribute(AttributeName = "testId")]
-        public string TestId { get; set; }
+        public string? TestId { get; set; }
         [XmlAttribute(AttributeName = "executionId")]
-        public string ExecutionId { get; set; }
+        public string? ExecutionId { get; set; }
         [XmlAttribute(AttributeName = "testListId")]
-        public string TestListId { get; set; }
+        public string? TestListId { get; set; }
     }
 }

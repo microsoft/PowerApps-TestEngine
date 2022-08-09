@@ -11,6 +11,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// <summary>
         /// List of controls object model
         /// </summary>
-        public List<JSControlModel> Controls { get; set; }
+        public List<JSControlModel>? Controls { get; set; }
     }
 }
