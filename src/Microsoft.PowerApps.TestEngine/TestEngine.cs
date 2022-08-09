@@ -71,10 +71,17 @@ namespace Microsoft.PowerApps.TestEngine
                 _state.SetOutputDirectory(outputDirectory);
             }
 
+            var stateOutputDirectory = _state.GetOutputDirectory();
+
+            if (stateOutputDirectory == null)
+            {
+                throw new ArgumentNullException("State output directory cannot be null.");
+            }
+
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
             _testReporter.StartTestRun(testRunId);
-            var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
+            var testRunDirectory = Path.Combine(stateOutputDirectory, testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
 
             await RunTestByWorkerCountAsync(testRunId, testRunDirectory);
