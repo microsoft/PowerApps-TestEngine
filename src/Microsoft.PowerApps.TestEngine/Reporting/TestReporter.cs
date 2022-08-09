@@ -77,8 +77,11 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public void StartTestRun(string testRunId)
         {
             var testRun = GetTestRun(testRunId);
-
-            if (testRun.Times.Start != _defaultDateTime)
+            if (testRun.Times == null)
+            {
+                throw new ArgumentNullException("Test Run Times cannot be null.");
+            }
+            else if (testRun.Times.Start != _defaultDateTime)
             {
                 throw new InvalidOperationException("Test run has already started");
             }
@@ -89,7 +92,11 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public void EndTestRun(string testRunId)
         {
             var testRun = GetTestRun(testRunId);
-            if (testRun.Times.Start == _defaultDateTime)
+            if (testRun.Times == null)
+            {
+                throw new ArgumentNullException("Test Run Times cannot be null.");
+            }
+            else if (testRun.Times.Start == _defaultDateTime)
             {
                 throw new InvalidOperationException("Test run has not been started");
             }
@@ -97,6 +104,11 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testRun.Times.Finish != _defaultDateTime)
             {
                 throw new InvalidOperationException("Can't end a test run is already finsihed");
+            }
+
+            if (testRun.ResultSummary == null)
+            {
+                throw new ArgumentNullException("Test Run Result Summary cannot be null.");
             }
 
             testRun.Times.Finish = DateTime.Now;
@@ -107,7 +119,11 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             var testRun = GetTestRun(testRunId);
 
-            if (testRun.Times.Start == _defaultDateTime)
+            if (testRun.Times == null)
+            {
+                throw new ArgumentNullException("Test Run Times cannot be null.");
+            }
+            else if (testRun.Times.Start == _defaultDateTime)
             {
                 throw new InvalidOperationException("Test run needs to be started");
             }
@@ -135,6 +151,11 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 }
             };
 
+            if (testRun.TestLists == null)
+            {
+                throw new ArgumentNullException("Test Run TestLists cannot be null.");
+            }
+
             var testEntry = new TestEntry
             {
                 TestId = unitTestDefinition.Id,
@@ -159,6 +180,23 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 }
             };
 
+            if (testRun.Definitions == null)
+            {
+                throw new ArgumentNullException("Test Run Times cannot be null.");
+            }
+            else if (testRun.TestEntries == null)
+            {
+                throw new ArgumentNullException("Test Run TestEntries cannot be null.");
+            }
+            else if (testRun.Results == null)
+            {
+                throw new ArgumentNullException("Test Run Results cannot be null.");
+            }
+            else if (testRun.ResultSummary == null)
+            {
+                throw new ArgumentNullException("Test Run ResultSummary cannot be null.");
+            }
+
             testRun.Definitions.UnitTests.Add(unitTestDefinition);
             testRun.TestEntries.Entries.Add(testEntry);
             testRun.Results.UnitTestResults.Add(unitTestResult);
@@ -170,6 +208,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public void StartTest(string testRunId, string testId)
         {
             var testRun = GetTestRun(testRunId);
+
+            if (testRun.Results == null)
+            {
+                throw new ArgumentNullException("Test Run Results cannot be null.");
+            }
+
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).FirstOrDefault();
 
             if (testResult == null)
@@ -183,12 +227,24 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }
 
             testResult.StartTime = DateTime.Now;
+
+            if (testRun.ResultSummary == null)
+            {
+                throw new ArgumentNullException("Test Run ResultSummary cannot be null.");
+            }
+
             testRun.ResultSummary.Counters.InProgress++;
         }
 
-        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string? errorMessage, string? stackTrace)
+        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
         {
             var testRun = GetTestRun(testRunId);
+
+            if (testRun.Results == null)
+            {
+                throw new ArgumentNullException("Test Run Results cannot be null.");
+            }
+
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
 
             if (testResult.StartTime == _defaultDateTime)
@@ -203,6 +259,17 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             testResult.EndTime = DateTime.Now;
             testResult.Duration = (testResult.EndTime - testResult.StartTime).ToString();
+
+            if (testResult.Output== null)
+            {
+                throw new ArgumentNullException("Test Result Output cannot be null.");
+            }
+
+            if (testResult.ResultFiles == null)
+            {
+                throw new ArgumentNullException("Test Result ResultFiles cannot be null.");
+            }
+
             testResult.Output.StdOut = stdout;
             if (additionalFiles != null)
             {
@@ -211,6 +278,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                     testResult.ResultFiles.ResultFile.Add(new ResultFile() { Path = additionalFile });
                 }
             }
+
+            if (testRun.ResultSummary == null)
+            {
+                throw new ArgumentNullException("Test Run ResultSummary cannot be null.");
+            }
+
             testRun.ResultSummary.Counters.InProgress--;
             testRun.ResultSummary.Counters.Completed++;
             if (success)
@@ -223,6 +296,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 testRun.ResultSummary.Counters.Failed++;
                 testResult.Outcome = "Failed";
                 testResult.Output.ErrorInfo = new TestErrorInfo();
+
                 testResult.Output.ErrorInfo.Message = errorMessage;
                 testResult.Output.ErrorInfo.StackTrace = stackTrace;
             }

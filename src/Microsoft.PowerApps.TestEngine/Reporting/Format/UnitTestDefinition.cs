@@ -8,14 +8,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class UnitTestDefinition
     {
         [XmlAttribute(AttributeName = "name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [XmlAttribute(AttributeName = "storage")]
-        public string Storage { get; set; }
+        public string? Storage { get; set; }
         [XmlAttribute(AttributeName = "id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [XmlElement(ElementName = "Execution")]
-        public TestExecution Execution { get; set; }
+        public TestExecution? Execution { get; set; }
         [XmlElement(ElementName = "TestMethod")]
-        public TestMethod Method { get; set; }
+        public TestMethod? Method { get; set; }
     }
 }

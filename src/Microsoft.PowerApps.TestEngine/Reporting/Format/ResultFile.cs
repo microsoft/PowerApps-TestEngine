@@ -8,6 +8,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class ResultFile
     {
         [XmlAttribute(AttributeName = "path")]
-        public string Path { get; set; }
+        public string? Path { get; set; }
     }
 }

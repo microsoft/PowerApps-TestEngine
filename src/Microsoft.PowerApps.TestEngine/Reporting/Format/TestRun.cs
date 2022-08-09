@@ -9,22 +9,22 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
     public class TestRun
     {
         [XmlAttribute(AttributeName = "id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [XmlAttribute(AttributeName = "name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [XmlAttribute(AttributeName = "runUser")]
-        public string RunUser { get; set; }
+        public string? RunUser { get; set; }
         [XmlElement(ElementName = "Times")]
-        public TestTimes Times { get; set; }
+        public TestTimes? Times { get; set; }
         [XmlElement(ElementName = "Results")]
-        public TestResults Results { get; set; }
+        public TestResults? Results { get; set; }
         [XmlElement(ElementName = "TestDefinitions")]
-        public TestDefinitions Definitions { get; set; }
+        public TestDefinitions? Definitions { get; set; }
         [XmlElement(ElementName = "TestEntries")]
-        public TestEntries TestEntries { get; set; }
+        public TestEntries? TestEntries { get; set; }
         [XmlElement(ElementName = "TestLists")]
-        public TestLists TestLists { get; set; }
+        public TestLists? TestLists { get; set; }
         [XmlElement(ElementName = "ResultSummary")]
-        public TestResultSummary ResultSummary { get; set; }
+        public TestResultSummary? ResultSummary { get; set; }
     }
 }
