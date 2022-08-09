@@ -1,13 +1,13 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerApps.TestEngine.Helpers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Moq;
+using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 {
@@ -24,7 +24,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         }
 
         private Func<bool, bool> conditionToCheck = x => !x;
-        private Func<bool> functionToCall = () => {
+        private Func<bool> functionToCall = () =>
+        {
             Thread.Sleep(1000);
             return true;
         };

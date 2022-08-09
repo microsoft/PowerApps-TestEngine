@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.Linq;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
@@ -48,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             Assert.Equal(recordType, tableValue.RecordType);
             Assert.Equal(tableCount, tableValue.Rows.Count());
 
-            for(var i = 0; i < tableCount; i++)
+            for (var i = 0; i < tableCount; i++)
             {
                 var row = tableValue.Rows.ToArray()[i];
                 Assert.Equal(recordType, row.Value.Type);

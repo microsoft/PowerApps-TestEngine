@@ -7,7 +7,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     /// Object model for a control returned from javascript
     /// </summary>
     public class JSControlModel
-    {        
+    {
         /// <summary>
         /// Gets or sets the name of the control
         /// </summary>

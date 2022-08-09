@@ -1,7 +1,7 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-using Microsoft.Extensions.Logging;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
@@ -25,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 CheckIfTimedOut(startTime, timeout, logger);
                 Thread.Sleep(500);
             }
-            
+
             return value;
         }
 

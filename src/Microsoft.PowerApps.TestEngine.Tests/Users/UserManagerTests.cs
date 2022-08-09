@@ -1,16 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Users
@@ -139,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [Theory]
         [InlineData(null, "myPassword1234")]
         [InlineData("", "myPassword1234")]
-        [InlineData("user1Email",  null)]
+        [InlineData("user1Email", null)]
         [InlineData("user1Email", "")]
         public async Task LoginUserAsyncThrowsOnInvalidUserConfigTest(string? emailKey, string? passwordKey)
         {

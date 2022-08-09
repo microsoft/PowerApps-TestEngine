@@ -8,8 +8,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
     {
         public IUntypedObject this[int index] => throw new global::System.NotImplementedException();
 
-        public FormulaType Type {
-            get {
+        public FormulaType Type
+        {
+            get
+            {
                 throw new global::System.NotImplementedException();
             }
         }

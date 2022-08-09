@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerFx.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 {
@@ -23,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             };
             if (additionalProperties != null)
             {
-                foreach(var additionalProperty in additionalProperties)
+                foreach (var additionalProperty in additionalProperties)
                 {
                     properties.Add(additionalProperty);
                 }

@@ -1,15 +1,15 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
-using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         protected readonly IPowerAppFunctions _powerAppFunctions;
         protected readonly ILogger _logger;
-        
+
         public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType, ILogger logger) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
         {
             _powerAppFunctions = powerAppFunctions;
@@ -170,12 +170,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         public static void RegisterAll(this PowerFxConfig powerFxConfig, IPowerAppFunctions powerAppFunctions, ILogger logger)
         {
-        powerFxConfig.AddFunction(new SetPropertyFunctionNumber(powerAppFunctions, logger));
-        powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions, logger));
-        powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions, logger));
-        powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions, logger));
-        powerFxConfig.AddFunction(new SetPropertyFunctionRecord(powerAppFunctions, logger));
-        powerFxConfig.AddFunction(new SetPropertyFunctionTable(powerAppFunctions, logger));
+            powerFxConfig.AddFunction(new SetPropertyFunctionNumber(powerAppFunctions, logger));
+            powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions, logger));
+            powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions, logger));
+            powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions, logger));
+            powerFxConfig.AddFunction(new SetPropertyFunctionRecord(powerAppFunctions, logger));
+            powerFxConfig.AddFunction(new SetPropertyFunctionTable(powerAppFunctions, logger));
         }
     }
 }

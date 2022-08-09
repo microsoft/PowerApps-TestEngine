@@ -3,10 +3,10 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using Newtonsoft.Json;
@@ -32,9 +32,9 @@ namespace Microsoft.PowerApps.TestEngine
         private Exception? TestException { get; set; }
         private int RunCount { get; set; } = 0;
 
-        public SingleTestRunner(ITestReporter testReporter, 
-                                IPowerFxEngine powerFxEngine, 
-                                ITestInfraFunctions testInfraFunctions, 
+        public SingleTestRunner(ITestReporter testReporter,
+                                IPowerFxEngine powerFxEngine,
+                                ITestInfraFunctions testInfraFunctions,
                                 IUserManager userManager,
                                 ILoggerProvider loggerProvider,
                                 ISingleTestInstanceState testState,
@@ -81,11 +81,14 @@ namespace Microsoft.PowerApps.TestEngine
                     $"\n---------------------------------------------------------------------------\n\n" +
                     $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
+<<<<<<< HEAD
 
                 if (Logger == null)
                 {
                     throw new ArgumentNullException("Logger cannot be null.");
                 }
+=======
+>>>>>>> 0e8d7934241fda6063d76295e6538e84fc048280
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync(Logger);

@@ -1,16 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerFx.Types;
-using Newtonsoft.Json;
 using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Helpers;
+using Microsoft.PowerFx.Types;
+using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 {
@@ -43,6 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// <summary>
         /// Gets the name of the control
         /// </summary>
+<<<<<<< HEAD
         public string Name {
             get {
                 if (_name != null)
@@ -53,6 +54,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                 {
                     throw new ArgumentNullException("Cannot get name of the control, as it is null.");
                 }
+=======
+        public string Name
+        {
+            get
+            {
+                return _name;
+>>>>>>> 0e8d7934241fda6063d76295e6538e84fc048280
             }
         }
 
