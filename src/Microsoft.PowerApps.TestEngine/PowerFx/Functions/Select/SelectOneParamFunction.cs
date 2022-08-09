@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx;
@@ -16,11 +17,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly Func<Task> _updateModelFunction;
+        protected readonly ILogger _logger;
 
-        public SelectOneParamFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType())
+        public SelectOneParamFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, new RecordType())
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;
+            _logger = logger;
         }
 
         public BlankValue Execute(RecordValue obj)
@@ -34,7 +37,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         {
             if (obj == null)
             {
-                throw new ArgumentException(nameof(obj));
+                _logger.LogTrace($"Object name: '{obj}'");
+                _logger.LogError($"Object cannot be null.");
+                throw new ArgumentException();
             }
 
             var powerAppControlModel = (ControlRecordValue)obj;
@@ -42,7 +47,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             if (!result)
             {
-                throw new Exception($"Unable to select control {powerAppControlModel.Name}");
+                _logger.LogTrace($"Control name: {powerAppControlModel.Name}");
+                _logger.LogError($"Unable to select control");
+                throw new Exception();
             }
 
             await _updateModelFunction();

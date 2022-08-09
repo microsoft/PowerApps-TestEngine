@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+using Castle.Core.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Moq;
 using System;
@@ -13,9 +15,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
     {
         private Mock<ITestConfigParser> MockTestConfigParser;
         private List<TestCase> TestCases = new List<TestCase>();
+        private Mock<Microsoft.Extensions.Logging.ILogger> MockLogger;
 
         public TestStateTests()
         {
+            MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             MockTestConfigParser = new Mock<ITestConfigParser>(MockBehavior.Strict);
             var testCase = new TestCase
             {

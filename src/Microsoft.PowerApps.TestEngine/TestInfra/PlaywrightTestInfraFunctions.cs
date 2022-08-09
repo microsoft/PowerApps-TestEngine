@@ -38,19 +38,21 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             BrowserContext = browserContext;
         }
 
-        public async Task SetupAsync()
+        public async Task SetupAsync(ILogger logger)
         {
 
             var browserConfig = _singleTestInstanceState.GetBrowserConfig();
 
             if (browserConfig == null)
             {
-                throw new InvalidOperationException("Browser config cannot be null");
+                logger.LogError("Browser config cannot be null");
+                throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(browserConfig.Browser))
             {
-                throw new InvalidOperationException("Browser cannot be null");
+                logger.LogError("Browser cannot be null");
+                throw new InvalidOperationException();
             }
 
             if (PlaywrightObject == null)
@@ -62,7 +64,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (testSettings == null)
             {
-                throw new InvalidOperationException("Test settings cannot be null");
+                logger.LogError("Test settings cannot be null.");
+                throw new InvalidOperationException();
             }
 
             var launchOptions = new BrowserTypeLaunchOptions()
@@ -98,7 +101,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             BrowserContext = await Browser.NewContextAsync(contextOptions);
         }
 
-        public async Task SetupNetworkRequestMockAsync()
+        public async Task SetupNetworkRequestMockAsync(ILogger logger)
         {
 
             var mocks =_singleTestInstanceState.GetTestSuiteDefinition().NetworkRequestMocks;
@@ -118,12 +121,14 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 
                 if (string.IsNullOrEmpty(mock.RequestURL))
                 {
-                    throw new InvalidOperationException("RequestURL cannot be null");
+                    logger.LogError("RequestURL cannot be null");
+                    throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
                 {
-                    throw new InvalidOperationException("ResponseDataFile is invalid or missing");
+                    logger.LogError("ResponseDataFile is invalid or missing");
+                    throw new InvalidOperationException();
                 }
 
                 await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
@@ -164,21 +169,24 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
-        public async Task GoToUrlAsync(string url)
+        public async Task GoToUrlAsync(string url, ILogger logger)
         {
             if (string.IsNullOrEmpty(url))
             {
-                throw new InvalidOperationException("Url cannot be null or empty");
+                logger.LogError("Url cannot be null or empty");
+                throw new InvalidOperationException();
             }
 
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
             {
-                throw new InvalidOperationException("Url is invalid");
+                logger.LogError("Url is invalid");
+                throw new InvalidOperationException();
             }
 
             if (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp)
             {
-                throw new InvalidOperationException("Url must be http/https");
+                logger.LogError("Url must be http/https");
+                throw new InvalidOperationException();
             }
 
             if (Page == null)
@@ -194,8 +202,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             //(From playwright https://playwright.dev/dotnet/docs/api/class-page#page-goto)
             if (response != null && !response.Ok )
             {
-                _singleTestInstanceState.GetLogger().LogError($"Error navigating to page: {url}, response is: {response?.Status}");
-                throw new InvalidOperationException("Go to url failed");
+                _singleTestInstanceState.GetLogger().LogTrace($"Page is {url}, response is {response?.Status}");
+                _singleTestInstanceState.GetLogger().LogError($"Error navigating to page.");
+                throw new InvalidOperationException();
             }
         }
 
@@ -257,6 +266,19 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             ValidatePage();
 
             return await Page.EvaluateAsync<T>(jsExpression);
+        }
+
+        public async Task<T> RunJavascriptAsync<T>(string jsExpression, string[] arguments)
+        {
+            ValidatePage();
+            var santizedArguments = new string[arguments.Length];
+            for (int i = 0; i < arguments.Length; i++)
+            { // encode and add to sanitizedArguments 
+                var argument = arguments[i];
+                var encode = Uri.EscapeDataString(argument);
+                santizedArguments[i] = encode;
+            }
+            return await Page.EvaluateAsync<T>(jsExpression, santizedArguments);
         }
 
         public async Task HandleUserEmailScreen(string selector, string value)

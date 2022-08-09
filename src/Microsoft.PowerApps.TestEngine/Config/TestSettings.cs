@@ -1,8 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+
 namespace Microsoft.PowerApps.TestEngine.Config
 {
+    
     /// <summary>
     /// Defines settings for tests in the test plan.
     /// </summary>
@@ -49,5 +52,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Number of workers. Default is 10.
         /// </summary>
         public int WorkerCount { get; set; } = 10;
+
+        /// <summary>
+        /// How verbose the logging should be.
+        /// </summary>
+        public LogLevel EngineLoggingLevel { get; set; } = LogLevel.Information;
     }
 }

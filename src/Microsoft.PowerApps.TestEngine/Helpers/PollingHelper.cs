@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
@@ -9,116 +10,77 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
     /// </summary>
     public class PollingHelper
     {
-        public static T Poll<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
+        public static T Poll<T>(T value, Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout, ILogger logger)
         {
-            if (timeout < 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
-            var valueToCheck = initialValue;
+            ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;
 
-            while (conditionToCheck(valueToCheck))
+            while (conditionToCheck(value))
             {
                 if (functionToCall != null)
                 {
-                    valueToCheck = functionToCall();
+                    value = functionToCall();
                 }
 
-                if (IsTimeout(startTime, timeout))
-                {
-                    throw new TimeoutException("Timed operation timed out.");
-                }
-
+                CheckIfTimedOut(startTime, timeout, logger);
                 Thread.Sleep(500);
             }
             
-            return valueToCheck;
+            return value;
         }
 
-        // Poll created for types that cannot have an initial value, because said type cannot be null
-        public static void Poll<T>(Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
+        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout, ILogger logger)
         {
-            ValidateTimeoutValue(timeout);
-
+            ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;
-            bool conditional = true;
 
-            while (conditional)
+            while (conditionToCheck(value))
             {
                 if (functionToCall != null)
                 {
-                    conditional = conditionToCheck(functionToCall());
+                    value = await functionToCall();
                 }
 
-                if (IsTimeout(startTime, timeout))
-                {
-                    throw new TimeoutException("Timed operation timed out.");
-                }
-
-                Thread.Sleep(500);
-            }
-        }
-
-        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout)
-        {
-            ValidateTimeoutValue(timeout);
-
-            var valueToCheck = initialValue;
-            DateTime startTime = DateTime.Now;
-
-            while (conditionToCheck(valueToCheck))
-            {
-                if (functionToCall != null)
-                {
-                    valueToCheck = await functionToCall();
-                }
-
-                if (IsTimeout(startTime, timeout))
-                {
-                    throw new TimeoutException("Timed operation timed out.");
-                }
-
+                CheckIfTimedOut(startTime, timeout, logger);
                 await Task.Delay(1000);
             }
         }
 
-        public static async Task PollAsync<T>(T initialValue, Func<T, bool> conditionToCheck, Func<T, Task<T>>? functionToCall, int timeout)
+        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<T, Task<T>>? functionToCall, int timeout, ILogger logger)
         {
-            ValidateTimeoutValue(timeout);
-
-            var valueToCheck = initialValue;
+            ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;
 
-            while (conditionToCheck(valueToCheck))
+            while (conditionToCheck(value))
             {
                 if (functionToCall != null)
                 {
-                    valueToCheck = await functionToCall(valueToCheck);
+                    value = await functionToCall(value);
                 }
 
-                if (IsTimeout(startTime, timeout))
-                {
-                    throw new TimeoutException("Timed operation timed out.");
-                }
-
+                CheckIfTimedOut(startTime, timeout, logger);
                 await Task.Delay(1000);
             }
         }
 
-        private static bool IsTimeout(DateTime startTime, int timeout)
+        private static void CheckIfTimedOut(DateTime startTime, int timeout, ILogger logger)
         {
-            return (DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout);
+            if ((DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout))
+            {
+                logger.LogDebug("Timeout duration was set to " + timeout);
+                logger.LogDebug("Make sure the function & property you're using is supported by TestEngine.");
+                logger.LogError("Waiting timed out.");
+                throw new TimeoutException();
+            }
         }
 
-        private static void ValidateTimeoutValue(int timeout)
+        private static void ValidateTimeoutValue(int timeout, ILogger logger)
         {
             if (timeout < 0)
             {
+                logger.LogError("The timeout TestSetting cannot be less than zero.");
                 throw new ArgumentOutOfRangeException();
             }
         }
-
     }
 }

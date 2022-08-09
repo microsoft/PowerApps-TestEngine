@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx;
@@ -16,11 +18,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly Func<Task> _updateModelFunction;
+        protected readonly ILogger _logger;
 
-        public SelectThreeParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction) : base("Select", FormulaType.Blank, new RecordType(), FormulaType.Number, new RecordType())
+        public SelectThreeParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, new RecordType(), FormulaType.Number, new RecordType())
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;
+            _logger = logger;
         }
 
         public BlankValue Execute(RecordValue obj, NumberValue rowOrColumn, RecordValue childObj)
@@ -32,20 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         private async Task SelectAsync(RecordValue obj, NumberValue rowOrColumn, RecordValue childObj)
         {
-            if (obj == null)
-            {
-                throw new ArgumentException(nameof(obj));
-            }
-
-            if (rowOrColumn == null)
-            {
-                throw new ArgumentException(nameof(rowOrColumn));
-            }
-
-            if (childObj == null)
-            {
-                throw new ArgumentException(nameof(childObj));
-            }
+            NullCheckHelper.NullCheck(obj, rowOrColumn, childObj, _logger);
 
             var parentControlName = obj.GetType().GetProperty("Name")?.GetValue(obj, null)?.ToString();
             var childControlName = childObj.GetType().GetProperty("Name")?.GetValue(childObj, null)?.ToString();
@@ -66,12 +57,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             };
 
             var recordType = new RecordType().Add(childControlName, new RecordType());
-            var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, childControlName, parentItemPath);
+            var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, _logger, childControlName, parentItemPath);
             var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.GetItemPath());
 
             if (!result)
-            {
-                throw new Exception($"Unable to select control {powerAppControlModel.Name}");
+            { 
+                _logger.LogTrace($"Control name: {powerAppControlModel.Name}");
+                _logger.LogError("Unable to select control");
+                throw new Exception();
             }
 
             await _updateModelFunction();

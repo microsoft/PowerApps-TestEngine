@@ -45,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockResponse = new Mock<IResponse>(MockBehavior.Strict);
             MockRequest = new Mock<IRequest>(MockBehavior.Strict);
             MockRoute = new Mock<IRoute>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockIFrame = new Mock<IFrame>(MockBehavior.Strict);
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
@@ -90,7 +90,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
-            await playwrightTestInfraFunctions.SetupAsync();
+            await playwrightTestInfraFunctions.SetupAsync(MockLogger.Object);
 
             MockSingleTestInstanceState.Verify(x => x.GetBrowserConfig(), Times.Once());
             MockPlaywrightObject.Verify(x => x[browserConfig.Browser], Times.Once());
@@ -154,7 +154,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync(MockLogger.Object));
         }
 
         [Fact]
@@ -171,7 +171,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync(MockLogger.Object));
         }
 
         [Fact]
@@ -182,7 +182,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync(MockLogger.Object));
         }
 
         [Fact]
@@ -233,7 +233,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync();
+            await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync(MockLogger.Object);
 
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once);
             MockPage.Verify(x => x.RouteAsync(mock.RequestURL, It.IsAny<Action<IRoute>>(), It.IsAny<PageRouteOptions>()), Times.Once);
@@ -265,7 +265,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync();
+            await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync(MockLogger.Object);
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Never);
         }
 
@@ -301,7 +301,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync(MockLogger.Object));
         }
 
         [Fact]
@@ -337,7 +337,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync(MockLogger.Object));
         }
 
         [Fact]
@@ -372,7 +372,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync(MockLogger.Object));
         }
 
         [Fact]
@@ -386,13 +386,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await playwrightTestInfraFunctions.GoToUrlAsync(urlToVisit);
+            await playwrightTestInfraFunctions.GoToUrlAsync(urlToVisit, MockLogger.Object);
 
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once);
             MockPage.Verify(x => x.GotoAsync(urlToVisit, It.Is<PageGotoOptions>((options) => options.WaitUntil == WaitUntilState.NetworkIdle)), Times.Once);
 
             var secondUrlToVisit = "https://powerapps.com";
-            await playwrightTestInfraFunctions.GoToUrlAsync(secondUrlToVisit);
+            await playwrightTestInfraFunctions.GoToUrlAsync(secondUrlToVisit, MockLogger.Object);
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once, "Should only create a new page once");
             MockPage.Verify(x => x.GotoAsync(secondUrlToVisit, It.Is<PageGotoOptions>((options) => options.WaitUntil == WaitUntilState.NetworkIdle)), Times.Once);
         }
@@ -407,7 +407,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         {
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.GoToUrlAsync(url));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.GoToUrlAsync(url, MockLogger.Object));
         }
 
         [Fact]
@@ -424,8 +424,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.GoToUrlAsync(urlToVisit));
-            LoggingTestHelper.VerifyLogging(MockLogger, (message) => message.Contains(urlToVisit) && message.Contains("404"), LogLevel.Error, Times.Once());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.GoToUrlAsync(urlToVisit, MockLogger.Object));
+            LoggingTestHelper.VerifyLogging(MockLogger, (message) => message.Contains(urlToVisit) && message.Contains("404"), LogLevel.Trace, Times.Once());
         }
 
         [Fact]

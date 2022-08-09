@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
@@ -14,20 +15,20 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Setup the test infrastructure
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupAsync();
+        public Task SetupAsync(ILogger logger);
 
         /// <summary>
         /// Setup the network request mocking
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupNetworkRequestMockAsync();
+        public Task SetupNetworkRequestMockAsync(ILogger logger);
 
         /// <summary>
         /// Navigates to url specified
         /// </summary>
         /// <param name="url">Url to go to</param>
         /// <returns>Task</returns>
-        public Task GoToUrlAsync(string url);
+        public Task GoToUrlAsync(string url, ILogger logger);
 
         /// <summary>
         /// Ends the test run
@@ -72,6 +73,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="jsExpression">Javascript expression to run</param>
         /// <returns>Return value of javascript</returns>
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
+        public Task<T> RunJavascriptAsync<T>(string jsExpression, string[] arguments);
 
         /// <summary>
         /// Fills in user email 

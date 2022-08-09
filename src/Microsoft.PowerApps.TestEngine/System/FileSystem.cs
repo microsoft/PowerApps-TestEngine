@@ -22,12 +22,26 @@ namespace Microsoft.PowerApps.TestEngine.System
 
         public void WriteTextToFile(string filePath, string text)
         {
-            File.WriteAllText(filePath, text);
+            if (File.Exists(filePath))
+            {
+                File.AppendAllText(filePath, text);
+            }
+            else
+            {
+                File.WriteAllText(filePath, text);
+            }
         }
 
         public void WriteTextToFile(string filePath, string[] text)
         {
-            File.WriteAllLines(filePath, text);
+            if (File.Exists(filePath))
+            {
+                File.AppendAllLines(filePath, text);
+            }
+            else
+            {
+                File.WriteAllLines(filePath, text);
+            }
         }
 
         public bool IsValidFilePath(string filePath)

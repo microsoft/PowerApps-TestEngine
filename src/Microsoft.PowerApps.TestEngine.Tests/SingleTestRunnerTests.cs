@@ -45,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
             MockTestLogger = new Mock<ITestLogger>(MockBehavior.Strict);
         }
 
@@ -81,14 +81,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>())).Throws(new Exception("something bad happened"));
             }
 
-            MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>(), It.IsAny<ILogger>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.CompletedTask);
 
-            MockUserManager.Setup(x => x.LoginAsUserAsync()).Returns(Task.CompletedTask);
+            MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
 
-            MockUrlMapper.Setup(x => x.GenerateTestUrl()).Returns(appUrl);
+            MockUrlMapper.Setup(x => x.GenerateTestUrl(It.IsAny<ILogger>())).Returns(appUrl);
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>()));
             TestLoggerProvider.TestLoggers.Add(testRunId, MockTestLogger.Object);
@@ -110,17 +110,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             MockPowerFxEngine.Verify(x => x.Setup(), Times.Once());
             MockPowerFxEngine.Verify(x => x.UpdatePowerFxModelAsync(), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.SetupAsync(), Times.Once());
-            MockUserManager.Verify(x => x.LoginAsUserAsync(), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(), Times.Once());
-            MockUrlMapper.Verify(x => x.GenerateTestUrl(), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.SetupAsync(It.IsAny<ILogger>()), Times.Once());
+            MockUserManager.Verify(x => x.LoginAsUserAsync(It.IsAny<ILogger>()), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>()), Times.Once());
+            MockUrlMapper.Verify(x => x.GenerateTestUrl(It.IsAny<ILogger>()), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl, It.IsAny<ILogger>()), Times.Once());
             MockTestState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
             MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteDefinition.TestCases[0].TestCaseName, "TODO"), Times.Once());
             MockTestReporter.Verify(x => x.StartTest(testRunId, testId), Times.Once());
             MockTestState.Verify(x => x.SetTestId(testId), Times.Once());
             MockLoggerProvider.Verify(x => x.CreateLogger(testId), Times.Once());
-            MockTestState.Verify(x => x.SetLogger(MockLogger.Object), Times.Exactly(2));
+            MockTestState.Verify(x => x.SetLogger(It.IsAny<ILogger>()), Times.Exactly(2));
             MockTestState.Verify(x => x.SetTestResultsDirectory(testResultDirectory), Times.Once());
             MockFileSystem.Verify(x => x.CreateDirectory(testResultDirectory), Times.Once());
             MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory), Times.Once());
@@ -242,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.SetupAsync()).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
@@ -251,7 +251,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUserManager.Setup(x => x.LoginAsUserAsync()).Throws(exceptionToThrow);
+                MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
@@ -260,7 +260,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
@@ -269,7 +269,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUrlMapper.Setup(x => x.GenerateTestUrl()).Throws(exceptionToThrow);
+                MockUrlMapper.Setup(x => x.GenerateTestUrl(It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
@@ -278,7 +278,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>(), It.IsAny<ILogger>())).Throws(exceptionToThrow);
             });
         }
 
