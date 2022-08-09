@@ -3,13 +3,12 @@
 
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
 using Newtonsoft.Json.Linq;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-
-using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.Extensions.Logging;
-using Microsoft.PowerApps.TestEngine.Config;
 
 namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 {

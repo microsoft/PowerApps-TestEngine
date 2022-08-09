@@ -12,6 +12,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting.Format
         [XmlElement(ElementName = "Counters")]
         public TestCounters Counters { get; set; }
         [XmlElement(ElementName = "Output")]
-        public TestOutput Output {get; set; }
+        public TestOutput Output { get; set; }
     }
 }

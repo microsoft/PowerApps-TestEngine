@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Xml.Serialization;
 using Microsoft.PowerApps.TestEngine.Reporting.Format;
 using Microsoft.PowerApps.TestEngine.System;
-using System.Xml.Serialization;
 
 namespace Microsoft.PowerApps.TestEngine.Reporting
 {

@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.Linq;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
@@ -123,7 +123,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var componentName = "Component1";
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var propertyValue = Guid.NewGuid().ToString();
-            
+
             mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text"), MockLogger.Object))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = propertyValue }));
 

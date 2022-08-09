@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -8,10 +12,6 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
@@ -103,7 +103,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             }
             MockSingleTestInstanceState.Verify(x => x.GetTestResultsDirectory(), Times.Once());
 
-            var verifyBrowserContextOptions = (BrowserNewContextOptions options) => {
+            var verifyBrowserContextOptions = (BrowserNewContextOptions options) =>
+            {
                 if (options.RecordVideoDir != testResultsDirectory)
                 {
                     return false;
@@ -128,7 +129,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                     {
                         return false;
                     }
-                } 
+                }
                 else
                 {
                     if (options.ViewportSize != null)
@@ -214,7 +215,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
-                NetworkRequestMocks = new List<NetworkRequestMock>{mock},
+                NetworkRequestMocks = new List<NetworkRequestMock> { mock },
                 TestCases = new List<TestCase>()
                 {
                     new TestCase
@@ -262,7 +263,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             };
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
-            
+
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
             await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync(MockLogger.Object);
@@ -284,7 +285,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
-                NetworkRequestMocks = new List<NetworkRequestMock>{mock},
+                NetworkRequestMocks = new List<NetworkRequestMock> { mock },
                 TestCases = new List<TestCase>()
                 {
                     new TestCase
@@ -298,7 +299,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
-            
+
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync(MockLogger.Object));
@@ -319,7 +320,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
-                NetworkRequestMocks = new List<NetworkRequestMock>{mock},
+                NetworkRequestMocks = new List<NetworkRequestMock> { mock },
                 TestCases = new List<TestCase>()
                 {
                     new TestCase
@@ -355,7 +356,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 TestSuiteDescription = "First test",
                 AppLogicalName = "logicalAppName1",
                 Persona = "User1",
-                NetworkRequestMocks = new List<NetworkRequestMock>{mock},
+                NetworkRequestMocks = new List<NetworkRequestMock> { mock },
                 TestCases = new List<TestCase>()
                 {
                     new TestCase
@@ -369,7 +370,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
-            
+
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync(MockLogger.Object));
@@ -554,7 +555,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             requestHeader.Add("x-ms-request-method", "PATCH");
             var requestBody = "request body";
             var requestMethod = "POST";
-            
+
             var mock = new NetworkRequestMock()
             {
                 RequestURL = "https://make.powerapps.com",

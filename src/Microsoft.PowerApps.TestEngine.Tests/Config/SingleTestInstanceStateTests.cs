@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Moq;
-using System;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Config

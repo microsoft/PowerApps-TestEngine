@@ -1,15 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.TestStudioConverter;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using Xunit;
+using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestStudioConverter;
+using Moq;
+using Xunit;
 using YamlDotNet;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
@@ -277,7 +277,7 @@ environmentVariables:
             mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
             mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
             CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, jsonFilePath, mockFileIO.Object);
-            
+
             converter.exportYAML();
 
             List<TestCase> actualTestCases = converter.GetTestCases();
@@ -455,7 +455,7 @@ environmentVariables:
 
 
             var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
-            
+
             mockFileIO.Reset();
 
             var jsonFilePath = "test.json";

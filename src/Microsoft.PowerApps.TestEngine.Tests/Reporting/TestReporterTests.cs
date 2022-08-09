@@ -1,19 +1,19 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerApps.TestEngine.Reporting;
-using Microsoft.PowerApps.TestEngine.Reporting.Format;
-using Microsoft.PowerApps.TestEngine.System;
-using Moq;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
-using Xunit;
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Reporting;
+using Microsoft.PowerApps.TestEngine.Reporting.Format;
+using Microsoft.PowerApps.TestEngine.System;
+using Moq;
+using Newtonsoft.Json;
+using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 {
@@ -329,8 +329,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             var expectedTrxPath = Path.Combine(resultDirectory, $"Results_{testRunId}.trx");
             Assert.Equal(Path.Combine(resultDirectory, $"Results_{testRunId}.trx"), trxPath);
-            var validateTestResults = (string serializedTestResults) => {
-                if(!serializedTestResults.Contains("http://microsoft.com/schemas/VisualStudio/TeamTest/2010"))
+            var validateTestResults = (string serializedTestResults) =>
+            {
+                if (!serializedTestResults.Contains("http://microsoft.com/schemas/VisualStudio/TeamTest/2010"))
                 {
                     return false;
                 }
