@@ -20,8 +20,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
     public class ControlRecordValue : RecordValue
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
-        private readonly string _name;
-        private readonly ItemPath _parentItemPath;
+        private readonly string? _name;
+        private readonly ItemPath? _parentItemPath;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// <param name="logger">Our logger object</param>
         /// <param name="name">Name of the control</param>
         /// <param name="parentItemPath">Path to the parent control</param>
-        public ControlRecordValue(RecordType type, IPowerAppFunctions powerAppFunctions, ILogger logger, string name = null, ItemPath parentItemPath = null) : base(type)
+        public ControlRecordValue(RecordType type, IPowerAppFunctions powerAppFunctions, ILogger logger, string? name = null, ItemPath? parentItemPath = null) : base(type)
         {
             _powerAppFunctions = powerAppFunctions;
             _parentItemPath = parentItemPath;
@@ -45,7 +45,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// </summary>
         public string Name {
             get {
-                return _name;
+                if (_name != null)
+                {
+                    return _name;
+                }
+                else
+                {
+                    throw new ArgumentNullException("Cannot get name of the control, as it is null.");
+                }
             }
         }
 
@@ -54,7 +61,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// </summary>
         /// <param name="propertyName">Property name. Optional</param>
         /// <returns>Path to control</returns>
-        public ItemPath GetItemPath(string propertyName = null)
+        public ItemPath GetItemPath(string? propertyName = null)
         {
             return new ItemPath()
             {
@@ -71,12 +78,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// <param name="fieldName">Name of the field</param>
         /// <param name="result">Value of the field</param>
         /// <returns>True if able to get the field value</returns>
-        protected override bool TryGetField(FormulaType fieldType, string fieldName, out FormulaValue result)
+        protected override bool TryGetField(FormulaType fieldType, string fieldName, out FormulaValue? result)
         {
             if (fieldType is TableType)
             {
                 // This would be if we were referencing a property that could be indexed. Eg. Gallery1.AllItems (fieldName = AllItems)
                 var tableType = fieldType as TableType;
+
+                if (tableType == null)
+                {
+                    throw new ArgumentNullException("Table Type cannot be null.");
+                }
+
                 var recordType = tableType.ToRecord();
                 // Create indexable table source
                 var tableSource = new ControlTableSource(_powerAppFunctions, GetItemPath(fieldName), recordType, _logger);
@@ -87,6 +100,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
             else if (fieldType is RecordType)
             {
                 var recordType = fieldType as RecordType;
+
+                if (recordType == null)
+                {
+                    throw new ArgumentNullException("Record Type cannot be null.");
+                }
                 if (string.IsNullOrEmpty(_name))
                 {
                     // We reach here if we are referencing a child item in a Gallery. Eg. Index(Gallery1.AllItems).Label1 (fieldName = Label1)

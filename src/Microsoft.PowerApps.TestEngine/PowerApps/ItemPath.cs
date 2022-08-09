@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Gets or sets the control name
         /// </summary>
         [JsonProperty("controlName")]
-        public string ControlName { get; set; }
+        public string? ControlName { get; set; }
         /// <summary>
         /// Gets or sets the index of the control. Optional. Used in Gallery
         /// </summary>
