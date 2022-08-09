@@ -54,7 +54,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         public void exportYAML()
         {
-            if (!_fileSystem.IsValidFilePath(InputDir))
+            if (InputDir == null)
+            {
+                _logger.LogError("Input directory cannot be null.");
+                throw new DirectoryNotFoundException();
+            }
+            else if (!_fileSystem.IsValidFilePath(InputDir))
             {
                 _logger.LogTrace($"File path: {InputDir}");
                 _logger.LogError("Found invalid file path.");

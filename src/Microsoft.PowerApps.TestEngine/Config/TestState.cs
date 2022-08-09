@@ -29,7 +29,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public TestSuiteDefinition GetTestSuiteDefinition()
         {
-            return TestPlanDefinition?.TestSuite;
+            var testSuite = TestPlanDefinition?.TestSuite;
+
+            if (testSuite == null)
+            {
+                throw new InvalidOperationException("Missing test suite");
+            }
+            else
+            {
+                return testSuite;
+            }
         }
 
         public List<TestCase> GetTestCases()
@@ -226,22 +235,56 @@ namespace Microsoft.PowerApps.TestEngine.Config
         }
         public TestSettings? GetTestSettings()
         {
-            return TestPlanDefinition?.TestSettings;
+            var testSettings = TestPlanDefinition?.TestSettings;
+
+            if (testSettings != null)
+            {
+                return testSettings;
+                
+            }
+            else
+            {
+                throw new InvalidOperationException("Missing test settings.");
+            }
         }
 
         public int GetTimeout()
         {
-            return GetTestSettings().Timeout;
+            var testSettings = GetTestSettings();
+            if (testSettings != null)
+            {
+                return testSettings.Timeout;
+            }
+            else
+            {
+                throw new InvalidOperationException("Missing test settings.");
+            }
         }
 
         public int GetWorkerCount()
         {
-            return GetTestSettings().WorkerCount;
+            var testSettings = GetTestSettings();
+            if (testSettings != null)
+            {
+                return testSettings.WorkerCount;
+            }
+            else
+            {
+                throw new InvalidOperationException("Missing test settings.");
+            }
         }
 
         public LogLevel GetEngineLoggingLevel()
         {
-            return GetTestSettings().EngineLoggingLevel;
+            var testSettings = GetTestSettings();
+            if (testSettings != null)
+            {
+                return testSettings.EngineLoggingLevel;
+            }
+            else
+            {
+                throw new InvalidOperationException("Missing test settings.");
+            }
         }
     }
 }

@@ -10,8 +10,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
     /// </summary>
     public class SingleTestInstanceState : ISingleTestInstanceState
     {
-        private ILogger Logger { get; set; }
-        private TestSuiteDefinition TestSuiteDefinition { get; set; }
+        private ILogger? Logger { get; set; }
+        private TestSuiteDefinition? TestSuiteDefinition { get; set; }
         private string TestRunId { get; set; }
         private string TestId { get; set; }
         private string ResultsDirectory { get; set; }
