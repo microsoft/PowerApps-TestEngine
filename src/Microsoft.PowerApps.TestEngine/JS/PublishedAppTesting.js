@@ -175,9 +175,11 @@ function setPropertyValueForControl(itemPath, value) {
 
         return (AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.setPropertyValueInternal(propertyName, value, AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName)));
     }*/
-    // Dencode itemPath and value
+    // Decode itemPath and value
     var val = unescape(value);
-    return AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, val, AppMagic.Controls.GlobalContextManager.bindingContext);
+    var unescapePath = unescape(itemPath);
+    var obj = JSON.parse(unescapePath);
+    return AppMagic.AuthoringTool.Runtime.getNamedControl(obj.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(obj.propertyName, val, AppMagic.Controls.GlobalContextManager.bindingContext);
 }
 
 function interactWithControl(itemPath, value) {
