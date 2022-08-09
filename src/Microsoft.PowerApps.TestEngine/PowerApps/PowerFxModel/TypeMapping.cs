@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerFx.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 {
@@ -52,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
             // Extract the names of the types out of the string
             var regex = new Regex(@"(?<subType>\w+):\w");
             var matches = regex.Matches(typeString);
-            foreach(Match match in matches)
+            foreach (Match match in matches)
             {
                 var subType = match.Groups["subType"].Value;
                 subTypes.Add(subType);

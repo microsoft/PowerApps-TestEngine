@@ -21,7 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         private readonly IFileSystem _fileSystem;
         private readonly ILogger _logger;
 
-        public ScreenshotFunction(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ILogger logger) 
+        public ScreenshotFunction(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ILogger logger)
             : base("Screenshot", FormulaType.Blank, FormulaType.String)
         {
             _testInfraFunctions = testInfraFunctions;
