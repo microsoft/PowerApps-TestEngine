@@ -268,6 +268,19 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return await Page.EvaluateAsync<T>(jsExpression);
         }
 
+        public async Task<T> RunJavascriptAsync<T>(string jsExpression, string[] arguments)
+        {
+            ValidatePage();
+            var santizedArguments = new string[arguments.Length];
+            for (int i = 0; i < arguments.Length; i++)
+            { // encode and add to sanitizedArguments 
+                var argument = arguments[i];
+                var encode = Uri.EscapeDataString(argument);
+                santizedArguments[i] = encode;
+            }
+            return await Page.EvaluateAsync<T>(jsExpression, santizedArguments);
+        }
+
         public async Task HandleUserEmailScreen(string selector, string value)
         {
             ValidatePage();
