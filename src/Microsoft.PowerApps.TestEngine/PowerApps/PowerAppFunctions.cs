@@ -229,7 +229,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var argument = new string[]{itemPathString, objectValue.ToString()};
+            var objectValueString = objectValue.ToString();
+
+            if (objectValueString == null)
+            {
+                throw new ArgumentNullException("ObjectValue cannot be null");
+            }
+
+            var argument = new string[]{itemPathString, objectValueString};
             var expression = "([itemPathString, objectValue]) => setPropertyValue(itemPathString, objectValue)";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, argument);
         }
