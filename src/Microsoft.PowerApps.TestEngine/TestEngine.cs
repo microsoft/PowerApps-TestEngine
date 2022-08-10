@@ -105,7 +105,7 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 throw new ArgumentNullException("State's Browser Configuration cannot be null.");
             }
-            
+
             var allTestRuns = new List<Task>();
 
             // Manage number of workers

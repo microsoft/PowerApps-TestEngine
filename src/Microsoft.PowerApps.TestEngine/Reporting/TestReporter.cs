@@ -303,7 +303,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testResult.EndTime = DateTime.Now;
             testResult.Duration = (testResult.EndTime - testResult.StartTime).ToString();
 
-            if (testResult.Output== null)
+            if (testResult.Output == null)
             {
                 throw new ArgumentNullException("Test Result Output cannot be null.");
             }

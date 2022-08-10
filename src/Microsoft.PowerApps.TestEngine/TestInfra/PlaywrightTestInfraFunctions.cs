@@ -274,7 +274,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
             }
-            
+
             if (string.IsNullOrEmpty(frameName))
             {
                 await Page.AddScriptTagAsync(new PageAddScriptTagOptions() { Path = scriptTag });
