@@ -43,18 +43,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
         /// <summary>
         /// Gets the name of the control
         /// </summary>
-        public string Name
+        public string? Name
         {
             get
             {
-                if (_name != null)
-                {
-                    return _name;
-                }
-                else
-                {
-                    throw new ArgumentNullException("Cannot get name of the control, as it is null.");
-                }
+                return _name;
             }
         }
 

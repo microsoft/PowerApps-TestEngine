@@ -21,14 +21,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
         }
 
-        [Fact]
-        public void BeginScopeTest()
-        {
-            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
-            Assert.Null(testLogger.BeginScope("hello"));
-            Assert.Null(testLogger.BeginScope(new Dictionary<string, string>()));
-        }
-
         [Theory]
         [InlineData(LogLevel.Critical, true)]
         [InlineData(LogLevel.Debug, true)]
