@@ -113,6 +113,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (Page == null)
             {
+                if (BrowserContext == null)
+                {
+                    throw new ArgumentNullException("BrowserContext cannot be null");
+                }
+
                 Page = await BrowserContext.NewPageAsync();
             }
 
@@ -178,7 +183,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 throw new InvalidOperationException();
             }
 
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
             {
                 logger.LogError("Url is invalid");
                 throw new InvalidOperationException();
@@ -192,6 +197,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (Page == null)
             {
+                if (BrowserContext == null)
+                {
+                    throw new ArgumentNullException("BrowserContext cannot be null");
+                }
+
                 Page = await BrowserContext.NewPageAsync();
             }
 
@@ -220,15 +230,16 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         private void ValidatePage()
         {
-            if (Page == null)
-            {
-                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
-            }
+
         }
 
         public async Task ScreenshotAsync(string screenshotFilePath)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
+
             if (!_fileSystem.IsValidFilePath(screenshotFilePath))
             {
                 throw new InvalidOperationException("screenshotFilePath must be provided");
@@ -239,39 +250,65 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task FillAsync(string selector, string value)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
+
             await Page.FillAsync(selector, value);
         }
 
         public async Task ClickAsync(string selector)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
+
             await Page.ClickAsync(selector);
         }
 
         public async Task AddScriptTagAsync(string scriptTag, string? frameName)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
+            
             if (string.IsNullOrEmpty(frameName))
             {
                 await Page.AddScriptTagAsync(new PageAddScriptTagOptions() { Path = scriptTag });
             }
             else
             {
-                await Page.Frame(frameName).AddScriptTagAsync(new FrameAddScriptTagOptions() { Path = scriptTag });
+                var pageFrame = Page.Frame(frameName);
+
+                if (pageFrame == null)
+                {
+                    throw new InvalidOperationException("Page's frame cannot be null");
+                }
+
+                await pageFrame.AddScriptTagAsync(new FrameAddScriptTagOptions() { Path = scriptTag });
             }
         }
 
         public async Task<T> RunJavascriptAsync<T>(string jsExpression)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
 
             return await Page.EvaluateAsync<T>(jsExpression);
         }
 
         public async Task<T> RunJavascriptAsync<T>(string jsExpression, string[] arguments)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
+
             var santizedArguments = new string[arguments.Length];
             for (int i = 0; i < arguments.Length; i++)
             { // encode and add to sanitizedArguments 
@@ -284,7 +321,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task HandleUserEmailScreen(string selector, string value)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
+
             await Page.Locator(selector).WaitForAsync();
             await Page.TypeAsync(selector, value, new PageTypeOptions { Delay = 50 });
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
@@ -292,14 +333,22 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task HandleUserPasswordScreen(string selector, string value)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
+
             await Page.Locator(selector).WaitForAsync();
             await Page.FillAsync(selector, value);
         }
 
         public async Task HandleKeepSignedInNoScreen(string selector)
         {
-            ValidatePage();
+            if (Page == null)
+            {
+                throw new InvalidOperationException("Page is null, make sure to call GoToUrlAsync first");
+            }
+
             await Page.ClickAsync(selector);
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }

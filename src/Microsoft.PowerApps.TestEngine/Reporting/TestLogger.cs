@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Helpers;
 
 namespace Microsoft.PowerApps.TestEngine.Reporting
 {
@@ -24,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            return null;
+            return new Disposable();
         }
 
         public bool IsEnabled(LogLevel logLevel)
@@ -41,8 +42,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), Logs.ToArray());
 
-            if (_engineLoggingLevel <= LogLevel.Debug)
-            {
+            if (_engineLoggingLevel <= LogLevel.Debug) {
                 _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.ToArray());
             }
         }
@@ -65,7 +65,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             logString += $"{formatter(state, exception)}{Environment.NewLine}";
 
-            if (messageLevel >= _engineLoggingLevel)
+            if(messageLevel >= _engineLoggingLevel)
             {
                 if (messageLevel > LogLevel.Debug)
                 {

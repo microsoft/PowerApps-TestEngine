@@ -66,6 +66,12 @@ else
         .AddProvider(tempLoggerProvider);
     });
     ILogger tempLogger = tempLoggerFactory.CreateLogger("Suite");
+
+    if (inputOptions.TestPlanFile == null)
+    {
+        throw new ArgumentNullException("TestPlanFile cannot be null");
+    }
+
     tempState.ParseAndSetTestState(inputOptions.TestPlanFile);
     LogLevel engineLoggingLevel = tempState.GetEngineLoggingLevel();
 
@@ -107,6 +113,20 @@ else
 
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
+
+
+    if (inputOptions.EnvironmentId == null)
+    {
+        throw new ArgumentNullException("EnvironmentID cannot be null");
+    }
+    else if (inputOptions.TenantId == null)
+    {
+        throw new ArgumentNullException("TenantID cannot be null");
+    }
+    else if (inputOptions.OutputDirectory == null)
+    {
+        throw new ArgumentNullException("OutputDirectory cannot be null");
+    }
 
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
 

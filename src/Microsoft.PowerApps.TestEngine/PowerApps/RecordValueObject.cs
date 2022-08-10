@@ -8,9 +8,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
     public class RecordValueObject
     {
         [JsonProperty("Value")]
-        private string Value { get; set; }
+        private string? Value { get; set; }
 
-        public RecordValueObject(string val)
+        public RecordValueObject(string? val)
         {
             this.Value = val;
         }
