@@ -47,6 +47,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetTestRunIdThrowsOnInvalidInputTest(string invalidInput)
         {
             var state = new SingleTestInstanceState();
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            state.SetLogger(logger.Object);
+
             Assert.Throws<ArgumentNullException>(() => state.SetTestRunId(invalidInput));
         }
 
@@ -56,6 +60,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetTestIdThrowsOnInvalidInputTest(string invalidInput)
         {
             var state = new SingleTestInstanceState();
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            state.SetLogger(logger.Object);
+
             Assert.Throws<ArgumentNullException>(() => state.SetTestId(invalidInput));
         }
 
@@ -65,6 +73,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetTestResultsDirectoryThrowsOnInvalidInputTest(string invalidInput)
         {
             var state = new SingleTestInstanceState();
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            state.SetLogger(logger.Object);
+
             Assert.Throws<ArgumentNullException>(() => state.SetTestResultsDirectory(invalidInput));
         }
 
@@ -72,6 +84,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetTestDefinitionThrowsOnNullInput()
         {
             var state = new SingleTestInstanceState();
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            state.SetLogger(logger.Object);
+
             Assert.Throws<ArgumentNullException>(() => state.SetTestSuiteDefinition(null));
         }
 
@@ -79,6 +95,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetLoggerThrowsOnNullInput()
         {
             var state = new SingleTestInstanceState();
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            state.SetLogger(logger.Object);
+
             Assert.Throws<ArgumentNullException>(() => state.SetLogger(null));
         }
 
@@ -86,6 +106,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void SetBrowserConfigThrowsOnNullInput()
         {
             var state = new SingleTestInstanceState();
+
+            var logger = new Mock<ILogger>(MockBehavior.Loose);
+            state.SetLogger(logger.Object);
+
             Assert.Throws<ArgumentNullException>(() => state.SetBrowserConfig(null));
         }
     }

@@ -106,7 +106,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
             else
             {
-                GetLogger().LogError("Cannot get Logger as it is set to a null value.");
                 throw new ArgumentNullException();
             }
         }
