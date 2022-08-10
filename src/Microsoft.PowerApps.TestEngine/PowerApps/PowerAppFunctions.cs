@@ -236,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 throw new ArgumentNullException("ObjectValue cannot be null");
             }
 
-            var argument = new string []{ itemPathString, objectValueString };
+            var argument = new string[] { itemPathString, objectValueString };
 
             var expression = "([itemPathString, objectValue]) => setPropertyValue(itemPathString, objectValue)";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, argument);
