@@ -81,22 +81,17 @@ namespace Microsoft.PowerApps.TestEngine
                     $"\n---------------------------------------------------------------------------\n\n" +
                     $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
-                if (Logger == null)
-                {
-                    throw new ArgumentNullException("Logger cannot be null.");
-                }
-
                 // Set up test infra
-                await _testInfraFunctions.SetupAsync(Logger);
+                await _testInfraFunctions.SetupAsync(testSuiteLogger);
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(Logger), Logger);
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(testSuiteLogger), testSuiteLogger);
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(Logger);
+                await _userManager.LoginAsUserAsync(testSuiteLogger);
 
                 // Set up network request mocking if any
-                await _testInfraFunctions.SetupNetworkRequestMockAsync(Logger);
+                await _testInfraFunctions.SetupNetworkRequestMockAsync(testSuiteLogger);
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();
@@ -161,22 +156,8 @@ namespace Microsoft.PowerApps.TestEngine
                             }
                         }
 
-                        var testExceptionMessage = TestException?.Message;
-
-                        if (testExceptionMessage == null)
-                        {
-                            throw new ArgumentNullException("TestException's message cannot be null.");
-                        }
-
-                        var testExceptionStackTrace = TestException?.StackTrace;
-
-                        if (testExceptionStackTrace == null)
-                        {
-                            throw new ArgumentNullException("TestException's StackTrace cannot be null.");
-                        }
-
                         var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
-                        _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, testExceptionMessage, testExceptionStackTrace);
+                        _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
                     }
                 }
 
