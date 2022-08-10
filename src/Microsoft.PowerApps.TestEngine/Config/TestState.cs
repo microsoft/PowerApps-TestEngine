@@ -237,9 +237,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
             if (testSettings == null)
             {
-                
                 throw new ArgumentNullException("Missing test settings.");
-
             }
 
             return testSettings;
@@ -251,7 +249,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
             if (testSettings == null)
             {
-                
                 throw new ArgumentNullException("Missing test settings.");
             }
 
