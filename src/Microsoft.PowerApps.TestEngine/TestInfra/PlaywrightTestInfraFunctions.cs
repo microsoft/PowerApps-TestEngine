@@ -285,6 +285,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         // Justification: Limited ability to run unit tests for 
         // Playwright actions on the sign-in page
+        [ExcludeFromCodeCoverage]
         public async Task HandleUserEmailScreen(string selector, string value)
         {
             ValidatePage();
@@ -295,6 +296,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         // Justification: Limited ability to run unit tests for 
         // Playwright actions on the sign-in page
+        [ExcludeFromCodeCoverage]
         public async Task HandleUserPasswordScreen(string selector, string value)
         {
             ValidatePage();
