@@ -105,8 +105,8 @@ namespace Microsoft.PowerApps.TestEngine
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
 
-                    testSuiteLogger = _loggerProvider.CreateLogger(testId);
-                    _testState.SetLogger(testSuiteLogger);
+                    var testCaseLogger = _loggerProvider.CreateLogger(testId);
+                    _testState.SetLogger(testCaseLogger);
 
                     var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                     _testState.SetTestResultsDirectory(testCaseResultDirectory);
@@ -116,11 +116,11 @@ namespace Microsoft.PowerApps.TestEngine
                     {
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
                         {
-                            testSuiteLogger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
+                            testCaseLogger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
                             await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
                         }
 
-                        testSuiteLogger.LogInformation($"---------------------------------------------------------------------------\n" +
+                        testCaseLogger.LogInformation($"---------------------------------------------------------------------------\n" +
                             $"RUNNING TEST CASE: {testCase.TestCaseName}" +
                             $"\n---------------------------------------------------------------------------");
 
@@ -128,13 +128,13 @@ namespace Microsoft.PowerApps.TestEngine
 
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
                         {
-                            testSuiteLogger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
+                            testCaseLogger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
                             await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                         }
                     }
                     catch (Exception ex)
                     {
-                        testSuiteLogger.LogError(ex.ToString());
+                        testCaseLogger.LogError(ex.ToString());
                         TestException = ex;
                         TestSuccess = false;
                     }
