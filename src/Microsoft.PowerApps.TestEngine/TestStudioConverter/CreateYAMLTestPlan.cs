@@ -12,16 +12,18 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 {
-    public class CreateYAMLTestPlan
+    public class CreateYamlTestPlan
     {
-        private readonly ILogger<CreateYAMLTestPlan> _logger;
+        private readonly ILogger<CreateYamlTestPlan> _logger;
         private readonly IFileSystem _fileSystem;
 
-        private string? InputDir;
+        private string InputDir;
 
         public List<TestCase> TestCases = new List<TestCase>();
 
         private TestPlanDefinition? YamlTestPlan;
+
+        private static string? YamlTestPlanString;
 
         private static string? TestSuiteName;
 
@@ -33,25 +35,23 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private static string? OnTestSuiteComplete;
 
-        private static string[] NoChangeCommands = { "Assert", "Select" };
-
         const string SetProperty = "SetProperty";
 
-        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger, string dir)
+        public CreateYamlTestPlan(ILogger<CreateYamlTestPlan> logger, string dir)
         {
             _logger = logger;
             _fileSystem = new FileSystem();
             InputDir = dir;
         }
 
-        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger, string dir, IFileSystem fileSystem)
+        public CreateYamlTestPlan(ILogger<CreateYamlTestPlan> logger, string dir, IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
             _logger = logger;
             InputDir = dir;
         }
 
-        public void exportYAML()
+        public void exportYaml()
         {
             if (!_fileSystem.IsValidFilePath(InputDir))
             {
@@ -66,7 +66,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             var outputDir = InputDir.Substring(0, InputDir.Length - 4) + "fx.yaml";
             _logger.LogInformation($"YAML TestPlan Location: {outputDir}");
-            writeYaml(outputDir);
+            WriteYaml(outputDir);
 
         }
 
@@ -86,12 +86,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             {
                 if ((testSuiteProperty["Property"] ??= false).ToString().Equals("Description"))
                 {
-                    TestSuiteDescription = extractScripts(testSuiteProperty);
+                    TestSuiteDescription = ExtractScripts(testSuiteProperty);
                 }
 
                 if ((testSuiteProperty["Property"] ??= false).ToString().Equals("DisplayName"))
                 {
-                    TestSuiteName = extractScripts(testSuiteProperty);
+                    TestSuiteName = ExtractScripts(testSuiteProperty);
                 }
             }
 
@@ -132,16 +132,16 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
                     if ((testCaseProperty["Property"] ??= false).ToString().Equals("Description"))
                     {
-                        testCaseObj.TestCaseDescription = extractScripts(testCaseProperty);
+                        testCaseObj.TestCaseDescription = ExtractScripts(testCaseProperty);
                     }
 
                     if ((testCaseProperty["Property"] ??= false).ToString().Equals("DisplayName"))
                     {
-                        testCaseObj.TestCaseName = extractScripts(testCaseProperty);
+                        testCaseObj.TestCaseName = ExtractScripts(testCaseProperty);
                     }
                 }
 
-                testCaseObj.TestSteps = combineTestSteps(testSteps);
+                testCaseObj.TestSteps = CombineTestSteps(testSteps);
                 TestCases.Add(testCaseObj);
             }
 
@@ -153,23 +153,23 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 {
                     if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestStart"))
                     {
-                        OnTestCaseStart = extractScripts(overallProperty, true);
+                        OnTestCaseStart = ExtractScripts(overallProperty, true);
                     }
 
                     if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestComplete"))
                     {
-                        OnTestCaseComplete = extractScripts(overallProperty, true);
+                        OnTestCaseComplete = ExtractScripts(overallProperty, true);
                     }
 
                     if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestSuiteComplete"))
                     {
-                        OnTestSuiteComplete = extractScripts(overallProperty, true);
+                        OnTestSuiteComplete = ExtractScripts(overallProperty, true);
                     }
                 }
             }
         }
 
-        private string extractScripts(JToken input, bool convertToList = false)
+        private string ExtractScripts(JToken input, bool convertToList = false)
         {
             if (input == null)
             {
@@ -184,7 +184,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
             else if (convertToList)
             {
-                return combineTestSteps(script.Split(";\r\n").ToList());
+                return CombineTestSteps(script.Split(";\r\n").ToList());
             }
             else
             {
@@ -192,7 +192,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
         }
 
-        private string combineTestSteps(List<string> testSteps)
+        private string CombineTestSteps(List<string> testSteps)
         {
             if (testSteps.Count == 0)
             {
@@ -203,14 +203,14 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             var stringBuilder = new StringBuilder("= \n");
             foreach (var step in testSteps)
             {
-                stringBuilder.Append(validateStep(step));
+                stringBuilder.Append(ValidateStep(step));
                 stringBuilder.Append(";\n");
             }
 
             return stringBuilder.ToString();
         }
 
-        private void writeYaml(string outputDir)
+        private void WriteYaml(string outputDir)
         {
             if (string.IsNullOrEmpty(TestSuiteName))
                 TestSuiteName = "Missing Test Name";
@@ -220,7 +220,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             var testYAML = new TestPlanDefinition
             {
-                TestSuite = new ConverterTestDefinition
+                TestSuite = new TestSuiteDefinition
                 {
                     TestSuiteName = TestSuiteName,
                     TestSuiteDescription = TestSuiteDescription,
@@ -245,64 +245,58 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
             var result = serializer.Serialize(testYAML);
+            YamlTestPlanString = result;
             YamlTestPlan = testYAML;
             _fileSystem.WriteTextToFile(outputDir, result);
         }
         /// <summary>
         /// Checks if a test step needs to be changed to match Test Engine Syntax
+        /// Right now, ValidateStep only affects the SetProperty Command
         /// </summary>
         /// <param name="step">A Test Step in Test Studio's Power fx syntax</param>
         /// <returns></returns>
-        private string validateStep(string step)
+        private string ValidateStep(string step)
         {
             var identifier = step.Split('(')[0];
 
-            if (NoChangeCommands.Contains(identifier))
+            if (!identifier.Equals(SetProperty))
             {
                 return step;
             }
-            var parameters = Regex.Match(step, @"\(.*\)").Groups[0].Value;
-            parameters = parameters.Substring(1, parameters.Length - 2);
-
-            switch (identifier)
+            else
             {
-                case SetProperty:
-                    // Expected Test Studio syntax sample:  SetProperty(IncrementControl1.value, 10)
-                    // Resulting Test Engine syntax sample: SetProperty(IncrementControl1, "value", 10)
+                var parameters = Regex.Match(step, @"\(.*\)").Groups[0].Value;
+                parameters = parameters.Substring(1, parameters.Length - 2);
 
-                    var parametersSplit = parameters.Split(new[] { ',' }, 2);
+                // Expected Test Studio syntax sample:  SetProperty(IncrementControl1.value, 10)
+                // Resulting Test Engine syntax sample: SetProperty(IncrementControl1, "value", 10)
 
-                    if (parametersSplit.Length < 2)
-                    {
-                        step = "Assert( true,\"" + step + " incorrect Test Studio syntax \")";
-                        _logger.LogWarning($"{step} incorrect syntax");
-                        break;
-                    }
+                var parametersSplit = parameters.Split(new[] { ',' }, 2);
 
-                    var property = parametersSplit[0];
-                    var value = parametersSplit[1];
+                if (parametersSplit.Length < 2)
+                {
+                    step = "Assert( true,\"" + step + " incorrect Test Studio syntax \")";
+                    _logger.LogWarning($"{step} incorrect syntax");
+                    return step;
+                }
 
-                    var propertySplitArray = property.Split(".");
+                var property = parametersSplit[0];
+                var value = parametersSplit[1];
 
-                    if (propertySplitArray.Length > 1)
-                    {
-                        step = identifier + "(" + propertySplitArray[0] + "," + "\"" + propertySplitArray[1] + "\"" + "," + value + ")";
-                        break;
-                    }
-                    else
-                    {
-                        step = "Assert( true,\"" + step + " missing property \")";
-                        _logger.LogWarning($"{step} has a missing property");
-                        break;
-                    }
+                var propertySplitArray = property.Split(".");
 
-                default:
-                    step = "Assert( true,\"" + step + " is not supported \")";
-                    _logger.LogWarning($"{step} is not supported");
-                    break;
+                if (propertySplitArray.Length > 1)
+                {
+                    step = identifier + "(" + propertySplitArray[0] + "," + "\"" + propertySplitArray[1] + "\"" + "," + value + ")";
+                    return step;
+                }
+                else
+                {
+                    step = "Assert( true,\"" + step + " missing property \")";
+                    _logger.LogWarning($"{step} has a missing property");
+                    return step;
+                }
             }
-
-            return step;
         }
 
         public List<TestCase> GetTestCases()
@@ -313,6 +307,11 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         public TestPlanDefinition? GetYamlTestPlan()
         {
             return YamlTestPlan;
+        }
+
+        public string? GetTestPlanString()
+        {
+            return YamlTestPlanString;
         }
     }
 }
