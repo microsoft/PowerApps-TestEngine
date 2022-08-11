@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -282,6 +283,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return await Page.EvaluateAsync<T>(jsExpression, santizedArguments);
         }
 
+        // Justification: Limited ability to run unit tests for 
+        // Playwright actions on the sign-in page
         public async Task HandleUserEmailScreen(string selector, string value)
         {
             ValidatePage();
@@ -290,6 +293,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
         }
 
+        // Justification: Limited ability to run unit tests for 
+        // Playwright actions on the sign-in page
         public async Task HandleUserPasswordScreen(string selector, string value)
         {
             ValidatePage();
@@ -297,6 +302,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.FillAsync(selector, value);
         }
 
+        // Justification: Limited ability to run unit tests for 
+        // Playwright actions on the sign-in page
+        [ExcludeFromCodeCoverage]
         public async Task HandleKeepSignedInNoScreen(string selector)
         {
             ValidatePage();
