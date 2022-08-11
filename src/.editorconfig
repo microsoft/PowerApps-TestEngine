@@ -143,6 +143,9 @@ dotnet_diagnostic.CS8604.severity = none
 # CS8620: Argument cannot be used for parameter due to differences in the nullability of reference types.
 dotnet_diagnostic.CS8620.severity = none
 
+# CS1998: Async method lacks 'await' operators and will run synchronously
+dotnet_diagnostic.CS1998.severity = none
+
 [*.vb]
 # Modifier preferences
 visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public,Friend,NotOverridable,Overridable,MustOverride,Overloads,Overrides,MustInherit,NotInheritable,Static,Shared,Shadows,ReadOnly,WriteOnly,Dim,Const,WithEvents,Widening,Narrowing,Custom,Async:suggestion
