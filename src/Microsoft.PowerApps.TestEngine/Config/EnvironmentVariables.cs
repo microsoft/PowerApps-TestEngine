@@ -11,7 +11,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Gets or sets the file path to a separate file with environment variables.
         /// </summary>
-        public string? FilePath { get; set; }
+        public string FilePath { get; set; }
 
         /// <summary>
         /// Gets or sets the list of user credential references.

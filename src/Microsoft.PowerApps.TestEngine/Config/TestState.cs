@@ -11,14 +11,14 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestState : ITestState
     {
         private readonly ITestConfigParser _testConfigParser;
-        private TestPlanDefinition? TestPlanDefinition { get; set; }
+        private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
-        private string? EnvironmentId { get; set; }
-        private string? Cloud { get; set; }
+        private string EnvironmentId { get; set; }
+        private string Cloud { get; set; }
 
-        private string? TenantId { get; set; }
+        private string TenantId { get; set; }
 
-        private string? OutputDirectory { get; set; }
+        private string OutputDirectory { get; set; }
 
         private bool IsValid { get; set; } = false;
 
@@ -162,7 +162,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             EnvironmentId = environmentId;
         }
 
-        public string? GetEnvironment()
+        public string GetEnvironment()
         {
             return EnvironmentId;
         }
@@ -177,7 +177,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             Cloud = cloud;
         }
 
-        public string? GetCloud()
+        public string GetCloud()
         {
             return Cloud;
         }
@@ -191,7 +191,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             TenantId = tenantId;
         }
 
-        public string? GetTenant()
+        public string GetTenant()
         {
             return TenantId;
         }
@@ -203,7 +203,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
             OutputDirectory = outputDirectory;
         }
-        public string? GetOutputDirectory()
+        public string GetOutputDirectory()
         {
             return OutputDirectory;
         }
@@ -224,7 +224,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
             return userConfiguration;
         }
-        public TestSettings? GetTestSettings()
+        public TestSettings GetTestSettings()
         {
             return TestPlanDefinition?.TestSettings;
         }

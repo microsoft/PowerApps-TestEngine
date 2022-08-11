@@ -92,10 +92,10 @@ csharp_style_expression_bodied_indexers = true:silent
 csharp_style_expression_bodied_accessors = true:silent
 # Pattern matching preferences
 csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
-csharp_style_pattern_matching_over_as_with_null_check = true:silent
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 # Null-checking preferences
 csharp_style_throw_expression = true:suggestion
-csharp_style_conditional_delegate_call = true:silent
+csharp_style_conditional_delegate_call = true:suggestion
 # Modifier preferences
 csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:suggestion
 # Expression-level preferences
@@ -144,17 +144,32 @@ csharp_style_prefer_tuple_swap = true:suggestion
 csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
 csharp_style_prefer_range_operator = true:suggestion
 csharp_style_prefer_index_operator = true:suggestion
-csharp_style_prefer_null_check_over_type_check = true:silent
+csharp_style_prefer_null_check_over_type_check = true:suggestion
 csharp_prefer_static_local_function = true:suggestion
 csharp_style_unused_value_expression_statement_preference = discard_variable:silent
 csharp_style_unused_value_assignment_preference = discard_variable:suggestion
-csharp_style_prefer_parameter_null_checking = true:silent
+csharp_style_prefer_parameter_null_checking = true:suggestion
 csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true:silent
 csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true:silent
 csharp_style_allow_embedded_statements_on_same_line_experimental = true:silent
+csharp_style_prefer_extended_property_pattern = true:suggestion
+csharp_style_prefer_not_pattern = true:suggestion
+csharp_style_prefer_pattern_matching = true:silent
+csharp_style_prefer_switch_expression = true:suggestion
+dotnet_diagnostic.xUnit2002.severity = warning
 ###############################
 # VB Coding Conventions       #
 ###############################
+
+# CS8625: Cannot convert null literal to non-nullable reference type.
+dotnet_diagnostic.CS8625.severity = none
+
+# CS8602: Dereference of a possibly null reference.
+dotnet_diagnostic.CS8602.severity = none
+
+# CS8600: Converting null literal or possible null value to non-nullable type.
+dotnet_diagnostic.CS8600.severity = none
+
 [*.vb]
 # Modifier preferences
 visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public,Friend,NotOverridable,Overridable,MustOverride,Overloads,Overrides,MustInherit,NotInheritable,Static,Shared,Shadows,ReadOnly,WriteOnly,Dim,Const,WithEvents,Widening,Narrowing,Custom,Async:suggestion

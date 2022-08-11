@@ -33,7 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [InlineData(null)]
         [InlineData("")]
         [InlineData("nonexistentid")]
-        public void ThrowsOnInvalidTestRunIdTest(string? testRunId)
+        public void ThrowsOnInvalidTestRunIdTest(string testRunId)
         {
             var testReporter = new TestReporter(MockFileSystem.Object);
             Assert.Throws<ArgumentException>(() => testReporter.GetTestRun(testRunId));
@@ -243,7 +243,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [InlineData(false, "some logs", new string[] { }, null, null)]
         [InlineData(true, "some logs", new string[] { }, "error message", null)]
         [InlineData(true, "some logs", new string[] { }, "error message", "stack trace")]
-        public void EndTestTest(bool success, string stdout, string[] additionalFiles, string? errorMessage, string? stackTrace)
+        public void EndTestTest(bool success, string stdout, string[] additionalFiles, string errorMessage, string stackTrace)
         {
             var testRunName = "testRunName";
             var testUser = "testUser";

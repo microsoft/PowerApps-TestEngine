@@ -13,6 +13,6 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// </summary>
         /// <param name="name">Name of variable</param>
         /// <returns>Variable value</returns>
-        public string? GetVariable(string name);
+        public string GetVariable(string name);
     }
 }

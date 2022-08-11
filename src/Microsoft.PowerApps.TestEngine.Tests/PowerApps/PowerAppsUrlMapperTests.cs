@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("myEnvironment", "prod", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant")]
         [InlineData("defaultEnvironment", "", "defaultApp", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant")]
         [InlineData("defaultEnvironment", null, "defaultApp", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant")]
-        public void GenerateAppUrlTest(string environmentId, string? cloud, string appLogicalName, string tenantId, string expectedAppUrl)
+        public void GenerateAppUrlTest(string environmentId, string cloud, string appLogicalName, string tenantId, string expectedAppUrl)
         {
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
             MockTestState.Setup(x => x.GetCloud()).Returns(cloud);
@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("environmentId", null, "tenantId")]
         [InlineData("environmentId", "appLogicalName", "")]
         [InlineData("environmentId", "appLogicalName", null)]
-        public void GenerateLoginUrlThrowsOnInvalidSetupTest(string? environmentId, string? appLogicalName, string? tenantId)
+        public void GenerateLoginUrlThrowsOnInvalidSetupTest(string environmentId, string appLogicalName, string tenantId)
         {
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() { AppLogicalName = appLogicalName });

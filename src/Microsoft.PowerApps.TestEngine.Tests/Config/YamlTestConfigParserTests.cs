@@ -144,7 +144,7 @@ enablePowerFxOverlay: false";
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void YamlTestConfigParserThrowsOnNullArguments(string? filePath)
+        public void YamlTestConfigParserThrowsOnNullArguments(string filePath)
         {
             Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);

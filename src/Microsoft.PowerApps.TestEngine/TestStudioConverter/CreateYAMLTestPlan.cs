@@ -17,21 +17,21 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         private readonly ILogger<CreateYAMLTestPlan> _logger;
         private readonly IFileSystem _fileSystem;
 
-        private string? InputDir;
+        private string InputDir;
 
         public List<TestCase> TestCases = new List<TestCase>();
 
-        private TestPlanDefinition? YamlTestPlan;
+        private TestPlanDefinition YamlTestPlan;
 
-        private static string? TestSuiteName;
+        private static string TestSuiteName;
 
-        private static string? TestSuiteDescription;
+        private static string TestSuiteDescription;
 
-        private static string? OnTestCaseStart;
+        private static string OnTestCaseStart;
 
-        private static string? OnTestCaseComplete;
+        private static string OnTestCaseComplete;
 
-        private static string? OnTestSuiteComplete;
+        private static string OnTestSuiteComplete;
 
         private static string[] NoChangeCommands = { "Assert", "Select" };
 
@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             JObject jobj = JObject.Parse(_fileSystem.ReadAllText(InputDir));
 
             // Read test suite information
-            JToken? testSuiteProperties = jobj.Root["TopParent"]?["Children"]?[0]?["Rules"];
+            JToken testSuiteProperties = jobj.Root["TopParent"]?["Children"]?[0]?["Rules"];
             if (testSuiteProperties == null || testSuiteProperties.Count() == 0)
             {
                 _logger.LogError("Missing Test Suite Information");
@@ -96,7 +96,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
 
             // Read test cases
-            JToken? testCaseList = jobj.Root["TopParent"]?["Children"]?[0]?["Children"];
+            JToken testCaseList = jobj.Root["TopParent"]?["Children"]?[0]?["Children"];
             if (testCaseList == null || testCaseList.Count() == 0)
             {
                 _logger.LogError("Missing Test Cases");
@@ -146,7 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
 
             // Read OnTestCaseStart, OnTestCaseComplete, OnTestSuiteComplete
-            JToken? overallProperties = jobj.Root["TopParent"]?["Rules"];
+            JToken overallProperties = jobj.Root["TopParent"]["Rules"];
             if (overallProperties != null && overallProperties.Count() > 0)
             {
                 foreach (var overallProperty in overallProperties)
@@ -310,7 +310,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             return TestCases;
         }
 
-        public TestPlanDefinition? GetYamlTestPlan()
+        public TestPlanDefinition GetYamlTestPlan()
         {
             return YamlTestPlan;
         }

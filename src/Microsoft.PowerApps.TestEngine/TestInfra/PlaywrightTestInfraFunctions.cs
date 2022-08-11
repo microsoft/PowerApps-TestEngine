@@ -17,10 +17,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
 
-        private IPlaywright? PlaywrightObject { get; set; }
-        private IBrowser? Browser { get; set; }
-        private IBrowserContext? BrowserContext { get; set; }
-        private IPage? Page { get; set; }
+        private IPlaywright PlaywrightObject { get; set; }
+        private IBrowser Browser { get; set; }
+        private IBrowserContext BrowserContext { get; set; }
+        private IPage Page { get; set; }
 
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem)
         {
@@ -31,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         // Constructor to aid with unit testing
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem,
-            IPlaywright? playwrightObject = null, IBrowserContext? browserContext = null, IPage? page = null) : this(testState, singleTestInstanceState, fileSystem)
+            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null) : this(testState, singleTestInstanceState, fileSystem)
         {
             PlaywrightObject = playwrightObject;
             Page = page;
@@ -249,7 +249,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.ClickAsync(selector);
         }
 
-        public async Task AddScriptTagAsync(string scriptTag, string? frameName)
+        public async Task AddScriptTagAsync(string scriptTag, string frameName)
         {
             ValidatePage();
             if (string.IsNullOrEmpty(frameName))

@@ -19,15 +19,15 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         public new string AppLogicalName { get; set; } = "";
 
         [YamlMember(ScalarStyle = ScalarStyle.Literal)]
-        public new string? OnTestCaseStart { get; set; }
+        public new string OnTestCaseStart { get; set; }
 
         [YamlMember(ScalarStyle = ScalarStyle.Literal)]
-        public new string? OnTestCaseComplete { get; set; }
+        public new string OnTestCaseComplete { get; set; }
 
         [YamlMember(ScalarStyle = ScalarStyle.Literal)]
-        public new string? OnTestSuiteComplete { get; set; }
+        public new string OnTestSuiteComplete { get; set; }
 
-        public new List<NetworkRequestMock>? NetworkRequestMocks { get; set; }
+        public new List<NetworkRequestMock> NetworkRequestMocks { get; set; }
 
         public new List<TestCase> TestCases { get; set; } = new List<TestCase>();
     }

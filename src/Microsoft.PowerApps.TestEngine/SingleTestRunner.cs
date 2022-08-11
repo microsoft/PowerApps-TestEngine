@@ -27,9 +27,9 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly IUrlMapper _urlMapper;
         private readonly IFileSystem _fileSystem;
 
-        private ILogger? Logger { get; set; }
+        private ILogger Logger { get; set; }
         private bool TestSuccess { get; set; } = true;
-        private Exception? TestException { get; set; }
+        private Exception TestException { get; set; }
         private int RunCount { get; set; } = 0;
 
         public SingleTestRunner(ITestReporter testReporter,

@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [InlineData("Chromium", "Pixel 2", null, null)]
         [InlineData("Safari", "iPhone 8", 400, null)]
         [InlineData("Safari", "iPhone 8", 400, 800)]
-        public async Task SetupAsyncTest(string browser, string? device, int? screenWidth, int? screenHeight)
+        public async Task SetupAsyncTest(string browser, string device, int? screenWidth, int? screenHeight)
         {
             var browserConfig = new BrowserConfiguration()
             {
@@ -145,7 +145,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task SetupAsyncThrowsOnInvalidBrowserTest(string? browser)
+        public async Task SetupAsyncThrowsOnInvalidBrowserTest(string browser)
         {
             var browserConfig = new BrowserConfiguration()
             {
@@ -404,7 +404,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [InlineData("www.microsoft.com")]
         [InlineData("file://c:/test.txt")]
         [InlineData("hi")]
-        public async Task GoToUrlThrowsOnInvalidUrlTest(string? url)
+        public async Task GoToUrlThrowsOnInvalidUrlTest(string url)
         {
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
@@ -504,7 +504,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task AddScriptTagSuccessfulTest()
         {
             var scriptTag = "test.js";
-            string? frameName = null;
+            string frameName = null;
 
             MockPage.Setup(x => x.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).Returns(Task.FromResult(MockElementHandle.Object));
 
@@ -569,7 +569,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockRoute.Setup(x => x.Request).Returns(MockRequest.Object);
             MockRequest.Setup(x => x.Method).Returns(requestMethod);
             MockRequest.Setup(x => x.PostData).Returns(requestBody);
-            MockRequest.Setup(x => x.HeaderValueAsync("x-ms-request-method")).Returns(Task.FromResult<string?>("PATCH"));
+            MockRequest.Setup(x => x.HeaderValueAsync("x-ms-request-method")).Returns(Task.FromResult<string>("PATCH"));
             MockRoute.Setup(x => x.FulfillAsync(It.IsAny<RouteFulfillOptions>())).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
             MockRoute.Setup(x => x.ContinueAsync(It.IsAny<RouteContinueOptions>())).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
 
@@ -581,7 +581,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockRoute.Verify(x => x.FulfillAsync(It.Is<RouteFulfillOptions>((option) => option.Path == mock.ResponseDataFile)), Times.Once);
 
             // Test continuing route's request without overrides
-            MockRequest.Setup(x => x.HeaderValueAsync("x-ms-request-method")).Returns(Task.FromResult<string?>("POST"));
+            MockRequest.Setup(x => x.HeaderValueAsync("x-ms-request-method")).Returns(Task.FromResult<string>("POST"));
             await playwrightTestInfraFunctions.RouteNetworkRequest(MockRoute.Object, mock);
             MockRoute.Verify(x => x.ContinueAsync(It.IsAny<RouteContinueOptions>()), Times.Once);
         }

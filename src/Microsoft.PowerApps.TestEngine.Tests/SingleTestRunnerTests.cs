@@ -55,7 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockTestReporter.Setup(x => x.CreateTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(testId);
             MockTestReporter.Setup(x => x.StartTest(It.IsAny<string>(), It.IsAny<string>()));
-            MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string?>(), It.IsAny<string?>()));
+            MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>()));
 
             MockLoggerProvider.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
@@ -106,7 +106,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         private void VerifySuccessfulTestExecution(string testResultDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig,
-            string testRunId, string testId, bool testSuccess, string[]? additionalFiles, string? errorMessage, string? stackTrace, string appUrl)
+            string testRunId, string testId, bool testSuccess, string[]? additionalFiles, string errorMessage, string stackTrace, string appUrl)
         {
             MockPowerFxEngine.Verify(x => x.Setup(), Times.Once());
             MockPowerFxEngine.Verify(x => x.UpdatePowerFxModelAsync(), Times.Once());

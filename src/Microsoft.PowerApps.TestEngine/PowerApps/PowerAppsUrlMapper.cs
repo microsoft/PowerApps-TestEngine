@@ -57,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 cloud = "";
             }
 
-            string? domain;
+            string domain;
             // TODO: implement the other clouds
             switch (cloud.ToLower())
             {

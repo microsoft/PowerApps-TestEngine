@@ -64,7 +64,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="scriptTag">Path to script</param>
         /// <param name="frameName">Frame name to add the script to. If null, it will be added to the main page.</param>
         /// <returns>Task</returns>
-        public Task AddScriptTagAsync(string scriptTag, string? frameName);
+        public Task AddScriptTagAsync(string scriptTag, string frameName);
 
         /// <summary>
         /// Runs javascript on the page

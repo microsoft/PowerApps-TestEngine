@@ -165,7 +165,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
         {
-            Object? objectValue = null;
+            Object objectValue = null;
 
             switch (value.Type)
             {

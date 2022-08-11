@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// This should match the devices supported by Playwright.
         /// https://playwright.dev/dotnet/docs/api/class-playwright#playwright-devices
         /// </summary>
-        public string? Device { get; set; }
+        public string Device { get; set; }
 
         /// <summary>
         /// Gets or sets the width of the screen to use when launching the browser.

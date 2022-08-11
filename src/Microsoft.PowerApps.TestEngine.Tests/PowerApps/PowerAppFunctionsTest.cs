@@ -254,7 +254,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("getAppStatus()")).Returns(Task.FromResult("Idle"));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult(JsonConvert.SerializeObject(JsObjectModel)));
             var testSettings = new TestSettings() { Timeout = 30000 };
@@ -307,7 +307,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             };
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("getAppStatus()")).Returns(Task.FromResult("Idle"));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult(JsonConvert.SerializeObject(jsObjectModel)));
             var testSettings = new TestSettings() { Timeout = 30000 };
@@ -330,11 +330,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("")]
         [InlineData("{}")]
         [InlineData("{ controls: [] }")]
-        public async Task LoadPowerAppsObjectModelAsyncWithNoModelTest(string? jsObjectModelString)
+        public async Task LoadPowerAppsObjectModelAsyncWithNoModelTest(string jsObjectModelString)
         {
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("getAppStatus()")).Returns(Task.FromResult("Idle"));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult(jsObjectModelString));
             var testSettings = new TestSettings() { Timeout = 3000 };
@@ -445,7 +445,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("getAppStatus()"))
                 .Returns(Task.FromResult("Loading"))
                 .Returns(Task.FromResult("Loading"))
@@ -469,7 +469,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("getAppStatus()"))
                 .Throws(new Exception())
                 .Returns(Task.FromResult("Loading"))
@@ -494,7 +494,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("getAppStatus()"))
                 .Returns(Task.FromResult("Busy"))
                 .Returns(Task.FromResult("Busy"))
@@ -518,7 +518,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("getAppStatus()"))
                 .Throws(new Exception())
                 .Returns(Task.FromResult("Busy"))
@@ -542,7 +542,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task LoadPowerAppsObjectModelAsyncWaitsForAppToBeIdleTimeout()
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("getAppStatus()"))
                 .Returns(Task.FromResult("Busy"))
                 .Returns(Task.FromResult("Busy"))
