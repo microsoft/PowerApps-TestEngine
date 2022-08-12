@@ -24,11 +24,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Gets or sets the parent control to access. Optional. Used in any nested control scenarios
         /// </summary>
         [JsonProperty("parentControl")]
-        public ItemPath? ParentControl { get; set; }
+        public ItemPath ParentControl { get; set; }
         /// <summary>
         /// Gets or sets the property name of a control. Optional.
         /// </summary>
         [JsonProperty("propertyName")]
-        public string? PropertyName { get; set; }
+        public string PropertyName { get; set; }
     }
 }

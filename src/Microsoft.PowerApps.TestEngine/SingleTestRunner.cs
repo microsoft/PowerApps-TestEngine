@@ -27,9 +27,8 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly IUrlMapper _urlMapper;
         private readonly IFileSystem _fileSystem;
 
-        private ILogger? Logger { get; set; }
         private bool TestSuccess { get; set; } = true;
-        private Exception? TestException { get; set; }
+        private Exception TestException { get; set; }
         private int RunCount { get; set; } = 0;
 
         public SingleTestRunner(ITestReporter testReporter,
@@ -83,16 +82,16 @@ namespace Microsoft.PowerApps.TestEngine
 
 
                 // Set up test infra
-                await _testInfraFunctions.SetupAsync(Logger);
+                await _testInfraFunctions.SetupAsync(testSuiteLogger);
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(Logger), Logger);
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(testSuiteLogger), testSuiteLogger);
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(Logger);
+                await _userManager.LoginAsUserAsync(testSuiteLogger);
 
                 // Set up network request mocking if any
-                await _testInfraFunctions.SetupNetworkRequestMockAsync(Logger);
+                await _testInfraFunctions.SetupNetworkRequestMockAsync(testSuiteLogger);
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();
@@ -106,8 +105,8 @@ namespace Microsoft.PowerApps.TestEngine
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
 
-                    Logger = _loggerProvider.CreateLogger(testId);
-                    _testState.SetLogger(Logger);
+                    var testCaseLogger = _loggerProvider.CreateLogger(testId);
+                    _testState.SetLogger(testCaseLogger);
 
                     var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                     _testState.SetTestResultsDirectory(testCaseResultDirectory);
@@ -117,11 +116,11 @@ namespace Microsoft.PowerApps.TestEngine
                     {
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
                         {
-                            Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
+                            testCaseLogger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
                             await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
                         }
 
-                        Logger.LogInformation($"---------------------------------------------------------------------------\n" +
+                        testCaseLogger.LogInformation($"---------------------------------------------------------------------------\n" +
                             $"RUNNING TEST CASE: {testCase.TestCaseName}" +
                             $"\n---------------------------------------------------------------------------");
 
@@ -129,13 +128,13 @@ namespace Microsoft.PowerApps.TestEngine
 
                         if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
                         {
-                            Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
+                            testCaseLogger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
                             await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError(ex.ToString());
+                        testCaseLogger.LogError(ex.ToString());
                         TestException = ex;
                         TestSuccess = false;
                     }

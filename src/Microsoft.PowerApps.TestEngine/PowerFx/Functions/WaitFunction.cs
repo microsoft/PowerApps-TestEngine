@@ -24,7 +24,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _logger = logger;
         }
 
-        protected void PollingCondition<T>(Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout)
+        protected void PollingCondition<T>(Func<T, bool> conditionToCheck, Func<T> functionToCall, int timeout)
         {
             _logger.LogDebug("Checking if Wait function's condition is met.");
 
