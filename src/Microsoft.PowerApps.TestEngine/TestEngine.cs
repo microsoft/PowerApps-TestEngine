@@ -100,7 +100,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _testReporter.EndTestRun(testRunId);
                 return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.LogError(e.Message);
                 throw;

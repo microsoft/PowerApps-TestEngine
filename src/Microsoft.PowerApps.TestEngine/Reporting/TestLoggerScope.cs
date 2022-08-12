@@ -10,7 +10,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     {
         private readonly string _scope;
         private readonly Action _scopeDisposalHandler;
-            
+
         public TestLoggerScope(string scope, Action scopeDisposalHandler)
         {
             _scope = scope;
