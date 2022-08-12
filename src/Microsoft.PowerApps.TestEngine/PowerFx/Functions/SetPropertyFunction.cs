@@ -27,7 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _logger = logger;
         }
 
-        public BooleanValue Execute(RecordValue obj, StringValue propName, TableValue value)
+        public BooleanValue Execute(RecordValue obj, StringValue propName, FormulaValue value)
         {
             SetProperty(obj, propName, value).Wait();
             return FormulaValue.New(true);
