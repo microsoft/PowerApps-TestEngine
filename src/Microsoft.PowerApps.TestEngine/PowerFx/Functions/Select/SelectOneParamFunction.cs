@@ -19,7 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         private readonly Func<Task> _updateModelFunction;
         protected readonly ILogger _logger;
 
-        public SelectOneParamFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, new RecordType())
+        public SelectOneParamFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, RecordType.Empty())
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;

@@ -62,7 +62,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         {
             var typeMapping = new TypeMapping();
 
-            var recordType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
 
             typeMapping.AddMapping("Label1", recordType);
 
@@ -74,9 +74,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         public void GetTableTypeTest()
         {
             var typeMapping = new TypeMapping();
-            var labelType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
-            var buttonType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
-            var imageType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var labelType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var buttonType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var imageType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
             typeMapping.AddMapping("Label1", labelType);
             typeMapping.AddMapping("Button1", buttonType);
             typeMapping.AddMapping("Image1", imageType);
@@ -114,9 +114,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         public void GetRecordTypeTest()
         {
             var typeMapping = new TypeMapping();
-            var labelType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
-            var buttonType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
-            var imageType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var labelType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var buttonType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var imageType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
             typeMapping.AddMapping("Label1", labelType);
             typeMapping.AddMapping("Button1", buttonType);
             typeMapping.AddMapping("Image1", imageType);
@@ -154,9 +154,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         public void GetComplexTypeWithMissingSubType()
         {
             var typeMapping = new TypeMapping();
-            var labelType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
-            var buttonType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
-            var imageType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var labelType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var buttonType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
+            var imageType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
             typeMapping.AddMapping("Label1", labelType);
             typeMapping.AddMapping("Button1", buttonType);
             typeMapping.AddMapping("Image1", imageType);

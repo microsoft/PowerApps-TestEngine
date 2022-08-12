@@ -222,12 +222,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task LoadPowerAppsObjectModelAsyncTest()
         {
             var expectedFormulaTypes = TestData.CreateExpectedFormulaTypesForSampleJsPropertyModelList();
-            var button1RecordType = new RecordType();
-            var label2RecordType = new RecordType();
-            var label3RecordType = new RecordType();
-            var button2RecordType = new RecordType();
-            var button3RecordType = new RecordType();
-            var gallery1RecordType = new RecordType();
+            var button1RecordType = RecordType.Empty();
+            var label2RecordType = RecordType.Empty();
+            var label3RecordType = RecordType.Empty();
+            var button2RecordType = RecordType.Empty();
+            var button3RecordType = RecordType.Empty();
+            var gallery1RecordType = RecordType.Empty();
             foreach (var expectedFormulaType in expectedFormulaTypes)
             {
                 button1RecordType = button1RecordType.Add(expectedFormulaType.Key, expectedFormulaType.Value);
@@ -237,20 +237,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 gallery1RecordType = gallery1RecordType.Add(expectedFormulaType.Key, expectedFormulaType.Value);
                 button3RecordType = button3RecordType.Add(expectedFormulaType.Key, expectedFormulaType.Value);
             }
-            var allItemsType = new TableType()
+            var allItemsType = TableType.Empty()
                                 .Add(new NamedFormulaType("Button1", button1RecordType))
                                 .Add(new NamedFormulaType("Label2", label2RecordType))
                                 .Add(new NamedFormulaType("Label3", label3RecordType));
             expectedFormulaTypes.Add("AllItems", allItemsType);
             gallery1RecordType.Add("AllItems", allItemsType);
-            var selectedItemType = new RecordType()
+            var selectedItemType = RecordType.Empty()
                                 .Add(new NamedFormulaType("Button1", button1RecordType))
                                 .Add(new NamedFormulaType("Label2", label2RecordType))
                                 .Add(new NamedFormulaType("Label3", label3RecordType));
             expectedFormulaTypes.Add("SelectedItem", selectedItemType);
             expectedFormulaTypes.Add("Button2", button2RecordType);
-            expectedFormulaTypes.Add("AllItems2", new TableType().Add(new NamedFormulaType("Gallery1", gallery1RecordType)).Add(new NamedFormulaType("Button3", button3RecordType)));
-            expectedFormulaTypes.Add("SelectedItem2", new RecordType().Add(new NamedFormulaType("Gallery1", gallery1RecordType)).Add(new NamedFormulaType("Button3", button3RecordType)));
+            expectedFormulaTypes.Add("AllItems2", TableType.Empty().Add(new NamedFormulaType("Gallery1", gallery1RecordType)).Add(new NamedFormulaType("Button3", button3RecordType)));
+            expectedFormulaTypes.Add("SelectedItem2", RecordType.Empty().Add(new NamedFormulaType("Gallery1", gallery1RecordType)).Add(new NamedFormulaType("Button3", button3RecordType)));
 
             var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);

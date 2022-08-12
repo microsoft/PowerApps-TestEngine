@@ -21,7 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         protected readonly IPowerAppFunctions _powerAppFunctions;
         protected readonly ILogger _logger;
 
-        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType, ILogger logger) : base("SetProperty", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
+        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType, ILogger logger) : base("SetProperty", FormulaType.Blank, RecordType.Empty(), FormulaType.String, formulaType)
         {
             _powerAppFunctions = powerAppFunctions;
             _logger = logger;
@@ -106,7 +106,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionRecord : SetPropertyFunction
     {
-        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, new RecordType(), logger)
+        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, RecordType.Empty(), logger)
         {
         }
 
@@ -119,7 +119,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
     public class SetPropertyFunctionTable : SetPropertyFunction
     {
-        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, new TableType(), logger)
+        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions, ILogger logger) : base(powerAppFunctions, TableType.Empty(), logger)
         {
         }
 
@@ -146,7 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 PropertyName = (string)propName.Value
             };
 
-            var recordType = new RecordType().Add(controlName, new RecordType());
+            var recordType = RecordType.Empty().Add(controlName, RecordType.Empty());
 
             var controlTableSource = new ControlTableSource(_powerAppFunctions, itemPath, recordType, _logger);
 

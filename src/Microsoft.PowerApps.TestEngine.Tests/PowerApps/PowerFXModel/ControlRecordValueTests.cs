@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         public void SimpleControlRecordValueTest()
         {
             Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
-            var recordType = new RecordType().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var controlName = "Label1";
             var propertyValue = Guid.NewGuid().ToString();
@@ -49,11 +49,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         public void GalleryControlRecordValueTest()
         {
             Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
-            var labelRecordType = new RecordType().Add("Text", FormulaType.String);
+            var labelRecordType = RecordType.Empty().Add("Text", FormulaType.String);
             var labelName = "Label1";
-            var galleryAllItemsTableType = new TableType().Add(new NamedFormulaType(labelName, labelRecordType));
+            var galleryAllItemsTableType = TableType.Empty().Add(new NamedFormulaType(labelName, labelRecordType));
             var allItemsName = "AllItems";
-            var galleryRecordType = new RecordType().Add(allItemsName, galleryAllItemsTableType);
+            var galleryRecordType = RecordType.Empty().Add(allItemsName, galleryAllItemsTableType);
             var galleryName = "Gallery1";
             var labelText = Guid.NewGuid().ToString();
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
@@ -117,9 +117,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         public void ComponentsControlRecordValueTest()
         {
             Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
-            var labelRecordType = new RecordType().Add("Text", FormulaType.String);
+            var labelRecordType = RecordType.Empty().Add("Text", FormulaType.String);
             var labelName = "Label1";
-            var componentRecordType = new RecordType().Add(labelName, labelRecordType);
+            var componentRecordType = RecordType.Empty().Add(labelName, labelRecordType);
             var componentName = "Component1";
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var propertyValue = Guid.NewGuid().ToString();

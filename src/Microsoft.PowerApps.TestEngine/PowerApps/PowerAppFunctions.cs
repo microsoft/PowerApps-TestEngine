@@ -102,7 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                         }
                         else
                         {
-                            var controlType = new RecordType();
+                            var controlType = RecordType.Empty();
                             var skipMessage = $"Control: {control.Name}";
                             bool everSkipped = false;
 

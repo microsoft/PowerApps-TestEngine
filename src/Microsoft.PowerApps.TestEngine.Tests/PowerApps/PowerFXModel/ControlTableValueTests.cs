@@ -22,9 +22,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var control2Name = Guid.NewGuid().ToString();
             var control1PropName = Guid.NewGuid().ToString();
             var control2PropName = Guid.NewGuid().ToString();
-            var control1Type = new RecordType().Add(control1PropName, FormulaType.String);
-            var control2Type = new RecordType().Add(control2PropName, FormulaType.String);
-            var tableType = new TableType().Add(new NamedFormulaType(control1Name, control1Type)).Add(new NamedFormulaType(control2Name, control2Type));
+            var control1Type = RecordType.Empty().Add(control1PropName, FormulaType.String);
+            var control2Type = RecordType.Empty().Add(control2PropName, FormulaType.String);
+            var tableType = TableType.Empty().Add(new NamedFormulaType(control1Name, control1Type)).Add(new NamedFormulaType(control2Name, control2Type));
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var tableCount = 5;
             var control1PropertyValue = Guid.NewGuid().ToString();
