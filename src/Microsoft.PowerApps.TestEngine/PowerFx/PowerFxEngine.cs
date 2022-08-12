@@ -54,7 +54,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
             powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions));
-            SetPropertyRegisterExtensions.RegisterAll(powerFxConfig, _powerAppFunctions);
             WaitRegisterExtensions.RegisterAll(powerFxConfig, _testState.GetTimeout());
 
             Engine = new RecalcEngine(powerFxConfig);
