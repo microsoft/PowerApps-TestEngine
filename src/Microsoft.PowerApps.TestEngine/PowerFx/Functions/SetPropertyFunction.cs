@@ -19,9 +19,55 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         protected readonly IPowerAppFunctions _powerAppFunctions;
 
-        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, FormulaType formulaType) : base("SetProperty", FormulaType.Blank, RecordType.Empty(), FormulaType.String, formulaType)
+        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions) : base("SetProperty", FormulaType.Blank, RecordType.Empty(), FormulaType.String, FormulaType.Boolean)
         {
             _powerAppFunctions = powerAppFunctions;
+        }
+
+        public BooleanValue Execute(RecordValue obj, StringValue propName, FormulaValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.New(true);
+        }
+
+        protected async Task SetProperty(RecordValue obj, StringValue propName, FormulaValue value)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentException(nameof(obj));
+            }
+
+            if (propName == null)
+            {
+                throw new ArgumentException(nameof(propName));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentException(nameof(value));
+            }
+
+            var controlModel = (ControlRecordValue)obj;
+            var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
+
+            if (!result)
+            {
+                throw new Exception($"Unable to set property {controlModel.Name}");
+            }
+        }
+    }
+    public class SetPropertyFunctionRecord : ReflectionFunction
+    {
+        protected readonly IPowerAppFunctions _powerAppFunctions;
+        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions) : base("SetProperty", FormulaType.Blank, RecordType.Empty(), FormulaType.String, RecordType.Empty())
+        {
+            _powerAppFunctions = powerAppFunctions;
+        }
+
+        public BooleanValue Execute(RecordValue obj, StringValue propName, TableValue value)
+        {
+            SetProperty(obj, propName, value).Wait();
+            return FormulaValue.New(true);
         }
 
         protected async Task SetProperty(RecordValue obj, StringValue propName, FormulaValue value)
@@ -51,75 +97,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    public class SetPropertyFunctionNumber : SetPropertyFunction
+    public class SetPropertyFunctionTable : ReflectionFunction
     {
-        public SetPropertyFunctionNumber(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Number)
+        protected readonly IPowerAppFunctions _powerAppFunctions;
+        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions) : base("SetProperty", FormulaType.Blank, RecordType.Empty(), FormulaType.String, TableType.Empty())
         {
-        }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, NumberValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-    }
-
-    public class SetPropertyFunctionString : SetPropertyFunction
-    {
-        public SetPropertyFunctionString(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.String)
-        {
-        }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, StringValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-    }
-
-    public class SetPropertyFunctionBoolean : SetPropertyFunction
-    {
-        public SetPropertyFunctionBoolean(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Boolean)
-        {
-        }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, BooleanValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-    }
-
-    public class SetPropertyFunctionDate : SetPropertyFunction
-    {
-        public SetPropertyFunctionDate(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, FormulaType.Date)
-        {
-        }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, DateValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-    }
-
-    public class SetPropertyFunctionRecord : SetPropertyFunction
-    {
-        public SetPropertyFunctionRecord(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, RecordType.Empty())
-        {
-        }
-
-        public BlankValue Execute(RecordValue obj, StringValue propName, RecordValue value)
-        {
-            SetProperty(obj, propName, value).Wait();
-            return FormulaValue.NewBlank();
-        }
-    }
-
-    public class SetPropertyFunctionTable : SetPropertyFunction
-    {
-        public SetPropertyFunctionTable(IPowerAppFunctions powerAppFunctions) : base(powerAppFunctions, TableType.Empty())
-        {
+            _powerAppFunctions = powerAppFunctions;
         }
 
         public BlankValue Execute(RecordValue obj, StringValue propName, TableValue value)
@@ -172,12 +155,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         public static void RegisterAll(this PowerFxConfig powerFxConfig, IPowerAppFunctions powerAppFunctions)
         {
-        powerFxConfig.AddFunction(new SetPropertyFunctionNumber(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionString(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionBoolean(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionDate(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionRecord(powerAppFunctions));
-        powerFxConfig.AddFunction(new SetPropertyFunctionTable(powerAppFunctions));
+            powerFxConfig.AddFunction(new SetPropertyFunctionRecord(powerAppFunctions));
+            powerFxConfig.AddFunction(new SetPropertyFunctionTable(powerAppFunctions));
         }
     }
 }
