@@ -15,20 +15,20 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Setup the test infrastructure
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupAsync(ILogger logger);
+        public Task SetupAsync();
 
         /// <summary>
         /// Setup the network request mocking
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupNetworkRequestMockAsync(ILogger logger);
+        public Task SetupNetworkRequestMockAsync();
 
         /// <summary>
         /// Navigates to url specified
         /// </summary>
         /// <param name="url">Url to go to</param>
         /// <returns>Task</returns>
-        public Task GoToUrlAsync(string url, ILogger logger);
+        public Task GoToUrlAsync(string url);
 
         /// <summary>
         /// Ends the test run

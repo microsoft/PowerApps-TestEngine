@@ -97,8 +97,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public async Task ExecuteWithVariablesTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var label1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Label1");
-            var label2 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Label2");
+            var label1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
+            var label2 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label2");
             var powerFxExpression = "Concatenate(Text(Label1.Text), Text(Label2.Text))";
             var label1Text = "Hello";
             var label2Text = "World";
@@ -121,36 +121,36 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                 PropertyName = "Text"
             };
 
-            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label1"), MockLogger.Object))
+            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label1")))
                 .Returns(JsonConvert.SerializeObject(label1JsProperty));
-            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label2"), MockLogger.Object))
+            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label2")))
                 .Returns(JsonConvert.SerializeObject(label2JsProperty));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 }, { "Label2", label2 } }));
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 }, { "Label2", label2 } }));
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
 
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
 
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName), MockLogger.Object), Times.Once());
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName), MockLogger.Object), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Once());
 
             result = powerFxEngine.Execute($"={powerFxExpression}");
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName), MockLogger.Object), Times.Exactly(2));
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName), MockLogger.Object), Times.Exactly(2));
+            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Exactly(2));
+            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Exactly(2));
         }
 
         [Fact]
         public void ExecuteFailsWhenPowerFXThrowsTest()
         {
             var powerFxExpression = "someNonExistentPowerFxFunction(1, 2, 3)";
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression));
@@ -198,9 +198,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public async Task ExecuteSelectFunctionTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Button1");
+            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -209,7 +209,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.IsType<BlankValue>(result);
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Exactly(3));
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Exactly(3));
         }
 
         [Fact]
@@ -218,15 +218,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
 
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Button1");
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
         [Fact]
@@ -234,25 +234,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var otherRecordType = new RecordType().Add("Foo", FormulaType.String);
-            var button1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, MockLogger.Object, "Button1");
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            var button1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Button1");
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
         [Fact]
         public async Task ExecuteSetPropertyFunctionTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Button1");
+            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
 
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
             var powerFxExpression = "SetProperty(Button1, \"Text\", \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -262,16 +262,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.IsType<BlankValue>(result);
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
         [Fact]
         public async Task ExecuteSetPropertyFunctionThrowsOnDifferentRecordTypeTest()
         {
             var wrongRecordType = new RecordType().Add("Foo", FormulaType.String);
-            var button1 = new ControlRecordValue(wrongRecordType, MockPowerAppFunctions.Object, MockLogger.Object, "Button1");
+            var button1 = new ControlRecordValue(wrongRecordType, MockPowerAppFunctions.Object, "Button1");
 
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
             var powerFxExpression = "SetProperty(Button1, \"Text\", \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -279,14 +279,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
         [Fact]
         public async Task ExecuteWaitFunctionTest()
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
-            var label1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Label1");
+            var label1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var label1Text = "1";
             var label1JsProperty = new JSPropertyValueModel()
             {
@@ -298,9 +298,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                 PropertyName = "Text"
             };
 
-            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((input) => itemPath.ControlName == input.ControlName && itemPath.PropertyName == input.PropertyName), MockLogger.Object))
+            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((input) => itemPath.ControlName == input.ControlName && itemPath.PropertyName == input.PropertyName)))
                 .Returns(JsonConvert.SerializeObject(label1JsProperty));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
@@ -308,7 +308,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
             var result = powerFxEngine.Execute(powerFxExpression);
             Assert.IsType<BlankValue>(result);
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
         [Fact]
@@ -316,14 +316,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var recordType = new RecordType().Add("Text", FormulaType.String);
             var otherRecordType = new RecordType().Add("Foo", FormulaType.String);
-            var label1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, MockLogger.Object, "Label1");
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
+            var label1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label1");
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
     }
 }

@@ -13,7 +13,6 @@ This is used to define settings for the tests in the test plan
 | timeout | No | Default is 30000 milliseconds(30s). Timeout value in milliseconds. If any operation takes longer than the timeout limit, it will end the test in a failure. |
 | workerCount | No |  Default is 10. The max number of tests being run in parallel. |
 | filePath | No |  The file path to a separate yaml file with all the test settings. If provided, it will **override** all the test settings in the test plan. |
-| engineLoggingLevel | No | Default is Information. What level of logging the user wants the program to output. The options are: None, Critical, Error, Warning, Information, Debug, Trace. |
 
 ### Browser configuration
 

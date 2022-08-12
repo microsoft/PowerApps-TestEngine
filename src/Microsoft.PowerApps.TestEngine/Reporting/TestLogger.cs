@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.System;
+using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Reporting
 {
@@ -12,19 +13,37 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     public class TestLogger : ITestLogger
     {
         private readonly IFileSystem _fileSystem;
-        private readonly LogLevel _engineLoggingLevel;
-        public List<string> Logs { get; set; } = new List<string>();
-        public List<string> DebugLogs { get; set; } = new List<string>();
+        public List<TestLog> Logs { get; set; } = new List<TestLog>();
+        public List<TestLog> DebugLogs { get; set; } = new List<TestLog>();
+        private TestLoggerScope currentScope = null;
 
-        public TestLogger(IFileSystem fileSystem, LogLevel engineLoggingLevel)
+        public TestLogger(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
-            _engineLoggingLevel = engineLoggingLevel;
         }
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            return null;
+            if (state is string)
+            {
+                var stateString = state as string;
+                if (string.IsNullOrEmpty(stateString))
+                {
+                    throw new InvalidOperationException("State cannot be an empty string");
+                }
+
+                if (currentScope != null)
+                {
+                    throw new InvalidOperationException("Scope is already set, only implemented one level of scopes at the moment");
+                }
+
+                currentScope = new TestLoggerScope(stateString, () => { currentScope = null; });
+                return currentScope;
+            }
+            else
+            {
+                throw new InvalidOperationException("We can only accept states of type string");
+            }
         }
 
         public bool IsEnabled(LogLevel logLevel)
@@ -32,19 +51,19 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             return true;
         }
 
-        public void WriteToLogsFile(string directoryPath)
+        public void WriteToLogsFile(string directoryPath, string filter)
         {
             if (!_fileSystem.IsValidFilePath(directoryPath))
             {
                 throw new ArgumentException(nameof(directoryPath));
             }
 
-            _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), Logs.ToArray());
+            // If no filter, get all logs
+            // else get only the logs specified by the filter
+            var filterAction = (TestLog logItem) => string.IsNullOrEmpty(filter) || logItem.ScopeFilter == filter;
 
-            if (_engineLoggingLevel <= LogLevel.Debug)
-            {
-                _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.ToArray());
-            }
+            _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), Logs.Where(filterAction).Select(x => x.LogMessage).ToArray());
+            _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.Where(filterAction).Select(x => x.LogMessage).ToArray());
         }
 
         public void Log<TState>(LogLevel messageLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
@@ -65,16 +84,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             logString += $"{formatter(state, exception)}{Environment.NewLine}";
 
-            if (messageLevel >= _engineLoggingLevel)
+            var scopeFilter = currentScope != null ? currentScope.GetScopeString() : "";
+            if (messageLevel > LogLevel.Debug)
             {
-                if (messageLevel > LogLevel.Debug)
-                {
-                    Logs.Add(logString);
-                }
-
-                DebugLogs.Add(logString);
-                Console.Out.WriteLine(logString);
+                Logs.Add(new TestLog() { LogMessage = logString, ScopeFilter = scopeFilter });
             }
+
+            DebugLogs.Add(new TestLog() { LogMessage = logString, ScopeFilter = scopeFilter });
         }
     }
 }

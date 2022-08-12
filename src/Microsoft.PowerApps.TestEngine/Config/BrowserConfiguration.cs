@@ -33,5 +33,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// If specified, screenWidth must also be specified.
         /// </summary>
         public int? ScreenHeight { get; set; }
+
+        /// <summary>
+        ///  Gets or sets the name of this config. This will be used to display in the test results.
+        ///  If not specified, the browser will be used
+        /// </summary>
+        public string ConfigName { get; set; }
     }
 }

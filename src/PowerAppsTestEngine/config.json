@@ -2,5 +2,6 @@
   "environmentId": "",
   "tenantId": "",
   "testPlanFile": "",
-  "outputDirectory": ""
+  "outputDirectory": "",
+  "logLevel":  ""
 }

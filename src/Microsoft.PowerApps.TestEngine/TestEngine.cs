@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
@@ -17,70 +18,101 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly IServiceProvider _serviceProvider;
         private readonly ITestReporter _testReporter;
         private readonly IFileSystem _fileSystem;
+        private readonly ILoggerFactory _loggerFactory;
         private const string DefaultOutputDirectory = "TestOutput";
         private const string DefaultCloud = "Prod";
+        private ILogger Logger { get; set; }
 
         public TestEngine(ITestState state,
                           IServiceProvider serviceProvider,
                           ITestReporter testReporter,
-                          IFileSystem fileSystem)
+                          IFileSystem fileSystem,
+                          ILoggerFactory loggerFactory)
         {
             _state = state;
             _serviceProvider = serviceProvider;
             _testReporter = testReporter;
             _fileSystem = fileSystem;
+            _loggerFactory = loggerFactory;
         }
 
-        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory = DefaultOutputDirectory, string cloud = DefaultCloud)
+        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory, string cloud)
         {
-            // Setup state
-            if (string.IsNullOrEmpty(testConfigFile))
-            {
-                throw new ArgumentNullException(nameof(testConfigFile));
-            }
+            // Set up test reporting
+            var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
+            _testReporter.StartTestRun(testRunId);
 
-            if (string.IsNullOrEmpty(environmentId))
-            {
-                throw new ArgumentNullException(nameof(environmentId));
-            }
-
-            if (string.IsNullOrEmpty(tenantId))
-            {
-                throw new ArgumentNullException(nameof(tenantId));
-            }
-
-            _state.ParseAndSetTestState(testConfigFile);
-            _state.SetEnvironment(environmentId);
-            _state.SetTenant(tenantId);
-
-            if (string.IsNullOrEmpty(cloud))
-            {
-                _state.SetCloud(DefaultCloud);
-            }
-            else
-            {
-                _state.SetCloud(cloud);
-            }
+            Logger = _loggerFactory.CreateLogger(testRunId);
 
             if (string.IsNullOrEmpty(outputDirectory))
             {
+                Logger.LogDebug($"Using default output directory: {DefaultOutputDirectory}");
                 _state.SetOutputDirectory(DefaultOutputDirectory);
             }
             else
             {
+                Logger.LogDebug($"Using output directory: {outputDirectory}");
                 _state.SetOutputDirectory(outputDirectory);
             }
 
-            // Set up test reporting
-            var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
-            _testReporter.StartTestRun(testRunId);
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
+            Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 
-            await RunTestByWorkerCountAsync(testRunId, testRunDirectory);
+            try
+            {
 
-            _testReporter.EndTestRun(testRunId);
-            return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
+                // Setup state
+                if (string.IsNullOrEmpty(testConfigFile))
+                {
+                    Logger.LogError("Test config file cannot be null");
+                    throw new ArgumentNullException(nameof(testConfigFile));
+                }
+
+                if (string.IsNullOrEmpty(environmentId))
+                {
+                    Logger.LogError("Environment id cannot be null");
+                    throw new ArgumentNullException(nameof(environmentId));
+                }
+
+                if (string.IsNullOrEmpty(tenantId))
+                {
+                    Logger.LogError("Tenant id cannot be null");
+                    throw new ArgumentNullException(nameof(tenantId));
+                }
+
+                _state.ParseAndSetTestState(testConfigFile);
+                _state.SetEnvironment(environmentId);
+                _state.SetTenant(tenantId);
+
+                if (string.IsNullOrEmpty(cloud))
+                {
+                    Logger.LogDebug($"Using default cloud: {DefaultCloud}");
+                    _state.SetCloud(DefaultCloud);
+                }
+                else
+                {
+                    Logger.LogDebug($"Using cloud: {cloud}");
+                    _state.SetCloud(cloud);
+                }
+
+                await RunTestByWorkerCountAsync(testRunId, testRunDirectory);
+                _testReporter.EndTestRun(testRunId);
+                return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e.Message);
+                throw;
+            }
+            finally
+            {
+                if (TestLoggerProvider.TestLoggers.ContainsKey(testRunId))
+                {
+                    var testLogger = TestLoggerProvider.TestLoggers[testRunId];
+                    testLogger.WriteToLogsFile(testRunDirectory, null);
+                }
+            }
         }
 
         public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory)
@@ -91,13 +123,16 @@ namespace Microsoft.PowerApps.TestEngine
             // Manage number of workers
             foreach (var browserConfig in browserConfigurations)
             {
-                allTestRuns.Add(RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig));
+                allTestRuns.Add(Task.Run(() => RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig)));
                 if (allTestRuns.Count >= _state.GetWorkerCount())
                 {
+                    Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
                     await Task.WhenAll(allTestRuns.ToArray());
                     allTestRuns.Clear();
                 }
             }
+
+            Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
             await Task.WhenAll(allTestRuns.ToArray());
         }
         private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig)
