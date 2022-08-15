@@ -13,6 +13,8 @@ testSuite:
           Select(TextInput1);
           SetProperty(TextInput1.Text, "hi""); alert(""Hello World!");
           Assert(TextInput1.Text = "hi""); alert(""Hello World!", "Validate comment box was changed.");
+          SetProperty(Dropdown1.Selected, {Value:"2""}}); document.body.style.backgroundColor = ""pink""; alert(""Hello World!""); console.log({""foo"",{Value:""2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2""}]}); document.body.style.backgroundColor = ""pink""; alert(""Hello World!""); console.log({""foo"":[{Value:""1""}, {Value:""2"}));
     
           Screenshot("stringtype_end.png");   
 
