@@ -23,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 }
 
                 CheckIfTimedOut(startTime, timeout, logger);
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
             }
 
             return value;
