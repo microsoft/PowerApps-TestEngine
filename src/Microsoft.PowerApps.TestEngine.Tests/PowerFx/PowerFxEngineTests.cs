@@ -254,14 +254,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
-            var powerFxExpression = "SetProperty(Button1, \"Text\", \"10\")";
+            var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
 
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
             var result = powerFxEngine.Execute(powerFxExpression);
-            Assert.IsType<BlankValue>(result);
+            Assert.IsType<BooleanValue>(result);
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object), Times.Once());
         }
 
@@ -273,7 +273,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync(MockLogger.Object)).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
-            var powerFxExpression = "SetProperty(Button1, \"Text\", \"10\")";
+            var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
 
             powerFxEngine.Setup();
