@@ -35,7 +35,7 @@ if (args.Length > 1)
         ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
         ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
         CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, InputDir);
-        converter.exportYaml();
+        converter.ExportYaml();
         return;
     }
 }

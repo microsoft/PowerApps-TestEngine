@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             InputDir = dir;
         }
 
-        public void exportYaml()
+        public void ExportYaml()
         {
             if (!_fileSystem.IsValidFilePath(InputDir))
             {
@@ -60,7 +60,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 throw new DirectoryNotFoundException();
             }
 
-            readJson(InputDir);
+            ReadJson(InputDir);
 
             _logger.LogInformation($"Test JSON Location: {InputDir}");
 
@@ -70,12 +70,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         }
 
-        private void readJson(string InputDir)
+        private void ReadJson(string InputDir)
         {
             JObject jobj = JObject.Parse(_fileSystem.ReadAllText(InputDir));
 
             // Read test suite information
-            JToken? testSuiteProperties = jobj.Root["TopParent"]?["Children"]?[0]?["Rules"];
+            JToken testSuiteProperties = jobj.Root["TopParent"]["Children"][0]["Rules"];
             if (testSuiteProperties == null || testSuiteProperties.Count() == 0)
             {
                 _logger.LogError("Missing Test Suite Information");
@@ -96,7 +96,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
 
             // Read test cases
-            JToken? testCaseList = jobj.Root["TopParent"]?["Children"]?[0]?["Children"];
+            JToken testCaseList = jobj.Root["TopParent"]["Children"][0]["Children"];
             if (testCaseList == null || testCaseList.Count() == 0)
             {
                 _logger.LogError("Missing Test Cases");
@@ -146,7 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
 
             // Read OnTestCaseStart, OnTestCaseComplete, OnTestSuiteComplete
-            JToken? overallProperties = jobj.Root["TopParent"]?["Rules"];
+            JToken overallProperties = jobj.Root["TopParent"]["Rules"];
             if (overallProperties != null && overallProperties.Count() > 0)
             {
                 foreach (var overallProperty in overallProperties)
