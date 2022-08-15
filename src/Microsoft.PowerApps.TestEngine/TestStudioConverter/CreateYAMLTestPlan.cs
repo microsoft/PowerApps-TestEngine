@@ -19,23 +19,21 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private string InputDir;
 
-        public List<TestCase> TestCases = new List<TestCase>();
+        public List<TestCase> TestCases = new ();
 
         private TestPlanDefinition? YamlTestPlan;
 
-        private static string? YamlTestPlanString;
+        private static string YamlTestPlanString;
 
-        private static string? TestSuiteName;
+        private static string TestSuiteName;
 
-        private static string? TestSuiteDescription;
+        private static string TestSuiteDescription;
 
-        private static string? OnTestCaseStart;
+        private static string OnTestCaseStart;
 
-        private static string? OnTestCaseComplete;
+        private static string OnTestCaseComplete;
 
-        private static string? OnTestSuiteComplete;
-
-        const string SetProperty = "SetProperty";
+        private static string OnTestSuiteComplete;
 
         public CreateYamlTestPlan(ILogger<CreateYamlTestPlan> logger, string dir)
         {
@@ -84,12 +82,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             foreach (var testSuiteProperty in testSuiteProperties)
             {
-                if ((testSuiteProperty["Property"] ??= false).ToString().Equals("Description"))
+                if ((testSuiteProperty["Property"]).ToString().Equals("Description"))
                 {
                     TestSuiteDescription = ExtractScripts(testSuiteProperty);
                 }
 
-                if ((testSuiteProperty["Property"] ??= false).ToString().Equals("DisplayName"))
+                if ((testSuiteProperty["Property"]).ToString().Equals("DisplayName"))
                 {
                     TestSuiteName = ExtractScripts(testSuiteProperty);
                 }
@@ -117,9 +115,9 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
                 foreach (var testCaseProperty in testCaseProperties)
                 {
-                    if ((testCaseProperty["Category"] ??= false).ToString().Equals("Behavior"))
+                    if (testCaseProperty["Category"].ToString().Equals("Behavior"))
                     {
-                        var testStep = testCaseProperty["InvariantScript"]?.ToString();
+                        var testStep = testCaseProperty["InvariantScript"].ToString();
                         if (!string.IsNullOrEmpty(testStep))
                         {
                             testSteps.Add(testStep);
@@ -130,12 +128,12 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                         }
                     }
 
-                    if ((testCaseProperty["Property"] ??= false).ToString().Equals("Description"))
+                    if (testCaseProperty["Property"].ToString().Equals("Description"))
                     {
                         testCaseObj.TestCaseDescription = ExtractScripts(testCaseProperty);
                     }
 
-                    if ((testCaseProperty["Property"] ??= false).ToString().Equals("DisplayName"))
+                    if (testCaseProperty["Property"].ToString().Equals("DisplayName"))
                     {
                         testCaseObj.TestCaseName = ExtractScripts(testCaseProperty);
                     }
@@ -147,16 +145,16 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             // Read OnTestCaseStart, OnTestCaseComplete, OnTestSuiteComplete
             JToken overallProperties = jobj.Root["TopParent"]["Rules"];
-            if (overallProperties != null && overallProperties.Count() > 0)
+            if (overallProperties != null && overallProperties.Any())
             {
                 foreach (var overallProperty in overallProperties)
                 {
-                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestStart"))
+                    if (overallProperty["Property"].ToString().Equals("OnTestStart"))
                     {
                         OnTestCaseStart = ExtractScripts(overallProperty, true);
                     }
 
-                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestComplete"))
+                    if (overallProperty["Property"].ToString().Equals("OnTestComplete"))
                     {
                         OnTestCaseComplete = ExtractScripts(overallProperty, true);
                     }
@@ -171,12 +169,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private string ExtractScripts(JToken input, bool convertToList = false)
         {
-            if (input == null)
-            {
-                return "";
-            }
-
-            var script = input["InvariantScript"]?.ToString();
+            var script = input["InvariantScript"].ToString();
 
             if (string.IsNullOrEmpty(script))
             {
@@ -203,7 +196,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             var stringBuilder = new StringBuilder("= \n");
             foreach (var step in testSteps)
             {
-                stringBuilder.Append(ValidateStep(step));
+                stringBuilder.Append(step);
                 stringBuilder.Append(";\n");
             }
 
@@ -249,55 +242,6 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             YamlTestPlan = testYAML;
             _fileSystem.WriteTextToFile(outputDir, result);
         }
-        /// <summary>
-        /// Checks if a test step needs to be changed to match Test Engine Syntax
-        /// Right now, ValidateStep only affects the SetProperty Command
-        /// </summary>
-        /// <param name="step">A Test Step in Test Studio's Power fx syntax</param>
-        /// <returns></returns>
-        private string ValidateStep(string step)
-        {
-            var identifier = step.Split('(')[0];
-
-            if (!identifier.Equals(SetProperty))
-            {
-                return step;
-            }
-            else
-            {
-                var parameters = Regex.Match(step, @"\(.*\)").Groups[0].Value;
-                parameters = parameters.Substring(1, parameters.Length - 2);
-
-                // Expected Test Studio syntax sample:  SetProperty(IncrementControl1.value, 10)
-                // Resulting Test Engine syntax sample: SetProperty(IncrementControl1, "value", 10)
-
-                var parametersSplit = parameters.Split(new[] { ',' }, 2);
-
-                if (parametersSplit.Length < 2)
-                {
-                    step = "Assert( true,\"" + step + " incorrect Test Studio syntax \")";
-                    _logger.LogWarning($"{step} incorrect syntax");
-                    return step;
-                }
-
-                var property = parametersSplit[0];
-                var value = parametersSplit[1];
-
-                var propertySplitArray = property.Split(".");
-
-                if (propertySplitArray.Length > 1)
-                {
-                    step = identifier + "(" + propertySplitArray[0] + "," + "\"" + propertySplitArray[1] + "\"" + "," + value + ")";
-                    return step;
-                }
-                else
-                {
-                    step = "Assert( true,\"" + step + " missing property \")";
-                    _logger.LogWarning($"{step} has a missing property");
-                    return step;
-                }
-            }
-        }
 
         public List<TestCase> GetTestCases()
         {
@@ -309,7 +253,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             return YamlTestPlan;
         }
 
-        public string? GetTestPlanString()
+        public string GetTestPlanString()
         {
             return YamlTestPlanString;
         }
