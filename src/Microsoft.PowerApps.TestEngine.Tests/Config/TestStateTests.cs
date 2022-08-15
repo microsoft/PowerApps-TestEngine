@@ -15,11 +15,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
     {
         private Mock<ITestConfigParser> MockTestConfigParser;
         private List<TestCase> TestCases = new List<TestCase>();
-        private Mock<Microsoft.Extensions.Logging.ILogger> MockLogger;
 
         public TestStateTests()
         {
-            MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             MockTestConfigParser = new Mock<ITestConfigParser>(MockBehavior.Strict);
             var testCase = new TestCase
             {

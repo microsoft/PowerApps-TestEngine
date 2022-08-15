@@ -2,8 +2,10 @@
 // Licensed under the MIT license.
 
 using System;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
 using Xunit;
 
@@ -13,13 +15,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
     {
         private Mock<ITestState> MockTestState;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
-        private Mock<Microsoft.Extensions.Logging.ILogger> MockLogger;
+        private Mock<ILogger> MockLogger;
 
         public PowerAppsUrlMapperTests()
         {
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
+            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
         }
 
         [Theory]
@@ -37,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() { AppLogicalName = appLogicalName });
             MockTestState.Setup(x => x.GetTenant()).Returns(tenantId);
             var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Equal(expectedAppUrl, powerAppUrlMapper.GenerateTestUrl(MockLogger.Object));
+            Assert.Equal(expectedAppUrl, powerAppUrlMapper.GenerateTestUrl());
             MockTestState.Verify(x => x.GetEnvironment(), Times.Once());
             MockTestState.Verify(x => x.GetCloud(), Times.Once());
             MockSingleTestInstanceState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
@@ -56,8 +58,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() { AppLogicalName = appLogicalName });
             MockTestState.Setup(x => x.GetTenant()).Returns(tenantId);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
             var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateTestUrl(MockLogger.Object));
+            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateTestUrl());
         }
 
         [Fact]
@@ -67,8 +71,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestState.Setup(x => x.GetEnvironment()).Returns("environmentId");
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testDefinition);
             MockTestState.Setup(x => x.GetTenant()).Returns("tenantId");
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
             var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateTestUrl(MockLogger.Object));
+            Assert.Throws<InvalidOperationException>(() => powerAppUrlMapper.GenerateTestUrl());
         }
     }
 }

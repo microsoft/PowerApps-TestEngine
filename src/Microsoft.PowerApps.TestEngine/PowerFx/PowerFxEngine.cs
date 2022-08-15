@@ -139,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 throw new InvalidOperationException();
             }
 
-            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync(Logger);
+            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
             foreach (var control in controlRecordValues)
             {
                 Engine.UpdateVariable(control.Key, control.Value);

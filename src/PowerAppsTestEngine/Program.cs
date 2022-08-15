@@ -5,6 +5,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.PowerApps.TestEngine;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
@@ -23,7 +24,8 @@ var switchMappings = new Dictionary<string, string>()
     { "-i", "TestPlanFile" },
     { "-e", "EnvironmentId" },
     { "-t", "TenantId" },
-    { "-o", "OutputDirectory" }
+    { "-o", "OutputDirectory" },
+    { "-l", "LogLevel" }
 };
 
 if (args.Length > 1)
@@ -55,40 +57,20 @@ if (inputOptions == null)
 }
 else
 {
-    // Get EngineLoggingLevel from testSettings
-    TestState tempState = new TestState(new YamlTestConfigParser(new FileSystem()));
-    TestLoggerProvider tempLoggerProvider = new TestLoggerProvider(new FileSystem());
-    tempLoggerProvider.SetEngineLoggingLevel(LogLevel.Error);
-    ILoggerFactory tempLoggerFactory = LoggerFactory.Create(tempLoggingBuilder =>
+    var logLevel = LogLevel.Information; // Default log level
+    if (!string.IsNullOrEmpty(inputOptions.LogLevel) && !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))
     {
-        tempLoggingBuilder
-        .ClearProviders()
-        .AddProvider(tempLoggerProvider);
-    });
-    ILogger tempLogger = tempLoggerFactory.CreateLogger("Suite");
-    tempState.ParseAndSetTestState(inputOptions.TestPlanFile);
-    LogLevel engineLoggingLevel = tempState.GetEngineLoggingLevel();
+        Console.Out.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default: Information");
+    }
 
-    // Set provider & logger
-    TestState state = new TestState(new YamlTestConfigParser(new FileSystem()));
-    TestLoggerProvider loggerProvider = new TestLoggerProvider(new FileSystem());
-    loggerProvider.SetEngineLoggingLevel(engineLoggingLevel);
-    ILoggerFactory loggerFactory = LoggerFactory.Create(loggingBuilder =>
-    {
-        loggingBuilder
-        .ClearProviders()
-        .AddProvider(loggerProvider);
-    });
-    ILogger logger = loggerFactory.CreateLogger("Suite");
-    state.ParseAndSetTestState(inputOptions.TestPlanFile);
-
-    // Set serviceProvider & Logger
     var serviceProvider = new ServiceCollection()
     .AddLogging(loggingBuilder =>
     {
         loggingBuilder
         .ClearProviders()
-        .AddProvider(loggerProvider);
+        .AddFilter(l => l >= logLevel)
+        .AddConsole()
+        .AddProvider(new TestLoggerProvider(new FileSystem()));
     })
     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
     .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
@@ -108,7 +90,7 @@ else
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
-    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory);
+    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, "");
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }

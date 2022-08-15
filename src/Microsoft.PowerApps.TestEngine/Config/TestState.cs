@@ -238,10 +238,5 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             return GetTestSettings().WorkerCount;
         }
-
-        public LogLevel GetEngineLoggingLevel()
-        {
-            return GetTestSettings().EngineLoggingLevel;
-        }
     }
 }
