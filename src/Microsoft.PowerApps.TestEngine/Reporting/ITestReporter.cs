@@ -28,6 +28,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="testRunId">Test run id</param>
         public void EndTestRun(string testRunId);
 
+        public string CreateTestSuite(string testRunId, string testSuiteName);
+
         /// <summary>
         /// Creates a test in a test run
         /// </summary>
@@ -35,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="testName">Name of test</param>
         /// <param name="testLocation">Location of test file</param>
         /// <returns>Test id</returns>
-        public string CreateTest(string testRunId, string testName, string testLocation);
+        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation);
 
         /// <summary>
         /// Starts test. This records the start time of the test.

@@ -17,16 +17,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
     public class ControlTableValue : CollectionTableValue<ControlTableRowSchema>
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
-        private readonly ILogger _logger;
-        public ControlTableValue(RecordType recordType, IEnumerable<ControlTableRowSchema> source, IPowerAppFunctions powerAppFunctions, ILogger logger) : base(recordType, source)
+        public ControlTableValue(RecordType recordType, IEnumerable<ControlTableRowSchema> source, IPowerAppFunctions powerAppFunctions) : base(recordType, source)
         {
             _powerAppFunctions = powerAppFunctions;
-            _logger = logger;
         }
 
         protected override DValue<RecordValue> Marshal(ControlTableRowSchema item)
         {
-            var recordValue = new ControlRecordValue(item.RecordType, _powerAppFunctions, _logger, parentItemPath: item.ItemPath);
+            var recordValue = new ControlRecordValue(item.RecordType, _powerAppFunctions, parentItemPath: item.ItemPath);
             return DValue<RecordValue>.Of(recordValue);
         }
     }

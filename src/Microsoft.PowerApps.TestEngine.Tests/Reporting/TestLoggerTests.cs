@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
@@ -22,11 +23,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         }
 
         [Fact]
-        public void BeginScopeTest()
+        public void BeginScopeThrowsOnInvalidInputTest()
         {
-            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
-            Assert.Null(testLogger.BeginScope("hello"));
-            Assert.Null(testLogger.BeginScope(new Dictionary<string, string>()));
+            var testLogger = new TestLogger(MockFileSystem.Object);
+            Assert.Throws<InvalidOperationException>(() => testLogger.BeginScope(""));
+            Assert.Throws<InvalidOperationException>(() => testLogger.BeginScope(null));
+            Assert.Throws<InvalidOperationException>(() => testLogger.BeginScope(new Dictionary<string, string>()));
+            Assert.Throws<InvalidOperationException>(() => testLogger.BeginScope(1));
+        }
+
+        [Fact]
+        public void BeginScopeThrowsIfScopeAlreadyBegunTest()
+        {
+            var testLogger = new TestLogger(MockFileSystem.Object);
+            Assert.NotNull(testLogger.BeginScope(Guid.NewGuid().ToString()));
+            Assert.Throws<InvalidOperationException>(() => testLogger.BeginScope(Guid.NewGuid().ToString()));
         }
 
         [Theory]
@@ -39,7 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [InlineData(LogLevel.Warning, true)]
         public void IsEnabledTest(LogLevel level, bool shouldBeEnabled)
         {
-            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
+            var testLogger = new TestLogger(MockFileSystem.Object);
             Assert.Equal(shouldBeEnabled, testLogger.IsEnabled(level));
         }
 
@@ -47,96 +58,116 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         public void WriteToLogsFileThrowsOnInvalidPathTest()
         {
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
-            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
-            Assert.Throws<ArgumentException>(() => testLogger.WriteToLogsFile(""));
+            var testLogger = new TestLogger(MockFileSystem.Object);
+            Assert.Throws<ArgumentException>(() => testLogger.WriteToLogsFile("", ""));
             MockFileSystem.Verify(x => x.IsValidFilePath(""), Times.Once());
         }
 
         [Fact]
-        public void WriteToLogsFileTest()
+        public void LoggerTest()
         {
+            var scopeId1 = Guid.NewGuid().ToString();
+            var scopeId2 = Guid.NewGuid().ToString();
+            var createdLogs = new Dictionary<string, string[]>();
+
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
-            MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>()));
-            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Debug);
-
-            var debugLogs = new List<string>();
-            var logs = new List<string>();
-
-            for (var i = 0; i < 10; i++)
+            MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>())).Callback((string filePath, string[] logs) =>
             {
-                debugLogs.Add($"Logging: {i}");
+                createdLogs.Add(filePath, logs);
+            });
+
+            var testLogger = new TestLogger(MockFileSystem.Object);
+
+            // Test data is in the format:
+            // expectedMessage, shouldBeInLogs, shouldBeInFirstScopeLogs, shouldBeInSecondScopeLogs
+            var expectedResults = new List<(string, bool, bool, bool)>();
+
+            var logLevels = new LogLevel[] { LogLevel.Critical, LogLevel.Error, LogLevel.Warning, LogLevel.Information, LogLevel.None };
+            var debugLogLevels = new LogLevel[] { LogLevel.Debug, LogLevel.Trace };
+
+            var logGenerator = (string tag, bool shouldBeInFirstScopeLogs, bool shouldBeInSecondScopeLogs) =>
+            {
+                foreach (var level in logLevels)
+                {
+                    for (var i = 0; i < 5; i++)
+                    {
+                        var id = Guid.NewGuid();
+                        var stringFormat = "LogLevel: {0} Tag: {1} Id: {2}";
+                        expectedResults.Add((String.Format(stringFormat, level, tag, id), true, shouldBeInFirstScopeLogs, shouldBeInSecondScopeLogs));
+                        testLogger.Log(level, stringFormat, level, tag, id);
+
+                        if (i == 3)
+                        {
+                            // throw in some debug logs in the middle
+                            foreach (var debugLevel in debugLogLevels)
+                            {
+                                var debugId = Guid.NewGuid();
+                                expectedResults.Add((String.Format(stringFormat, debugLevel, tag, debugId), false, shouldBeInFirstScopeLogs, shouldBeInSecondScopeLogs));
+                                testLogger.Log(debugLevel, stringFormat, debugLevel, tag, debugId);
+                            }
+                        }
+                    }
+                }
+            };
+
+            logGenerator("Before Scope 1", false, false);
+
+            using (var scope1 = testLogger.BeginScope(scopeId1))
+            {
+                logGenerator("Scope 1", true, false);
             }
 
-            for (var i = 0; i < 10; i++)
+            logGenerator("After Scope 1/Before Scope 2", false, false);
+
+            using (var scope2 = testLogger.BeginScope(scopeId2))
             {
-                debugLogs.Add($"Logging: {i + 10}");
-                logs.Add($"Logging: {i + 10}");
+                logGenerator("Scope 2", false, true);
             }
 
-            testLogger.DebugLogs = debugLogs;
-            testLogger.Logs = logs;
+            logGenerator("After Scope 2", false, false);
 
-            var directoryPath = "C:\\Logs";
-            testLogger.WriteToLogsFile(directoryPath);
-            MockFileSystem.Verify(x => x.IsValidFilePath(directoryPath), Times.Once());
-            MockFileSystem.Verify(x => x.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), debugLogs.ToArray()), Times.Once());
-            MockFileSystem.Verify(x => x.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), logs.ToArray()), Times.Once());
+
+            var writeLogsToFileAndValidate = (string filter, string directoryPath, string[] expectedDebugLogs, string[] expectedLogs) =>
+            {
+                testLogger.WriteToLogsFile(directoryPath, filter);
+                MockFileSystem.Verify(x => x.IsValidFilePath(directoryPath), Times.Once());
+                var debugLogPath = Path.Combine(directoryPath, "debugLogs.txt");
+                var logPath = Path.Combine(directoryPath, "logs.txt");
+                Assert.True(createdLogs.ContainsKey(debugLogPath));
+                Assert.True(createdLogs.ContainsKey(logPath));
+                var debugLogs = createdLogs[debugLogPath];
+                var logs = createdLogs[logPath];
+
+                Assert.Equal(expectedDebugLogs.Length, debugLogs.Length);
+                for (var i = 0; i < expectedDebugLogs.Length; i++)
+                {
+                    Assert.True(debugLogs[i].IndexOf(expectedDebugLogs[i]) >= 0);
+                }
+
+                Assert.Equal(expectedLogs.Length, logs.Length);
+                for (var i = 0; i < expectedLogs.Length; i++)
+                {
+                    Assert.True(logs[i].IndexOf(expectedLogs[i]) >= 0);
+                }
+            };
+
+            // Get all logs
+            var allLogsDirectoryPath = "C:\\AllLogs";
+            var allLogsExpectedDebugLogs = expectedResults.Select(x => x.Item1).ToArray();
+            var allLogsExpectedLogs = expectedResults.Where(x => x.Item2).Select(x => x.Item1).ToArray();
+            writeLogsToFileAndValidate("", allLogsDirectoryPath, allLogsExpectedDebugLogs, allLogsExpectedLogs);
+
+            // Get scope 1 logs
+            var scope1LogsDirectoryPath = "C:\\Scope1Logs";
+            var scope1ExpectedDebugLogs = expectedResults.Where(x => x.Item3).Select(x => x.Item1).ToArray();
+            var scope1ExpectedLogs = expectedResults.Where(x => x.Item2 && x.Item3).Select(x => x.Item1).ToArray();
+            writeLogsToFileAndValidate(scopeId1, scope1LogsDirectoryPath, scope1ExpectedDebugLogs, scope1ExpectedLogs);
+
+            // Get scope 2 logs
+            var scope2LogsDirectoryPath = "C:\\Scope2Logs";
+            var scope2ExpectedDebugLogs = expectedResults.Where(x => x.Item4).Select(x => x.Item1).ToArray();
+            var scope2ExpectedLogs = expectedResults.Where(x => x.Item2 && x.Item4).Select(x => x.Item1).ToArray();
+            writeLogsToFileAndValidate(scopeId2, scope2LogsDirectoryPath, scope2ExpectedDebugLogs, scope2ExpectedLogs);
         }
-
-
-
-        [Theory]
-        [InlineData(LogLevel.Warning, true, true)]
-        [InlineData(LogLevel.Critical, true, true)]
-        [InlineData(LogLevel.Error, true, true)]
-        public void LogTestLevel(LogLevel level, bool shouldBeInDebugLogs, bool shouldBeInLogs)
-        {
-            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Trace);
-
-            var expectedMessages = new List<string>();
-
-            for (var i = 0; i < 5; i++)
-            {
-                var id = Guid.NewGuid();
-                var stringFormat = "Id: {0}";
-                expectedMessages.Add($"[{level}]: {String.Format(stringFormat, id)}{Environment.NewLine}");
-                testLogger.Log(level, stringFormat, id);
-            }
-
-            foreach (var message in expectedMessages)
-            {
-                Assert.Equal(shouldBeInDebugLogs, testLogger.DebugLogs.Contains(message));
-                Assert.Equal(shouldBeInLogs, testLogger.Logs.Contains(message));
-            }
-        }
-
-
-
-        [Theory]
-        [InlineData(LogLevel.Trace, true, false)]
-        [InlineData(LogLevel.Debug, true, false)]
-        [InlineData(LogLevel.Information, true, true)]
-        [InlineData(LogLevel.None, true, true)]
-        public void LogTest(LogLevel level, bool shouldBeInDebugLogs, bool shouldBeInLogs)
-        {
-            var testLogger = new TestLogger(MockFileSystem.Object, LogLevel.Trace);
-
-            var expectedMessages = new List<string>();
-
-            for (var i = 0; i < 5; i++)
-            {
-                var id = Guid.NewGuid();
-                var stringFormat = "Id: {0}";
-                expectedMessages.Add($"{String.Format(stringFormat, id)}{Environment.NewLine}");
-                testLogger.Log(level, stringFormat, id);
-            }
-
-            foreach (var message in expectedMessages)
-            {
-                Assert.Equal(shouldBeInDebugLogs, testLogger.DebugLogs.Contains(message));
-                Assert.Equal(shouldBeInLogs, testLogger.Logs.Contains(message));
-            }
-        }
-
     }
 }

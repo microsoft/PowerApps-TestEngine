@@ -17,18 +17,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         [Fact]
         public void SimpleControlRecordValueTest()
         {
-            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
-            var recordType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
+            var recordType = RecordType().Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var controlName = "Label1";
             var propertyValue = Guid.NewGuid().ToString();
             var numberPropertyValue = 11;
-            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text"), MockLogger.Object))
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text")))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = propertyValue }));
-            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "X"), MockLogger.Object))
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "X")))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = numberPropertyValue.ToString() }));
 
-            var controlRecordValue = new ControlRecordValue(recordType, mockPowerAppFunctions.Object, MockLogger.Object, controlName);
+            var controlRecordValue = new ControlRecordValue(recordType, mockPowerAppFunctions.Object, controlName);
             Assert.Equal(controlName, controlRecordValue.Name);
             Assert.Equal(recordType, controlRecordValue.Type);
 
@@ -41,15 +40,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             Assert.Equal(propertyValue, (controlRecordValue.GetField("Text") as StringValue).Value);
             Assert.Equal(numberPropertyValue, (controlRecordValue.GetField("X") as NumberValue).Value);
 
-            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == controlName), MockLogger.Object), Times.Once());
-            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "X" && x.ControlName == controlName), MockLogger.Object), Times.Once());
+            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == controlName)), Times.Once());
+            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "X" && x.ControlName == controlName)), Times.Once());
         }
 
         [Fact]
         public void GalleryControlRecordValueTest()
         {
-            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
-            var labelRecordType = RecordType.Empty().Add("Text", FormulaType.String);
+            var labelRecordType = RecordType().Empty().Add("Text", FormulaType.String);
             var labelName = "Label1";
             var galleryAllItemsTableType = TableType.Empty().Add(new NamedFormulaType(labelName, labelRecordType));
             var allItemsName = "AllItems";
@@ -57,13 +55,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var galleryName = "Gallery1";
             var labelText = Guid.NewGuid().ToString();
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
-            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>(), MockLogger.Object))
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = labelText }));
 
             var itemCount = 4;
-            mockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>(), MockLogger.Object)).Returns(itemCount);
+            mockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>())).Returns(itemCount);
 
-            var galleryRecordValue = new ControlRecordValue(galleryRecordType, mockPowerAppFunctions.Object, MockLogger.Object, galleryName);
+            var galleryRecordValue = new ControlRecordValue(galleryRecordType, mockPowerAppFunctions.Object, galleryName);
             Assert.Equal(galleryName, galleryRecordValue.Name);
             Assert.Equal(galleryRecordType, galleryRecordValue.Type);
 
@@ -110,24 +108,23 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 // Index(Gallery1.AllItems, i).Label1.Text
                 Assert.Equal(labelText, (labelRecordValue.GetField("Text") as StringValue).Value);
             }
-            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == labelName), MockLogger.Object), Times.Exactly(itemCount));
+            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == labelName)), Times.Exactly(itemCount));
 
         }
         [Fact]
         public void ComponentsControlRecordValueTest()
         {
-            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
-            var labelRecordType = RecordType.Empty().Add("Text", FormulaType.String);
+            var labelRecordType = RecordType().Empty().Add("Text", FormulaType.String);
             var labelName = "Label1";
             var componentRecordType = RecordType.Empty().Add(labelName, labelRecordType);
             var componentName = "Component1";
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var propertyValue = Guid.NewGuid().ToString();
 
-            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text"), MockLogger.Object))
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text")))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = propertyValue }));
 
-            var controlRecordValue = new ControlRecordValue(componentRecordType, mockPowerAppFunctions.Object, MockLogger.Object, componentName);
+            var controlRecordValue = new ControlRecordValue(componentRecordType, mockPowerAppFunctions.Object, componentName);
             Assert.Equal(componentName, controlRecordValue.Name);
             Assert.Equal(componentRecordType, controlRecordValue.Type);
 
@@ -155,7 +152,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             // Component1.Label1.Text
             Assert.Equal(propertyValue, (labelRecordValue.GetField("Text") as StringValue).Value);
 
-            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == labelName), MockLogger.Object), Times.Once());
+            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == labelName)), Times.Once());
         }
     }
 }

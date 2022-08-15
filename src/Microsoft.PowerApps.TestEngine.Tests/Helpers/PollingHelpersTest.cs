@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 
         public PollingHelpersTests()
         {
-            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
+            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
         }
 
         private Func<bool, bool> conditionToCheck = x => !x;
@@ -45,6 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public void PollingTimeoutTest()
         {
+            LoggingTestHelper.SetupMock(MockLogger);
             Assert.Throws<TimeoutException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, _notEnoughRuntime, MockLogger.Object));
         }
 
@@ -63,6 +64,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public void PollingThrowsOnInvalidArgumentsTest()
         {
+            LoggingTestHelper.SetupMock(MockLogger);
             Assert.Throws<ArgumentOutOfRangeException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, _invalidRuntime, MockLogger.Object));
         }
 

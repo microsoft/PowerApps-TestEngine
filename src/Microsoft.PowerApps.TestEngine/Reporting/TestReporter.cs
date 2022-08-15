@@ -103,7 +103,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testRun.ResultSummary.Outcome = "Completed";
         }
 
-        public string CreateTest(string testRunId, string testName, string testLocation)
+        public string CreateTestSuite(string testRunId, string testSuiteName)
         {
             var testRun = GetTestRun(testRunId);
 
@@ -115,6 +115,35 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (testRun.Times.Finish != _defaultDateTime)
             {
                 throw new InvalidOperationException("Test run is already finished");
+            }
+
+            var testList = new TestList() { Id = Guid.NewGuid().ToString(), Name = testSuiteName };
+            testRun.TestLists.TestList.Add(testList);
+            return testList.Id;
+        }
+
+        private bool DoesTestSuiteExist(TestRun testRun, string testSuiteId)
+        {
+            return testRun.TestLists.TestList.Where(x => x.Id == testSuiteId).Count() == 1;
+        }
+
+        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation)
+        {
+            var testRun = GetTestRun(testRunId);
+
+            if (testRun.Times.Start == _defaultDateTime)
+            {
+                throw new InvalidOperationException("Test run needs to be started");
+            }
+
+            if (testRun.Times.Finish != _defaultDateTime)
+            {
+                throw new InvalidOperationException("Test run is already finished");
+            }
+
+            if (!DoesTestSuiteExist(testRun, testSuiteId))
+            {
+                throw new InvalidOperationException("Test suite needs to be created");
             }
 
             var unitTestDefinition = new UnitTestDefinition
@@ -139,7 +168,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 TestId = unitTestDefinition.Id,
                 ExecutionId = unitTestDefinition.Execution.Id,
-                TestListId = testRun.TestLists.TestList.First().Id
+                TestListId = testSuiteId
             };
 
             var unitTestResult = new UnitTestResult

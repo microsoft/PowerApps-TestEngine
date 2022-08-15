@@ -21,12 +21,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
     {
         private Mock<IFileSystem> MockFileSystem;
         private readonly DateTime DefaultDateTime = new DateTime();
-        private Mock<ILogger> MockLogger;
 
         public TestReporterTests()
         {
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
         }
 
         [Theory]
@@ -39,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             Assert.Throws<ArgumentException>(() => testReporter.GetTestRun(testRunId));
             Assert.Throws<ArgumentException>(() => testReporter.StartTestRun(testRunId));
             Assert.Throws<ArgumentException>(() => testReporter.EndTestRun(testRunId));
-            Assert.Throws<ArgumentException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), "c:\\testplan.fx.yaml"));
+            Assert.Throws<ArgumentException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "c:\\testplan.fx.yaml"));
             Assert.Throws<ArgumentException>(() => testReporter.StartTest(testRunId, Guid.NewGuid().ToString()));
             Assert.Throws<ArgumentException>(() => testReporter.EndTest(testRunId, Guid.NewGuid().ToString(), true, "", new List<string>(), null, null));
             Assert.Throws<ArgumentException>(() => testReporter.GenerateTestReport(testRunId, "c:\\results"));
@@ -133,20 +131,51 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         }
 
         [Fact]
+        public void CreateTestSuiteTest()
+        {
+            var testRunName = "testRunName";
+            var testUser = "testUser";
+            var testSuiteName = "testSuite";
+            var testReporter = new TestReporter(MockFileSystem.Object);
+            var testRunId = testReporter.CreateTestRun(testRunName, testUser);
+
+            Assert.Throws<InvalidOperationException>(() => testReporter.CreateTestSuite(testRunId, testSuiteName));
+
+            testReporter.StartTestRun(testRunId);
+
+            var testSuiteId = testReporter.CreateTestSuite(testRunId, testSuiteName);
+
+            Assert.NotNull(testSuiteId);
+
+            var testRun = testReporter.GetTestRun(testRunId);
+            var testList = testRun.TestLists.TestList.Where(x => x.Id == testSuiteId);
+            Assert.Single(testList);
+            Assert.Equal(testSuiteName, testList.First().Name);
+
+            testReporter.EndTestRun(testRunId);
+            Assert.Throws<InvalidOperationException>(() => testReporter.CreateTestSuite(testRunId, testSuiteName));
+        }
+
+        [Fact]
         public void CreateTestTest()
         {
             var testRunName = "testRunName";
             var testUser = "testUser";
             var testName = "testName";
+            var testSuiteName = "testSuite";
             var testLocation = "C:\\testplan.fx.yaml";
             var testReporter = new TestReporter(MockFileSystem.Object);
             var testRunId = testReporter.CreateTestRun(testRunName, testUser);
 
-            Assert.Throws<InvalidOperationException>(() => testReporter.CreateTest(testRunId, testName, testLocation));
+            Assert.Throws<InvalidOperationException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), testName, testLocation));
 
             testReporter.StartTestRun(testRunId);
 
-            var testId = testReporter.CreateTest(testRunId, testName, testLocation);
+            Assert.Throws<InvalidOperationException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), testName, testLocation));
+
+            var testSuiteId = testReporter.CreateTestSuite(testRunId, testSuiteName);
+
+            var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, testLocation);
 
             var testRun = testReporter.GetTestRun(testRunId);
 
@@ -161,14 +190,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             Assert.Equal(testId, testRun.TestEntries.Entries[0].TestId);
             Assert.Equal(testRun.Definitions.UnitTests[0].Execution.Id, testRun.TestEntries.Entries[0].ExecutionId);
-            Assert.Equal(testRun.TestLists.TestList.First().Id, testRun.TestEntries.Entries[0].TestListId);
+            Assert.Equal(testSuiteId, testRun.TestEntries.Entries[0].TestListId);
 
             Assert.Equal(testRun.Definitions.UnitTests[0].Execution.Id, testRun.Results.UnitTestResults[0].ExecutionId);
             Assert.Equal(testId, testRun.Results.UnitTestResults[0].TestId);
             Assert.Equal(testName, testRun.Results.UnitTestResults[0].TestName);
             Assert.Equal("", testRun.Results.UnitTestResults[0].ComputerName);
             Assert.Equal("13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b", testRun.Results.UnitTestResults[0].TestType);
-            Assert.Equal(testRun.TestLists.TestList.First().Id, testRun.Results.UnitTestResults[0].TestListId);
+            Assert.Equal(testSuiteId, testRun.Results.UnitTestResults[0].TestListId);
             Assert.NotNull(testRun.Results.UnitTestResults[0].Output);
             Assert.Equal(DefaultDateTime, testRun.Results.UnitTestResults[0].StartTime);
             Assert.Equal(DefaultDateTime, testRun.Results.UnitTestResults[0].EndTime);
@@ -177,7 +206,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             var testName2 = "testName2";
             var testLocation2 = "C:\\testplan2.fx.yaml";
-            var testId2 = testReporter.CreateTest(testRunId, testName2, testLocation2);
+            var testId2 = testReporter.CreateTest(testRunId, testSuiteId, testName2, testLocation2);
 
             testRun = testReporter.GetTestRun(testRunId);
 
@@ -192,14 +221,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             Assert.Equal(testId2, testRun.TestEntries.Entries[1].TestId);
             Assert.Equal(testRun.Definitions.UnitTests[1].Execution.Id, testRun.TestEntries.Entries[1].ExecutionId);
-            Assert.Equal(testRun.TestLists.TestList.First().Id, testRun.TestEntries.Entries[1].TestListId);
+            Assert.Equal(testSuiteId, testRun.TestEntries.Entries[1].TestListId);
 
             Assert.Equal(testRun.Definitions.UnitTests[1].Execution.Id, testRun.Results.UnitTestResults[1].ExecutionId);
             Assert.Equal(testId2, testRun.Results.UnitTestResults[1].TestId);
             Assert.Equal(testName2, testRun.Results.UnitTestResults[1].TestName);
             Assert.Equal("", testRun.Results.UnitTestResults[1].ComputerName);
             Assert.Equal("13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b", testRun.Results.UnitTestResults[1].TestType);
-            Assert.Equal(testRun.TestLists.TestList.First().Id, testRun.Results.UnitTestResults[1].TestListId);
+            Assert.Equal(testSuiteId, testRun.Results.UnitTestResults[1].TestListId);
             Assert.NotNull(testRun.Results.UnitTestResults[1].Output);
             Assert.Equal(DefaultDateTime, testRun.Results.UnitTestResults[0].StartTime);
             Assert.Equal(DefaultDateTime, testRun.Results.UnitTestResults[0].EndTime);
@@ -207,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             Assert.Equal(2, testRun.ResultSummary.Counters.Total);
 
             testReporter.EndTestRun(testRunId);
-            Assert.Throws<InvalidOperationException>(() => testReporter.CreateTest(testRunId, testName, testLocation));
+            Assert.Throws<InvalidOperationException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), testName, testLocation));
         }
 
         [Fact]
@@ -222,7 +251,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             testReporter.StartTestRun(testRunId);
 
-            var testId = testReporter.CreateTest(testRunId, testName, testLocation);
+            var testSuiteId = testReporter.CreateTestSuite(testRunId, "testSuite");
+            var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, testLocation);
 
             var before = DateTime.Now;
             testReporter.StartTest(testRunId, testId);
@@ -254,7 +284,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             testReporter.StartTestRun(testRunId);
 
-            var testId = testReporter.CreateTest(testRunId, testName, testLocation);
+            var testSuiteId = testReporter.CreateTestSuite(testRunId, "testSuite");
+            var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, testLocation);
 
             Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage, stackTrace));
 
@@ -315,7 +346,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             testReporter.StartTestRun(testRunId);
 
-            var testId = testReporter.CreateTest(testRunId, testName, testLocation);
+            var testSuiteId = testReporter.CreateTestSuite(testRunId, "testSuite");
+            var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, testLocation);
 
             testReporter.StartTest(testRunId, testId);
 
