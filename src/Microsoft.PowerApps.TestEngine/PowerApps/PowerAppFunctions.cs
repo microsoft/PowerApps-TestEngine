@@ -193,7 +193,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var recordValue = value.Value;
 
             // Date.parse() parses the date to unix timestamp
-            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":Date.parse(\"{recordValue}\")}})";
+            var expression = $"setPropertyValue({itemPathString},{{\"propertyName\":Date.parse(\"{recordValue}\")}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
@@ -207,7 +207,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var val = recordValue.GetType().GetProperty("Value")?.GetValue(recordValue, null)?.ToString();
             RecordValueObject json = new RecordValueObject(val);
             var checkVal = JsonConvert.SerializeObject(json);
-            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+            var expression = $"setPropertyValue({itemPathString},{{\"propertyName\":{checkVal}}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
@@ -233,7 +233,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
             }
             var checkVal = JsonConvert.SerializeObject(jsonArr);
-            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+            var expression = $"setPropertyValue({itemPathString},{{\"propertyName\":{checkVal}}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);            
         }

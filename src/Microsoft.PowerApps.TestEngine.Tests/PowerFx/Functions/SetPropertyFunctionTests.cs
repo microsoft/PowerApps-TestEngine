@@ -156,7 +156,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var control2Name = Guid.NewGuid().ToString();
             var control1Type = new RecordType().Add("Value", FormulaType.String);
             var control2Type = new RecordType().Add("Value", FormulaType.String);
-            var tableType = new TableType().Add(new NamedFormulaType(control1Name, control1Type,"2")).Add(new NamedFormulaType(control2Name, control2Type,"3"));
+            var tableType = new TableType().Add(new NamedFormulaType(control1Name, control1Type, "2")).Add(new NamedFormulaType(control2Name, control2Type, "3"));
             var itemPath = new ItemPath()
             {
                 ControlName = "ComboBox1",

@@ -60,18 +60,20 @@ function selectControl(itemPath) {
 
 function interactWithControl(itemPath, value) {
     var script = "";
+    var escapedPropertyName = escape(itemPath.propertyName);
     if (isArray(Object.values(value))) {        
         var valuesJsonArr = [];
         var values = Object.values(value);
         for (var index in values) {
             valuesJsonArr[`${index}`] = `${JSON.stringify(values[index])}`;
         }
-        var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
+        var valueJson = `{"${escapedPropertyName}":${valuesJsonArr}}`;
         script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
     } else {
-        var valueJson = `{"${itemPath.propertyName}":${value}}`;
+        var valueJson = `{"${escapedPropertyName}":${value}}`;
         script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
     }
+
     return executePublishedAppScript(script);
 }
 
