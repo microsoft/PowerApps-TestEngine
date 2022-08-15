@@ -26,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         private Func<bool, bool> conditionToCheck = x => !x;
         private Func<bool> functionToCall = () =>
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
             return true;
         };
 
