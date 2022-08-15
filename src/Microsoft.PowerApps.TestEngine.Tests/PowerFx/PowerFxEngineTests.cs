@@ -261,7 +261,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
             var result = powerFxEngine.Execute(powerFxExpression);
-            Assert.IsType<BlankValue>(result);
+            Assert.IsType<BooleanValue>(result);
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
