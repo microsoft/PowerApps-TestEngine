@@ -10,7 +10,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
     /// </summary>
     public class PollingHelper
     {
-        public static T Poll<T>(T value, Func<T, bool> conditionToCheck, Func<T>? functionToCall, int timeout, ILogger logger)
+        public static T Poll<T>(T value, Func<T, bool> conditionToCheck, Func<T> functionToCall, int timeout, ILogger logger)
         {
             ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;
@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             return value;
         }
 
-        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<Task<T>>? functionToCall, int timeout, ILogger logger)
+        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<Task<T>> functionToCall, int timeout, ILogger logger)
         {
             ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;
@@ -46,7 +46,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             }
         }
 
-        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<T, Task<T>>? functionToCall, int timeout, ILogger logger)
+        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<T, Task<T>> functionToCall, int timeout, ILogger logger)
         {
             ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;

@@ -182,7 +182,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnInvalidTestConfigFile(string? testConfigPath)
+        public void ParseAndSetTestStateThrowsOnInvalidTestConfigFile(string testConfigPath)
         {
             var state = new TestState(MockTestConfigParser.Object);
             Assert.Throws<ArgumentNullException>(() => state.ParseAndSetTestState(testConfigPath));
@@ -321,7 +321,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnNoBrowserInBrowserConfigurationInTestSettings(string? browser)
+        public void ParseAndSetTestStateThrowsOnNoBrowserInBrowserConfigurationInTestSettings(string browser)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";

@@ -19,14 +19,14 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Gets or sets the request's method (GET, POST, etc.).
         /// </summary>
-        public string? Method { get; set; } = "";
+        public string Method { get; set; } = "";
         /// <summary>
         /// Gets or sets the request's headers.
         /// </summary>
-        public IDictionary<string, string>? Headers { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
         /// <summary>
         /// Gets or sets the request's payload.
         /// </summary>
-        public string? RequestBodyFile { get; set; }
+        public string RequestBodyFile { get; set; }
     }
 }

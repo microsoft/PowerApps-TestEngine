@@ -38,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets the environment id the apps should be opened in.
         /// </summary>
         /// <returns>Environment id</returns>
-        public string? GetEnvironment();
+        public string GetEnvironment();
 
         /// <summary>
         /// Set the cloud the app should be opened in.
@@ -50,7 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets the cloud the app should be opened in.
         /// </summary>
         /// <returns>Cloud</returns>
-        public string? GetCloud();
+        public string GetCloud();
 
         /// <summary>
         /// Sets the tenant the app should be opened in.
@@ -62,7 +62,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets the tenant the app should be opened in.
         /// </summary>
         /// <returns>Tenant id</returns>
-        public string? GetTenant();
+        public string GetTenant();
 
         /// <summary>
         /// Sets the directory that all test outputs should be placed in.
@@ -74,7 +74,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets the directory that all tests outputs should be placed in.
         /// </summary>
         /// <returns>Output directory</returns>
-        public string? GetOutputDirectory();
+        public string GetOutputDirectory();
 
         /// <summary>
         /// Gets the user configuration given a persona.
@@ -87,7 +87,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets the test settings.
         /// </summary>
         /// <returns>Gets the test settings</returns>
-        public TestSettings? GetTestSettings();
+        public TestSettings GetTestSettings();
 
         /// <summary>
         /// Gets the timeout value from the test settings.

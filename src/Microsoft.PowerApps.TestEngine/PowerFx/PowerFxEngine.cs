@@ -28,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly ITestState _testState;
         private int _retryLimit = 2;
 
-        private RecalcEngine? Engine { get; set; }
+        private RecalcEngine Engine { get; set; }
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
 
         public PowerFxEngine(ITestInfraFunctions testInfraFunctions,

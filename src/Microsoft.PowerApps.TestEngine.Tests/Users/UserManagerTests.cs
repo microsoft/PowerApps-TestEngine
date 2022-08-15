@@ -99,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public async Task LoginUserAsyncThrowsOnInvalidPersonaTest(string? persona)
+        public async Task LoginUserAsyncThrowsOnInvalidPersonaTest(string persona)
         {
             var testSuiteDefinition = new TestSuiteDefinition()
             {
@@ -141,7 +141,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [InlineData("", "myPassword1234")]
         [InlineData("user1Email", null)]
         [InlineData("user1Email", "")]
-        public async Task LoginUserAsyncThrowsOnInvalidUserConfigTest(string? emailKey, string? passwordKey)
+        public async Task LoginUserAsyncThrowsOnInvalidUserConfigTest(string emailKey, string passwordKey)
         {
             UserConfiguration userConfiguration = new UserConfiguration()
             {
@@ -162,7 +162,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
         [InlineData("", "user1Password")]
         [InlineData("someone@example.com", null)]
         [InlineData("someone@example.com", "")]
-        public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string? email, string? password)
+        public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string email, string password)
         {
             UserConfiguration userConfiguration = new UserConfiguration()
             {
