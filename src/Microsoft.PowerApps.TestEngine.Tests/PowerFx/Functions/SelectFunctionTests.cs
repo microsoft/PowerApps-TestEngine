@@ -82,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
             LoggingTestHelper.SetupMock(MockLogger);
-            var recordType = RecordType().Empty().Add("Gallery1", new RecordType());
+            var recordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
 
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Gallery1");
             var rowOrColumn = NumberValue.New(1.0);
@@ -106,8 +106,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
             LoggingTestHelper.SetupMock(MockLogger);
-            var parentRecordType = RecordType().Empty().Add("Gallery1", new RecordType());
-            var childRecordType = RecordType().Empty().Add("Button1", new RecordType());
+            var parentRecordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
+            var childRecordType = RecordType.Empty().Add("Button1", RecordType.Empty());
 
             var parentValue = new ControlRecordValue(parentRecordType, MockPowerAppFunctions.Object, "Gallery1");
             var rowOrColumn = NumberValue.New(1.0);
@@ -152,7 +152,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
             LoggingTestHelper.SetupMock(MockLogger);
-            var recordType = RecordType().Empty().Add("Gallery1", new RecordType());
+            var recordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
 
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Gallery1");
             var rowOrColumn = NumberValue.New(1.0);
@@ -175,8 +175,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
             LoggingTestHelper.SetupMock(MockLogger);
-            var parentRecordType = RecordType().Empty().Add("Gallery1", new RecordType());
-            var childRecordType = RecordType().Empty().Add("Button1", new RecordType());
+            var parentRecordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
+            var childRecordType = RecordType.Empty().Add("Button1", RecordType.Empty());
 
             var parentValue = new ControlRecordValue(parentRecordType, MockPowerAppFunctions.Object, "Gallery1");
             var rowOrColumn = NumberValue.New(1.0);
@@ -199,8 +199,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
             LoggingTestHelper.SetupMock(MockLogger);
-            var parentRecordType = RecordType().Empty().Add("Gallery1", new RecordType());
-            var childRecordType = RecordType().Empty().Add("Button1", new RecordType());
+            var parentRecordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
+            var childRecordType = RecordType.Empty().Add("Button1", RecordType.Empty());
 
             var updaterFunctionCallCount = 0;
             var updaterFunction = () =>
@@ -226,7 +226,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 PropertyName = null
             };
 
-            var recordType = RecordType().Empty().Add("Button1", new RecordType());
+            var recordType = RecordType.Empty().Add("Button1", RecordType.Empty());
             var powerAppControlModel = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1", parentItemPath);
 
             var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);

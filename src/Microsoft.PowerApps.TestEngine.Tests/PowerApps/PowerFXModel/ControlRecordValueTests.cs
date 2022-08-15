@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         [Fact]
         public void SimpleControlRecordValueTest()
         {
-            var recordType = RecordType().Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var controlName = "Label1";
             var propertyValue = Guid.NewGuid().ToString();
@@ -47,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         [Fact]
         public void GalleryControlRecordValueTest()
         {
-            var labelRecordType = RecordType().Empty().Add("Text", FormulaType.String);
+            var labelRecordType = RecordType.Empty().Add("Text", FormulaType.String);
             var labelName = "Label1";
             var galleryAllItemsTableType = TableType.Empty().Add(new NamedFormulaType(labelName, labelRecordType));
             var allItemsName = "AllItems";
@@ -114,7 +114,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         [Fact]
         public void ComponentsControlRecordValueTest()
         {
-            var labelRecordType = RecordType().Empty().Add("Text", FormulaType.String);
+            var labelRecordType = RecordType.Empty().Add("Text", FormulaType.String);
             var labelName = "Label1";
             var componentRecordType = RecordType.Empty().Add(labelName, labelRecordType);
             var componentName = "Component1";

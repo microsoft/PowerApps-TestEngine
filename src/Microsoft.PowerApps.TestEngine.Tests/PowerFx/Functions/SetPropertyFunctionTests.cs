@@ -80,7 +80,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             LoggingTestHelper.SetupMock(MockLogger);
 
             // Make setPropertyFunction contain a component called Rating1
-            var recordType = new RecordType().Add("Value", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Value", FormulaType.Number);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Rating1");
             var setPropertyFunction = new SetPropertyFunctionNumber(MockPowerAppFunctions.Object, MockLogger.Object);
 
@@ -99,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             LoggingTestHelper.SetupMock(MockLogger);
 
             // Make setPropertyFunction contain a component called Toggle1
-            var recordType = new RecordType().Add("Value", FormulaType.Boolean);
+            var recordType = RecordType.Empty().Add("Value", FormulaType.Boolean);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Toggle1");
             var setPropertyFunction = new SetPropertyFunctionBoolean(MockPowerAppFunctions.Object, MockLogger.Object);
 
@@ -118,7 +118,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             LoggingTestHelper.SetupMock(MockLogger);
 
             // Make setPropertyFunction contain a component called DatePicker1
-            var recordType = new RecordType().Add("Value", FormulaType.Date);
+            var recordType = RecordType.Empty().Add("Value", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
             var setPropertyFunction = new SetPropertyFunctionDate(MockPowerAppFunctions.Object, MockLogger.Object);
 
@@ -138,7 +138,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             LoggingTestHelper.SetupMock(MockLogger);
 
             // Make setPropertyFunction contain a component called Dropdown1
-            var recordType = new RecordType().Add("Selected", new RecordType());
+            var recordType = RecordType.Empty().Add("Selected", RecordType.Empty());
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object,"Dropdown1");
             var setPropertyFunction = new SetPropertyFunctionRecord(MockPowerAppFunctions.Object, MockLogger.Object);
 

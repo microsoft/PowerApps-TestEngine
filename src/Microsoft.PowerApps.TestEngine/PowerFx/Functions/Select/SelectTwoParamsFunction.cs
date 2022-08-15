@@ -48,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 PropertyName = "AllItems"
             };
 
-            var recordType = RecordType().Empty().Add(controlName, RecordType().Empty());
+            var recordType = RecordType.Empty().Add(controlName, RecordType.Empty());
             var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, controlName);
 
             var result = await _powerAppFunctions.SelectControlAsync(itemPath);
