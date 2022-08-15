@@ -74,7 +74,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             // Read test suite information
             JToken testSuiteProperties = jobj.Root["TopParent"]["Children"][0]["Rules"];
-            if (testSuiteProperties == null || testSuiteProperties.Count() == 0)
+            if (testSuiteProperties == null)
             {
                 _logger.LogError("Missing Test Suite Information");
                 return;
@@ -95,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             // Read test cases
             JToken testCaseList = jobj.Root["TopParent"]["Children"][0]["Children"];
-            if (testCaseList == null || testCaseList.Count() == 0)
+            if (testCaseList == null)
             {
                 _logger.LogError("Missing Test Cases");
                 return;
@@ -159,7 +159,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                         OnTestCaseComplete = ExtractScripts(overallProperty, true);
                     }
 
-                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestSuiteComplete"))
+                    if (overallProperty["Property"].ToString().Equals("OnTestSuiteComplete"))
                     {
                         OnTestSuiteComplete = ExtractScripts(overallProperty, true);
                     }
