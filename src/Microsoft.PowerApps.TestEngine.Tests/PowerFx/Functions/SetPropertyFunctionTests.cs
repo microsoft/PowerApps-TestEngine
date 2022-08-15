@@ -48,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Make setPropertyFunction contain a text component called Button1
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, MockLogger.Object, "Button1");
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
             var setPropertyFunctionString = new SetPropertyFunction(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Button1's 'Text' property to 5
@@ -82,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Make setPropertyFunction contain a component called Rating1
             var recordType = RecordType.Empty().Add("Value", FormulaType.Number);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Rating1");
-            var setPropertyFunction = new SetPropertyFunctionNumber(MockPowerAppFunctions.Object, MockLogger.Object);
+            var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Rating1's 'Value' property to 5
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), NumberValue.New(5));
@@ -101,7 +101,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Make setPropertyFunction contain a component called Toggle1
             var recordType = RecordType.Empty().Add("Value", FormulaType.Boolean);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Toggle1");
-            var setPropertyFunction = new SetPropertyFunctionBoolean(MockPowerAppFunctions.Object, MockLogger.Object);
+            var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Toggle1's 'Value' property to true
             var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), BooleanValue.New(true));
@@ -120,7 +120,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Make setPropertyFunction contain a component called DatePicker1
             var recordType = RecordType.Empty().Add("Value", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
-            var setPropertyFunction = new SetPropertyFunctionDate(MockPowerAppFunctions.Object, MockLogger.Object);
+            var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of DatePicker1's 'Value' property to the datetime (01/01/2030)
             var dt = new DateTime(2030, 1, 1, 0, 0, 0);
@@ -140,7 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Make setPropertyFunction contain a component called Dropdown1
             var recordType = RecordType.Empty().Add("Selected", RecordType.Empty());
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object,"Dropdown1");
-            var setPropertyFunction = new SetPropertyFunctionRecord(MockPowerAppFunctions.Object, MockLogger.Object);
+            var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Dropdown1's 'Selected' property to {"Value":"2"}
             var pair = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
