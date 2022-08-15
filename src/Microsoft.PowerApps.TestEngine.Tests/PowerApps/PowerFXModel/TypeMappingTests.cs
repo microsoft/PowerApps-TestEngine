@@ -106,8 +106,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             Assert.ThrowsAny<Exception>(() => tableType.GetFieldType("Image1"));
 
             // Empty table
-            Assert.False(typeMapping.TryGetType("*[]", out formulaType));
-            Assert.Null(formulaType);
+            Assert.True(typeMapping.TryGetType("*[]", out formulaType));
+            Assert.NotNull(formulaType);
         }
 
         [Fact]
@@ -146,8 +146,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             Assert.ThrowsAny<Exception>(() => recordType.GetFieldType("Image1"));
 
             // Empty table
-            Assert.False(typeMapping.TryGetType("![]", out formulaType));
-            Assert.Null(formulaType);
+            Assert.True(typeMapping.TryGetType("![]", out formulaType));
+            Assert.NotNull(formulaType);
         }
 
         [Fact]
