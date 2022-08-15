@@ -53,7 +53,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem, Logger));
             powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
-            SetPropertyRegisterExtensions.RegisterAll(powerFxConfig, _powerAppFunctions, Logger);
+            powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions, Logger));
             WaitRegisterExtensions.RegisterAll(powerFxConfig, _testState.GetTimeout(), Logger);
 
             Engine = new RecalcEngine(powerFxConfig);
@@ -139,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 throw new InvalidOperationException();
             }
 
-            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync(Logger);
+            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
             foreach (var control in controlRecordValues)
             {
                 Engine.UpdateVariable(control.Key, control.Value);

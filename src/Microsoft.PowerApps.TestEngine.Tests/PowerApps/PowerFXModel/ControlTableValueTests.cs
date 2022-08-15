@@ -17,22 +17,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         [Fact]
         public void TableTest()
         {
-            Mock<Microsoft.Extensions.Logging.ILogger> MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Loose);
             var control1Name = Guid.NewGuid().ToString();
             var control2Name = Guid.NewGuid().ToString();
             var control1PropName = Guid.NewGuid().ToString();
             var control2PropName = Guid.NewGuid().ToString();
-            var control1Type = new RecordType().Add(control1PropName, FormulaType.String);
-            var control2Type = new RecordType().Add(control2PropName, FormulaType.String);
-            var tableType = new TableType().Add(new NamedFormulaType(control1Name, control1Type)).Add(new NamedFormulaType(control2Name, control2Type));
+            var control1Type = RecordType.Empty().Add(control1PropName, FormulaType.String);
+            var control2Type = RecordType.Empty().Add(control2PropName, FormulaType.String);
+            var tableType = TableType.Empty().Add(new NamedFormulaType(control1Name, control1Type)).Add(new NamedFormulaType(control2Name, control2Type));
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var tableCount = 5;
             var control1PropertyValue = Guid.NewGuid().ToString();
             var control2PropertyValue = Guid.NewGuid().ToString();
-            mockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>(), MockLogger.Object)).Returns(tableCount);
-            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>(x => x.PropertyName == control1PropName), MockLogger.Object))
+            mockPowerAppFunctions.Setup(x => x.GetItemCount(It.IsAny<ItemPath>())).Returns(tableCount);
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>(x => x.PropertyName == control1PropName)))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = control1PropertyValue }));
-            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>(x => x.PropertyName == control2PropName), MockLogger.Object))
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>(x => x.PropertyName == control2PropName)))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = control2PropertyValue }));
 
             var itemPath = new ItemPath()
@@ -42,8 +41,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             };
 
             var recordType = tableType.ToRecord();
-            var tableSource = new ControlTableSource(mockPowerAppFunctions.Object, itemPath, recordType, MockLogger.Object);
-            var tableValue = new ControlTableValue(recordType, tableSource, mockPowerAppFunctions.Object, MockLogger.Object);
+            var tableSource = new ControlTableSource(mockPowerAppFunctions.Object, itemPath, recordType);
+            var tableValue = new ControlTableValue(recordType, tableSource, mockPowerAppFunctions.Object);
 
             Assert.Equal(recordType, tableValue.RecordType);
             Assert.Equal(tableCount, tableValue.Rows.Count());
@@ -79,9 +78,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 Assert.Equal(control2PropertyValue, (control2PropValue as StringValue).Value);
             }
 
-            mockPowerAppFunctions.Verify(x => x.GetItemCount(It.IsAny<ItemPath>(), MockLogger.Object), Times.AtLeastOnce());
-            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>(x => x.PropertyName == control1PropName), MockLogger.Object), Times.Exactly(tableCount));
-            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>(x => x.PropertyName == control2PropName), MockLogger.Object), Times.Exactly(tableCount));
+            mockPowerAppFunctions.Verify(x => x.GetItemCount(It.IsAny<ItemPath>()), Times.AtLeastOnce());
+            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>(x => x.PropertyName == control1PropName)), Times.Exactly(tableCount));
+            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>(x => x.PropertyName == control2PropName)), Times.Exactly(tableCount));
         }
     }
 }

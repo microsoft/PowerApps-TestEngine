@@ -52,10 +52,5 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Number of workers. Default is 10.
         /// </summary>
         public int WorkerCount { get; set; } = 10;
-
-        /// <summary>
-        /// How verbose the logging should be.
-        /// </summary>
-        public LogLevel EngineLoggingLevel { get; set; } = LogLevel.Information;
     }
 }

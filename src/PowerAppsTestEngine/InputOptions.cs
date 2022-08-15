@@ -9,5 +9,6 @@ namespace PowerAppsTestEngine
         public string? TenantId { get; set; }
         public string? TestPlanFile { get; set; }
         public string? OutputDirectory { get; set; }
+        public string? LogLevel { get; set; }
     }
 }

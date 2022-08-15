@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         protected readonly int _timeout;
         protected readonly ILogger _logger;
-        public WaitFunction(int timeout, FormulaType formulaType, ILogger logger) : base("Wait", FormulaType.Blank, new RecordType(), FormulaType.String, formulaType)
+        public WaitFunction(int timeout, FormulaType formulaType, ILogger logger) : base("Wait", FormulaType.Blank, RecordType.Empty(), FormulaType.String, formulaType)
         {
             _timeout = timeout;
             _logger = logger;

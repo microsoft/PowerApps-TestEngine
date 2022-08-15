@@ -89,17 +89,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
 
             if (isTable || isRecord)
             {
-                var recordType = new RecordType();
+                var recordType = RecordType.Empty();
 
                 // Either Table value - Example: *[Gallery2:v, Icon2:v, Label4:v]
                 // Or Record value - Example: ![Gallery2:v, Icon2:v, Label4:v]
                 var subTypes = GetSubTypes(typeString);
-
-                if (subTypes == null || subTypes.Count == 0)
-                {
-                    formulaType = null;
-                    return false;
-                }
 
                 foreach (var subType in subTypes)
                 {

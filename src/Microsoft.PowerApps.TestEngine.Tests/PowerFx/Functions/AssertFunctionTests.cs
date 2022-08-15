@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
         public AssertFunctionTests()
         {
-            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
+            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
         }
 
         [Fact]

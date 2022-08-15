@@ -28,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<IPowerFxEngine> MockPowerFxEngine;
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<IUserManager> MockUserManager;
-        private Mock<ILoggerProvider> MockLoggerProvider;
+        private Mock<ILoggerFactory> MockLoggerFactory;
         private Mock<ISingleTestInstanceState> MockTestState;
         private Mock<IUrlMapper> MockUrlMapper;
         private Mock<IFileSystem> MockFileSystem;
@@ -41,23 +41,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine = new Mock<IPowerFxEngine>(MockBehavior.Strict);
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockUserManager = new Mock<IUserManager>(MockBehavior.Strict);
-            MockLoggerProvider = new Mock<ILoggerProvider>(MockBehavior.Strict);
+            MockLoggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
             MockTestState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Loose);
+            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockTestLogger = new Mock<ITestLogger>(MockBehavior.Strict);
         }
 
-        private void SetupMocks(string testRunId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles)
+        private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles)
         {
             LoggingTestHelper.SetupMock(MockLogger);
+            MockLogger.Setup(x => x.BeginScope(It.IsAny<string>())).Returns(new TestLoggerScope("", () => { }));
 
-            MockTestReporter.Setup(x => x.CreateTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(testId);
+            MockTestReporter.Setup(x => x.CreateTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(testId);
+            MockTestReporter.Setup(x => x.CreateTestSuite(It.IsAny<string>(), It.IsAny<string>())).Returns(testSuiteId);
             MockTestReporter.Setup(x => x.StartTest(It.IsAny<string>(), It.IsAny<string>()));
             MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>()));
 
-            MockLoggerProvider.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
             MockTestState.Setup(x => x.SetLogger(It.IsAny<ILogger>()));
             MockTestState.Setup(x => x.SetTestSuiteDefinition(It.IsAny<TestSuiteDefinition>()));
@@ -72,6 +74,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockPowerFxEngine.Setup(x => x.Setup());
             MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Returns(Task.CompletedTask);
+            MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Returns(FormulaValue.NewBlank());
             if (powerFxTestSuccess)
             {
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
@@ -81,23 +84,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>())).Throws(new Exception("something bad happened"));
             }
 
-            MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>(), It.IsAny<ILogger>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.CompletedTask);
 
-            MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<ILogger>())).Returns(Task.CompletedTask);
+            MockUserManager.Setup(x => x.LoginAsUserAsync()).Returns(Task.CompletedTask);
 
-            MockUrlMapper.Setup(x => x.GenerateTestUrl(It.IsAny<ILogger>())).Returns(appUrl);
+            MockUrlMapper.Setup(x => x.GenerateTestUrl()).Returns(appUrl);
 
-            MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>()));
-            TestLoggerProvider.TestLoggers.Add(testRunId, MockTestLogger.Object);
-            TestLoggerProvider.TestLoggers.Add(testId, MockTestLogger.Object);
+            MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
+            TestLoggerProvider.TestLoggers.Add(testSuiteId, MockTestLogger.Object);
         }
 
-        private void VerifyTestStateSetup(string testRunId, TestSuiteDefinition testSuiteDefinition, string testResultDirectory, BrowserConfiguration browserConfig)
+        private void VerifyTestStateSetup(string testSuiteId, string testRunId, TestSuiteDefinition testSuiteDefinition, string testResultDirectory, BrowserConfiguration browserConfig)
         {
-            MockLoggerProvider.Verify(x => x.CreateLogger(testRunId), Times.Once());
+            MockLoggerFactory.Verify(x => x.CreateLogger(testSuiteId), Times.Once());
             MockTestState.Verify(x => x.SetTestSuiteDefinition(testSuiteDefinition), Times.Once());
             MockTestState.Verify(x => x.SetTestRunId(testRunId), Times.Once());
             MockTestState.Verify(x => x.SetBrowserConfig(browserConfig));
@@ -106,24 +108,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         private void VerifySuccessfulTestExecution(string testResultDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig,
-            string testRunId, string testId, bool testSuccess, string[]? additionalFiles, string errorMessage, string stackTrace, string appUrl)
+            string testSuiteId, string testRunId, string testId, bool testSuccess, string[]? additionalFiles, string? errorMessage, string? stackTrace, string appUrl)
         {
             MockPowerFxEngine.Verify(x => x.Setup(), Times.Once());
             MockPowerFxEngine.Verify(x => x.UpdatePowerFxModelAsync(), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.SetupAsync(It.IsAny<ILogger>()), Times.Once());
-            MockUserManager.Verify(x => x.LoginAsUserAsync(It.IsAny<ILogger>()), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>()), Times.Once());
-            MockUrlMapper.Verify(x => x.GenerateTestUrl(It.IsAny<ILogger>()), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl, It.IsAny<ILogger>()), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.SetupAsync(), Times.Once());
+            MockUserManager.Verify(x => x.LoginAsUserAsync(), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(), Times.Once());
+            MockUrlMapper.Verify(x => x.GenerateTestUrl(), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl), Times.Once());
             MockTestState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
-            MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteDefinition.TestCases[0].TestCaseName, "TODO"), Times.Once());
+            MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteId, testSuiteDefinition.TestCases[0].TestCaseName, "TODO"), Times.Once());
             MockTestReporter.Verify(x => x.StartTest(testRunId, testId), Times.Once());
             MockTestState.Verify(x => x.SetTestId(testId), Times.Once());
-            MockLoggerProvider.Verify(x => x.CreateLogger(testId), Times.Once());
-            MockTestState.Verify(x => x.SetLogger(It.IsAny<ILogger>()), Times.Exactly(2));
+            MockLoggerFactory.Verify(x => x.CreateLogger(testSuiteId), Times.Once());
+            MockTestState.Verify(x => x.SetLogger(It.IsAny<ILogger>()), Times.Exactly(1));
             MockTestState.Verify(x => x.SetTestResultsDirectory(testResultDirectory), Times.Once());
             MockFileSystem.Verify(x => x.CreateDirectory(testResultDirectory), Times.Once());
-            MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory), Times.Once());
+            MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory, testId), Times.Once());
             MockFileSystem.Verify(x => x.GetFiles(testResultDirectory), Times.Once());
             var additionalFilesList = new List<string>();
             if (additionalFiles != null)
@@ -136,33 +138,58 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private void VerifyFinallyExecution(string testResultDirectory)
         {
             MockTestInfraFunctions.Verify(x => x.EndTestRunAsync(), Times.Once());
-            MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory), Times.Once());
+            MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory, null), Times.Once());
         }
 
         [Theory]
-        [InlineData("Null additional files", null)]
-        [InlineData("No additional files", new string[] { })]
-        [InlineData("Some additional files", new string[] { "/logs.txt", "/screenshot1.png", "/screenshot2.png" })]
-        public async Task SingleTestRunnerSuccessTest(string testName, string[]? additionalFiles)
+        [InlineData(null)]
+        [InlineData(new object[] { new string[] { } })]
+        [InlineData(new object[] { new string[] { "/logs.txt", "/screenshot1.png", "/screenshot2.png" } })]
+        public async Task SingleTestRunnerSuccessWithTestDataOneTest(string[]? additionalFiles)
         {
-            // testName param is present but not used because InlineData requires a primitive parameter as the first one, you can't just use an array
             var singleTestRunner = new SingleTestRunner(MockTestReporter.Object,
                                                         MockPowerFxEngine.Object,
                                                         MockTestInfraFunctions.Object,
                                                         MockUserManager.Object,
-                                                        MockLoggerProvider.Object,
                                                         MockTestState.Object,
                                                         MockUrlMapper.Object,
-                                                        MockFileSystem.Object);
+                                                        MockFileSystem.Object,
+                                                        MockLoggerFactory.Object);
 
-            var testData = new TestData();
+            var testData = new TestDataOne();
 
-            SetupMocks(testData.testRunId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, additionalFiles);
+            SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, additionalFiles);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig);
 
-            VerifyTestStateSetup(testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
-            VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl);
+            VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
+            VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testSuiteId, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl);
+            VerifyFinallyExecution(testData.testResultDirectory);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(new object[] { new string[] { } })]
+        [InlineData(new object[] { new string[] { "/logs.txt", "/screenshot1.png", "/screenshot2.png" } })]
+        public async Task SingleTestRunnerSuccessWithTestDataTwoTest(string[]? additionalFiles)
+        {
+            var singleTestRunner = new SingleTestRunner(MockTestReporter.Object,
+                                                        MockPowerFxEngine.Object,
+                                                        MockTestInfraFunctions.Object,
+                                                        MockUserManager.Object,
+                                                        MockTestState.Object,
+                                                        MockUrlMapper.Object,
+                                                        MockFileSystem.Object,
+                                                        MockLoggerFactory.Object);
+
+            var testData = new TestDataTwo();
+
+            SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, additionalFiles);
+
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig);
+
+            VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
+            VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testSuiteId, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl);
             VerifyFinallyExecution(testData.testResultDirectory);
         }
 
@@ -173,17 +200,39 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockPowerFxEngine.Object,
                                                         MockTestInfraFunctions.Object,
                                                         MockUserManager.Object,
-                                                        MockLoggerProvider.Object,
                                                         MockTestState.Object,
                                                         MockUrlMapper.Object,
-                                                        MockFileSystem.Object);
+                                                        MockFileSystem.Object,
+                                                        MockLoggerFactory.Object);
 
-            var testData = new TestData();
+            var testData = new TestDataOne();
 
-            SetupMocks(testData.testRunId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles);
+            SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => { await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig); });
+        }
+
+        [Fact]
+        public async Task SingleTestRunnerPowerFxTestFail()
+        {
+            var singleTestRunner = new SingleTestRunner(MockTestReporter.Object,
+                                                        MockPowerFxEngine.Object,
+                                                        MockTestInfraFunctions.Object,
+                                                        MockUserManager.Object,
+                                                        MockTestState.Object,
+                                                        MockUrlMapper.Object,
+                                                        MockFileSystem.Object,
+                                                        MockLoggerFactory.Object);
+
+            var testData = new TestDataOne();
+
+            SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, false, testData.additionalFiles);
+
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig);
+
+            VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
+            VerifyFinallyExecution(testData.testResultDirectory);
         }
 
         public async Task SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper(Action<Exception> additionalMockSetup)
@@ -192,21 +241,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockPowerFxEngine.Object,
                                                            MockTestInfraFunctions.Object,
                                                            MockUserManager.Object,
-                                                           MockLoggerProvider.Object,
                                                            MockTestState.Object,
                                                            MockUrlMapper.Object,
-                                                           MockFileSystem.Object);
+                                                           MockFileSystem.Object,
+                                                           MockLoggerFactory.Object);
 
-            var testData = new TestData();
+            var testData = new TestDataOne();
 
-            SetupMocks(testData.testRunId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles);
+            SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles);
 
             var exceptionToThrow = new InvalidOperationException("Test exception");
             additionalMockSetup(exceptionToThrow);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig);
 
-            VerifyTestStateSetup(testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
+            VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             LoggingTestHelper.VerifyLogging(MockLogger, exceptionToThrow.ToString(), LogLevel.Error, Times.Once());
             VerifyFinallyExecution(testData.testResultDirectory);
         }
@@ -242,7 +291,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.SetupAsync()).Throws(exceptionToThrow);
             });
         }
 
@@ -251,7 +300,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
+                MockUserManager.Setup(x => x.LoginAsUserAsync()).Throws(exceptionToThrow);
             });
         }
 
@@ -260,7 +309,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync(It.IsAny<ILogger>())).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Throws(exceptionToThrow);
             });
         }
 
@@ -269,7 +318,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUrlMapper.Setup(x => x.GenerateTestUrl(It.IsAny<ILogger>())).Throws(exceptionToThrow);
+                MockUrlMapper.Setup(x => x.GenerateTestUrl()).Throws(exceptionToThrow);
             });
         }
 
@@ -278,7 +327,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>(), It.IsAny<ILogger>())).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Throws(exceptionToThrow);
             });
         }
 
@@ -291,7 +340,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             });
         }
 
-        class TestData
+        // Sample Test Data for test with OnTestCaseStart, OnTestCaseComplete and OnTestSuiteComplete
+        class TestDataOne
         {
             public string testRunId;
             public string testRunDirectory;
@@ -300,13 +350,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             public string testId;
             public string appUrl;
+            public string testSuiteId;
             public string testResultDirectory;
             public string testCaseResultDirectory;
             public string[] additionalFiles;
 
-            public TestData()
+            public TestDataOne()
             {
                 testRunId = Guid.NewGuid().ToString();
+                testSuiteId = Guid.NewGuid().ToString();
                 testRunDirectory = "TestRunDirectory";
                 testSuiteDefinition = new TestSuiteDefinition()
                 {
@@ -334,7 +386,56 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
                 testId = Guid.NewGuid().ToString();
                 appUrl = "https://fake-app-url.com";
-                testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfig.Browser}");
+                testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfig.Browser}_{testSuiteId.Substring(0, 6)}");
+                testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testSuiteDefinition.TestCases[0].TestCaseName}_{testId.Substring(0, 6)}");
+                additionalFiles = new string[] { };
+            }
+        }
+
+        // Sample Test Data for test
+        class TestDataTwo
+        {
+            public string testRunId;
+            public string testSuiteId;
+            public string testRunDirectory;
+            public TestSuiteDefinition testSuiteDefinition;
+            public BrowserConfiguration browserConfig;
+
+            public string testId;
+            public string appUrl;
+            public string testResultDirectory;
+            public string testCaseResultDirectory;
+            public string[] additionalFiles;
+
+            public TestDataTwo()
+            {
+                testRunId = Guid.NewGuid().ToString();
+                testSuiteId = Guid.NewGuid().ToString();
+                testRunDirectory = "TestRunDirectory";
+                testSuiteDefinition = new TestSuiteDefinition()
+                {
+                    TestSuiteName = "Test1",
+                    TestSuiteDescription = "First test",
+                    AppLogicalName = "logicalAppName1",
+                    Persona = "User1",
+                    TestCases = new List<TestCase>()
+                    {
+                        new TestCase
+                        {
+                            TestCaseName = "Test Case Name",
+                            TestCaseDescription = "Test Case Description",
+                            TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                        }
+                    }
+                };
+                browserConfig = new BrowserConfiguration()
+                {
+                    Browser = "Chromium"
+                };
+
+                testId = Guid.NewGuid().ToString();
+                appUrl = "https://fake-app-url.com";
+                testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfig.Browser}_{testSuiteId.Substring(0, 6)}");
                 testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testSuiteDefinition.TestCases[0].TestCaseName}_{testId.Substring(0, 6)}");
                 additionalFiles = new string[] { };
             }

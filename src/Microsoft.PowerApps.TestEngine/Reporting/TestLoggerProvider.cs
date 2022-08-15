@@ -13,16 +13,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     {
         public static Dictionary<string, ITestLogger> TestLoggers { get; set; } = new Dictionary<string, ITestLogger>();
         private readonly IFileSystem _fileSystem;
-        public LogLevel _engineLoggingLevel;
 
         public TestLoggerProvider(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
-        }
-
-        public void SetEngineLoggingLevel(LogLevel engineLoggingLevel)
-        {
-            _engineLoggingLevel = engineLoggingLevel;
         }
 
         public ILogger CreateLogger(string categoryName)
@@ -32,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 return TestLoggers[categoryName];
             }
 
-            var logger = new TestLogger(_fileSystem, _engineLoggingLevel);
+            var logger = new TestLogger(_fileSystem);
             TestLoggers.Add(categoryName, logger);
             return logger;
         }

@@ -22,10 +22,11 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly IPowerFxEngine _powerFxEngine;
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly IUserManager _userManager;
-        private readonly ILoggerProvider _loggerProvider;
         private readonly ISingleTestInstanceState _testState;
         private readonly IUrlMapper _urlMapper;
         private readonly IFileSystem _fileSystem;
+        private readonly ILoggerFactory _loggerFactory;
+        private ILogger Logger { get; set; }
 
         private bool TestSuccess { get; set; } = true;
         private Exception TestException { get; set; }
@@ -35,19 +36,19 @@ namespace Microsoft.PowerApps.TestEngine
                                 IPowerFxEngine powerFxEngine,
                                 ITestInfraFunctions testInfraFunctions,
                                 IUserManager userManager,
-                                ILoggerProvider loggerProvider,
                                 ISingleTestInstanceState testState,
                                 IUrlMapper urlMapper,
-                                IFileSystem fileSystem)
+                                IFileSystem fileSystem,
+                                ILoggerFactory loggerFactory)
         {
             _testReporter = testReporter;
             _powerFxEngine = powerFxEngine;
             _testInfraFunctions = testInfraFunctions;
             _userManager = userManager;
-            _loggerProvider = loggerProvider;
             _testState = testState;
             _urlMapper = urlMapper;
             _fileSystem = fileSystem;
+            _loggerFactory = loggerFactory;
         }
 
         public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig)
@@ -61,37 +62,41 @@ namespace Microsoft.PowerApps.TestEngine
                 throw new InvalidOperationException("This test can only be run once.");
             }
 
-            var testSuiteLogger = _loggerProvider.CreateLogger(testRunId);
-            _testState.SetLogger(testSuiteLogger);
+            var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
+
+            var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteDefinition.TestSuiteName} - {browserConfigName}");
+
+            Logger = _loggerFactory.CreateLogger(testSuiteId);
+            _testState.SetLogger(Logger);
 
             _testState.SetTestSuiteDefinition(testSuiteDefinition);
             _testState.SetTestRunId(testRunId);
             _testState.SetBrowserConfig(browserConfig);
 
-            var testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfig.Browser}");
+            var testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
 
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
 
-                testSuiteLogger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
+                Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteDefinition.TestSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n" +
                     $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
 
                 // Set up test infra
-                await _testInfraFunctions.SetupAsync(testSuiteLogger);
+                await _testInfraFunctions.SetupAsync();
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(testSuiteLogger), testSuiteLogger);
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl());
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(testSuiteLogger);
+                await _userManager.LoginAsUserAsync();
 
                 // Set up network request mocking if any
-                await _testInfraFunctions.SetupNetworkRequestMockAsync(testSuiteLogger);
+                await _testInfraFunctions.SetupNetworkRequestMockAsync();
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();
@@ -101,75 +106,75 @@ namespace Microsoft.PowerApps.TestEngine
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
                     TestSuccess = true;
-                    var testId = _testReporter.CreateTest(testRunId, $"{testCase.TestCaseName}", "TODO");
+                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
 
-                    var testCaseLogger = _loggerProvider.CreateLogger(testId);
-                    _testState.SetLogger(testCaseLogger);
-
-                    var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
-                    _testState.SetTestResultsDirectory(testCaseResultDirectory);
-                    _fileSystem.CreateDirectory(testCaseResultDirectory);
-
-                    try
+                    using (var scope = Logger.BeginScope(testId))
                     {
-                        if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
-                        {
-                            testCaseLogger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
-                            await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
-                        }
+                        var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
+                        _testState.SetTestResultsDirectory(testCaseResultDirectory);
+                        _fileSystem.CreateDirectory(testCaseResultDirectory);
 
-                        testCaseLogger.LogInformation($"---------------------------------------------------------------------------\n" +
-                            $"RUNNING TEST CASE: {testCase.TestCaseName}" +
-                            $"\n---------------------------------------------------------------------------");
-
-                        await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps);
-
-                        if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
+                        try
                         {
-                            testCaseLogger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
-                            await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        testCaseLogger.LogError(ex.ToString());
-                        TestException = ex;
-                        TestSuccess = false;
-                    }
-                    finally
-                    {
-                        if (TestLoggerProvider.TestLoggers.ContainsKey(testId))
-                        {
-                            var testLogger = TestLoggerProvider.TestLoggers[testId];
-                            testLogger.WriteToLogsFile(testCaseResultDirectory);
-                        }
-
-                        var additionalFiles = new List<string>();
-                        var files = _fileSystem.GetFiles(testCaseResultDirectory);
-                        if (files != null)
-                        {
-                            foreach (var file in files)
+                            if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
                             {
-                                additionalFiles.Add(file);
+                                Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
+                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
+                            }
+
+                            Logger.LogInformation($"---------------------------------------------------------------------------\n" +
+                                $"RUNNING TEST CASE: {testCase.TestCaseName}" +
+                                $"\n---------------------------------------------------------------------------");
+
+                            await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps);
+
+                            if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
+                            {
+                                Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
+                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            Logger.LogError(ex.ToString());
+                            TestException = ex;
+                            TestSuccess = false;
+                        }
+                        finally
+                        {
+                            if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
+                            {
+                                var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
+                                testLogger.WriteToLogsFile(testCaseResultDirectory, testId);
+                            }
 
-                        var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
-                        _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
+                            var additionalFiles = new List<string>();
+                            var files = _fileSystem.GetFiles(testCaseResultDirectory);
+                            if (files != null)
+                            {
+                                foreach (var file in files)
+                                {
+                                    additionalFiles.Add(file);
+                                }
+                            }
+
+                            var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
+                            _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
+                        }
                     }
-                }
 
-                if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestSuiteComplete))
-                {
-                    testSuiteLogger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteDefinition.TestSuiteName}");
-                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
+                    if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestSuiteComplete))
+                    {
+                        Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteDefinition.TestSuiteName}");
+                        _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                testSuiteLogger.LogError(ex.ToString());
+                Logger.LogError(ex.ToString());
                 TestException = ex;
             }
             finally
@@ -177,10 +182,10 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.EndTestRunAsync();
 
                 // save log for the test suite
-                if (TestLoggerProvider.TestLoggers.ContainsKey(testRunId))
+                if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
                 {
-                    var testLogger = TestLoggerProvider.TestLoggers[testRunId];
-                    testLogger.WriteToLogsFile(testResultDirectory);
+                    var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
+                    testLogger.WriteToLogsFile(testResultDirectory, null);
                 }
             }
         }

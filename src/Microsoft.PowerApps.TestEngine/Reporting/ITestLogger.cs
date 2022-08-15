@@ -14,6 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// Writes all captured logs to file
         /// </summary>
         /// <param name="directoryPath">Directory to place log files in</param>
-        public void WriteToLogsFile(string directoryPath);
+        /// <param name="filter">Filter for filtering logs</param>
+        public void WriteToLogsFile(string directoryPath, string filter);
     }
 }

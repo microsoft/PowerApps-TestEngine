@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -38,20 +39,20 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             BrowserContext = browserContext;
         }
 
-        public async Task SetupAsync(ILogger logger)
+        public async Task SetupAsync()
         {
 
             var browserConfig = _singleTestInstanceState.GetBrowserConfig();
 
             if (browserConfig == null)
             {
-                logger.LogError("Browser config cannot be null");
+                _singleTestInstanceState.GetLogger().LogError("Browser config cannot be null");
                 throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(browserConfig.Browser))
             {
-                logger.LogError("Browser cannot be null");
+                _singleTestInstanceState.GetLogger().LogError("Browser cannot be null");
                 throw new InvalidOperationException();
             }
 
@@ -64,7 +65,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (testSettings == null)
             {
-                logger.LogError("Test settings cannot be null.");
+                _singleTestInstanceState.GetLogger().LogError("Test settings cannot be null.");
                 throw new InvalidOperationException();
             }
 
@@ -101,7 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             BrowserContext = await Browser.NewContextAsync(contextOptions);
         }
 
-        public async Task SetupNetworkRequestMockAsync(ILogger logger)
+        public async Task SetupNetworkRequestMockAsync()
         {
 
             var mocks = _singleTestInstanceState.GetTestSuiteDefinition().NetworkRequestMocks;
@@ -121,13 +122,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
                 if (string.IsNullOrEmpty(mock.RequestURL))
                 {
-                    logger.LogError("RequestURL cannot be null");
+                    _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
                     throw new InvalidOperationException();
                 }
 
                 if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
                 {
-                    logger.LogError("ResponseDataFile is invalid or missing");
+                    _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
                     throw new InvalidOperationException();
                 }
 
@@ -170,23 +171,23 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
-        public async Task GoToUrlAsync(string url, ILogger logger)
+        public async Task GoToUrlAsync(string url)
         {
             if (string.IsNullOrEmpty(url))
             {
-                logger.LogError("Url cannot be null or empty");
+                _singleTestInstanceState.GetLogger().LogError("Url cannot be null or empty");
                 throw new InvalidOperationException();
             }
 
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
             {
-                logger.LogError("Url is invalid");
+                _singleTestInstanceState.GetLogger().LogError("Url is invalid");
                 throw new InvalidOperationException();
             }
 
             if (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp)
             {
-                logger.LogError("Url must be http/https");
+                _singleTestInstanceState.GetLogger().LogError("Url must be http/https");
                 throw new InvalidOperationException();
             }
 
@@ -211,9 +212,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task EndTestRunAsync()
         {
-            if (BrowserContext != null && Page != null)
+            if (BrowserContext != null)
             {
-                await Page.WaitForRequestFinishedAsync();
+                await Task.Delay(200);
                 await BrowserContext.CloseAsync();
             }
         }
@@ -282,6 +283,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return await Page.EvaluateAsync<T>(jsExpression, santizedArguments);
         }
 
+        // Justification: Limited ability to run unit tests for 
+        // Playwright actions on the sign-in page
+        [ExcludeFromCodeCoverage]
         public async Task HandleUserEmailScreen(string selector, string value)
         {
             ValidatePage();
@@ -290,6 +294,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
         }
 
+        // Justification: Limited ability to run unit tests for 
+        // Playwright actions on the sign-in page
+        [ExcludeFromCodeCoverage]
         public async Task HandleUserPasswordScreen(string selector, string value)
         {
             ValidatePage();
@@ -297,6 +304,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.FillAsync(selector, value);
         }
 
+        // Justification: Limited ability to run unit tests for 
+        // Playwright actions on the sign-in page
+        [ExcludeFromCodeCoverage]
         public async Task HandleKeepSignedInNoScreen(string selector)
         {
             ValidatePage();
