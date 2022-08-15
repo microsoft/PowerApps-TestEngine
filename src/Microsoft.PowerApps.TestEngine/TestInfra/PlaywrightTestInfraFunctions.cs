@@ -212,9 +212,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task EndTestRunAsync()
         {
-            if (BrowserContext != null && Page != null)
+            if (BrowserContext != null)
             {
-                await Page.WaitForRequestFinishedAsync();
+                await Task.Delay(200);
                 await BrowserContext.CloseAsync();
             }
         }

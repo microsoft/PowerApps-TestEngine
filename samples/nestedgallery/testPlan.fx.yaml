@@ -15,7 +15,7 @@ testSuite:
           Assert(Index(Gallery1.AllItems, 1).Label4.Text = "Row id: 1", "Validate row label");
           Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 5).Label5.Text = "Column id: 5", "Validate the label in the nested gallery");
           // Generate a 2nd row
-          SetProperty(TextInput1, "Text", "10");
+          SetProperty(TextInput1.Text, "10");
           Select(Button1);
           Assert(Index(Gallery1.AllItems, 2).Label4.Text = "Row id: 2", "Validate row label");
           Assert(Index(Index(Gallery1.AllItems, 2).Gallery2.AllItems, 10).Label5.Text = "Column id: 10", "Validate the label in the nested gallery");

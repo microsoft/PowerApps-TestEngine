@@ -12,7 +12,7 @@ testSuite:
           Select(Button1);
           Screenshot("manyscreens_labelscreenloaded.png");
           Assert(Label1.Text = "Text input", "Label should be set to default value");
-          SetProperty(TextInput1, "Text", "Hello world!");
+          SetProperty(TextInput1.Text, "Hello world!");
           Assert(Label1.Text = "Hello world!", "Label should be updated to the updated text input");
           // Navigate to Gallery screen
           Select(Button4);

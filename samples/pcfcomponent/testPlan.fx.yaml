@@ -8,9 +8,9 @@ testSuite:
     - testCaseName: Case1
       testSteps: |
         = Screenshot("pcfcomponent_loaded.png");
-          SetProperty(IncrementControl1, "value", 10);
+          SetProperty(IncrementControl1.value, 10);
           Assert(IncrementControl1.value = 10, "Make sure increment control is set to 10");
-          SetProperty(IncrementControl1, "value", 20);
+          SetProperty(IncrementControl1.value, 20);
           Assert(IncrementControl1.value = 20, "Make sure increment control is set to 20");
           Screenshot("pcfcomponent_end.png");
 

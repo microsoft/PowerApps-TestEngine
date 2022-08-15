@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         private readonly Func<Task> _updateModelFunction;
         protected readonly ILogger _logger;
 
-        public SelectThreeParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, new RecordType(), FormulaType.Number, new RecordType())
+        public SelectThreeParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, RecordType.Empty(), FormulaType.Number, RecordType.Empty())
         {
             _powerAppFunctions = powerAppFunctions;
             _updateModelFunction = updateModelFunction;
@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 PropertyName = null
             };
 
-            var recordType = new RecordType().Add(childControlName, new RecordType());
+            var recordType = RecordType.Empty().Add(childControlName, RecordType.Empty());
             var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, childControlName, parentItemPath);
             var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.GetItemPath());
 

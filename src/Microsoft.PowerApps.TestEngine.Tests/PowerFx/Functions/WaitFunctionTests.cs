@@ -36,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionStringThrowsOnInvalidArgumentsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var waitFunction = new WaitFunctionString(Timeout, MockLogger.Object);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New("1")));
@@ -49,7 +49,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionNumberThrowsOnInvalidArgumentsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
-            var recordType = new RecordType().Add("Text", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Number);
             var waitFunction = new WaitFunctionNumber(Timeout, MockLogger.Object);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New(1)));
@@ -62,7 +62,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionBooleanThrowsOnInvalidArgumentsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
-            var recordType = new RecordType().Add("Text", FormulaType.Boolean);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Boolean);
             var waitFunction = new WaitFunctionBoolean(Timeout, MockLogger.Object);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.New(false)));
@@ -76,7 +76,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var value = new DateTime(1970, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("Text", FormulaType.Date);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Date);
             var waitFunction = new WaitFunctionDate(Timeout, MockLogger.Object);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             Assert.Throws<ArgumentNullException>(() => waitFunction.Execute(null, FormulaValue.New("Text"), FormulaValue.NewDateOnly(value.Date)));
@@ -90,7 +90,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var valueToWaitFor = "1";
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -116,7 +116,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var valueToWaitFor = 1;
-            var recordType = new RecordType().Add("Text", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Number);
 
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
@@ -142,7 +142,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void WaitFunctionBooleanSucceedsTest()
         {
             var valueToWaitFor = false;
-            var recordType = new RecordType().Add("Text", FormulaType.Boolean);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Boolean);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -169,7 +169,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("SelectedDate", FormulaType.Date);
+            var recordType = RecordType.Empty().Add("SelectedDate", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -195,7 +195,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var valueToWaitFor = "1";
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -227,7 +227,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var valueToWaitFor = 1;
-            var recordType = new RecordType().Add("Text", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Number);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -259,7 +259,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var valueToWaitFor = false;
-            var recordType = new RecordType().Add("Text", FormulaType.Boolean);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Boolean);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -291,7 +291,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("SelectedDate", FormulaType.Date);
+            var recordType = RecordType.Empty().Add("SelectedDate", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -323,7 +323,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var valueToWaitFor = "1";
-            var recordType = new RecordType().Add("Text", FormulaType.String);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -344,7 +344,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var valueToWaitFor = 1;
-            var recordType = new RecordType().Add("Text", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Number);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -367,7 +367,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var valueToWaitFor = false;
-            var recordType = new RecordType().Add("Text", FormulaType.Boolean);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.Boolean);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {
@@ -390,7 +390,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
-            var recordType = new RecordType().Add("SelectedDate", FormulaType.Date);
+            var recordType = RecordType.Empty().Add("SelectedDate", FormulaType.Date);
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "DatePicker1");
             var jsPropertyValueModel = new JSPropertyValueModel()
             {

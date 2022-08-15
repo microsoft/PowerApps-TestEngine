@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
     public class PollingHelpersTests
     {
         private int _enoughRuntime = 5000;
-        private int _notEnoughRuntime = 1000;
+        private int _notEnoughRuntime = 500;
         private int _invalidRuntime = -1000;
         private Mock<ILogger> MockLogger;
 
@@ -26,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         private Func<bool, bool> conditionToCheck = x => !x;
         private Func<bool> functionToCall = () =>
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
             return true;
         };
 
