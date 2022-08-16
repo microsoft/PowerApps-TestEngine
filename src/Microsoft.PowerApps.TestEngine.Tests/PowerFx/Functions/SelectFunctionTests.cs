@@ -140,8 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             {
                 updaterFunctionCallCount++;
                 return Task.CompletedTask;
-            };
-            
+            };            
             var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
 
             // Testing Scenario where control is null
