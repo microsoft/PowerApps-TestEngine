@@ -158,13 +158,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            
             string itemPathString = "{\"controlName\":\"Dropdown1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Selected\"}";
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+            
             var pair = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
             var nameValue = new NamedValue(pair);
+            
             var result = await powerAppFunctions.SetPropertyAsync(itemPath, RecordValue.NewRecordFromFields(nameValue));
             var value = "{\"Value\":\"2\"}";
-            Assert.Equal(true, result);
+            
+            Assert.True(result);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString},{{\"Selected\":{value}}})"), Times.Once());
         }
 
@@ -173,19 +177,28 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            
             string itemPathString = "{\"controlName\":\"ComboBox1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"SelectedItems\"}";
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+            
+            //Record Type for table 
             var controlType = RecordType.Empty().Add("Value", FormulaType.String);
+            
+            //First record value for table 
             var pair1 = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
             var name1Value = new NamedValue(pair1);
             var record1Value = RecordValue.NewRecordFromFields(name1Value);
+            
+            //Second record value for table 
             var pair2 = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("3"));
             var name2Value = new NamedValue(pair2);
             var record2Value = RecordValue.NewRecordFromFields(name2Value);
+            
             RecordValue[] values = new RecordValue[] { record1Value, record2Value };
             var result = await powerAppFunctions.SetPropertyAsync(itemPath, TableValue.NewTable(controlType, values));
             var value = "[{\"Value\":\"2\"},{\"Value\":\"3\"}]";
-            Assert.Equal(true, result);
+            
+            Assert.True(result);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"setPropertyValue({itemPathString},{{\"SelectedItems\":{value}}})"), Times.Once());
         }
 

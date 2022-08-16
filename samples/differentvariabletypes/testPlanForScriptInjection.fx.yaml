@@ -1,6 +1,6 @@
 testSuite:
-  testSuiteName: DifferentVariableTypes
-  testSuiteDescription: Showcases prevent script injection of Assert/Wait/SetProperty with multiple types
+  testSuiteName: DifferentVariableTypesForScriptInjection
+  testSuiteDescription: Showcases prevent script injection of SetProperty with multiple types
   persona: User1
   appLogicalName: cr693_differentvariabletypes_09b4b
 
@@ -10,13 +10,28 @@ testSuite:
         = Screenshot("stringtype_loaded.png");
           
           Wait(TextInput1, "Text", "Comments");
+
           Select(TextInput1);
+
           SetProperty(TextInput1.Text, "hi""); alert(""Hello World!");
+          
           Assert(TextInput1.Text = "hi""); alert(""Hello World!", "Validate comment box was changed.");
-          SetProperty(Dropdown1.Selected, {Value:"2""}}); document.body.style.backgroundColor = ""pink""; alert(""Hello World!""); console.log({""foo"",{Value:""2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2""}]}); document.body.style.backgroundColor = ""pink""; alert(""Hello World!""); console.log({""foo"":[{Value:""1""}, {Value:""2"}));
-    
+      
           Screenshot("stringtype_end.png");   
+    - testCaseName: Record_Case
+      testSteps: |
+        = Screenshot("recordtype_loaded.png");
+        
+         SetProperty(Dropdown1.Selected, {Value:"2""}}); document.body.style.backgroundColor = ""pink""; alert(""Hello World!""); console.log({""foo"",{Value:""2"});
+
+         Screenshot("recordtype_end.png");  
+    - testCaseName: Table_Case
+      testSteps: |
+        = Screenshot("tabletype_loaded.png");
+        
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2""}]}); document.body.style.backgroundColor = ""pink""; alert(""Hello World!""); console.log({""foo"":[{Value:""1""}, {Value:""2"}));
+          
+          Screenshot("tabletype_end.png");
 
 testSettings:
   recordVideo: true
