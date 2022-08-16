@@ -203,6 +203,29 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Fact]
+        public async Task SetPropertyAsyncItemPathTest()
+        {
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockLogger.Setup(x => x.Log<It.IsAnyType>(It.IsAny<LogLevel>(),It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception?>(), It.IsAny<Func<It.IsAnyType,Exception?,string>>()));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>(), It.IsAny<string[]>())).Returns(Task.FromResult(true));
+
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Testing itempath controlname null case
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":null,\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}");
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await powerAppFunctions.SetPropertyAsync(itemPath, StringValue.New("A")));
+
+            // Testing itempath propertyname null case
+            itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":null}");
+            var result = await powerAppFunctions.SetPropertyAsync(itemPath, StringValue.New("A"));
+            Assert.True(result);
+
+            // Testing itempath propertyname null case when index not null
+            itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Button1\",\"index\":1,\"parentControl\":null,\"propertyName\":null}");
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await powerAppFunctions.SetPropertyAsync(itemPath, StringValue.New("A")));
+        }
+
+        [Fact]
         public async Task SetPropertyAsyncThrowsOnInvalidFormulaValueTest()
         {
             var itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}");
