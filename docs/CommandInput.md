@@ -29,3 +29,16 @@ Command line parameters override anything specified in `config.json`
 | -t | TenantId |
 | -o | OutputDirectory |
 | -l | LogLevel |
+
+## Test plan conversion
+The exe can also be used to convert an msapp's test json to a Test Engine yaml test plan.
+This is done by passing `convert` as an input followed by a path that leads to the test json.
+
+```bash
+#using the exe
+PowerAppsTestEngine.exe convert "path/to/test.json"
+
+#using dotnet run
+dotnet run convert "path/to/test.json"
+```
+The output is yaml test plan in the same directory as the test json.
