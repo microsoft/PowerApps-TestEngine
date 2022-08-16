@@ -71,6 +71,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 return Task.CompletedTask;
             };
             var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
+            
             var result = selectFunction.Execute(recordValue);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
@@ -142,9 +143,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 return Task.CompletedTask;
             };            
             var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
-
-            // Testing Scenario where control is null
-            Assert.ThrowsAny<Exception>(() => selectFunction.Execute(null));
 
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
