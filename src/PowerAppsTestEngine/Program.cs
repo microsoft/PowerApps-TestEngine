@@ -69,7 +69,6 @@ else
         loggingBuilder
         .ClearProviders()
         .AddFilter(l => l >= logLevel)
-        .AddConsole()
         .AddProvider(new TestLoggerProvider(new FileSystem()));
     })
     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
