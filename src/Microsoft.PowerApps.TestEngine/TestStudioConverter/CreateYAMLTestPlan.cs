@@ -19,7 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private string InputDir;
 
-        public List<TestCase> TestCases = new ();
+        public List<TestCase> TestCases = new();
 
         private TestPlanDefinition YamlTestPlan;
 
