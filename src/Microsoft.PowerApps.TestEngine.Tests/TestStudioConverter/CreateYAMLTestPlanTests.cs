@@ -20,15 +20,50 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
     public class CreateYAMLTestPlanTests
     {
         [Fact]
+        public void MissingTestSuiteTest()
+        {
+            var missingSuiteJson = @"{}";
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
+            ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
+
+            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
+            mockFileIO.Reset();
+
+            var jsonFilePath = "missing.json";
+            mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(missingSuiteJson);
+            mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
+            mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
+            CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, jsonFilePath, mockFileIO.Object);
+
+            List<TestCase> actualTestCases = converter.GetTestCases();
+            TestPlanDefinition? testPlan = converter.GetYamlTestPlan();
+            string? testPlanString = converter.GetTestPlanString();
+            Assert.Empty(actualTestCases);
+        }
+
+        [Fact]
         public void ValidFileTest()
         {
             var InputDir = "path/to/nothing/that/exists/test.json";
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
-            ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
-            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, InputDir);
+            ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
+            CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, InputDir);
 
             Assert.Throws<DirectoryNotFoundException>(
-                () => converter.exportYAML()
+                () => converter.ExportYaml()
+            );
+        }
+
+        [Fact]
+        public void InvalidDirectoryTest()
+        {
+            var InputDir = "path/to/nothing/that/oops|exists/test.json";
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
+            ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
+            CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, InputDir);
+
+            Assert.Throws<DirectoryNotFoundException>(
+                () => converter.ExportYaml()
             );
         }
 
@@ -125,7 +160,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
                     {
                         ""Property"": ""DisplayName"",
                         ""Category"": ""Data"",
-                        ""InvariantScript"": ""\""Suite\"""",
+                        ""InvariantScript"":,
                         ""RuleProviderType"": ""Unknown""
                     },
                     {
@@ -213,6 +248,30 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
                                 ""Category"": ""Behavior"",
                                 ""InvariantScript"": ""Assert(IncrementControl1.value = 20, \""Make sure increment control is set to 10\"")"",
                                 ""RuleProviderType"": ""Unknown""
+                            },
+                            {
+                                ""Property"": ""Step5"",
+                                ""Category"": ""Behavior"",
+                                ""InvariantScript"": ""SetProperty(20)"",
+                                ""RuleProviderType"": ""Unknown""
+                            },
+                            {
+                                ""Property"": ""Step6"",
+                                ""Category"": ""Behavior"",
+                                ""InvariantScript"": ""SetProperty(Button.IncrementControl1.value, 20)"",
+                                ""RuleProviderType"": ""Unknown""
+                            },
+                            {
+                                ""Property"": ""Step7"",
+                                ""Category"": ""Behavior"",
+                                ""InvariantScript"": ""SetProperty(IncrementControl1, 20)"",
+                                ""RuleProviderType"": ""Unknown""
+                            },
+                            {
+                                ""Property"": ""Step8"",
+                                ""Category"": ""Behavior"",
+                                ""InvariantScript"": """",
+                                ""RuleProviderType"": ""Unknown""
                             }
                         ],
                         ""ControlPropertyState"": [
@@ -235,40 +294,138 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestStudioConverter
 }";
 
             var expectedYamlTestPlan = @"testSuite:
-  testSuiteName: Suite
-  testSuiteDescription: 
+  testSuiteName: Missing Test Name
+  testSuiteDescription: Missing Test Description
   persona: User1
   appLogicalName: Replace with appLogicalName
+  onTestCaseStart: """"
+  onTestCaseComplete: """"
+  onTestSuiteComplete: """"
   networkRequestMocks: 
-  onTestCaseStart: Assert(Label1.Text = ""0"")
-  onTestCaseComplete: Assert(Label1.Text = ""0"")
-  onTestSuiteComplete: Assert(Label1.Text = ""0"")
-  testCases:
-    - testCaseName: Case
-      testCaseDescription: Missing Test Description
-      testSteps: |
-        = 
-        SetProperty(IncrementControl1,""value"", 10);
-        Assert(IncrementControl1.value = 10, ""Make sure increment control is set to 10"");
-        SetProperty(IncrementControl1,""value"", 20);
-        Assert(IncrementControl1.value = 20, ""Make sure increment control is set to 10"");
+  testCases: []
 testSettings:
+  filePath: 
   browserConfigurations:
   - browser: Chromium
     device: 
     screenWidth: 
     screenHeight: 
   recordVideo: true
+  headless: true
   enablePowerFxOverlay: false
   timeout: 30000
+  workerCount: 10
 environmentVariables:
+  filePath: 
   users:
   - personaName: User1
     emailKey: user1Email
-    passwordKey: user1Password";
+    passwordKey: user1Password
+testSuite:
+  testSuiteName: Button Clicker
+  testSuiteDescription: Verifies that counter increments when the button is clicked
+  persona: User1
+  appLogicalName: Replace with appLogicalName
+  onTestCaseStart: """"
+  onTestCaseComplete: """"
+  onTestSuiteComplete: """"
+  networkRequestMocks: 
+  testCases: []
+testSettings:
+  filePath: 
+  browserConfigurations:
+  - browser: Chromium
+    device: 
+    screenWidth: 
+    screenHeight: 
+  recordVideo: true
+  headless: true
+  enablePowerFxOverlay: false
+  timeout: 30000
+  workerCount: 10
+environmentVariables:
+  filePath: 
+  users:
+  - personaName: User1
+    emailKey: user1Email
+    passwordKey: user1Password
+testSuite:
+  testSuiteName: Button Clicker
+  testSuiteDescription: Verifies that counter increments when the button is clicked
+  persona: User1
+  appLogicalName: Replace with appLogicalName
+  onTestCaseStart: """"
+  onTestCaseComplete: """"
+  onTestSuiteComplete: """"
+  networkRequestMocks: 
+  testCases: []
+testSettings:
+  filePath: 
+  browserConfigurations:
+  - browser: Chromium
+    device: 
+    screenWidth: 
+    screenHeight: 
+  recordVideo: true
+  headless: true
+  enablePowerFxOverlay: false
+  timeout: 30000
+  workerCount: 10
+environmentVariables:
+  filePath: 
+  users:
+  - personaName: User1
+    emailKey: user1Email
+    passwordKey: user1Password
+testSuite:
+  testSuiteName: Missing Test Name
+  testSuiteDescription: Missing Test Description
+  persona: User1
+  appLogicalName: Replace with appLogicalName
+  onTestCaseStart: |
+    = 
+    Assert(Label1.Text = ""0"");
+  onTestCaseComplete: |
+    = 
+    Assert(Label1.Text = ""0"");
+  onTestSuiteComplete: |
+    = 
+    Assert(Label1.Text = ""0"");
+  networkRequestMocks: 
+  testCases:
+  - testCaseName: Case
+    testCaseDescription: Missing Test Description
+    testSteps: |
+      = 
+      SetProperty(IncrementControl1,""value"", 10);
+      Assert(IncrementControl1.value = 10, ""Make sure increment control is set to 10"");
+      SetProperty(IncrementControl1,""value"", 20);
+      Assert(IncrementControl1.value = 20, ""Make sure increment control is set to 10"");
+      Assert( true,""SetProperty(20) incorrect Test Studio syntax "");
+      SetProperty(Button,""IncrementControl1"", 20);
+      Assert( true,""SetProperty(IncrementControl1, 20) missing property "");
+testSettings:
+  filePath: 
+  browserConfigurations:
+  - browser: Chromium
+    device: 
+    screenWidth: 
+    screenHeight: 
+  recordVideo: true
+  headless: true
+  enablePowerFxOverlay: false
+  timeout: 30000
+  workerCount: 10
+environmentVariables:
+  filePath: 
+  users:
+  - personaName: User1
+    emailKey: user1Email
+    passwordKey: user1Password
+";
 
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
-            ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
+            ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
 
             var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
 
@@ -276,12 +433,13 @@ environmentVariables:
             mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJson);
             mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
             mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
-            CreateYAMLTestPlan converter = new CreateYAMLTestPlan(logger, jsonFilePath, mockFileIO.Object);
+            CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, jsonFilePath, mockFileIO.Object);
 
-            converter.exportYAML();
+            converter.ExportYaml();
 
             List<TestCase> actualTestCases = converter.GetTestCases();
             TestPlanDefinition? actualTestPlan = converter.GetYamlTestPlan();
+            string? testPlanString = converter.GetTestPlanString();
 
             Assert.Equal("Case", actualTestCases[0].TestCaseName);
             Assert.Equal("Missing Test Description", actualTestCases[0].TestCaseDescription);
@@ -291,8 +449,8 @@ environmentVariables:
             .Build();
 
             var expectedTestObject = deserializer.Deserialize<TestPlanDefinition>(expectedYamlTestPlan);
-            Assert.Equal(expectedTestObject.ToString(), actualTestPlan?.ToString());
-
+            Assert.Equal(expectedTestObject.ToString(), actualTestPlan.ToString());
+            Assert.Contains("Missing Test Name", testPlanString);
         }
 
         [Fact]
@@ -451,7 +609,7 @@ environmentVariables:
 }";
 
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
-            ILogger<CreateYAMLTestPlan> logger = loggerFactory.CreateLogger<CreateYAMLTestPlan>();
+            ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
 
 
             var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
@@ -462,16 +620,408 @@ environmentVariables:
             mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJsonWithoutSteps);
             mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
             mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
-            CreateYAMLTestPlan emptyConverter = new CreateYAMLTestPlan(logger, jsonFilePath, mockFileIO.Object);
+            CreateYamlTestPlan emptyConverter = new CreateYamlTestPlan(logger, jsonFilePath, mockFileIO.Object);
 
-            emptyConverter.exportYAML();
+            emptyConverter.ExportYaml();
 
-            Assert.Null(emptyConverter.GetYamlTestPlan().TestSuite.OnTestCaseStart);
-            Assert.Null(emptyConverter.GetYamlTestPlan().TestSuite.OnTestCaseComplete);
-            Assert.Null(emptyConverter.GetYamlTestPlan().TestSuite.OnTestSuiteComplete);
+            Assert.Null(emptyConverter.GetYamlTestPlan()?.TestSuite?.OnTestCaseStart);
+            Assert.Null(emptyConverter.GetYamlTestPlan()?.TestSuite?.OnTestCaseComplete);
+            Assert.Null(emptyConverter.GetYamlTestPlan()?.TestSuite?.OnTestSuiteComplete);
 
             List<TestCase> emptyTestCases = emptyConverter.GetTestCases();
             Assert.Empty(emptyTestCases[0].TestSteps);
+        }
+
+        [Fact]
+        public void MissingSuitePropertiesTest()
+        {
+            var missingCaseJson = @"{
+    ""TopParent"": {
+        ""Type"": ""ControlInfo"",
+        ""Name"": ""Test_7F478737223C4B69"",
+        ""Template"": {
+            ""Id"": ""http://microsoft.com/appmagic/apptest"",
+            ""Version"": ""1.0"",
+            ""LastModifiedTimestamp"": ""0"",
+            ""Name"": ""AppTest"",
+            ""FirstParty"": true,
+            ""IsPremiumPcfControl"": false,
+            ""IsCustomGroupControlTemplate"": false,
+            ""CustomGroupControlTemplateName"": """",
+            ""IsComponentDefinition"": false,
+            ""OverridableProperties"": {}
+        },
+        ""Index"": 0.0,
+        ""PublishOrderIndex"": 0,
+        ""VariantName"": """",
+        ""LayoutName"": """",
+        ""MetaDataIDKey"": """",
+        ""PersistMetaDataIDKey"": false,
+        ""IsFromScreenLayout"": false,
+        ""StyleName"": """",
+        ""Parent"": """",
+        ""IsDataControl"": true,
+        ""AllowAccessToGlobals"": true,
+        ""IsGroupControl"": false,
+        ""IsAutoGenerated"": false,
+        ""Rules"": [
+            {
+                ""Property"": """",
+                ""Category"": ""Behavior"",
+                ""InvariantScript"": ""Assert(Label1.Text = \""0\"")"",
+                ""RuleProviderType"": ""Unknown""
+            },
+            {
+                ""Property"": """",
+                ""Category"": ""Behavior"",
+                ""InvariantScript"": ""Assert(Label1.Text = \""0\"")"",
+                ""RuleProviderType"": ""Unknown""
+            },
+            {
+                ""Property"": """",
+                ""Category"": ""Behavior"",
+                ""InvariantScript"": ""Assert(Label1.Text = \""0\"")"",
+                ""RuleProviderType"": ""Unknown""
+            }
+        ],
+        ""ControlPropertyState"": [
+            ""OnTestStart"",
+            ""OnTestComplete"",
+            ""OnTestSuiteComplete""
+         ],
+        ""IsLocked"": false,
+        ""ControlUniqueId"": ""2"",
+        ""Children"": []
+    }
+}";
+
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
+            ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
+
+            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
+            mockFileIO.Reset();
+
+            var jsonFilePath = "test.json";
+            mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(missingCaseJson);
+            mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
+            mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
+            CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, jsonFilePath, mockFileIO.Object);
+
+            List<TestCase> actualTestCases = converter.GetTestCases();
+            Assert.Empty(actualTestCases);
+        }
+
+        [Fact]
+        public void EmptyTestSuiteRulesTest()
+        {
+            var testJson = @"{
+    ""TopParent"": {
+        ""Type"": ""ControlInfo"",
+        ""Name"": ""Test_7F478737223C4B69"",
+        ""Template"": {
+            ""Id"": ""http://microsoft.com/appmagic/apptest"",
+            ""Version"": ""1.0"",
+            ""LastModifiedTimestamp"": ""0"",
+            ""Name"": ""AppTest"",
+            ""FirstParty"": true,
+            ""IsPremiumPcfControl"": false,
+            ""IsCustomGroupControlTemplate"": false,
+            ""CustomGroupControlTemplateName"": """",
+            ""IsComponentDefinition"": false,
+            ""OverridableProperties"": {}
+        },
+        ""Index"": 0.0,
+        ""PublishOrderIndex"": 0,
+        ""VariantName"": """",
+        ""LayoutName"": """",
+        ""MetaDataIDKey"": """",
+        ""PersistMetaDataIDKey"": false,
+        ""IsFromScreenLayout"": false,
+        ""StyleName"": """",
+        ""Parent"": """",
+        ""IsDataControl"": true,
+        ""AllowAccessToGlobals"": true,
+        ""IsGroupControl"": false,
+        ""IsAutoGenerated"": false,
+        ""IsLocked"": false,
+        ""ControlUniqueId"": ""2"",
+        ""Children"": [
+            {
+                ""Type"": ""ControlInfo"",
+                ""Name"": ""a2788d19-22e2-4a03-b8ba-3ebc4aad96b5"",
+                ""HasDynamicProperties"": false,
+                ""Template"": {
+                    ""Id"": ""http://microsoft.com/appmagic/testsuite"",
+                    ""Version"": ""1.0"",
+                    ""LastModifiedTimestamp"": ""0"",
+                    ""Name"": ""TestSuite"",
+                    ""FirstParty"": true,
+                    ""IsPremiumPcfControl"": false,
+                    ""IsCustomGroupControlTemplate"": false,
+                    ""CustomGroupControlTemplateName"": """",
+                    ""IsComponentDefinition"": false,
+                    ""OverridableProperties"": {}
+                },
+                ""Index"": 0.0,
+                ""PublishOrderIndex"": 0,
+                ""VariantName"": """",
+                ""LayoutName"": """",
+                ""MetaDataIDKey"": """",
+                ""PersistMetaDataIDKey"": false,
+                ""IsFromScreenLayout"": false,
+                ""StyleName"": """",
+                ""Parent"": ""Test_7F478737223C4B69"",
+                ""IsDataControl"": true,
+                ""AllowAccessToGlobals"": true,
+                ""IsGroupControl"": false,
+                ""IsAutoGenerated"": false,
+                ""Rules"": [
+                    {
+                        ""Property"": ""DisplayName"",
+                        ""Category"": ""Data"",
+                        ""InvariantScript"":,
+                        ""RuleProviderType"": ""Unknown""
+                    },
+                    {
+                        ""Property"": ""Description"",
+                        ""Category"": ""Data"",
+                        ""InvariantScript"": ""\""\"""",
+                        ""RuleProviderType"": ""Unknown""
+                    }
+                ],
+                ""ControlPropertyState"": [
+                    ""DisplayName"",
+                    ""Description""
+                ],
+                ""IsLocked"": false,
+                ""ControlUniqueId"": ""5"",
+                ""Children"": [
+                    {
+                        ""Type"": ""ControlInfo"",
+                        ""Name"": ""e8b0a102-2096-4cfc-a6a4-c4b4030ec8c9"",
+                        ""HasDynamicProperties"": false,
+                        ""Template"": {
+                            ""Id"": ""http://microsoft.com/appmagic/testcase"",
+                            ""Version"": ""1.0"",
+                            ""LastModifiedTimestamp"": ""0"",
+                            ""Name"": ""TestCase"",
+                            ""FirstParty"": true,
+                            ""IsPremiumPcfControl"": false,
+                            ""IsCustomGroupControlTemplate"": false,
+                            ""CustomGroupControlTemplateName"": """",
+                            ""IsComponentDefinition"": false,
+                            ""OverridableProperties"": {}
+                        },
+                        ""Index"": 0.0,
+                        ""PublishOrderIndex"": 0,
+                        ""VariantName"": """",
+                        ""LayoutName"": """",
+                        ""MetaDataIDKey"": """",
+                        ""PersistMetaDataIDKey"": false,
+                        ""IsFromScreenLayout"": false,
+                        ""StyleName"": """",
+                        ""Parent"": ""a2788d19-22e2-4a03-b8ba-3ebc4aad96b5"",
+                        ""IsDataControl"": true,
+                        ""AllowAccessToGlobals"": true,
+                        ""IsGroupControl"": false,
+                        ""IsAutoGenerated"": false,
+                        ""Rules"": [],
+                        ""ControlPropertyState"": [
+                            ""DisplayName"",
+                            ""Description"",
+                            ""Step1"",
+                            ""TestStepsMetadata"",
+                            ""Step2"",
+                            ""Step3"",
+                            ""Step4""
+                        ],
+                        ""IsLocked"": false,
+                        ""ControlUniqueId"": ""6"",
+                        ""Children"": []
+                    }
+                ]
+            }
+        ]
+    }
+}";
+
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
+            ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
+
+            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
+
+            var jsonFilePath = "test.json";
+            mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJson);
+            mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
+            mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
+            CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, jsonFilePath, mockFileIO.Object);
+
+            converter.ExportYaml();
+
+            List<TestCase> actualTestCases = converter.GetTestCases();
+            TestPlanDefinition? actualTestPlan = converter.GetYamlTestPlan();
+            string? testPlanString = converter.GetTestPlanString();
+
+            var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+
+            Assert.Empty(actualTestCases);
+        }
+
+        [Fact]
+        public void NullTestCaseCategoryTest()
+        {
+            var testJson = @"{
+    ""TopParent"": {
+        ""Type"": ""ControlInfo"",
+        ""Name"": ""Test_7F478737223C4B69"",
+        ""Template"": {
+            ""Id"": ""http://microsoft.com/appmagic/apptest"",
+            ""Version"": ""1.0"",
+            ""LastModifiedTimestamp"": ""0"",
+            ""Name"": ""AppTest"",
+            ""FirstParty"": true,
+            ""IsPremiumPcfControl"": false,
+            ""IsCustomGroupControlTemplate"": false,
+            ""CustomGroupControlTemplateName"": """",
+            ""IsComponentDefinition"": false,
+            ""OverridableProperties"": {}
+        },
+        ""Index"": 0.0,
+        ""PublishOrderIndex"": 0,
+        ""VariantName"": """",
+        ""LayoutName"": """",
+        ""MetaDataIDKey"": """",
+        ""PersistMetaDataIDKey"": false,
+        ""IsFromScreenLayout"": false,
+        ""StyleName"": """",
+        ""Parent"": """",
+        ""IsDataControl"": true,
+        ""AllowAccessToGlobals"": true,
+        ""IsGroupControl"": false,
+        ""IsAutoGenerated"": false,
+        ""IsLocked"": false,
+        ""ControlUniqueId"": ""2"",
+        ""Children"": [
+            {
+                ""Type"": ""ControlInfo"",
+                ""Name"": ""a2788d19-22e2-4a03-b8ba-3ebc4aad96b5"",
+                ""HasDynamicProperties"": false,
+                ""Template"": {
+                    ""Id"": ""http://microsoft.com/appmagic/testsuite"",
+                    ""Version"": ""1.0"",
+                    ""LastModifiedTimestamp"": ""0"",
+                    ""Name"": ""TestSuite"",
+                    ""FirstParty"": true,
+                    ""IsPremiumPcfControl"": false,
+                    ""IsCustomGroupControlTemplate"": false,
+                    ""CustomGroupControlTemplateName"": """",
+                    ""IsComponentDefinition"": false,
+                    ""OverridableProperties"": {}
+                },
+                ""Index"": 0.0,
+                ""PublishOrderIndex"": 0,
+                ""VariantName"": """",
+                ""LayoutName"": """",
+                ""MetaDataIDKey"": """",
+                ""PersistMetaDataIDKey"": false,
+                ""IsFromScreenLayout"": false,
+                ""StyleName"": """",
+                ""Parent"": ""Test_7F478737223C4B69"",
+                ""IsDataControl"": true,
+                ""AllowAccessToGlobals"": true,
+                ""IsGroupControl"": false,
+                ""IsAutoGenerated"": false,
+                ""Rules"": [
+                    {
+                        ""Property"": ""DisplayName"",
+                        ""InvariantScript"":,
+                        ""RuleProviderType"": ""Unknown""
+                    },
+                    {
+                        ""Property"": ""Description"",
+                        ""InvariantScript"": ""\""\"""",
+                        ""RuleProviderType"": ""Unknown""
+                    }
+                ],
+                ""ControlPropertyState"": [
+                    ""DisplayName"",
+                    ""Description""
+                ],
+                ""IsLocked"": false,
+                ""ControlUniqueId"": ""5"",
+                ""Children"": [
+                    {
+                        ""Type"": ""ControlInfo"",
+                        ""Name"": ""e8b0a102-2096-4cfc-a6a4-c4b4030ec8c9"",
+                        ""HasDynamicProperties"": false,
+                        ""Template"": {
+                            ""Id"": ""http://microsoft.com/appmagic/testcase"",
+                            ""Version"": ""1.0"",
+                            ""LastModifiedTimestamp"": ""0"",
+                            ""Name"": ""TestCase"",
+                            ""FirstParty"": true,
+                            ""IsPremiumPcfControl"": false,
+                            ""IsCustomGroupControlTemplate"": false,
+                            ""CustomGroupControlTemplateName"": """",
+                            ""IsComponentDefinition"": false,
+                            ""OverridableProperties"": {}
+                        },
+                        ""Index"": 0.0,
+                        ""PublishOrderIndex"": 0,
+                        ""VariantName"": """",
+                        ""LayoutName"": """",
+                        ""MetaDataIDKey"": """",
+                        ""PersistMetaDataIDKey"": false,
+                        ""IsFromScreenLayout"": false,
+                        ""StyleName"": """",
+                        ""Parent"": ""a2788d19-22e2-4a03-b8ba-3ebc4aad96b5"",
+                        ""IsDataControl"": true,
+                        ""AllowAccessToGlobals"": true,
+                        ""IsGroupControl"": false,
+                        ""IsAutoGenerated"": false,
+                        ""ControlPropertyState"": [
+                            ""DisplayName"",
+                            ""Description"",
+                            ""Step1"",
+                            ""TestStepsMetadata"",
+                            ""Step2"",
+                            ""Step3"",
+                            ""Step4""
+                        ],
+                        ""IsLocked"": false,
+                        ""ControlUniqueId"": ""6"",
+                        ""Children"": []
+                    }
+                ]
+            }
+        ]
+    }
+}";
+
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
+            ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
+
+            var mockFileIO = new Mock<IFileSystem>(MockBehavior.Strict);
+
+            var jsonFilePath = "test.json";
+            mockFileIO.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testJson);
+            mockFileIO.Setup(f => f.IsValidFilePath(It.IsAny<string>())).Returns((bool)true);
+            mockFileIO.Setup(f => f.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
+            CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, jsonFilePath, mockFileIO.Object);
+
+            converter.ExportYaml();
+
+            List<TestCase> actualTestCases = converter.GetTestCases();
+            TestPlanDefinition? actualTestPlan = converter.GetYamlTestPlan();
+            string? testPlanString = converter.GetTestPlanString();
+
+            var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+
+            Assert.Empty(actualTestCases);
         }
     }
 }
