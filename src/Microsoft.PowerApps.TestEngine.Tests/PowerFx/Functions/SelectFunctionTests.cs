@@ -120,6 +120,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 return Task.CompletedTask;
             };
             var selectFunction = new SelectThreeParamsFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
+            
             var result = selectFunction.Execute(parentValue, rowOrColumn, childValue);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Once());
@@ -140,8 +141,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 updaterFunctionCallCount++;
                 return Task.CompletedTask;
             };
-
+            
             var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
+
+            // Testing Scenario where control is null
+            Assert.ThrowsAny<Exception>(() => selectFunction.Execute(null));
+
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
             Assert.Equal(0, updaterFunctionCallCount);
@@ -164,6 +169,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 return Task.CompletedTask;
             };
             var selectFunction = new SelectTwoParamsFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
+
+            // Testing Scenarios where members(control, row or column) are null
+            Assert.ThrowsAny<Exception>(() => selectFunction.Execute(null, rowOrColumn));
+            Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue, null));
 
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue, rowOrColumn));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
@@ -189,6 +198,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 return Task.CompletedTask;
             };
             var selectFunction = new SelectThreeParamsFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
+
+            // Testing Scenarios where members(parent control, row or column and child control) are null
+            Assert.ThrowsAny<Exception>(() => selectFunction.Execute(null, rowOrColumn, childValue));
+            Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, null, childValue));
+            Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, rowOrColumn, null));
+
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, rowOrColumn, childValue));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Once());
             Assert.Equal(0, updaterFunctionCallCount);
