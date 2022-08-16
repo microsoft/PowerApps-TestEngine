@@ -21,7 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         public List<TestCase> TestCases = new ();
 
-        private TestPlanDefinition? YamlTestPlan;
+        private TestPlanDefinition YamlTestPlan;
 
         private static string YamlTestPlanString;
 
@@ -65,7 +65,6 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             var outputDir = InputDir.Substring(0, InputDir.Length - 4) + "fx.yaml";
             _logger.LogInformation($"YAML TestPlan Location: {outputDir}");
             WriteYaml(outputDir);
-
         }
 
         private void ReadJson(string InputDir)
@@ -233,7 +232,6 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 {
                     Users = new List<UserConfiguration>(new UserConfiguration[] { new UserConfiguration { PersonaName = "User1", EmailKey = "user1Email", PasswordKey = "user1Password" } })
                 }
-
             };
 
             var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
