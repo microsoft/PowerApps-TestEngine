@@ -201,6 +201,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, null, childValue));
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, rowOrColumn, null));
 
+            // Adding test where control names are null
+            parentValue = new ControlRecordValue(parentRecordType, MockPowerAppFunctions.Object, null);
+            childValue = new ControlRecordValue(childRecordType, MockPowerAppFunctions.Object, null);
+            Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, rowOrColumn, childValue));
+
+            parentValue = new ControlRecordValue(parentRecordType, MockPowerAppFunctions.Object, "Gallery1");
+            childValue = new ControlRecordValue(childRecordType, MockPowerAppFunctions.Object, "Button1");
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, rowOrColumn, childValue));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Once());
             Assert.Equal(0, updaterFunctionCallCount);
