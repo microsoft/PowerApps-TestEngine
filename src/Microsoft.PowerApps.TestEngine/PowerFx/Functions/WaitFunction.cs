@@ -214,14 +214,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
                 {
-                    return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
+                    return ((DateTimeValue)propType).Value;
                 }, _timeout);
             }
             else
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
                 {
-                    return ((DateValue)controlModel.GetField(propName.Value)).Value;
+                    return ((DateValue)propType).Value;
                 }, _timeout);
             }
 
