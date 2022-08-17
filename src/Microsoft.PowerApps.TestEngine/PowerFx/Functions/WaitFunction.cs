@@ -173,14 +173,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
                 {
-                    return ((DateTimeValue)propType).Value;
+                    return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
             }
             else
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
                 {
-                    return ((DateValue)propType).Value;
+                    return ((DateValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
             }
 
@@ -214,14 +214,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
                 {
-                    return ((DateTimeValue)propType).Value;
+                    return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
             }
             else
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
                 {
-                    return ((DateValue)propType).Value;
+                    return ((DateValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
             }
 
@@ -236,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             powerFxConfig.AddFunction(new WaitFunctionNumber(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionString(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionBoolean(timeout, logger));
-            //powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout, logger));
+            powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionDate(timeout, logger));
         }
     }
