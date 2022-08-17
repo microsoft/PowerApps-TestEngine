@@ -235,8 +235,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             powerFxConfig.AddFunction(new WaitFunctionNumber(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionString(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionBoolean(timeout, logger));
-            powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionDate(timeout, logger));
+            powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout, logger));
         }
     }
 }
