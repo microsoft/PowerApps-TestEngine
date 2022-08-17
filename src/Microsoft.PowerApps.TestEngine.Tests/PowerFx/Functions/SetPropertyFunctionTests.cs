@@ -52,6 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // This tests the SetPropertyAsync returning false and hence throwing exception
             Assert.ThrowsAny<Exception>(() => setPropertyFunctionString.Execute(recordValue, StringValue.New("Text"), StringValue.New("5")));
+            MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<StringValue>(stringVal => stringVal.Value == "5")), Times.Once());
         }
 
         [Fact]
