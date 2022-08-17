@@ -168,6 +168,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             var controlModel = (ControlRecordValue)obj;
             var propType = controlModel.GetField(propName.Value);
 
+            // Handling in the case that the property is a DateTime
             if (propType.GetType() == typeof(DateTimeValue))
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
@@ -175,6 +176,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                     return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
             }
+            // Otherwise, the property should be be a Date
             else
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
@@ -209,6 +211,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             var controlModel = (ControlRecordValue)obj;
             var propType = controlModel.GetField(propName.Value);
 
+            // Handling in the case that the property is a DateTime
             if (propType.GetType() == typeof(DateTimeValue))
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
@@ -216,6 +219,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                     return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
             }
+            // Otherwise, the property should be a Date
             else
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
