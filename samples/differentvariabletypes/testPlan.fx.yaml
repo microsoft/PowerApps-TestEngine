@@ -58,6 +58,8 @@ testSuite:
 
           Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
 
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+
           Screenshot("datetime_type_end.png");
     - testCaseName: Record_Case
       testSteps: |
