@@ -146,6 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
+    
     public class WaitFunctionDateTime : WaitFunction
     {
         public WaitFunctionDateTime(int timeout, ILogger logger) : base(timeout, FormulaType.DateTime, logger)
@@ -166,11 +167,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
-            var propType = propName.Type;
+            var propType = controlModel.GetField(propName.Value);
 
-            PollingCondition<DateTime>((x) => x != value.Value, () => {
-                return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
-            }, _timeout);
+            if (propType.GetType() == typeof(DateTimeValue))
+            {
+                PollingCondition<DateTime>((x) => x != value.Value, () =>
+                {
+                    return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
+                }, _timeout);
+            }
+            else
+            {
+                PollingCondition<DateTime>((x) => x != value.Value, () =>
+                {
+                    return ((DateValue)controlModel.GetField(propName.Value)).Value;
+                }, _timeout);
+            }
 
             _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
         }
@@ -196,11 +208,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
+            var propType = controlModel.GetField(propName.Value);
 
-            PollingCondition<DateTime>((x) => x != value.Value, () =>
+            if (propType.GetType() == typeof(DateTimeValue))
             {
-                return ((DateValue)controlModel.GetField(propName.Value)).Value;
-            }, _timeout);
+                PollingCondition<DateTime>((x) => x != value.Value, () =>
+                {
+                    return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
+                }, _timeout);
+            }
+            else
+            {
+                PollingCondition<DateTime>((x) => x != value.Value, () =>
+                {
+                    return ((DateValue)controlModel.GetField(propName.Value)).Value;
+                }, _timeout);
+            }
 
             _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
         }
@@ -213,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             powerFxConfig.AddFunction(new WaitFunctionNumber(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionString(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionBoolean(timeout, logger));
-            powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout, logger));
+            //powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionDate(timeout, logger));
         }
     }
