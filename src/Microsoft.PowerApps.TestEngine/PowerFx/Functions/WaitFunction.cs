@@ -146,7 +146,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    
     public class WaitFunctionDateTime : WaitFunction
     {
         public WaitFunctionDateTime(int timeout, ILogger logger) : base(timeout, FormulaType.DateTime, logger)
