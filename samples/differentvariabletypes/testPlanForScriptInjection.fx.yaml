@@ -16,7 +16,7 @@ testSuite:
           SetProperty(TextInput1.Text, "hi""); alert(""Hello World!");
           
           Assert(TextInput1.Text = "hi""); alert(""Hello World!", "Validate comment box was changed.");
-          
+      
           Screenshot("stringtype_end.png");   
     - testCaseName: Record_Case
       testSteps: |

@@ -13,7 +13,7 @@ testSuite:
           Wait(TextInput1, "Text", "Comments");
           
           // Set input fields
-          SetProperty(TextInput1, "Text", "Good job!");
+          SetProperty(TextInput1.Text, "Good job!");
 
           // Confirm that they were set to the correct value
           Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
@@ -25,7 +25,7 @@ testSuite:
 
           Wait(Rating1, "Value", 3);
 
-          SetProperty(Rating1, "Value", 5);
+          SetProperty(Rating1.Value, 5);
 
           Assert(Rating1.Value = 5, "Validate rating was changed.");
 
@@ -36,7 +36,7 @@ testSuite:
 
           Wait(Toggle1, "Value", false);
 
-          SetProperty(Toggle1, "Value", true);
+          SetProperty(Toggle1.Value, true);
 
           Assert(Toggle1.Value = true, "Validate toggle is now on");
 
@@ -47,7 +47,7 @@ testSuite:
 
           Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
 
-          SetProperty(DatePicker1, "SelectedDate", Date(2040, 01, 01));
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
 
           Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
 
@@ -55,24 +55,22 @@ testSuite:
     - testCaseName: Record_Case
       testSteps: |
         = Screenshot("recordtype_loaded.png");
-        
-         SetProperty(Dropdown1, "Selected", {Value:"2"});
 
-         Screenshot("recordtype_end.png");  
+         SetProperty(Dropdown1.Selected, {Value:"2"});
+
+         Screenshot("recordtype_end.png");
     - testCaseName: Table_Case
       testSteps: |
         = Screenshot("tabletype_loaded.png");
-        
-          SetProperty(ComboBox1,"SelectedItems", Table({Value:"1"},{Value:"2"}));
+
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
           
-          SetProperty(ListBox1,"SelectedItems", Table({Value:"1"},{Value:"3"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
           
-          Screenshot("tabletype_end.png");    
+          Screenshot("tabletype_end.png");
 
 testSettings:
-  recordVideo: true
-  browserConfigurations:
-    - browser: Chromium
+  filePath: ../../samples/testSettings.yaml
 
 environmentVariables:
   users:
