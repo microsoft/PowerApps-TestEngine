@@ -164,12 +164,14 @@ namespace Microsoft.PowerApps.TestEngine
                             _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
                         }
                     }
+                }
 
-                    if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestSuiteComplete))
-                    {
-                        Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteDefinition.TestSuiteName}");
-                        _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
-                    }
+                // Execute OnTestSuiteComplete
+                if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestSuiteComplete))
+                {
+                    Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteDefinition.TestSuiteName}");
+                    _testState.SetTestResultsDirectory(testResultDirectory);
+                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
                 }
             }
             catch (Exception ex)

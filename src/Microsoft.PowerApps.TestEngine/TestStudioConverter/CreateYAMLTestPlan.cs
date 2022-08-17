@@ -12,16 +12,18 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 {
-    public class CreateYAMLTestPlan
+    public class CreateYamlTestPlan
     {
-        private readonly ILogger<CreateYAMLTestPlan> _logger;
+        private readonly ILogger<CreateYamlTestPlan> _logger;
         private readonly IFileSystem _fileSystem;
 
         private string InputDir;
 
-        public List<TestCase> TestCases = new List<TestCase>();
+        public List<TestCase> TestCases = new();
 
         private TestPlanDefinition YamlTestPlan;
+
+        private static string YamlTestPlanString;
 
         private static string TestSuiteName;
 
@@ -33,25 +35,21 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
         private static string OnTestSuiteComplete;
 
-        private static string[] NoChangeCommands = { "Assert", "Select" };
-
-        const string SetProperty = "SetProperty";
-
-        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger, string dir)
+        public CreateYamlTestPlan(ILogger<CreateYamlTestPlan> logger, string dir)
         {
             _logger = logger;
             _fileSystem = new FileSystem();
             InputDir = dir;
         }
 
-        public CreateYAMLTestPlan(ILogger<CreateYAMLTestPlan> logger, string dir, IFileSystem fileSystem)
+        public CreateYamlTestPlan(ILogger<CreateYamlTestPlan> logger, string dir, IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
             _logger = logger;
             InputDir = dir;
         }
 
-        public void exportYAML()
+        public void ExportYaml()
         {
             if (!_fileSystem.IsValidFilePath(InputDir))
             {
@@ -60,23 +58,22 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 throw new DirectoryNotFoundException();
             }
 
-            readJson(InputDir);
+            ReadJson(InputDir);
 
             _logger.LogInformation($"Test JSON Location: {InputDir}");
 
             var outputDir = InputDir.Substring(0, InputDir.Length - 4) + "fx.yaml";
             _logger.LogInformation($"YAML TestPlan Location: {outputDir}");
-            writeYaml(outputDir);
-
+            WriteYaml(outputDir);
         }
 
-        private void readJson(string InputDir)
+        private void ReadJson(string InputDir)
         {
             JObject jobj = JObject.Parse(_fileSystem.ReadAllText(InputDir));
 
             // Read test suite information
-            JToken testSuiteProperties = jobj.Root["TopParent"]?["Children"]?[0]?["Rules"];
-            if (testSuiteProperties == null || testSuiteProperties.Count() == 0)
+            JToken testSuiteProperties = jobj.Root["TopParent"]["Children"][0]["Rules"];
+            if (testSuiteProperties == null)
             {
                 _logger.LogError("Missing Test Suite Information");
                 return;
@@ -84,20 +81,20 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             foreach (var testSuiteProperty in testSuiteProperties)
             {
-                if ((testSuiteProperty["Property"] ??= false).ToString().Equals("Description"))
+                if ((testSuiteProperty["Property"]).ToString().Equals("Description"))
                 {
-                    TestSuiteDescription = extractScripts(testSuiteProperty);
+                    TestSuiteDescription = ExtractScripts(testSuiteProperty);
                 }
 
-                if ((testSuiteProperty["Property"] ??= false).ToString().Equals("DisplayName"))
+                if ((testSuiteProperty["Property"]).ToString().Equals("DisplayName"))
                 {
-                    TestSuiteName = extractScripts(testSuiteProperty);
+                    TestSuiteName = ExtractScripts(testSuiteProperty);
                 }
             }
 
             // Read test cases
-            JToken testCaseList = jobj.Root["TopParent"]?["Children"]?[0]?["Children"];
-            if (testCaseList == null || testCaseList.Count() == 0)
+            JToken testCaseList = jobj.Root["TopParent"]["Children"][0]["Children"];
+            if (testCaseList == null)
             {
                 _logger.LogError("Missing Test Cases");
                 return;
@@ -117,9 +114,9 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
                 foreach (var testCaseProperty in testCaseProperties)
                 {
-                    if ((testCaseProperty["Category"] ??= false).ToString().Equals("Behavior"))
+                    if (testCaseProperty["Category"].ToString().Equals("Behavior"))
                     {
-                        var testStep = testCaseProperty["InvariantScript"]?.ToString();
+                        var testStep = testCaseProperty["InvariantScript"].ToString();
                         if (!string.IsNullOrEmpty(testStep))
                         {
                             testSteps.Add(testStep);
@@ -130,53 +127,48 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                         }
                     }
 
-                    if ((testCaseProperty["Property"] ??= false).ToString().Equals("Description"))
+                    if (testCaseProperty["Property"].ToString().Equals("Description"))
                     {
-                        testCaseObj.TestCaseDescription = extractScripts(testCaseProperty);
+                        testCaseObj.TestCaseDescription = ExtractScripts(testCaseProperty);
                     }
 
-                    if ((testCaseProperty["Property"] ??= false).ToString().Equals("DisplayName"))
+                    if (testCaseProperty["Property"].ToString().Equals("DisplayName"))
                     {
-                        testCaseObj.TestCaseName = extractScripts(testCaseProperty);
+                        testCaseObj.TestCaseName = ExtractScripts(testCaseProperty);
                     }
                 }
 
-                testCaseObj.TestSteps = combineTestSteps(testSteps);
+                testCaseObj.TestSteps = CombineTestSteps(testSteps);
                 TestCases.Add(testCaseObj);
             }
 
             // Read OnTestCaseStart, OnTestCaseComplete, OnTestSuiteComplete
             JToken overallProperties = jobj.Root["TopParent"]["Rules"];
-            if (overallProperties != null && overallProperties.Count() > 0)
+            if (overallProperties != null && overallProperties.Any())
             {
                 foreach (var overallProperty in overallProperties)
                 {
-                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestStart"))
+                    if (overallProperty["Property"].ToString().Equals("OnTestStart"))
                     {
-                        OnTestCaseStart = extractScripts(overallProperty, true);
+                        OnTestCaseStart = ExtractScripts(overallProperty, true);
                     }
 
-                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestComplete"))
+                    if (overallProperty["Property"].ToString().Equals("OnTestComplete"))
                     {
-                        OnTestCaseComplete = extractScripts(overallProperty, true);
+                        OnTestCaseComplete = ExtractScripts(overallProperty, true);
                     }
 
-                    if ((overallProperty["Property"] ??= false).ToString().Equals("OnTestSuiteComplete"))
+                    if (overallProperty["Property"].ToString().Equals("OnTestSuiteComplete"))
                     {
-                        OnTestSuiteComplete = extractScripts(overallProperty, true);
+                        OnTestSuiteComplete = ExtractScripts(overallProperty, true);
                     }
                 }
             }
         }
 
-        private string extractScripts(JToken input, bool convertToList = false)
+        private string ExtractScripts(JToken input, bool convertToList = false)
         {
-            if (input == null)
-            {
-                return "";
-            }
-
-            var script = input["InvariantScript"]?.ToString();
+            var script = input["InvariantScript"].ToString();
 
             if (string.IsNullOrEmpty(script))
             {
@@ -184,7 +176,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
             else if (convertToList)
             {
-                return combineTestSteps(script.Split(";\r\n").ToList());
+                return CombineTestSteps(script.Split(";\r\n").ToList());
             }
             else
             {
@@ -192,7 +184,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             }
         }
 
-        private string combineTestSteps(List<string> testSteps)
+        private string CombineTestSteps(List<string> testSteps)
         {
             if (testSteps.Count == 0)
             {
@@ -203,14 +195,14 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             var stringBuilder = new StringBuilder("= \n");
             foreach (var step in testSteps)
             {
-                stringBuilder.Append(validateStep(step));
+                stringBuilder.Append(step);
                 stringBuilder.Append(";\n");
             }
 
             return stringBuilder.ToString();
         }
 
-        private void writeYaml(string outputDir)
+        private void WriteYaml(string outputDir)
         {
             if (string.IsNullOrEmpty(TestSuiteName))
                 TestSuiteName = "Missing Test Name";
@@ -220,7 +212,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
 
             var testYAML = new TestPlanDefinition
             {
-                TestSuite = new ConverterTestDefinition
+                TestSuite = new TestSuiteDefinition
                 {
                     TestSuiteName = TestSuiteName,
                     TestSuiteDescription = TestSuiteDescription,
@@ -240,69 +232,13 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
                 {
                     Users = new List<UserConfiguration>(new UserConfiguration[] { new UserConfiguration { PersonaName = "User1", EmailKey = "user1Email", PasswordKey = "user1Password" } })
                 }
-
             };
 
             var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
             var result = serializer.Serialize(testYAML);
+            YamlTestPlanString = result;
             YamlTestPlan = testYAML;
             _fileSystem.WriteTextToFile(outputDir, result);
-        }
-        /// <summary>
-        /// Checks if a test step needs to be changed to match Test Engine Syntax
-        /// </summary>
-        /// <param name="step">A Test Step in Test Studio's Power fx syntax</param>
-        /// <returns></returns>
-        private string validateStep(string step)
-        {
-            var identifier = step.Split('(')[0];
-
-            if (NoChangeCommands.Contains(identifier))
-            {
-                return step;
-            }
-            var parameters = Regex.Match(step, @"\(.*\)").Groups[0].Value;
-            parameters = parameters.Substring(1, parameters.Length - 2);
-
-            switch (identifier)
-            {
-                case SetProperty:
-                    // Expected Test Studio syntax sample:  SetProperty(IncrementControl1.value, 10)
-                    // Resulting Test Engine syntax sample: SetProperty(IncrementControl1, "value", 10)
-
-                    var parametersSplit = parameters.Split(new[] { ',' }, 2);
-
-                    if (parametersSplit.Length < 2)
-                    {
-                        step = "Assert( true,\"" + step + " incorrect Test Studio syntax \")";
-                        _logger.LogWarning($"{step} incorrect syntax");
-                        break;
-                    }
-
-                    var property = parametersSplit[0];
-                    var value = parametersSplit[1];
-
-                    var propertySplitArray = property.Split(".");
-
-                    if (propertySplitArray.Length > 1)
-                    {
-                        step = identifier + "(" + propertySplitArray[0] + "," + "\"" + propertySplitArray[1] + "\"" + "," + value + ")";
-                        break;
-                    }
-                    else
-                    {
-                        step = "Assert( true,\"" + step + " missing property \")";
-                        _logger.LogWarning($"{step} has a missing property");
-                        break;
-                    }
-
-                default:
-                    step = "Assert( true,\"" + step + " is not supported \")";
-                    _logger.LogWarning($"{step} is not supported");
-                    break;
-            }
-
-            return step;
         }
 
         public List<TestCase> GetTestCases()
@@ -313,6 +249,11 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
         public TestPlanDefinition GetYamlTestPlan()
         {
             return YamlTestPlan;
+        }
+
+        public string GetTestPlanString()
+        {
+            return YamlTestPlanString;
         }
     }
 }
