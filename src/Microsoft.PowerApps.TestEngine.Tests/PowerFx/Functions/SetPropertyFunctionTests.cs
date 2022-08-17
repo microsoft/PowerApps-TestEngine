@@ -41,6 +41,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
+        public void SetPropertyFunctionFailsTest()
+        {
+            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(false));
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String);
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
+            var setPropertyFunctionString = new SetPropertyFunction(MockPowerAppFunctions.Object, MockLogger.Object);
+
+            // This tests the SetPropertyAsync returning false and hence throwing exception
+            Assert.ThrowsAny<Exception>(() => setPropertyFunctionString.Execute(recordValue, StringValue.New("Text"), StringValue.New("5")));
+            MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<StringValue>(stringVal => stringVal.Value == "5")), Times.Once());
+        }
+
+        [Fact]
         public void SetPropertyStringFunctionTest()
         {
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
