@@ -1,6 +1,6 @@
 testSuite:
   testSuiteName: ScriptInjectionTestingOnDifferentVariableTypes
-  testSuiteDescription: Testing script injection for SetProperty with multiple types
+  testSuiteDescription: Showcases prevent script injection of SetProperty with multiple types
   persona: User1
   appLogicalName: cr693_differentvariabletypes_09b4b
 
