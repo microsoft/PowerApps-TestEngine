@@ -215,7 +215,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var recordValue = value.GetField("Value");
-            var val = recordValue.GetType().GetProperty("Value")?.GetValue(recordValue, null)?.ToString();
+            var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
             RecordValueObject json = new RecordValueObject(val);
             var checkVal = JsonConvert.SerializeObject(json);
             var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
@@ -236,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 if (row.IsValue)
                 {
                     var recordValue = row.Value.GetField("Value");
-                    var val = recordValue.GetType().GetProperty("Value")?.GetValue(recordValue, null)?.ToString();
+                    var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
                     if (val != null)
                     {
                         jsonArr[index++] = new RecordValueObject(val);
