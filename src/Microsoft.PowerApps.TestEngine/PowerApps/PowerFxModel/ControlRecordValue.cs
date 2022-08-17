@@ -120,8 +120,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         result = BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
-                    /* TODO: When .Date and .DateTime not ambiguous, uncomment
-                     * Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
                     else if (fieldType is DateTimeType)
                     {
                         double milliseconds;
@@ -142,7 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel
                         }
 
                         return true;
-                    } */
+                    }
                     else if (fieldType is DateType)
                     {
                         double milliseconds;

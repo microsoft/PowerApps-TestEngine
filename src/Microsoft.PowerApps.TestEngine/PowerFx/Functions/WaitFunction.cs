@@ -146,8 +146,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         }
     }
 
-    /* TODO: When .Date and .DateTime not ambiguous, uncomment
-     * Currently waiting on PowerFX 'DateTime' and 'Date' types to be less ambiguous, so that both can be used
     public class WaitFunctionDateTime : WaitFunction
     {
         public WaitFunctionDateTime(int timeout, ILogger logger) : base(timeout, FormulaType.DateTime, logger)
@@ -162,12 +160,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         private void Wait(RecordValue obj, StringValue propName, DateTimeValue value)
         {
-            _logger.LogInformationg("------------------------------\n\n" +
-    "Executing Wait function.");
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Wait function.");
 
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
+            var propType = propName.Type;
 
             PollingCondition<DateTime>((x) => x != value.Value, () => {
                 return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
@@ -176,7 +175,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
         }
     }
-    */
 
     public class WaitFunctionDate : WaitFunction
     {
@@ -215,8 +213,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             powerFxConfig.AddFunction(new WaitFunctionNumber(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionString(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionBoolean(timeout, logger));
-            // TODO: When .Date and .DateTime not ambiguous, uncomment
-            // powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout));
+            powerFxConfig.AddFunction(new WaitFunctionDateTime(timeout, logger));
             powerFxConfig.AddFunction(new WaitFunctionDate(timeout, logger));
         }
     }
