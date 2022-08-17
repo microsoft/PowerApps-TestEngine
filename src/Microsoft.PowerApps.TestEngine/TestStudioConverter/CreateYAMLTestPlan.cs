@@ -246,7 +246,7 @@ namespace Microsoft.PowerApps.TestEngine.TestStudioConverter
             return TestCases;
         }
 
-        public TestPlanDefinition? GetYamlTestPlan()
+        public TestPlanDefinition GetYamlTestPlan()
         {
             return YamlTestPlan;
         }
