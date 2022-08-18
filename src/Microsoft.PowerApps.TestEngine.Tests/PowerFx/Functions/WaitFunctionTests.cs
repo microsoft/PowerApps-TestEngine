@@ -506,6 +506,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             {
                 PropertyValue = "0",
             };
+
             MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
                     .Returns(JsonConvert.SerializeObject(jsPropertyValueModel))
                     .Returns(JsonConvert.SerializeObject(jsPropertyValueModel))
@@ -527,6 +528,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             {
                 PropertyValue = "0",
             };
+
             MockPowerAppFunctions.SetupSequence(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
                     .Returns(JsonConvert.SerializeObject(jsPropertyValueModel))
                     .Returns(JsonConvert.SerializeObject(jsPropertyValueModel))
