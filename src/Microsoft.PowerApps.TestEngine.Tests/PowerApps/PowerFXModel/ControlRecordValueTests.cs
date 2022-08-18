@@ -9,6 +9,7 @@ using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
 {
@@ -17,15 +18,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         [Fact]
         public void SimpleControlRecordValueTest()
         {
-            var recordType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number);
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add("SelectedDate", FormulaType.Date).Add("DefaultDate", FormulaType.DateTime);
             var mockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             var controlName = "Label1";
             var propertyValue = Guid.NewGuid().ToString();
             var numberPropertyValue = 11;
+            var datePropertyValue = new DateTime(2030, 1, 1, 0, 0, 0).Date;
+            var dateTimePropertyValue = new DateTime(2030, 1, 1, 0, 0, 0);
+
             mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text")))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = propertyValue }));
             mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "X")))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = numberPropertyValue.ToString() }));
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "SelectedDate")))
+                .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = datePropertyValue.ToString() }));
+            mockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "DefaultDate")))
+                .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = dateTimePropertyValue.ToString() }));
 
             var controlRecordValue = new ControlRecordValue(recordType, mockPowerAppFunctions.Object, controlName);
             Assert.Equal(controlName, controlRecordValue.Name);
@@ -39,9 +47,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
 
             Assert.Equal(propertyValue, (controlRecordValue.GetField("Text") as StringValue).Value);
             Assert.Equal(numberPropertyValue, (controlRecordValue.GetField("X") as NumberValue).Value);
+            Assert.Equal(datePropertyValue.ToString(), (controlRecordValue.GetField("SelectedDate") as DateValue).Value.ToString());
+            Assert.Equal(dateTimePropertyValue.ToString(), (controlRecordValue.GetField("DefaultDate") as DateTimeValue).Value.ToString());
 
             mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == controlName)), Times.Once());
             mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "X" && x.ControlName == controlName)), Times.Once());
+            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "SelectedDate" && x.ControlName == controlName)), Times.Once());
+            mockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "DefaultDate" && x.ControlName == controlName)), Times.Once());
         }
 
         [Fact]

@@ -165,7 +165,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
-        public void WaitFunctionDatePropDateValueSucceedsTest()
+        public void WaitFunctionDate_DateValueSucceedsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
@@ -191,7 +191,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
-        public void WaitFunctionDatePropDateTimeValueSucceedsTest()
+        public void WaitFunctionDate_DateTimeValueSucceedsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
@@ -211,13 +211,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDate(Timeout, MockLogger.Object);
-            waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.NewDateOnly(value.Date));
+            waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.NewDateOnly(value));
 
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(2));
         }
 
         [Fact]
-        public void WaitFunctionDateTimePropDateTimeValueSucceedsTest()
+        public void WaitFunctionDateTime_DateTimeValueSucceedsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
@@ -237,13 +237,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDateTime(Timeout, MockLogger.Object);
-            waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.New(value.Date));
+            waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.New(value));
 
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(2));
         }
 
         [Fact]
-        public void WaitFunctionDateTimePropDateValueSucceedsTest()
+        public void WaitFunctionDateTime_DateValueSucceedsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
             var value = new DateTime(2030, 1, 1, 0, 0, 0);
@@ -423,7 +423,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDateTime(Timeout, MockLogger.Object);
-            waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.New(value.Date));
+            waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.New(value));
 
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
         }
@@ -534,7 +534,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDateTime(300, MockLogger.Object); // each trial has 500ms in between
-            Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.New(value.Date)));
+            Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.New(value)));
         }
     }
 }
