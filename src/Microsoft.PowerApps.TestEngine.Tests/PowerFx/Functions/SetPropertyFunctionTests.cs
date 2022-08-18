@@ -55,6 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<StringValue>(stringVal => stringVal.Value == "5")), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)"Error occurred on DataType of type Microsoft.PowerFx.Types.StringValue", LogLevel.Debug, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)"Property name: Text", LogLevel.Trace, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Unable to set property with SetProperty function.", LogLevel.Error, Times.Once());
         }
 
         [Fact]
