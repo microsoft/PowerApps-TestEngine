@@ -76,13 +76,23 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
+            var propType = controlModel.GetField(propName.Value);
 
-            PollingCondition<double>((x) => x != value.Value, () =>
+            // Handling in the case that the property is a Number type
+            if (propType.GetType() == typeof(NumberValue))
             {
-                return ((NumberValue)controlModel.GetField(propName.Value)).Value;
-            }, _timeout);
+                PollingCondition<double>((x) => x != value.Value, () =>
+                {
+                    return ((NumberValue)controlModel.GetField(propName.Value)).Value;
+                }, _timeout);
 
-            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
+                _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
+            }
+            // Otherwise, return error for improper value type.
+            else
+            {
+                _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Number Type");
+            }
         }
     }
 
@@ -106,13 +116,24 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
+            var propType = controlModel.GetField(propName.Value);
 
-            PollingCondition<string>((x) => x != value.Value, () =>
+            // Handling in the case that the property is a String type
+            if (propType.GetType() == typeof(StringValue))
             {
-                return ((StringValue)controlModel.GetField(propName.Value)).Value;
-            }, _timeout);
 
-            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
+                PollingCondition<string>((x) => x != value.Value, () =>
+                {
+                    return ((StringValue)controlModel.GetField(propName.Value)).Value;
+                }, _timeout);
+
+                _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
+            }
+            // Otherwise, return error for improper value type.
+            else
+            {
+                _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of String Type");
+            }
         }
     }
 
@@ -136,13 +157,24 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
+            var propType = controlModel.GetField(propName.Value);
 
-            PollingCondition<bool>((x) => x != value.Value, () =>
+            // Handling in the case that the property is a Boolean type
+            if (propType.GetType() == typeof(BooleanValue))
             {
-                return ((BooleanValue)controlModel.GetField(propName.Value)).Value;
-            }, _timeout);
 
-            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
+                PollingCondition<bool>((x) => x != value.Value, () =>
+                {
+                    return ((BooleanValue)controlModel.GetField(propName.Value)).Value;
+                }, _timeout);
+
+                _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
+            }
+            // Otherwise, return error for improper value type.
+            else
+            {
+                _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Boolean Type");
+            }
         }
     }
 
@@ -218,17 +250,25 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 {
                     return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
+
+                _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
+
             }
-            // Otherwise, the property should be a Date
-            else
+            // Handling in the case that the property is a Date
+            else if (propType.GetType() == typeof(DateValue))
             {
                 PollingCondition<DateTime>((x) => x != value.Value, () =>
                 {
                     return ((DateValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
+  
+                _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
             }
-
-            _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
+            // Otherwise, return error for improper value type.
+            else
+            {
+                _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Date Type");
+            }
         }
     }
 
