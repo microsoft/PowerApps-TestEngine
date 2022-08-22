@@ -62,9 +62,13 @@ namespace Microsoft.PowerApps.TestEngine
                 throw new InvalidOperationException("This test can only be run once.");
             }
 
-            var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
+            var casesTotal = 0;
+            var casesPass = 0;
+            var casesFail = 0;
 
-            var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteDefinition.TestSuiteName} - {browserConfigName}");
+            var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
+            var testSuiteName = testSuiteDefinition.TestSuiteName;
+            var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName}");
 
             Logger = _loggerFactory.CreateLogger(testSuiteId);
             _testState.SetLogger(Logger);
@@ -73,7 +77,7 @@ namespace Microsoft.PowerApps.TestEngine
             _testState.SetTestRunId(testRunId);
             _testState.SetBrowserConfig(browserConfig);
 
-            var testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
+            var testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteName}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
 
             try
@@ -81,7 +85,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _fileSystem.CreateDirectory(testResultDirectory);
 
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
-                    $"RUNNING TEST SUITE: {testSuiteDefinition.TestSuiteName}" +
+                    $"RUNNING TEST SUITE: {testSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n" +
                     $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
@@ -101,6 +105,8 @@ namespace Microsoft.PowerApps.TestEngine
                 // Set up Power Fx
                 _powerFxEngine.Setup();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
+
+                casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
 
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
@@ -135,9 +141,11 @@ namespace Microsoft.PowerApps.TestEngine
                                 Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
+                            casesPass++;
                         }
                         catch (Exception ex)
                         {
+                            casesFail++;
                             Logger.LogError(ex.ToString());
                             TestException = ex;
                             TestSuccess = false;
@@ -169,7 +177,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Execute OnTestSuiteComplete
                 if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestSuiteComplete))
                 {
-                    Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteDefinition.TestSuiteName}");
+                    Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteName}");
                     _testState.SetTestResultsDirectory(testResultDirectory);
                     _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
                 }
@@ -182,6 +190,15 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 await _testInfraFunctions.EndTestRunAsync();
+
+                Logger.LogInformation($"---------------------------------------------------------------------------\n" +
+                                $"{testSuiteName} TEST SUMMARY" +
+                                $"\n---------------------------------------------------------------------------");
+
+                Logger.LogInformation("Total cases: " + casesTotal);
+                Logger.LogInformation("Cases passed: " + casesPass);
+                Logger.LogInformation("Cases skipped: " + (casesTotal - (casesFail + casesPass)));
+                Logger.LogInformation("Cases failed: " + casesFail + "\n");
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
