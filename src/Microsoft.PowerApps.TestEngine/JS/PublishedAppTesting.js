@@ -162,23 +162,23 @@ function selectControl(itemPath) {
 }
 
 function setPropertyValueForControl(itemPath, value) {
-    // TODO: handle galleries and components
-    /*
-    if (parentControlName && rowOrColumnNumber) {
-        var galleryControlOpenAjax = AppMagic.AuthoringTool.Runtime.getNamedControl(parentControlName).OpenAjax;
-        var replicatedContextManagerId = galleryControlOpenAjax.replicatedContextManager.managerId;
-        var galleryBindingContext = galleryControlOpenAjax.replicatedContextManager.authoringAreaBindingContext.parent.replicatedContexts[replicatedContextManagerId].bindingContextAt(rowOrColumnNumber);
-        return AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.setPropertyValueInternal(propertyName, value, galleryBindingContext)
-    }
-
-    if (parentControlName) {
-
-        return (AppMagic.AuthoringTool.Runtime.getNamedControl(controlName).OpenAjax.setPropertyValueInternal(propertyName, value, AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(parentControlName)));
-    }*/
     // Decode itemPath and value
     var val = unescape(value);
     var unescapePath = unescape(itemPath);
     var obj = JSON.parse(unescapePath);
+
+    if (obj.parentControl && obj.parentControl.index !== null) {
+        // Gallery & Nested gallery
+        var galleryBindingContext = getBindingContext(obj.parentControl);     
+        return AppMagic.AuthoringTool.Runtime.getNamedControl(obj.controlName, galleryBindingContext).OpenAjax.setPropertyValueInternal(obj.propertyName, val, galleryBindingContext)
+    }
+
+    if (obj.parentControl) {
+        // Component
+        var componentBindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(obj.parentControl.controlName);
+        return (AppMagic.AuthoringTool.Runtime.getNamedControl(obj.controlName, componentBindingContext).OpenAjax.setPropertyValueInternal(obj.propertyName, val, componentBindingContext));
+    }
+    
     return AppMagic.AuthoringTool.Runtime.getNamedControl(obj.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(obj.propertyName, val, AppMagic.Controls.GlobalContextManager.bindingContext);
 }
 
