@@ -67,8 +67,8 @@ namespace Microsoft.PowerApps.TestEngine
             var casesFail = 0;
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
-
-            var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteDefinition.TestSuiteName} - {browserConfigName}");
+            var testSuiteName = testSuiteDefinition.TestSuiteName;
+            var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName}");
 
             Logger = _loggerFactory.CreateLogger(testSuiteId);
             _testState.SetLogger(Logger);
@@ -77,7 +77,7 @@ namespace Microsoft.PowerApps.TestEngine
             _testState.SetTestRunId(testRunId);
             _testState.SetBrowserConfig(browserConfig);
 
-            var testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
+            var testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteName}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
 
             try
@@ -85,7 +85,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _fileSystem.CreateDirectory(testResultDirectory);
 
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
-                    $"RUNNING TEST SUITE: {testSuiteDefinition.TestSuiteName}" +
+                    $"RUNNING TEST SUITE: {testSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n" +
                     $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
@@ -177,7 +177,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Execute OnTestSuiteComplete
                 if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestSuiteComplete))
                 {
-                    Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteDefinition.TestSuiteName}");
+                    Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteName}");
                     _testState.SetTestResultsDirectory(testResultDirectory);
                     _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
                 }
@@ -192,7 +192,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.EndTestRunAsync();
 
                 Logger.LogInformation($"---------------------------------------------------------------------------\n" +
-                                $"{testSuiteDefinition.TestSuiteName} TEST SUMMARY" +
+                                $"{testSuiteName} TEST SUMMARY" +
                                 $"\n---------------------------------------------------------------------------");
 
                 Logger.LogInformation("Total cases: " + casesTotal);

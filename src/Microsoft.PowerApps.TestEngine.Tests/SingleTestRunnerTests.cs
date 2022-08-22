@@ -118,7 +118,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(), Times.Once());
             MockUrlMapper.Verify(x => x.GenerateTestUrl(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl), Times.Once());
-            MockTestState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
+            MockTestState.Verify(x => x.GetTestSuiteDefinition(), Times.Exactly(2));
             MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteId, testSuiteDefinition.TestCases[0].TestCaseName, "TODO"), Times.Once());
             MockTestReporter.Verify(x => x.StartTest(testRunId, testId), Times.Once());
             MockTestState.Verify(x => x.SetTestId(testId), Times.Once());
@@ -136,10 +136,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(testSuiteDefinition.TestCases[0].TestCaseName) && x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage, stackTrace), Times.Once());
         }
 
-        private void VerifyFinallyExecution(string testResultDirectory)
+        private void VerifyFinallyExecution(string testResultDirectory, int total, int pass, int skip, int fail)
         {
             MockTestInfraFunctions.Verify(x => x.EndTestRunAsync(), Times.Once());
             MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory, null), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Total cases: " + total, LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Cases passed: " + pass, LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Cases skipped: " + skip, LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Cases failed: " + fail + "\n", LogLevel.Information, Times.Once());
         }
 
         [Theory]
@@ -165,7 +169,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
             VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testSuiteId, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl);
-            VerifyFinallyExecution(testData.testResultDirectory);
+            VerifyFinallyExecution(testData.testResultDirectory, 1, 1, 0, 0);
         }
 
         [Theory]
@@ -191,7 +195,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testSuiteId, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl);
-            VerifyFinallyExecution(testData.testResultDirectory);
+            VerifyFinallyExecution(testData.testResultDirectory, 1, 1, 0, 0);
         }
 
         [Fact]
@@ -233,7 +237,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig);
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
-            VerifyFinallyExecution(testData.testResultDirectory);
+            VerifyFinallyExecution(testData.testResultDirectory, 1, 0, 0, 1);
         }
 
         public async Task SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper(Action<Exception> additionalMockSetup)
@@ -258,7 +262,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             LoggingTestHelper.VerifyLogging(MockLogger, exceptionToThrow.ToString(), LogLevel.Error, Times.Once());
-            VerifyFinallyExecution(testData.testResultDirectory);
+            VerifyFinallyExecution(testData.testResultDirectory, 0, 0, 0, 0);
         }
 
         [Fact]
@@ -356,7 +360,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
             LoggingTestHelper.VerifyLogging(MockLogger, exceptionToThrow.ToString(), LogLevel.Error, Times.Once());
-            VerifyFinallyExecution(testData.testResultDirectory);
+            VerifyFinallyExecution(testData.testResultDirectory, 1, 1, 0, 0);
         }
 
         // Sample Test Data for test with OnTestCaseStart, OnTestCaseComplete and OnTestSuiteComplete
