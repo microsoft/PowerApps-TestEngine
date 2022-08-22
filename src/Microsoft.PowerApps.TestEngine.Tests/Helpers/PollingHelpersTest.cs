@@ -49,11 +49,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             Assert.Throws<TimeoutException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, _notEnoughRuntime, MockLogger.Object));
         }
 
-        [Fact]
-        public async void PollingAsyncSucceedsTest()
-        {
-            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _enoughRuntime, MockLogger.Object);
-        }
+        // [Fact]
+        // public async void PollingAsyncSucceedsTest()
+        // {
+        //     await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _enoughRuntime, MockLogger.Object);
+        // }
 
         [Fact]
         public void PollingAsyncTimeoutTest()
