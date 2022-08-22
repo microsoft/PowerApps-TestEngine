@@ -17,6 +17,10 @@ testSuite:
           Select(Gallery1, 2);
           Select(Gallery1, 3, NextArrow1);
           Assert(Label1.Text = "Lorem ipsum 3", "Label should be updated to indicate third item in the gallery");
+          // Using SetProperty to change the values on the controls
+          SetProperty(Label1.Text, "End of the test");
+          SetProperty(Index(Gallery1.AllItems, 2).Title1.Text, "End of the test");
+          Assert(Index(Gallery1.AllItems, 2).Title1.Text = "End of the test", "Label in the gallery should be updated");
           Screenshot("basicgallery_end.png");
 
 testSettings:

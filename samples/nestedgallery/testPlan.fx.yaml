@@ -13,7 +13,12 @@ testSuite:
           Select(Button1);
           // Validate that the row was generated with some data
           Assert(Index(Gallery1.AllItems, 1).Label4.Text = "Row id: 1", "Validate row label");
-          Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 5).Label5.Text = "Column id: 5", "Validate the label in the nested gallery");
+          // Change the labels and verify
+          SetProperty(Index(Gallery1.AllItems, 1).Label4.Text, "Updated label");
+          Assert(Index(Gallery1.AllItems, 1).Label4.Text = "Updated label", "Validate row label");
+          Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 3).Label5.Text = "Column id: 3", "Validate the label in the nested gallery");
+          SetProperty(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 3).Label5.Text, "Updated label");
+          Assert(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 3).Label5.Text = "Updated label", "Validate the label in the nested gallery");
           // Generate a 2nd row
           SetProperty(TextInput1.Text, "10");
           Select(Button1);
