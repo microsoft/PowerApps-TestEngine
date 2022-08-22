@@ -39,7 +39,6 @@ testSuite:
 
 testSettings:
   recordVideo: true
-  headless: false
   browserConfigurations:
     - browser: Chromium
 
