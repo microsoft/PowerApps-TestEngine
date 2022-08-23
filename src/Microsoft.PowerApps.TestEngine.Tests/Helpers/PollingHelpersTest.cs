@@ -13,7 +13,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 {
     public class PollingHelpersTests
     {
-        private int _enoughRuntime = 5000;
+        private int _enoughRuntime = 6000;
         private int _notEnoughRuntime = 500;
         private int _invalidRuntime = -1000;
         private Mock<ILogger> MockLogger;
@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 
         private async Task<bool> functionToCallAsync()
         {
-            await Task.Delay(1000);
+            await Task.Delay(500);
             return true;
         }
 
@@ -49,11 +49,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             Assert.Throws<TimeoutException>(() => PollingHelper.Poll(false, conditionToCheck, functionToCall, _notEnoughRuntime, MockLogger.Object));
         }
 
-        // [Fact]
-        // public async void PollingAsyncSucceedsTest()
-        // {
-        //     await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _enoughRuntime, MockLogger.Object);
-        // }
+        [Fact]
+        public async Task PollingAsyncSucceedsTest()
+        {
+            await PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _enoughRuntime, MockLogger.Object);
+        }
 
         [Fact]
         public void PollingAsyncTimeoutTest()

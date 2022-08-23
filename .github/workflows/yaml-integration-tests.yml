@@ -23,7 +23,7 @@ jobs:
           chmod +x yaml-integration-tests.sh
           ./yaml-integration-tests.sh "${{ inputs.parameters }}"       # run the script with the parameter, contains logic to run the tests
       - name: Sample Test Report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v1.5.0
         if: success() || failure()    # run this step even if previous step failed
         with:
           name: Sample Tests          # Name of the check run which will be created
