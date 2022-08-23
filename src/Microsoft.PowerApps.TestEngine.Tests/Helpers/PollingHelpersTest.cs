@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 
         private async Task<bool> functionToCallAsync()
         {
-            await Task.Delay(1000);
+            await Task.Delay(500);
             return true;
         }
 
