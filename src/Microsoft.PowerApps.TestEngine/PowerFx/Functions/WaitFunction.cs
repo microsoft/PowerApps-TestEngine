@@ -261,7 +261,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 {
                     return ((DateValue)controlModel.GetField(propName.Value)).Value;
                 }, _timeout);
-  
+
                 _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
             }
             // Otherwise, return error for improper value type.
