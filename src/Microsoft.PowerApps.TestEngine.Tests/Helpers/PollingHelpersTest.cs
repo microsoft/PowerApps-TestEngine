@@ -13,7 +13,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 {
     public class PollingHelpersTests
     {
-        private int _enoughRuntime = 5500;
+        private int _enoughRuntime = 6000;
         private int _notEnoughRuntime = 500;
         private int _invalidRuntime = -1000;
         private Mock<ILogger> MockLogger;
