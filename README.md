@@ -82,6 +82,7 @@ While work to provide full control coverage is in progress, support for the foll
 - Media
 - Timer
 - Mixed Reality
+- Child controls within components
 
 ## Contributing
 
