@@ -19,6 +19,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public TestSettings TestSettings { get; set; }
 
         /// <summary>
+        /// Gets or sets the UserDefinedFunctions made for this test
+        /// </summary>
+        public string? UserDefinedFunctions { get; set; }
+
+        /// <summary>
         /// Gets or sets the environment variables.
         /// </summary>
         public EnvironmentVariables EnvironmentVariables { get; set; }

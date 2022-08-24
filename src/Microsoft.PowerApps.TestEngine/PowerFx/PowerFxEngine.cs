@@ -26,6 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly IFileSystem _fileSystem;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
+        private bool _udfIsReg = false;
         private int _retryLimit = 2;
 
         private RecalcEngine Engine { get; set; }
@@ -57,6 +58,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             WaitRegisterExtensions.RegisterAll(powerFxConfig, _testState.GetTimeout(), Logger);
 
             Engine = new RecalcEngine(powerFxConfig);
+           
         }
 
         public async Task ExecuteWithRetryAsync(string testSteps)
@@ -93,6 +95,25 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");
                 throw new InvalidOperationException();
+            }
+
+            while (!_udfIsReg)
+            {
+                _udfIsReg = true;
+                if (_testState.GetUserDefinedFunctions() == null)
+                {
+                    break;
+                }
+                var errors = Engine.DefineFunctions(_testState.GetUserDefinedFunctions()).Errors;
+                if (errors.Any())
+                {
+                    var str = "";
+                    foreach (var error in errors)
+                    {
+                        str += error.Message;
+                    }
+                    throw new Exception(str);
+                }
             }
 
             // Remove the leading = sign

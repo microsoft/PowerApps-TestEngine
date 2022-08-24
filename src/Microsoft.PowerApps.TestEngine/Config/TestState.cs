@@ -32,6 +32,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return TestPlanDefinition?.TestSuite;
         }
 
+        public string? GetUserDefinedFunctions()
+        {
+            return TestPlanDefinition?.UserDefinedFunctions;
+        }
+
         public List<TestCase> GetTestCases()
         {
             return TestCases;

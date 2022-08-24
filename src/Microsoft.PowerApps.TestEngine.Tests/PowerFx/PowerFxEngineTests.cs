@@ -38,6 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
+            MockTestState.Setup(x => x.GetUserDefinedFunctions()).Returns("");
             LoggingTestHelper.SetupMock(MockLogger);
         }
 
@@ -144,6 +145,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Exactly(2));
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Exactly(2));
+        }
+
+        [Fact]
+        public void UserDefinedFunctionTest()
+        {
+            MockTestState.Setup(x => x.GetUserDefinedFunctions()).Returns("Foo(x: Number): Number => x+1;");
+            var powerFxExpression = "Foo(1)";
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            powerFxEngine.Setup();
+            var result = powerFxEngine.Execute(powerFxExpression);
+            Assert.Equal(2.0, result.ToObject());
         }
 
         [Fact]

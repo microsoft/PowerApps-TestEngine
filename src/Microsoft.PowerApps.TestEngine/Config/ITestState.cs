@@ -41,6 +41,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public string GetEnvironment();
 
         /// <summary>
+        /// User defined functions.
+        /// </summary>
+        /// <returns>String to parse for user defined functions.</returns>
+        public string? GetUserDefinedFunctions();
+
+        /// <summary>
         /// Set the cloud the app should be opened in.
         /// </summary>
         /// <param name="cloud">Cloud</param>
