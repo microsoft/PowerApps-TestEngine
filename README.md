@@ -74,6 +74,16 @@ dotnet run
 
 When the run is complete, you should be able to view the test results in the folder you specified earlier.
 
+## Known limitations
+
+While work to provide full control coverage is in progress, support for the following controls are currently unavailable:
+
+- Charts
+- Media
+- Timer
+- Mixed Reality
+- Child controls within components
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
