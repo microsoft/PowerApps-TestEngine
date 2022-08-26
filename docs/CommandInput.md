@@ -30,6 +30,14 @@ Command line parameters override anything specified in `config.json`
 | -o | OutputDirectory |
 | -l | LogLevel |
 
+## What is the difference between the settings passed in via command line/config.json vs settings located inside the YAML?
+
+The settings passed in via command line or config.json are settings that either start off the test (link to the test plan) or they are settings that are likely to change due to the environment the app being test in is located.
+
+Settings located in the YAML should be able to be "imported" with the solution, so another person could take the solution and corresponding test plan and use the two of them without any modifications.
+
+Example: environment id changes if the app is imported to a another tenant/environment, and so it is located as a command line or config.json setting.
+
 ## Test plan conversion
 The exe can also be used to convert an msapp's test json to a Test Engine yaml test plan.
 This is done by passing `convert` as an input followed by a path that leads to the test json.
