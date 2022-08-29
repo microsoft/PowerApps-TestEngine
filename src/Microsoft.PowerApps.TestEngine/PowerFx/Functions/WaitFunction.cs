@@ -132,7 +132,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Otherwise, return error for improper value type.
             else
             {
-                throw new InvalidDataException($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of String Type");            }
+                throw new InvalidDataException($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of String Type");            
+            }
         }
     }
 
@@ -172,7 +173,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Otherwise, return error for improper value type.
             else
             {
-                throw new InvalidDataException($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Boolean Type");            }
+                throw new InvalidDataException($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Boolean Type");            
+            }
         }
     }
 
