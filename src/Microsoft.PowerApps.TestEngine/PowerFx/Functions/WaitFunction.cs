@@ -92,6 +92,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             else
             {
                 _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Number Type");
+                throw new InvalidDataException();
             }
         }
     }
@@ -133,6 +134,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             else
             {
                 _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of String Type");
+                throw new InvalidDataException();
             }
         }
     }
@@ -174,6 +176,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             else
             {
                 _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Boolean Type");
+                throw new InvalidDataException();
             }
         }
     }
@@ -268,6 +271,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             else
             {
                 _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Date Type");
+                throw new InvalidDataException();
             }
         }
     }
