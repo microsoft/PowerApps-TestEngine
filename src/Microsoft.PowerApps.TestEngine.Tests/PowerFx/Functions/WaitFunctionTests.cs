@@ -14,7 +14,6 @@ using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 {
