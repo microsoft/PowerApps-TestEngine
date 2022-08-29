@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -13,6 +14,7 @@ using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 {
@@ -132,9 +134,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionString(Timeout, MockLogger.Object);
-            waitFunction.Execute(recordValue, FormulaValue.New("Value"), StringValue.New("1"));
-
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Once());
+            Assert.Throws<InvalidDataException>(() => waitFunction.Execute(recordValue, FormulaValue.New("Value"), StringValue.New("1")));
         }
 
 
@@ -186,9 +186,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionNumber(Timeout, MockLogger.Object);
-            waitFunction.Execute(recordValue, FormulaValue.New("Value"), NumberValue.New(1));
-
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Once());
+            Assert.Throws<InvalidDataException>(() => waitFunction.Execute(recordValue, FormulaValue.New("Value"), NumberValue.New(1)));
         }
 
         [Fact]
@@ -239,9 +237,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionBoolean(Timeout, MockLogger.Object);
-            waitFunction.Execute(recordValue, FormulaValue.New("Text"), BooleanValue.New(true));
-
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Once());
+            Assert.Throws<InvalidDataException>(() => waitFunction.Execute(recordValue, FormulaValue.New("Text"), BooleanValue.New(true)));
         }
 
         [Fact]
@@ -319,9 +315,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDate(Timeout, MockLogger.Object);
-            waitFunction.Execute(recordValue, FormulaValue.New("Text"), FormulaValue.NewDateOnly(value.Date));
-
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Once());
+            Assert.Throws<InvalidDataException>(() => waitFunction.Execute(recordValue, FormulaValue.New("Text"), FormulaValue.NewDateOnly(value.Date)));
         }
 
         [Fact]
