@@ -91,7 +91,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Otherwise, return error for improper value type.
             else
             {
-                throw new InvalidDataException($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Number Type");
+                _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Number Type");
+                throw new InvalidDataException();
             }
         }
     }
@@ -132,7 +133,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Otherwise, return error for improper value type.
             else
             {
-                throw new InvalidDataException($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of String Type");
+                _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of String Type");
+                throw new InvalidDataException();
             }
         }
     }
@@ -173,7 +175,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Otherwise, return error for improper value type.
             else
             {
-                throw new InvalidDataException($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Boolean Type");
+                _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Boolean Type");
+                throw new InvalidDataException();
             }
         }
     }
@@ -267,7 +270,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Otherwise, return error for improper value type.
             else
             {
-                throw new InvalidDataException($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Date Type");
+                _logger.LogError($"Value isn't valid. Value of the Wait function should be {propType.Type} Type instead of Date Type");
+                throw new InvalidDataException();
             }
         }
     }
