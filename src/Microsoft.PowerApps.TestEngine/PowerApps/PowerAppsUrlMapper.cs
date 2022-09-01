@@ -73,7 +73,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     break;
             }
 
-            return $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine";
+            return $"https://apps.preprod.powerapps.com/play/e/{environment}/a/{appLogicalName}?tenantId={tenantId}&source=testengine&PAOverrideFGRollout.ForceOnePlayer=true#";
         }
     }
 }
