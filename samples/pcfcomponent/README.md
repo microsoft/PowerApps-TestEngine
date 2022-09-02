@@ -11,6 +11,6 @@
 
 4.Run test for Test Engine
 ## Important
-Make sure you enable the PCF admin setting BEFORE importing the solution. [![Enable the Power Apps component framework feature](https://docs.microsoft.com/en-us/power-apps/developer/component-framework/component-framework-for-canvas-apps#enable-the-power-apps-component-framework-feature)](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml)
+Make sure you enable the PCF admin setting BEFORE importing the solution. [Enable the Power Apps component framework feature](https://docs.microsoft.com/en-us/power-apps/developer/component-framework/component-framework-for-canvas-apps#enable-the-power-apps-component-framework-feature)
 
 If you didn't have it enabled before, you have to delete the solution, enable the PCF admin setting, re-import the solution.
