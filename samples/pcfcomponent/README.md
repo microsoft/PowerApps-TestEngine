@@ -5,11 +5,11 @@
 
 2.[Enable the Power Apps component framework feature](https://docs.microsoft.com/en-us/power-apps/developer/component-framework/component-framework-for-canvas-apps#enable-the-power-apps-component-framework-feature)
 
-2.Import the solution
+3.Import the solution
 
-3.Play the app
+4.Play the app
 
-4.Run test for Test Engine
+5.Run test for Test Engine
 ## Important
 Make sure you enable the PCF admin setting BEFORE importing the solution. [Enable the Power Apps component framework feature](https://docs.microsoft.com/en-us/power-apps/developer/component-framework/component-framework-for-canvas-apps#enable-the-power-apps-component-framework-feature)
 
