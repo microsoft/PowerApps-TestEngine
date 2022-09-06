@@ -52,5 +52,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Number of workers. Default is 10.
         /// </summary>
         public int WorkerCount { get; set; } = 10;
+
+        /// <summary>
+        /// Feature switch to enable use of TestEngine JS implementation
+        /// </summary>
+        public bool TestEngineJS { get; set; } = false;
     }
 }

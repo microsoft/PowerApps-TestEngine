@@ -238,5 +238,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             return GetTestSettings().WorkerCount;
         }
+
+        public bool UsingTestEngineJS()
+        {
+            return GetTestSettings().TestEngineJS;
+        }
     }
 }

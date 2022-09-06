@@ -100,5 +100,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <returns>Number of workers</returns>
         public int GetWorkerCount();
+
+        /// <summary>
+        /// Gets whether we are using TestEngine's JS implementation or not
+        /// </summary>
+        /// <returns>True/false if using TE JS implementation</returns>
+        public bool UsingTestEngineJS();
     }
 }
