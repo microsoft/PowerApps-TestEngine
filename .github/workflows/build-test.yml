@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         dotnet-version: ['6.0.x']
