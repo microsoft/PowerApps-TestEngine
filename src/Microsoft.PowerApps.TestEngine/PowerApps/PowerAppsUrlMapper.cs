@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var returnURL = $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine";
 
-            if (_testState.UsingTestEngineJS)
+            if (_testState.UsingTestEngineJS())
             {
                 returnURL += "&enablePATest=true&patestSDKVersion=0.0.1";
             }
