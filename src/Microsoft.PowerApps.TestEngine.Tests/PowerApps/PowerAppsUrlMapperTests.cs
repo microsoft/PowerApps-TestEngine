@@ -25,21 +25,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("myEnvironment", "Prod", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine")]
-        [InlineData("defaultEnvironment", "Test", "defaultApp", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine")]
-        [InlineData("defaultEnvironment", "test", "defaultApp", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine")]
-        [InlineData("myEnvironment", "PROD", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine")]
-        [InlineData("myEnvironment", "prod", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine")]
-        [InlineData("defaultEnvironment", "", "defaultApp", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine")]
-        [InlineData("defaultEnvironment", null, "defaultApp", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine")]
-        public void GenerateAppUrlTest(string environmentId, string cloud, string appLogicalName, string tenantId, string expectedAppUrl)
+        [InlineData("myEnvironment", "Prod", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", false)]
+        [InlineData("myEnvironment", "Prod", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine&enablePATest=true&patestSDKVersion=0.0.1", true)]
+        [InlineData("defaultEnvironment", "Test", "defaultApp", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", false)]
+        [InlineData("defaultEnvironment", "test", "defaultApp", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", false)]
+        [InlineData("myEnvironment", "PROD", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", false)]
+        [InlineData("myEnvironment", "prod", "myApp", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", false)]
+        [InlineData("defaultEnvironment", "", "defaultApp", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", false)]
+        [InlineData("defaultEnvironment", null, "defaultApp", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", false)]
+        public void GenerateAppUrlTest(string environmentId, string cloud, string appLogicalName, string tenantId, string expectedAppUrl, bool testEngineJS)
         {
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
             MockTestState.Setup(x => x.GetCloud()).Returns(cloud);
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() { AppLogicalName = appLogicalName });
             MockTestState.Setup(x => x.GetTenant()).Returns(tenantId);
+            MockTestState.Setup(x => x.UsingTestEngineJS()).Returns(testEngineJS);
+
             var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
-            Assert.Equal(expectedAppUrl, powerAppUrlMapper.GenerateTestUrl());
+            var testURL = powerAppUrlMapper.GenerateTestUrl();
+            Assert.Equal(expectedAppUrl, testURL);
             MockTestState.Verify(x => x.GetEnvironment(), Times.Once());
             MockTestState.Verify(x => x.GetCloud(), Times.Once());
             MockSingleTestInstanceState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());

@@ -315,7 +315,7 @@ testSettings:
   enablePowerFxOverlay: false
   timeout: 30000
   workerCount: 10
-  usingTestEngineJS: true
+  testEngineJS: true
 environmentVariables:
   filePath: 
   users:
@@ -344,7 +344,7 @@ testSettings:
   enablePowerFxOverlay: false
   timeout: 30000
   workerCount: 10
-  usingTestEngineJS: true
+  testEngineJS: true
 environmentVariables:
   filePath: 
   users:
@@ -373,7 +373,7 @@ testSettings:
   enablePowerFxOverlay: false
   timeout: 30000
   workerCount: 10
-  usingTestEngineJS: true
+  testEngineJS: true
 environmentVariables:
   filePath: 
   users:
@@ -419,7 +419,7 @@ testSettings:
   enablePowerFxOverlay: false
   timeout: 30000
   workerCount: 10
-  usingTestEngineJS: true
+  testEngineJS: true
 environmentVariables:
   filePath: 
   users:
