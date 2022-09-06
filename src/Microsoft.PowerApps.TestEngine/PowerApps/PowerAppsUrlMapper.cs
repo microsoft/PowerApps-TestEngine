@@ -73,14 +73,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     break;
             }
 
-            var returnURL = $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine";
+            var mappedURL = $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine";
 
             if (_testState.UsingTestEngineJS())
             {
-                returnURL += "&enablePATest=true&patestSDKVersion=0.0.1";
+                mappedURL += "&enablePATest=true&patestSDKVersion=0.0.1";
             }
 
-            return $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine";
+            return mappedURL;
         }
     }
 }
