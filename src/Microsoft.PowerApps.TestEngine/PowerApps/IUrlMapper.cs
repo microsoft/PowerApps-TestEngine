@@ -13,6 +13,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Generates url for the test
         /// </summary>
         /// <returns>Test url</returns>
-        public string GenerateTestUrl(string additionalQuery);
+        public string GenerateTestUrl(string queryParams);
     }
 }
