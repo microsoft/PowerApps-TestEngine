@@ -25,7 +25,8 @@ var switchMappings = new Dictionary<string, string>()
     { "-e", "EnvironmentId" },
     { "-t", "TenantId" },
     { "-o", "OutputDirectory" },
-    { "-l", "LogLevel" }
+    { "-l", "LogLevel" },
+    { "-q", "QueryParams" }
 };
 
 if (args.Length > 1)
@@ -89,7 +90,14 @@ else
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
-    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, "");
+    var queryParams = "";
+
+    if (!string.IsNullOrEmpty(inputOptions.QueryParams))
+    {
+        queryParams = inputOptions.QueryParams;
+    }
+
+    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, "", queryParams);
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }

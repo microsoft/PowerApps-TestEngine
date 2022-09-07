@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine
             _loggerFactory = loggerFactory;
         }
 
-        public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig)
+        public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string queryParams)
         {
             RunCount++;
 
@@ -68,7 +68,6 @@ namespace Microsoft.PowerApps.TestEngine
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
-            var additionalQuery = testSuiteDefinition.urlQuery;
             var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName}");
 
             Logger = _loggerFactory.CreateLogger(testSuiteId);
@@ -95,7 +94,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupAsync();
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(additionalQuery));
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(queryParams));
 
                 // Log in user
                 await _userManager.LoginAsUserAsync();

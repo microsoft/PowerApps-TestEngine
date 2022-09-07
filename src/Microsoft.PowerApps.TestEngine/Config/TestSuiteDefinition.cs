@@ -35,11 +35,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public string AppLogicalName { get; set; } = "";
 
         /// <summary>
-        /// Gets or sets the queries being added to the executed url
-        /// </summary>
-        public string urlQuery { get; set; } = "";
-
-        /// <summary>
         /// Gets or sets the Power FX functions that need to be triggered
         /// for every test case in a suite before the case begins executing.
         /// </summary>
