@@ -68,6 +68,7 @@ namespace Microsoft.PowerApps.TestEngine
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
+            var additionalQuery = testSuiteDefinition.urlQuery;
             var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName}");
 
             Logger = _loggerFactory.CreateLogger(testSuiteId);
@@ -94,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupAsync();
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl());
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(additionalQuery));
 
                 // Log in user
                 await _userManager.LoginAsUserAsync();

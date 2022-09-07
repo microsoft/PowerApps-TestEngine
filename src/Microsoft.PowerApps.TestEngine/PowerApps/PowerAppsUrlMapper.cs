@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public string GenerateTestUrl()
+        public string GenerateTestUrl(string additionalQuery)
         {
             var environment = _testState.GetEnvironment();
             if (string.IsNullOrEmpty(environment))
@@ -73,7 +73,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     break;
             }
 
-            return $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine";
+            return $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine{additionalQuery}";
         }
     }
 }
