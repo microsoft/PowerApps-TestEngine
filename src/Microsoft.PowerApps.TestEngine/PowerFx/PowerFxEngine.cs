@@ -120,7 +120,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 foreach (var step in splitSteps)
                 {
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
-                    result = Engine.Eval(step);
+                    result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true });
                 }
                 return result;
             }
