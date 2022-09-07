@@ -91,7 +91,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockUserManager.Setup(x => x.LoginAsUserAsync()).Returns(Task.CompletedTask);
 
-            MockUrlMapper.Setup(x => x.GenerateTestUrl()).Returns(appUrl);
+            MockUrlMapper.Setup(x => x.GenerateTestUrl("")).Returns(appUrl);
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             TestLoggerProvider.TestLoggers.Add(testSuiteId, MockTestLogger.Object);
@@ -116,7 +116,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestInfraFunctions.Verify(x => x.SetupAsync(), Times.Once());
             MockUserManager.Verify(x => x.LoginAsUserAsync(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(), Times.Once());
-            MockUrlMapper.Verify(x => x.GenerateTestUrl(), Times.Once());
+            MockUrlMapper.Verify(x => x.GenerateTestUrl(""), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl), Times.Once());
             MockTestState.Verify(x => x.GetTestSuiteDefinition(), Times.Exactly(2));
             MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteId, testSuiteDefinition.TestCases[0].TestCaseName, "TODO"), Times.Once());
@@ -323,7 +323,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUrlMapper.Setup(x => x.GenerateTestUrl()).Throws(exceptionToThrow);
+                MockUrlMapper.Setup(x => x.GenerateTestUrl("")).Throws(exceptionToThrow);
             });
         }
 
