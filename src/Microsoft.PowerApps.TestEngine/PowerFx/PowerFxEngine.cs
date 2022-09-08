@@ -99,11 +99,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             while (!_udfIsReg)
             {
+                Logger.LogInformation("UDF Registration Phase");
                 _udfIsReg = true;
                 if (_testState.GetUserDefinedFunctions() == null)
                 {
+                    Logger.LogInformation("No UDFs to register");
                     break;
                 }
+                Logger.LogInformation("Registering UDFs");
                 var errors = Engine.DefineFunctions(_testState.GetUserDefinedFunctions()).Errors;
                 if (errors.Any())
                 {
@@ -112,6 +115,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     {
                         str += error.Message;
                     }
+                    Logger.LogInformation("Failed UDF registration with" + str);
                     throw new Exception(str);
                 }
             }
@@ -141,7 +145,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 foreach (var step in splitSteps)
                 {
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
-                    result = Engine.Eval(step);
+                    result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true });
                 }
                 return result;
             }
@@ -154,6 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
         public async Task UpdatePowerFxModelAsync()
         {
+            //Thread.Sleep(60000);
             if (Engine == null)
             {
                 Logger.LogError("Engine is null, make sure to call Setup first");

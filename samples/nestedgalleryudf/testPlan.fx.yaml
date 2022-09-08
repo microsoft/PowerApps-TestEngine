@@ -27,17 +27,32 @@ testSuite:
           Assert(IsBlank(Label3.Text), "Validate that the selected row is empty");
           Assert(IsBlank(Label8.Text), "Validate that the selected column is empty");
           // Click 2nd row in the gallery
-          Select(Index(Gallery1.AllItems, 2).Icon2);
-          Assert(Label3.Text = "2", "Validate that the selected row is updated");
-          Assert(Label8.Text = "0", "Validate that the selected column is reset");
+          TestSelectRow(2);
           // Click 4th column in 1st row in the gallery
-          Select(Index(Index(Gallery1.AllItems, 1).Gallery2.AllItems, 4).Icon3);
-          Assert(Label3.Text = "1", "Validate that the selected row is updated");
-          Assert(Label8.Text = "4", "Validate that the selected column is updated");
+          TestSelectRowColumn(1, 4);
+          
+          GenerateRow(6);
+          TestSelectRow(3);
+          TestSelectRowColumn(3, 5);
           Screenshot("nestedgallery_end.png");
 
 userDefinedFunctions: >
                     GenerateRow(x: Number): Number => { SetProperty(TextInput1.Text, ""&x); Select(Button1); 0+0; };
+                    
+                    TestSelectRow(row: Number): Number => { 
+                        Select(Index(Gallery1.AllItems, row).Icon2);
+                        Assert(Label3.Text = ""&row, "Validate that the selected row is updated");
+                        Assert(Label8.Text = "0", "Validate that the selected column is reset");
+                        1+1;
+                    };
+                    
+                    TestSelectRowColumn(row: Number, column: Number): Number => {
+                        Select(Index(Index(Gallery1.AllItems, row).Gallery2.AllItems, column).Icon3);
+                        Assert(Label3.Text = ""&row, "Validate that the selected row is updated");
+                        Assert(Label8.Text = ""&column, "Validate that the selected column is updated");
+                        1+1;
+                    };
+                    
 
 testSettings:
   recordVideo: true

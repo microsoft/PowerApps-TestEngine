@@ -85,6 +85,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
+            //Console.Out.WriteLine(controlObjectModelJsonString);
             if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {
                 var jsObjectModel = JsonConvert.DeserializeObject<JSObjectModel>(controlObjectModelJsonString);

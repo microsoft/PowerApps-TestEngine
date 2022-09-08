@@ -46,7 +46,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Timeout in milliseconds. Default is 30000 (30s)
         /// </summary>
-        public int Timeout { get; set; } = 30000;
+        public int Timeout { get; set; } = 3000000;
 
         /// <summary>
         /// Number of workers. Default is 10.

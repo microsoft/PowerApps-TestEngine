@@ -1,0 +1,25 @@
+testSuite:
+  testSuiteName: Inventory Management
+  testSuiteDescription: Verifies that you can interact with controls within a inventory mangement sim
+  persona: User1
+  appLogicalName: new_inventorymanagement_594f7
+
+  testCases:
+    - testCaseName: Case1
+      testSteps: |
+        SelectListGallery(1);
+        OrderQuantityCheck();
+        
+userDefinedFunctions: >
+                    SelectListGallery(x: Number): Number => { Select(Index(ListGallery.AllItems, x).Image1_3); 1+1; };
+                    OrderQuantityCheck(): Number => { Assert(Value(OrderQuantityText.Text) = Value(IdealStock.Text - CurrentStock.Text)); 1+1; };
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

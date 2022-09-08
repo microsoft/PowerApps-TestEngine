@@ -1,0 +1,28 @@
+testSuite:
+  testSuiteName: Chess
+  testSuiteDescription: Chess Stuff
+  persona: User1
+  appLogicalName: crea9_powerappschessmalekplay_b6e0f
+
+  testCases:
+    - testCaseName: Case1
+      testSteps: |
+        = Assert(1=1);
+        //Screenshot("test.png");
+        Assert(10 = 5+5);
+        Assert(10 = 5+5);
+        Select(Index(Index(GalleryBoard.AllItems, 1).GalleryBoardColumns.AllItems, 1).BoardPiece);
+        Assert(10 = 5+5);
+
+userDefinedFunctions: >
+                    Foo(x: Number): Number => 1+1;
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
