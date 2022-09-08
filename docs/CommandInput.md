@@ -11,6 +11,7 @@ The exe can take in inputs in the form of `config.json` (or `config.dev.json`) o
 | TestPlanFile | Path to the test plan that you wish to run |
 | OutputDirectory | Path to folder the test results will be placed. Optional. If this is not provided, it will be placed in the `TestOutput` folder. |
 | LogLevel | Level for logging (Folllows [this](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel?view=dotnet-plat-ext-6.0)). Optional. If this is not provided, Information level logs and higher will be logged |
+| QueryParams | Specify query parameters to be added to the powerapps URL. |
 
 ## Config.json
 
@@ -29,6 +30,7 @@ Command line parameters override anything specified in `config.json`
 | -t | TenantId |
 | -o | OutputDirectory |
 | -l | LogLevel |
+| -q | QueryParams |
 
 ## What is the difference between the settings passed in via command line/config.json vs settings located inside the YAML?
 

@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine
             _loggerFactory = loggerFactory;
         }
 
-        public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig)
+        public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string queryParams)
         {
             RunCount++;
 
@@ -94,7 +94,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupAsync();
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl());
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(queryParams));
 
                 // Log in user
                 await _userManager.LoginAsUserAsync();

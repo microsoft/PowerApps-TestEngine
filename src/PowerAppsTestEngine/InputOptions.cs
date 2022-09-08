@@ -10,5 +10,6 @@ namespace PowerAppsTestEngine
         public string? TestPlanFile { get; set; }
         public string? OutputDirectory { get; set; }
         public string? LogLevel { get; set; }
+        public string? QueryParams { get; set; }
     }
 }
