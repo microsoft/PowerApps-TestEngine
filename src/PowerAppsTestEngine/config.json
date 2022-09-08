@@ -3,5 +3,6 @@
   "tenantId": "",
   "testPlanFile": "",
   "outputDirectory": "",
-  "logLevel": ""
+  "logLevel": "",
+  "queryParams": ""
 }
