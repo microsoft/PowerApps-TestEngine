@@ -72,7 +72,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     domain = "apps.powerapps.com";
                     break;
             }
-
+            Console.WriteLine($"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine{queryParams}");
             return $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine{queryParams}";
         }
     }
