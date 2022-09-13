@@ -67,6 +67,11 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 Logger.LogDebug($"Using no additional query parameters.");
             }
+            else if (queryParams.Substring(0, 1) == "-")
+            {
+                Logger.LogError("QueryParams cannot be empty.");
+                Environment.Exit(0);
+            }
             else
             {
                 Logger.LogDebug($"Using query: {queryParams}");
