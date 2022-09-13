@@ -49,6 +49,9 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogDebug($"Using default output directory: {DefaultOutputDirectory}");
                 _state.SetOutputDirectory(DefaultOutputDirectory);
             }
+            // If an empty outputDirectory is put in via commandline, it won't register as empty
+            // It will cannabalize the next flag, and then ruin the next flag's operation
+            // Therefore, we have to abort the program in this instance
             else if (outputDirectory.Substring(0, 1) == "-")
             {
                 Logger.LogError("Output directory cannot be empty.");
@@ -76,13 +79,16 @@ namespace Microsoft.PowerApps.TestEngine
 
             try
             {
-
-
                 // Setup state
                 if (string.IsNullOrEmpty(testConfigFile))
                 {
                     Logger.LogError("Test config file cannot be null");
                     throw new ArgumentNullException(nameof(testConfigFile));
+                }
+                else if (testConfigFile.Substring(0, 1) == "-")
+                {
+                    Logger.LogError("TestConfigFile cannot be empty.");
+                    Environment.Exit(0);
                 }
 
                 if (string.IsNullOrEmpty(environmentId))
@@ -90,11 +96,21 @@ namespace Microsoft.PowerApps.TestEngine
                     Logger.LogError("Environment id cannot be null");
                     throw new ArgumentNullException(nameof(environmentId));
                 }
+                else if (environmentId.Substring(0, 1) == "-")
+                {
+                    Logger.LogError("EnvironmentID cannot be empty.");
+                    Environment.Exit(0);
+                }
 
                 if (string.IsNullOrEmpty(tenantId))
                 {
-                    Logger.LogError("Tenant id cannot be null");
+                    Logger.LogError("TenantId cannot be null");
                     throw new ArgumentNullException(nameof(tenantId));
+                }
+                else if (tenantId.Substring(0, 1) == "-")
+                {
+                    Logger.LogError("TenantID cannot be empty.");
+                    Environment.Exit(0);
                 }
 
                 _state.ParseAndSetTestState(testConfigFile);
@@ -105,6 +121,11 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     Logger.LogDebug($"Using default cloud: {DefaultCloud}");
                     _state.SetCloud(DefaultCloud);
+                }
+                else if (cloud.Substring(0, 1) == "-")
+                {
+                    Logger.LogError("Cloud cannot be empty.");
+                    Environment.Exit(0);
                 }
                 else
                 {
