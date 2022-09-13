@@ -25,13 +25,11 @@ class TestEnginePlugin {
     }
 }
 
-var TestEngine = {
-
-    executePublishedAppScript: function(scriptToExecute) {
-        var callbackId = Core.Utility.generate128BitUUID();
-        var completeablePromise = Core.Promise.createCompletablePromise();
-        callbackDictionary[callbackId] = completeablePromise;
-        AppMagic.Runtime.WebPlayerRuntime._appHostManager._apiHandler.invokeScriptAsync(`
+function executePublishedAppScript(scriptToExecute) {
+    var callbackId = Core.Utility.generate128BitUUID();
+    var completeablePromise = Core.Promise.createCompletablePromise();
+    callbackDictionary[callbackId] = completeablePromise;
+    AppMagic.Runtime.WebPlayerRuntime._appHostManager._apiHandler.invokeScriptAsync(`
         try {
             var result = ${scriptToExecute};
             Cordova.exec(function() {}, function() {}, '${testEnginePluginName}', 'processResult', ['${callbackId}', {successful: true, message: result}])
@@ -39,66 +37,68 @@ var TestEngine = {
         catch(err) {
             Cordova.exec(function() {}, function() {}, '${testEnginePluginName}', 'processResult', ['${callbackId}', {successful: false, message: err}])
         }`)
-        return completeablePromise.promise;
-    },
+    return completeablePromise.promise;
+}
 
-     getOngoingActionsInPublishedApp: function() {
-        return executePublishedAppScript("AppMagic.AuthoringTool.Runtime.existsOngoingAsync()");
-     },
+function getOngoingActionsInPublishedApp() {
+    return executePublishedAppScript("AppMagic.AuthoringTool.Runtime.existsOngoingAsync()");
+}
 
-     getControlObjectModel: function() {
-        return executePublishedAppScript("buildControlObjectModel()");
-     },
+function getControlObjectModel () {
+    return executePublishedAppScript("buildControlObjectModel()");
+}
 
-     getPropertyValueFromPublishedApp: function(itemPath) {
-        var script = `getPropertyValueFromControl(${JSON.stringify(itemPath)})`;
-        return executePublishedAppScript(script);
-     },
+function getPropertyValueFromPublishedApp(itemPath) {
+    var script = `getPropertyValueFromControl(${JSON.stringify(itemPath)})`;
+    return executePublishedAppScript(script);
+}
 
-     selectControl: function(itemPath) {
-        var script = `selectControl(${JSON.stringify(itemPath)})`;
-        return executePublishedAppScript(script);
-     },
+function selectControl(itemPath) {
+    var script = `selectControl(${JSON.stringify(itemPath)})`;
+    return executePublishedAppScript(script);
+}
 
-     interactWithControl: function(itemPath, value) {
-        var script = "";
-        if (isArray(Object.values(value))) {
-            var valuesJsonArr = [];
-            var values = Object.values(value);
-            for (var index in values) {
-                valuesJsonArr[`${index}`] = `${JSON.stringify(values[index])}`;
-            }
-            var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
-            script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
-        } else {
-            var valueJson = `{"${itemPath.propertyName}":${value}}`;
-            script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
+function interactWithControl(itemPath, value) {
+    var script = "";
+    if (isArray(Object.values(value))) {        
+        var valuesJsonArr = [];
+        var values = Object.values(value);
+        for (var index in values) {
+            valuesJsonArr[`${index}`] = `${JSON.stringify(values[index])}`;
         }
-        return executePublishedAppScript(script);
-     },
+        var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
+        script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
+    } else {
+        var valueJson = `{"${itemPath.propertyName}":${value}}`;
+        script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
+    }
+    return executePublishedAppScript(script);
+}
 
-     setPropertyValueForControl: function(itemPath, value) {
-        if (typeof value == "object") {
-            return interactWithControl(itemPath, value);
-        }
-        var script = `setPropertyValueForControl("${itemPath}", "${value}")`;
-        return executePublishedAppScript(script);
-     },
+function setPropertyValueForControl(itemPath, value) {    
+    if (typeof value == "object") {
+        return interactWithControl(itemPath,value);
+    } 
+    var script = `setPropertyValueForControl("${itemPath}", "${value}")`;
+    return executePublishedAppScript(script);
+}
 
-     fetchArrayItemCount: function(itemPath) {
-        var script = `fetchArrayItemCount(${JSON.stringify(itemPath)})`;
-        return executePublishedAppScript(script);
-     },
+function fetchArrayItemCount(itemPath) {
+    var script = `fetchArrayItemCount(${JSON.stringify(itemPath)})`;
+    return executePublishedAppScript(script);
+}
 
-    isArray: function(obj) {
-        return obj.constructor === Array;
-    },
+function isArray(obj) {
+    return obj.constructor === Array;
+}
 
-    /*
-     These are the functions that will be called by the Test Engine
-    */
+/*
+ These are the functions that will be called by the Test Engine
+*/
 
-     getAppStatus: function() {
+var TestEngine = {
+
+    getAppStatus: function () {
         if (typeof AppMagic === "undefined" || typeof AppMagic.Runtime === "undefined"
             || typeof AppMagic.Runtime.WebPlayerRuntime === "undefined" || typeof AppMagic.Runtime.WebPlayerRuntime._appHostManager === "undefined") {
             return "Loading";
@@ -124,7 +124,7 @@ var TestEngine = {
         }
     },
 
-    buildObjectModel: function() {
+     buildObjectModel: function() {
         return getControlObjectModel().then((controlObjectModel) => {
             return {
                 controls: controlObjectModel
@@ -132,20 +132,19 @@ var TestEngine = {
         })
     },
 
-     getPropertyValue: function(itemPath) {
-        return getPropertyValueFromPublishedApp(itemPath)
-     },
-
-     select: function(itemPath) {
+    select: function(itemPath) {
         return selectControl(itemPath)
-     },
+    },
 
      setPropertyValue: function(itemPath, value) {
         return setPropertyValueForControl(itemPath, value);
-     },
+    },
 
      getItemCount: function(itemPath) {
         return fetchArrayItemCount(itemPath);
     }
+}
 
+function getPropertyValue(itemPath) {
+    return getPropertyValueFromPublishedApp(itemPath)
 }
