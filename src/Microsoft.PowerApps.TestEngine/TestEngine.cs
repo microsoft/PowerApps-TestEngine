@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
             else if (outputDirectory.Substring(0, 1) == "-")
             {
-                Logger.LogError("Output directory provided must be valid.");
+                Logger.LogError("Output directory cannot be empty.");
                 Environment.Exit(0);
             }
             else
