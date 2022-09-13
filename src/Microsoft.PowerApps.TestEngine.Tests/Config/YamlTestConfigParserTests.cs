@@ -74,7 +74,7 @@ environmentVariables:
             }
             else
             {
-                Assert.Equal("05b2e9a0-4ac6-4333-999c-96cffcec0bb2", testPlan.TestSuite?.AppId);
+                Assert.Equal("1253535", testPlan.TestSuite?.AppId);
             }
             Assert.Equal("https://unitedstates-002.azure-apim.net/invoke", testPlan.TestSuite?.NetworkRequestMocks?[0].RequestURL);
             Assert.Equal("POST", testPlan.TestSuite?.NetworkRequestMocks?[0].Method);
