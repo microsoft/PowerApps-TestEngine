@@ -35,6 +35,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public string AppLogicalName { get; set; } = "";
 
         /// <summary>
+        /// Gets or sets the id of the app to be launched
+        /// This will be used only when app logical name is present
+        /// </summary>
+        public string AppId { get; set; } = string.Empty;
+
+        /// <summary>
         /// Gets or sets the Power FX functions that need to be triggered
         /// for every test case in a suite before the case begins executing.
         /// </summary>

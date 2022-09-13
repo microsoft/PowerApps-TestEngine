@@ -13,16 +13,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
 {
     public class YamlTestConfigParserTests
     {
-        [Fact]
-        public void YamlTestConfigParserPaeseTestPlanTest()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void YamlTestConfigParserPaeseTestPlanTest(bool useAppId)
         {
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
-            var yamlFile = @"testSuite:
+            var yamlFile = $@"testSuite:
   testSuiteName: Button Clicker
   testSuiteDescription: Verifies that counter increments when the button is clicked
   persona: User1
-  appLogicalName: new_buttonclicker_0a877
+  {(useAppId ? "appId": "appLogicalName")}: {(useAppId ? "05b2e9a0-4ac6-4333-999c-96cffcec0bb2" : "new_buttonclicker_0a877")}
   networkRequestMocks:
     - requestURL: https://unitedstates-002.azure-apim.net/invoke
       method: POST
@@ -66,7 +68,14 @@ environmentVariables:
             Assert.Equal("Button Clicker", testPlan.TestSuite?.TestSuiteName);
             Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.TestSuite?.TestSuiteDescription);
             Assert.Equal("User1", testPlan.TestSuite?.Persona);
-            Assert.Equal("new_buttonclicker_0a877", testPlan.TestSuite?.AppLogicalName);
+            if (!useAppId)
+            {
+                Assert.Equal("new_buttonclicker_0a877", testPlan.TestSuite?.AppLogicalName);
+            }
+            else
+            {
+                Assert.Equal("05b2e9a0-4ac6-4333-999c-96cffcec0bb2", testPlan.TestSuite?.AppId);
+            }
             Assert.Equal("https://unitedstates-002.azure-apim.net/invoke", testPlan.TestSuite?.NetworkRequestMocks?[0].RequestURL);
             Assert.Equal("POST", testPlan.TestSuite?.NetworkRequestMocks?[0].Method);
             Assert.Equal("PATCH", testPlan.TestSuite?.NetworkRequestMocks?[0].Headers?["x-ms-request-method"]);

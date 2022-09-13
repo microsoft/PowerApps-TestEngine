@@ -227,17 +227,37 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnNoAppLogicalNameInTestSuiteDefinition(string appLogicalName)
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(null, "")]
+        [InlineData("", null)]
+        public void ParseAndSetTestStateThrowsOnNoAppLogicalNameOrAppIdInTestSuiteDefinition(string appLogicalName, string appId)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.AppLogicalName = appLogicalName;
+            testPlanDefinition.TestSuite.AppId = appId;
 
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
             Assert.Throws<InvalidOperationException>(() => state.ParseAndSetTestState(testConfigFile));
+        }
+
+        [Theory]
+        [InlineData("appLogicalName", null)]
+        [InlineData(null, "appId")]
+        public void ParseAndSetTestStateDoesNotThrowWhenEitherOfAppLogicalNameOrAppIdInTestSuiteDefinition(string appLogicalName, string appId)
+        {
+            var state = new TestState(MockTestConfigParser.Object);
+            var testConfigFile = "testPlan.fx.yaml";
+            var testPlanDefinition = GenerateTestPlanDefinition();
+            testPlanDefinition.TestSuite.AppLogicalName = appLogicalName;
+            testPlanDefinition.TestSuite.AppId = appId;
+
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>())).Returns(testPlanDefinition);
+            state.ParseAndSetTestState(testConfigFile);
+            Assert.Equal(state.GetTestSuiteDefinition().AppLogicalName, appLogicalName);
+            Assert.Equal(state.GetTestSuiteDefinition().AppId, appId);
         }
 
         [Fact]

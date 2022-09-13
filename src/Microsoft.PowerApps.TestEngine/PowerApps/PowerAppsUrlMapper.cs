@@ -37,9 +37,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
 
             var appLogicalName = testSuiteDefinition.AppLogicalName;
-            if (string.IsNullOrEmpty(appLogicalName))
+            var appId = testSuiteDefinition.AppId;
+
+            if (string.IsNullOrEmpty(appLogicalName) && string.IsNullOrEmpty(appId))
             {
-                _singleTestInstanceState.GetLogger().LogError("App logical name cannot be empty.");
+                _singleTestInstanceState.GetLogger().LogError("Atleast one of the App Logical Name or App Id must be valid.");
                 throw new InvalidOperationException();
             }
 
@@ -73,7 +75,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     break;
             }
 
-            return $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine{queryParams}";
+            return !string.IsNullOrEmpty(appLogicalName) ?
+                   $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine{queryParams}" :
+                   $"https://{domain}/play/{appId}?tenantId={tenantId}&source=testengine{queryParams}";
         }
     }
 }
