@@ -25,7 +25,7 @@ class TestEnginePlugin {
     }
 }
 
-var PowerAppsTestEngine = {
+var TestEngine = {
 
     executePublishedAppScript: function(scriptToExecute) {
         var callbackId = Core.Utility.generate128BitUUID();

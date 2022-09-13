@@ -35,7 +35,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             ValidateItemPath(itemPath, true);
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"getPropertyValue({itemPathString})";
+            var expression = $"TestEngine.getPropertyValue({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
         }
 
@@ -69,7 +69,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
                     IsPlayerJsLoaded = true;
                 }
-                var expression = "getAppStatus()";
+                var expression = "TestEngine.getAppStatus()";
                 return (await _testInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
             catch (Exception ex)
@@ -83,7 +83,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
         {
-            var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
+            var expression = "TestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
             if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {
@@ -159,7 +159,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             ValidateItemPath(itemPath, false);
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"select({itemPathString})";
+            var expression = $"TestEngine.select({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
@@ -192,7 +192,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var argument = new string[] { itemPathString, objectValue.ToString() };
-            var expression = "([itemPathString, objectValue]) => setPropertyValue(itemPathString, objectValue)";
+            var expression = "([itemPathString, objectValue]) => TestEngine.setPropertyValue(itemPathString, objectValue)";
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, argument);
         }
 
@@ -204,7 +204,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var recordValue = value.Value;
 
             // Date.parse() parses the date to unix timestamp
-            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":Date.parse(\"{recordValue}\")}})";
+            var expression = $"TestEngine.setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":Date.parse(\"{recordValue}\")}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
@@ -218,7 +218,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
             RecordValueObject json = new RecordValueObject(val);
             var checkVal = JsonConvert.SerializeObject(json);
-            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+            var expression = $"TestEngine.setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
@@ -244,7 +244,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
             }
             var checkVal = JsonConvert.SerializeObject(jsonArr);
-            var expression = $"setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+            var expression = $"TestEngine.setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
@@ -280,7 +280,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             ValidateItemPath(itemPath, false);
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"getItemCount({itemPathString})";
+            var expression = $"TestEngine.getItemCount({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<int>(expression);
 
         }
