@@ -35,7 +35,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             ValidateItemPath(itemPath, true);
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"getPropertyValue({itemPathString})";
+            var expression = $"TestEngine.getPropertyValue({itemPathString})";
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
         }
 

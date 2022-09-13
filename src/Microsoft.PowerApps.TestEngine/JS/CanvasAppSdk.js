@@ -132,6 +132,10 @@ var TestEngine = {
         })
     },
 
+     getPropertyValue: function(itemPath) {
+        return getPropertyValueFromPublishedApp(itemPath)
+    },
+
     select: function(itemPath) {
         return selectControl(itemPath)
     },
@@ -143,8 +147,4 @@ var TestEngine = {
      getItemCount: function(itemPath) {
         return fetchArrayItemCount(itemPath);
     }
-}
-
-function getPropertyValue(itemPath) {
-    return getPropertyValueFromPublishedApp(itemPath)
 }
