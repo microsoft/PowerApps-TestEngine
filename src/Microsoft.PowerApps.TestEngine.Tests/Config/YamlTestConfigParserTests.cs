@@ -24,7 +24,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
   testSuiteName: Button Clicker
   testSuiteDescription: Verifies that counter increments when the button is clicked
   persona: User1
-  {(useAppId ? "appId": "appLogicalName")}: {(useAppId ? "05b2e9a0-4ac6-4333-999c-96cffcec0bb2" : "new_buttonclicker_0a877")}
+  {(useAppId ? "appId": "appLogicalName")}: {(useAppId ? "1253535" : "new_buttonclicker_0a877")}
   networkRequestMocks:
     - requestURL: https://unitedstates-002.azure-apim.net/invoke
       method: POST
