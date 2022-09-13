@@ -17,11 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="JS\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="JS\CanvasAppSdk.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="JS\ModelAppSdk.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="JS\PublishedAppTesting.js">
