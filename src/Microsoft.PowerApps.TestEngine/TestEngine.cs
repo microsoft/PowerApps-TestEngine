@@ -49,6 +49,11 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogDebug($"Using default output directory: {DefaultOutputDirectory}");
                 _state.SetOutputDirectory(DefaultOutputDirectory);
             }
+            else if (outputDirectory.Substring(0, 1) == "-")
+            {
+                Logger.LogError("Output directory provided must be valid.");
+                Environment.Exit(0);
+            }
             else
             {
                 Logger.LogDebug($"Using output directory: {outputDirectory}");
@@ -64,12 +69,14 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogDebug($"Using query: {queryParams}");
             }
 
+
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
             Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 
             try
             {
+
 
                 // Setup state
                 if (string.IsNullOrEmpty(testConfigFile))
