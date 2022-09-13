@@ -51,6 +51,11 @@ var inputOptions = new ConfigurationBuilder()
     .Build()
     .Get<InputOptions>();
 
+if (inputOptions.OutputDirectory.Substring(0,1) == "-")
+{
+    inputOptions.OutputDirectory = "C:\\testEngineResults";
+}
+
 if (inputOptions == null)
 {
     Console.Out.WriteLine("Input options are null");
