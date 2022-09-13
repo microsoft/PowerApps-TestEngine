@@ -22,17 +22,27 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public string GenerateTestUrl()
         {
-            var environment = _testState.GetEnvironment();
-            if (string.IsNullOrEmpty(environment))
-            {
-                _singleTestInstanceState.GetLogger().LogError("Environment cannot be empty.");
-                throw new InvalidOperationException();
-            }
-
             var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
             if (testSuiteDefinition == null)
             {
                 _singleTestInstanceState.GetLogger().LogError("Test definition must be specified.");
+                throw new InvalidOperationException();
+            }
+
+            if (string.IsNullOrEmpty(testSuiteDefinition.AppLogicalName))
+            {
+                if (string.IsNullOrEmpty(testSuiteDefinition.Url))
+                {
+                    _singleTestInstanceState.GetLogger().LogError("App logical name and url cannot both be empty.");
+                    throw new InvalidOperationException();
+                }
+                return testSuiteDefinition.Url;
+            }
+
+            var environment = _testState.GetEnvironment();
+            if (string.IsNullOrEmpty(environment))
+            {
+                _singleTestInstanceState.GetLogger().LogError("Environment cannot be empty.");
                 throw new InvalidOperationException();
             }
 

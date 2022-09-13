@@ -31,8 +31,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets or sets the logical name of the app to be launched.
         /// It can be obtained from the solution.
         /// For canvas apps, you need to add it to a solution to obtain it.
+        /// If this is not set, Url must be set.
         /// </summary>
-        public string AppLogicalName { get; set; } = "";
+        public string? AppLogicalName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the url of the site to be launched.
+        /// If this is not set, AppLogicalName must be set.
+        /// This is ignored if AppLogicalName is set.
+        /// </summary>
+        public string? Url { get; set; }
 
         /// <summary>
         /// Gets or sets the Power FX functions that need to be triggered

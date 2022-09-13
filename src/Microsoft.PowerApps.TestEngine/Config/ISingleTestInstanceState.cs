@@ -80,5 +80,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <returns>Browser config</returns>
         public BrowserConfiguration GetBrowserConfig();
+
+        public bool IsModelDrivenApp();
     }
 }

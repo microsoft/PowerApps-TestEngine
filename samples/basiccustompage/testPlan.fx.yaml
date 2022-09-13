@@ -1,0 +1,28 @@
+testSuite:
+  testSuiteName: Basic Custom Page
+  testSuiteDescription: Verifies that you can interact with controls within a basic custom page
+  persona: User1
+  url: "https://orga28a82ef.crm.dynamics.com/main.aspx?appid=e1e4eb75-4e25-ed11-b83e-00224809bc5d&pagetype=custom&name=crea9_buttonclickerpage_8f079"
+
+  testCases:
+    - testCaseName: Case1
+      testSteps: |
+        = Screenshot("basiccustompage_loaded.png");
+          Select(Button1);
+          Assert(Label1.Text = "1", "Counter should be incremented to 1");
+          Select(Button1);
+          Assert(Label1.Text = "2", "Counter should be incremented to 2");
+          Select(Button1);
+          Assert(Label1.Text = "3");
+          Screenshot("basiccustompage_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

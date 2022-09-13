@@ -110,5 +110,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             return BrowserConfig;
         }
+        public bool IsModelDrivenApp()
+        {
+            return !string.IsNullOrEmpty(TestSuiteDefinition.Url);
+        }
     }
 }

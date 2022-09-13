@@ -20,6 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
         private bool IsPlayerJsLoaded { get; set; } = false;
+        private bool IsModelAppJsLoaded { get; set; } = false;
         private bool IsPublishedAppTestingJsLoaded { get; set; } = false;
         private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
         private TypeMapping TypeMapping = new TypeMapping();
@@ -64,7 +65,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             try
             {
-                if (!IsPlayerJsLoaded)
+                if (_singleTestInstanceState.IsModelDrivenApp() && !IsModelAppJsLoaded)
+                {
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "ModelAppSdk.js")), null);
+                    IsModelAppJsLoaded = true;
+                }
+
+                if (!IsPlayerJsLoaded && !_singleTestInstanceState.IsModelDrivenApp())
                 {
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
                     IsPlayerJsLoaded = true;
@@ -83,7 +90,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
         {
-            var expression = "buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
+            var expression = "JSON.stringify(buildObjectModel());";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
             if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {
@@ -141,7 +148,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
 
-            if (!IsPublishedAppTestingJsLoaded)
+            if (!IsPublishedAppTestingJsLoaded && !_singleTestInstanceState.IsModelDrivenApp())
             {
                 await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
                 IsPublishedAppTestingJsLoaded = true;

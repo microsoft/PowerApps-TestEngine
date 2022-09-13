@@ -59,9 +59,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
                     throw new InvalidOperationException("Missing persona from test suite definition");
                 }
 
-                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName))
+                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName) && string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Url))
                 {
-                    throw new InvalidOperationException("Missing app logical name from test suite definition");
+                    throw new InvalidOperationException("Missing app logical name and url from test suite definition. At least one must be set");
                 }
             }
 
