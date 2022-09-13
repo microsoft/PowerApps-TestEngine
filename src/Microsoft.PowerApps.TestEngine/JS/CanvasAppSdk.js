@@ -27,8 +27,6 @@ class TestEnginePlugin {
 
 var PowerAppsTestEngine = {
 
-
-
     executePublishedAppScript: function(scriptToExecute) {
         var callbackId = Core.Utility.generate128BitUUID();
         var completeablePromise = Core.Promise.createCompletablePromise();
