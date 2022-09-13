@@ -16,7 +16,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void YamlTestConfigParserPaeseTestPlanTest(bool useAppId)
+        public void YamlTestConfigParserParseTestPlanTest(bool useAppId)
         {
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);

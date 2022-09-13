@@ -36,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         /// <summary>
         /// Gets or sets the id of the app to be launched
-        /// This will be used only when app logical name is present
+        /// This will be used only when app logical name is not present
         /// </summary>
         public string AppId { get; set; } = string.Empty;
 

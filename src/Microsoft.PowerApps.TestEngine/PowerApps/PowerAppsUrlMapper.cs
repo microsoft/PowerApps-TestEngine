@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public string GenerateTestUrl(string queryParams)
+        public string GenerateTestUrl(string additionalQueryParams)
         {
             var environment = _testState.GetEnvironment();
             if (string.IsNullOrEmpty(environment))
@@ -75,9 +75,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     break;
             }
 
+            var queryParametersForTestUrl = GetQueryParametersForTestUrl(tenantId, additionalQueryParams);
             return !string.IsNullOrEmpty(appLogicalName) ?
-                   $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine{queryParams}" :
-                   $"https://{domain}/play/{appId}?tenantId={tenantId}&source=testengine{queryParams}";
+                   $"https://{domain}/play/e/{environment}/an/{appLogicalName}{queryParametersForTestUrl}" :
+                   $"https://{domain}/play/{appId}{queryParametersForTestUrl}";
+        }
+
+        private static string GetQueryParametersForTestUrl(string tenantId, string additionalQueryParams)
+        {
+            return $"?tenantId={tenantId}&source=testengine{additionalQueryParams}";
         }
     }
 }
