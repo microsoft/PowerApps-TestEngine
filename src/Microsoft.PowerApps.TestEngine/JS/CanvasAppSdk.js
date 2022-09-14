@@ -96,7 +96,7 @@ function isArray(obj) {
  These are the functions that will be called by the Test Engine
 */
 
-var TestEngine = {
+var PowerAppsTestEngine = {
 
     getAppStatus: function () {
         if (typeof AppMagic === "undefined" || typeof AppMagic.Runtime === "undefined"
