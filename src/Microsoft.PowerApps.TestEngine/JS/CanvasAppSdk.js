@@ -96,52 +96,55 @@ function isArray(obj) {
  These are the functions that will be called by the Test Engine
 */
 
-function getAppStatus() {
-    if (typeof AppMagic === "undefined" || typeof AppMagic.Runtime === "undefined"
-        || typeof AppMagic.Runtime.WebPlayerRuntime === "undefined" || typeof AppMagic.Runtime.WebPlayerRuntime._appHostManager === "undefined") {
-        return "Loading";
-    }
-    if (AppMagic.Runtime.WebPlayerRuntime._appHostManager._appIsLoading) {
-        return "Loading";
-    }
-    else {
-        // Determine interaction required and error states
-        
-        // App is loaded, register plugin
-        // When this is ported into PowerApps, need to do the proper plugin registration
-        if (!isPluginRegistered) {
-            AppMagic.Runtime.WebPlayerRuntime._appHostManager._apiHandler.registerHandler(testEnginePluginName, new TestEnginePlugin());
+var PowerAppsTestEngine = {
+
+    getAppStatus: function () {
+        if (typeof AppMagic === "undefined" || typeof AppMagic.Runtime === "undefined"
+            || typeof AppMagic.Runtime.WebPlayerRuntime === "undefined" || typeof AppMagic.Runtime.WebPlayerRuntime._appHostManager === "undefined") {
+            return "Loading";
         }
-        return getOngoingActionsInPublishedApp().then((ongoingAppActionRunning) => {
-            if (ongoingAppActionRunning) {
-                return "Busy";
-            } else {
-                return "Idle";
+        if (AppMagic.Runtime.WebPlayerRuntime._appHostManager._appIsLoading) {
+            return "Loading";
+        }
+        else {
+            // Determine interaction required and error states
+
+            // App is loaded, register plugin
+            // When this is ported into PowerApps, need to do the proper plugin registration
+            if (!isPluginRegistered) {
+                AppMagic.Runtime.WebPlayerRuntime._appHostManager._apiHandler.registerHandler(testEnginePluginName, new TestEnginePlugin());
             }
-        });
+            return getOngoingActionsInPublishedApp().then((ongoingAppActionRunning) => {
+                if (ongoingAppActionRunning) {
+                    return "Busy";
+                } else {
+                    return "Idle";
+                }
+            });
+        }
+    },
+
+     buildObjectModel: function() {
+        return getControlObjectModel().then((controlObjectModel) => {
+            return {
+                controls: controlObjectModel
+            };
+        })
+    },
+
+     getPropertyValue: function(itemPath) {
+        return getPropertyValueFromPublishedApp(itemPath)
+    },
+
+    select: function(itemPath) {
+        return selectControl(itemPath)
+    },
+
+     setPropertyValue: function(itemPath, value) {
+        return setPropertyValueForControl(itemPath, value);
+    },
+
+     getItemCount: function(itemPath) {
+        return fetchArrayItemCount(itemPath);
     }
-}
-
-function buildObjectModel() {
-    return getControlObjectModel().then((controlObjectModel) => {
-        return {
-            controls: controlObjectModel
-        };
-    })
-}
-
-function getPropertyValue(itemPath) {
-    return getPropertyValueFromPublishedApp(itemPath)
-}
-
-function select(itemPath) {
-    return selectControl(itemPath)
-}
-
-function setPropertyValue(itemPath, value) {
-    return setPropertyValueForControl(itemPath, value);
-}
-
-function getItemCount(itemPath) {
-    return fetchArrayItemCount(itemPath);
 }
