@@ -58,7 +58,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public void GenerateLoginUrlThrowsOnInvalidSetupTest(string environmentId, string appLogicalName, string appId, string tenantId)
         {
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
-            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() { AppLogicalName = appLogicalName });
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() { AppLogicalName = appLogicalName, AppId = appId });
             MockTestState.Setup(x => x.GetTenant()).Returns(tenantId);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
