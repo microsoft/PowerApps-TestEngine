@@ -84,6 +84,19 @@ While work to provide full control coverage is in progress, support for the foll
 - Mixed Reality
 - Child controls within components
 
+## Remarks
+
+- **Working with apps outside of Solutions** - Test plan files for apps that are part of [solutions](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/solutions-overview) are portable across environments.  For solution-based apps, the test plan refers to the target app with a logical name (the appLogicalName property) which does not change if the app moves to a different environment.  However, if you move an app that is *not* part of a solution to a new environment, you will need to manually update the test plan file to refer to the app. How to update a test plan file for a non-solution based app:
+
+  1. Locate the App ID for the app in its new location
+      1. In the **Apps** list, locate the app and open the context menu
+      1. Select **Details**
+      1. Note the **App ID** GUID on the Details pane
+  2. Update your test plan file
+      1. Open the test plan YAML file for the app
+      1. Replace the **appId** value with the new App ID from the app
+
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
