@@ -41,7 +41,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             if (string.IsNullOrEmpty(appLogicalName) && string.IsNullOrEmpty(appId))
             {
-                _singleTestInstanceState.GetLogger().LogError("Atleast one of the App Logical Name or App Id must be valid.");
+                _singleTestInstanceState.GetLogger().LogError("At least one of the App Logical Name or App Id must be defined.");
                 throw new InvalidOperationException();
             }
 
