@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public string GenerateTestUrl(string queryParams)
+        public string GenerateTestUrl(string additionalQueryParams)
         {
             var environment = _testState.GetEnvironment();
             if (string.IsNullOrEmpty(environment))
@@ -37,9 +37,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
 
             var appLogicalName = testSuiteDefinition.AppLogicalName;
-            if (string.IsNullOrEmpty(appLogicalName))
+            var appId = testSuiteDefinition.AppId;
+
+            if (string.IsNullOrEmpty(appLogicalName) && string.IsNullOrEmpty(appId))
             {
-                _singleTestInstanceState.GetLogger().LogError("App logical name cannot be empty.");
+                _singleTestInstanceState.GetLogger().LogError("Atleast one of the App Logical Name or App Id must be valid.");
                 throw new InvalidOperationException();
             }
 
@@ -73,7 +75,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     break;
             }
 
-            return $"https://{domain}/play/e/{environment}/an/{appLogicalName}?tenantId={tenantId}&source=testengine{queryParams}";
+            var queryParametersForTestUrl = GetQueryParametersForTestUrl(tenantId, additionalQueryParams);
+            return !string.IsNullOrEmpty(appLogicalName) ?
+                   $"https://{domain}/play/e/{environment}/an/{appLogicalName}{queryParametersForTestUrl}" :
+                   $"https://{domain}/play/{appId}{queryParametersForTestUrl}";
+        }
+
+        private static string GetQueryParametersForTestUrl(string tenantId, string additionalQueryParams)
+        {
+            return $"?tenantId={tenantId}&source=testengine{additionalQueryParams}";
         }
     }
 }

@@ -10,6 +10,7 @@ This is used to define one test.
 | testSuiteDescription | No | Additional information describe what the test suite does |
 | persona | Yes | This is the user that will be logged in to perform the test. This must match a persona listed in the [Users](./Users.md) section | 
 | appLogicalName | Yes | This is the logical name of the app that is to be launched. It can be obtained from the solution. For canvas apps, you need to add it to a solution to obtain it |
+| appId | No | This is the id of the app that is to be launched. This is required and used only when app logical name is not present. App id should be used only for canvas apps that are not in the solution
 | networkRequestMocks | No | Defines network request mocks needed for the test |
 | testCases | Yes | Defines test cases in the test suite. Test cases contained in test suites are run sequentially. The app state is persisted across all test cases in a suite |
 | onTestCaseStart | No | Defines the steps that need to be triggered for every test case in a suite before the case begins executing |
