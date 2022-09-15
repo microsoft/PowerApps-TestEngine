@@ -87,7 +87,7 @@ Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/b
 
 Option 1: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App and create new tests for your updated app. Check [Power FX](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. Sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
 
-Option 2: If you are using [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can convert your  Test Studio tests to Test Engine.
+Option 2: If you are using [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can convert your Test Studio tests to Test Engine.
 
 Note: Currently this is a slightly complicated process. In the near future we'll have the download button available in Test Studio to download the converted test plan.
 
@@ -100,9 +100,35 @@ Note: Currently this is a slightly complicated process. In the near future we'll
 dotnet run convert "path\to\yourApp.msapp.zip\AppTests\2.json"
 ```
 
-5. Open the yaml file generated and add the logical name or app ID of your app. The steps to get these are [here](https://github.com/microsoft/PowerApps-TestEngine#remarks).
-6. Make sure you update the config file and user configurations for this app. You will need to modify `testPlanFile` with the path to the `2.fx.yaml` file for the sample that you wish to run.
+5. Open the yaml file generated and add the logical name or app ID of your app. The steps to get them are [here](https://github.com/microsoft/PowerApps-TestEngine#remarks).
+6. Make sure you update the config file and user configurations if you are using a different tenant or environment for this app. You will need to modify `testPlanFile` with the path to the `2.fx.yaml` file for the sample that you wish to run.
 7. Now you should be ready to run the test with `dotnet run`
+
+## More about the test plan
+
+[Yaml Format](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/Yaml)
+[Power FX](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX)
+
+## Remarks
+
+- **Working with apps within Solutions** - Test plan files for apps that are part of [solutions](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/solutions-overview) are portable across environments.  For solution-based apps, the test plan refers to the target app with a logical name (the appLogicalName property) which does not change if the app moves to a different environment.
+  1. Locate the App Logical name for the app
+      1. In the **Solutions** tab, open the solution that contains the app
+      1. Select **Apps**
+      1. Note the **Name** column. It is the app logical name (Not the **Display name**)
+  2. Update your test plan file
+      1. Open the test plan YAML file for the app
+      1. Replace the **appLogicalName** value
+
+- **Working with apps outside of Solutions** - If you move an app that is *not* part of a solution to a new environment, you will need to manually update the test plan file to refer to the app. How to update a test plan file for a non-solution based app:
+
+  1. Locate the App ID for the app in its new location
+      1. In the **Apps** list, locate the app and open the context menu
+      1. Select **Details**
+      1. Note the **App ID** GUID on the Details pane
+  2. Update your test plan file
+      1. Open the test plan YAML file for the app
+      1. Replace the **appLogicalName** key to **appId** and put the new App ID from the app as the value
 
 ## Known limitations
 
@@ -114,18 +140,19 @@ While work to provide full control coverage is in progress, support for the foll
 - Mixed Reality
 - Child controls within components
 
-## Remarks
+## Frequently asked questions
 
-- **Working with apps outside of Solutions** - Test plan files for apps that are part of [solutions](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/solutions-overview) are portable across environments.  For solution-based apps, the test plan refers to the target app with a logical name (the appLogicalName property) which does not change if the app moves to a different environment.  However, if you move an app that is *not* part of a solution to a new environment, you will need to manually update the test plan file to refer to the app. How to update a test plan file for a non-solution based app:
+### 1. I got timeout error. What does it mean?
 
-  1. Locate the App ID for the app in its new location
-      1. In the **Apps** list, locate the app and open the context menu
-      1. Select **Details**
-      1. Note the **App ID** GUID on the Details pane
-  2. Update your test plan file
-      1. Open the test plan YAML file for the app
-      1. Replace the **appId** value with the new App ID from the app
+You might get a timeout error due to the app takes longer than the default 30s limit to load. Most of the times just trying to rerun again can solve the problem. If this error still happens you probably want to check the recording in the test result folder to see what cause the error(for example, wrong email or password can make the browser stuck on the sign-in page). If your app takes longer to load, you can also modify the timeout limit in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md).
 
+### 2. What is the difference between the settings passed in via command line/config.json vs settings located inside the YAML?
+
+The settings passed in via command line or config.json are settings that either start off the test (link to the test plan) or they are settings that are likely to change due to the environment the app being test in is located.
+
+Settings located in the YAML should be able to be "imported" with the solution, so another person could take the solution and corresponding test plan and use the two of them without any modifications.
+
+Example: environment id changes if the app is imported to a another tenant/environment, and so it is located as a command line or config.json setting.
 
 ## Contributing
 
