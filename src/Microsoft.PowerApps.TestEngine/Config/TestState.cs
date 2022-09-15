@@ -61,7 +61,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
                 if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName) && string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppId))
                 {
-                    throw new InvalidOperationException("Atleast one of the app logical name or app id must be present in test suite definition");
+                    throw new InvalidOperationException("At least one of the app logical name or app id must be present in test suite definition");
                 }
             }
 
