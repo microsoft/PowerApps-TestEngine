@@ -11,9 +11,14 @@ The engine uses Playwright to orchestrate the tests.
 
 To get started with running one of the samples
 
+### Prerequisites
+
+- Have [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) installed and make sure your `MSBuildSDKsPath` environment variable is pointing to [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+- Have [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2) installed.
+
 ### Build locally
 
-Note: You may need to change your `MSBuildSDKsPath` environment variable to point to [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) if it is set to a different .NET Core SDK version.
+Run the commands below in your PowerShell.
 
 ```bash
 # Pull github repo
@@ -62,7 +67,9 @@ Fill in the various properties:
 
 For more information about the config and the inputs to the command, please view [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/CommandInput.md)
 
-To setup the user environment variables, please view [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/Users.md). Refer to the user configuration section in your selected sample's `testPlan.fx.yaml`.
+### Setup the user environment variables
+
+Please view [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/Users.md). Refer to the user configuration section in your selected sample's `testPlan.fx.yaml`.
 
 ### Run test
 
@@ -73,6 +80,29 @@ dotnet run
 ```
 
 When the run is complete, you should be able to view the test results in the folder you specified earlier.
+
+Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
+
+## What to do next
+
+Option 1: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App and create new tests for your updated app. Check [Power FX](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. Sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
+
+Option 2: If you are using [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can convert your  Test Studio tests to Test Engine.
+
+Note: Currently this is a slightly complicated process. In the near future we'll have the download button available in Test Studio to download the converted test plan.
+
+1. Download your Power App.
+2. Rename your `.msapp` file by adding `.zip` at the end
+3. Unzip your zipped `.msapp` file and you will see a `AppTests` folder.
+4. In the folder there is a `2.json` file. Run the following commands in command line to convert an Test Studio json to a Test Engine yaml test plan.
+
+```bash
+dotnet run convert "path\to\yourApp.msapp.zip\AppTests\2.json"
+```
+
+5. Open the yaml file generated and add the logical name or app ID of your app. The steps to get these are [here](https://github.com/microsoft/PowerApps-TestEngine#remarks).
+6. Make sure you update the config file and user configurations for this app. You will need to modify `testPlanFile` with the path to the `2.fx.yaml` file for the sample that you wish to run.
+7. Now you should be ready to run the test with `dotnet run`
 
 ## Known limitations
 
@@ -102,6 +132,8 @@ While work to provide full control coverage is in progress, support for the foll
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+This [JS folder](https://github.com/microsoft/PowerApps-TestEngine/tree/main/src/Microsoft.PowerApps.TestEngine/JS) is having refactor in big ways. Thus, we aren't yet accepting code contributions for all Javascript related part of this project until we are more stable.
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
