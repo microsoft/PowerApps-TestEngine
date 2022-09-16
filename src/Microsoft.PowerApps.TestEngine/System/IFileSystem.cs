@@ -48,5 +48,12 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// <param name="filePath">File path</param>
         /// <returns>Text in file</returns>
         public string ReadAllText(string filePath);
+
+        /// <summary>
+        /// Removes characters that are not allowed in file names
+        /// </summary>
+        /// <param name="fileName">File name</param>
+        /// <returns>File name with all valid characters</returns>
+        public string RemoveInvalidFileNameChars(string fileName);
     }
 }
