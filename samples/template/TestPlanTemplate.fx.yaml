@@ -2,7 +2,8 @@ testSuite:
   testSuiteName: testPlan Template
   testSuiteDescription: testPlan template for written own test steps
   persona: User1
-  appLogicalName: Fill your app logical name
+  appLogicalName:
+  appId:
 
   testCases:
     - testCaseName: Case1
