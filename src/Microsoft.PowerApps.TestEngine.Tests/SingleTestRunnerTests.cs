@@ -71,6 +71,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
             MockFileSystem.Setup(x => x.GetFiles(It.IsAny<string>())).Returns(additionalFiles);
+            MockFileSystem.Setup(x => x.RemoveInvalidFileNameChars(testSuiteDefinition.TestSuiteName)).Returns(testSuiteDefinition.TestSuiteName);
 
             MockPowerFxEngine.Setup(x => x.Setup());
             MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Returns(Task.CompletedTask);

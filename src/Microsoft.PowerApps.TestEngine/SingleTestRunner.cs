@@ -77,7 +77,7 @@ namespace Microsoft.PowerApps.TestEngine
             _testState.SetTestRunId(testRunId);
             _testState.SetBrowserConfig(browserConfig);
 
-            var testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteName}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
+            var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
 
             try

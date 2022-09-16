@@ -22,5 +22,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
             var result = fileSystem.IsValidFilePath(filePath);
             Assert.Equal(expectedResult, result);
         }
+
+        // Some inline data is commented because invalid characters can vary by file system.
+        // The commented data below should pass on your windows machine.
+        [Theory]
+        [InlineData("file.txt", "file.txt")]
+        [InlineData("", "")]
+        // [InlineData("C:/folder/file.txt", "Cfolderfile.txt")]
+        // [InlineData("C:\\folder\\file", "Cfolderfile")]
+        // [InlineData("tem|<p", "temp")]
+        public void RemoveInvalidFileNameCharsTest(string inputFileName, string expectedFileName)
+        {
+            var fileSystem = new FileSystem();
+            var result = fileSystem.RemoveInvalidFileNameChars(inputFileName);
+            Assert.Equal(expectedFileName, result);
+        }
     }
 }
