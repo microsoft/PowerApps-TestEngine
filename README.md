@@ -107,6 +107,7 @@ dotnet run convert "path\to\yourApp.msapp.zip\AppTests\2.json"
 ## More about the test plan
 
 [Yaml Format](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/Yaml)
+
 [Power FX](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX)
 
 ## Remarks
@@ -118,7 +119,7 @@ dotnet run convert "path\to\yourApp.msapp.zip\AppTests\2.json"
       1. Note the **Name** column. It is the app logical name (Not the **Display name**)
   2. Update your test plan file
       1. Open the test plan YAML file for the app
-      1. Replace the **appLogicalName** value
+      1. Fill in the **appLogicalName** value with the new App logical name
 
 - **Working with apps outside of Solutions** - If you move an app that is *not* part of a solution to a new environment, you will need to manually update the test plan file to refer to the app. How to update a test plan file for a non-solution based app:
 
@@ -128,7 +129,7 @@ dotnet run convert "path\to\yourApp.msapp.zip\AppTests\2.json"
       1. Note the **App ID** GUID on the Details pane
   2. Update your test plan file
       1. Open the test plan YAML file for the app
-      1. Replace the **appLogicalName** key to **appId** and put the new App ID from the app as the value
+      1. Fill in the **appId** with the new App ID
 
 ## Known limitations
 
