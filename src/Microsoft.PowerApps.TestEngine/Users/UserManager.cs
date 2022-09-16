@@ -37,15 +37,17 @@ namespace Microsoft.PowerApps.TestEngine.Users
         public async Task LoginAsUserAsync()
         {
             var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
+            var logger = _singleTestInstanceState.GetLogger();
+
             if (testSuiteDefinition == null)
             {
-                _singleTestInstanceState.GetLogger().LogError("Test definition cannot be null");
+                logger.LogError("Test definition cannot be null");
                 throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(testSuiteDefinition.Persona))
             {
-                _singleTestInstanceState.GetLogger().LogError("Persona cannot be empty");
+                logger.LogError("Persona cannot be empty");
                 throw new InvalidOperationException();
             }
 
@@ -53,19 +55,19 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             if (userConfig == null)
             {
-                _singleTestInstanceState.GetLogger().LogError("Cannot find user config for persona");
+                logger.LogError("Cannot find user config for persona");
                 throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(userConfig.EmailKey))
             {
-                _singleTestInstanceState.GetLogger().LogError("Email key for persona cannot be empty");
+                logger.LogError("Email key for persona cannot be empty");
                 throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(userConfig.PasswordKey))
             {
-                _singleTestInstanceState.GetLogger().LogError("Password key for persona cannot be empty");
+                logger.LogError("Password key for persona cannot be empty");
                 throw new InvalidOperationException();
             }
 
@@ -74,13 +76,13 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             if (string.IsNullOrEmpty(user))
             {
-                _singleTestInstanceState.GetLogger().LogError(("User email cannot be null"));
+                logger.LogError(("User email cannot be null"));
                 throw new InvalidOperationException();
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                _singleTestInstanceState.GetLogger().LogError("Password cannot be null");
+                logger.LogError("Password cannot be null");
                 throw new InvalidOperationException();
             }
 
@@ -92,8 +94,6 @@ namespace Microsoft.PowerApps.TestEngine.Users
             await Task.Delay(1000);
 
             await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
-
-            await _testInfraFunctions.ClickAsync(SubmitButtonSelector);
 
             // Click No button to indicate we don't want to stay signed in
             await _testInfraFunctions.HandleKeepSignedInNoScreen(KeepMeSignedInNoSelector);

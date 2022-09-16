@@ -299,9 +299,17 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         [ExcludeFromCodeCoverage]
         public async Task HandleUserPasswordScreen(string selector, string value)
         {
+            PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
+            options.UrlString = "https://login.microsoftonline.com/*/login";
+
             ValidatePage();
-            await Page.Locator(selector).WaitForAsync();
-            await Page.FillAsync(selector, value);
+
+            await Page.RunAndWaitForNavigationAsync(async () =>
+            {
+                await Page.Locator(selector).WaitForAsync();
+                await Page.FillAsync(selector, value);
+                await this.ClickAsync("input[type=\"submit\"]");
+            }, options);
         }
 
         // Justification: Limited ability to run unit tests for 
