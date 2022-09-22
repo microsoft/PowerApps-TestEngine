@@ -89,6 +89,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="selector">Selector to find element</param>
         /// <param name="value">Value to fill in</param>
         /// <returns>Task</returns>
-        public Task HandleUserPasswordScreen(string selector, string value, string desiredUrl, ILogger logger);
+        public Task HandleUserPasswordScreen(string selector, string value, string desiredUrl);
     }
 }

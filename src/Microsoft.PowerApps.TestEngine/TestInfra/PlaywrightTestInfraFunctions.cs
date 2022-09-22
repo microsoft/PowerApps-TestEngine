@@ -17,22 +17,24 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ITestState _testState;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger _logger;
 
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         private IPage Page { get; set; }
 
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ILogger logger)
         {
             _testState = testState;
             _singleTestInstanceState = singleTestInstanceState;
             _fileSystem = fileSystem;
+            _logger = logger;
         }
 
         // Constructor to aid with unit testing
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem,
-            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null) : this(testState, singleTestInstanceState, fileSystem)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ILogger logger,
+            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null) : this(testState, singleTestInstanceState, fileSystem, logger)
         {
             PlaywrightObject = playwrightObject;
             Page = page;
@@ -297,7 +299,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         // Justification: Limited ability to run unit tests for 
         // Playwright actions on the sign-in page
         [ExcludeFromCodeCoverage]
-        public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl, ILogger logger)
+        public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
         {
             PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
             options.UrlString = desiredUrl;
@@ -319,7 +321,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
             catch (TimeoutException)
             {
-                logger.LogError("Timed out during login attempt. In order to confirm why this timed out, it may be beneficial to watch the output recording. Make sure that your timeout period is long enough, and that your credentials are correct.");
+                _logger.LogError("Timed out during login attempt. In order to confirm why this timed out, it may be beneficial to watch the output recording. Make sure that your timeout period is long enough, and that your credentials are correct.");
                 throw new TimeoutException();
             }
         }

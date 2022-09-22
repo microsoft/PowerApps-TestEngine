@@ -93,7 +93,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
             // Wait for the sliding animation to finish
             await Task.Delay(1000);
 
-            await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password, desiredUrl, logger);
+            await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password, desiredUrl);
         }
     }
 }
