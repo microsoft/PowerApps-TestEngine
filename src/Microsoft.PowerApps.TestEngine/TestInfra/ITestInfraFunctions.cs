@@ -89,7 +89,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="selector">Selector to find element</param>
         /// <param name="value">Value to fill in</param>
         /// <returns>Task</returns>
-        public Task HandleUserPasswordScreen(string selector, string value);
+        public Task HandleUserPasswordScreen(string selector, string value, string desiredUrl);
 
         // <summary>
         /// Handles the page asking whether to stay signed in

@@ -34,7 +34,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
             _environmentVariable = environmentVariable;
         }
 
-        public async Task LoginAsUserAsync()
+        public async Task LoginAsUserAsync(string desiredUrl)
         {
             var testSuiteDefinition = _singleTestInstanceState.GetTestSuiteDefinition();
             var logger = _singleTestInstanceState.GetLogger();
@@ -93,7 +93,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
             // Wait for the sliding animation to finish
             await Task.Delay(1000);
 
-            await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password);
+            await _testInfraFunctions.HandleUserPasswordScreen(PasswordSelector, password, desiredUrl);
 
             // Click No button to indicate we don't want to stay signed in
             await _testInfraFunctions.HandleKeepSignedInNoScreen(KeepMeSignedInNoSelector);

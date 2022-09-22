@@ -297,10 +297,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         // Justification: Limited ability to run unit tests for 
         // Playwright actions on the sign-in page
         [ExcludeFromCodeCoverage]
-        public async Task HandleUserPasswordScreen(string selector, string value)
+        public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
         {
             PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
-            options.UrlString = "https://login.microsoftonline.com/*/login";
+            options.UrlString = desiredUrl;
 
             ValidatePage();
 
