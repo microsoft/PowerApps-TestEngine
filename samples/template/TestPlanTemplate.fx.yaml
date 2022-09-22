@@ -1,0 +1,32 @@
+testSuite:
+  testSuiteName: testPlan Template
+  testSuiteDescription: testPlan template for written own test steps
+  persona: User1
+  appLogicalName:
+  appId:
+
+  testCases:
+    - testCaseName: Case1
+      testCaseDescription: Description for Case1
+      testSteps: |
+        = Screenshot("template_loaded.png");
+          
+          Screenshot("template_end.png");
+    - testCaseName: Case2
+      testCaseDescription: Description for Case2
+      testSteps: |
+        = Screenshot("template_loaded.png");
+          
+          Screenshot("template_end.png"); 
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
+

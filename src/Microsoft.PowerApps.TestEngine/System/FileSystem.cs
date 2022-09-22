@@ -67,5 +67,10 @@ namespace Microsoft.PowerApps.TestEngine.System
         {
             return File.ReadAllText(filePath);
         }
+
+        public string RemoveInvalidFileNameChars(string fileName)
+        {
+            return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
+        }
     }
 }
