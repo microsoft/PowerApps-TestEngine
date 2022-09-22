@@ -79,7 +79,6 @@ namespace Microsoft.PowerApps.TestEngine
 
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
-            var desiredUrl = _urlMapper.GenerateTestUrl(queryParams);
 
             try
             {
@@ -95,10 +94,10 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupAsync();
 
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(desiredUrl);
+                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(queryParams));
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(desiredUrl);
+                await _userManager.LoginAsUserAsync(_urlMapper.GenerateTestUrl(queryParams));
 
                 // Set up network request mocking if any
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();

@@ -95,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("desiredUrl"));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
 
         [Theory]
@@ -125,7 +125,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("desiredUrl"));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
 
         [Fact]
@@ -139,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("desiredUrl"));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
 
         [Theory]
@@ -162,7 +162,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("desiredUrl"));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
 
         [Theory]
@@ -187,7 +187,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("desiredUrl"));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
     }
 }
