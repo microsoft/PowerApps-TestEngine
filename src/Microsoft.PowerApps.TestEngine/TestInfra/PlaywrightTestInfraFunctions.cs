@@ -297,29 +297,31 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         // Justification: Limited ability to run unit tests for 
         // Playwright actions on the sign-in page
         [ExcludeFromCodeCoverage]
-        public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
+        public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl, ILogger logger)
         {
             PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
             options.UrlString = desiredUrl;
 
             ValidatePage();
 
-            await Page.RunAndWaitForNavigationAsync(async () =>
+            try
             {
-                await Page.Locator(selector).WaitForAsync();
-                await Page.FillAsync(selector, value);
-                await this.ClickAsync("input[type=\"submit\"]");
-            }, options);
-        }
+                await Page.RunAndWaitForNavigationAsync(async () =>
+                {
+                    await Page.Locator(selector).WaitForAsync();
+                    await Page.FillAsync(selector, value);
+                    await this.ClickAsync("input[type=\"submit\"]");
 
-        // Justification: Limited ability to run unit tests for 
-        // Playwright actions on the sign-in page
-        [ExcludeFromCodeCoverage]
-        public async Task HandleKeepSignedInNoScreen(string selector)
-        {
-            ValidatePage();
-            await Page.ClickAsync(selector);
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                    ValidatePage();
+                    await Page.ClickAsync("[id=\"idBtn_Back\"]");
+                    await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                }, options);
+            }
+            catch (TimeoutException)
+            {
+                logger.LogError("Timed out during login attempt. In order to confirm why this timed out, it may be beneficial to watch the output recording. Make sure that your timeout period is long enough, and that your credentials are correct.");
+                throw new TimeoutException();
+            }
         }
     }
 }

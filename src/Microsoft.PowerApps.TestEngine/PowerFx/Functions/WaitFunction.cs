@@ -47,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 if ((DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout))
                 {
                     _logger.LogDebug("Timeout duration set to " + timeout);
-                    _logger.LogError("Wait function timed out. In order to confirm why this timed out, it may be beneficial to watch the output recording.");
+                    _logger.LogError("Wait function timed out.");
                     throw new TimeoutException();
                 }
 
