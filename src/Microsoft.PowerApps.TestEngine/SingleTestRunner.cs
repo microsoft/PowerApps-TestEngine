@@ -93,11 +93,13 @@ namespace Microsoft.PowerApps.TestEngine
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
 
+                var desiredUrl = _urlMapper.GenerateTestUrl(queryParams);
+
                 // Navigate to test url
-                await _testInfraFunctions.GoToUrlAsync(_urlMapper.GenerateTestUrl(queryParams));
+                await _testInfraFunctions.GoToUrlAsync(desiredUrl);
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(_urlMapper.GenerateTestUrl(queryParams));
+                await _userManager.LoginAsUserAsync(desiredUrl);
 
                 // Set up network request mocking if any
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
