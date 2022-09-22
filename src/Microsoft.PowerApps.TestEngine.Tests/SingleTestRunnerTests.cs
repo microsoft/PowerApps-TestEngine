@@ -262,7 +262,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "");
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
-            LoggingTestHelper.VerifyLogging(MockLogger, exceptionToThrow.ToString(), LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, exceptionToThrow.ToString(), LogLevel.Error, Times.AtLeastOnce());
             VerifyFinallyExecution(testData.testResultDirectory, 0, 0, 0, 0);
         }
 
@@ -306,7 +306,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUserManager.Setup(x => x.LoginAsUserAsync("desiredUrl")).Throws(exceptionToThrow);
+                MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<string>())).Throws(exceptionToThrow);
             });
         }
 
