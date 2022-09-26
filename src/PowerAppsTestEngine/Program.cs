@@ -141,6 +141,7 @@ else
     .AddSingleton<ITestReporter, TestReporter>()
     .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
     .AddScoped<ISingleTestRunner, SingleTestRunner>()
+    .AddScoped<ILogger>((sp) => sp.GetRequiredService<ISingleTestInstanceState>().GetLogger())
     .AddSingleton<IFileSystem, FileSystem>()
     .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
     .AddSingleton<TestEngine>()

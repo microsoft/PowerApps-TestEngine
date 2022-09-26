@@ -69,21 +69,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.PasswordKey)).Returns(password);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.HandleUserEmailScreen(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.HandleUserPasswordScreen(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.HandleKeepSignedInNoScreen(It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.HandleUserPasswordScreen(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.ClickAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await userManager.LoginAsUserAsync();
+            await userManager.LoginAsUserAsync("*");
 
             MockSingleTestInstanceState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
             MockTestState.Verify(x => x.GetUserConfiguration(userConfiguration.PersonaName), Times.Once());
             MockEnvironmentVariable.Verify(x => x.GetVariable(userConfiguration.EmailKey), Times.Once());
             MockEnvironmentVariable.Verify(x => x.GetVariable(userConfiguration.PasswordKey), Times.Once());
             MockTestInfraFunctions.Verify(x => x.HandleUserEmailScreen("input[type=\"email\"]", email), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.ClickAsync("input[type=\"submit\"]"), Times.Exactly(2));
-            MockTestInfraFunctions.Verify(x => x.HandleUserPasswordScreen("input[type=\"password\"]", password), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.HandleKeepSignedInNoScreen("[id=\"idBtn_Back\"]"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.ClickAsync("input[type=\"submit\"]"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.HandleUserPasswordScreen("input[type=\"password\"]", password, "*"), Times.Once());
         }
 
         [Fact]
@@ -96,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
 
         [Theory]
@@ -126,7 +125,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
 
         [Fact]
@@ -140,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
 
         [Theory]
@@ -163,7 +162,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
 
         [Theory]
@@ -188,7 +187,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
         }
     }
 }

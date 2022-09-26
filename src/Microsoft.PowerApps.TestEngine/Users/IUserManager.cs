@@ -14,6 +14,6 @@ namespace Microsoft.PowerApps.TestEngine.Users
         /// Log in as user for currently running test
         /// </summary>
         /// <returns>Task</returns>
-        public Task LoginAsUserAsync();
+        public Task LoginAsUserAsync(string desiredUrl);
     }
 }

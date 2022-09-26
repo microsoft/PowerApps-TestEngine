@@ -32,6 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         private Mock<IFrame> MockIFrame;
         private Mock<IElementHandle> MockElementHandle;
         private Mock<ILogger> MockLogger;
+        private Mock<ILoggerFactory> MockLoggerFactory;
 
         public PlaywrightTestInfraFunctionTests()
         {
@@ -48,6 +49,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockIFrame = new Mock<IFrame>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLoggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
         }
 
