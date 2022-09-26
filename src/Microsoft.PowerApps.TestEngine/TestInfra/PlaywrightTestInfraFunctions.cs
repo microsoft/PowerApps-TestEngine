@@ -17,24 +17,22 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ITestState _testState;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
-        private readonly ILoggerFactory _loggerFactory;
 
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         private IPage Page { get; set; }
 
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ILoggerFactory loggerFactory)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem)
         {
             _testState = testState;
             _singleTestInstanceState = singleTestInstanceState;
             _fileSystem = fileSystem;
-            _loggerFactory = loggerFactory;
         }
 
         // Constructor to aid with unit testing
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ILoggerFactory loggerFactory,
-            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null) : this(testState, singleTestInstanceState, fileSystem, loggerFactory)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem,
+            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null) : this(testState, singleTestInstanceState, fileSystem)
         {
             PlaywrightObject = playwrightObject;
             Page = page;
@@ -321,7 +319,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
             catch (TimeoutException)
             {
-                _loggerFactory.CreateLogger("").LogError("Timed out during login attempt. In order to confirm why this timed out, it may be beneficial to watch the output recording. Make sure that your timeout period is long enough, and that your credentials are correct.");
+                _singleTestInstanceState.GetLogger().LogError("Timed out during login attempt. In order to confirm why this timed out, it may be beneficial to watch the output recording. Make sure that your timeout period is long enough, and that your credentials are correct.");
                 throw new TimeoutException();
             }
         }
