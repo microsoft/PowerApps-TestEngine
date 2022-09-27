@@ -22,6 +22,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private bool IsPlayerJsLoaded { get; set; } = false;
         private bool IsPublishedAppTestingJsLoaded { get; set; } = false;
         private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
+        private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
@@ -64,11 +65,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             try
             {
-                if (!IsPlayerJsLoaded)
-                {
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-                    IsPlayerJsLoaded = true;
-                }
+                // This is for client side JSSDK
+                // if (!IsPlayerJsLoaded)
+                // {
+                //     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
+                //     IsPlayerJsLoaded = true;
+                // }
+
+                // TODO: update the expression when the server side JSSDK is released
                 var expression = "PowerAppsTestEngine.getAppStatus()";
                 return (await _testInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
@@ -139,7 +143,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), GetAppStatusErrorMessage);
 
             if (!IsPublishedAppTestingJsLoaded)
             {
