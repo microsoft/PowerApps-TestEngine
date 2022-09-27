@@ -5,7 +5,7 @@
 
 Power Apps Test Engine is an open source project that provides a way for makers to run tests authored using Power FX against Canvas apps. These tests are written in our Power FX expression language.
 
-The engine uses Playwright to orchestrate the tests.
+This engine uses Playwright to orchestrate the tests.
 
 ## Getting Started
 
@@ -18,7 +18,7 @@ To get started with running one of the samples
 
 ### Build locally
 
-Run the commands below in your PowerShell.
+Run the commands below in PowerShell.
 
 ```bash
 # Pull github repo
@@ -30,23 +30,24 @@ cd PowerApps-TestEngine\src\PowerAppsTestEngine
 # Build
 dotnet build
 
-# Install required browsers - replace netX with actual output folder name, eg. net6.0.
-pwsh bin\Debug\netX\playwright.ps1 install
+# Install required browsers - replace <net-version> with actual output folder name, eg. net6.0.
+pwsh bin\Debug\<net-version>\playwright.ps1 install
 ```
 
 ### Import a sample solution
 
-Log in to Power Apps with a work or school organization account. The account used cannot have multi-factor authentication enabled for use with Power Apps. For Microsoft employees, you will need to create a test account.
+Log in to Power Apps with a work or school organization account. The account used cannot have multi-factor authentication enabled for PowerApps. For Microsoft employees, you will need to create a test account.
 
-If you need a test tenant, you can create one by visiting [this](https://cdx.transform.microsoft.com/my-tenants).
+If you need a test tenant, you can create one by visiting [this link](https://cdx.transform.microsoft.com/my-tenants).
 
-Import the solution of a sample(Eg. `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_2.zip`). Remember the environment that you imported the solution to. For information about solution import, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions). Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
+Import a sample solution (eg. `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_2.zip`). Remember the environment that you imported the solution to. For information about solution importing, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions). Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
 
 ### Set up the config file
 
-Create a `config.dev.json` inside the `PowerAppsTestEngine` folder. (It should be next to the config.json)
+Create a `config.dev.json` inside the `PowerAppsTestEngine` folder. (It should be next to the config.json.)
 
-The contents should be a copy of config.json, like this.
+The contents should be a copy of config.json, like this:
+
 ```
 {
   "environmentId": "",
@@ -59,21 +60,22 @@ The contents should be a copy of config.json, like this.
 Fill in the various properties:
 
 - environmentId: Environment that you imported the solution to
-  - You can get the `environmentId` by visiting [this](https://make.powerapps.com/). Make sure to select the environment you import the solution to. In the URL, you will be able to find the `environmentId`. (Eg. https://make.powerapps.com/environments/{environmentId}/solutions/)
+  - You can get the `environmentId` by visiting [this link](https://make.powerapps.com/). Make sure to select the environment you import the solution to. In the URL, you will be able to find the `environmentId`. (Eg. https://make.powerapps.com/environments/{environmentId}/solutions/)
 - tenantId: Tenant you are in
   - Select the solution imported and visit the `Details` of the solution. `tenantId` can be found in `Web link`.
 - testPlanFile: Path to the `testPlan.fx.yaml` file for the sample that you wish to run. (Eg. `../../samples/basicgallery/testPlan.fx.yaml`)
 - outputDirectory: Path to folder you wish the test results to be placed.
 
-For more information about the config and the inputs to the command, please view [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/CommandInput.md)
+For more information about the config and the inputs to the command, please view [this link](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/CommandInput.md).
 
 ### Setup the user environment variables
 
-Please view [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/Users.md). Refer to the user configuration section in your selected sample's `testPlan.fx.yaml`.
+Please view [this link](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/Users.md). Refer to the user configuration section in your selected sample's `testPlan.fx.yaml`.
 
 ### Run test
 
-Now you should be ready to run the test
+Now you should be ready to run the test:
+
 ```
 # Run test
 dotnet run
@@ -85,7 +87,7 @@ Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/b
 
 ## What to do next
 
-Option 1: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App and create new tests for your updated app. Check [Power FX](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. Sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
+Option 1: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample PowerApp and create new tests for your updated app. Check [Power FX](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. The sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
 
 Option 2: If you are using [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can convert your Test Studio tests to Test Engine.
 
@@ -145,7 +147,7 @@ While work to provide full control coverage is in progress, support for the foll
 
 ### 1. I got timeout error. What does it mean?
 
-You might get a timeout error due to the app takes longer than the default 30s limit to load. Most of the times just trying to rerun again can solve the problem. If this error still happens you probably want to check the recording in the test result folder to see what cause the error(for example, wrong email or password can make the browser stuck on the sign-in page). If your app takes longer to load, you can also modify the timeout limit in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md).
+You might get a timeout error due to the app taking longer than the default 30s time-limit to load. Most of the time, re-running the program can solve the problem. If this error still happens you probably want to check the recording in the test result folder to see what caused the error. If your app takes longer to load, you can also modify the timeout limit in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md) to give it more time.
 
 ### 2. What is the difference between the settings passed in via command line/config.json vs settings located inside the YAML?
 
@@ -153,7 +155,7 @@ The settings passed in via command line or config.json are settings that either 
 
 Settings located in the YAML should be able to be "imported" with the solution, so another person could take the solution and corresponding test plan and use the two of them without any modifications.
 
-Example: environment id changes if the app is imported to a another tenant/environment, and so it is located as a command line or config.json setting.
+Example: environmentId changes if the app is imported to a another tenant/environment, and so it is located as a command line or config.json setting.
 
 ## Contributing
 
