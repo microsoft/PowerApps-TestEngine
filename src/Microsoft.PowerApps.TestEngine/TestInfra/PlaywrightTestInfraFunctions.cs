@@ -301,7 +301,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
             options.UrlString = desiredUrl;
-
+            var logger = _singleTestInstanceState.GetLogger();
             ValidatePage();
 
             try
@@ -319,9 +319,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
             catch (TimeoutException)
             {
-                _singleTestInstanceState.GetLogger().LogError("Timed out during login attempt. In order to confirm why this timed out, it may be beneficial to watch the output recording. Make sure that your timeout period is long enough, and that your credentials are correct.");
+                logger.LogError("Timed out during login attempt. In order to determine why, it may be beneficial to view the output recording. Make sure that your login credentials are correct.");
                 throw new TimeoutException();
             }
+
+            logger.LogDebug("Logged in successfully.");
+
         }
     }
 }
