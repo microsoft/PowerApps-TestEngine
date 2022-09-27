@@ -1,9 +1,9 @@
-# Power Apps Test Engine
+# PowerApps TestEngine
 
 [![CI Build](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml/badge.svg)](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml)
 > This is currently an experimental project.
 
-Power Apps Test Engine is an open source project that provides a way for makers to run tests authored using Power FX against Canvas apps. These tests are written in our Power FX expression language.
+PowerApps TestEngine is an open source project that provides a way for makers to run tests authored using Power FX against Canvas apps. These tests are written in our PowerFX expression language.
 
 This engine uses Playwright to orchestrate the tests.
 
@@ -36,7 +36,7 @@ pwsh bin\Debug\<net-version>\playwright.ps1 install
 
 ### Import a sample solution
 
-Log in to Power Apps with a work or school organization account. The account used cannot have multi-factor authentication enabled for PowerApps. For Microsoft employees, you will need to create a test account.
+Log in to PowerApps with a work or school organization account. The account used cannot have multi-factor authentication enabled for PowerApps. For Microsoft employees, you will need to create a test account.
 
 If you need a test tenant, you can create one by visiting [this link](https://cdx.transform.microsoft.com/my-tenants).
 
@@ -93,7 +93,7 @@ Option 2: If you are using [Test Studio](https://docs.microsoft.com/en-us/power-
 
 Note: Currently this is a slightly complicated process. In the near future we'll have the download button available in Test Studio to download the converted test plan.
 
-1. Download your Power App.
+1. Download your PowerApp.
 2. Rename your `.msapp` file by adding `.zip` at the end
 3. Unzip your zipped `.msapp` file and you will see a `AppTests` folder.
 4. In the folder there is a `2.json` file. Run the following commands in command line to convert an Test Studio json to a Test Engine yaml test plan.
