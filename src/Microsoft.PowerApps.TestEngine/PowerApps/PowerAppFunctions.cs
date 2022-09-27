@@ -23,6 +23,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private bool IsPublishedAppTestingJsLoaded { get; set; } = false;
         private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
         private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
+        private string GetItemCountErrorMessage = "Something went wrong when Test Engine try to get item count.";
+        private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine try to get property value.";
+        private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine try to load object model.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
@@ -44,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             var getProperty = GetPropertyValueFromControlAsync<T>(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger());
+            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger(), GetPropertyValueErrorMessage);
 
             return getProperty.GetResult();
         }
@@ -145,15 +148,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), GetAppStatusErrorMessage);
 
-            if (!IsPublishedAppTestingJsLoaded)
-            {
-                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
-                IsPublishedAppTestingJsLoaded = true;
-            }
+            // This is for client side JSSDK
+            // if (!IsPublishedAppTestingJsLoaded)
+            // {
+            //     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+            //     IsPublishedAppTestingJsLoaded = true;
+            // }
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), LoadObjectModelErrorMessage);
             _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;
@@ -293,7 +297,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             var getItemCount = GetItemCountAsync(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger());
+            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger(), GetItemCountErrorMessage);
 
             return getItemCount.GetResult();
         }
