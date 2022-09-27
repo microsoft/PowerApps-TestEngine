@@ -324,7 +324,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
 
             logger.LogDebug("Logged in successfully.");
-
         }
     }
 }
