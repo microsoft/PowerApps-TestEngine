@@ -201,7 +201,7 @@ If these steps don't help, you can run
 dotnet run -l trace
 ```
 
-and ask for support following [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/SUPPORT.md).
+and ask for support by adhering to [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/SUPPORT.md).
 
 ### 2. What is the difference between the settings passed in via command line/config.json vs settings located inside the YAML?
 
