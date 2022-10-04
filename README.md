@@ -186,7 +186,7 @@ Multi-factor authentication is not supported.  Use an account that requires only
 
 ### 1. The test execution failed. What should I do?
 
-We suggest check the recording and logs in the test result folder to see what caused the error. Common issues are listed below:
+We suggest checking the logs and recording in the test result folder to see what caused the error. Common issues are listed below:
 
 - Wrong authentication information
 - Require authorization to certain controls or features (you will need to manually open the app and grant the access before using test engine to run tests on the app)
