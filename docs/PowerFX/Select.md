@@ -10,7 +10,7 @@
 
 This is the same functionality as the Power Apps [Select function](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/functions/function-select).
 
-In case of nested gallery, use Index() within the select function.
+When working with a nested gallery, use [Index()](https://learn.microsoft.com/en-us/power-platform/power-fx/reference/function-first-last) within the select function.
 
 ## Example
 

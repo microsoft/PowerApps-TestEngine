@@ -1,6 +1,6 @@
 # Yaml Format
 
-Tests are defined in YAML following the same guidelines as Power FX does. To find out more about the Power Fx YAML formula grammar, view [this](https://docs.microsoft.com/en-us/power-platform/power-fx/yaml-formula-grammar).
+Tests are defined in YAML following the same guidelines as Power Fx does. To find out more about the Power Fx YAML formula grammar, view [this](https://docs.microsoft.com/en-us/power-platform/power-fx/yaml-formula-grammar).
 
 View the [samples](../../samples/) folder for detailed examples.
 
