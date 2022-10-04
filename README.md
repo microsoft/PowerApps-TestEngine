@@ -189,7 +189,7 @@ Multi-factor authentication is not supported.  Use an account that requires only
 We suggest checking the logs and recording in the test result folder to see what caused the error. Common issues are listed below:
 
 - Wrong authentication information
-- Require authorization to certain controls or features (you will need to manually open the app and grant the access before using test engine to run tests on the app)
+- Requiring authorization to certain controls or features (you will need to manually open the app and grant the access before using test engine to run tests on the app)
 - Bad network connection causes test engine cannot load the app
 
 Occasionally, you might get a timeout error due to the app taking longer to load than the default 30 second timeout. Most of the time, re-running the program will solve this problem. If this error still happens, you will probably want to check the recording as mentioned. If your app takes a while to load, you can also modify the timeout limit in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md) to give it more time.
