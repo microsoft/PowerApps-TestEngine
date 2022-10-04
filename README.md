@@ -188,7 +188,7 @@ Multi-factor authentication is not supported.  Use an account that requires only
 
 We suggest checking the logs and recording in the test result folder to see what caused the error. Common issues are listed below:
 
-- Wrong authentication information
+- Entering incorrect authentication information
 - Requiring authorization to certain controls or features (you will need to manually open the app and grant the access before using test engine to run tests on the app)
 - Bad network connection causes test engine cannot load the app
 
