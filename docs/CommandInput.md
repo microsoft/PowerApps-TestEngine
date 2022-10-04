@@ -1,6 +1,6 @@
 # PowerAppsTestEngine.exe Inputs
 
-The executable can take in inputs defined in`config.dev.json`, or as command line input parameters.
+The executable can take in inputs defined in `config.dev.json`, or as command line input parameters.
 
 ## Parameters
 

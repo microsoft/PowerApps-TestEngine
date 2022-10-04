@@ -20,7 +20,7 @@ Test Engine currently supports Power Apps canvas apps.
 
 ## Getting Started
 
-To get started, you will need to download the Test Engine code from GitHub, locally build the project, and install the browser(s) you wish to use to execute the tests. Once you have the Test Engine executable built, the repo contains a library of sample test plans and apps you can use to exercise the tool.  
+To get started, you will need to clone the Test Engine code from GitHub, locally build the project, and install the browser(s) you wish to use to execute the tests. Once you have the Test Engine executable built, the repo contains a library of sample test plans and apps you can use to exercise the tool.  
 
 ### Prerequisites for building Test Engine
 
@@ -33,7 +33,7 @@ To get started, you will need to download the Test Engine code from GitHub, loca
 Run the commands below in PowerShell.  These commands will clone the repo to your desktop, will build the executable, and will install browser prerequisites needed for the tests to execute.
 
 ```bash
-# Pull github repo
+# Clone GitHub repo
 git clone https://github.com/microsoft/PowerApps-TestEngine.git
 
 # Change to the PowerAppsTestEngine folder
@@ -51,8 +51,10 @@ Test Engine includes a library of samples you can use to get started.  Each samp
 
 To use the samples, import the solution into your environment and then execute the corresponding test plan file with Test Engine.
 
+ See [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
+
 #### 1. Import a sample solution
- (eg. `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_2.zip`). Remember the environment that you imported the solution to. For information about solution importing, please view [this](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions). Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
+ Choose one of the packaged solutions within the Samples folder (e.g., `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_2.zip`). You can import solutions [using the Dataverse portal](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions), or by using the [PAC CLI command line tool](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/solution#pac-solution-import). Remember the environment that you imported the solution to. 
 
 #### 2. Set up the config file
 
@@ -124,7 +126,7 @@ Option 2 Convert recorded tests from Test Studio: If you have tests that you hav
 
 Note: Currently this is a slightly complicated process. In the near future we'll have the download button available in Test Studio to download the converted test plan.
 
-1. Download your Power App app.
+1. Download your Power Apps app.
 2. Rename your `.msapp` file by adding `.zip` at the end
 3. Unzip your zipped `.msapp` file and you will see a `AppTests` folder.
 4. In the folder there is a `2.json` file. Run the following commands in command line to convert an Test Studio json to a Test Engine yaml test plan.
@@ -194,7 +196,11 @@ Settings located in the YAML should be able to be "imported" with the solution, 
 
 Example: environmentId changes if the app is imported to a another tenant/environment, and so it is located as a command line or config.json setting.
 
-## Contributing
+## How to report issues
+
+You are invited to contribute corrections to both code and documentation.  See the below section entitled "Contributing to Test Engine code and documentation" for further info.  You may also [file GitHub issues for Test Engine](https://github.com/microsoft/PowerApps-TestEngine/issues) to make Microsoft and the community aware of issues.
+
+## Contributing to Test Engine code and documentation
 
 This project welcomes contributions and suggestions to both code and documentation.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 
