@@ -184,9 +184,24 @@ Multi-factor authentication is not supported.  Use an account that requires only
 
 ## Frequently asked questions
 
-### 1. I got timeout error. What does it mean?
+### 1. The test execution failed. What should I do?
 
-You might get a timeout error due to the app taking longer than the default 30 second timeout to load. Most of the time, re-running the program can solve the problem. If this error still happens you probably want to check the recording in the test result folder to see what caused the error. If your app takes longer to load, you can also modify the timeout limit in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md) to give it more time.
+We suggest checking the logs and recording in the test result folder to see what caused the error. Common issues are listed below:
+
+- Entering incorrect authentication information
+- Requiring authorization to certain controls or features (you will need to manually open the app and grant the access before using test engine to run tests on the app)
+- Having a bad network connection (which causes Test Engine to not load the app)
+
+Occasionally, you might get a timeout error due to the app taking longer to load than the default 30 second timeout. Most of the time, re-running the program will solve this problem. If this error still happens, you will probably want to check the recording as mentioned. If your app takes a while to load, you can also modify the timeout limit in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md) to give it more time.
+
+If these steps don't help, you can run
+
+```bash
+# Run test with trace logs
+dotnet run -l trace
+```
+
+and ask for support by adhering to [this](https://github.com/microsoft/PowerApps-TestEngine/blob/main/SUPPORT.md).
 
 ### 2. What is the difference between the settings passed in via command line/config.json vs settings located inside the YAML?
 
