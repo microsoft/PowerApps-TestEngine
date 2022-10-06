@@ -76,9 +76,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
 
             var queryParametersForTestUrl = GetQueryParametersForTestUrl(tenantId, additionalQueryParams);
+            
             return !string.IsNullOrEmpty(appLogicalName) ?
                    $"https://{domain}/play/e/{environment}/an/{appLogicalName}{queryParametersForTestUrl}" :
-                   $"https://{domain}/play/{appId}{queryParametersForTestUrl}";
+                   $"https://{domain}/play/e/{environment}/a/{appId}{queryParametersForTestUrl}";
         }
 
         private static string GetQueryParametersForTestUrl(string tenantId, string additionalQueryParams)
