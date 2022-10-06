@@ -33,7 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("myEnvironment", "prod", "myApp", "appId", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", "")]
         [InlineData("defaultEnvironment", "", "defaultApp", "appId", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", "")]
         [InlineData("defaultEnvironment", null, "defaultApp", "appId", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", "")]
-        [InlineData("defaultEnvironment", "prod", null, "appId", "defaultTenant", "https://apps.powerapps.com/play/appId?tenantId=defaultTenant&source=testengine", "")]
+        [InlineData("defaultEnvironment", "prod", null, "appId", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/a/appId?tenantId=defaultTenant&source=testengine", "")]
         public void GenerateAppUrlTest(string environmentId, string cloud, string appLogicalName, string appId, string tenantId, string expectedAppUrl, string queryParams)
         {
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
