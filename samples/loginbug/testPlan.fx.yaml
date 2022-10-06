@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: LoginBug
+  testSuiteDescription: Troubleshoot
+  persona: User1
+  appId: e80aa73c-6781-4882-a055-caa906f35706
+  onTestCaseStart: Screenshot("appinaday_onTestCaseStart.png");
+  onTestSuiteComplete: Screenshot("appinaday_onTestSuiteComplete.png");
+
+  testCases:
+    - testCaseName: Case1
+      testSteps: |
+        = Screenshot("appinaday_loaded.png");
+          Select(Button1);
+          SetProperty(TitleLabel.Text, "Title changed!");
+          Assert(TitleLabel.Text = "Device Ordering Appppp", "Label should indicate the app title.");                 
+          Screenshot("appinaday_end.png");
+
+testSettings:
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
