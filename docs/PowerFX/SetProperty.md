@@ -4,7 +4,7 @@
 
 This is the same functionality as the Power Apps [SetProperty function](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/functions/function-setproperty).
 
-In case of nested gallery, use Index() within the SetProperty function.
+When working with a nested gallery, use [Index()](https://learn.microsoft.com/en-us/power-platform/power-fx/reference/function-first-last) within the SetProperty function.
 
 ## Example
 

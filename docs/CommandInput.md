@@ -1,17 +1,17 @@
 # PowerAppsTestEngine.exe Inputs
 
-The exe can take in inputs in the form of `config.json` (or `config.dev.json`) or command line input parameters
+The executable can take in inputs defined in `config.dev.json`, or as command line input parameters.
 
 ## Parameters
 
 | Parameter | Details |
 | -- | -- |
-| EnvironmentId | Environment that the Power App you are testing is located in. For more information about environments, please view [this](https://docs.microsoft.com/en-us/power-platform/admin/environments-overview) |
-| TenantId | Tenant that the Power App is located in. |
+| EnvironmentId | Environment that the Power Apps app you are testing is located in. For more information about environments, please view [this](https://docs.microsoft.com/en-us/power-platform/admin/environments-overview) |
+| TenantId | Tenant that the Power Apps app is located in. |
 | TestPlanFile | Path to the test plan that you wish to run |
 | OutputDirectory | Path to folder the test results will be placed. Optional. If this is not provided, it will be placed in the `TestOutput` folder. |
 | LogLevel | Level for logging (Folllows [this](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel?view=dotnet-plat-ext-6.0)). Optional. If this is not provided, Information level logs and higher will be logged |
-| QueryParams | Specify query parameters to be added to the powerapps URL. |
+| QueryParams | Specify query parameters to be added to the Power Apps URL. |
 
 ## Config.json
 
@@ -21,7 +21,7 @@ Use a `config.dev.json` to prevent accidentally checking in personal info.
 
 ### Command line
 
-Command line parameters override anything specified in `config.json`
+When provided, command line parameters will override anything specified in `config.dev.json`
 
 | Switch | Parameter |
 | -- | -- |
