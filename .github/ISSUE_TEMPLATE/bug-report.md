@@ -6,7 +6,7 @@ labels: 'new'
 assignees: ''
 ---
 
-- [ ] Please attach a test suite YAML and a sample .msapp to this Issue which demonstrates the issue you are experiencing. *(Please do not attach any file which may contain sensitive personal or company data.)*
+- [ ] Please attach a test suite YAML, a sample .msapp, and any logs that you may have received to this Issue which demonstrates the issue you are experiencing. *(Please do not attach any file which may contain sensitive personal or company data.)*
 
 ## Describe the bug
 
@@ -15,7 +15,7 @@ assignees: ''
 ## To Reproduce
 
 Steps to reproduce the behavior:
-1. dotnet run ...
+1. `dotnet run -l trace`
 
 **Expected Behavior:** *[What you thought would happen]*  
 **Actual Behavior:** *[What actually happened. If applicable, add screenshots of error messages to help explain your problem.]*
