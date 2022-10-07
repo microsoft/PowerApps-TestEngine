@@ -6,7 +6,7 @@ labels: 'new'
 assignees: ''
 ---
 
-- [ ] Please attach a test suite YAML, a sample .msapp, and any logs that you may have received to this Issue which demonstrates the issue you are experiencing. *(Please do not attach any file which may contain sensitive personal or company data.)*
+- [ ] Please attach the test suite YAML & .msapp which demonstrates the issue you are experiencing and any logs written to the specified outputDirectory. *(Please do not attach any file which may contain sensitive personal or company data.)*
 
 ## Describe the bug
 
