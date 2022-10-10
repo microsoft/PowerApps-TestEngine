@@ -128,7 +128,7 @@ Option 2 Convert recorded tests from Test Studio: If you have tests that you hav
 2. Navigate to the Test Studio.
 2. Click the download button available in Test Studio to download the converted test plan.
 3. Open the yaml file generated and add the logical name or app ID of your app.
-4. Make sure you update the config file and user configurations if you are using a different tenant or environment for this app. You will need to modify `testPlanFile` with the path to the `2.fx.yaml` file for the sample that you wish to run.
+4. Make sure you update the config file and user configurations if you are using a different tenant or environment for this app. You will need to modify `testPlanFile` with the path to the yaml file for the sample that you wish to run.
 5. Now you should be ready to run the test with `dotnet run`.
 
 ## More about the test plan
