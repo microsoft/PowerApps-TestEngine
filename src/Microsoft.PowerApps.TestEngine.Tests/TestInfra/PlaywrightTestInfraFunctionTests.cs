@@ -147,6 +147,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Theory]
         [InlineData("")]
         [InlineData(null)]
+        [InlineData("Chrome")]
+        [InlineData("Safari")]
+        [InlineData("INVALID_BROWSER_NAME")]
         public async Task SetupAsyncThrowsOnInvalidBrowserTest(string browser)
         {
             var browserConfig = new BrowserConfiguration()
@@ -157,8 +160,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
 
+            var testSettings = new TestSettings()
+            {
+                Headless = true,
+                Timeout = 15
+            };
+
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
-                MockFileSystem.Object, MockPlaywrightObject.Object);
+                MockFileSystem.Object, null);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
         }
 
