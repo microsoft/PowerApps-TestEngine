@@ -118,6 +118,10 @@ When the run is complete, check the folder specified in the `outputDirectory` co
 
 Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
 
+## What to do next
+
+Option 1 Author your own test plan: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App apps and create new tests for your updated app. Check [Power Fx](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. The sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
+
 ## More about the test plan
 
 [Yaml Format](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/Yaml)
