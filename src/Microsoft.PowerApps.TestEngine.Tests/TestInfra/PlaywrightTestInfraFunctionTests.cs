@@ -149,6 +149,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [InlineData(null)]
         [InlineData("Chrome")]
         [InlineData("Safari")]
+        [InlineData("INVALID_BROWSER_NAME")]
         public async Task SetupAsyncThrowsOnInvalidBrowserTest(string browser)
         {
             var browserConfig = new BrowserConfiguration()
