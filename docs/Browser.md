@@ -1,4 +1,4 @@
-# Browsers Supported
+# Supported Browsers
 
 - Chromium
 - Firefox
