@@ -75,13 +75,14 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 Timeout = testSettings.Timeout
             };
 
-            if (PlaywrightObject[browserConfig.Browser] == null)
+            var browser = PlaywrightObject[browserConfig.Browser];
+            if (browser == null)
             {
                 _singleTestInstanceState.GetLogger().LogError("Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers");
                 throw new InvalidOperationException();
             }
 
-            Browser = await PlaywrightObject[browserConfig.Browser].LaunchAsync(launchOptions);
+            Browser = await browser.LaunchAsync(launchOptions);
 
             var contextOptions = new BrowserNewContextOptions();
 
