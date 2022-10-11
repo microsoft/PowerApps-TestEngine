@@ -83,7 +83,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
 
             Browser = await browser.LaunchAsync(launchOptions);
-            _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");                
+            _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");
 
             var contextOptions = new BrowserNewContextOptions();
 
@@ -107,7 +107,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
 
             BrowserContext = await Browser.NewContextAsync(contextOptions);
-            _singleTestInstanceState.GetLogger().LogInformation("Browser context created"); 
+            _singleTestInstanceState.GetLogger().LogInformation("Browser context created");
         }
 
         public async Task SetupNetworkRequestMockAsync()
