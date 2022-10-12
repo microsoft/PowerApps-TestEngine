@@ -92,11 +92,14 @@ namespace Microsoft.PowerApps.TestEngine
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
+                Logger.LogInformation("Test infrastructure setup finished");
 
                 var desiredUrl = _urlMapper.GenerateTestUrl(queryParams);
+                Logger.LogTrace($"Desired URL: {desiredUrl}");
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
+                Logger.LogInformation("Successfully navigate page to target URL.");
 
                 // Log in user
                 await _userManager.LoginAsUserAsync(desiredUrl);
