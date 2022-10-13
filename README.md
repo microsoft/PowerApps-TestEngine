@@ -118,6 +118,10 @@ When the run is complete, check the folder specified in the `outputDirectory` co
 
 Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
 
+#### Languages and regions that use period as the decimal separator
+
+The syntax can be different based on your systems language settings. `samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml` is a test plan for these languages and regions. If you want to try out the other samples, you will need to modify formula separators and chaining operators according to [this link](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/global-apps#formula-separators-and-chaining-operator). We will try out best to provide more sample test plans for these languages and regions.
+
 ## What to do next
 
 Option 1 Author your own test plan: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App apps and create new tests for your updated app. Check [Power Fx](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. The sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
