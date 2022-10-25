@@ -128,7 +128,7 @@ The syntax can be different based on your systems language settings. `samples/ba
 
 **Option 2** - Convert recorded tests from Test Studio: If you have tests that you have recorded in [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can convert your Test Studio tests to Test Engine.
 - Make use of the download button available in Test Studio to download the converted test plan.
-- Make sure you update the config file and user configurations if you are using a different tenant or environment for this app. You will need to modify `testPlanFile` with the path to the test plan file for the sample that you wish to run.
+- Make sure you update the config file and user configurations if you are using a different tenant or environment for this app. You will need to modify `testPlanFile` with the path to the converted test plan file for the sample that you wish to run.
 - Now you should be ready to run the test with `dotnet run`
 
 ## More about the test plan
