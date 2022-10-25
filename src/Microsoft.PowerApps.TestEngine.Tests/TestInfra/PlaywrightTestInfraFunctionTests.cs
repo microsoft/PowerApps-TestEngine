@@ -87,8 +87,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockPlaywrightObject.SetupGet(x => x.Devices).Returns(devicesDictionary);
             MockBrowserType.Setup(x => x.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>())).Returns(Task.FromResult(MockBrowser.Object));
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(testResultsDirectory);
             MockBrowser.Setup(x => x.NewContextAsync(It.IsAny<BrowserNewContextOptions>())).Returns(Task.FromResult(MockBrowserContext.Object));
+            LoggingTestHelper.SetupMock(MockLogger);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
