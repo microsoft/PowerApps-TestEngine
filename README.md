@@ -124,9 +124,9 @@ The syntax can be different based on your systems language settings. `samples/ba
 
 ## What to do next
 
-Option 1 Author your own test plan: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App apps and create new tests for your updated app. Check [Power Fx](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. The sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
+**Option 1** - Author your own test plan: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App apps and create new tests for your updated app. Check [Power Fx](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. The sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
 
-Option 2 Convert recorded tests from Test Studio: If you have tests that you have recorded in [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can convert your Test Studio tests to Test Engine.
+**Option 2** - Convert recorded tests from Test Studio: If you have tests that you have recorded in [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can convert your Test Studio tests to Test Engine.
 - Make use of the download button available in Test Studio to download the converted test plan.
 
 ## More about the test plan
