@@ -54,26 +54,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var cloud = _testState.GetCloud();
 
-            if (cloud == null)
-            {
-                cloud = "";
-            }
-
-            string domain;
-            // TODO: implement the other clouds
-            switch (cloud.ToLower())
-            {
-                case "test":
-                    domain = "apps.test.powerapps.com";
-                    break;
-                case "prod":
-                    domain = "apps.powerapps.com";
-                    break;
-                default:
-                    // TODO: determine what happens on default
-                    domain = "apps.powerapps.com";
-                    break;
-            }
+            string domain = "apps.powerapps.com";
 
             var queryParametersForTestUrl = GetQueryParametersForTestUrl(tenantId, additionalQueryParams);
 
