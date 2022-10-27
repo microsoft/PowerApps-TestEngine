@@ -29,8 +29,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("myEnvironment", "apps.powerapps.com", "myApp", "appId", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", "")]
         [InlineData("defaultEnvironment", "apps.test.powerapps.com", "defaultApp", "appId", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", "")]
         [InlineData("myEnvironment", "APPS.POWERAPPS.COM", "myApp", "appId", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", "")]
-        [InlineData("defaultEnvironment", "", "defaultApp", "appId", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", "")]
-        [InlineData("defaultEnvironment", null, "defaultApp", "appId", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", "")]
         [InlineData("defaultEnvironment", "apps.powerapps.com", null, "appId", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/a/appId?tenantId=defaultTenant&source=testengine", "")]
         public void GenerateAppUrlTest(string environmentId, string domain, string appLogicalName, string appId, string tenantId, string expectedAppUrl, string queryParams)
         {
@@ -41,7 +39,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppUrlMapper = new PowerAppsUrlMapper(MockTestState.Object, MockSingleTestInstanceState.Object);
             Assert.Equal(expectedAppUrl, powerAppUrlMapper.GenerateTestUrl(domain, queryParams));
             MockTestState.Verify(x => x.GetEnvironment(), Times.Once());
-            MockTestState.Verify(x => x.GetDomain(), Times.Once());
             MockSingleTestInstanceState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
             MockTestState.Verify(x => x.GetTenant(), Times.Once());
         }
