@@ -28,7 +28,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("myEnvironment", "apps.powerapps.com", "myApp", "appId", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine&enablePATest=true&patestSDKVersion=0.0.1", "&enablePATest=true&patestSDKVersion=0.0.1")]
         [InlineData("myEnvironment", "apps.powerapps.com", "myApp", "appId", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", "")]
         [InlineData("defaultEnvironment", "apps.test.powerapps.com", "defaultApp", "appId", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", "")]
-        [InlineData("myEnvironment", "APPS.POWERAPPS.COM", "myApp", "appId", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", "")]
         [InlineData("defaultEnvironment", "apps.powerapps.com", null, "appId", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/a/appId?tenantId=defaultTenant&source=testengine", "")]
         public void GenerateAppUrlTest(string environmentId, string domain, string appLogicalName, string appId, string tenantId, string expectedAppUrl, string queryParams)
         {
