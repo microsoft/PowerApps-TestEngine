@@ -13,7 +13,6 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.TestStudioConverter;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
@@ -28,20 +27,6 @@ var switchMappings = new Dictionary<string, string>()
     { "-l", "LogLevel" },
     { "-q", "QueryParams" }
 };
-
-if (args.Length > 1)
-{
-    if (args[0].Equals("convert"))
-    {
-        string InputDir = args[1];
-
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
-        ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
-        CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, InputDir);
-        converter.ExportYaml();
-        return;
-    }
-}
 
 var inputOptions = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
