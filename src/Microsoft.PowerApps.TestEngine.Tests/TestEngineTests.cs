@@ -82,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", "", "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 

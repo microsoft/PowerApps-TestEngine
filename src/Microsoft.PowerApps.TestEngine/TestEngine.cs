@@ -92,9 +92,9 @@ namespace Microsoft.PowerApps.TestEngine
                 _state.ParseAndSetTestState(testConfigFile);
                 _state.SetEnvironment(environmentId);
                 _state.SetTenant(tenantId);
+                _state.SetDomain(domain);
 
                 Logger.LogDebug($"Using domain: {domain}");
-                _state.SetDomain(domain);
 
                 await RunTestByWorkerCountAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);
