@@ -140,7 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
 
-            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestSuiteDefinition>(), It.IsAny<BrowserConfiguration>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestSuiteDefinition>(), It.IsAny<BrowserConfiguration>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
 
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
