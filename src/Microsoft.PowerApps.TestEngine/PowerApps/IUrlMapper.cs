@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
     /// <summary>
-    /// Map urls based on the cloud
+    /// Map urls
     /// </summary>
     public interface IUrlMapper
     {
@@ -13,6 +13,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Generates url for the test
         /// </summary>
         /// <returns>Test url</returns>
-        public string GenerateTestUrl(string queryParams);
+        public string GenerateTestUrl(string domain, string queryParams);
     }
 }

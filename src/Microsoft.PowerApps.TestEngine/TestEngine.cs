@@ -20,7 +20,6 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly IFileSystem _fileSystem;
         private readonly ILoggerFactory _loggerFactory;
         private const string DefaultOutputDirectory = "TestOutput";
-        private const string DefaultCloud = "Prod";
         private ILogger Logger { get; set; }
 
         public TestEngine(ITestState state,
@@ -36,7 +35,7 @@ namespace Microsoft.PowerApps.TestEngine
             _loggerFactory = loggerFactory;
         }
 
-        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory, string cloud, string queryParams)
+        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory, string domain, string queryParams)
         {
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
@@ -63,7 +62,7 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 Logger.LogDebug($"Using query: {queryParams}");
             }
-
+            Logger.LogDebug($"Using domain: {domain}");
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
             Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
@@ -94,18 +93,10 @@ namespace Microsoft.PowerApps.TestEngine
                 _state.SetEnvironment(environmentId);
                 _state.SetTenant(tenantId);
 
-                if (string.IsNullOrEmpty(cloud))
-                {
-                    Logger.LogDebug($"Using default cloud: {DefaultCloud}");
-                    _state.SetCloud(DefaultCloud);
-                }
-                else
-                {
-                    Logger.LogDebug($"Using cloud: {cloud}");
-                    _state.SetCloud(cloud);
-                }
+                Logger.LogDebug($"Using domain: {domain}");
+                _state.SetDomain(domain);
 
-                await RunTestByWorkerCountAsync(testRunId, testRunDirectory, queryParams);
+                await RunTestByWorkerCountAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);
                 return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
             }
@@ -124,7 +115,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
         }
 
-        public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory, string queryParams)
+        public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
         {
             var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
             var allTestRuns = new List<Task>();
@@ -132,7 +123,7 @@ namespace Microsoft.PowerApps.TestEngine
             // Manage number of workers
             foreach (var browserConfig in browserConfigurations)
             {
-                allTestRuns.Add(Task.Run(() => RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, queryParams)));
+                allTestRuns.Add(Task.Run(() => RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams)));
                 if (allTestRuns.Count >= _state.GetWorkerCount())
                 {
                     Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
@@ -144,12 +135,12 @@ namespace Microsoft.PowerApps.TestEngine
             Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
             await Task.WhenAll(allTestRuns.ToArray());
         }
-        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string queryParams)
+        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams)
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
-                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, queryParams);
+                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams);
             }
         }
     }

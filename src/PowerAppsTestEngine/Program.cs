@@ -26,7 +26,8 @@ var switchMappings = new Dictionary<string, string>()
     { "-t", "TenantId" },
     { "-o", "OutputDirectory" },
     { "-l", "LogLevel" },
-    { "-q", "QueryParams" }
+    { "-q", "QueryParams" },
+    { "-d", "Domain" }
 };
 
 if (args.Length > 1)
@@ -117,6 +118,15 @@ else
         }
     }
 
+    if (!string.IsNullOrEmpty(inputOptions.Domain))
+    {
+        if (inputOptions.Domain.Substring(0, 1) == "-")
+        {
+            Console.Out.WriteLine("[Error]: Domain field is blank.");
+            return;
+        }
+    }
+
     var logLevel = LogLevel.Information; // Default log level
     if (!string.IsNullOrEmpty(inputOptions.LogLevel) && !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))
     {
@@ -147,17 +157,22 @@ else
     .AddSingleton<TestEngine>()
     .BuildServiceProvider();
 
-
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
     var queryParams = "";
+    var domain = "apps.powerapps.com";
 
     if (!string.IsNullOrEmpty(inputOptions.QueryParams))
     {
         queryParams = inputOptions.QueryParams;
     }
 
-    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, "", queryParams);
+    if (!string.IsNullOrEmpty(inputOptions.Domain))
+    {
+        domain = inputOptions.Domain;
+    }
+
+    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, domain, queryParams);
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }

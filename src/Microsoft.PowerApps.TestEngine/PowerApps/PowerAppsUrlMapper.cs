@@ -7,7 +7,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
     /// <summary>
-    /// Map urls based on the cloud
+    /// Map urls
     /// </summary>
     public class PowerAppsUrlMapper : IUrlMapper
     {
@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public string GenerateTestUrl(string additionalQueryParams)
+        public string GenerateTestUrl(string domain, string additionalQueryParams)
         {
             var environment = _testState.GetEnvironment();
             if (string.IsNullOrEmpty(environment))
@@ -51,10 +51,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 _singleTestInstanceState.GetLogger().LogError("Tenant cannot be empty.");
                 throw new InvalidOperationException();
             }
-
-            var cloud = _testState.GetCloud();
-
-            string domain = "apps.powerapps.com";
 
             var queryParametersForTestUrl = GetQueryParametersForTestUrl(tenantId, additionalQueryParams);
 
