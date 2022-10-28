@@ -41,16 +41,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public string GetEnvironment();
 
         /// <summary>
-        /// Set the cloud the app should be opened in.
+        /// Set the domain of the URL where the app will be launched
         /// </summary>
-        /// <param name="cloud">Cloud</param>
-        public void SetCloud(string cloud);
+        /// <param name="domain">Domain</param>
+        public void SetDomain(string domain);
 
         /// <summary>
-        /// Gets the cloud the app should be opened in.
+        /// Gets the domain of the URL where the app will be launched
         /// </summary>
-        /// <returns>Cloud</returns>
-        public string GetCloud();
+        /// <returns>Domain</returns>
+        public string GetDomain();
 
         /// <summary>
         /// Sets the tenant the app should be opened in.
