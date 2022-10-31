@@ -320,9 +320,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     await Page.FillAsync(selector, value);
                     await this.ClickAsync("input[type=\"submit\"]");
 
-                    ValidatePage();
-                    await Page.ClickAsync("[id=\"idBtn_Back\"]");
-                    await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                    // Check if going to stay signed in page; may not always go there
+                    // if(){
+                        ValidatePage();
+                        await Page.ClickAsync("[id=\"idBtn_Back\"]");
+                        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                    // }
                 }, options);
             }
             catch (TimeoutException)
