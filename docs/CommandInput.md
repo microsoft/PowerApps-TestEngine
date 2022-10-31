@@ -12,7 +12,7 @@ The executable can take in inputs defined in `config.dev.json`, or as command li
 | OutputDirectory | Path to folder the test results will be placed. Optional. If this is not provided, it will be placed in the `TestOutput` folder. |
 | LogLevel | Level for logging (Folllows [this](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel?view=dotnet-plat-ext-6.0)). Optional. If this is not provided, Information level logs and higher will be logged |
 | QueryParams | Specify query parameters to be added to the Power Apps URL. |
-
+| Domain | Specify what URL domain your app uses. This is optional; if not set, it will default to 'apps.powerapps.com'. |
 ## Config.json
 
 Please view the checked in `config.json` file for the latest format.
@@ -31,16 +31,4 @@ When provided, command line parameters will override anything specified in `conf
 | -o | OutputDirectory |
 | -l | LogLevel |
 | -q | QueryParams |
-
-## Test plan conversion
-The exe can also be used to convert an msapp's test json to a Test Engine yaml test plan.
-This is done by passing `convert` as an input followed by a path that leads to the test json.
-
-```bash
-#using the exe
-PowerAppsTestEngine.exe convert "path/to/test.json"
-
-#using dotnet run
-dotnet run convert "path/to/test.json"
-```
-The output is yaml test plan in the same directory as the test json.
+| -d | Domain |

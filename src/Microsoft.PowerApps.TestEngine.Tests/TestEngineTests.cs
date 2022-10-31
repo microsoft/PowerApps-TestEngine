@@ -75,23 +75,23 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = "TestOutput";
             var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
-            var expectedCloud = "Prod";
+            var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
 
             SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", "", "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile, environmentId, tenantId, expectedCloud, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile, environmentId, tenantId, domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         [Theory]
         [ClassData(typeof(TestDataGenerator))]
-        public async Task TestEngineTest(string outputDirectory, string cloud, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition)
+        public async Task TestEngineTest(string outputDirectory, string domain, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition)
         {
             var testConfigFile = "C:\\testPlan.fx.yaml";
             var environmentId = "defaultEnviroment";
@@ -103,10 +103,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 expectedOutputDirectory = "TestOutput";
             }
             var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
-            var expectedCloud = cloud;
-            if (string.IsNullOrEmpty(expectedCloud))
+
+            if (string.IsNullOrEmpty(domain))
             {
-                expectedCloud = "Prod";
+                domain = "apps.powerapps.com";
             }
 
             var expectedTestReportPath = "C:\\test.trx";
@@ -114,11 +114,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, cloud, "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile, environmentId, tenantId, expectedCloud, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile, environmentId, tenantId, domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         private void SetupMocks(string outputDirectory, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition, string testRunId, string testReportPath)
@@ -126,7 +126,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.ParseAndSetTestState(It.IsAny<string>()));
             MockState.Setup(x => x.SetEnvironment(It.IsAny<string>()));
             MockState.Setup(x => x.SetTenant(It.IsAny<string>()));
-            MockState.Setup(x => x.SetCloud(It.IsAny<string>()));
+            MockState.Setup(x => x.SetDomain(It.IsAny<string>()));
             MockState.Setup(x => x.SetOutputDirectory(It.IsAny<string>()));
             MockState.Setup(x => x.GetOutputDirectory()).Returns(outputDirectory);
             MockState.Setup(x => x.GetTestSettings()).Returns(testSettings);
@@ -140,20 +140,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
 
-            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestSuiteDefinition>(), It.IsAny<BrowserConfiguration>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestSuiteDefinition>(), It.IsAny<BrowserConfiguration>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
 
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
         }
 
 
-        private void Verify(string testConfigFile, string environmentId, string tenantId, string cloud, string queryParams,
+        private void Verify(string testConfigFile, string environmentId, string tenantId, string domain, string queryParams,
             string outputDirectory, string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, TestSettings testSettings)
         {
             MockState.Verify(x => x.ParseAndSetTestState(testConfigFile), Times.Once());
             MockState.Verify(x => x.SetEnvironment(environmentId), Times.Once());
             MockState.Verify(x => x.SetTenant(tenantId), Times.Once());
-            MockState.Verify(x => x.SetCloud(cloud), Times.Once());
+            MockState.Verify(x => x.SetDomain(domain), Times.Once());
             MockState.Verify(x => x.SetOutputDirectory(outputDirectory), Times.Once());
 
             MockTestReporter.Verify(x => x.CreateTestRun("Power Fx Test Runner", "User"), Times.Once());
@@ -163,7 +163,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             foreach (var browserConfig in testSettings.BrowserConfigurations)
             {
-                MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, queryParams), Times.Once());
+                MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams), Times.Once());
             }
 
             MockTestReporter.Verify(x => x.EndTestRun(testRunId), Times.Once());

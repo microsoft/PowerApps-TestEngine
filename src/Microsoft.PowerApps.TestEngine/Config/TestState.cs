@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
         private string EnvironmentId { get; set; }
-        private string Cloud { get; set; }
+        private string Domain { get; set; }
 
         private string TenantId { get; set; }
 
@@ -167,19 +167,18 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return EnvironmentId;
         }
 
-        public void SetCloud(string cloud)
+        public void SetDomain(string domain)
         {
-            if (string.IsNullOrEmpty(cloud))
+            if (string.IsNullOrEmpty(domain))
             {
-                throw new ArgumentNullException(nameof(cloud));
+                throw new ArgumentNullException(nameof(domain));
             }
-            // TODO: validate clouds
-            Cloud = cloud;
+            Domain = domain;
         }
 
-        public string GetCloud()
+        public string GetDomain()
         {
-            return Cloud;
+            return Domain;
         }
 
         public void SetTenant(string tenantId)

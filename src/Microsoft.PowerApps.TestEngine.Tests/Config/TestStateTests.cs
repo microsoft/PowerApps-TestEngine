@@ -134,15 +134,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
 
             var environmentId = Guid.NewGuid().ToString();
             var tenantId = Guid.NewGuid().ToString();
-            var cloud = "Prod";
+            var domain = "apps.powerapps.com";
             var outputDirectory = Guid.NewGuid().ToString();
 
             state.SetEnvironment(environmentId);
             Assert.Equal(environmentId, state.GetEnvironment());
             state.SetTenant(tenantId);
             Assert.Equal(tenantId, state.GetTenant());
-            state.SetCloud(cloud);
-            Assert.Equal(cloud, state.GetCloud());
+            state.SetDomain(domain);
+            Assert.Equal(domain, state.GetDomain());
             state.SetOutputDirectory(outputDirectory);
             Assert.Equal(outputDirectory, state.GetOutputDirectory());
         }
@@ -471,10 +471,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetCloudThrowsOnNullInput(string cloud)
+        public void SetDomainThrowsOnNullInput(string domain)
         {
             var state = new TestState(MockTestConfigParser.Object);
-            Assert.Throws<ArgumentNullException>(() => state.SetCloud(cloud));
+            Assert.Throws<ArgumentNullException>(() => state.SetDomain(domain));
         }
 
         [Theory]

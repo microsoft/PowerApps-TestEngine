@@ -13,7 +13,6 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.TestStudioConverter;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
@@ -26,22 +25,9 @@ var switchMappings = new Dictionary<string, string>()
     { "-t", "TenantId" },
     { "-o", "OutputDirectory" },
     { "-l", "LogLevel" },
-    { "-q", "QueryParams" }
+    { "-q", "QueryParams" },
+    { "-d", "Domain" }
 };
-
-if (args.Length > 1)
-{
-    if (args[0].Equals("convert"))
-    {
-        string InputDir = args[1];
-
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { builder.ClearProviders(); builder.AddConsole(); });
-        ILogger<CreateYamlTestPlan> logger = loggerFactory.CreateLogger<CreateYamlTestPlan>();
-        CreateYamlTestPlan converter = new CreateYamlTestPlan(logger, InputDir);
-        converter.ExportYaml();
-        return;
-    }
-}
 
 var inputOptions = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -117,6 +103,15 @@ else
         }
     }
 
+    if (!string.IsNullOrEmpty(inputOptions.Domain))
+    {
+        if (inputOptions.Domain.Substring(0, 1) == "-")
+        {
+            Console.Out.WriteLine("[Error]: Domain field is blank.");
+            return;
+        }
+    }
+
     var logLevel = LogLevel.Information; // Default log level
     if (!string.IsNullOrEmpty(inputOptions.LogLevel) && !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))
     {
@@ -147,17 +142,22 @@ else
     .AddSingleton<TestEngine>()
     .BuildServiceProvider();
 
-
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
     var queryParams = "";
+    var domain = "apps.powerapps.com";
 
     if (!string.IsNullOrEmpty(inputOptions.QueryParams))
     {
         queryParams = inputOptions.QueryParams;
     }
 
-    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, "", queryParams);
+    if (!string.IsNullOrEmpty(inputOptions.Domain))
+    {
+        domain = inputOptions.Domain;
+    }
+
+    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, domain, queryParams);
 
     Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }

@@ -4,5 +4,6 @@
   "testPlanFile": "",
   "outputDirectory": "",
   "logLevel": "",
+  "domain":  "",
   "queryParams": ""
 }
