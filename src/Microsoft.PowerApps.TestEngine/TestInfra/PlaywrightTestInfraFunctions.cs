@@ -314,7 +314,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             // URL that should be redirected to
             options.UrlString = desiredUrl;
-            
+
             ValidatePage();
 
             try
@@ -337,7 +337,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                         // Set options for the WaitForSelectorOptions function
                         PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
                         selectorOptions.Timeout = 0;
-                        
+
                         ValidatePage();
 
                         logger.LogDebug("Checking for 'Stay signed in?' dialogue box.");
