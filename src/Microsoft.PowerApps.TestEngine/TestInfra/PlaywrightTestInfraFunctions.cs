@@ -307,25 +307,53 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         [ExcludeFromCodeCoverage]
         public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
         {
-            PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
-            options.UrlString = desiredUrl;
             var logger = _singleTestInstanceState.GetLogger();
+
+            // Setting options fot the RunAndWaitForNavigationAsync function
+            PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
+
+            // URL that should be redirected to
+            options.UrlString = desiredUrl;
+            
             ValidatePage();
 
             try
             {
+                // Only continue if redirected to the correct page
                 await Page.RunAndWaitForNavigationAsync(async () =>
                 {
+                    // Find the password box
                     await Page.Locator(selector).WaitForAsync();
+
+                    // Fill in the password
                     await Page.FillAsync(selector, value);
+
+                    // Submit password form
                     await this.ClickAsync("input[type=\"submit\"]");
 
-                    // Check if going to stay signed in page; may not always go there
-                    // if(){
+                    // For instances where there is a 'Stay signed in?' dialogue box.
+                    try
+                    {
+                        // Set options for the WaitForSelectorOptions function
+                        PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
+                        selectorOptions.Timeout = 0;
+                        
                         ValidatePage();
+
+                        // Check if we received a 'Stay signed in?' box?
+                        await Page.WaitForSelectorAsync("[id=\"idBtn_Back\"]", selectorOptions);
+
+                        // Click to stay signed in
                         await Page.ClickAsync("[id=\"idBtn_Back\"]");
-                        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-                    // }
+                    }
+                    // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
+                    catch (Exception)
+                    {
+                        
+                    }
+
+                    await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
                 }, options);
             }
             catch (TimeoutException)
