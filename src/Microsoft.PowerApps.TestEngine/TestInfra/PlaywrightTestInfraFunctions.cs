@@ -338,12 +338,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                         PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
                         ValidatePage();
 
-                        logger.LogDebug("Checking for 'Stay signed in?' dialogue box");
-
                         // Check if we received a 'Stay signed in?' box?
                         await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", selectorOptions);
-
-                        logger.LogDebug("'Stay signed in?' dialogue box appeared");
 
                         // Click to stay signed in
                         await Page.ClickAsync("[id=\"idBtn_Back\"]");
@@ -351,7 +347,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
                     catch (Exception)
                     {
-                        logger.LogDebug("'Stay signed in?' dialogue box did not appear");
                     }
                     await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
                 }, options);
