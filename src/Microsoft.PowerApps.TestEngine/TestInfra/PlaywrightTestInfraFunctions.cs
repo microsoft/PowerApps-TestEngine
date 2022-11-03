@@ -334,7 +334,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     // For instances where there is a 'Stay signed in?' dialogue box
                     try
                     {
-                         ValidatePage();
+                        ValidatePage();
 
                         logger.LogDebug("Checking if asked to stay signed in.");
 
@@ -360,7 +360,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                             hasPasswordError = true;
                         }
                         catch (Exception peException)
-                        {  
+                        {
                             logger.LogDebug("Exception encountered: " + peException.ToString());
                         }
 
