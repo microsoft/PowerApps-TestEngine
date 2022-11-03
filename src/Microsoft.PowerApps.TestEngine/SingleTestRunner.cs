@@ -99,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
-                Logger.LogInformation("Successfully navigate page to target URL.");
+                Logger.LogInformation("Successfully navigated to target URL");
 
                 // Log in user
                 await _userManager.LoginAsUserAsync(desiredUrl);
