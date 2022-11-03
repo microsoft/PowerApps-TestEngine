@@ -331,23 +331,54 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     // Submit password form
                     await this.ClickAsync("input[type=\"submit\"]");
 
-                    // For instances where there is a 'Stay signed in?' dialogue box.
+                    // For instances where there is a 'Stay signed in?' dialogue box
                     try
                     {
-                        // Set options for the WaitForSelectorOptions function
-                        PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
-                        ValidatePage();
+                         ValidatePage();
+
+                        logger.LogDebug("Checking if asked to stay signed in.");
 
                         // Check if we received a 'Stay signed in?' box?
-                        await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", selectorOptions);
+                        await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]");
+                        logger.LogDebug("Was asked to 'stay signed in'.");
 
                         // Click to stay signed in
                         await Page.ClickAsync("[id=\"idBtn_Back\"]");
                     }
                     // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
-                    catch (Exception)
+                    catch (Exception ssiException)
                     {
+                        logger.LogDebug("Exception encountered: " + ssiException.ToString());
+
+                        // Keep record if passwordError was encountered
+                        bool hasPasswordError = false;
+
+                        try
+                        {
+                            // Check if we received a password error
+                            await Page.WaitForSelectorAsync("[id=\"passwordError\"]");
+                            hasPasswordError = true;
+                        }
+                        catch (Exception peException)
+                        {  
+                            logger.LogDebug("Exception encountered: " + peException.ToString());
+                        }
+
+                        // If encountered password error, exit program
+                        if (hasPasswordError)
+                        {
+                            logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
+                            throw new InvalidOperationException();
+                        }
+                        // If not, continue
+                        else
+                        {
+                            logger.LogDebug("Did not encounter an invalid password error.");
+                        }
+
+                        logger.LogDebug("Was not asked to 'stay signed in'.");
                     }
+
                     await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
                 }, options);
             }
