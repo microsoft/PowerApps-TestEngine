@@ -337,7 +337,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     // For instances where there is a 'Stay signed in?' dialogue box
                     try
                     {
-                        
                         logger.LogDebug("Checking if asked to stay signed in.");
 
                         // Check if we received a 'Stay signed in?' box?
