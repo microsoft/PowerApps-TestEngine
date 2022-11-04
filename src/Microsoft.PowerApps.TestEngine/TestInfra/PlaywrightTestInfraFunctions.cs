@@ -331,15 +331,17 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     // Submit password form
                     await this.ClickAsync("input[type=\"submit\"]");
 
+                    PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
+                    selectorOptions.Timeout = 8;
+
                     // For instances where there is a 'Stay signed in?' dialogue box
                     try
                     {
-                        ValidatePage();
-
+                        
                         logger.LogDebug("Checking if asked to stay signed in.");
 
                         // Check if we received a 'Stay signed in?' box?
-                        await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]");
+                        await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", selectorOptions);
                         logger.LogDebug("Was asked to 'stay signed in'.");
 
                         // Click to stay signed in
@@ -355,8 +357,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
                         try
                         {
+                            selectorOptions.Timeout = 2;
+
                             // Check if we received a password error
-                            await Page.WaitForSelectorAsync("[id=\"passwordError\"]");
+                            await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
                             hasPasswordError = true;
                         }
                         catch (Exception peException)
