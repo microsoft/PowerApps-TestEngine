@@ -332,7 +332,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     await this.ClickAsync("input[type=\"submit\"]");
 
                     PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
-                    selectorOptions.Timeout = 8;
+                    selectorOptions.Timeout = 800;
 
                     // For instances where there is a 'Stay signed in?' dialogue box
                     try
@@ -356,7 +356,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
                         try
                         {
-                            selectorOptions.Timeout = 2;
+                            selectorOptions.Timeout = 200;
 
                             // Check if we received a password error
                             await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
