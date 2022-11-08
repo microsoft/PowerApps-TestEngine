@@ -4,7 +4,7 @@
 
 `Assert(BooleanExpression, Message)`
 
-The Assert function takes in a Power FX expression that should evaluate to a boolean value. If the value returned is false, the test will fail.
+The Assert function takes in a Power Fx expression that should evaluate to a boolean value. If the value returned is false, the test will fail.
 
 ## Example
 `Assert(Label1.Text = "1");`

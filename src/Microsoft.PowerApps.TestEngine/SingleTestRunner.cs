@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine
             _loggerFactory = loggerFactory;
         }
 
-        public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string queryParams)
+        public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams)
         {
             RunCount++;
 
@@ -92,11 +92,14 @@ namespace Microsoft.PowerApps.TestEngine
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
+                Logger.LogInformation("Test infrastructure setup finished");
 
-                var desiredUrl = _urlMapper.GenerateTestUrl(queryParams);
+                var desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
+                Logger.LogTrace($"Desired URL: {desiredUrl}");
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
+                Logger.LogInformation("Successfully navigated to target URL");
 
                 // Log in user
                 await _userManager.LoginAsUserAsync(desiredUrl);

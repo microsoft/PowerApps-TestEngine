@@ -7,7 +7,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 namespace Microsoft.PowerApps.TestEngine.PowerApps
 {
     /// <summary>
-    /// Map urls based on the cloud
+    /// Map urls
     /// </summary>
     public class PowerAppsUrlMapper : IUrlMapper
     {
@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public string GenerateTestUrl(string additionalQueryParams)
+        public string GenerateTestUrl(string domain, string additionalQueryParams)
         {
             var environment = _testState.GetEnvironment();
             if (string.IsNullOrEmpty(environment))
@@ -52,33 +52,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 throw new InvalidOperationException();
             }
 
-            var cloud = _testState.GetCloud();
-
-            if (cloud == null)
-            {
-                cloud = "";
-            }
-
-            string domain;
-            // TODO: implement the other clouds
-            switch (cloud.ToLower())
-            {
-                case "test":
-                    domain = "apps.test.powerapps.com";
-                    break;
-                case "prod":
-                    domain = "apps.powerapps.com";
-                    break;
-                default:
-                    // TODO: determine what happens on default
-                    domain = "apps.powerapps.com";
-                    break;
-            }
-
             var queryParametersForTestUrl = GetQueryParametersForTestUrl(tenantId, additionalQueryParams);
+
             return !string.IsNullOrEmpty(appLogicalName) ?
                    $"https://{domain}/play/e/{environment}/an/{appLogicalName}{queryParametersForTestUrl}" :
-                   $"https://{domain}/play/{appId}{queryParametersForTestUrl}";
+                   $"https://{domain}/play/e/{environment}/a/{appId}{queryParametersForTestUrl}";
         }
 
         private static string GetQueryParametersForTestUrl(string tenantId, string additionalQueryParams)

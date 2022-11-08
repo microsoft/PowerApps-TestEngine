@@ -75,8 +75,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 Timeout = testSettings.Timeout
             };
 
+            var browser = PlaywrightObject[browserConfig.Browser];
+            if (browser == null)
+            {
+                _singleTestInstanceState.GetLogger().LogError("Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers");
+                throw new InvalidOperationException("Browser not supported.");
+            }
 
-            Browser = await PlaywrightObject[browserConfig.Browser].LaunchAsync(launchOptions);
+            Browser = await browser.LaunchAsync(launchOptions);
+            _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");
 
             var contextOptions = new BrowserNewContextOptions();
 
@@ -100,6 +107,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
 
             BrowserContext = await Browser.NewContextAsync(contextOptions);
+            _singleTestInstanceState.GetLogger().LogInformation("Browser context created");
         }
 
         public async Task SetupNetworkRequestMockAsync()
@@ -299,29 +307,91 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         [ExcludeFromCodeCoverage]
         public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
         {
+            var logger = _singleTestInstanceState.GetLogger();
+
+            // Setting options fot the RunAndWaitForNavigationAsync function
             PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
+
+            // URL that should be redirected to
             options.UrlString = desiredUrl;
 
             ValidatePage();
 
             try
             {
+                // Only continue if redirected to the correct page
                 await Page.RunAndWaitForNavigationAsync(async () =>
                 {
+                    // Find the password box
                     await Page.Locator(selector).WaitForAsync();
+
+                    // Fill in the password
                     await Page.FillAsync(selector, value);
+
+                    // Submit password form
                     await this.ClickAsync("input[type=\"submit\"]");
 
-                    ValidatePage();
-                    await Page.ClickAsync("[id=\"idBtn_Back\"]");
+                    PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
+                    selectorOptions.Timeout = 8000;
+
+                    // For instances where there is a 'Stay signed in?' dialogue box
+                    try
+                    {
+                        logger.LogDebug("Checking if asked to stay signed in.");
+
+                        // Check if we received a 'Stay signed in?' box?
+                        await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", selectorOptions);
+                        logger.LogDebug("Was asked to 'stay signed in'.");
+
+                        // Click to stay signed in
+                        await Page.ClickAsync("[id=\"idBtn_Back\"]");
+                    }
+                    // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
+                    catch (Exception ssiException)
+                    {
+                        logger.LogDebug("Exception encountered: " + ssiException.ToString());
+
+                        // Keep record if passwordError was encountered
+                        bool hasPasswordError = false;
+
+                        try
+                        {
+                            selectorOptions.Timeout = 2000;
+
+                            // Check if we received a password error
+                            await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
+                            hasPasswordError = true;
+                        }
+                        catch (Exception peException)
+                        {
+                            logger.LogDebug("Exception encountered: " + peException.ToString());
+                        }
+
+                        // If encountered password error, exit program
+                        if (hasPasswordError)
+                        {
+                            logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
+                            throw new InvalidOperationException();
+                        }
+                        // If not, continue
+                        else
+                        {
+                            logger.LogDebug("Did not encounter an invalid password error.");
+                        }
+
+                        logger.LogDebug("Was not asked to 'stay signed in'.");
+                    }
+
                     await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
                 }, options);
             }
             catch (TimeoutException)
             {
-                _singleTestInstanceState.GetLogger().LogError("Timed out during login attempt. In order to confirm why this timed out, it may be beneficial to watch the output recording. Make sure that your timeout period is long enough, and that your credentials are correct.");
+                logger.LogError("Timed out during login attempt. In order to determine why, it may be beneficial to view the output recording. Make sure that your login credentials are correct.");
                 throw new TimeoutException();
             }
+
+            logger.LogDebug("Logged in successfully.");
         }
     }
 }

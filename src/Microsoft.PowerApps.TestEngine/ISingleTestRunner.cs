@@ -18,6 +18,6 @@ namespace Microsoft.PowerApps.TestEngine
         /// <param name="testSuiteDefinition">Definition of test suite</param>
         /// <param name="browserConfig">Brower to run test on</param>
         /// <returns>Task</returns>
-        public Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string queryParams);
+        public Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams);
     }
 }

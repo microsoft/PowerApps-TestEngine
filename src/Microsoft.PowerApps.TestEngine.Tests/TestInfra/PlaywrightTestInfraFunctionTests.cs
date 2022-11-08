@@ -87,8 +87,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockPlaywrightObject.SetupGet(x => x.Devices).Returns(devicesDictionary);
             MockBrowserType.Setup(x => x.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>())).Returns(Task.FromResult(MockBrowser.Object));
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(testResultsDirectory);
             MockBrowser.Setup(x => x.NewContextAsync(It.IsAny<BrowserNewContextOptions>())).Returns(Task.FromResult(MockBrowserContext.Object));
+            LoggingTestHelper.SetupMock(MockLogger);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
@@ -147,6 +149,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Theory]
         [InlineData("")]
         [InlineData(null)]
+        [InlineData("Chrome")]
+        [InlineData("Safari")]
+        [InlineData("INVALID_BROWSER_NAME")]
         public async Task SetupAsyncThrowsOnInvalidBrowserTest(string browser)
         {
             var browserConfig = new BrowserConfiguration()
@@ -157,8 +162,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
 
+            var testSettings = new TestSettings()
+            {
+                Headless = true,
+                Timeout = 15
+            };
+
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
-                MockFileSystem.Object, MockPlaywrightObject.Object);
+                MockFileSystem.Object, null);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
         }
 

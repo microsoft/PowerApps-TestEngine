@@ -41,7 +41,7 @@ For Sharepoint/Dataverse/Connector apps, requestURL and Method can be the same f
 
 ### TestSteps
 
-- This can use any existing [Power FX](https://docs.microsoft.com/en-us/power-platform/power-fx/overview) functions or [specific test functions](../PowerFX/README.md) defined by this framework.
-- It should start with a | to allow for multiline YAML expressions followed by an = sign to indicate that it is a Power FX expression
+- This can use any existing [Power Fx](https://docs.microsoft.com/en-us/power-platform/power-fx/overview) functions or [specific test functions](../PowerFX/README.md) defined by this framework.
+- It should start with a | to allow for multiline YAML expressions followed by an = sign to indicate that it is a Power Fx expression
 - Functions should be separated by a ;
 - Comments can be used and should start with //
