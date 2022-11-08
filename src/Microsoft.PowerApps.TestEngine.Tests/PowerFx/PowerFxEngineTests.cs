@@ -19,10 +19,10 @@ using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 {
-    public class PowerFxEngineTests
+    public class PowerFxEngineTests 
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
-        private Mock<ITestState> MockTestState;
+        private Mock<ITestState> MockTestState; 
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
