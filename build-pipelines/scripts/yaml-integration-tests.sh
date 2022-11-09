@@ -7,6 +7,7 @@ do
   IFS=',' read -ra args <<< "$testplan"                    # separate the testplan arguments to args
   envId=''
   tenantId=''
+  domain=''
   testPlanFile=''
   outputDir=''
   for arg in "${args[@]}" 
@@ -23,6 +24,12 @@ do
           tenantId=${value[1]}
         fi
       fi
+      if [[ $arg == *"domain"* ]]; then
+        IFS=':' read -ra value <<< "$arg"
+        if [ -n "${value[1]}" ]; then
+          domain=${value[1]}
+        fi
+      fi
       if [[ $arg == *"testPlanFile"* ]]; then
         IFS=':' read -ra value <<< "$arg"
         if [ -n "${value[1]}" ]; then
@@ -36,7 +43,7 @@ do
         fi
        fi                                                                
     done
-  if [[ -n "${envId}" && -n "${tenantId}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then     # null checks on args
-    dotnet run -- -e ${envId} -t ${tenantId} -i ${testPlanFile} -o ${outputDir};  
+  if [[ -n "${envId}" && -n "${tenantId}" && -n "${domain}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then     # null checks on args
+    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir};  
   fi
 done
