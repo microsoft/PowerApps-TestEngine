@@ -250,7 +250,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
             var result = powerAppFunctions.GetPropertyValueFromControl<string>(itemPath);
             Assert.Equal(expectedOutput, result);
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"PowerAppsTestEngine.getPropertyValue({itemPathString}).then((propertyValue) => JSON.stringify(propertyValue));"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"PowerAppsTestEngine.getPropertyValue({itemPathString})"), Times.Once());
         }
 
         [Theory]
