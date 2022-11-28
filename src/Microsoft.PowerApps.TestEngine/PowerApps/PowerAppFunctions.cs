@@ -214,21 +214,21 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
-        public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, TableValue value)
+        public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, TableValue tableValue)
         {
             ValidateItemPath(itemPath, false);
 
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            RecordValueObject[] jsonArr = new RecordValueObject[value.Rows.Count()];
+            RecordValueObject[] jsonArr = new RecordValueObject[tableValue.Rows.Count()];
 
             var index = 0;
-            foreach (var row in value.Rows)
+            foreach (var row in tableValue.Rows)
             {
                 if (row.IsValue)
                 {
-                    var recordValue = row.Value.GetField("Value");
+                    var recordValue = row.Value.Fields.First().Value;
                     var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
-                    if (val != null)
+                    if (!String.IsNullOrEmpty(val))
                     {
                         jsonArr[index++] = new RecordValueObject(val);
                     }
