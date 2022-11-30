@@ -97,3 +97,15 @@ jobs:
           { "environmentId": "ea47a6c3-2392-e1f1-8c55-364cd58a6719", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "ea47a6c3-2392-e1f1-8c55-364cd58a6719", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'     
     secrets: inherit
+  notification:
+    if: failure() && github.event_name == 'schedule' #send notification only for schedule failure
+    needs: yaml-integration-tests
+    runs-on: ubuntu-latest
+    name: Send Notification To Teams
+    steps:
+    - name: Send a Notification to Teams
+      id: notify
+      uses: thechetantalwar/teams-notify@v2
+      with:
+        teams_webhook_url: ${{ secrets.TEAM_HOOK }}
+        message: "Github Action Build is failing. Please check https://github.com/microsoft/PowerApps-TestEngine/actions for more details."
