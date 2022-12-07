@@ -182,9 +182,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var argument = new string[] { itemPathString, objectValue.ToString() };
-            var expression = "([itemPathString, objectValue]) => PowerAppsTestEngine.setPropertyValue(itemPathString, objectValue)";
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, argument);
+            var sanitizedObjectValue = Uri.EscapeDataString(objectValue.ToString());
+            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString}, \"{sanitizedObjectValue}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
         public async Task<bool> SetPropertyDateAsync(ItemPath itemPath, DateValue value)
