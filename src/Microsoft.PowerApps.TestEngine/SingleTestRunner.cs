@@ -68,7 +68,7 @@ namespace Microsoft.PowerApps.TestEngine
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
-            var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName} -temp");
+            var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName}");
 
             Logger = _loggerFactory.CreateLogger(testSuiteId);
             _testState.SetLogger(Logger);
