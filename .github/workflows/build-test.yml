@@ -61,7 +61,7 @@ jobs:
         with:
           recreate: true
           path: code-coverage-results.md
-  yaml-integration-tests-prod:
+  yaml-integration-tests:
     needs: build
     uses: ./.github/workflows/yaml-integration-tests.yml
     with: 
@@ -77,7 +77,7 @@ jobs:
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]' 
     secrets: inherit
-  yaml-integration-tests-preprod:
+  yaml-integration-tests:
     needs: build
     uses: ./.github/workflows/yaml-integration-tests.yml
     with: 
@@ -93,7 +93,7 @@ jobs:
           { "environmentId": "ea47a6c3-2392-e1f1-8c55-364cd58a6719", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "ea47a6c3-2392-e1f1-8c55-364cd58a6719", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'    
     secrets: inherit
-  yaml-integration-tests-test:
+  yaml-integration-tests:
     needs: build
     uses: ./.github/workflows/yaml-integration-tests.yml
     with: 
