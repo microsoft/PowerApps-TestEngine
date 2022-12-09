@@ -4,7 +4,7 @@ IFS='}' read -ra testplans <<< $1     # separate the parameters to testplans
 cd ../../src/PowerAppsTestEngine
 for testplan in "${testplans[@]}" 
 do
-  IFS=',' read -ra args <<< "$testplan"                    # separate the testplan arguments to args
+  IFS=',' read -ra args <<< "$testplan"                    # separate the test plan arguments to args
   envId=''
   tenantId=''
   domain=''
