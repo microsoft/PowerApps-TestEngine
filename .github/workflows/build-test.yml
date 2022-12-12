@@ -111,7 +111,7 @@ jobs:
     secrets: inherit
   notification:
     if: failure() && github.event_name == 'schedule' #send notification only for schedule failure
-    needs: yaml-integration-tests
+    needs: [yaml-integration-tests-prod, yaml-integration-tests-preprod, yaml-integration-tests-test]
     runs-on: ubuntu-latest
     name: Send Notification To Teams
     steps:
