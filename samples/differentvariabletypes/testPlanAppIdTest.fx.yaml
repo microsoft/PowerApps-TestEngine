@@ -1,0 +1,86 @@
+testSuite:
+  testSuiteName: DifferentVariableTypes-AppId
+  testSuiteDescription: Showcases usage of Assert/Wait/SetProperty with multiple types, using AppId instead of AppLogicalName
+  persona: User1
+  appId: 5f30b052-2edc-4da7-b950-b894978a1eba
+
+  testCases:
+    - testCaseName: String_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Number_Case
+      testSteps: |
+        = Screenshot("number_type_loaded.png");
+
+          Wait(Rating1, "Value", 3);
+
+          SetProperty(Rating1.Value, 5);
+
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+
+          Screenshot("number_type_end.png");
+    - testCaseName: Boolean_Case
+      testSteps: |
+        = Screenshot("boolean_type_loaded.png");
+
+          Wait(Toggle1, "Value", false);
+
+          SetProperty(Toggle1.Value, true);
+
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+
+          Screenshot("boolean_type_end.png");
+    - testCaseName: Date_Case
+      testSteps: |
+        = Screenshot("date_type_loaded.png");
+
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("date_type_end.png");
+    - testCaseName: DateTime_Case
+      testSteps: |
+        = Screenshot("datetime_type_loaded.png");
+
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          Screenshot("datetime_type_end.png");
+    - testCaseName: Record_Case
+      testSteps: |
+        = Screenshot("record_type_loaded.png");
+
+         SetProperty(Dropdown1.Selected, {Value:"2"});
+
+         Screenshot("record_type_end.png");
+    - testCaseName: Table_Case
+      testSteps: |
+        = Screenshot("table_type_loaded.png");
+
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          
+          Screenshot("table_type_end.png");
+
+testSettings:
+  filePath: ../../samples/testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
