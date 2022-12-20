@@ -67,8 +67,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             try
             {
-                var exp = "typeof PowerAppsTestEngine";
-                var result = await _testInfraFunctions.RunJavascriptAsync<string>(exp);
+                var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
+                var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
                 if (result == "undefined")
                 {
                     _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
