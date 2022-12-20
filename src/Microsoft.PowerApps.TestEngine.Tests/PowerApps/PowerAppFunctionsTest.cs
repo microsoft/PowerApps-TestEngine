@@ -668,6 +668,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Once());
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), PowerAppFunctions.PublishedAppIframeName), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Legacy WebPlayer in use, injecting embedded JS", LogLevel.Debug, Times.Once());
+
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
