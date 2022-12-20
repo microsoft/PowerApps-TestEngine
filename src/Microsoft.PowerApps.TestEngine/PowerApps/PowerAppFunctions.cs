@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
         private bool IsPlayerJsLoaded { get; set; } = false;
-        private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
+        public static string PublishedAppIframeName = "fullscreen-app-host";
         private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine try to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine try to get property value.";
