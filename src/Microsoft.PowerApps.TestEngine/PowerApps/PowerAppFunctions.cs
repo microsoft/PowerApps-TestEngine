@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
         private bool IsPlayerJsLoaded { get; set; } = false;
-        private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
+        public static string PublishedAppIframeName = "fullscreen-app-host";
         private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine try to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine try to get property value.";
@@ -67,6 +67,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             try
             {
+                var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
+                var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
+                if (result.ToLower() == "undefined")
+                {
+                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                }
+
                 var expression = "PowerAppsTestEngine.getAppStatus()";
                 return (await _testInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
