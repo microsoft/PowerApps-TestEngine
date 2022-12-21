@@ -69,7 +69,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
                 var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
-                if (result == "undefined")
+                if (result.ToLower() == "undefined")
                 {
                     _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
