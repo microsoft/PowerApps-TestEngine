@@ -20,8 +20,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
         private bool IsPlayerJsLoaded { get; set; } = false;
-        private bool IsPublishedAppTestingJsLoaded { get; set; } = false;
-        private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
+        public static string PublishedAppIframeName = "fullscreen-app-host";
+        private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
+        private string GetItemCountErrorMessage = "Something went wrong when Test Engine try to get item count.";
+        private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine try to get property value.";
+        private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine try to load object model.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
@@ -64,11 +67,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             try
             {
-                if (!IsPlayerJsLoaded)
+                var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
+                var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
+                if (result.ToLower() == "undefined")
                 {
+                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-                    IsPlayerJsLoaded = true;
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
+
                 var expression = "PowerAppsTestEngine.getAppStatus()";
                 return (await _testInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
