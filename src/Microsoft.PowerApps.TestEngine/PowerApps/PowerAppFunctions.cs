@@ -134,7 +134,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return controlDictionary;
         }
 
-        private async void checkAndHandleIfLegacyPlayer()
+        private async void CheckAndHandleIfLegacyPlayer()
         {
             try
             {
@@ -154,7 +154,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         }
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
         {
-            checkAndHandleIfLegacyPlayer();
+            CheckAndHandleIfLegacyPlayer();
 
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), GetAppStatusErrorMessage);
 
