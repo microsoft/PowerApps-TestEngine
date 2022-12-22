@@ -136,13 +136,21 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async void checkAndHandleIfLegacyPlayer()
         {
-            var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
-            var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
-            if (result.ToLower() == "undefined")
+            try
             {
-                _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
-                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
+                var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
+                if (result.ToLower() == "undefined")
+                {
+                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
+                return false;
             }
         }
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
