@@ -150,7 +150,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             catch (Exception ex)
             {
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
-                return false;
             }
         }
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
