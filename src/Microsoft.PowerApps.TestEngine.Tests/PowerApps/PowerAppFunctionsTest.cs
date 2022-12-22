@@ -345,6 +345,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             var objectModel = await powerAppFunctions.LoadPowerAppsObjectModelAsync();
 
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)null, LogLevel.Debug, Times.Exactly(2));
@@ -396,6 +397,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             var objectModel = await powerAppFunctions.LoadPowerAppsObjectModelAsync();
 
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)"Control: Label1 already added", LogLevel.Trace, Times.Once());
@@ -421,6 +423,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
@@ -528,8 +531,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"))
-                .Returns(Task.FromResult("object"))
                 .Returns(Task.FromResult("object"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Returns(Task.FromResult("Loading"))
@@ -542,6 +543,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeast(3));
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
@@ -553,9 +555,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"))
-                .Returns(Task.FromResult("object"))
-                .Returns(Task.FromResult("object"))
                 .Returns(Task.FromResult("object"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Throws(new Exception())
@@ -571,6 +570,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeast(4));
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
@@ -582,8 +582,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"))
-                .Returns(Task.FromResult("object"))
                 .Returns(Task.FromResult("object"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Returns(Task.FromResult("Busy"))
@@ -596,6 +594,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeast(3));
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
@@ -607,9 +606,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"))
-                .Returns(Task.FromResult("object"))
-                .Returns(Task.FromResult("object"))
                 .Returns(Task.FromResult("object"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Throws(new Exception())
@@ -634,8 +630,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"))
-                .Returns(Task.FromResult("object"))
                 .Returns(Task.FromResult("object"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Returns(Task.FromResult("Busy"))
@@ -670,6 +664,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), PowerAppFunctions.PublishedAppIframeName), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "Legacy WebPlayer in use, injecting embedded JS", LogLevel.Trace, Times.Once());
 
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
