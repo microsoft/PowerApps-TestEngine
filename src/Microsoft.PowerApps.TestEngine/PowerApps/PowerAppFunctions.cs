@@ -134,8 +134,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return controlDictionary;
         }
 
-        private async Task<string> GetPowerAppsTestEngineObject(){
-            return await _testInfraFunctions.RunJavascriptAsync<string>("typeof PowerAppsTestEngine");
+        private async Task<string> GetPowerAppsTestEngineObject() {
+            var result = "undefined";
+
+            try
+            {
+                result = await _testInfraFunctions.RunJavascriptAsync<string>("typeof PowerAppsTestEngine");
+            }
+            catch (NullReferenceException) {}
+
+            return result;
         }
 
         private async void CheckAndHandleIfLegacyPlayer()

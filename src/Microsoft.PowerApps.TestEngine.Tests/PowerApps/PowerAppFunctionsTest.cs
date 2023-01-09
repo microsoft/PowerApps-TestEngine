@@ -644,10 +644,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Fact]
-        public async Task LoadPowerAppsObjectModelAsyncEmbedJS()
+        public async Task LoadPowerAppsObjectModelAsyncEmbedJSUndefined()
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
+                .Returns(Task.FromResult("undefined"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
                 .Returns(Task.FromResult("undefined"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
