@@ -133,25 +133,34 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             return controlDictionary;
         }
+        
+        private async void SetupLegacyPlayer(){
+            _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
+            await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
+            await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+        }
 
         private async void CheckAndHandleIfLegacyPlayer()
         {
             try
             {
-                var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
-                var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
-                if (result.ToLower() == "undefined")
+                // See if uses the legacy player
+                try
                 {
-                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                    var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
+                    var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
+
+                    PollingHelper.Poll<string>(result.ToLower(), (x) => x != "undefined", () => SetupLegacyPlayer(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Using legacy player.");
                 }
+                // Catch timeout, move on without setting up Legacy Player
+                catch (TimeoutException){}
             }
             catch (Exception ex)
             {
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
             }
         }
+
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
         {
             CheckAndHandleIfLegacyPlayer();
