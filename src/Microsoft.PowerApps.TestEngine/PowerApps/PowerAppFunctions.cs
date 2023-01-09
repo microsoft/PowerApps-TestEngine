@@ -134,7 +134,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return controlDictionary;
         }
 
-        private async string GetPowerAppsTestEngineObject(){
+        private string GetPowerAppsTestEngineObject(){
             return await _testInfraFunctions.RunJavascriptAsync<string>("typeof PowerAppsTestEngine");
         }
 
