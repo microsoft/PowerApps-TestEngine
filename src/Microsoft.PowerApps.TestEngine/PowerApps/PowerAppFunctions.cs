@@ -145,7 +145,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 // See if using legacy player
                 try
                 {
-                    PollingHelper.Poll<string>(result.ToLower(), (x) => x == "undefined", GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Using legacy player.");
+                    PollingHelper.Poll<string>("undefined", (x) => x.ToLower() == "undefined", GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Using legacy player.");
                 }
                 catch (TimeoutException){
                     _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
