@@ -45,8 +45,8 @@ if (inputOptions == null)
 else
 {
 
-    // If an empty field is put in via commandline, it won't register as empty
-    // It will cannabalize the next flag, and then ruin the next flag's operation
+    // If an empty field is put in via command-line, it won't register as empty
+    // It will cannibalize the next flag, and then ruin the next flag's operation
     // Therefore, we have to abort the program in this instance
 
     if (!string.IsNullOrEmpty(inputOptions.TestPlanFile))

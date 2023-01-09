@@ -20,8 +20,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
         private bool IsPlayerJsLoaded { get; set; } = false;
-        private bool IsPublishedAppTestingJsLoaded { get; set; } = false;
-        private string PublishedAppIframeName { get; set; } = "fullscreen-app-host";
+        public static string PublishedAppIframeName = "fullscreen-app-host";
+        private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
+        private string GetItemCountErrorMessage = "Something went wrong when Test Engine try to get item count.";
+        private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine try to get property value.";
+        private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine try to load object model.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
@@ -35,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             ValidateItemPath(itemPath, true);
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString})";
+            var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString}).then((propertyValue) => JSON.stringify(propertyValue));";
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
         }
 
@@ -43,7 +46,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             var getProperty = GetPropertyValueFromControlAsync<T>(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger());
+            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger(), GetPropertyValueErrorMessage);
 
             return getProperty.GetResult();
         }
@@ -64,18 +67,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             try
             {
-                if (!IsPlayerJsLoaded)
-                {
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-                    IsPlayerJsLoaded = true;
-                }
                 var expression = "PowerAppsTestEngine.getAppStatus()";
                 return (await _testInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
             catch (Exception ex)
             {
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
-                IsPlayerJsLoaded = false;
                 return false;
             }
 
@@ -137,19 +134,33 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return controlDictionary;
         }
 
+        private async void CheckAndHandleIfLegacyPlayer()
+        {
+            try
+            {
+                var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
+                var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
+                if (result.ToLower() == "undefined")
+                {
+                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
+            }
+        }
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
+            CheckAndHandleIfLegacyPlayer();
 
-            if (!IsPublishedAppTestingJsLoaded)
-            {
-                await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
-                IsPublishedAppTestingJsLoaded = true;
-            }
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), GetAppStatusErrorMessage);
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), LoadObjectModelErrorMessage);
             _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;
@@ -191,9 +202,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
             // TODO: handle components
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var argument = new string[] { itemPathString, objectValue.ToString() };
-            var expression = "([itemPathString, objectValue]) => PowerAppsTestEngine.setPropertyValue(itemPathString, objectValue)";
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression, argument);
+            var sanitizedObjectValue = Uri.EscapeDataString(objectValue.ToString());
+            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString}, \"{sanitizedObjectValue}\")";
+            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
 
         public async Task<bool> SetPropertyDateAsync(ItemPath itemPath, DateValue value)
@@ -289,7 +300,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             var getItemCount = GetItemCountAsync(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger());
+            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger(), GetItemCountErrorMessage);
 
             return getItemCount.GetResult();
         }
