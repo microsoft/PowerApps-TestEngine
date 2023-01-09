@@ -133,27 +133,25 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             return controlDictionary;
         }
-        
-        private async void SetupLegacyPlayer(){
-            _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
-            await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-            await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+
+        private async string GetPowerAppsTestEngineObject(){
+            return await _testInfraFunctions.RunJavascriptAsync<string>("typeof PowerAppsTestEngine");
         }
 
         private async void CheckAndHandleIfLegacyPlayer()
         {
             try
             {
-                // See if uses the legacy player
+                // See if using legacy player
                 try
                 {
-                    var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
-                    var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
-
-                    PollingHelper.Poll<string>(result.ToLower(), (x) => x != "undefined", () => SetupLegacyPlayer(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Using legacy player.");
+                    PollingHelper.Poll<string>(result.ToLower(), (x) => x == "undefined", GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Using legacy player.");
                 }
-                // Catch timeout, move on without setting up Legacy Player
-                catch (TimeoutException){}
+                catch (TimeoutException){
+                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                }
             }
             catch (Exception ex)
             {
