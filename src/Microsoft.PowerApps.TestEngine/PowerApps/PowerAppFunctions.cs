@@ -19,7 +19,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
-        private bool IsPlayerJsLoaded { get; set; } = false;
+
+        // Error code suggesting published app without JSSDK, error code sent from the serverside JSSDK code
+        public static string PublishedAppWithoutJSSDKErrorCode = "1";
+        public static string PublishedAppWithoutJSSDKMessage = "Please republish the app and try again!";
+
         public static string PublishedAppIframeName = "fullscreen-app-host";
         private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine try to get item count.";
@@ -72,6 +76,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             catch (Exception ex)
             {
+                if (ex.ToString() == PublishedAppWithoutJSSDKErrorCode)
+                {
+                    _singleTestInstanceState.GetLogger().LogError(PublishedAppWithoutJSSDKMessage);
+                }
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
                 return false;
             }
