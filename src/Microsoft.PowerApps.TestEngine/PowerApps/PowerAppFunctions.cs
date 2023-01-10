@@ -157,7 +157,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer not in use.");
                 }
                 catch (TimeoutException){
-                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
+                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS.");
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
