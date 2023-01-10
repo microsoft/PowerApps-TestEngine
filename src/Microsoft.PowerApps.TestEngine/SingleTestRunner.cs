@@ -150,7 +150,7 @@ namespace Microsoft.PowerApps.TestEngine
                         }
                         catch (Exception ex)
                         {
-                            if (ex.ToString() == PowerAppFunctions.PublishedAppWithoutJSSDKErrorCode)
+                            if (ex.Message?.ToString() == PowerAppFunctions.PublishedAppWithoutJSSDKErrorCode)
                             {
                                 Logger.LogError(PowerAppFunctions.PublishedAppWithoutJSSDKMessage);
                             }
@@ -194,7 +194,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
             catch (Exception ex)
             {
-                if (ex.ToString() == PowerAppFunctions.PublishedAppWithoutJSSDKErrorCode)
+                if (ex.Message?.ToString() == PowerAppFunctions.PublishedAppWithoutJSSDKErrorCode)
                 {
                     Logger.LogError(PowerAppFunctions.PublishedAppWithoutJSSDKMessage);
                 }

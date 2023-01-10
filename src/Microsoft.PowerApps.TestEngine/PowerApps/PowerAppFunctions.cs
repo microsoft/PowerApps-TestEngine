@@ -76,7 +76,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             catch (Exception ex)
             {
-                if (ex.ToString() == PublishedAppWithoutJSSDKErrorCode)
+                if (ex.Message?.ToString() == PublishedAppWithoutJSSDKErrorCode)
                 {
                     _singleTestInstanceState.GetLogger().LogError(PublishedAppWithoutJSSDKMessage);
                 }
