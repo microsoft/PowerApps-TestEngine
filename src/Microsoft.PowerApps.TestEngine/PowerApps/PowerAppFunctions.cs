@@ -153,11 +153,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 // See if using legacy player
                 try
                 {
-                    await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Using legacy player.");
-                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer not in use.");
+                    await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "");
+                    _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer not in use.");
                 }
                 catch (TimeoutException){
-                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS.");
+                    _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
