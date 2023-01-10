@@ -21,10 +21,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ITestState _testState;
         private bool IsPlayerJsLoaded { get; set; } = false;
         public static string PublishedAppIframeName = "fullscreen-app-host";
-        private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
-        private string GetItemCountErrorMessage = "Something went wrong when Test Engine try to get item count.";
-        private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine try to get property value.";
-        private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine try to load object model.";
+        private string GetAppStatusErrorMessage = "Something went wrong when Test Engine tried to get App status.";
+        private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
+        private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
+        private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
