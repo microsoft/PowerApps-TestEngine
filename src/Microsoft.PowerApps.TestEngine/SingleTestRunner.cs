@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
@@ -150,10 +151,7 @@ namespace Microsoft.PowerApps.TestEngine
                         }
                         catch (Exception ex)
                         {
-                            if (ex.Message?.ToString() == PowerAppFunctions.PublishedAppWithoutJSSDKErrorCode)
-                            {
-                                Logger.LogError(PowerAppFunctions.PublishedAppWithoutJSSDKMessage);
-                            }
+                            ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, Logger);
 
                             casesFail++;
                             Logger.LogError(ex.ToString());
@@ -194,11 +192,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
             catch (Exception ex)
             {
-                if (ex.Message?.ToString() == PowerAppFunctions.PublishedAppWithoutJSSDKErrorCode)
-                {
-                    Logger.LogError(PowerAppFunctions.PublishedAppWithoutJSSDKMessage);
-                }
-
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, Logger);
                 Logger.LogError(ex.ToString());
                 TestException = ex;
             }

@@ -31,6 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine try to load object model.";
         private TypeMapping TypeMapping = new TypeMapping();
 
+        public static bool PrintedError = false;
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
         {
             _testInfraFunctions = testInfraFunctions;
@@ -39,7 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         }
 
         private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
-        {
+        { 
             ValidateItemPath(itemPath, true);
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString}).then((propertyValue) => JSON.stringify(propertyValue));";
@@ -76,10 +77,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             catch (Exception ex)
             {
-                if (ex.Message?.ToString() == PublishedAppWithoutJSSDKErrorCode)
+                if (!PrintedError && ex.Message?.ToString() == PublishedAppWithoutJSSDKErrorCode)
                 {
-                    _singleTestInstanceState.GetLogger().LogError(PublishedAppWithoutJSSDKMessage);
+                    PrintedError = true;
+                    throw;
                 }
+
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
                 return false;
             }
@@ -176,43 +179,59 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<bool> SelectControlAsync(ItemPath itemPath)
         {
-            ValidateItemPath(itemPath, false);
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"PowerAppsTestEngine.select({itemPathString})";
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            try
+            {
+                ValidateItemPath(itemPath, false);
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var expression = $"PowerAppsTestEngine.select({itemPathString})";
+                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                return false;
+            }
         }
 
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
         {
-            Object objectValue = null;
-
-            switch (value.Type)
+            try
             {
-                case (NumberType):
-                    objectValue = ((NumberValue)value).Value;
-                    break;
-                case (StringType):
-                    objectValue = ((StringValue)value).Value;
-                    break;
-                case (BooleanType):
-                    objectValue = ((BooleanValue)value).Value;
-                    break;
-                case (DateType):
-                    return await SetPropertyDateAsync(itemPath, (DateValue)value);
-                case (RecordType):
-                    return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
-                case (TableType):
-                    return await SetPropertyTableAsync(itemPath, (TableValue)value);
-                default:
-                    throw new ArgumentException("SetProperty must be a valid type.");
-            }
+                Object objectValue = null;
 
-            ValidateItemPath(itemPath, false);
-            // TODO: handle components
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var sanitizedObjectValue = Uri.EscapeDataString(objectValue.ToString());
-            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString}, \"{sanitizedObjectValue}\")";
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+                switch (value.Type)
+                {
+                    case (NumberType):
+                        objectValue = ((NumberValue)value).Value;
+                        break;
+                    case (StringType):
+                        objectValue = ((StringValue)value).Value;
+                        break;
+                    case (BooleanType):
+                        objectValue = ((BooleanValue)value).Value;
+                        break;
+                    case (DateType):
+                        return await SetPropertyDateAsync(itemPath, (DateValue)value);
+                    case (RecordType):
+                        return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
+                    case (TableType):
+                        return await SetPropertyTableAsync(itemPath, (TableValue)value);
+                    default:
+                        throw new ArgumentException("SetProperty must be a valid type.");
+                }
+
+                ValidateItemPath(itemPath, false);
+                // TODO: handle components
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var sanitizedObjectValue = Uri.EscapeDataString(objectValue.ToString());
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString}, \"{sanitizedObjectValue}\")";
+                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                return false;
+            }
         }
 
         public async Task<bool> SetPropertyDateAsync(ItemPath itemPath, DateValue value)
@@ -297,11 +316,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async Task<int> GetItemCountAsync(ItemPath itemPath)
         {
-            ValidateItemPath(itemPath, false);
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"PowerAppsTestEngine.getItemCount({itemPathString})";
-            return await _testInfraFunctions.RunJavascriptAsync<int>(expression);
-
+            try
+            {
+                ValidateItemPath(itemPath, false);
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var expression = $"PowerAppsTestEngine.getItemCount({itemPathString})";
+                return await _testInfraFunctions.RunJavascriptAsync<int>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         public int GetItemCount(ItemPath itemPath)
