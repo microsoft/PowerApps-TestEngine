@@ -10,7 +10,6 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 {
     public static class ExceptionHandlingHelper
     {
-
         // Error code suggesting published app without JSSDK, error code sent from the serverside JSSDK code
         public static string PublishedAppWithoutJSSDKErrorCode = "1";
         public static string PublishedAppWithoutJSSDKMessage = "Please republish the app and try again!";
