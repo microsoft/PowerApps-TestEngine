@@ -8,7 +8,7 @@ using Microsoft.PowerApps.TestEngine.PowerApps;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
-    internal static class ExceptionHandlingHelper
+    public static class ExceptionHandlingHelper
     {
         public static void CheckIfOutDatedPublishedApp(Exception ex, ILogger logger)
         {

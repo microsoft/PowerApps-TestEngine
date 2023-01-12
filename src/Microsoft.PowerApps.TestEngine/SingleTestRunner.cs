@@ -151,8 +151,6 @@ namespace Microsoft.PowerApps.TestEngine
                         }
                         catch (Exception ex)
                         {
-                            ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, Logger);
-
                             casesFail++;
                             Logger.LogError(ex.ToString());
                             TestException = ex;
@@ -192,7 +190,6 @@ namespace Microsoft.PowerApps.TestEngine
             }
             catch (Exception ex)
             {
-                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, Logger);
                 Logger.LogError(ex.ToString());
                 TestException = ex;
             }
