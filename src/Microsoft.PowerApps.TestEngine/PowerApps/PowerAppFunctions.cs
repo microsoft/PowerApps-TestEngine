@@ -21,10 +21,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ITestState _testState;
         private bool IsPlayerJsLoaded { get; set; } = false;
         public static string PublishedAppIframeName = "fullscreen-app-host";
-        private string GetAppStatusErrorMessage = "Something went wrong when Test Engine try to get App status.";
-        private string GetItemCountErrorMessage = "Something went wrong when Test Engine try to get item count.";
-        private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine try to get property value.";
-        private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine try to load object model.";
+        private string GetAppStatusErrorMessage = "Something went wrong when Test Engine tried to get App status.";
+        private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
+        private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
+        private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
@@ -134,15 +134,30 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return controlDictionary;
         }
 
-        private async void CheckAndHandleIfLegacyPlayer()
+        private async Task<string> GetPowerAppsTestEngineObject() {
+            var result = "undefined";
+
+            try
+            {
+                result = await _testInfraFunctions.RunJavascriptAsync<string>("typeof PowerAppsTestEngine");
+            }
+            catch (NullReferenceException) {}
+
+            return result;
+        }
+
+        private async Task CheckAndHandleIfLegacyPlayerAsync()
         {
             try
             {
-                var checkJSSDKExistExpression = "typeof PowerAppsTestEngine";
-                var result = await _testInfraFunctions.RunJavascriptAsync<string>(checkJSSDKExistExpression);
-                if (result.ToLower() == "undefined")
+                // See if using legacy player
+                try
                 {
-                    _singleTestInstanceState.GetLogger().LogTrace("Legacy WebPlayer in use, injecting embedded JS");
+                    await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "");
+                    _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer not in use.");
+                }
+                catch (TimeoutException){
+                    _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
@@ -152,9 +167,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
             }
         }
+
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
         {
-            CheckAndHandleIfLegacyPlayer();
+            await CheckAndHandleIfLegacyPlayerAsync();
 
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), GetAppStatusErrorMessage);
 
