@@ -31,7 +31,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine try to load object model.";
         private TypeMapping TypeMapping = new TypeMapping();
 
-        public static bool PrintedError = false;
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
         {
             _testInfraFunctions = testInfraFunctions;
@@ -77,9 +76,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             catch (Exception ex)
             {
-                if (!PrintedError && ex.Message?.ToString() == PublishedAppWithoutJSSDKErrorCode)
+                if (ex.Message?.ToString() == PublishedAppWithoutJSSDKErrorCode)
                 {
-                    PrintedError = true;
                     throw;
                 }
 
