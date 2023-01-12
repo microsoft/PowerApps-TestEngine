@@ -19,12 +19,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public void CheckIfOutDatedPublishedAppTrue()
         {
-            Exception exception= new Exception(PowerAppFunctions.PublishedAppWithoutJSSDKErrorCode);
+            Exception exception= new Exception(ExceptionHandlingHelper.PublishedAppWithoutJSSDKErrorCode);
             LoggingTestHelper.SetupMock(MockLogger);
             ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(exception,MockLogger.Object);
 
             // Verify the message is logged in this case
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
         [Fact]
         public void CheckIfOutDatedPublishedAppFalse()
@@ -34,7 +34,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(exception, MockLogger.Object);
 
             // Verify the message is never logged in this case
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Never());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Never());
         }
 
     }
