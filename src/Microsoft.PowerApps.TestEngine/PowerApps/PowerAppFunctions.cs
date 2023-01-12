@@ -20,10 +20,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
 
-        // Error code suggesting published app without JSSDK, error code sent from the serverside JSSDK code
-        public static string PublishedAppWithoutJSSDKErrorCode = "1";
-        public static string PublishedAppWithoutJSSDKMessage = "Please republish the app and try again!";
-
         public static string PublishedAppIframeName = "fullscreen-app-host";
         private string GetAppStatusErrorMessage = "Something went wrong when Test Engine tried to get App status.";
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
@@ -84,7 +80,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             catch (Exception ex)
             {
-                if (ex.Message?.ToString() == PublishedAppWithoutJSSDKErrorCode)
+                if (ex.Message?.ToString() == ExceptionHandlingHelper.PublishedAppWithoutJSSDKErrorCode)
                 {
                     ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
                     throw;

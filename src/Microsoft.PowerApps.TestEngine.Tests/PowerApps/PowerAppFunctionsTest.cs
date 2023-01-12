@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
@@ -714,7 +715,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeast(1));
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -738,7 +739,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -755,7 +756,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SelectControlAsync(itemPath); });
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>(It.IsAny<string>()), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -777,7 +778,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var value = "{\"Value\":\"2\"}";
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"Selected\":{value}}})"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -811,7 +812,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SetPropertyTableAsync(itemPath, TableValue.NewTable(controlType, values)); });
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedItems\":{value}}})"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -830,7 +831,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SetPropertyDateAsync(itemPath, DateValue.NewDateOnly(dt.Date)); });
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{((DateValue)DateValue.NewDateOnly(dt.Date)).Value}\")}})"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -848,7 +849,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             await Assert.ThrowsAsync<Exception>(async () => { powerAppFunctions.GetItemCount(itemPath); });
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<int>($"PowerAppsTestEngine.getItemCount({JsonConvert.SerializeObject(itemPath)})"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -866,7 +867,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             await Assert.ThrowsAsync<Exception>(async () => { powerAppFunctions.GetPropertyValueFromControl<string>(itemPath); });
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"PowerAppsTestEngine.getPropertyValue({JsonConvert.SerializeObject(itemPath)}).then((propertyValue) => JSON.stringify(propertyValue));"), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         // End Published App JSSDK not found tests
