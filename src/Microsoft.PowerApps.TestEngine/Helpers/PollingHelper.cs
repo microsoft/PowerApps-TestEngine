@@ -78,7 +78,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                 else
                 {
                     logger.LogError(errorMessage);
-                    throw new Exception(errorMessage);
+                    throw new TimeoutException(errorMessage);
                 }
             }
         }
