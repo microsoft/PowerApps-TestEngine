@@ -674,7 +674,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         // Testing if app outdated and needs to be republished, error thrown right and captured
         // Published App JSSDK not found tests
         [Fact]
-        public async Task CheckIfAppIsIdleAsyncFailsWithNoPublishedAppFunction() {
+        public async Task CheckIfAppIsIdleAsyncFailsWithNoPublishedAppFunction()
+        {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
                 .Returns(Task.FromResult("object"));
@@ -740,7 +741,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
 
             var pair = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
-            var nameValue = new NamedValue(pair);         
+            var nameValue = new NamedValue(pair);
 
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>()))
@@ -843,7 +844,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"PowerAppsTestEngine.getPropertyValue({JsonConvert.SerializeObject(itemPath)}).then((propertyValue) => JSON.stringify(propertyValue));"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
-        
+
         // End Published App JSSDK not found tests
     }
 }
