@@ -230,7 +230,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             catch (Exception ex)
             {
                 ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
-                return false;
+                throw;
             }
         }
 
