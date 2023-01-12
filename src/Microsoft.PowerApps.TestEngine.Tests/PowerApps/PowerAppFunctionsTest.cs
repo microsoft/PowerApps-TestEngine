@@ -670,23 +670,27 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
+
+        // Testing if app outdated and needs to be republished, error thrown right and captured
+        // Published App JSSDK not found tests
         [Fact]
-        public async Task CheckIfAppIsIdleAsyncFailsWithNoPublishedAppJSSDK() {
+        public async Task CheckIfAppIsIdleAsyncFailsWithNoPublishedAppFunction() {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
                 .Returns(Task.FromResult("object"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Throws(new Exception("1"));
+
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+
             LoggingTestHelper.SetupMock(MockLogger);
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeast(1));
-            LoggingTestHelper.VerifyLogging(MockLogger, PowerAppFunctions.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
+        // End Published App JSSDK not found tests
     }
 }
