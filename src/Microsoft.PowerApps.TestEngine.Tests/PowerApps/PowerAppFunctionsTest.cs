@@ -662,7 +662,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Once());
             MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), PowerAppFunctions.PublishedAppIframeName), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "Legacy WebPlayer in use, injecting embedded JS.", LogLevel.Trace, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Legacy WebPlayer in use, injecting embedded JS.", LogLevel.Information, Times.Once());
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeastOnce());
@@ -686,7 +686,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
-            LoggingTestHelper.VerifyLogging(MockLogger, "Legacy WebPlayer not in use.", LogLevel.Trace, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Legacy WebPlayer not in use.", LogLevel.Information, Times.Once());
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeastOnce());
