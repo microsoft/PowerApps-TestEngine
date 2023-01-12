@@ -69,8 +69,17 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             {
                 logger.LogDebug("Timeout duration was set to " + timeout);
                 logger.LogDebug("Make sure the function & property you're using is supported by TestEngine.");
-                logger.LogError("Waiting timed out.");
-                throw new TimeoutException();
+
+                if (string.IsNullOrEmpty(errorMessage))
+                {
+                    logger.LogError("Waiting timed out.");
+                    throw new TimeoutException();
+                }
+                else
+                {
+                    logger.LogError(errorMessage);
+                    throw new TimeoutException(errorMessage);
+                }
             }
         }
 
