@@ -567,6 +567,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var jsExpression = "console.log('hello')";
             var expectedResponse = "hello";
 
+            LoggingTestHelper.SetupMock(MockLogger);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockPage.Setup(x => x.EvaluateAsync<string>(It.IsAny<string>(), It.IsAny<object?>())).Returns(Task.FromResult(expectedResponse));
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
@@ -574,6 +576,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var result = await playwrightTestInfraFunctions.RunJavascriptAsync<string>(jsExpression);
             Assert.Equal(expectedResponse, result);
 
+            LoggingTestHelper.VerifyLogging(MockLogger, (message) => message.Contains(jsExpression), LogLevel.Debug, Times.Once());
             MockPage.Verify(x => x.EvaluateAsync<string>(jsExpression, null), Times.Once());
         }
 
