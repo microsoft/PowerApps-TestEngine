@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
@@ -237,6 +238,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             var itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}");
             Guid guid = new Guid("00000000-0000-0000-0000-000000000001");
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
 
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<ArgumentException>(async () => await powerAppFunctions.SetPropertyAsync(itemPath, GuidValue.New(guid)));
@@ -706,5 +708,181 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
+
+        // Testing if app outdated and needs to be republished, error thrown right and captured
+        // Published App JSSDK not found tests
+        [Fact]
+        public async Task CheckIfAppIsIdleAsyncFailsWithNoPublishedAppFunction()
+        {
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
+                .Returns(Task.FromResult("object"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(It.IsAny<string>()))
+                .Throws(new Exception("1"));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+
+            LoggingTestHelper.SetupMock(MockLogger);
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
+
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeast(1));
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public async Task LoadPowerAppsObjectModelAsyncNoPublishedAppFunction()
+        {
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
+                .Returns(Task.FromResult("object"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
+                .Returns(Task.FromResult("Idle"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Throws(new Exception("1"));
+
+            var testSettings = new TestSettings() { Timeout = 12000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
+
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public async Task SelectControlAsyncFailsNoPublishedAppFunction()
+        {
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":null}");
+
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>()))
+                .Throws(new Exception("1"));
+
+            LoggingTestHelper.SetupMock(MockLogger);
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SelectControlAsync(itemPath); });
+
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>(It.IsAny<string>()), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public async Task SetPropertyRecordAsyncNoPublishedAppFunction()
+        {
+            string itemPathString = "{\"controlName\":\"Dropdown1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Selected\"}";
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+
+            var pair = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
+            var nameValue = new NamedValue(pair);
+
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>()))
+                .Throws(new Exception("1"));
+
+            LoggingTestHelper.SetupMock(MockLogger);
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SetPropertyRecordAsync(itemPath, RecordValue.NewRecordFromFields(nameValue)); });
+            var value = "{\"Value\":\"2\"}";
+
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"Selected\":{value}}})"), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public async Task SetPropertyTableAsyncNoPublishedAppFunction()
+        {
+            string itemPathString = "{\"controlName\":\"ComboBox1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"SelectedItems\"}";
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+
+            //Record Type for table 
+            var controlType = RecordType.Empty().Add("Value", FormulaType.String);
+
+            //First record value for table 
+            var pair1 = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
+            var name1Value = new NamedValue(pair1);
+            var record1Value = RecordValue.NewRecordFromFields(name1Value);
+
+            //Second record value for table 
+            var pair2 = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("3"));
+            var name2Value = new NamedValue(pair2);
+            var record2Value = RecordValue.NewRecordFromFields(name2Value);
+
+            RecordValue[] values = new RecordValue[] { record1Value, record2Value };
+            var value = "[{\"Value\":\"2\"},{\"Value\":\"3\"}]";
+
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>()))
+                .Throws(new Exception("1"));
+
+            LoggingTestHelper.SetupMock(MockLogger);
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SetPropertyTableAsync(itemPath, TableValue.NewTable(controlType, values)); });
+
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedItems\":{value}}})"), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public async Task SetPropertyDateAsyncNoPublishedAppFunction()
+        {
+            DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0);
+            string itemPathString = "{\"controlName\":\"DatePicker1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"SelectedDate\"}";
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
+
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>()))
+                .Throws(new Exception("1"));
+
+            LoggingTestHelper.SetupMock(MockLogger);
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SetPropertyDateAsync(itemPath, DateValue.NewDateOnly(dt.Date)); });
+
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{((DateValue)DateValue.NewDateOnly(dt.Date)).Value}\")}})"), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public async Task GetItemCountAsyncNoPublishedAppFunction()
+        {
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Button1\",\"index\":null,\"parentControl\":null,\"propertyName\":null}");
+
+            MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<int>(It.IsAny<string>()))
+                .Throws(new Exception("1"));
+
+            LoggingTestHelper.SetupMock(MockLogger);
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            await Assert.ThrowsAsync<Exception>(async () => { powerAppFunctions.GetItemCount(itemPath); });
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<int>($"PowerAppsTestEngine.getItemCount({JsonConvert.SerializeObject(itemPath)})"), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public async Task GetPropertyAsyncNoPublishedAppFunction()
+        {
+            var itemPath = JsonConvert.DeserializeObject<ItemPath>("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}");
+
+            MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(It.IsAny<string>()))
+                .Throws(new Exception("1"));
+
+            LoggingTestHelper.SetupMock(MockLogger);
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            await Assert.ThrowsAsync<Exception>(async () => { powerAppFunctions.GetPropertyValueFromControl<string>(itemPath); });
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"PowerAppsTestEngine.getPropertyValue({JsonConvert.SerializeObject(itemPath)}).then((propertyValue) => JSON.stringify(propertyValue));"), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
+        }
+
+        // End Published App JSSDK not found tests
     }
 }

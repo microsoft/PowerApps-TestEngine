@@ -19,7 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
-        private bool IsPlayerJsLoaded { get; set; } = false;
+
         public static string PublishedAppIframeName = "fullscreen-app-host";
         private string GetAppStatusErrorMessage = "Something went wrong when Test Engine tried to get App status.";
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
@@ -36,10 +36,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
-            ValidateItemPath(itemPath, true);
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString}).then((propertyValue) => JSON.stringify(propertyValue))";
-            return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
+            try
+            {
+                ValidateItemPath(itemPath, true);
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString}).then((propertyValue) => JSON.stringify(propertyValue));";
+                return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         public T GetPropertyValueFromControl<T>(ItemPath itemPath)
@@ -72,6 +80,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             catch (Exception ex)
             {
+                if (ex.Message?.ToString() == ExceptionHandlingHelper.PublishedAppWithoutJSSDKErrorCode)
+                {
+                    ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                    throw;
+                }
+
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
                 IsPlayerJsLoaded = false;
                 return false;
@@ -81,58 +95,67 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
         {
-            var expression = "PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))";
-            var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
-            if (!string.IsNullOrEmpty(controlObjectModelJsonString))
+            try
             {
-                var jsObjectModel = JsonConvert.DeserializeObject<JSObjectModel>(controlObjectModelJsonString);
-
-                if (jsObjectModel != null && jsObjectModel.Controls != null)
+                var expression = "PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
+                var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
+                if (!string.IsNullOrEmpty(controlObjectModelJsonString))
                 {
-                    _singleTestInstanceState.GetLogger().LogTrace("Listing all skipped properties for each control.");
+                    var jsObjectModel = JsonConvert.DeserializeObject<JSObjectModel>(controlObjectModelJsonString);
 
-                    foreach (var control in jsObjectModel.Controls)
+                    if (jsObjectModel != null && jsObjectModel.Controls != null)
                     {
-                        if (controlDictionary.ContainsKey(control.Name))
+                        _singleTestInstanceState.GetLogger().LogTrace("Listing all skipped properties for each control.");
+
+                        foreach (var control in jsObjectModel.Controls)
                         {
-                            // Components get declared twice at the moment so prevent it from throwing.
-                            _singleTestInstanceState.GetLogger().LogTrace($"Control: {control.Name} already added");
-                        }
-                        else
-                        {
-                            var controlType = RecordType.Empty();
-                            var skipMessage = $"Control: {control.Name}";
-                            bool everSkipped = false;
-
-                            foreach (var property in control.Properties)
+                            if (controlDictionary.ContainsKey(control.Name))
                             {
-                                if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
-                                {
-                                    controlType = controlType.Add(property.PropertyName, formulaType);
-                                }
-                                else
-                                {
-                                    everSkipped = true;
-                                    skipMessage += $"\nProperty: {property.PropertyName}, of type: {property.PropertyType}";
-                                }
+                                // Components get declared twice at the moment so prevent it from throwing.
+                                _singleTestInstanceState.GetLogger().LogTrace($"Control: {control.Name} already added");
                             }
-
-                            if (everSkipped)
+                            else
                             {
-                                _singleTestInstanceState.GetLogger().LogTrace(skipMessage);
+                                var controlType = RecordType.Empty();
+                                var skipMessage = $"Control: {control.Name}";
+                                bool everSkipped = false;
+
+                                foreach (var property in control.Properties)
+                                {
+                                    if (TypeMapping.TryGetType(property.PropertyType, out var formulaType))
+                                    {
+                                        controlType = controlType.Add(property.PropertyName, formulaType);
+                                    }
+                                    else
+                                    {
+                                        everSkipped = true;
+                                        skipMessage += $"\nProperty: {property.PropertyName}, of type: {property.PropertyType}";
+                                    }
+                                }
+
+                                if (everSkipped)
+                                {
+                                    _singleTestInstanceState.GetLogger().LogTrace(skipMessage);
+                                }
+
+                                TypeMapping.AddMapping(control.Name, controlType);
+
+                                var controlValue = new ControlRecordValue(controlType, this, control.Name);
+
+                                controlDictionary.Add(control.Name, controlValue);
                             }
-
-                            TypeMapping.AddMapping(control.Name, controlType);
-
-                            var controlValue = new ControlRecordValue(controlType, this, control.Name);
-
-                            controlDictionary.Add(control.Name, controlValue);
                         }
                     }
                 }
+
+                return controlDictionary;
             }
 
-            return controlDictionary;
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         private async Task<string> GetPowerAppsTestEngineObject() {
@@ -185,46 +208,64 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<bool> SelectControlAsync(ItemPath itemPath)
         {
-            ValidateItemPath(itemPath, false);
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"PowerAppsTestEngine.select({itemPathString})";
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            try
+            {
+                ValidateItemPath(itemPath, false);
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var expression = $"PowerAppsTestEngine.select({itemPathString})";
+                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         public async Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
         {
-            Object objectValue = null;
-
-            switch (value.Type)
+            try
             {
-                case (NumberType):
-                    objectValue = ((NumberValue)value).Value;
-                    break;
-                case (StringType):
-                    objectValue = ((StringValue)value).Value;
-                    break;
-                case (BooleanType):
-                    objectValue = ((BooleanValue)value).Value;
-                    break;
-                case (DateType):
-                    return await SetPropertyDateAsync(itemPath, (DateValue)value);
-                case (RecordType):
-                    return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
-                case (TableType):
-                    return await SetPropertyTableAsync(itemPath, (TableValue)value);
-                default:
-                    throw new ArgumentException("SetProperty must be a valid type.");
-            }
+                Object objectValue = null;
 
-            ValidateItemPath(itemPath, false);
-            // TODO: handle components
-            var expression = $"PowerAppsTestEngine.setPropertyValue({JsonConvert.SerializeObject(itemPath)}, {JsonConvert.SerializeObject(objectValue)})";
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+                switch (value.Type)
+                {
+                    case (NumberType):
+                        objectValue = ((NumberValue)value).Value;
+                        break;
+                    case (StringType):
+                        objectValue = ((StringValue)value).Value;
+                        break;
+                    case (BooleanType):
+                        objectValue = ((BooleanValue)value).Value;
+                        break;
+                    case (DateType):
+                        return await SetPropertyDateAsync(itemPath, (DateValue)value);
+                    case (RecordType):
+                        return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
+                    case (TableType):
+                        return await SetPropertyTableAsync(itemPath, (TableValue)value);
+                    default:
+                        throw new ArgumentException("SetProperty must be a valid type.");
+                }
+
+                ValidateItemPath(itemPath, false);
+                // TODO: handle components
+                var expression = $"PowerAppsTestEngine.setPropertyValue({JsonConvert.SerializeObject(itemPath)}, {JsonConvert.SerializeObject(objectValue)})";
+                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         public async Task<bool> SetPropertyDateAsync(ItemPath itemPath, DateValue value)
         {
-            ValidateItemPath(itemPath, false);
+            try
+            {
+                ValidateItemPath(itemPath, false);
 
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
@@ -233,12 +274,20 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             // Date.parse() parses the date to unix timestamp
             var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
 
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         public async Task<bool> SetPropertyRecordAsync(ItemPath itemPath, RecordValue value)
         {
-            ValidateItemPath(itemPath, false);
+            try
+            {
+                ValidateItemPath(itemPath, false);
 
             var itemPathString = JsonConvert.SerializeObject(itemPath);
             var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
@@ -248,7 +297,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var checkVal = JsonConvert.SerializeObject(json);
             var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
 
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, TableValue tableValue)
@@ -262,20 +317,35 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             var index = 0;
             foreach (var row in tableValue.Rows)
             {
-                if (row.IsValue)
+                ValidateItemPath(itemPath, false);
+
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                RecordValueObject[] jsonArr = new RecordValueObject[tableValue.Rows.Count()];
+
+                var index = 0;
+                foreach (var row in tableValue.Rows)
                 {
-                    var recordValue = row.Value.Fields.First().Value;
-                    var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
-                    if (!String.IsNullOrEmpty(val))
+                    if (row.IsValue)
                     {
-                        jsonArr[index++] = new RecordValueObject(val);
+                        var recordValue = row.Value.Fields.First().Value;
+                        var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
+                        if (!String.IsNullOrEmpty(val))
+                        {
+                            jsonArr[index++] = new RecordValueObject(val);
+                        }
                     }
                 }
             }
             var checkVal = JsonConvert.SerializeObject(jsonArr);
             var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
 
-            return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+                return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
@@ -307,11 +377,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async Task<int> GetItemCountAsync(ItemPath itemPath)
         {
-            ValidateItemPath(itemPath, false);
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"PowerAppsTestEngine.getItemCount({itemPathString})";
-            return await _testInfraFunctions.RunJavascriptAsync<int>(expression);
-
+            try
+            {
+                ValidateItemPath(itemPath, false);
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var expression = $"PowerAppsTestEngine.getItemCount({itemPathString})";
+                return await _testInfraFunctions.RunJavascriptAsync<int>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, _singleTestInstanceState.GetLogger());
+                throw;
+            }
         }
 
         public int GetItemCount(ItemPath itemPath)
