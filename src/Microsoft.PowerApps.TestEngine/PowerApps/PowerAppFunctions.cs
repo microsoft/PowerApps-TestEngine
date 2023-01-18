@@ -199,10 +199,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
 
             var itemPathString = JsonConvert.SerializeObject(itemPath);
+            var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
             var recordValue = value.Value;
 
             // Date.parse() parses the date to unix timestamp
-            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":Date.parse(\"{recordValue}\")}})";
+            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
@@ -212,11 +213,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
 
             var itemPathString = JsonConvert.SerializeObject(itemPath);
+            var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
             var recordValue = value.GetField("Value");
             var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
             RecordValueObject json = new RecordValueObject(val);
             var checkVal = JsonConvert.SerializeObject(json);
-            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
@@ -226,6 +228,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             ValidateItemPath(itemPath, false);
 
             var itemPathString = JsonConvert.SerializeObject(itemPath);
+            var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
             RecordValueObject[] jsonArr = new RecordValueObject[tableValue.Rows.Count()];
 
             var index = 0;
@@ -242,7 +245,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
             }
             var checkVal = JsonConvert.SerializeObject(jsonArr);
-            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"{itemPath.PropertyName}\":{checkVal}}})";
+            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
 
             return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
         }
