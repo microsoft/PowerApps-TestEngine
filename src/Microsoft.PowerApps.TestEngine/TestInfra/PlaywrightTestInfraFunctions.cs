@@ -275,20 +275,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             ValidatePage();
 
-            return await Page.EvaluateAsync<T>(jsExpression);
-        }
+            _singleTestInstanceState.GetLogger().LogDebug("Run Javascript: " + jsExpression);
 
-        public async Task<T> RunJavascriptAsync<T>(string jsExpression, string[] arguments)
-        {
-            ValidatePage();
-            var santizedArguments = new string[arguments.Length];
-            for (int i = 0; i < arguments.Length; i++)
-            { // encode and add to sanitizedArguments 
-                var argument = arguments[i];
-                var encode = Uri.EscapeDataString(argument);
-                santizedArguments[i] = encode;
-            }
-            return await Page.EvaluateAsync<T>(jsExpression, santizedArguments);
+            return await Page.EvaluateAsync<T>(jsExpression);
         }
 
         // Justification: Limited ability to run unit tests for 

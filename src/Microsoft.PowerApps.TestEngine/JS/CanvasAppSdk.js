@@ -75,11 +75,13 @@ function interactWithControl(itemPath, value) {
     return executePublishedAppScript(script);
 }
 
-function setPropertyValueForControl(itemPath, value) {    
+function setPropertyValueForControl(itemPath, value) {
     if (typeof value == "object") {
-        return interactWithControl(itemPath,value);
-    } 
-    var script = `setPropertyValueForControl("${itemPath}", "${value}")`;
+        return interactWithControl(itemPath, value);
+    } else if (typeof value == "string") {
+        value = JSON.stringify(value);
+    }
+    var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, ${value})`;
     return executePublishedAppScript(script);
 }
 
@@ -140,7 +142,7 @@ var PowerAppsTestEngine = {
         return selectControl(itemPath)
     },
 
-     setPropertyValue: function(itemPath, value) {
+    setPropertyValue: function(itemPath, value) {
         return setPropertyValueForControl(itemPath, value);
     },
 
