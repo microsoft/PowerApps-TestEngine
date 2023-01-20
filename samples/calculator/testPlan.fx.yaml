@@ -26,16 +26,14 @@ testSuite:
           Assert(Calculator_1.ResultLabel.Text = "10000", "Validate result label has the results of multiplication");
           Assert(Calculator_1.CalculatorResult = 10000, "Validate component output calculator result has the results of multiplication");
     - testCaseName: Check division
-      testSteps: |      
+      testSteps: |
         = Select(Calculator_1.Divide);
           Assert(Calculator_1.ResultLabel.Text = "1", "Validate result label has the results of division");
           Assert(Calculator_1.CalculatorResult = 1, "Validate component output calculator result has the results of division");
           Screenshot("calculator_end.png");
 
 testSettings:
-  recordVideo: true
-  browserConfigurations:
-    - browser: Chromium
+  filePath: ../../samples/testSettings.yaml
 
 environmentVariables:
   users:

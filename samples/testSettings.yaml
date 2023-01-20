@@ -1,3 +1,4 @@
 recordVideo: true
+timeout: 60000
 browserConfigurations:
   - browser: Chromium

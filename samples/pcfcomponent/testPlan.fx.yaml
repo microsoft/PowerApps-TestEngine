@@ -15,9 +15,7 @@ testSuite:
           Screenshot("pcfcomponent_end.png");
 
 testSettings:
-  recordVideo: true
-  browserConfigurations:
-    - browser: Chromium
+  filePath: ../../samples/testSettings.yaml
 
 environmentVariables:
   users:
