@@ -35,7 +35,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             ValidateItemPath(itemPath, true);
             var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString})";
+            var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString}).then((propertyValue) => JSON.stringify(propertyValue))";
             return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
         }
 
@@ -83,7 +83,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
         {
-            var expression = "PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
+            var expression = "PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))";
             var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
             if (!string.IsNullOrEmpty(controlObjectModelJsonString))
             {

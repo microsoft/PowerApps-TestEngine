@@ -109,9 +109,9 @@ function getPropertyValueFromControl(itemPath) {
 
     var propertyValue = bindingContext.controlContexts[itemPath.controlName].modelProperties[itemPath.propertyName].getValue();
 
-    return JSON.stringify({
+    return {
         propertyValue: propertyValue
-    });
+    };
 }
 
 function selectControl(itemPath) {
