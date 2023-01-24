@@ -157,14 +157,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
         }
 
-        private async Task<string> GetPowerAppsTestEngineObject() {
+        private async Task<string> GetPowerAppsTestEngineObject()
+        {
             var result = "undefined";
 
             try
             {
                 result = await _testInfraFunctions.RunJavascriptAsync<string>("typeof PowerAppsTestEngine");
             }
-            catch (NullReferenceException) {}
+            catch (NullReferenceException) { }
 
             return result;
         }
@@ -179,7 +180,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                     await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "");
                     _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer not in use.");
                 }
-                catch (TimeoutException){
+                catch (TimeoutException)
+                {
                     _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
@@ -199,7 +201,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger() ,LoadObjectModelErrorMessage);
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), LoadObjectModelErrorMessage);
             _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;
@@ -266,12 +268,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 ValidateItemPath(itemPath, false);
 
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-            var recordValue = value.Value;
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
+                var recordValue = value.Value;
 
-            // Date.parse() parses the date to unix timestamp
-            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
+                // Date.parse() parses the date to unix timestamp
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
 
                 return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -288,13 +290,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 ValidateItemPath(itemPath, false);
 
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-            var recordValue = value.GetField("Value");
-            var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
-            RecordValueObject json = new RecordValueObject(val);
-            var checkVal = JsonConvert.SerializeObject(json);
-            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
+                var recordValue = value.GetField("Value");
+                var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
+                RecordValueObject json = new RecordValueObject(val);
+                var checkVal = JsonConvert.SerializeObject(json);
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
 
                 return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
