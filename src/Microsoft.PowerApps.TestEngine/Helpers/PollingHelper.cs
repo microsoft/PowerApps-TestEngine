@@ -10,7 +10,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
     /// </summary>
     public class PollingHelper
     {
-        public static T Poll<T>(T value, Func<T, bool> conditionToCheck, Func<T> functionToCall, int timeout, ILogger logger)
+        public static T Poll<T>(T value, Func<T, bool> conditionToCheck, Func<T> functionToCall, int timeout, ILogger logger, string errorMessage = "")
         {
             ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;
@@ -22,14 +22,14 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     value = functionToCall();
                 }
 
-                CheckIfTimedOut(startTime, timeout, logger);
+                CheckIfTimedOut(startTime, timeout, logger, errorMessage);
                 Thread.Sleep(500);
             }
 
             return value;
         }
 
-        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<Task<T>> functionToCall, int timeout, ILogger logger)
+        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<Task<T>> functionToCall, int timeout, ILogger logger, string errorMessage = "")
         {
             ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;
@@ -41,12 +41,12 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     value = await functionToCall();
                 }
 
-                CheckIfTimedOut(startTime, timeout, logger);
+                CheckIfTimedOut(startTime, timeout, logger, errorMessage);
                 await Task.Delay(1000);
             }
         }
 
-        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<T, Task<T>> functionToCall, int timeout, ILogger logger)
+        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<T, Task<T>> functionToCall, int timeout, ILogger logger, string errorMessage = "")
         {
             ValidateTimeoutValue(timeout, logger);
             DateTime startTime = DateTime.Now;
@@ -58,12 +58,12 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
                     value = await functionToCall(value);
                 }
 
-                CheckIfTimedOut(startTime, timeout, logger);
+                CheckIfTimedOut(startTime, timeout, logger, errorMessage);
                 await Task.Delay(1000);
             }
         }
 
-        private static void CheckIfTimedOut(DateTime startTime, int timeout, ILogger logger)
+        private static void CheckIfTimedOut(DateTime startTime, int timeout, ILogger logger, string errorMessage = "")
         {
             if ((DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout))
             {

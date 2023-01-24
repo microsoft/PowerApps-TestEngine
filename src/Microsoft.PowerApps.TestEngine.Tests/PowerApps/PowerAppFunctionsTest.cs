@@ -166,16 +166,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            
+
             string itemPathString = "{\"controlName\":\"Dropdown1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Selected\"}";
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
-            
+
             var pair = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
             var nameValue = new NamedValue(pair);
-            
+
             var result = await powerAppFunctions.SetPropertyAsync(itemPath, RecordValue.NewRecordFromFields(nameValue));
             var value = "{\"Value\":\"2\"}";
-            
+
             Assert.True(result);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"Selected\":{value}}})"), Times.Once());
         }
@@ -185,27 +185,27 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            
+
             string itemPathString = "{\"controlName\":\"ComboBox1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"SelectedItems\"}";
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
-            
+
             //Record Type for table 
             var controlType = RecordType.Empty().Add("Value", FormulaType.String);
-            
+
             //First record value for table 
             var pair1 = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("2"));
             var name1Value = new NamedValue(pair1);
             var record1Value = RecordValue.NewRecordFromFields(name1Value);
-            
+
             //Second record value for table 
             var pair2 = new KeyValuePair<string, FormulaValue>("Value", StringValue.New("3"));
             var name2Value = new NamedValue(pair2);
             var record2Value = RecordValue.NewRecordFromFields(name2Value);
-            
+
             RecordValue[] values = new RecordValue[] { record1Value, record2Value };
             var result = await powerAppFunctions.SetPropertyAsync(itemPath, TableValue.NewTable(controlType, values));
             var value = "[{\"Value\":\"2\"},{\"Value\":\"3\"}]";
-            
+
             Assert.True(result);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedItems\":{value}}})"), Times.Once());
         }
@@ -214,7 +214,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task SetPropertyAsyncItemPathTest()
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockLogger.Setup(x => x.Log<It.IsAnyType>(It.IsAny<LogLevel>(),It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception?>(), It.IsAny<Func<It.IsAnyType,Exception?,string>>()));
+            MockLogger.Setup(x => x.Log<It.IsAnyType>(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception?>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(true));
 
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
@@ -337,7 +337,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             expectedFormulaTypes.Add("AllItems2", TableType.Empty().Add(new NamedFormulaType("Gallery1", gallery1RecordType)).Add(new NamedFormulaType("Button3", button3RecordType)));
             expectedFormulaTypes.Add("SelectedItem2", RecordType.Empty().Add(new NamedFormulaType("Gallery1", gallery1RecordType)).Add(new NamedFormulaType("Button3", button3RecordType)));
 
-            var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine")).Returns(Task.FromResult("object"));
@@ -390,7 +389,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     }
                 }
             };
-            var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine")).Returns(Task.FromResult("object"));
@@ -417,7 +415,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("{ controls: [] }")]
         public async Task LoadPowerAppsObjectModelAsyncWithNoModelTest(string jsObjectModelString)
         {
-            var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine")).Returns(Task.FromResult("object"));
@@ -534,7 +531,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [Fact]
         public async Task LoadPowerAppsObjectModelAsyncWaitsForAppToLoad()
         {
-            var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
@@ -543,7 +539,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("Loading"))
                 .Returns(Task.FromResult("Loading"))
                 .Returns(Task.FromResult("Idle"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult("{}"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
             var testSettings = new TestSettings() { Timeout = 6000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
@@ -559,7 +555,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [Fact]
         public async Task LoadPowerAppsObjectModelAsyncWaitsForAppToLoadWithExceptions()
         {
-            var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
@@ -571,7 +566,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("Idle"));
             
 
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult("{}"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
             var testSettings = new TestSettings() { Timeout = 12000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
@@ -587,7 +582,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [Fact]
         public async Task LoadPowerAppsObjectModelAsyncWaitsForAppToBeIdle()
         {
-            var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
@@ -596,7 +590,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("Busy"))
                 .Returns(Task.FromResult("Busy"))
                 .Returns(Task.FromResult("Idle"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult("{}"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
             var testSettings = new TestSettings() { Timeout = 6000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
@@ -612,7 +606,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [Fact]
         public async Task LoadPowerAppsObjectModelAsyncWaitsForAppToBeIdleWithExceptions()
         {
-            var publishedAppIframeName = "fullscreen-app-host";
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
@@ -629,11 +622,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
 
-<<<<<<< HEAD
-            MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("CanvasAppSdk.js")), null), Times.Exactly(2));
-            MockTestInfraFunctions.Verify(x => x.AddScriptTagAsync(It.Is<string>((scriptTag) => scriptTag.Contains("PublishedAppTesting.js")), publishedAppIframeName), Times.Once());
-=======
->>>>>>> 02f83f3 (Handling legacy player support (#185))
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeast(4));
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
@@ -644,8 +632,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Returns(Task.FromResult("Busy"))
                 .Returns(Task.FromResult("Busy"))
@@ -667,7 +653,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("undefined"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Returns(Task.FromResult("Idle"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult("{}"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
             var testSettings = new TestSettings() { Timeout = 5000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
@@ -681,7 +667,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeastOnce());
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
@@ -694,7 +680,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("defined"));
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Returns(Task.FromResult("Idle"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Returns(Task.FromResult("{}"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
             var testSettings = new TestSettings() { Timeout = 5000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             LoggingTestHelper.SetupMock(MockLogger);
@@ -705,7 +691,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeastOnce());
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.AtLeastOnce());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
@@ -740,7 +726,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 .Returns(Task.FromResult("object"));
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"))
                 .Returns(Task.FromResult("Idle"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));")).Throws(new Exception("1"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Throws(new Exception("1"));
 
             var testSettings = new TestSettings() { Timeout = 12000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
@@ -750,7 +736,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.Once());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
@@ -879,7 +865,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
 
             await Assert.ThrowsAsync<Exception>(async () => { powerAppFunctions.GetPropertyValueFromControl<string>(itemPath); });
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"PowerAppsTestEngine.getPropertyValue({JsonConvert.SerializeObject(itemPath)}).then((propertyValue) => JSON.stringify(propertyValue));"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>($"PowerAppsTestEngine.getPropertyValue({JsonConvert.SerializeObject(itemPath)}).then((propertyValue) => JSON.stringify(propertyValue))"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 

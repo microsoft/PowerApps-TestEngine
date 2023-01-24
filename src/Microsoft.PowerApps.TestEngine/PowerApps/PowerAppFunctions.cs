@@ -40,7 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 ValidateItemPath(itemPath, true);
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
-                var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString}).then((propertyValue) => JSON.stringify(propertyValue));";
+                var expression = $"PowerAppsTestEngine.getPropertyValue({itemPathString}).then((propertyValue) => JSON.stringify(propertyValue))";
                 return await _testInfraFunctions.RunJavascriptAsync<T>(expression);
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             var getProperty = GetPropertyValueFromControlAsync<T>(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger());
+            PollingHelper.Poll(getProperty, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger(), GetPropertyValueErrorMessage);
 
             return getProperty.GetResult();
         }
@@ -87,7 +87,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
 
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
-                IsPlayerJsLoaded = false;
                 return false;
             }
 
@@ -97,7 +96,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             try
             {
-                var expression = "PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel));";
+                var expression = "PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))";
                 var controlObjectModelJsonString = await _testInfraFunctions.RunJavascriptAsync<string>(expression);
                 if (!string.IsNullOrEmpty(controlObjectModelJsonString))
                 {
@@ -200,7 +199,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger() ,LoadObjectModelErrorMessage);
             _singleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;
@@ -308,21 +307,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, TableValue tableValue)
         {
-            ValidateItemPath(itemPath, false);
-
-            var itemPathString = JsonConvert.SerializeObject(itemPath);
-            var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-            RecordValueObject[] jsonArr = new RecordValueObject[tableValue.Rows.Count()];
-
-            var index = 0;
-            foreach (var row in tableValue.Rows)
+            try
             {
                 ValidateItemPath(itemPath, false);
 
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
                 RecordValueObject[] jsonArr = new RecordValueObject[tableValue.Rows.Count()];
 
                 var index = 0;
+
                 foreach (var row in tableValue.Rows)
                 {
                     if (row.IsValue)
@@ -335,9 +329,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                         }
                     }
                 }
-            }
-            var checkVal = JsonConvert.SerializeObject(jsonArr);
-            var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
+                var checkVal = JsonConvert.SerializeObject(jsonArr);
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
 
                 return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -395,7 +388,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         {
             var getItemCount = GetItemCountAsync(itemPath).GetAwaiter();
 
-            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger());
+            PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger(), GetItemCountErrorMessage);
 
             return getItemCount.GetResult();
         }
