@@ -29,6 +29,7 @@ jobs:
           name: Sample Tests          # Name of the check run which will be created
           path: |
             **/*.trx
+            **/**/*.trx
           reporter: dotnet-trx        # Format of test results      
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
