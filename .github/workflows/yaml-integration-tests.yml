@@ -27,7 +27,7 @@ jobs:
         if: success() || failure()    # run this step even if previous step failed
         with:
           name: Sample Tests          # Name of the check run which will be created
-          path: 'TestResults/*/*.trx'            
+          path: TestResults/**/*.trx            
           reporter: dotnet-trx        # Format of test results      
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
