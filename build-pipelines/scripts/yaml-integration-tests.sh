@@ -10,6 +10,8 @@ do
   domain=''
   testPlanFile=''
   outputDir=''
+  newDomain=''
+  oldDomain=''
   for arg in "${args[@]}" 
     do      
       if [[ $arg == *"environmentId"* ]]; then
