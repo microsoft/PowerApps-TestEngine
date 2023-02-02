@@ -80,6 +80,7 @@ namespace Microsoft.PowerApps.TestEngine
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
 
+            casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
@@ -110,8 +111,6 @@ namespace Microsoft.PowerApps.TestEngine
                 // Set up Power Fx
                 _powerFxEngine.Setup();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
-
-                casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
 
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
