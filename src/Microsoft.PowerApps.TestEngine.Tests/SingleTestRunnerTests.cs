@@ -263,7 +263,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             LoggingTestHelper.VerifyLogging(MockLogger, exceptionToThrow.ToString(), LogLevel.Error, Times.AtLeastOnce());
-            VerifyFinallyExecution(testData.testResultDirectory, 0, 0, 0, 0);
+            VerifyFinallyExecution(testData.testResultDirectory, 1, 0, 1, 0);
         }
 
         [Fact]
