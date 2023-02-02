@@ -44,8 +44,9 @@ do
        fi                                                                
     done
   if [[ -n "${envId}" && -n "${tenantId}" && -n "${domain}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then     # null checks on args
-    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir};
-    domain = "${domain}&PAOverrideFGRollout.ForceOnePlayer=true";
-    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir}; # run with previous player
+    oldDomain = "${domain}&PAOverrideFGRollout.OnePlayerStandaloneWebPlayer=false";
+    newDomain = "${domain}&PAOverrideFGRollout.OnePlayerStandaloneWebPlayer=true";
+    dotnet run -- -e ${envId} -t ${tenantId} -d ${oldDomain} -i ${testPlanFile} -o ${outputDir};
+    dotnet run -- -e ${envId} -t ${tenantId} -d ${newDomain} -i ${testPlanFile} -o ${outputDir}; # run with previous player
   fi
 done
