@@ -58,6 +58,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="stackTrace">Stack trace if test was unsuccessful</param>
         public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace);
 
+
+        /// <summary>
+        /// End test.
+        /// </summary>
+        /// <param name="testRunId">Test run id</param>
+        /// <param name="totalCases">Total cases</param>
+        public void EndTestsSkipped(string testRunId, int totalCases);
+
         /// <summary>
         /// Generate test report
         /// </summary>

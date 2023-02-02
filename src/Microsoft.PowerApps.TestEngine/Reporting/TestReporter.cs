@@ -215,6 +215,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testRun.ResultSummary.Counters.InProgress++;
         }
 
+        public void EndTestsSkipped(string testRunId, int totalCases)
+        {
+            var testRun = GetTestRun(testRunId);
+            
+            testRun.ResultSummary.Counters.Disconnected = totalCases;
+            testRun.ResultSummary.Counters.Total = totalCases; 
+        }
+
         public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
         {
             var testRun = GetTestRun(testRunId);

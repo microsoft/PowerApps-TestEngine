@@ -62,6 +62,9 @@ namespace Microsoft.PowerApps.TestEngine
                 throw new InvalidOperationException("This test can only be run once.");
             }
 
+            // This flag is needed to check if test run is skipped
+            var allTestsSkipped = true;
+
             var casesTotal = 0;
             var casesPass = 0;
             var casesFail = 0;
@@ -116,6 +119,7 @@ namespace Microsoft.PowerApps.TestEngine
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
                     TestSuccess = true;
+                    allTestsSkipped = false;
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
@@ -194,6 +198,11 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 await _testInfraFunctions.EndTestRunAsync();
+
+                if (allTestsSkipped)
+                {
+                    _testReporter.EndTestsSkipped(testRunId, casesTotal);
+                }
 
                 Logger.LogInformation($"---------------------------------------------------------------------------\n" +
                                 $"{testSuiteName} TEST SUMMARY" +
