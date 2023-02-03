@@ -197,7 +197,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
             finally
             {
-            await _testInfraFunctions.EndTestRunAsync();
+                await _testInfraFunctions.EndTestRunAsync();
 
                 if (allTestsSkipped)
                 {
