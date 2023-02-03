@@ -221,6 +221,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
             testRun.ResultSummary.Counters.Disconnected++;
             testRun.ResultSummary.Counters.Total++;
+            testResult.Outcome = "Disconnected";
         }
 
         public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
