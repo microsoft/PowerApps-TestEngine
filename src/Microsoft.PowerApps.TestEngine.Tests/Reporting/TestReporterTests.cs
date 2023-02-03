@@ -350,8 +350,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testRun = testReporter.GetTestRun(testRunId);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
 
-            Assert.True(testResult.Outcome == "Disconnected");
-            Assert.Equal(1, testRun.ResultSummary.Counters.Disconnected);
+            Assert.True(testResult.Outcome == "NotExecuted");
+            Assert.Equal(1, testRun.ResultSummary.Counters.NotExecuted);
         }
 
         [Fact]

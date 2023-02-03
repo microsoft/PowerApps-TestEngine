@@ -219,8 +219,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             var testRun = GetTestRun(testRunId);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
-            testRun.ResultSummary.Counters.Disconnected++;
-            testResult.Outcome = "Disconnected";
+            testRun.ResultSummary.Counters.NotExecuted++;
+            testResult.Outcome = "NotExecuted";
         }
 
         public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
