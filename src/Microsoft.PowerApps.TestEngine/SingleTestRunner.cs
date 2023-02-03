@@ -62,6 +62,9 @@ namespace Microsoft.PowerApps.TestEngine
                 throw new InvalidOperationException("This test can only be run once.");
             }
 
+            // This flag is needed to check if test run is skipped
+            var allTestsSkipped = true;
+
             var casesTotal = 0;
             var casesPass = 0;
             var casesFail = 0;
@@ -80,6 +83,7 @@ namespace Microsoft.PowerApps.TestEngine
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
 
+            casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
@@ -111,8 +115,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _powerFxEngine.Setup();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
-                casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
-
+                allTestsSkipped = false;
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
@@ -195,6 +198,16 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 await _testInfraFunctions.EndTestRunAsync();
+
+                if (allTestsSkipped)
+                {
+                    // Run test case one by one, mark it as skipped
+                    foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
+                    {
+                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
+                        _testReporter.SkipTest(testRunId, testId);
+                    }
+                }
 
                 Logger.LogInformation($"---------------------------------------------------------------------------\n" +
                                 $"{testSuiteName} TEST SUMMARY" +
