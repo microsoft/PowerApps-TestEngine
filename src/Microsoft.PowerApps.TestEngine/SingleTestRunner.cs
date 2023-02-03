@@ -115,11 +115,11 @@ namespace Microsoft.PowerApps.TestEngine
                 _powerFxEngine.Setup();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
+                allTestsSkipped = false;
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    TestSuccess = true;
-                    allTestsSkipped = false;
+                    TestSuccess = true;                    
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
@@ -197,16 +197,14 @@ namespace Microsoft.PowerApps.TestEngine
             }
             finally
             {
-                await _testInfraFunctions.EndTestRunAsync();
+            await _testInfraFunctions.EndTestRunAsync();
 
                 if (allTestsSkipped)
                 {
                     // Run test case one by one, mark it as skipped
                     foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                     {
-                        allTestsSkipped = false;
                         var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
-                        var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
                         _testReporter.SkipTest(testRunId, testId);
                     }
                 }
@@ -217,6 +215,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 Logger.LogInformation("Total cases: " + casesTotal);
                 Logger.LogInformation("Cases passed: " + casesPass);
+
                 Logger.LogInformation("Cases skipped: " + (casesTotal - (casesFail + casesPass)));
                 Logger.LogInformation("Cases failed: " + casesFail + "\n");
 
