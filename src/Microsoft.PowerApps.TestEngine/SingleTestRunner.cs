@@ -201,7 +201,14 @@ namespace Microsoft.PowerApps.TestEngine
 
                 if (allTestsSkipped)
                 {
-                    _testReporter.EndTestsSkipped(testRunId, casesTotal);
+                    // Run test case one by one, mark it as skipped
+                    foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
+                    {
+                        allTestsSkipped = false;
+                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
+                        var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
+                        _testReporter.SkipTest(testRunId, testId);
+                    }
                 }
 
                 Logger.LogInformation($"---------------------------------------------------------------------------\n" +

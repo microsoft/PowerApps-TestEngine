@@ -62,8 +62,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// End test.
         /// </summary>
         /// <param name="testRunId">Test run id</param>
-        /// <param name="totalCases">Total cases</param>
-        public void EndTestsSkipped(string testRunId, int totalCases);
+        /// <param name="testId">Test id</param>
+        public void SkipTest(string testRunId, string testId);
 
         /// <summary>
         /// Generate test report
