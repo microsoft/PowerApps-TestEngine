@@ -331,6 +331,30 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         }
 
         [Fact]
+        public void SkipTestTest()
+        {
+            var testRunName = "testRunName";
+            var testUser = "testUser";
+            var testName = "testName";
+            var testLocation = "C:\\testplan.fx.yaml";
+            var testReporter = new TestReporter(MockFileSystem.Object);
+            var testRunId = testReporter.CreateTestRun(testRunName, testUser);
+
+            testReporter.StartTestRun(testRunId);
+
+            var testSuiteId = testReporter.CreateTestSuite(testRunId, "testSuite");
+            var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, testLocation);
+
+            testReporter.SkipTest(testRunId, testId);
+
+            var testRun = testReporter.GetTestRun(testRunId);
+            var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
+
+            Assert.True(testResult.Outcome == "Disconnected");
+            Assert.Equal(1, testRun.ResultSummary.Counters.Disconnected);
+        }
+
+        [Fact]
         public void GenerateTestReportTest()
         {
             bool success = true;
