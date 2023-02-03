@@ -215,7 +215,6 @@ namespace Microsoft.PowerApps.TestEngine
 
                 Logger.LogInformation("Total cases: " + casesTotal);
                 Logger.LogInformation("Cases passed: " + casesPass);
-
                 Logger.LogInformation("Cases skipped: " + (casesTotal - (casesFail + casesPass)));
                 Logger.LogInformation("Cases failed: " + casesFail + "\n");
 
