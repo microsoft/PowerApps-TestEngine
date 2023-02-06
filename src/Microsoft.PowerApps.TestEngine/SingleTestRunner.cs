@@ -205,7 +205,7 @@ namespace Microsoft.PowerApps.TestEngine
                     foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                     {
                         var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
-                        _testReporter.SkipTest(testRunId, testId);
+                        _testReporter.FailTest(testRunId, testId);
                     }
                 }
 

@@ -345,13 +345,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testSuiteId = testReporter.CreateTestSuite(testRunId, "testSuite");
             var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, testLocation);
 
-            testReporter.SkipTest(testRunId, testId);
+            testReporter.FailTest(testRunId, testId);
 
             var testRun = testReporter.GetTestRun(testRunId);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
 
-            Assert.True(testResult.Outcome == "NotExecuted");
-            Assert.Equal(1, testRun.ResultSummary.Counters.NotExecuted);
+            Assert.True(testResult.Outcome == "Failed");
+            Assert.Equal(1, testRun.ResultSummary.Counters.Failed);
         }
 
         [Fact]

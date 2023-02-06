@@ -215,12 +215,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testRun.ResultSummary.Counters.InProgress++;
         }
 
-        public void SkipTest(string testRunId, string testId)
+        public void FailTest(string testRunId, string testId)
         {
             var testRun = GetTestRun(testRunId);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
-            testRun.ResultSummary.Counters.NotExecuted++;
-            testResult.Outcome = "NotExecuted";
+            testRun.ResultSummary.Counters.Failed++;
+            testResult.Outcome = "Failed";
         }
 
         public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
