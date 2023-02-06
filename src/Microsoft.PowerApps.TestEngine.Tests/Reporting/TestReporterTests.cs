@@ -331,7 +331,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         }
 
         [Fact]
-        public void SkipTestTest()
+        public void FailTestTest()
         {
             var testRunName = "testRunName";
             var testUser = "testUser";
