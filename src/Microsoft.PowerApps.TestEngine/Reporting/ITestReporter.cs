@@ -63,7 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// </summary>
         /// <param name="testRunId">Test run id</param>
         /// <param name="testId">Test id</param>
-        public void SkipTest(string testRunId, string testId);
+        public void FailTest(string testRunId, string testId);
 
         /// <summary>
         /// Generate test report
