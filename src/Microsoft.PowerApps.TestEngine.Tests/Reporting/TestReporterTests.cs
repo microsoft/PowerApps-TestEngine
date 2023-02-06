@@ -315,14 +315,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             {
                 Assert.Equal(1, testRun.ResultSummary.Counters.Passed);
                 Assert.Equal(0, testRun.ResultSummary.Counters.Failed);
-                Assert.Equal("Passed", testRun.Results.UnitTestResults[0].Outcome);
+                Assert.Equal(TestReporter.PassedResultOutcome, testRun.Results.UnitTestResults[0].Outcome);
                 Assert.Null(testRun.Results.UnitTestResults[0].Output.ErrorInfo);
             }
             else
             {
                 Assert.Equal(0, testRun.ResultSummary.Counters.Passed);
                 Assert.Equal(1, testRun.ResultSummary.Counters.Failed);
-                Assert.Equal("Failed", testRun.Results.UnitTestResults[0].Outcome);
+                Assert.Equal(TestReporter.FailedResultOutcome, testRun.Results.UnitTestResults[0].Outcome);
                 Assert.Equal(errorMessage, testRun.Results.UnitTestResults[0].Output.ErrorInfo.Message);
                 Assert.Equal(stackTrace, testRun.Results.UnitTestResults[0].Output.ErrorInfo.StackTrace);
             }
@@ -350,7 +350,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testRun = testReporter.GetTestRun(testRunId);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
 
-            Assert.True(testResult.Outcome == "Failed");
+            Assert.True(testResult.Outcome == TestReporter.FailedResultOutcome);
             Assert.Equal(1, testRun.ResultSummary.Counters.Failed);
         }
 
