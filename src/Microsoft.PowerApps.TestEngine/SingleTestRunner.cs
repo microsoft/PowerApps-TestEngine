@@ -201,11 +201,11 @@ namespace Microsoft.PowerApps.TestEngine
 
                 if (allTestsSkipped)
                 {
-                    // Run test case one by one, mark it as skipped
+                    // Run test case one by one, mark it as failed
                     foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                     {
                         var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
-                        _testReporter.SkipTest(testRunId, testId);
+                        _testReporter.FailTest(testRunId, testId);
                     }
                 }
 
