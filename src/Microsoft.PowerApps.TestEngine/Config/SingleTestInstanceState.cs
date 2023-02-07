@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private string TestId { get; set; }
         private string ResultsDirectory { get; set; }
         private BrowserConfiguration BrowserConfig { get; set; }
-        
+
         public void SetTestRunId(string testRunId)
         {
             if (string.IsNullOrEmpty(testRunId))

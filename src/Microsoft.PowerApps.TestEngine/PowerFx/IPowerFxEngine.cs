@@ -14,9 +14,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <summary>
         /// Set up the Power FX engine
         /// </summary>
-        //public void Setup();
         public void Setup(CultureInfo locale);
-        
+
         /// <summary>
         /// Executes testSteps with retry
         /// </summary>
