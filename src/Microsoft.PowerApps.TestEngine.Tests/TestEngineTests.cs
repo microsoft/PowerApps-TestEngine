@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
@@ -44,6 +46,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             var testSettings = new TestSettings()
             {
+                Locale = string.Empty,
                 WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
@@ -140,7 +143,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
 
-            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestSuiteDefinition>(), It.IsAny<BrowserConfiguration>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockSingleTestRunner.Setup(x => x.RunTestAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TestSuiteDefinition>(), It.IsAny<BrowserConfiguration>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CultureInfo>())).Returns(Task.CompletedTask);
 
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
@@ -161,9 +164,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockFileSystem.Verify(x => x.CreateDirectory(testRunDirectory), Times.Once());
 
+            var locale = string.IsNullOrEmpty(testSettings.Locale) ? CultureInfo.CurrentCulture : new CultureInfo(testSettings.Locale);
+
+            //TODO: Additional tests for non-empty locales
             foreach (var browserConfig in testSettings.BrowserConfigurations)
             {
-                MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams), Times.Once());
+                MockSingleTestRunner.Verify(x => x.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale), Times.Once());
             }
 
             MockTestReporter.Verify(x => x.EndTestRun(testRunId), Times.Once());
@@ -197,6 +203,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     "GCC",
                     new TestSettings()
                     {
+                        Locale = string.Empty,
                         BrowserConfigurations = new List<BrowserConfiguration>()
                         {
                             new BrowserConfiguration()
@@ -227,6 +234,40 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     null,
                     new TestSettings()
                     {
+                        Locale = string.Empty,
+                        BrowserConfigurations = new List<BrowserConfiguration>()
+                        {
+                            new BrowserConfiguration()
+                            {
+                                Browser = "Chromium"
+                            }
+                        }
+                    },
+                    new TestSuiteDefinition()
+                    {
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
+                        {
+                            new TestCase
+                            {
+                                TestCaseName = "Test Case Name",
+                                TestCaseDescription = "Test Case Description",
+                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            }
+                        }
+                    });
+
+                // Simple test in en-US locale (this should be like every other test)
+                // For the rest of the tests where Locale = string.Empty, CurrentCulture should be used
+                // and the test should pass
+                Add("C:\\testResults",
+                    "GCC",
+                    new TestSettings()
+                    {
+                        Locale = "en-US",
                         BrowserConfigurations = new List<BrowserConfiguration>()
                         {
                             new BrowserConfiguration()
@@ -257,6 +298,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     "",
                     new TestSettings()
                     {
+                        Locale = string.Empty,
                         BrowserConfigurations = new List<BrowserConfiguration>()
                         {
                             new BrowserConfiguration()
@@ -282,11 +324,43 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                         }
                     });
 
+                // Simple test in a different locale
+                Add("C:\\testResults",
+                    "GCC",
+                    new TestSettings()
+                    {
+                        Locale = "de-DE",
+                        BrowserConfigurations = new List<BrowserConfiguration>()
+                        {
+                            new BrowserConfiguration()
+                            {
+                                Browser = "Chromium"
+                            }
+                        }
+                    },
+                    new TestSuiteDefinition()
+                    {
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
+                        {
+                            new TestCase
+                            {
+                                TestCaseName = "Test Case Name",
+                                TestCaseDescription = "Test Case Description",
+                                TestSteps = "Assert(1 + 1 = 2; \"1 + 1 should be 2 \")"
+                            }
+                        }
+                    });
+
                 // Multiple browsers
                 Add("C:\\testResults",
                     "Prod",
                     new TestSettings()
                     {
+                        Locale = string.Empty,
                         BrowserConfigurations = new List<BrowserConfiguration>()
                         {
                             new BrowserConfiguration()
@@ -326,6 +400,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     "Prod",
                     new TestSettings()
                     {
+                        Locale = string.Empty,
                         BrowserConfigurations = new List<BrowserConfiguration>()
                         {
                             new BrowserConfiguration()
@@ -362,6 +437,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     "Prod",
                     new TestSettings()
                     {
+                        Locale = string.Empty,
                         BrowserConfigurations = new List<BrowserConfiguration>()
                         {
                             new BrowserConfiguration()

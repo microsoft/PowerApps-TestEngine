@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.Config
@@ -21,6 +22,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// At least one browser must be specified.
         /// </summary>
         public List<BrowserConfiguration> BrowserConfigurations { get; set; }
+
+        /// <summary>
+        /// Gets or sets the locale of the app to be launched
+        /// </summary>
+        //TODO: Log when empty
+        public string Locale { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets whether to record a video.
