@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
@@ -51,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine
             _loggerFactory = loggerFactory;
         }
 
-        public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams)
+        public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
         {
             RunCount++;
 
@@ -112,7 +113,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
 
                 // Set up Power Fx
-                _powerFxEngine.Setup();
+                _powerFxEngine.Setup(locale);
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
                 allTestsSkipped = false;
