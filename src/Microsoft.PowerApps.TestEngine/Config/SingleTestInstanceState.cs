@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Globalization;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.PowerApps.TestEngine.Config

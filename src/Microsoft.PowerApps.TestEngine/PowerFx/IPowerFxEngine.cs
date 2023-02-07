@@ -14,6 +14,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <summary>
         /// Set up the Power FX engine
         /// </summary>
+        /// <param name="locale">The locale to be used when setting up the Power FX engine. This is typically provided by the test plan file</param>
         public void Setup(CultureInfo locale);
 
         /// <summary>

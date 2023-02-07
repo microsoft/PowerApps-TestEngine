@@ -43,19 +43,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
         public void Setup(CultureInfo locale)
         {
-            //var powerFxConfig = new PowerFxConfig();
-            //if (string.IsNullOrEmpty(locale))
-            //{
-            //    locale = "en-US";
-            //    //TODO: Log SOMETHING, not an error, if locale is missing
-            //    //TODO: For now, if locale missing, select CurrentCulture
-            //    Logger.LogError("Test Log 2");
-            //}
-
-            //if (!string.IsNullOrEmpty(locale))
-            //{
             var powerFxConfig = new PowerFxConfig(locale);
-            //}
+
             powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectThreeParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));

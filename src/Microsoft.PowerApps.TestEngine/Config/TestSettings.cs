@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Globalization;
-using Microsoft.Extensions.Logging;
-
 namespace Microsoft.PowerApps.TestEngine.Config
 {
 
@@ -24,9 +21,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<BrowserConfiguration> BrowserConfigurations { get; set; }
 
         /// <summary>
-        /// Gets or sets the locale of the app to be launched
+        /// Gets or sets the locale for the test suite being run
         /// </summary>
-        //TODO: Log when empty
         public string Locale { get; set; } = string.Empty;
 
         /// <summary>

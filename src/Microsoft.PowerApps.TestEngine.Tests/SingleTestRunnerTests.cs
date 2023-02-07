@@ -1,24 +1,24 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Extensions.Logging;
-using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerFx;
-using Microsoft.PowerApps.TestEngine.Reporting;
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.Users;
-using Moq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Xunit;
-using Microsoft.PowerFx.Types;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.PowerFx;
+using Microsoft.PowerApps.TestEngine.Reporting;
+using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using System.Globalization;
+using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.PowerFx.Types;
+using Moq;
+using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests
 {
@@ -292,10 +292,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task PowerFxSetupThrowsTest()
         {
-            //TODO: Additional tests for non-empty locales
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockPowerFxEngine.Setup(x => x.Setup(CultureInfo.CurrentCulture)).Throws(exceptionToThrow);
+                MockPowerFxEngine.Setup(x => x.Setup(It.IsAny<CultureInfo>())).Throws(exceptionToThrow);
             });
         }
 
