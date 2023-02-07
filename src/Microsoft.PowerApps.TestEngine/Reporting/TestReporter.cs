@@ -13,6 +13,9 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         private readonly IFileSystem _fileSystem;
         private readonly DateTime _defaultDateTime = new DateTime();
 
+        public static string FailedResultOutcome = "Failed";
+        public static string PassedResultOutcome = "Passed";
+
         public TestReporter(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
@@ -215,6 +218,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testRun.ResultSummary.Counters.InProgress++;
         }
 
+        public void FailTest(string testRunId, string testId)
+        {
+            var testRun = GetTestRun(testRunId);
+            var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
+            testRun.ResultSummary.Counters.Failed++;
+            testResult.Outcome = FailedResultOutcome;
+        }
+
         public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
         {
             var testRun = GetTestRun(testRunId);
@@ -245,12 +256,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             if (success)
             {
                 testRun.ResultSummary.Counters.Passed++;
-                testResult.Outcome = "Passed";
+                testResult.Outcome = PassedResultOutcome;
             }
             else
             {
                 testRun.ResultSummary.Counters.Failed++;
-                testResult.Outcome = "Failed";
+                testResult.Outcome = FailedResultOutcome;
                 testResult.Output.ErrorInfo = new TestErrorInfo();
                 testResult.Output.ErrorInfo.Message = errorMessage;
                 testResult.Output.ErrorInfo.StackTrace = stackTrace;

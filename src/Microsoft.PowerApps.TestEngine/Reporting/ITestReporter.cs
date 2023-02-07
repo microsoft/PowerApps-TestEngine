@@ -59,6 +59,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace);
 
         /// <summary>
+        /// End test.
+        /// </summary>
+        /// <param name="testRunId">Test run id</param>
+        /// <param name="testId">Test id</param>
+        public void FailTest(string testRunId, string testId);
+
+        /// <summary>
         /// Generate test report
         /// </summary>
         /// <param name="testRunId">Test run id</param>
