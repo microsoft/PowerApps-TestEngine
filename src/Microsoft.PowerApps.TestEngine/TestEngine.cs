@@ -163,14 +163,11 @@ namespace Microsoft.PowerApps.TestEngine
                     locale = new CultureInfo(strLocale);
                     Logger.LogInformation($"Locale selected in Test Suite Definition: {locale.Name}");
                 }
-                if (!string.Equals(locale.Name, CultureInfo.CurrentCulture.Name))
-                {
-                    Logger.LogInformation($"Test Suite Locale ({locale.Name}) and system locale ({CultureInfo.CurrentCulture.Name}) do not match!");
-                }
             }
             catch (ArgumentException)
             {
                 Logger.LogError($"Locale from test suite definition {strLocale} unrecognized");
+                throw;
             }
             return locale;
         }
