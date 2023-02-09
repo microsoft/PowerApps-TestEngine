@@ -28,7 +28,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Select function.");
+
             SelectAsync(obj).Wait();
+
+            _logger.LogInformation("Successfully finished executing Select function.");
 
             return FormulaValue.NewBlank();
         }
