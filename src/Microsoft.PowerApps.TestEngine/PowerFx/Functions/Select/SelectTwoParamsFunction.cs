@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         public BlankValue Execute(RecordValue obj, NumberValue rowOrColumn)
         {
             SelectAsync(obj, rowOrColumn).Wait();
-            
+          
             return FormulaValue.NewBlank();
         }
 
