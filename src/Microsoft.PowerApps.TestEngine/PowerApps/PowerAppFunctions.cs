@@ -177,8 +177,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 // See if using legacy player
                 try
                 {
-                    await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "");
-                    _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer not in use.");
+                    await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
                 }
                 catch (TimeoutException)
                 {

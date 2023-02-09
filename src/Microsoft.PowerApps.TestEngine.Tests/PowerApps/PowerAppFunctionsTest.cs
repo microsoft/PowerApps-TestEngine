@@ -687,7 +687,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
-            LoggingTestHelper.VerifyLogging(MockLogger, "Legacy WebPlayer not in use.", LogLevel.Information, Times.Once());
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"), Times.AtLeastOnce());
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.getAppStatus()"), Times.AtLeastOnce());

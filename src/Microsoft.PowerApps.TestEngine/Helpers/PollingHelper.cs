@@ -29,6 +29,42 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             return value;
         }
 
+        // Will not print an error message
+        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<Task<T>> functionToCall, int timeout, ILogger logger)
+        {
+            ValidateTimeoutValue(timeout, logger);
+            DateTime startTime = DateTime.Now;
+
+            while (conditionToCheck(value))
+            {
+                if (functionToCall != null)
+                {
+                    value = await functionToCall();
+                }
+
+                CheckIfTimedOut(startTime, timeout, logger);
+                await Task.Delay(1000);
+            }
+        }
+
+        // Will not print an error message
+        public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<T, Task<T>> functionToCall, int timeout, ILogger logger)
+        {
+            ValidateTimeoutValue(timeout, logger);
+            DateTime startTime = DateTime.Now;
+
+            while (conditionToCheck(value))
+            {
+                if (functionToCall != null)
+                {
+                    value = await functionToCall(value);
+                }
+
+                CheckIfTimedOut(startTime, timeout, logger);
+                await Task.Delay(1000);
+            }
+        }
+
         public static async Task PollAsync<T>(T value, Func<T, bool> conditionToCheck, Func<Task<T>> functionToCall, int timeout, ILogger logger, string errorMessage = "")
         {
             ValidateTimeoutValue(timeout, logger);
@@ -60,6 +96,17 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
                 CheckIfTimedOut(startTime, timeout, logger, errorMessage);
                 await Task.Delay(1000);
+            }
+        }
+
+        // Will not print out error message
+        private static void CheckIfTimedOut(DateTime startTime, int timeout, ILogger logger)
+        {
+            if ((DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout))
+            {
+                logger.LogDebug("Timeout duration was set to " + timeout);
+
+                throw new TimeoutException();
             }
         }
 
