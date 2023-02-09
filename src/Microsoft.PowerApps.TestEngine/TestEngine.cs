@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -117,13 +118,17 @@ namespace Microsoft.PowerApps.TestEngine
 
         public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
         {
-            var browserConfigurations = _state.GetTestSettings().BrowserConfigurations;
+            var testSettings = _state.GetTestSettings();
+
+            var locale = GetLocaleFromTestSettings(testSettings.Locale);
+
+            var browserConfigurations = testSettings.BrowserConfigurations;
             var allTestRuns = new List<Task>();
 
             // Manage number of workers
             foreach (var browserConfig in browserConfigurations)
             {
-                allTestRuns.Add(Task.Run(() => RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams)));
+                allTestRuns.Add(Task.Run(() => RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale)));
                 if (allTestRuns.Count >= _state.GetWorkerCount())
                 {
                     Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
@@ -135,13 +140,36 @@ namespace Microsoft.PowerApps.TestEngine
             Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
             await Task.WhenAll(allTestRuns.ToArray());
         }
-        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams)
+        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
-                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams);
+                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale);
             }
+        }
+
+        private CultureInfo GetLocaleFromTestSettings(string strLocale)
+        {
+            var locale = CultureInfo.CurrentCulture;
+            try
+            {
+                if (string.IsNullOrEmpty(strLocale))
+                {
+                    Logger.LogInformation($"Locale unspecified in Test Suite Definition, using system locale {locale.Name}");
+                }
+                else
+                {
+                    locale = new CultureInfo(strLocale);
+                    Logger.LogInformation($"Locale selected in Test Suite Definition: {locale.Name}");
+                }
+            }
+            catch (ArgumentException)
+            {
+                Logger.LogError($"Locale from test suite definition {strLocale} unrecognized");
+                throw;
+            }
+            return locale;
         }
     }
 }

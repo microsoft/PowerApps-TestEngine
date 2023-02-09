@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Globalization;
 using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
@@ -13,7 +14,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <summary>
         /// Set up the Power FX engine
         /// </summary>
-        public void Setup();
+        /// <param name="locale">The locale to be used when setting up the Power FX engine. This is typically provided by the test plan file</param>
+        public void Setup(CultureInfo locale);
 
         /// <summary>
         /// Executes testSteps with retry
