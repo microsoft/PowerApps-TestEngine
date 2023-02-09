@@ -29,8 +29,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         public BlankValue Execute(RecordValue obj, NumberValue rowOrColumn)
         {
-            
-
             SelectAsync(obj, rowOrColumn).Wait();
 
             _logger.LogInformation("Successfully finished executing Select function.");
