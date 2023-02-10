@@ -27,6 +27,7 @@ testSuite:
           Screenshot("Container_end.png");
 
 testSettings:
+  locale: "en-US"
   recordVideo: true
   browserConfigurations:
     - browser: Chromium
