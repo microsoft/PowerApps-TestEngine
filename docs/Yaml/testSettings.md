@@ -6,6 +6,7 @@ This is used to define settings for the tests in the test plan
 
 | Property | Required | Description |
 | -- | -- | -- |
+| locale | Yes | The locale/culture syntax in which the test cases or test steps are written in. See {TODO:shortlink} for more info. If unspecified, `CultureInfo.CurrentCulture` will be used for the locale by default for parsing the test steps. |
 | browserConfigurations | Yes | A list of browser configurations to be tested. At least one browser must be specified. |
 | recordVideo | No | Default is false. If set to true, a video recording of the test is captured. |
 | headless | No | Default is true. If set to false, the browser will show up during test execution. |
