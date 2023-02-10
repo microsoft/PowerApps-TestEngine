@@ -59,11 +59,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectOneParamFunctionTest()
         {
+            LoggingTestHelper.SetupMock(MockLogger);
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
 
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
-
+           
             var updaterFunctionCallCount = 0;
             var updaterFunction = () =>
             {
@@ -75,7 +76,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var result = selectFunction.Execute(recordValue);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.Once());
             Assert.Equal(1, updaterFunctionCallCount);
+            LoggingTestHelper.VerifyLogging(MockLogger, "Assert failed. Property is not equal to the specified value.", LogLevel.Information, Times.Once());
         }
 
         [Fact]
