@@ -122,9 +122,12 @@ Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/b
 
 The syntax can be different based on your systems language settings. We have now introduced a new `locale` property in the testSettings section of the test plan file (see `locale` in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md)). Please specify your locale (e.g., "en-US", "fr-FR", "de-DE") if you're in a region where the PowerFx syntax can vary, for example, `,` instead of `.` for decimals and `;` instead of `,` for separators.
 
-TODO: Additional test plan samples have been provided to demonstrate. These samples also have the `locale` property specified:
-1. `;` instead of `,` for separator - `samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml`
-2. `,` instead of `.` for separator - `samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml`
+Additional test plan samples have been provided to demonstrate. These samples also have the `locale` property specified:
+
+1. `;` instead of `,` for separator - [testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml](samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml)
+2. `,` instead of `.` for separator - [testPlanWithCommaForDecimal.fx.yaml.fx.yaml](samples/calculator/testPlanWithCommaForDecimal.fx.yaml)
+
+NOTE: Since the integration tests that use these samples run in an `en-US` locale, the `testPlanWithCommaForDecimal` sample represents absolute numbers with decimals as `,` but their string representations of the decimals are still `.` to match the locale these tests are running in. Additionally, this is also because the corresponding sample app is also hosted in an `en-US` locale. But for real-world applications make sure the syntax of the tests represent the locale for the app and environment as well.
 
 ## What to do next
 
