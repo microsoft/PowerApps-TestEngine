@@ -191,7 +191,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue, rowOrColumn));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.AtLeastOnce());
-                        LoggingTestHelper.VerifyLogging(MockLogger, "Control name: Gallery1", LogLevel.Trace, Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Control name: Gallery1", LogLevel.Trace, Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Unable to select control", LogLevel.Error, Times.AtLeastOnce());
             Assert.Equal(0, updaterFunctionCallCount);
         }
@@ -231,6 +231,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, rowOrColumn, childValue));
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Control name: Gallery1", LogLevel.Trace, Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Unable to select control", LogLevel.Error, Times.AtLeastOnce());
             Assert.Equal(0, updaterFunctionCallCount);
         }
 
