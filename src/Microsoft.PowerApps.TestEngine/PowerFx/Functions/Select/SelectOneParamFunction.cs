@@ -35,6 +35,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         private async Task SelectAsync(RecordValue obj)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Select function.");
+
             if (obj == null)
             {
                 _logger.LogTrace($"Object name: '{obj}'");
@@ -53,6 +56,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             }
 
             await _updateModelFunction();
+
+            _logger.LogInformation("Successfully finished executing Select function.");
         }
     }
 }

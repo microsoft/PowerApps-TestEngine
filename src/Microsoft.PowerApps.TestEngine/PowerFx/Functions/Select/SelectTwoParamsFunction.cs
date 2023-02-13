@@ -36,6 +36,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         private async Task SelectAsync(RecordValue obj, NumberValue rowOrColumn)
         {
+            _logger.LogInformation("------------------------------\n\n" +
+                "Executing Select function.");
+
             NullCheckHelper.NullCheck(obj, rowOrColumn, _logger);
 
             var controlName = obj.GetType().GetProperty("Name")?.GetValue(obj, null)?.ToString();
@@ -61,6 +64,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             }
 
             await _updateModelFunction();
+
+            _logger.LogInformation("Successfully finished executing Select function.");
         }
     }
 }
