@@ -4,6 +4,10 @@ testSuite:
   persona: User1
   appId: fd32a609-eaca-4d91-b5b4-31651d265133
 
+  # This sample has been written to demonstrate tests written in regions that use commas ',' instead of 
+  # periods '.' for a decimal separator. E.g., "10,22" instead of "10.22". However since all of our tests 
+  # run in an en-US locale, string representations of the numbers still use the en-US variant i.e., the 
+  # number 10,22 is represented in a Label field in the Power App as "10.22". See README for more details.
   testCases:
     - testCaseName: Default Check
       testSteps: |
