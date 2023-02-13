@@ -120,7 +120,7 @@ Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/b
 
 #### Languages and regions that use period as the decimal separator
 
-The syntax can be different based on your systems language settings. We have now introduced a new `locale` property in the testSettings section of the test plan file (see `locale` in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md)). Please specify your locale (e.g., "en-US", "fr-FR", "de-DE") if you're in a region where the PowerFx syntax can vary, for example, `,` instead of `.` for decimals and `;` instead of `,` for separators.
+The syntax of Power Fx can differ based on your system's language settings. Use the `locale` property in the `testSettings` section of the test plan file to specify the locale in which your Power Fx is written. (See `locale` in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md)). This is useful if you are working across regions that use different decimal or thousands separators.  For example, `,` instead of `.` for decimals and `;` instead of `,`.
 
 Additional test plan samples have been provided to demonstrate. These samples also have the `locale` property specified:
 
