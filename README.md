@@ -120,7 +120,11 @@ Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/b
 
 #### Languages and regions that use period as the decimal separator
 
-The syntax can be different based on your systems language settings. `samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml` is a test plan for these languages and regions. If you want to try out the other samples, you will need to modify formula separators and chaining operators according to [this link](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/global-apps#formula-separators-and-chaining-operator). We will try out best to provide more sample test plans for these languages and regions.
+The syntax can be different based on your systems language settings. We have now introduced a new `locale` property in the testSettings section of the test plan file (see `locale` in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md)). Please specify your locale (e.g., "en-US", "fr-FR", "de-DE") if you're in a region where the PowerFx syntax can vary, for example, `,` instead of `.` for decimals and `;` instead of `,` for separators.
+
+TODO: Additional test plan samples have been provided to demonstrate. These samples also have the `locale` property specified:
+1. `;` instead of `,` for separator - `samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml`
+2. `,` instead of `.` for separator - `samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml`
 
 ## What to do next
 
