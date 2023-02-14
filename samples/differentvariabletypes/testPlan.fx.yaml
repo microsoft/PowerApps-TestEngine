@@ -77,7 +77,6 @@ testSuite:
           Screenshot("table_type_end.png");
 
 testSettings:
-  locale: "en-US"
   filePath: ../../samples/testSettings.yaml
 
 environmentVariables:
