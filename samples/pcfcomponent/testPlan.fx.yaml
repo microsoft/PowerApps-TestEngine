@@ -15,6 +15,7 @@ testSuite:
           Screenshot("pcfcomponent_end.png");
 
 testSettings:
+  locale: "en-US"
   recordVideo: true
   browserConfigurations:
     - browser: Chromium
