@@ -120,7 +120,14 @@ Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/b
 
 #### Languages and regions that use period as the decimal separator
 
-The syntax can be different based on your systems language settings. `samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml` is a test plan for these languages and regions. If you want to try out the other samples, you will need to modify formula separators and chaining operators according to [this link](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/global-apps#formula-separators-and-chaining-operator). We will try out best to provide more sample test plans for these languages and regions.
+The syntax of Power Fx can differ based on your system's language settings. Use the `locale` property in the `testSettings` section of the test plan file to specify the locale in which your Power Fx is written. (See `locale` in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md)). This is useful if you are working across regions that use different decimal or thousands separators.  For example, `,` instead of `.` for decimals and `;` instead of `,`.
+
+See the following samples that have the `locale` property specified as examples of its usage:
+
+1. `;` instead of `,` for separator - [testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml](samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml)
+2. `,` instead of `.` for separator - [testPlanWithCommaForDecimal.fx.yaml.fx.yaml](samples/calculator/testPlanWithCommaForDecimal.fx.yaml)
+
+NOTE: Since the integration tests that use these samples run in an `en-US` locale, the `testPlanWithCommaForDecimal` sample represents absolute numbers with decimals as `,` but their string representations of the decimals are still `.` to match the locale these tests are running in. Additionally, this is also because the corresponding sample app is also hosted in an `en-US` locale. But for real-world applications make sure the syntax of the tests represent the locale for the app and environment as well.
 
 ## What to do next
 
