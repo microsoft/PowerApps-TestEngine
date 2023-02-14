@@ -24,7 +24,6 @@ testSuite:
           Assert(Label1.Text = "3");
 
 testSettings:
-  locale: "en-US"
   filePath: ../../samples/testSettings.yaml
 
 environmentVariables:
