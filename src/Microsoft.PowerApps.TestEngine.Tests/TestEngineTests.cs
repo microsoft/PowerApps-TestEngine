@@ -45,8 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             var testSettings = new TestSettings()
             {
-                // Empty string in locale field is supported and handled appropriately
-                Locale = string.Empty,
+                Locale = "en-US",
                 WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
@@ -138,6 +137,57 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
 
             await Assert.ThrowsAsync<CultureNotFoundException>(() => testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", domain, ""));
+        }
+
+        [Fact]
+        public async Task TestEngineWithUnspecifiedLocaleShowsWarning()
+        {
+            var testSettings = new TestSettings()
+            {
+                WorkerCount = 2,
+                BrowserConfigurations = new List<BrowserConfiguration>()
+                {
+                    new BrowserConfiguration()
+                    {
+                        Browser = "Chromium"
+                    }
+                }
+            };
+            var testSuiteDefinition = new TestSuiteDefinition()
+            {
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
+                AppLogicalName = "logicalAppName1",
+                Persona = "User1",
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
+            };
+            var testConfigFile = "C:\\testPlan.fx.yaml";
+            var environmentId = "defaultEnviroment";
+            var tenantId = "tenantId";
+            var testRunId = Guid.NewGuid().ToString();
+            var expectedOutputDirectory = "TestOutput";
+            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var domain = "apps.powerapps.com";
+
+            var expectedTestReportPath = "C:\\test.trx";
+
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", domain, "");
+
+            Assert.Equal(expectedTestReportPath, testReportPath);
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Locale property not specified in testSettings. Using current system locale: {CultureInfo.CurrentCulture.Name}", LogLevel.Warning, Times.Once());
+
+            Verify(testConfigFile, environmentId, tenantId, domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         [Theory]
