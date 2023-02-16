@@ -156,7 +156,7 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 if (string.IsNullOrEmpty(strLocale))
                 {
-                    Logger.LogInformation($"Locale unspecified in Test Suite Definition, using system locale {locale.Name}");
+                    Logger.LogWarning($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
                 }
                 else
                 {
