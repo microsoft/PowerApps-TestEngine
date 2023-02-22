@@ -194,8 +194,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
         {
-            await CheckAndHandleIfLegacyPlayerAsync();
-
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), GetAppStatusErrorMessage);
 
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
