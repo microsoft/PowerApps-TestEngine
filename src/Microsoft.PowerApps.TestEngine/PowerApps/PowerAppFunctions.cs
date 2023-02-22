@@ -172,32 +172,24 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task CheckAndHandleIfLegacyPlayerAsync()
         {
-            Console.WriteLine("TEST0");
             try
             {
-                Console.WriteLine("TEST1");
                 // See if using legacy player
                 try
                 {
-                    Console.WriteLine("TEST2");
                     await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
                 }
                 catch (TimeoutException)
                 {
-                    Console.WriteLine("TEST3");
                     _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
-                Console.WriteLine("TEST4");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("TEST5");
                 _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
-                Console.WriteLine("TEST6");
             }
-            Console.WriteLine("TEST7");
         }
 
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
