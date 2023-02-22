@@ -51,6 +51,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// <summary>
         /// Verify if using legacy player
         /// </summary>
-         public Task CheckAndHandleIfLegacyPlayerAsync();
+        public Task CheckAndHandleIfLegacyPlayerAsync();
     }
 }
