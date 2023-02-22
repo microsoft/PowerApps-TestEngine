@@ -170,7 +170,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return result;
         }
 
-        private async Task CheckAndHandleIfLegacyPlayerAsync()
+        public async Task CheckAndHandleIfLegacyPlayerAsync()
         {
             try
             {
