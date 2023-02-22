@@ -187,7 +187,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             catch (Exception ex)
             {
-                _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
+                throw;
             }
         }
 
