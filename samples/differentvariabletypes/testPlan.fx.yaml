@@ -2,7 +2,7 @@ testSuite:
   testSuiteName: DifferentVariableTypes
   testSuiteDescription: Showcases usage of Assert/Wait/SetProperty with multiple types
   persona: User1
-  appLogicalName: 5f30b052-2edc-4da7-b950-b894978a1eba
+  appLogicalName: cr693_differentvariabletypes_09b4b
 
   testCases:
     - testCaseName: String_Case
