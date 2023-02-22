@@ -200,6 +200,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
@@ -252,6 +253,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
 
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
@@ -299,6 +301,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                 PropertyName = "Text"
             };
 
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((input) => itemPath.ControlName == input.ControlName && itemPath.PropertyName == input.PropertyName)))
                 .Returns(JsonConvert.SerializeObject(label1JsProperty));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
