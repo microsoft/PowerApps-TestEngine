@@ -2,7 +2,7 @@ testSuite:
   testSuiteName: ManyScreens
   testSuiteDescription: Verifies that you can interact with controls on other screens
   persona: User1
-  appLogicalName: new_manyscreens_7720b
+  appId: dbe5e2de-fc09-4983-a694-0991b4fcf06d
 
   testCases:
     - testCaseName: Case1

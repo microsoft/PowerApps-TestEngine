@@ -61,7 +61,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             int currentRetry = 0;
             FormulaValue result = FormulaValue.NewBlank();
-            await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
 
             while (currentRetry <= _retryLimit)
             {
@@ -138,6 +137,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 Logger.LogError("Engine is null, make sure to call Setup first");
                 throw new InvalidOperationException();
             }
+
+            await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
 
             var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
             foreach (var control in controlRecordValues)
