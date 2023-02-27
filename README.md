@@ -1,6 +1,7 @@
 # Power Apps Test Engine
 
 [![CI Build](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml/badge.svg)](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml)
+
 > This is currently an experimental project.
 
 ## Overview
@@ -9,8 +10,8 @@ Power Apps Test Engine is an open source project with the aim of providing maker
 
 - Power Fx test authoring - Makers can author tests in YAML format using the familiar Power Fx language.
 - DOM abstraction - Tests are authored using references to control names that are defined at design-time. Test authors do not need to write JavaScript, and do not need to be familiar with the browser DOM of the app's rendered output.
-- Connector mocking - Test authors can optionally create mocks of network calls, typically used when Power Apps make calls to connectors. This allows the app to be tested without modification to the app itself while avoiding any unwanted side-effects of the external APIs. 
-- Screenshot and video recording support - Test Engine can take screenshots at any point during your test execution, and records videos of the test run.  This can be very helpful to diagnose failed tests and to understand what the actual experience of the failed test case was.
+- Connector mocking - Test authors can optionally create mocks of network calls, typically used when Power Apps make calls to connectors. This allows the app to be tested without modification to the app itself while avoiding any unwanted side-effects of the external APIs.
+- Screenshot and video recording support - Test Engine can take screenshots at any point during your test execution, and records videos of the test run. This can be very helpful to diagnose failed tests and to understand what the actual experience of the failed test case was.
 
 Build this project using the instructions below. This will create a local executable that can be used to run tests from your machine.
 
@@ -20,17 +21,17 @@ Test Engine currently supports Power Apps canvas apps.
 
 ## Getting Started
 
-To get started, you will need to clone the Test Engine code from GitHub, locally build the project, and install the browser(s) you wish to use to execute the tests. Once you have the Test Engine executable built, the repo contains a library of sample test plans and apps you can use to exercise the tool.  
+To get started, you will need to clone the Test Engine code from GitHub, locally build the project, and install the browser(s) you wish to use to execute the tests. Once you have the Test Engine executable built, the repo contains a library of sample test plans and apps you can use to exercise the tool.
 
 ### Prerequisites for building Test Engine
 
-1. Install [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) 
+1. Install [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 1. Ensure that your `MSBuildSDKsPath` environment variable is pointing to [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
-1. Make sure  [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2) is installed.
+1. Make sure [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2) is installed.
 
 ### Build locally
 
-Run the commands below in PowerShell.  These commands will clone the repo to your desktop, will build the executable, and will install browser prerequisites needed for the tests to execute.
+Run the commands below in PowerShell. These commands will clone the repo to your desktop, will build the executable, and will install browser prerequisites needed for the tests to execute.
 
 ```bash
 # Clone GitHub repo
@@ -47,20 +48,22 @@ dotnet build
 ```
 
 ### Using the provided samples
-Test Engine includes a library of samples you can use to get started.  Each sample consists of solution that you can directly import into your Power Apps environment, and a test plan file that corresponds to the Power Apps canvas app that is in the solution.
+
+Test Engine includes a library of samples you can use to get started. Each sample consists of solution that you can directly import into your Power Apps environment, and a test plan file that corresponds to the Power Apps canvas app that is in the solution.
 
 To use the samples, import the solution into your environment and then execute the corresponding test plan file with Test Engine.
 
- See [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
+See [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
 
 #### 1. Import a sample solution
- Choose one of the packaged solutions within the Samples folder (e.g., `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_2.zip`). You can import solutions [using the Dataverse portal](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions), or by using the [PAC CLI command line tool](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/solution#pac-solution-import). Remember the environment that you imported the solution to. 
+
+Choose one of the packaged solutions within the Samples folder (e.g., `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_2.zip`). You can import solutions [using the Dataverse portal](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions), or by using the [PAC CLI command line tool](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/solution#pac-solution-import). Remember the environment that you imported the solution to.
 
 #### 2. Set up the config file
 
-You can use a config file to specify values needed to run the tests, or you can provide these same values on the command line when executing the app.  This example shows using the config file.
+You can use a config file to specify values needed to run the tests, or you can provide these same values on the command line when executing the app. This example shows using the config file.
 
-Create a `config.dev.json` file inside the `PowerAppsTestEngine` folder. 
+Create a `config.dev.json` file inside the `PowerAppsTestEngine` folder.
 
 Here is an example of its contents (a file `config.json` is provided in the repo as an example):
 
@@ -75,12 +78,12 @@ Here is an example of its contents (a file `config.json` is provided in the repo
 
 Fill in the required properties:
 
-- environmentId: The ID of the Environment into which you imported the solution 
+- environmentId: The ID of the Environment into which you imported the solution
 - tenantId: The ID of your tenant
 
 Both environmentId and tenantId can be found by opening the `Settings > Session details` dialog from within the environment:
 
-  ![Screenshot of Power Apps session details dialog](docs/images/findenvironment.png)
+![Screenshot of Power Apps session details dialog](docs/images/findenvironment.png)
 
 - testPlanFile: Path to the test plan YAML filethat you wish to run. (e.g., `../../samples/basicgallery/testPlan.fx.yaml`)
 - outputDirectory: Path to folder where test output/results will be placed.
@@ -89,11 +92,11 @@ For more information about the config and the inputs to the command, please view
 
 ### Set up user authentication
 
-This refers to the account that Test Engine will use to execute the test. 
+This refers to the account that Test Engine will use to execute the test.
 
-Test Engine does not support multi-factor authentication.  Use an account that requires only a username and password to sign in for your tests.
+Test Engine does not support multi-factor authentication. Use an account that requires only a username and password to sign in for your tests.
 
-Test credentials cannot be stored in test plan files.  Rather, they are stored in PowerShell environment variables.  The test plan file contains references to which environment variables are used for credentials.  For example, the following snippet indicates that the `user1Email` and `user1Password` environment variables will be used:
+Test credentials cannot be stored in test plan files. Rather, they are stored in PowerShell environment variables. The test plan file contains references to which environment variables are used for credentials. For example, the following snippet indicates that the `user1Email` and `user1Password` environment variables will be used:
 
 ```yaml
 environmentVariables:
@@ -101,15 +104,15 @@ environmentVariables:
     - personaName: User1
       emailKey: user1Email
       passwordKey: user1Password
-```      
+```
 
 Please view the [YAML/Users reference page](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/Users.md) for more information.
 
 ### Run test
 
-Once the `config.dev.json` and credentials are configured, you are ready to run the test.  Use the following command:
+Once the `config.dev.json` and credentials are configured, you are ready to run the test. Use the following command:
 
-```bash 
+```bash
 # Run test
 dotnet run
 ```
@@ -120,11 +123,11 @@ Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/b
 
 #### Languages and regions that use period as the decimal separator
 
-The syntax of Power Fx can differ based on your system's language settings. Use the `locale` property in the `testSettings` section of the test plan file to specify the locale in which your Power Fx is written. (See `locale` in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md)). This is useful if you are working across regions that use different decimal or thousands separators.  For example, `,` instead of `.` for decimals and `;` instead of `,`.
+The syntax of Power Fx can differ based on your system's language settings. Use the `locale` property in the `testSettings` section of the test plan file to specify the locale in which your Power Fx is written. (See `locale` in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md)). This is useful if you are working across regions that use different decimal or thousands separators. For example, `,` instead of `.` for decimals and `;` instead of `,`.
 
 See the following samples that have the `locale` property specified as examples of its usage:
 
-1. `;` instead of `,` for separator - [testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml](samples/basicgallery/testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml)
+1. `;` instead of `,` for separator - [testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml](samples/basicgallery/testPlanForRegionUseSemicolonAsSeparator.fx.yaml)
 2. `,` instead of `.` for separator - [testPlanWithCommaForDecimal.fx.yaml.fx.yaml](samples/calculator/testPlanWithCommaForDecimal.fx.yaml)
 
 NOTE: Since the integration tests that use these samples run in an `en-US` locale, the `testPlanWithCommaForDecimal` sample represents absolute numbers with decimals as `,` but their string representations of the decimals are still `.` to match the locale these tests are running in. Additionally, this is also because the corresponding sample app is also hosted in an `en-US` locale. But for real-world applications make sure the syntax of the tests represent the locale for the app and environment as well.
@@ -134,6 +137,7 @@ NOTE: Since the integration tests that use these samples run in an `en-US` local
 **Option 1** - Author your own test plan: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App apps and create new tests for your updated app. Check [Power Fx](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. The sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
 
 **Option 2** - Download recorded tests from Test Studio: If you have tests that you have recorded in [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can download them from Test Studio to reuse in Test Engine.
+
 - Make use of the "Download suite" button available in Test Studio to download the test plan. Choose the test suite to download if you have multiple test suites. ![Screenshot of Test Studio download test suite button](docs/images/downloadtestsuite.png)
 - Alternatively you can make use of the "Download" button available under each test suite.![Screenshot of Test Studio download test suite individual button](docs/images/downloadtestsuiteindividual.png)
 - Make sure you update the config file and user configurations if you are using a different tenant or environment for this app.
@@ -146,30 +150,33 @@ NOTE: Since the integration tests that use these samples run in an `en-US` local
 [Power Fx](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX)
 
 ## How apps are referenced in test plan files
-The way that the test plan files refer to the target app differs depending on whether or not the app is in a solution or not.  We recommend using solutions whenever possible because they provide greater portability.
 
-- **Working with apps within Solutions** - Test plan files for apps that are part of [solutions](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/solutions-overview) are portable across environments.  For solution-based apps, the test plan refers to the target app with a logical name (the appLogicalName property) which does not change if the app moves to a different environment.
+The way that the test plan files refer to the target app differs depending on whether or not the app is in a solution or not. We recommend using solutions whenever possible because they provide greater portability.
+
+- **Working with apps within Solutions** - Test plan files for apps that are part of [solutions](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/solutions-overview) are portable across environments. For solution-based apps, the test plan refers to the target app with a logical name (the appLogicalName property) which does not change if the app moves to a different environment.
+
   1. Locate the App Logical name for the app
-      1. In the **Solutions** tab, open the solution that contains the app
-      1. Select **Apps**
-      1. Note the **Name** column. It is the app logical name (Not the **Display name**)
+     1. In the **Solutions** tab, open the solution that contains the app
+     1. Select **Apps**
+     1. Note the **Name** column. It is the app logical name (Not the **Display name**)
   2. Update your test plan file
-      1. Open the test plan YAML file for the app
-      1. Fill in the **appLogicalName** value with the new App logical name
+     1. Open the test plan YAML file for the app
+     1. Fill in the **appLogicalName** value with the new App logical name
 
-- **Working with apps outside of Solutions** - If you move an app that is *not* part of a solution to a new environment, you will need to manually update the test plan file to refer to the app. How to update a test plan file for a non-solution based app:
+- **Working with apps outside of Solutions** - If you move an app that is _not_ part of a solution to a new environment, you will need to manually update the test plan file to refer to the app. How to update a test plan file for a non-solution based app:
 
   1. Locate the App ID for the app in its new location
-      1. In the **Apps** list, locate the app and open the context menu
-      1. Select **Details**
-      1. Note the **App ID** GUID on the Details pane
+     1. In the **Apps** list, locate the app and open the context menu
+     1. Select **Details**
+     1. Note the **App ID** GUID on the Details pane
   2. Update your test plan file
-      1. Open the test plan YAML file for the app
-      1. Fill in the **appId** with the new App ID
+     1. Open the test plan YAML file for the app
+     1. Fill in the **appId** with the new App ID
 
 ## Known limitations
 
 ### Unsupported controls
+
 While work to provide full control coverage is in progress, support for the following controls are currently unavailable:
 
 - Charts
@@ -179,7 +186,8 @@ While work to provide full control coverage is in progress, support for the foll
 - Child controls within components
 
 ### Authentication
-Multi-factor authentication is not supported.  Use an account that requires only a username and password to run your tests.
+
+Multi-factor authentication is not supported. Use an account that requires only a username and password to run your tests.
 
 ## Frequently asked questions
 
@@ -212,13 +220,13 @@ Example: environmentId changes if the app is imported to a another tenant/enviro
 
 ## How to report issues
 
-You are invited to contribute corrections to both code and documentation.  See the below section entitled "Contributing to Test Engine code and documentation" for further info.  You may also [file GitHub issues for Test Engine](https://github.com/microsoft/PowerApps-TestEngine/issues) to make Microsoft and the community aware of issues.
+You are invited to contribute corrections to both code and documentation. See the below section entitled "Contributing to Test Engine code and documentation" for further info. You may also [file GitHub issues for Test Engine](https://github.com/microsoft/PowerApps-TestEngine/issues) to make Microsoft and the community aware of issues.
 
 ## Contributing to Test Engine code and documentation
 
-This project welcomes contributions and suggestions to both code and documentation.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+This project welcomes contributions and suggestions to both code and documentation. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 
-> **Note:** We are not accepting contributions for content within the [JS folder](https://github.com/microsoft/PowerApps-TestEngine/tree/main/src/Microsoft.PowerApps.TestEngine/JS). 
+> **Note:** We are not accepting contributions for content within the [JS folder](https://github.com/microsoft/PowerApps-TestEngine/tree/main/src/Microsoft.PowerApps.TestEngine/JS).
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
@@ -230,8 +238,8 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 ## Trademarks
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
+trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
