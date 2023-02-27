@@ -127,6 +127,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label2")))
                 .Returns(JsonConvert.SerializeObject(label2JsProperty));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 }, { "Label2", label2 } }));
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -218,6 +219,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public async Task ExecuteSelectFunctionFailingTest()
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
 
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
@@ -238,6 +240,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var otherRecordType = RecordType.Empty().Add("Foo", FormulaType.String);
             var button1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Button1");
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -275,6 +278,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var button1 = new ControlRecordValue(wrongRecordType, MockPowerAppFunctions.Object, "Button1");
 
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -322,6 +326,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var otherRecordType = RecordType.Empty().Add("Foo", FormulaType.String);
             var label1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label1");
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
