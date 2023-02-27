@@ -120,4 +120,4 @@ jobs:
       uses: thechetantalwar/teams-notify@v2
       with:
         teams_webhook_url: ${{ secrets.TEAM_HOOK }}
-        message: "${{ job.status }}: Github Action ${{ github.run_number }} (attempt #${{ github.run_attempt }}). See https://github.com/microsoft/PowerApps-TestEngine/actions/runs/${{ github.run_id }} details."
+        message: "${{ job.status }}: Github Action ${{ github.run_number }} (attempt #${{ github.run_attempt }}) triggered by ${{ github.triggering_actor }}. See https://github.com/microsoft/PowerApps-TestEngine/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }} details."
