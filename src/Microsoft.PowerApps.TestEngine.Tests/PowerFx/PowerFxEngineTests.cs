@@ -128,6 +128,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                 .Returns(JsonConvert.SerializeObject(label2JsProperty));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 }, { "Label2", label2 } }));
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -204,6 +208,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -220,6 +228,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
@@ -241,6 +253,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var button1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Button1");
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -259,6 +275,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -279,6 +299,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -309,6 +333,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((input) => itemPath.ControlName == input.ControlName && itemPath.PropertyName == input.PropertyName)))
                 .Returns(JsonConvert.SerializeObject(label1JsProperty));
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -327,6 +356,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var label1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label1");
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
