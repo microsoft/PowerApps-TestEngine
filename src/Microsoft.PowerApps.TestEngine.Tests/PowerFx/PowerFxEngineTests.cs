@@ -66,6 +66,26 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         }
 
         [Fact]
+        public async void UpdatePowerFxModelAsyncThrowsOnCantGetAppStatusTest()
+        {
+            var recordType = RecordType.Empty().Add("Text", FormulaType.String);
+            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(false));
+
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+
+            var powerFxExpression = "Select(Button1)";
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            await Assert.ThrowsAsync<TimeoutException>(() => powerFxEngine.UpdatePowerFxModelAsync());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Something went wrong when Test Engine tried to get App status.", LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
         public void ExecuteOneFunctionTest()
         {
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
