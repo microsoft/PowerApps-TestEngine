@@ -52,5 +52,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Verify if using legacy player
         /// </summary>
         public Task CheckAndHandleIfLegacyPlayerAsync();
+
+        /// <summary>
+        /// Check if app status returns 'idle' or 'busy'
+        /// </summary>
+        /// <returns>True if app status is idle</returns>
+        public Task<bool> CheckIfAppIsIdleAsync();
     }
 }

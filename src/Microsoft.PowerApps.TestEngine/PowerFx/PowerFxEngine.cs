@@ -4,6 +4,7 @@
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.System;
@@ -139,6 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _powerAppFunctions.CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), _powerAppFunctions.GetAppStatusErrorMessage);
 
             var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
             foreach (var control in controlRecordValues)

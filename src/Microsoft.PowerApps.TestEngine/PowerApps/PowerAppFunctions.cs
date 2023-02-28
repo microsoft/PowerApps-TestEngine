@@ -21,7 +21,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ITestState _testState;
 
         public static string PublishedAppIframeName = "fullscreen-app-host";
-        private string GetAppStatusErrorMessage = "Something went wrong when Test Engine tried to get App status.";
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
@@ -71,7 +70,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             return Path.Combine(Directory.GetParent(currentDirectory).FullName, "Microsoft.PowerApps.TestEngine", file);
         }
 
-        private async Task<bool> CheckIfAppIsIdleAsync()
+        public async Task<bool> CheckIfAppIsIdleAsync()
         {
             try
             {
@@ -194,8 +193,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         public async Task<Dictionary<string, ControlRecordValue>> LoadPowerAppsObjectModelAsync()
         {
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), GetAppStatusErrorMessage);
-
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             _singleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
             await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadPowerAppsObjectModelAsyncHelper(x), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), LoadObjectModelErrorMessage);
