@@ -557,55 +557,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Fact]
-        public async Task LoadPowerAppsObjectModelAsyncWaitsForAppToBeIdle()
-        {
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
-            var testSettings = new TestSettings() { Timeout = 6000 };
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
-            LoggingTestHelper.SetupMock(MockLogger);
-            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
-
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))"), Times.AtLeastOnce());
-            LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
-        }
-
-        [Fact]
-        public async Task LoadPowerAppsObjectModelAsyncWaitsForAppToBeIdleWithExceptions()
-        {
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
-            var testSettings = new TestSettings() { Timeout = 5000 };
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
-            LoggingTestHelper.SetupMock(MockLogger);
-            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
-
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))"), Times.AtLeastOnce());
-            LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
-        }
-
-        [Fact]
-        public async Task LoadPowerAppsObjectModelAsyncWaitsForAppToBeIdleTimeout()
-        {
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
-            var testSettings = new TestSettings() { Timeout = 15 };
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
-            LoggingTestHelper.SetupMock(MockLogger);
-            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
-        }
-
-        [Fact]
         public async Task LoadPowerAppsObjectModelAsyncEmbedJSUndefined()
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
@@ -641,27 +592,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
-        }
-
-        // Testing if app outdated and needs to be republished, error thrown right and captured
-        // Published App JSSDK not found tests
-        [Fact]
-        public async Task CheckIfAppIsIdleAsyncFailsWithNoPublishedAppFunction()
-        {
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"));
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(It.IsAny<string>()))
-                .Throws(new Exception("1"));
-
-            var testSettings = new TestSettings() { Timeout = 3000 };
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
-
-            LoggingTestHelper.SetupMock(MockLogger);
-            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
-            
-            LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
