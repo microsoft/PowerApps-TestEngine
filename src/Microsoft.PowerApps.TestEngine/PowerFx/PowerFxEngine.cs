@@ -4,6 +4,7 @@
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.System;
@@ -61,6 +62,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             int currentRetry = 0;
             FormulaValue result = FormulaValue.NewBlank();
+
             while (currentRetry <= _retryLimit)
             {
                 try
@@ -136,6 +138,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 Logger.LogError("Engine is null, make sure to call Setup first");
                 throw new InvalidOperationException();
             }
+
+            await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _powerAppFunctions.CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
 
             var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
             foreach (var control in controlRecordValues)

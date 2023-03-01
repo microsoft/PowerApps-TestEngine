@@ -47,5 +47,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// <param name="itemPath">Path to the item</param>
         /// <returns>Number of items in the array</returns>
         public int GetItemCount(ItemPath itemPath);
+
+        /// <summary>
+        /// Verify if using legacy player
+        /// </summary>
+        public Task CheckAndHandleIfLegacyPlayerAsync();
+
+        /// <summary>
+        /// Check if app status returns 'idle' or 'busy'
+        /// </summary>
+        /// <returns>True if app status is idle</returns>
+        public Task<bool> CheckIfAppIsIdleAsync();
     }
 }
