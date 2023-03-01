@@ -10,6 +10,7 @@ do
   domain=''
   testPlanFile=''
   outputDir=''
+  queryParam=''
   for arg in "${args[@]}" 
     do      
       if [[ $arg == *"environmentId"* ]]; then
@@ -44,6 +45,9 @@ do
        fi                                                                
     done
   if [[ -n "${envId}" && -n "${tenantId}" && -n "${domain}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then     # null checks on args
-    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir};  
+    queryParam = "&PAOverrideFGRollout.OnePlayerStandaloneWebPlayer=false"; # force old player
+    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir} -q ${queryParam};
+    queryParam = "&PAOverrideFGRollout.OnePlayerStandaloneWebPlayer=true"; # force new player
+    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir} -q ${queryParam};
   fi
 done
