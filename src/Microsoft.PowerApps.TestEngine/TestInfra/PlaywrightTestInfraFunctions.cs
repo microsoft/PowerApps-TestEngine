@@ -276,7 +276,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             ValidatePage();
 
-            if (!jsExpression.Equals(PowerAppFunctions.CheckPowerAppsTestEngineObject)) {
+            if (!jsExpression.Equals(PowerAppFunctions.CheckPowerAppsTestEngineObject))
+            {
                 _singleTestInstanceState.GetLogger().LogDebug("Run Javascript: " + jsExpression);
             }
 
