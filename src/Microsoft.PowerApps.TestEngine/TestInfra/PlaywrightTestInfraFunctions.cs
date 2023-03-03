@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.System;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
@@ -275,7 +276,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             ValidatePage();
 
-            _singleTestInstanceState.GetLogger().LogDebug("Run Javascript: " + jsExpression);
+            if (!jsExpression.Equals(PowerAppFunctions.CheckPowerAppsTestEngineObject))
+            {
+                _singleTestInstanceState.GetLogger().LogDebug("Run Javascript: " + jsExpression);
+            }
 
             return await Page.EvaluateAsync<T>(jsExpression);
         }
