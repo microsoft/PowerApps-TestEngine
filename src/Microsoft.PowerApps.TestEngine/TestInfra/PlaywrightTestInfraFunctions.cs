@@ -278,7 +278,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (!jsExpression.Equals(PowerAppFunctions.CheckPowerAppsTestEngineObject)) {
                 _singleTestInstanceState.GetLogger().LogDebug("Run Javascript: " + jsExpression);
-            }            
+            }
 
             return await Page.EvaluateAsync<T>(jsExpression);
         }
