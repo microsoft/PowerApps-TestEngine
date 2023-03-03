@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
@@ -21,6 +22,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ITestState _testState;
 
         public static string PublishedAppIframeName = "fullscreen-app-host";
+        public static string CheckPowerAppsTestEngineObject = "typeof PowerAppsTestEngine";
+
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
@@ -162,7 +165,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             try
             {
-                result = await _testInfraFunctions.RunJavascriptAsync<string>("typeof PowerAppsTestEngine");
+                result = await _testInfraFunctions.RunJavascriptAsync<string>(CheckPowerAppsTestEngineObject);
             }
             catch (NullReferenceException) { }
 
