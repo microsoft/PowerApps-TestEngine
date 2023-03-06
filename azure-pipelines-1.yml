@@ -9,11 +9,6 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-
 steps:
 - task: UseDotNet@2
   displayName: 'Use dotnet sdk 6.0'
@@ -26,4 +21,4 @@ steps:
   displayName: 'Build and test '
   inputs:
     command: 'run'
-    projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.sln'
+    projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
