@@ -1,34 +1,36 @@
-# ASP.NET
-# Build and test ASP.NET projects.
-# Add steps that publish symbols, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
 - main
 
+pr: none
+
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+jobs:
+- job: 'Build_PowerApps-TestEngine'
+  displayName: 'Build PowerApps-TestEngine Solution'
 
-steps:
-- task: NuGetToolInstaller@1
+  strategy:
+    matrix:
+      Debug:
+        BuildConfiguration: 'Debug'
+      Release:
+        BuildConfiguration: 'Release'
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Use dotnet sdk 6.0'
+    inputs:
+      version: 6.0.x
+      installationPath: '$(Agent.ToolsDirectory)/dotnet'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: DotNetCoreCLI@2
+    displayName: 'Build and test '
+    inputs:
+      command: 'build'
+      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine'
