@@ -25,7 +25,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: ''$(Build.BinariesDirectory)/$(BuildConfiguration)/PowerAppsTestEngine/PowerAppsTestEngine.nuspec'
+    packagesToPack: ''$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.nuspec'
     versioningScheme: 'off'
 
 - task: PublishBuildArtifacts@1
