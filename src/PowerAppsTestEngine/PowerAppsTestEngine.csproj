@@ -21,7 +21,7 @@
       0.0.1-alpha
       Intial Alpha release of Microsoft.PowerAppsTestEngine
     </PackageReleaseNotes>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <Copyright>Â© Microsoft Corporation. All rights reserved.</Copyright>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
   
@@ -40,9 +40,11 @@
     <None Update="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
   <ItemGroup>
     <None Update="Microsoft.PowerAppsTestEngine.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-</Project></Project>
+</Project>
+
