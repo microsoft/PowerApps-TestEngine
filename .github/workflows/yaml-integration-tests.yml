@@ -18,7 +18,7 @@ jobs:
         run: |   
           cd src/PowerAppsTestEngine
           dotnet build
-          pwsh bin/Debug/net6.0/playwright.ps1 install
+          pwsh bin/Debug/playwright.ps1 install
           cd ../../build-pipelines/scripts
           chmod +x yaml-integration-tests.sh
           ./yaml-integration-tests.sh "${{ inputs.parameters }}"       # run the script with the parameter, contains logic to run the tests
