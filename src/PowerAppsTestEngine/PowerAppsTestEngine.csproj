@@ -10,6 +10,7 @@
   
   <!-- Nuget Properties -->
   <PropertyGroup>
+    <PackageId>Microsoft.PowerApps.TestEngine</PackageId>
     <Authors>Microsoft</Authors>
     <Company>crmsdk,Microsoft</Company>
     <Description>Alpha Release:.</Description>
@@ -20,7 +21,7 @@
       0.0.1-alpha
       Intial Alpha release of Microsoft.PowerAppsTestEngine
     </PackageReleaseNotes>
-    <Copyright>Â© Microsoft Corporation. All rights reserved.</Copyright>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
   
@@ -39,18 +40,9 @@
     <None Update="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  <ItemGroup>
+    <None Update="Microsoft.PowerAppsTestEngine.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-  
-  <Target Name="TestEngine" AfterTargets="MinVer">
-    <PropertyGroup>
-      <AssemblyVersion>$(MinVer)</AssemblyVersion>
-    </PropertyGroup>
-  </Target>
-  
-  <ItemGroup Condition="'$(GitExists)' == true">
-    <PackageReference Include="MinVer" Version="2.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-</Project>
+</Project></Project>

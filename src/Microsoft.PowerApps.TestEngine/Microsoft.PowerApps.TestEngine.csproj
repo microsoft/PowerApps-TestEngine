@@ -27,6 +27,6 @@
     <None Update="JS\PublishedAppTesting.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup> 
+  </ItemGroup>
 
 </Project>
