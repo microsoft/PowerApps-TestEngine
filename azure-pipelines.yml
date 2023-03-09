@@ -31,7 +31,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.nuspec'
+    packagesToPack: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/Microsoft.PowerAppsTestEngine.nuspec'
     versioningScheme: 'off'
 - task: PublishBuildArtifacts@1
   inputs:
