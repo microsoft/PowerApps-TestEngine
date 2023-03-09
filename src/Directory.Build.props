@@ -1,7 +1,27 @@
 <Project>
     <PropertyGroup>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <LangVersion>8.0</LangVersion>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+        <LangVersion>10.0</LangVersion>
+    </PropertyGroup>
+
+    <!-- If not otherwise specified, the project is building for Debug -->
+    <PropertyGroup Condition=" '$(Configuration)' == '' ">
+        <Configuration>Debug</Configuration>
+    </PropertyGroup>
+
+    <!-- Settings for the Debug configuration. -->
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <DefineConstants>TRACE;DEBUG</DefineConstants>
+    </PropertyGroup>
+
+    <!-- Settings for the Release confi guration. -->
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <DefineConstants>TRACE</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup>
