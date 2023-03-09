@@ -22,13 +22,17 @@ steps:
     command: 'run'
     projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
 
- - task: DotNetCoreCLI@2
-    displayName: 'Pack'
-    inputs:
-      command: 'run'
-      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
-      arguments: '-- pack -c $(BuildConfiguration)'
-
+- task: DotNetCoreCLI@2
+  displayName: 'Pack'
+  inputs:
+    command: 'run'
+    projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
+    arguments: '-- pack -c $(BuildConfiguration)'
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.nuspec'
+    versioningScheme: 'off'
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
