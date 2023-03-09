@@ -10,7 +10,6 @@
   
   <!-- Nuget Properties -->
   <PropertyGroup>
-    <PackageId>Microsoft.PowerApps.TestEngine</PackageId>
     <Authors>Microsoft</Authors>
     <Company>crmsdk,Microsoft</Company>
     <Description>Alpha Release:.</Description>
