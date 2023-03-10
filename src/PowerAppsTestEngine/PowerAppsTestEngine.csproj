@@ -20,6 +20,7 @@
       0.0.1-alpha
       Intial Alpha release of Microsoft.PowerAppsTestEngine
     </PackageReleaseNotes>
+    <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
