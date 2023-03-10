@@ -39,13 +39,6 @@ steps:
          "toolVersion": "1.0"
        },
        {
-         "keyCode" : "CP-233863-SN",
-         "operationCode" : "StrongNameVerify",
-         "parameters" : {},
-         "toolName" : "sign",
-         "toolVersion" : "1.0"
-       }
-       {
          "keyCode": "CP-230012",
          "operationSetCode": "SigntoolSign",
          "parameters": [
