@@ -8,25 +8,6 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
-  <!-- Nuget Properties -->
-  <PropertyGroup>
-    <Authors>Microsoft</Authors>
-    <Company>crmsdk,Microsoft</Company>
-    <Description>Alpha Release:.</Description>
-    <PackageReleaseNotes>
-      Notice:
-      This package is an ALPHA release. - Use at your own risk.
-
-      0.0.1-alpha
-      Intial Alpha release of Microsoft.PowerAppsTestEngine
-    </PackageReleaseNotes>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
-    <PublicSign>true</PublicSign>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
   </ItemGroup>
