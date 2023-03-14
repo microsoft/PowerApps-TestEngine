@@ -31,7 +31,7 @@ steps:
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1  
   displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
   inputs:
-    ConnectedServiceName: 'ESRPCodeSigningConnection'
+    ConnectedServiceName: 'ESRPCodeSignConnection-OneCRM'
     FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
     Pattern: '*.dll'
     signConfigType: inlineSignParams
