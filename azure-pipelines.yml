@@ -26,13 +26,13 @@ steps:
   displayName: 'Build and test '
   inputs:
     command: 'run'
-    projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
+    projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1  
   displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
   inputs:
     ConnectedServiceName: 'ESRPCodeSigningConnection'
-    FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngine/'
+    FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
     Pattern: '*.dll'
     signConfigType: inlineSignParams
     inlineOperation: |
