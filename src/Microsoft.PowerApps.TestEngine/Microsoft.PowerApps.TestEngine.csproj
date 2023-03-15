@@ -47,9 +47,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
-  <PropertyGroup Condition="'$(IsLabBuild)' == 'true'">
-    <DefineConstants>$(DefineConstants);ADOBuild</DefineConstants>
-  </PropertyGroup>
-
 </Project>
