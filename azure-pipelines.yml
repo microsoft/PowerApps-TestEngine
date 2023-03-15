@@ -15,6 +15,12 @@ steps:
   inputs:
     version: 6.0.x
     installationPath: '$(Agent.ToolsDirectory)/dotnet'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build and test '
+  inputs:
+    command: 'run'
+    projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
     
  # Dotnet 2.1 appears to be required for ESRP signing
 - task: UseDotNet@2
@@ -22,12 +28,6 @@ steps:
   inputs:
     version: 2.1.x
     installationPath: '$(Agent.ToolsDirectory)/dotnet'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Build and test '
-  inputs:
-    command: 'run'
-    projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1  
   displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
