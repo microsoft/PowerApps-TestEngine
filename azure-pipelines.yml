@@ -33,7 +33,7 @@ steps:
   displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
   inputs:
     ConnectedServiceName: 'ESRPCodeSignConnection-OneCRM'
-    FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngine/'
+    FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
     Pattern: '*.dll'
     signConfigType: inlineSignParams
     inlineOperation: |
