@@ -3,8 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <AssemblyName>Microsoft.PowerAppsTestEngine</AssemblyName>
+    <RootNamespace>Microsoft.PowerAppsTestEngine</RootNamespace>
   </PropertyGroup>
 
   <!-- Nuget Properties -->
