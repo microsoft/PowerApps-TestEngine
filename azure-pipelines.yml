@@ -83,7 +83,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
+    packagesToPack: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
     versioningScheme: 'off'
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
