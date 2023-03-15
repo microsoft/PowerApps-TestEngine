@@ -8,7 +8,8 @@ trigger:
 
 pool:
   vmImage: 'windows-latest'
- jobs:
+
+jobs:
 - job: 'Build_PowerAppsTestEngine'
   displayName: 'Build PowerAppsTestEngine Solution'
 
