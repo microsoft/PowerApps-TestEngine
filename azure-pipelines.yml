@@ -27,8 +27,7 @@ steps:
   displayName: 'Build and test '
   inputs:
     command: 'run'
-    projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
-    arguments: '-- ci -c $(BuildConfiguration)'
+    projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1  
   displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
@@ -82,11 +81,10 @@ steps:
     ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
     
 - task: DotNetCoreCLI@2
-  displayName: 'Pack'
   inputs:
-    command: 'run'
-    packagesToPack: '$(Build.SourcesDirectory)/targets/targets.csproj'
-    arguments: '-- pack -c $(BuildConfiguration)'
+    command: 'pack'
+    packagesToPack: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
+    versioningScheme: 'off'
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
   displayName: 'ESRP sign nuget packages'
