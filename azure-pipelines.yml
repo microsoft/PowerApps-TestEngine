@@ -21,15 +21,8 @@ steps:
   inputs:
     command: 'run'
     projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
-    
- # Dotnet 2.1 appears to be required for ESRP signing
-- task: UseDotNet@2
-  displayName: 'Use dotnet sdk 2.1'
-  inputs:
-    version: 2.1.x
-    installationPath: '$(Agent.ToolsDirectory)/dotnet'
 
-- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1  
+- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2  
   displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
   inputs:
     ConnectedServiceName: 'ESRPCodeSignConnection-OneCRM'
