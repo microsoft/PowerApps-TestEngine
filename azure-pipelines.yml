@@ -17,10 +17,11 @@ steps:
     installationPath: '$(Agent.ToolsDirectory)/dotnet'
     
  # Dotnet 2.1 appears to be required for ESRP signing
-- task: DotNetCoreInstaller@0
-  displayName: 'Use .NET Core SDK 2.1'
+- task: UseDotNet@2
+  displayName: 'Use dotnet sdk 2.1'
   inputs:
     version: 2.1.x
+    installationPath: '$(Agent.ToolsDirectory)/dotnet'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build and test '
