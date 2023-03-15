@@ -27,13 +27,13 @@ steps:
   displayName: 'Build and test '
   inputs:
     command: 'run'
-    projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
+    projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1  
   displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
   inputs:
     ConnectedServiceName: 'ESRPCodeSignConnection-OneCRM'
-    FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
+    FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngine/'
     Pattern: '*.dll'
     signConfigType: inlineSignParams
     inlineOperation: |
@@ -83,7 +83,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
+    packagesToPack: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
     versioningScheme: 'off'
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
