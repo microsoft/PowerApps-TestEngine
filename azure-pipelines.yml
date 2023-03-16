@@ -1,4 +1,4 @@
-# ASP.NET
+﻿# ASP.NET
 # Build and test ASP.NET projects.
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
@@ -60,49 +60,50 @@ jobs:
       ConnectedServiceName: 'ESRPCodeSignConnection-OneCRM'
       FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
       Pattern: '*.dll'
-      signConfigType: inlineSignParams
-      inlineOperation: |
-        [
-            {
-                  "keyCode": "CP-233863-SN",
-                  "operationSetCode": "StrongNameSign",
-                  "parameters": [ ],
-                  "toolName": "sign",
-                  "toolVersion": "1.0"
-            },
-            {
-                "keyCode": "CP-230012",
-                "operationSetCode": "SigntoolSign",
-                "parameters": [
-                {
-                    "parameterName": "OpusName",
-                    "parameterValue": "Microsoft"
-                },
-                {
-                    "parameterName": "OpusInfo",
-                    "parameterValue": "http://www.microsoft.com"
-                },
-                {
-                    "parameterName": "Append",
-                    "parameterValue": "/as"
-                },
-                {
-                    "parameterName": "FileDigest",
-                    "parameterValue": "/fd \"SHA256\""
-                },
-                {
-                    "parameterName": "PageHash",
-                    "parameterValue": "/NPH"
-                },
-                {
-                    "parameterName": "TimeStamp",
-                    "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
-                }
-                ],
-                "toolName": "sign",
-                "toolVersion": "1.0"
-            }
-        ]
+      ​​​​​​​​​SigningInfo : {
+        Operations : 
+           [
+              {
+                    "keyCode": "CP-233863-SN",
+                    "operationSetCode": "StrongNameSign",
+                    "parameters": [ ],
+                    "toolName": "sign",
+                    "toolVersion": "1.0"
+              },
+              {
+                    "keyCode": "CP-230012",
+                    "operationSetCode": "SigntoolSign",
+                    "parameters": [
+                    {
+                        "parameterName": "OpusName",
+                        "parameterValue": "Microsoft"
+                    },
+                    {
+                        "parameterName": "OpusInfo",
+                        "parameterValue": "http://www.microsoft.com"
+                    },
+                    {
+                        "parameterName": "Append",
+                        "parameterValue": "/as"
+                    },
+                    {
+                        "parameterName": "FileDigest",
+                        "parameterValue": "/fd \"SHA256\""
+                    },
+                    {
+                        "parameterName": "PageHash",
+                        "parameterValue": "/NPH"
+                    },
+                    {
+                        "parameterName": "TimeStamp",
+                        "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+                    }
+                    ],
+                    "toolName": "sign",
+                    "toolVersion": "1.0"
+              }
+          ]
+      }
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v2'
 
   - task: PublishBuildArtifacts@1
