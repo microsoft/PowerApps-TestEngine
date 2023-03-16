@@ -60,8 +60,8 @@ jobs:
       ConnectedServiceName: 'ESRPCodeSignConnection-OneCRM'
       FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
       Pattern: '*.dll'
-      ​​​​​​​​​SigningInfo : {
-        Operations : 
+      ​​​​​​​​​SigningInfo : |
+        Operations : |
            [
               {
                     "keyCode": "CP-233863-SN",
@@ -102,8 +102,7 @@ jobs:
                     "toolName": "sign",
                     "toolVersion": "1.0"
               }
-          ]
-      }
+          ]      
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v2'
 
   - task: PublishBuildArtifacts@1
