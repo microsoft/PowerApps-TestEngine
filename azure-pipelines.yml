@@ -44,13 +44,6 @@ jobs:
       inlineOperation: |
         [
             {
-                  "keyCode": "CP-233863-SN",
-                  "operationSetCode": "StrongNameSign",
-                  "parameters": [ ],
-                  "toolName": "sign",
-                  "toolVersion": "1.0"
-            },
-            {
                 "keyCode": "CP-230012",
                 "operationSetCode": "SigntoolSign",
                 "parameters": [
@@ -76,7 +69,7 @@ jobs:
                 },
                 {
                     "parameterName": "TimeStamp",
-                    "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+                    "parameterValue": "/tr\"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\"/td sha256"
                 }
                 ],
                 "toolName": "sign",
