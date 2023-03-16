@@ -33,8 +33,26 @@ jobs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
       arguments: '-- ci -c $(BuildConfiguration)'
- 
-  - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2  
+	  
+- job: 'Sign_PowerAppsTestEngine'
+  displayName: 'Sign PowerAppsTestEngine Solution'
+
+  strategy:
+    matrix:
+      Debug:
+        BuildConfiguration: 'Debug'
+      Release:
+        BuildConfiguration: 'Release'
+
+  steps:
+  # Dotnet 2.1 appears to be required for ESRP signing
+  - task: UseDotNet@2
+    displayName: 'Use dotnet sdk 2.1'
+    inputs:
+      version: 2.1.x
+      installationPath: '$(Agent.ToolsDirectory)/dotnet'
+
+  - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
     inputs:
       ConnectedServiceName: 'ESRPCodeSignConnection-OneCRM'
@@ -43,6 +61,13 @@ jobs:
       signConfigType: inlineSignParams
       inlineOperation: |
         [
+            {
+                  "keyCode": "CP-233863-SN",
+                  "operationSetCode": "StrongNameSign",
+                  "parameters": [ ],
+                  "toolName": "sign",
+                  "toolVersion": "1.0"
+            },
             {
                 "keyCode": "CP-230012",
                 "operationSetCode": "SigntoolSign",
@@ -69,7 +94,7 @@ jobs:
                 },
                 {
                     "parameterName": "TimeStamp",
-                    "parameterValue": "/tr\"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\"/td sha256"
+                    "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
                 }
                 ],
                 "toolName": "sign",
@@ -77,7 +102,7 @@ jobs:
             }
         ]
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
- 
+	  
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)'
