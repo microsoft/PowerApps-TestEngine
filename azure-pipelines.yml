@@ -38,14 +38,14 @@ jobs:
     inputs:
       ConnectedServiceName: 'ESRPCodeSignConnection-OneCRM'
       FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
-      Pattern: '*.dll'
+      Pattern: 'Microsoft.PowerApps.TestEngine.dll'
       signConfigType: inlineSignParams
       inlineOperation: |
         [
             {
                   "keyCode": "CP-233863-SN",
                   "operationSetCode": "StrongNameSign",
-                  "parameters": [ ],
+                  "parameters": [],
                   "toolName": "sign",
                   "toolVersion": "1.0"
             },
