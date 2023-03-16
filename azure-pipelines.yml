@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 jobs:
-- job: 'Build_PowerAppsTestEngine'
+- job: Build_PowerAppsTestEngine
   displayName: 'Build PowerAppsTestEngine Solution'
 
   strategy:
@@ -34,8 +34,9 @@ jobs:
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
       arguments: '-- ci -c $(BuildConfiguration)'
  
-- job: 'Sign_PowerAppsTestEngine'
-  needs: 'Build_PowerAppsTestEngine'
+- job: Sign_PowerAppsTestEngine
+  dependsOn: Build_PowerAppsTestEngine
+  condition: in(dependencies.Build_PowerAppsTestEngine.result, 'Succeeded', 'Skipped')
   displayName: 'Sign PowerAppsTestEngine Solution'
 
   strategy:
