@@ -32,3 +32,9 @@ jobs:
     inputs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
+ 
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)'
+      ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
+      publishLocation: 'Container'
