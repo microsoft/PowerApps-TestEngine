@@ -82,7 +82,7 @@ jobs:
                 "toolVersion": "1.0"
             }
         ]
-      ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
+      ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v2'
     
   - task: DotNetCoreCLI@2
     inputs:
@@ -114,7 +114,7 @@ jobs:
                   "toolVersion": "1.0"
             }
         ]
-      ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
+      ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v2'
 
   - task: PublishBuildArtifacts@1
     inputs:
