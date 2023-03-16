@@ -35,6 +35,7 @@ jobs:
       arguments: '-- ci -c $(BuildConfiguration)'
  
 - job: 'Sign_PowerAppsTestEngine'
+  needs: 'Build_PowerAppsTestEngine'
   displayName: 'Sign PowerAppsTestEngine Solution'
 
   strategy:
