@@ -33,7 +33,7 @@ jobs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
       arguments: '-- ci -c $(BuildConfiguration)'
-	  
+ 
 - job: 'Sign_PowerAppsTestEngine'
   displayName: 'Sign PowerAppsTestEngine Solution'
 
@@ -102,7 +102,7 @@ jobs:
             }
         ]
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
-	  
+
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)'
