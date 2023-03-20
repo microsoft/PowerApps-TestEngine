@@ -127,3 +127,9 @@ jobs:
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+  
+  - task: tagBuildOrRelease@0
+    inputs:
+      type: 'Build'
+      tags: 'deployable'
+    condition: eq(variables['PublicRelease'], 'true')  
