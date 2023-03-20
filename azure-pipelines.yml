@@ -49,7 +49,9 @@ jobs:
   steps:
   - task: CmdLine@2
     inputs:
-      script: ls
+      script: |
+        cd src
+        ls
       
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
