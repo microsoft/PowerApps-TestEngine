@@ -89,7 +89,7 @@ jobs:
     displayName: 'Pack'
     inputs:
       command: 'run'
-      packagesToPack: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
+      projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
       arguments: '-- pack -c $(BuildConfiguration)'
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
