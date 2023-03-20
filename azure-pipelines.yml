@@ -28,7 +28,7 @@ jobs:
       installationPath: '$(Agent.ToolsDirectory)/dotnet'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Build and test '
+    displayName: 'Build and test'
     inputs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'

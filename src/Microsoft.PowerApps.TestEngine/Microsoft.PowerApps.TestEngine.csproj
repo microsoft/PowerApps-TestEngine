@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <TargetLatestRuntimePatch>false</TargetLatestRuntimePatch>
+    <Nullable>disable</Nullable>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>s
   </PropertyGroup>
 
   <!-- Nuget Properties -->
