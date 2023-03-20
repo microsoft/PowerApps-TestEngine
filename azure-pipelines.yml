@@ -32,7 +32,6 @@ jobs:
     inputs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
-      arguments: '-- ci -c $(BuildConfiguration)'  
       
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
@@ -88,9 +87,10 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Pack'
     inputs:
-      command: 'run'
-      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
-      arguments: '-- pack -c $(BuildConfiguration)'
+      command: pack
+      projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
+      configuration: '$(BuildConfiguration)'
+      nobuild: true
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign nuget packages'
@@ -120,6 +120,6 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
