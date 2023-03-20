@@ -47,11 +47,15 @@ jobs:
         BuildConfiguration: 'Release'
 
   steps:
+  - task: CmdLine@2
+    inputs:
+      script: ls
+      
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
     inputs:
       ConnectedServiceName: 'ESRPCodeSigningConnection'
-      FolderPath: '$(Build.SourcesDirectory)/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
+      FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
       Pattern: '*.dll'
       signConfigType: inlineSignParams
       inlineOperation: |
