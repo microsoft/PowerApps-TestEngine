@@ -51,7 +51,7 @@ jobs:
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
     inputs:
       ConnectedServiceName: 'ESRPCodeSigningConnection'
-      FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
+      FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngine/'
       Pattern: '*.dll'
       signConfigType: inlineSignParams
       inlineOperation: |
