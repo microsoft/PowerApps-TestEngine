@@ -32,7 +32,7 @@ jobs:
     inputs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
-      configuration: '$(BuildConfiguration)'
+      arguments: '--configuration $(BuildConfiguration)'
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
@@ -90,7 +90,7 @@ jobs:
     inputs:
       command: pack
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
-      configuration: '$(BuildConfiguration)'
+      arguments: '--configuration $(BuildConfiguration)'
       nobuild: true
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
