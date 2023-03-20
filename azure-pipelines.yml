@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
-- main
+  - main
 
 pool:
   vmImage: 'windows-latest'
@@ -32,7 +32,8 @@ jobs:
     inputs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
-      
+      configuration: '$(BuildConfiguration)'
+
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
     inputs:
