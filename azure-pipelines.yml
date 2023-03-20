@@ -54,7 +54,7 @@ jobs:
         ls
         cd Microsoft.PowerApps.TestEngine
         ls
-        cd PowerAppsTestEngine
+        cd ../PowerAppsTestEngine
         ls
       
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
