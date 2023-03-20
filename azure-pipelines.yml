@@ -124,3 +124,4 @@ jobs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
