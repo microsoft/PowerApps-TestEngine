@@ -84,7 +84,40 @@ jobs:
             }
         ]
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
- 
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Pack'
+    inputs:
+      command: 'run'
+      packagesToPack: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
+      arguments: '-- pack -c $(BuildConfiguration)'
+
+  - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
+    displayName: 'ESRP sign nuget packages'
+    inputs:
+      ConnectedServiceName: 'ESRPCodeSigningConnection'
+      FolderPath: '$(Build.SourcesDirectory)/pkg'
+      Pattern: '*.nupkg'
+      signConfigType: inlineSignParams
+      inlineOperation: |
+        [
+          {
+            "keyCode": "CP-401405",
+            "operationSetCode": "NuGetSign",
+            "parameters": [],
+            "toolName": "sign",
+            "toolVersion": "1.0"
+          },
+          {
+            "keyCode": "CP-401405",
+            "operationSetCode": "NuGetVerify",
+            "parameters": [],
+            "toolName": "sign",
+            "toolVersion": "1.0"
+          }
+        ]
+      ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
+
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)'
