@@ -138,15 +138,6 @@ jobs:
         ]
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
 
-  - task: CmdLine@2
-    inputs:
-      script: |
-        ls
-        cd pkg
-        ls
-        cd PackResult
-        ls
-
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.SourcesDirectory)/pkg/PackResult'
