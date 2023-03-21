@@ -32,16 +32,16 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Build'
     inputs:
-      command: 'run'
+      command: 'build'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
-      arguments: '--configuration $(BuildConfiguration)'
+      arguments: '-c $(BuildConfiguration)'
 
   - task: DotNetCoreCLI@2
     displayName: 'Test'
     inputs:
       command: 'test'
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine.Tests/Microsoft.PowerApps.TestEngine.Tests.csproj'
-      arguments: '--configuration $(BuildConfiguration) --no-build --logger trx --results-directory $(Build.SourcesDirectory)\obj\testResults'
+      arguments: '-c $(BuildConfiguration) --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults'
   
   - task: PublishTestResults@2
     inputs:
@@ -107,7 +107,7 @@ jobs:
     inputs:
       command: pack
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
-      arguments: '--configuration $(BuildConfiguration)'
+      arguments: '-c $(BuildConfiguration)'
       nobuild: true
       packDirectory: '$(Build.SourcesDirectory)/pkg/PackResult'
 
