@@ -40,9 +40,9 @@ jobs:
     displayName: 'Test'
     inputs:
       command: 'test'
-      projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine.Tests/Microsoft.PowerApps.TestEngine.Tests.csproj'
+      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
       arguments: '-c $(BuildConfiguration) --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults'
-      publishTestResults: true
+      publishTestResults: false
 
   - task: CmdLine@2
     inputs:
