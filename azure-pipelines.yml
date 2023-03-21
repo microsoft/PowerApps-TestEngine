@@ -41,13 +41,13 @@ jobs:
     inputs:
       command: 'test'
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine.Tests/Microsoft.PowerApps.TestEngine.Tests.csproj'
-      arguments: '--configuration $(BuildConfiguration)'
+      arguments: '--configuration $(BuildConfiguration) --results-directory $(Build.SourcesDirectory)/obj/testResults'
 
   - task: PublishTestResults@2
     inputs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '**/*-*.trx'
-      searchFolder: '$(Build.SourcesDirectory)/src/TestResults/'
+      searchFolder: '$(Build.SourcesDirectory)/obj/testResults/'
       mergeTestResults: true
       failTaskOnFailedTests: true
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
