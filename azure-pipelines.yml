@@ -42,6 +42,15 @@ jobs:
       command: 'test'
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine.Tests/Microsoft.PowerApps.TestEngine.Tests.csproj'
       arguments: '--configuration $(BuildConfiguration) --no-build --logger trx --results-directory $(Build.SourcesDirectory)\obj\testResults'
+      publishTestResults: false
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*-*.trx'
+      searchFolder: '$(Build.SourcesDirectory)/obj/'
+      mergeTestResults: true
+      failTaskOnFailedTests: true
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
