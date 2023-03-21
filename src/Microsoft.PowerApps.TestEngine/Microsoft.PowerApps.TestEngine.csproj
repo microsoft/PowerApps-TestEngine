@@ -11,12 +11,11 @@
   <PropertyGroup>
     <Authors>Microsoft</Authors>
     <Company>crmsdk,Microsoft</Company>
-    <Description>Alpha Release:.</Description>
+    <Description>Alpha Release: Microsoft.PowerAppsTestEngine</Description>
     <PackageReleaseNotes>
       Notice:
       This package is an ALPHA release. - Use at your own risk.
 
-      0.0.1-alpha
       Intial Alpha release of Microsoft.PowerAppsTestEngine
     </PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>

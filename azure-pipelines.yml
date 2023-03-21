@@ -44,15 +44,6 @@ jobs:
       arguments: '-c $(BuildConfiguration) --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults'
       publishTestResults: false
 
-  - task: CmdLine@2
-    inputs:
-      script: |
-        ls
-        cd obj
-        ls
-        cd testResults
-        ls
-
   - task: PublishTestResults@2
     inputs:
       testResultsFormat: 'VSTest'
