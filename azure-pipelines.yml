@@ -41,7 +41,8 @@ jobs:
     inputs:
       command: 'test'
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine.Tests/Microsoft.PowerApps.TestEngine.Tests.csproj'
-      arguments: '--configuration $(BuildConfiguration) --results-directory $(Build.SourcesDirectory)/obj/testResults'
+      arguments: '--configuration $(BuildConfiguration) --no-build --logger trx --results-directory $(Build.SourcesDirectory)\obj\testResults'
+      publishTestResults: false
 
   - task: PublishTestResults@2
     inputs:
