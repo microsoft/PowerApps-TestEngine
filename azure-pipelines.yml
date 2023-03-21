@@ -94,6 +94,7 @@ jobs:
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
       arguments: '--configuration $(BuildConfiguration)'
       nobuild: true
+      packDirectory: '$(Build.SourcesDirectory)/pkg/PackResult'
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign nuget packages'
@@ -123,7 +124,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.SourcesDirectory)/pkg'
+      PathtoPublish: '$(Build.SourcesDirectory)/pkg/PackResult'
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
