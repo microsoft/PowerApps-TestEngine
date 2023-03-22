@@ -199,8 +199,7 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 // Trying to log the debug info including session details
-                _powerFxEngine.DebugInfo();
-                
+                _powerFxEngine.DebugInfo();                
                 await _testInfraFunctions.EndTestRunAsync();
 
                 if (allTestsSkipped)
@@ -220,7 +219,7 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation("Total cases: " + casesTotal);
                 Logger.LogInformation("Cases passed: " + casesPass);
                 Logger.LogInformation("Cases skipped: " + (casesTotal - (casesFail + casesPass)));
-                Logger.LogInformation("Cases failed: " + casesFail + "\n");                
+                Logger.LogInformation("Cases failed: " + casesFail + "\n");
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))

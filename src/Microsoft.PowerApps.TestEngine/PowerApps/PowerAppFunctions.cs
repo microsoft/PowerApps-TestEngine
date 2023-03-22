@@ -398,7 +398,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 var expression = $"PowerAppsTestEngine.debugInfo";
                 return await _testInfraFunctions.RunJavascriptAsync<object>(expression);
             }
-            catch (Exception ex){
+            catch (Exception)
+            {
                 throw;
             }
         }
