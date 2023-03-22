@@ -390,5 +390,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             return getItemCount.GetResult();
         }
+
+        public async Task<object> GetDebugInfo()
+        {
+            try
+            {
+                var expression = $"PowerAppsTestEngine.debugInfo";
+                return await _testInfraFunctions.RunJavascriptAsync<object>(expression);
+            }
+            catch (Exception ex){
+                throw;
+            }
+        }
     }
 }

@@ -146,7 +146,9 @@ var PowerAppsTestEngine = {
         return setPropertyValueForControl(itemPath, value);
     },
 
-     getItemCount: function(itemPath) {
+    getItemCount: function(itemPath) {
         return fetchArrayItemCount(itemPath);
-    }
+    },
+
+    debugInfo : Core.Telemetry?.Log?._sessionId
 }

@@ -148,5 +148,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 Engine.UpdateVariable(control.Key, control.Value);
             }
         }
+
+        public async void DebugInfo()
+        {
+            var debugInfo = await _powerAppFunctions.GetDebugInfo();
+            if (debugInfo != null && debugInfo.ToString() != "undefined")
+            {
+                Logger.LogDebug($"Debug Info: {debugInfo.ToString()}");
+            }
+        }
     }
 }

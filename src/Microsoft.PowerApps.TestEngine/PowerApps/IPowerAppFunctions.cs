@@ -58,5 +58,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// </summary>
         /// <returns>True if app status is idle</returns>
         public Task<bool> CheckIfAppIsIdleAsync();
+
+        /// <summary>
+        /// Get Debug Info
+        /// </summary>
+        public Task<object> GetDebugInfo();
     }
 }

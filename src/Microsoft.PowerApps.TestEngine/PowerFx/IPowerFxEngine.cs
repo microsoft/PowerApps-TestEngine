@@ -36,5 +36,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         /// <returns>A task</returns>
         public Task UpdatePowerFxModelAsync();
+
+        /// <summary>
+        /// Log debug info
+        /// </summary>
+        public void DebugInfo();
     }
 }
