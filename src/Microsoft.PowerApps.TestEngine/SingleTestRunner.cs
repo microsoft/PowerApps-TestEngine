@@ -194,9 +194,6 @@ namespace Microsoft.PowerApps.TestEngine
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-
-                // Trying to log the debug info including session details
-                _powerFxEngine.DebugInfo();
                 TestException = ex;
             }
             finally
