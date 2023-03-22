@@ -199,7 +199,7 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 // Trying to log the debug info including session details
-                _powerFxEngine.DebugInfo();                
+                _powerFxEngine.DebugInfo();
                 await _testInfraFunctions.EndTestRunAsync();
 
                 if (allTestsSkipped)
