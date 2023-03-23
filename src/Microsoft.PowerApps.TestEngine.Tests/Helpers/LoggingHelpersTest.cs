@@ -36,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         }
 
         [Fact]
-        public async Task DebugInfoWithSessionTestAsync()
+        public async Task DebugInfoWithSessionTest()
         {
             var obj = new ExpandoObject();
             obj.TryAdd("sessionID", "somesessionId");
@@ -46,8 +46,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Debug, Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "sessionID:\tsomesessionId", LogLevel.Debug, Times.Once());
+            LoggingTestHelper.VerifyLogging((Mock<ILogger>)MockSingleTestInstanceState.Object.GetLogger(), "------------------------------\n Debug Info \n------------------------------", LogLevel.Debug, Times.Once());
+            LoggingTestHelper.VerifyLogging((Mock<ILogger>)MockSingleTestInstanceState.Object.GetLogger(), "sessionID:\tsomesessionId", LogLevel.Debug, Times.Once());
         }
     }
 }
