@@ -12,7 +12,7 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
-    public class LoggingHelper: ILoggingHelper
+    public class LoggingHelper
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
