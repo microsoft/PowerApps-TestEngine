@@ -607,7 +607,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"))
     .Returns(Task.FromResult((object)newSession));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var actualValue = powerAppFunctions.GetDebugInfo();
+            var actualValue = await powerAppFunctions.GetDebugInfo();
 
             Assert.Equal(actualValue, (object)newSession);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.debugInfo"), Times.Once());
@@ -625,7 +625,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"))
     .Returns(Task.FromResult<object>(null));
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var actualValue = powerAppFunctions.GetDebugInfo();
+            var actualValue = await powerAppFunctions.GetDebugInfo();
 
             Assert.Null(actualValue);
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.debugInfo"), Times.Once());
