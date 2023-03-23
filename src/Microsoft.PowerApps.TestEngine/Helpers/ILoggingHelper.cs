@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
-    public interface ILoggerHelper
+    public interface ILoggingHelper
     {
         /// <summary>
         /// Log debug info

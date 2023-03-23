@@ -12,13 +12,13 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
-    public class LoggerHelper: ILoggerHelper
+    public class LoggingHelper: ILoggingHelper
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
 
-        public LoggerHelper(IPowerAppFunctions powerAppFunctions,
+        public LoggingHelper(IPowerAppFunctions powerAppFunctions,
                              ISingleTestInstanceState singleTestInstanceState)
         {
             _powerAppFunctions = powerAppFunctions;
