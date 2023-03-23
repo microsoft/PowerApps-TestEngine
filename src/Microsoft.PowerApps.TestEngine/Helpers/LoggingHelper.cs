@@ -30,10 +30,10 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();
             if (debugInfo != null && debugInfo.ToString() != "undefined")
             {
-                Logger.LogDebug($"------------------------------\n Debug Info \n------------------------------");
+                Logger.LogInformation($"------------------------------\n Debug Info \n------------------------------");
                 foreach (var info in debugInfo)
                 {
-                    Logger.LogDebug($"{info.Key}:\t{info.Value}");
+                    Logger.LogInformation($"{info.Key}:\t{info.Value}");
                 }
             }
         }
