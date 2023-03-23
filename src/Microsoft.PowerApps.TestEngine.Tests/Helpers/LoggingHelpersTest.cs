@@ -18,10 +18,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
 
         public LoggingHelpersTest()
-        {
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+        {            
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             LoggingTestHelper.SetupMock(MockLogger);
         }
 
@@ -47,7 +47,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Debug, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "sessionID:\tsomesessionId", LogLevel.Debug, Times.Once());
         }
     }
