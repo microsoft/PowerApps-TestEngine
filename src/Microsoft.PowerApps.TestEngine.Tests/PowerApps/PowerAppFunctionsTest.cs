@@ -610,7 +610,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var actualValue = await powerAppFunctions.GetDebugInfo();
 
             Assert.Equal(actualValue, (object)newSession);
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.debugInfo"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"), Times.Once());
         }
 
         [Fact]
@@ -628,7 +628,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var actualValue = await powerAppFunctions.GetDebugInfo();
 
             Assert.Null(actualValue);
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.debugInfo"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"), Times.Once());
         }
 
         // Start Published App JSSDK not found tests
