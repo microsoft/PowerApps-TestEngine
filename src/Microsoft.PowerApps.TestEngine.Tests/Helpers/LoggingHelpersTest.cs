@@ -26,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         }
 
         [Fact]
-        public void DebugInfoNullSessionTest()
+        public async void DebugInfoNullSessionTest()
         {
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)null));
             var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
@@ -37,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         }
 
         [Fact]
-        public void DebugInfoWithSessionTest()
+        public async void DebugInfoWithSessionTestAsync()
         {
             var obj = new ExpandoObject();
             obj.TryAdd("sessionID", "somesessionId");
