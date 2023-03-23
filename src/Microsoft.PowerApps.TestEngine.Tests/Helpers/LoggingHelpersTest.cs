@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -26,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         }
 
         [Fact]
-        public void DebugInfoNullSessionTest()
+        public async Task DebugInfoNullSessionTest()
         {
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)null));
             var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
@@ -37,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         }
 
         [Fact]
-        public void DebugInfoWithSessionTestAsync()
+        public async Task DebugInfoWithSessionTestAsync()
         {
             var obj = new ExpandoObject();
             obj.TryAdd("sessionID", "somesessionId");
@@ -47,6 +46,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Debug, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "sessionID:\tsomesessionId", LogLevel.Debug, Times.Once());
         }
     }
