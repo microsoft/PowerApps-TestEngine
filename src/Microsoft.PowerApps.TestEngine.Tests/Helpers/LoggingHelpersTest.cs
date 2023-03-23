@@ -20,6 +20,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         public LoggingHelpersTest()
         {
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+            MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
         }
 
         [Fact]
