@@ -616,13 +616,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task GetDebugInfoReturnsNull()
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-
-            var newSession = new ExpandoObject();
-            newSession.TryAdd("sessionID", "somesessionId");
-
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"))
     .Returns(Task.FromResult<object>(null));
+
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             var actualValue = await powerAppFunctions.GetDebugInfo();
 
