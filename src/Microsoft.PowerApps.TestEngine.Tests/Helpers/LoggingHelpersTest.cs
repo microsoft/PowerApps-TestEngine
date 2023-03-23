@@ -22,13 +22,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
+            LoggingTestHelper.SetupMock(MockLogger);
         }
 
         [Fact]
         public void DebugInfoNullSessionTest()
         {
-            LoggingTestHelper.SetupMock(MockLogger);
-
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)null));
             var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
             loggingHelper.DebugInfo();
@@ -42,7 +41,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         {
             var obj = new ExpandoObject();
             obj.TryAdd("sessionID", "somesessionId");
-            LoggingTestHelper.SetupMock(MockLogger);
 
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
             var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
