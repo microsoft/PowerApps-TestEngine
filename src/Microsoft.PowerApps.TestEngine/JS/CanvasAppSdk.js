@@ -126,7 +126,7 @@ var PowerAppsTestEngine = {
         }
     },
 
-     buildObjectModel: function() {
+    buildObjectModel: function () {
         return getControlObjectModel().then((controlObjectModel) => {
             return {
                 controls: controlObjectModel
@@ -134,21 +134,23 @@ var PowerAppsTestEngine = {
         })
     },
 
-     getPropertyValue: function(itemPath) {
+    getPropertyValue: function (itemPath) {
         return getPropertyValueFromPublishedApp(itemPath)
     },
 
-    select: function(itemPath) {
+    select: function (itemPath) {
         return selectControl(itemPath)
     },
 
-    setPropertyValue: function(itemPath, value) {
+    setPropertyValue: function (itemPath, value) {
         return setPropertyValueForControl(itemPath, value);
     },
 
-    getItemCount: function(itemPath) {
+    getItemCount: function (itemPath) {
         return fetchArrayItemCount(itemPath);
     },
 
-    debugInfo : Core.Telemetry?.Log?._sessionId
+    debugInfo: {
+        sessionID: Core.Telemetry?.Log?._sessionId
+    }
 }

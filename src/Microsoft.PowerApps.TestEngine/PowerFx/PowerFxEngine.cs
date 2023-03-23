@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Dynamic;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -151,10 +152,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
         public async void DebugInfo()
         {
-            var debugInfo = await _powerAppFunctions.GetDebugInfo();
+            ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();
             if (debugInfo != null && debugInfo.ToString() != "undefined")
             {
-                Logger.LogDebug($"Debug Info: {debugInfo.ToString()}");
+                Logger.LogDebug($"------------------------------\n Debug Info \n------------------------------");
+                foreach (var info in debugInfo)
+                {
+                    Logger.LogDebug($"{info.Key}:\t{info.Value}");
+                }
             }
         }
     }

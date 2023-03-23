@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -387,6 +388,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task DebugInfoTest()
+        {
+            var obj = new ExpandoObject();
+            obj.TryAdd("sessionID","somesessionId");
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
+
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            powerFxEngine.DebugInfo();
+
+            MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "sessionID:\tsomesessionId", LogLevel.Debug, Times.Once());
         }
     }
 }
