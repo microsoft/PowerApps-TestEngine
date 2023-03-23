@@ -4,6 +4,7 @@
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
@@ -199,7 +200,9 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 // Trying to log the debug info including session details
-                _powerFxEngine.DebugInfo();
+                LoggerHelper loggerHelper = new LoggerHelper(_powerFxEngine.GetPowerAppFunctions(), _testState);
+                loggerHelper.DebugInfo();
+
                 await _testInfraFunctions.EndTestRunAsync();
 
                 if (allTestsSkipped)

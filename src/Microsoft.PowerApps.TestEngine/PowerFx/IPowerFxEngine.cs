@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Globalization;
+using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
@@ -38,8 +39,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public Task UpdatePowerFxModelAsync();
 
         /// <summary>
-        /// Log debug info
+        /// get PowerAppFunctions
         /// </summary>
-        public void DebugInfo();
+        public IPowerAppFunctions GetPowerAppFunctions();
     }
 }

@@ -150,17 +150,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
         }
 
-        public async void DebugInfo()
+        public IPowerAppFunctions GetPowerAppFunctions()
         {
-            ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();
-            if (debugInfo != null && debugInfo.ToString() != "undefined")
-            {
-                Logger.LogDebug($"------------------------------\n Debug Info \n------------------------------");
-                foreach (var info in debugInfo)
-                {
-                    Logger.LogDebug($"{info.Key}:\t{info.Value}");
-                }
-            }
+            return _powerAppFunctions;
         }
     }
 }

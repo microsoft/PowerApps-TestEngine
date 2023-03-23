@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+
+namespace Microsoft.PowerApps.TestEngine.Helpers
+{
+    public class LoggerHelper: ILoggerHelper
+    {
+        private readonly IPowerAppFunctions _powerAppFunctions;
+        private readonly ISingleTestInstanceState _singleTestInstanceState;
+        private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
+
+        public LoggerHelper(IPowerAppFunctions powerAppFunctions,
+                             ISingleTestInstanceState singleTestInstanceState)
+        {
+            _powerAppFunctions = powerAppFunctions;
+            _singleTestInstanceState = singleTestInstanceState;
+        }
+
+        public async void DebugInfo()
+        {
+            ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();
+            if (debugInfo != null && debugInfo.ToString() != "undefined")
+            {
+                Logger.LogDebug($"------------------------------\n Debug Info \n------------------------------");
+                foreach (var info in debugInfo)
+                {
+                    Logger.LogDebug($"{info.Key}:\t{info.Value}");
+                }
+            }
+        }
+    }
+}

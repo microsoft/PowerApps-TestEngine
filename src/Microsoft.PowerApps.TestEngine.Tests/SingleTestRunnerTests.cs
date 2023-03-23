@@ -88,7 +88,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>())).Throws(new Exception("something bad happened"));
             }
-            MockPowerFxEngine.Setup(x => x.DebugInfo());
 
             MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
