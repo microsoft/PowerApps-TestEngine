@@ -19,9 +19,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         public LoggingHelpersTest()
         {            
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
-            MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);            
             LoggingTestHelper.SetupMock(MockLogger);
         }
 
