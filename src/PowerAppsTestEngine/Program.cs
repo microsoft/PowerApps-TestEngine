@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using Microsoft.PowerApps.TestEngine;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
@@ -57,7 +55,7 @@ else
             return;
         }
     }
-    
+
     if (!string.IsNullOrEmpty(inputOptions.EnvironmentId))
     {
         if (inputOptions.EnvironmentId.Substring(0, 1) == "-")
@@ -66,7 +64,7 @@ else
             return;
         }
     }
-    
+
     if (!string.IsNullOrEmpty(inputOptions.TenantId))
     {
         if (inputOptions.TenantId.Substring(0, 1) == "-")
@@ -75,7 +73,7 @@ else
             return;
         }
     }
-    
+
     if (!string.IsNullOrEmpty(inputOptions.OutputDirectory))
     {
         if (inputOptions.OutputDirectory.Substring(0, 1) == "-")
@@ -84,7 +82,7 @@ else
             return;
         }
     }
-    
+
     if (!string.IsNullOrEmpty(inputOptions.LogLevel))
     {
         if (inputOptions.LogLevel.Substring(0, 1) == "-")
@@ -93,7 +91,7 @@ else
             return;
         }
     }
-    
+
     if (!string.IsNullOrEmpty(inputOptions.QueryParams))
     {
         if (inputOptions.QueryParams.Substring(0, 1) == "-")
