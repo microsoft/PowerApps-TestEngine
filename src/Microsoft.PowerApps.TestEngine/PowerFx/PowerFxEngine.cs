@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Dynamic;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -147,6 +148,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 Engine.UpdateVariable(control.Key, control.Value);
             }
+        }
+
+        public IPowerAppFunctions GetPowerAppFunctions()
+        {
+            return _powerAppFunctions;
         }
     }
 }
