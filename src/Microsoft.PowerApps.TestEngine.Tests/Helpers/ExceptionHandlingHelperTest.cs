@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.PowerApps;
 using Moq;
 using Xunit;
 

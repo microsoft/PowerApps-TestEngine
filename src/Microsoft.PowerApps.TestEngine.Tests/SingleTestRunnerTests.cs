@@ -35,6 +35,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ILogger> MockLogger;
         private Mock<ITestLogger> MockTestLogger;
+        private Mock<IPowerAppFunctions> MockPowerAppFunctions;
 
         public SingleTestRunnerTests()
         {
@@ -48,6 +49,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockTestLogger = new Mock<ITestLogger>(MockBehavior.Strict);
+            MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
         }
 
         private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles, string testSuitelocale)
@@ -88,6 +90,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>())).Throws(new Exception("something bad happened"));
             }
+            MockPowerFxEngine.Setup(x => x.GetPowerAppFunctions()).Returns(MockPowerAppFunctions.Object);
 
             MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
