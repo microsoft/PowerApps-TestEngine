@@ -44,6 +44,6 @@ do
        fi                                                                
     done
   if [[ -n "${envId}" && -n "${tenantId}" && -n "${domain}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then     # null checks on args
-    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir};  
+    dotnet run -f net6.0 -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir};  
   fi
 done

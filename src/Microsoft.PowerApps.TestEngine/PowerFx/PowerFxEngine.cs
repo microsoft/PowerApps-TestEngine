@@ -97,7 +97,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             // Remove the leading = sign
-            if (testSteps.StartsWith('='))
+            if (testSteps.StartsWith("="))
             {
                 testSteps = testSteps.Remove(0, 1);
             }
