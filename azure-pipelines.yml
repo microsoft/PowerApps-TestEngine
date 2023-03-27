@@ -153,7 +153,7 @@ jobs:
     inputs:
       command: push
       nuGetFeedType: "internal"
-      packagesToPush: "$(Build.SourcesDirectory)/pkg/PackResult/Microsoft.PowerApps.TestEngine.nupkg"
+      packagesToPush: "$(Build.SourcesDirectory)/pkg/PackResult/Microsoft.PowerApps.TestEngine*.nupkg"
       publishVstsFeed: "OneCRM/CRMSharedFeed-Stable"
       allowPackageConflicts: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
