@@ -172,7 +172,7 @@ namespace Microsoft.PowerApps.TestEngine
                                 testLogger.WriteToLogsFile(testCaseResultDirectory, testId);
                             }
 
-                            if(!string.IsNullOrEmpty(caseException))
+                            if (!string.IsNullOrEmpty(caseException))
                             {
                                 var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                                 testLogger.WriteExceptionToDebugLogsFile(testCaseResultDirectory, caseException);
@@ -242,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine
                     testLogger.WriteToLogsFile(testResultDirectory, null);
                 }
 
-                if(!string.IsNullOrEmpty(suiteException))
+                if (!string.IsNullOrEmpty(suiteException))
                 {
                     var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                     testLogger.WriteExceptionToDebugLogsFile(testResultDirectory, suiteException);
