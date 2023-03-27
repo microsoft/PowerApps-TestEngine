@@ -66,6 +66,16 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.Where(filterAction).Select(x => x.LogMessage).ToArray());
         }
 
+        public void WriteExceptionToDebugLogsFile(string directoryPath, string exception)
+        {
+            if (!_fileSystem.IsValidFilePath(directoryPath))
+            {
+                throw new ArgumentException(nameof(directoryPath));
+            }
+
+            _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), exception);
+        }
+
         public void Log<TState>(LogLevel messageLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             var logString = "";
