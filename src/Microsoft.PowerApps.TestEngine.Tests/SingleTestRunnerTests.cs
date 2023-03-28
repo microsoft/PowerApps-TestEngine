@@ -271,7 +271,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
 
-            var exceptionToThrow = new InvalidOperationException("Test exception");
+            var exceptionToThrow = new Exception("Encountered an error. See the debug log for this test suite for more information.");
             additionalMockSetup(exceptionToThrow);
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
