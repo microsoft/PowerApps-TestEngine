@@ -102,6 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockUrlMapper.Setup(x => x.GenerateTestUrl("", "")).Returns(appUrl);
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
+            MockTestLogger.Setup(x => x.WriteExceptionToDebugLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             TestLoggerProvider.TestLoggers.Add(testSuiteId, MockTestLogger.Object);
         }
 
