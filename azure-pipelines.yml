@@ -147,6 +147,7 @@ jobs:
    
   - task: NuGetAuthenticate@0
     displayName: "NuGet Authenticate"
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: NuGetCommand@2
     displayName: "NuGet push"
