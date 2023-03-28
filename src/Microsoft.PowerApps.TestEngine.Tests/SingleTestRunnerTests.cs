@@ -102,6 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockUrlMapper.Setup(x => x.GenerateTestUrl("", "")).Returns(appUrl);
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
+            MockTestLogger.Setup(x => x.WriteExceptionToDebugLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             TestLoggerProvider.TestLoggers.Add(testSuiteId, MockTestLogger.Object);
         }
 
@@ -279,7 +280,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
-            LoggingTestHelper.VerifyLogging(MockLogger, exceptionToThrow.ToString(), LogLevel.Error, Times.AtLeastOnce());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Encountered an error. See the debug log for this test suite for more information.", LogLevel.Error, Times.AtLeastOnce());
             VerifyFinallyExecution(testData.testResultDirectory, 1, 0, 1, 0);
         }
 
@@ -379,7 +380,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
-            LoggingTestHelper.VerifyLogging(MockLogger, exceptionToThrow.ToString(), LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Encountered an error. See the debug log for this test suite for more information.", LogLevel.Error, Times.Once());
             VerifyFinallyExecution(testData.testResultDirectory, 1, 1, 0, 0);
         }
 

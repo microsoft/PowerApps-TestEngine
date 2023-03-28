@@ -86,6 +86,8 @@ namespace Microsoft.PowerApps.TestEngine
             _testState.SetTestResultsDirectory(testResultDirectory);
 
             casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
+            string suiteException = null;
+
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
@@ -131,6 +133,7 @@ namespace Microsoft.PowerApps.TestEngine
                         var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                         _testState.SetTestResultsDirectory(testCaseResultDirectory);
                         _fileSystem.CreateDirectory(testCaseResultDirectory);
+                        string caseException = null;
 
                         try
                         {
@@ -156,7 +159,8 @@ namespace Microsoft.PowerApps.TestEngine
                         catch (Exception ex)
                         {
                             casesFail++;
-                            Logger.LogError(ex.ToString());
+                            Logger.LogError("Encountered an error. See the debug log for this test case for more information.");
+                            caseException = ex.ToString();
                             TestException = ex;
                             TestSuccess = false;
                         }
@@ -166,6 +170,12 @@ namespace Microsoft.PowerApps.TestEngine
                             {
                                 var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                                 testLogger.WriteToLogsFile(testCaseResultDirectory, testId);
+                            }
+
+                            if (!string.IsNullOrEmpty(caseException))
+                            {
+                                var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
+                                testLogger.WriteExceptionToDebugLogsFile(testCaseResultDirectory, caseException);
                             }
 
                             var additionalFiles = new List<string>();
@@ -194,7 +204,8 @@ namespace Microsoft.PowerApps.TestEngine
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.ToString());
+                Logger.LogError("Encountered an error. See the debug log for this test suite for more information.");
+                suiteException = ex.ToString();
                 TestException = ex;
             }
             finally
@@ -229,6 +240,12 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                     testLogger.WriteToLogsFile(testResultDirectory, null);
+                }
+
+                if (!string.IsNullOrEmpty(suiteException))
+                {
+                    var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
+                    testLogger.WriteExceptionToDebugLogsFile(testResultDirectory, suiteException);
                 }
             }
         }
