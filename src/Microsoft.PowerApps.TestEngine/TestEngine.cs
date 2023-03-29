@@ -36,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine
             _loggerFactory = loggerFactory;
         }
 
-        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory, string domain, string queryParams)
+        public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid tenantId, DirectoryInfo outputDirectory, string domain, string queryParams)
         {
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
@@ -44,16 +44,8 @@ namespace Microsoft.PowerApps.TestEngine
 
             Logger = _loggerFactory.CreateLogger(testRunId);
 
-            if (string.IsNullOrEmpty(outputDirectory))
-            {
-                Logger.LogDebug($"Using default output directory: {DefaultOutputDirectory}");
-                _state.SetOutputDirectory(DefaultOutputDirectory);
-            }
-            else
-            {
-                Logger.LogDebug($"Using output directory: {outputDirectory}");
-                _state.SetOutputDirectory(outputDirectory);
-            }
+            Logger.LogDebug($"Using output directory: {outputDirectory.Name}");
+            _state.SetOutputDirectory(outputDirectory.Name);
 
             if (string.IsNullOrEmpty(queryParams))
             {
@@ -70,9 +62,8 @@ namespace Microsoft.PowerApps.TestEngine
 
             try
             {
-
                 // Setup state
-                if (string.IsNullOrEmpty(testConfigFile))
+                if (testConfigFile == null)
                 {
                     Logger.LogError("Test config file cannot be null");
                     throw new ArgumentNullException(nameof(testConfigFile));
@@ -84,15 +75,15 @@ namespace Microsoft.PowerApps.TestEngine
                     throw new ArgumentNullException(nameof(environmentId));
                 }
 
-                if (string.IsNullOrEmpty(tenantId))
+                if (tenantId == null || tenantId == Guid.Empty)
                 {
                     Logger.LogError("Tenant id cannot be null");
                     throw new ArgumentNullException(nameof(tenantId));
                 }
 
-                _state.ParseAndSetTestState(testConfigFile);
+                _state.ParseAndSetTestState(testConfigFile.Name);
                 _state.SetEnvironment(environmentId);
-                _state.SetTenant(tenantId);
+                _state.SetTenant(tenantId.ToString());
                 _state.SetDomain(domain);
 
                 Logger.LogDebug($"Using domain: {domain}");
