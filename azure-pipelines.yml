@@ -41,7 +41,7 @@ jobs:
     inputs:
       command: 'test'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
-      arguments: '-c $(BuildConfiguration) --no-cache --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults'
+      arguments: '-c $(BuildConfiguration) --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults'
       publishTestResults: false
 
   - task: PublishTestResults@2
