@@ -53,8 +53,9 @@ jobs:
       failTaskOnFailedTests: true
 
 - job: Sign_PowerAppsTestEngine
-  displayName: 'Sign PowerAppsTestEngine Solution'
+  dependsOn: Build_PowerAppsTestEngine
   condition: in(dependencies.Build_PowerAppsTestEngine.result, 'Succeeded')
+  displayName: 'Sign PowerAppsTestEngine Solution'  
 
   steps:
   - task: UseDotNet@2
