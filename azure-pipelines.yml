@@ -108,7 +108,8 @@ jobs:
     inputs:
       command: 'pack'
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
-      arguments: '-c $(BuildConfiguration) --no-build'
+      arguments: '-c $(BuildConfiguration)'
+      nobuild: true
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign nuget packages'
