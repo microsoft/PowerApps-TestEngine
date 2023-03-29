@@ -52,11 +52,22 @@ jobs:
       mergeTestResults: true
       failTaskOnFailedTests: true
 
+- job: Sign_PowerAppsTestEngine
+  displayName: 'Sign PowerAppsTestEngine Solution'
+  condition: in(dependencies.Build_PowerAppsTestEngine.result, 'Succeeded')
+
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Use dotnet sdk 6.0'
+    inputs:
+      version: 6.0.x
+      installationPath: '$(Agent.ToolsDirectory)/dotnet'
+
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
     inputs:
       ConnectedServiceName: 'ESRPCodeSigningConnection'
-      FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
+      FolderPath: '$(Build.SourcesDirectory)/bin/Release/Microsoft.PowerApps.TestEngine/'
       Pattern: '*.dll'
       signConfigType: inlineSignParams
       inlineOperation: |
@@ -108,7 +119,7 @@ jobs:
     inputs:
       command: pack
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
-      arguments: '-c $(BuildConfiguration)'
+      arguments: '-c Release'
       nobuild: true
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
@@ -139,13 +150,12 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
-      publishLocation: 'Container'
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'PowerApps.TestEngine (Release)'
+      publishLocation: 'Container'    
    
   - task: NuGetAuthenticate@0
     displayName: "NuGet Authenticate"
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: NuGetCommand@2
     displayName: "NuGet push"
@@ -155,10 +165,8 @@ jobs:
       packagesToPush: "$(Build.ArtifactStagingDirectory)/Microsoft.PowerApps.TestEngine*.nupkg"
       publishVstsFeed: "CRMSharedFeed-Stable"
       allowPackageConflicts: true
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
   
   - task: tagBuildOrRelease@0
     inputs:
       type: 'Build'
       tags: 'deployable'
-    condition: eq(variables['PublicRelease'], 'true')  
