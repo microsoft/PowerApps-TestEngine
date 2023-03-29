@@ -142,20 +142,43 @@ else
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
-    var queryParams = "";
-    var domain = "apps.powerapps.com";
-
-    if (!string.IsNullOrEmpty(inputOptions.QueryParams))
+    try
     {
-        queryParams = inputOptions.QueryParams;
-    }
+        //resolved inputs to types
+        var testPlanFile = new FileInfo(inputOptions.TestPlanFile);
+        var tenantId = Guid.Parse(inputOptions.TenantId);
+        var environmentId = inputOptions.EnvironmentId;
+        var domain = "apps.powerapps.com";
+        var queryParams = "";
 
-    if (!string.IsNullOrEmpty(inputOptions.Domain))
+        // Default value for optional argument is set outside the class library
+        DirectoryInfo outputDirectory;
+        const string DefaultOutputDirectory = "TestOutput";
+        if (!string.IsNullOrEmpty(inputOptions.OutputDirectory))
+        {
+            outputDirectory = new DirectoryInfo(inputOptions.OutputDirectory);
+        }
+        else
+        {
+            outputDirectory = new DirectoryInfo(DefaultOutputDirectory);
+        }
+
+        if (!string.IsNullOrEmpty(inputOptions.QueryParams))
+        {
+            queryParams = inputOptions.QueryParams;
+        }
+
+        if (!string.IsNullOrEmpty(inputOptions.Domain))
+        {
+            domain = inputOptions.Domain;
+        }
+
+        //setting defaults for optional parameters outside RunTestAsync
+        var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
+        Console.Out.WriteLine($"Test results can be found here: {testResult}");
+    }
+    catch (Exception ex)
     {
-        domain = inputOptions.Domain;
+        Console.Out.WriteLine(ex.Message, ex.StackTrace);
     }
-
-    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, domain, queryParams);
-
-    Console.Out.WriteLine($"Test results can be found here: {testResult}");
 }
