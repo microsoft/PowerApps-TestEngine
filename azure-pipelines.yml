@@ -108,8 +108,9 @@ jobs:
     inputs:
       command: 'custom'
       custom: 'pack'
-      arguments: '$(Build.SourcesDirectory)\src\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj --no-build --include-symbols --include-source -c=Release -o $(Build.ArtifactStagingDirectory)'
+      arguments: '$(Build.SourcesDirectory)\src\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj -c $(BuildConfiguration) --no-build -o $(Build.ArtifactStagingDirectory)'
       nobuild: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign nuget packages'
@@ -136,6 +137,7 @@ jobs:
           }
         ]
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: PublishBuildArtifacts@1
     inputs:
