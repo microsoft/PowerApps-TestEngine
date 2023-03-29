@@ -33,7 +33,7 @@ jobs:
     displayName: 'Build'
     inputs:
       command: 'build'
-      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
+      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
       arguments: '-c $(BuildConfiguration)'
 
   - task: DotNetCoreCLI@2
