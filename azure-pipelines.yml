@@ -127,7 +127,7 @@ jobs:
     displayName: 'ESRP sign nuget packages'
     inputs:
       ConnectedServiceName: 'ESRPCodeSigningConnection'
-      FolderPath: '$(Build.ArtifactStagingDirectory)'
+      FolderPath: '$(Build.SourcesDirectory)/pkg/PackResult'
       Pattern: '*.nupkg'
       signConfigType: inlineSignParams
       inlineOperation: |
