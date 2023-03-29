@@ -106,9 +106,9 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Pack'
     inputs:
-      command: 'pack'
-      projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
-      arguments: '-c $(BuildConfiguration)'
+      command: 'custom'
+      custom: 'pack'
+      arguments: '$(Build.SourcesDirectory)\src\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj --no-build --include-symbols --include-source -c=Release -o $(Build.ArtifactStagingDirectory)'
       nobuild: true
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
