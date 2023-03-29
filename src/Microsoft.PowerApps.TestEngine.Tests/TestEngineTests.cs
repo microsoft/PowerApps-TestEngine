@@ -71,24 +71,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     }
                 }
             };
-            var testConfigFile = "C:\\testPlan.fx.yaml";
+            var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
-            var tenantId = "tenantId";
+            var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
+            var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
-            var expectedOutputDirectory = "TestOutput";
-            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var expectedOutputDirectory = outputDirectory;
+            var testRunDirectory = Path.Combine(expectedOutputDirectory.Name, testRunId.Substring(0, 6));
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
 
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory.Name, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", domain, "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile, environmentId, tenantId, domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.Name, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory.Name, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         [Fact]
@@ -122,21 +123,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     }
                 }
             };
-            var testConfigFile = "C:\\testPlan.fx.yaml";
+            var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
-            var tenantId = "tenantId";
+            var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
+            var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
-            var expectedOutputDirectory = "TestOutput";
-            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var expectedOutputDirectory = outputDirectory;
+            var testRunDirectory = Path.Combine(expectedOutputDirectory.Name, testRunId.Substring(0, 6));
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
 
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory.Name, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
 
-            await Assert.ThrowsAsync<CultureNotFoundException>(() => testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", domain, ""));
+            await Assert.ThrowsAsync<CultureNotFoundException>(() => testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
         }
 
         [Fact]
@@ -169,41 +171,43 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     }
                 }
             };
-            var testConfigFile = "C:\\testPlan.fx.yaml";
+            var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
-            var tenantId = "tenantId";
+            var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
+            var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
-            var expectedOutputDirectory = "TestOutput";
-            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var expectedOutputDirectory = outputDirectory;
+            var testRunDirectory = Path.Combine(expectedOutputDirectory.Name, testRunId.Substring(0, 6));
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
 
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory.Name, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", domain, "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Locale property not specified in testSettings. Using current system locale: {CultureInfo.CurrentCulture.Name}", LogLevel.Warning, Times.Once());
 
-            Verify(testConfigFile, environmentId, tenantId, domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.Name, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory.Name, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         [Theory]
         [ClassData(typeof(TestDataGenerator))]
-        public async Task TestEngineTest(string outputDirectory, string domain, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition)
+        public async Task TestEngineTest(DirectoryInfo outputDirectory, string domain, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition)
         {
-            var testConfigFile = "C:\\testPlan.fx.yaml";
+            var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
-            var tenantId = "tenantId";
+            var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
             var testRunId = Guid.NewGuid().ToString();
+
             var expectedOutputDirectory = outputDirectory;
-            if (string.IsNullOrEmpty(expectedOutputDirectory))
+            if (expectedOutputDirectory == null)
             {
-                expectedOutputDirectory = "TestOutput";
+                expectedOutputDirectory = new DirectoryInfo("TestOutput");
             }
-            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var testRunDirectory = Path.Combine(expectedOutputDirectory.Name, testRunId.Substring(0, 6));
 
             if (string.IsNullOrEmpty(domain))
             {
@@ -212,14 +216,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var expectedTestReportPath = "C:\\test.trx";
 
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory.Name, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile, environmentId, tenantId, domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.Name, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory.Name, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         private void SetupMocks(string outputDirectory, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition, string testRunId, string testReportPath)
@@ -274,10 +278,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         [Theory]
-        [InlineData("", "defaultEnvironment", "tenantId")]
-        [InlineData("C:\\testPlan.fx.yaml", "", "tenantId")]
-        [InlineData("C:\\testPlan.fx.yaml", "defaultEnvironment", "")]
-        public async Task TestEngineThrowsOnNullArguments(string testConfigFile, string environmentId, string tenantId)
+        [InlineData("C:\\testPlan.fx.yaml", "", "a01af035-a529-4aaf-aded-011ad676f976")]
+        public async Task TestEngineThrowsOnNullArguments(string testConfigFilePath, string environmentId, Guid tenantId)
         {
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));
@@ -288,15 +290,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
 
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, "", "", ""));
+            var testConfigFile = new FileInfo(testConfigFilePath);
+            var outputDirectory = new DirectoryInfo("TestOutput");
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, "", ""));
         }
 
-        class TestDataGenerator : TheoryData<string, string, TestSettings, TestSuiteDefinition>
+        class TestDataGenerator : TheoryData<DirectoryInfo, string, TestSettings, TestSuiteDefinition>
         {
             public TestDataGenerator()
             {
                 // Simple test
-                Add("C:\\testResults",
+                Add(new DirectoryInfo("C:\\testResults"),
                     "GCC",
                     new TestSettings()
                     {
@@ -327,8 +331,39 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Simple test with null params
-                Add(null,
+                Add(new DirectoryInfo("TestOutput"),
                     null,
+                    new TestSettings()
+                    {
+                        Locale = string.Empty,
+                        BrowserConfigurations = new List<BrowserConfiguration>()
+                        {
+                            new BrowserConfiguration()
+                            {
+                                Browser = "Chromium"
+                            }
+                        }
+                    },
+                    new TestSuiteDefinition()
+                    {
+                        TestSuiteName = "Test1",
+                        TestSuiteDescription = "First test",
+                        AppLogicalName = "logicalAppName1",
+                        Persona = "User1",
+                        TestCases = new List<TestCase>()
+                        {
+                            new TestCase
+                            {
+                                TestCaseName = "Test Case Name",
+                                TestCaseDescription = "Test Case Description",
+                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                            }
+                        }
+                    });
+
+                // Simple test with empty string params
+                Add(new DirectoryInfo("TestOutput"),
+                    "",
                     new TestSettings()
                     {
                         Locale = string.Empty,
@@ -360,7 +395,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 // Simple test in en-US locale (this should be like every other test)
                 // For the rest of the tests where Locale = string.Empty, CurrentCulture should be used
                 // and the test should pass
-                Add("C:\\testResults",
+                Add(new DirectoryInfo("C:\\testResults"),
                     "GCC",
                     new TestSettings()
                     {
@@ -390,39 +425,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                         }
                     });
 
-                // Simple test with empty string params
-                Add("",
-                    "",
-                    new TestSettings()
-                    {
-                        Locale = string.Empty,
-                        BrowserConfigurations = new List<BrowserConfiguration>()
-                        {
-                            new BrowserConfiguration()
-                            {
-                                Browser = "Chromium"
-                            }
-                        }
-                    },
-                    new TestSuiteDefinition()
-                    {
-                        TestSuiteName = "Test1",
-                        TestSuiteDescription = "First test",
-                        AppLogicalName = "logicalAppName1",
-                        Persona = "User1",
-                        TestCases = new List<TestCase>()
-                        {
-                            new TestCase
-                            {
-                                TestCaseName = "Test Case Name",
-                                TestCaseDescription = "Test Case Description",
-                                TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-                            }
-                        }
-                    });
-
                 // Simple test in a different locale
-                Add("C:\\testResults",
+                Add(new DirectoryInfo("C:\\testResults"),
                     "GCC",
                     new TestSettings()
                     {
@@ -453,7 +457,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple browsers
-                Add("C:\\testResults",
+                Add(new DirectoryInfo("C:\\testResults"),
                     "Prod",
                     new TestSettings()
                     {
@@ -493,7 +497,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple tests
-                Add("C:\\testResults",
+                Add(new DirectoryInfo("C:\\testResults"),
                     "Prod",
                     new TestSettings()
                     {
@@ -530,7 +534,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple tests and browsers
-                Add("C:\\testResults",
+                Add(new DirectoryInfo("C:\\testResults"),
                     "Prod",
                     new TestSettings()
                     {
