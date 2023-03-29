@@ -33,7 +33,7 @@ jobs:
     displayName: 'Build'
     inputs:
       command: 'build'
-      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine/PowerAppsTestEngine.csproj'
+      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
       arguments: '-c $(BuildConfiguration)'
 
   - task: DotNetCoreCLI@2
@@ -139,6 +139,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory);!$(Build.ArtifactStagingDirectory)/PowerAppsTestEngine*.nupkg'
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
