@@ -34,14 +34,14 @@ jobs:
     inputs:
       command: 'build'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
-      arguments: '-c $(BuildConfiguration)'
+      arguments: '-c $(BuildConfiguration) -no-cache'
 
   - task: DotNetCoreCLI@2
     displayName: 'Test'
     inputs:
       command: 'test'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
-      arguments: '-c $(BuildConfiguration) --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults'
+      arguments: '-c $(BuildConfiguration) --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults -no-cache'
       publishTestResults: false
 
   - task: PublishTestResults@2
@@ -106,9 +106,9 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Pack'
     inputs:
-      command: pack
+      command: 'pack'
       projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
-      arguments: '-c $(BuildConfiguration)'
+      arguments: '-c $(BuildConfiguration) --no-build'
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign nuget packages'
