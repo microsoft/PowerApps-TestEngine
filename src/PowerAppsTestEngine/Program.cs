@@ -51,7 +51,7 @@ else
     {
         if (inputOptions.TestPlanFile.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: Test plan file field is blank.");
+            Console.Out.WriteLine("[Error]: TestPlanFile field is blank.");
             return;
         }
     }
@@ -60,7 +60,7 @@ else
     {
         if (inputOptions.EnvironmentId.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: Environment ID field is blank.");
+            Console.Out.WriteLine("[Error]: EnvironmentId field is blank.");
             return;
         }
     }
@@ -69,7 +69,7 @@ else
     {
         if (inputOptions.TenantId.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: Tenant ID field is blank.");
+            Console.Out.WriteLine("[Error]: TenantId field is blank.");
             return;
         }
     }
@@ -78,7 +78,7 @@ else
     {
         if (inputOptions.OutputDirectory.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: Output Directory field is blank.");
+            Console.Out.WriteLine("[Error]: OutputDirectory field is blank.");
             return;
         }
     }
@@ -87,16 +87,7 @@ else
     {
         if (inputOptions.LogLevel.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: Log Level field is blank.");
-            return;
-        }
-    }
-
-    if (!string.IsNullOrEmpty(inputOptions.QueryParams))
-    {
-        if (inputOptions.QueryParams.Substring(0, 1) == "-")
-        {
-            Console.Out.WriteLine("[Error]: Query Params field is blank.");
+            Console.Out.WriteLine("[Error]: LogLevel field is blank.");
             return;
         }
     }
@@ -106,6 +97,15 @@ else
         if (inputOptions.Domain.Substring(0, 1) == "-")
         {
             Console.Out.WriteLine("[Error]: Domain field is blank.");
+            return;
+        }
+    }
+
+    if (!string.IsNullOrEmpty(inputOptions.QueryParams))
+    {
+        if (inputOptions.QueryParams.Substring(0, 1) == "-")
+        {
+            Console.Out.WriteLine("[Error]: QueryParams field is blank.");
             return;
         }
     }
@@ -144,14 +144,16 @@ else
 
     try
     {
-        //resolved inputs to types
+        // Default value for optional arguments is set before the class library is invoked.
+        // The class library expects actual types in its input arguments, so optional arguments
+        // to the Test Engine entry point function RunTestAsync must be checked for null values and their
+        // corresponding default values set beforehand.
         var testPlanFile = new FileInfo(inputOptions.TestPlanFile);
         var tenantId = Guid.Parse(inputOptions.TenantId);
         var environmentId = inputOptions.EnvironmentId;
         var domain = "apps.powerapps.com";
         var queryParams = "";
 
-        // Default value for optional argument is set outside the class library
         DirectoryInfo outputDirectory;
         const string DefaultOutputDirectory = "TestOutput";
         if (!string.IsNullOrEmpty(inputOptions.OutputDirectory))
