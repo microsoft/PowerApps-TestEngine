@@ -44,8 +44,8 @@ namespace Microsoft.PowerApps.TestEngine
 
             Logger = _loggerFactory.CreateLogger(testRunId);
 
-            Logger.LogDebug($"Using output directory: {outputDirectory.Name}");
-            _state.SetOutputDirectory(outputDirectory.Name);
+            Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
+            _state.SetOutputDirectory(outputDirectory.FullName);
 
             if (string.IsNullOrEmpty(queryParams))
             {
@@ -81,7 +81,7 @@ namespace Microsoft.PowerApps.TestEngine
                     throw new ArgumentNullException(nameof(tenantId));
                 }
 
-                _state.ParseAndSetTestState(testConfigFile.Name);
+                _state.ParseAndSetTestState(testConfigFile.FullName);
                 _state.SetEnvironment(environmentId);
                 _state.SetTenant(tenantId.ToString());
                 _state.SetDomain(domain);
