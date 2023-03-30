@@ -1,4 +1,4 @@
-﻿# ASP.NET
+# ASP.NET
 # Build and test ASP.NET projects.
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
@@ -34,7 +34,7 @@ jobs:
     inputs:
       command: 'build'
       projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
-      arguments: '-c $(BuildConfiguration)'
+      arguments: '-c $(BuildConfiguration) --no-cache'
 
   - task: DotNetCoreCLI@2
     displayName: 'Test'
@@ -106,17 +106,18 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Pack'
     inputs:
-      command: pack
-      projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
-      arguments: '-c $(BuildConfiguration)'
+      command: 'custom'
+      custom: 'pack'
+      arguments: '$(Build.SourcesDirectory)\src\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj -c $(BuildConfiguration) --no-build -o $(Build.ArtifactStagingDirectory)'
       nobuild: true
-      packDirectory: '$(Build.SourcesDirectory)/pkg/PackResult'
+      versioningScheme: 'byBuildNumber'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign nuget packages'
     inputs:
       ConnectedServiceName: 'ESRPCodeSigningConnection'
-      FolderPath: '$(Build.SourcesDirectory)/pkg/PackResult'
+      FolderPath: '$(Build.ArtifactStagingDirectory)'
       Pattern: '*.nupkg'
       signConfigType: inlineSignParams
       inlineOperation: |
@@ -137,14 +138,28 @@ jobs:
           }
         ]
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.SourcesDirectory)/pkg/PackResult'
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
-  
+
+  - task: NuGetAuthenticate@0
+    displayName: "NuGet Authenticate"
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: NuGetCommand@2
+    displayName: "NuGet push"
+    inputs:
+      command: push
+      nuGetFeedType: "internal"
+      packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
+      publishVstsFeed: $(InternalFeed)
+      allowPackageConflicts: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
   - task: tagBuildOrRelease@0
     inputs:
       type: 'Build'
