@@ -11,9 +11,6 @@ pr: none
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  InternalFeed: '${{ secrets.INTERNAL_FEED }}'
-
 jobs:
 - job: Build_PowerAppsTestEngine
   displayName: 'Build PowerAppsTestEngine Solution'
