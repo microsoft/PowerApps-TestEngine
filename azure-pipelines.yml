@@ -145,7 +145,21 @@ jobs:
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
-  
+
+  - task: NuGetAuthenticate@0
+    displayName: "NuGet Authenticate"
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: NuGetCommand@2
+    displayName: "NuGet push"
+    inputs:
+      command: push
+      nuGetFeedType: "internal"
+      packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
+      publishVstsFeed: "${{ secrets.INTERNAL_FEED }}"
+      allowPackageConflicts: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
   - task: tagBuildOrRelease@0
     inputs:
       type: 'Build'
