@@ -110,6 +110,7 @@ jobs:
       custom: 'pack'
       arguments: '$(Build.SourcesDirectory)\src\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj -c $(BuildConfiguration) --no-build -o $(Build.ArtifactStagingDirectory)'
       nobuild: true
+      versioningScheme: 'byBuildNumber'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
@@ -143,20 +144,6 @@ jobs:
     inputs:
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
-   
-  - task: NuGetAuthenticate@0
-    displayName: "NuGet Authenticate"
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
-
-  - task: NuGetCommand@2
-    displayName: "NuGet push"
-    inputs:
-      command: push
-      nuGetFeedType: "internal"
-      packagesToPush: "$(Build.ArtifactStagingDirectory)/Microsoft.PowerApps.TestEngine*.nupkg"
-      publishVstsFeed: "CRMSharedFeed-Stable"
-      allowPackageConflicts: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
   
   - task: tagBuildOrRelease@0
