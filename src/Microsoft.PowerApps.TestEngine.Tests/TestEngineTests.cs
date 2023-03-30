@@ -278,8 +278,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         [Theory]
-        [InlineData("C:\\testPlan.fx.yaml", "", "a01af035-a529-4aaf-aded-011ad676f976")]
-        public async Task TestEngineThrowsOnNullArguments(string testConfigFilePath, string environmentId, Guid tenantId)
+        [InlineData(null, "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
+        [InlineData("C:\\testPlan.fx.yaml", "", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
+        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "00000000-0000-0000-0000-000000000000", "apps.powerapps.com")]
+        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "")]
+        public async Task TestEngineThrowsOnNullArguments(string testConfigFilePath, string environmentId, Guid tenantId, string domain)
         {
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));
@@ -290,9 +293,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
 
-            var testConfigFile = new FileInfo(testConfigFilePath);
+            FileInfo testConfigFile;
+            if (string.IsNullOrEmpty(testConfigFilePath))
+            {
+                //specifically for the test case where the caller might
+                //inadvertently pass a null testConfigFile object to RunTestAsync
+                testConfigFile = null;
+            }
+            else
+            {
+                testConfigFile = new FileInfo(testConfigFilePath);
+            }
             var outputDirectory = new DirectoryInfo("TestOutput");
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, "", ""));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
         }
 
         class TestDataGenerator : TheoryData<DirectoryInfo, string, TestSettings, TestSuiteDefinition>

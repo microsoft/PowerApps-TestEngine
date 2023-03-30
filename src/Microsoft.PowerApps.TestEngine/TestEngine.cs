@@ -11,7 +11,7 @@ using Microsoft.PowerApps.TestEngine.System;
 namespace Microsoft.PowerApps.TestEngine
 {
     /// <summary>
-    /// Test engine
+    /// This class covers the core functionality of Test Engine, including the entry point for executing tests.
     /// </summary>
     public class TestEngine
     {
@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly ITestReporter _testReporter;
         private readonly IFileSystem _fileSystem;
         private readonly ILoggerFactory _loggerFactory;
-        private const string DefaultOutputDirectory = "TestOutput";
+
         private ILogger Logger { get; set; }
 
         public TestEngine(ITestState state,
@@ -36,6 +36,19 @@ namespace Microsoft.PowerApps.TestEngine
             _loggerFactory = loggerFactory;
         }
 
+        /// <summary>
+        /// This is the entry point function for executing tests. This function expects the Test Plan file along with 
+        /// environment and tenant IDs along with other optional parameters and executes the specified tests on the app
+        /// in the provided tenant and environment.
+        /// </summary>
+        /// <param name="testConfigFile">The (absolute or relative) path to the test plan file.</param>
+        /// <param name="environmentId">The environment ID where the Power App is published.</param>
+        /// <param name="tenantId">The tenant ID where the Power App is published.</param>
+        /// <param name="outputDirectory">The output directory where the test results and logs are to be saved.</param>
+        /// <param name="domain">The domain of the Power Apps Canvas Designer application where the app is published (Example: "apps.powerapps.com").</param>
+        /// <param name="queryParams">Optional query parameters that would be passed to the Player URL for optional features or parameters.</param>
+        /// <returns>The full path where the test results are saved.</returns>
+        /// <exception cref="ArgumentNullException">Throws ArgumentNullException if any of testConfigFile, environmentId, tenantId or domain are missing or empty.</exception>
         public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid tenantId, DirectoryInfo outputDirectory, string domain, string queryParams)
         {
             // Set up test reporting
@@ -65,20 +78,26 @@ namespace Microsoft.PowerApps.TestEngine
                 // Setup state
                 if (testConfigFile == null)
                 {
-                    Logger.LogError("Test config file cannot be null");
+                    Logger.LogError("testConfigFile cannot be null");
                     throw new ArgumentNullException(nameof(testConfigFile));
                 }
 
                 if (string.IsNullOrEmpty(environmentId))
                 {
-                    Logger.LogError("Environment id cannot be null");
+                    Logger.LogError("environmentId cannot be null");
                     throw new ArgumentNullException(nameof(environmentId));
                 }
 
                 if (tenantId == null || tenantId == Guid.Empty)
                 {
-                    Logger.LogError("Tenant id cannot be null");
+                    Logger.LogError("tenantId cannot be null or empty");
                     throw new ArgumentNullException(nameof(tenantId));
+                }
+
+                if (string.IsNullOrEmpty(domain))
+                {
+                    Logger.LogError("domain cannot be null");
+                    throw new ArgumentNullException(nameof(domain));
                 }
 
                 _state.ParseAndSetTestState(testConfigFile.FullName);
@@ -107,7 +126,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
         }
 
-        public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
+        private async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
         {
             var testSettings = _state.GetTestSettings();
 
