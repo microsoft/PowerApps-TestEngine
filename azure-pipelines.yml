@@ -11,6 +11,9 @@ pr: none
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  InternalFeed: '${{ secrets.INTERNAL_FEED }}'
+
 jobs:
 - job: Build_PowerAppsTestEngine
   displayName: 'Build PowerAppsTestEngine Solution'
@@ -156,7 +159,7 @@ jobs:
       command: push
       nuGetFeedType: "internal"
       packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
-      publishVstsFeed: "${{ secrets.INTERNAL_FEED }}"
+      publishVstsFeed: $(InternalFeed)
       allowPackageConflicts: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
