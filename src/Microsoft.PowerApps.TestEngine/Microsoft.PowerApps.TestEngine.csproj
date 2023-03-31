@@ -9,6 +9,7 @@
 
   <!-- Nuget Properties -->
   <PropertyGroup>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
     <Authors>Microsoft</Authors>
     <Company>crmsdk,Microsoft</Company>
     <Description>Alpha Release: Microsoft.PowerAppsTestEngine</Description>
