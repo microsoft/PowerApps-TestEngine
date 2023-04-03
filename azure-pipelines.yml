@@ -32,7 +32,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Build and test'
     inputs:
-      command: 'build'
+      command: 'run'
       projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
       arguments: '-- ci -c $(BuildConfiguration)'
 

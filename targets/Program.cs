@@ -46,8 +46,8 @@ namespace targets
             string PkgDir = Path.Combine(RootDir, "pkg");
             string SrcDir = Path.Combine(RootDir, "src");
 
-            string LogDir = Path.Combine(ObjDir, "testResults");
-            string TestLogDir = Path.Combine(ObjDir, "testLogs");
+            string LogDir = Path.Combine(ObjDir, "logs");
+            string TestLogDir = Path.Combine(ObjDir, "testResults");
 
             string PATestEngineDir = Path.Combine(SrcDir, "Microsoft.PowerApps.TestEngine");
             var solution = Path.Combine(SrcDir, "PowerAppsTestEngine.sln");
