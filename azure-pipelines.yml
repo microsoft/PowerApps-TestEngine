@@ -164,4 +164,4 @@ jobs:
     inputs:
       type: 'Build'
       tags: 'deployable'
-    condition: eq(variables['PublicRelease'], 'true')  
+    condition: eq(variables['PreviewRelease'], 'true')  
