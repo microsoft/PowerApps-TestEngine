@@ -19,7 +19,7 @@ namespace targets
         [Option('c', "configuration", Required = false, Default = "Debug")]
         public string Configuration { get; set; }
 
-        [Option('o', "outputDirectory", Required = false, Default = "Debug")]
+        [Option('o', "outputDirectory", Required = false, Default = "")]
         public string OutputDirectory { get; set; }
     }
 
@@ -86,7 +86,7 @@ namespace targets
                 DependsOn("restore", "build"));
 
             Target("pack",
-                () => RunDotnet("pack", $"{EscapePath(project)} --configuration {options.Configuration} --no-build -o {options.} -p:Packing=true", gitExists, LogDir));
+                () => RunDotnet("pack", $"{EscapePath(project)} --configuration {options.Configuration} --no-build -o {options.OutputDirectory} -p:Packing=true", gitExists, LogDir));
 
             Target("ci",
                 DependsOn("squeaky-clean", "rebuild", "test"));
