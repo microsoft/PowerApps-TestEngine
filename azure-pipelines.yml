@@ -30,19 +30,11 @@ jobs:
       installationPath: '$(Agent.ToolsDirectory)/dotnet'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Build'
+    displayName: 'Build and test'
     inputs:
       command: 'build'
-      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
-      arguments: '-c $(BuildConfiguration) --no-cache'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Test'
-    inputs:
-      command: 'test'
-      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
-      arguments: '-c $(BuildConfiguration) --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults'
-      publishTestResults: false
+      projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+      arguments: '-- ci -c $(BuildConfiguration)'
 
   - task: PublishTestResults@2
     inputs:
@@ -106,11 +98,9 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Pack'
     inputs:
-      command: 'custom'
-      custom: 'pack'
-      arguments: '$(Build.SourcesDirectory)\src\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj -c $(BuildConfiguration) --no-build -o $(Build.ArtifactStagingDirectory)'
-      nobuild: true
-      versioningScheme: 'byBuildNumber'
+      command: 'run'
+      projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+      arguments: '-- pack -c $(BuildConfiguration)'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2

@@ -2,7 +2,11 @@
     <PropertyGroup>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-        <LangVersion>10.0</LangVersion>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Packing)' == ''">
+      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <!-- If not otherwise specified, the project is building for Debug -->
@@ -17,7 +21,7 @@
         <DefineConstants>TRACE;DEBUG</DefineConstants>
     </PropertyGroup>
 
-    <!-- Settings for the Release confi guration. -->
+    <!-- Settings for the Release configuration. -->
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
