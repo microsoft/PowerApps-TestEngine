@@ -57,8 +57,8 @@ namespace Microsoft.PowerApps.TestEngine
 
             Logger = _loggerFactory.CreateLogger(testRunId);
 
-            Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
             _state.SetOutputDirectory(outputDirectory.FullName);
+            Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
 
             if (string.IsNullOrEmpty(queryParams))
             {
