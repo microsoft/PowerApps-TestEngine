@@ -159,3 +159,9 @@ jobs:
       publishVstsFeed: $(InternalFeed)
       allowPackageConflicts: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: tagBuildOrRelease@0
+    inputs:
+      type: 'Build'
+      tags: 'deployable'
+    condition: eq(variables['PreviewRelease'], 'true')  
