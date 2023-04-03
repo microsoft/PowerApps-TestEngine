@@ -100,7 +100,7 @@ jobs:
     inputs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
-      arguments: '-- pack -c $(BuildConfiguration)'
+      arguments: '-- pack -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
