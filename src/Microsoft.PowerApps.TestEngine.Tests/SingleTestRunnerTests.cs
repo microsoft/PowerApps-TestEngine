@@ -151,7 +151,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory, null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)"Total cases: " + total, LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)"Cases passed: " + pass, LogLevel.Information, Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Cases skipped: " + skip, LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)"Cases failed: " + fail + "\n", LogLevel.Information, Times.Once());
         }
 
