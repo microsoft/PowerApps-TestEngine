@@ -96,7 +96,7 @@ namespace Microsoft.PowerApps.TestEngine
                     $"RUNNING TEST SUITE: {testSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n");
                 Logger.LogTrace( $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
-                
+
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
                 Logger.LogDebug("Test infrastructure setup finished");
@@ -227,13 +227,18 @@ namespace Microsoft.PowerApps.TestEngine
 
                 Logger.LogInformation($"---------------------------------------------------------------------------\n" +
                                 $"{testSuiteName} TEST SUMMARY" +
-                                $"\n---------------------------------------------------------------------------");
+                                "\n---------------------------------------------------------------------------" +
+                                "\nTotal cases: " + casesTotal +
+                                "\nTotal cases: " + casesPass +
+                                "\nTotal cases: " + casesFail + "\n");
 
-                Logger.LogInformation("Total cases: " + casesTotal);
-                Logger.LogInformation("Cases passed: " + casesPass);
-                Logger.LogInformation("Cases failed: " + casesFail + "\n");
-
-                Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
+                Console.Out.WriteLine($"---------------------------------------------------------------------------\n" +
+                                $"{testSuiteName} in {browserConfigName} TEST SUMMARY" +
+                                "\n---------------------------------------------------------------------------" +
+                                "\nTotal cases: " + casesTotal +
+                                "\nTotal cases: " + casesPass +
+                                "\nTotal cases: " + casesFail + 
+                                $"\n\nLogs are stored in: {testRunDirectory}\n");
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
