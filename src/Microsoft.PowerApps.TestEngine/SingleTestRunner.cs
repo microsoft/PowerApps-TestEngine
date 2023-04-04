@@ -101,7 +101,7 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogDebug("Test infrastructure setup finished");
 
                 var desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
-                Logger.LogTrace($"Desired URL: {desiredUrl}");
+                Logger.LogInformation($"Desired URL: {desiredUrl}");
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
