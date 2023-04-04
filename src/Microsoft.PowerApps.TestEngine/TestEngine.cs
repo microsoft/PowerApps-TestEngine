@@ -66,7 +66,6 @@ namespace Microsoft.PowerApps.TestEngine
             Logger.LogDebug($"Using domain: {domain}");
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
-            Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 
             try
             {
@@ -156,7 +155,7 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 if (string.IsNullOrEmpty(strLocale))
                 {
-                    Logger.LogWarning($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
+                    Logger.LogInformation($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
                 }
                 else
                 {

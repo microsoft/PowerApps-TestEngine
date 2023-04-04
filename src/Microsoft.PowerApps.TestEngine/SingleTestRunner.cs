@@ -95,19 +95,17 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n" +
-                    $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
-
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
-                Logger.LogInformation("Test infrastructure setup finished");
+                Logger.LogDebug("Test infrastructure setup finished");
 
                 var desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
                 Logger.LogTrace($"Desired URL: {desiredUrl}");
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
-                Logger.LogInformation("Successfully navigated to target URL");
+                Logger.LogDebug("Successfully navigated to target URL");
 
                 // Log in user
                 await _userManager.LoginAsUserAsync(desiredUrl);
@@ -137,15 +135,15 @@ namespace Microsoft.PowerApps.TestEngine
 
                         try
                         {
+                            Logger.LogInformation($"---------------------------------------------------------------------------\n" +
+                                $"RUNNING TEST CASE: {testCase.TestCaseName}" +
+                                $"\n---------------------------------------------------------------------------");
+
                             if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
                             {
                                 Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
                             }
-
-                            Logger.LogInformation($"---------------------------------------------------------------------------\n" +
-                                $"RUNNING TEST CASE: {testCase.TestCaseName}" +
-                                $"\n---------------------------------------------------------------------------");
 
                             await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps);
 
@@ -234,6 +232,8 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation("Cases passed: " + casesPass);
                 Logger.LogInformation("Cases skipped: " + (casesTotal - (casesFail + casesPass)));
                 Logger.LogInformation("Cases failed: " + casesFail + "\n");
+
+                Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
