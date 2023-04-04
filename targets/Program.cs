@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using CommandLine;
@@ -45,23 +44,10 @@ namespace targets
                 gitExists = false;
             }
 
+            string BinDir = Path.Combine(RootDir, "bin");
             string ObjDir = Path.Combine(RootDir, "obj");
+            string PkgDir = Path.Combine(RootDir, "pkg");
             string SrcDir = Path.Combine(RootDir, "src");
-
-            List<string> cleanDirs = new(){
-                Path.Combine(RootDir, "bin"),
-                Path.Combine(RootDir, "obj"),
-                Path.Combine(RootDir, "pkg"),
-                Path.Combine(SrcDir, "Microsoft.PowerApps.TestEngine/bin"),
-                Path.Combine(SrcDir, "PowerAppsTestEngine/bin"),
-                Path.Combine(SrcDir, "Microsoft.PowerApps.TestEngine.Tests/bin"),
-                Path.Combine(SrcDir, "Microsoft.PowerApps.TestEngine/obj"),
-                Path.Combine(SrcDir, "PowerAppsTestEngine/obj"),
-                Path.Combine(SrcDir, "Microsoft.PowerApps.TestEngine.Tests/obj"),
-                Path.Combine(SrcDir, "Microsoft.PowerApps.TestEngine/pkg"),
-                Path.Combine(SrcDir, "PowerAppsTestEngine/pkg"),
-                Path.Combine(SrcDir, "Microsoft.PowerApps.TestEngine.Tests/pkg")
-            };            
 
             string LogDir = Path.Combine(ObjDir, "logs");
             string TestLogDir = Path.Combine(ObjDir, "testResults");
@@ -74,7 +60,9 @@ namespace targets
             Target("squeaky-clean",
                 () =>
                 {
-                    CleanDirectories(cleanDirs);
+                    CleanDirectory(BinDir);
+                    CleanDirectory(ObjDir);
+                    CleanDirectory(PkgDir);
                 });
 
             Target("clean",
@@ -145,23 +133,15 @@ namespace targets
 
         static void CleanDirectory(string directoryPath)
         {
-            directoryPath = Path.GetFullPath(directoryPath);            
+            directoryPath = Path.GetFullPath(directoryPath);
+            Console.WriteLine($"Cleaning directory: {directoryPath}");
             try {
                 if (Directory.Exists(directoryPath))
                 {
-                    Console.WriteLine($"Cleaning directory: {directoryPath}");
                     Directory.Delete(directoryPath, recursive: true);
                 }
             }
             catch (AccessViolationException) { /* swallow */ }
-        }
-
-        static void CleanDirectories(List<string> listDirectoryPath)
-        {
-            foreach (var directoryPath in listDirectoryPath)
-            {
-                CleanDirectory(directoryPath);
-            }
         }
 
         static string EscapePath(string path)
