@@ -100,8 +100,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 Logs.Add(new TestLog() { LogMessage = logString, ScopeFilter = scopeFilter });
             }
 
-            Console.Out.WriteLine(logString);
-
             DebugLogs.Add(new TestLog() { LogMessage = logString, ScopeFilter = scopeFilter });
         }
     }

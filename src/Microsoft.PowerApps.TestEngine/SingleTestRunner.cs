@@ -95,7 +95,8 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n");
-
+                Logger.LogTrace( $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
+                
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
                 Logger.LogDebug("Test infrastructure setup finished");
