@@ -94,7 +94,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteName}" +
-                    $"\n---------------------------------------------------------------------------\n\n" +
+                    $"\n---------------------------------------------------------------------------\n\n");
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
