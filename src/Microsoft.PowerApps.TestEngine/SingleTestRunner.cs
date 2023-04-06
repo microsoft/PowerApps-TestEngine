@@ -67,11 +67,9 @@ namespace Microsoft.PowerApps.TestEngine
             // This flag is needed to check if test run is skipped
             var allTestsSkipped = true;
 
-            var casesTotal = 0;
-            var casesPass = 0;
+
             
-            List<string> caseList = new List<string>();
-            List<string> passingCaseList = new List<string>();
+            List<CaseInfo> caseList = new List<CaseInfo>();
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
@@ -87,7 +85,6 @@ namespace Microsoft.PowerApps.TestEngine
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
 
-            casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
             string suiteException = null;
 
             try
@@ -125,7 +122,9 @@ namespace Microsoft.PowerApps.TestEngine
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    caseList.Add(testCase.TestCaseName);
+                    caseList.Add(new CaseInfo(){name = testCase.TestCaseName});
+                    var currentCaseIndex = caseList.FindIndex(x => x.name == testCase.TestCaseName);
+
                     TestSuccess = true;
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
                     _testReporter.StartTest(testRunId, testId);
@@ -157,14 +156,17 @@ namespace Microsoft.PowerApps.TestEngine
                                 Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
-                            casesPass++;
-                            passingCaseList.Add(testCase.TestCaseName);
+
+                            caseList[currentCaseIndex].casePassed = true;
                         }
                         catch (Exception ex)
                         {
+                            caseList[currentCaseIndex].exception = ex.Message;
+
                             caseException = ex.ToString();
                             TestException = ex;
                             TestSuccess = false;
+
                             Logger.LogError("Encountered an error. See the debug log for this test case for more information.");
                         }
                         finally
@@ -229,21 +231,40 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                 }
 
+                List<CaseInfo> passedCaseList = new List<CaseInfo>();
+                List<CaseInfo> failedCaseList = new List<CaseInfo>();
+
+                foreach (CaseInfo caseInfo in caseList)
+                {
+                    if (!caseInfo.casePassed)
+                    {
+                        failedCaseList.Add(caseInfo);
+                    }
+                    else
+                    {
+                        passedCaseList.Add(caseInfo);
+                    }
+                }
+
                 string summaryString = $"\n-------------------------------\n" +
                                 $"{testSuiteName} TEST SUMMARY" +
                                 "\n-------------------------------" +
-                                "\n\nCases passed: " + casesPass;
+                                "\n\nCases passed: " + passedCaseList.Count;
 
-                foreach (var passingCase in passingCaseList){
-                    summaryString += "\n  -- " + passingCase;
-                    caseList.Remove(passingCase);
+                foreach (CaseInfo caseInfo in passedCaseList)
+                {
+                    summaryString += "\n - " + caseInfo.name;
                 }
 
-                summaryString += "\n\nCases failed: " + (casesTotal - casesPass);
+                summaryString += "\n\nCases failed: " + failedCaseList.Count;
 
-                foreach (var failedCase in caseList)
+                foreach (CaseInfo caseInfo in failedCaseList)
                 {
-                    summaryString += "\n  - " + failedCase;
+                    if(caseInfo.exception != null){
+                        caseInfo.exception = "No exception message found.";
+                    }
+
+                    summaryString += "\n - " + caseInfo.name + " | " + caseInfo.exception;
                 }
 
                 summaryString += $"\n\nTarget URL: ";
