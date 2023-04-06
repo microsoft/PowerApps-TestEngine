@@ -235,7 +235,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 foreach (CaseInfo caseInfo in caseList)
                 {
-                    if (caseInfo.casePassed != true)
+                    if (!caseInfo.casePassed)
                     {
                         failedCaseList.Add(caseInfo);
                     }
