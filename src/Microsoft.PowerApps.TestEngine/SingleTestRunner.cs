@@ -67,7 +67,9 @@ namespace Microsoft.PowerApps.TestEngine
             // This flag is needed to check if test run is skipped
             var allTestsSkipped = true;
 
-            List<CaseInfo> caseList = new List<CaseInfo>();
+            var casesTotal = 0;
+            var casesPass = 0;
+            var casesFail = 0;
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
@@ -83,6 +85,8 @@ namespace Microsoft.PowerApps.TestEngine
 
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             _testState.SetTestResultsDirectory(testResultDirectory);
+
+            casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
 
             string suiteException = null;
 
@@ -128,10 +132,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    caseList.Add(new CaseInfo(){name = testCase.TestCaseName});
                     Console.Out.WriteLine($"\nTest case: {testCase.TestCaseName}");
-
-                    var currentCaseIndex = caseList.FindIndex(x => x.name == testCase.TestCaseName);
 
                     TestSuccess = true;
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
@@ -166,14 +167,14 @@ namespace Microsoft.PowerApps.TestEngine
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
 
-                            caseList[currentCaseIndex].casePassed = true;
                             Console.Out.WriteLine("  Result: Passed");
+                            casesPass++;
                         }
                         catch (Exception ex)
                         {
-                            caseList[currentCaseIndex].exception = ex.Message;
                             Console.Out.WriteLine($"  Assertion failed: {ex.Message}");
                             Console.Out.WriteLine("  Result: Failed");
+                            casesFail++;
 
                             caseException = ex.ToString();
                             TestException = ex;
@@ -243,24 +244,9 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                 }
 
-                List<CaseInfo> passedCaseList = new List<CaseInfo>();
-                List<CaseInfo> failedCaseList = new List<CaseInfo>();
-
-                foreach (CaseInfo caseInfo in caseList)
-                {
-                    if (!caseInfo.casePassed)
-                    {
-                        failedCaseList.Add(caseInfo);
-                    }
-                    else
-                    {
-                        passedCaseList.Add(caseInfo);
-                    }
-                }
-
-                string summaryString = $"\nTest suite summary\nTotal cases: {caseList.Count}" +
-                                $"\nCases passed: {passedCaseList.Count}" +
-                                $"\nCases failed: {failedCaseList.Count}";
+                string summaryString = $"\nTest suite summary\nTotal cases: {casesTotal}" +
+                                $"\nCases passed: {casesPass}" +
+                                $"\nCases failed: {casesFail}";
 
                 Logger.LogInformation(summaryString);
                 Console.Out.WriteLine(summaryString);
