@@ -34,7 +34,7 @@ testSuite:
       testSteps: |
         = Screenshot("boolean_type_loaded.png");
 
-          Wait(Togglfe1, "Value", false);
+          Wait(Toggle1, "Value", false);
 
           SetProperty(Toggle1.Value, true);
 

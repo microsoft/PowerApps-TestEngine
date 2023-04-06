@@ -260,7 +260,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 foreach (CaseInfo caseInfo in failedCaseList)
                 {
-                    if(caseInfo.exception != null){
+                    if(caseInfo.exception == null){
                         caseInfo.exception = "No exception message found.";
                     }
 
