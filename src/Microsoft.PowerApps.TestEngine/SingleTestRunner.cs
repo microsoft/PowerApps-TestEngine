@@ -251,8 +251,7 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation(summaryString);
 
                 summaryString += $"\nBrowser: {browserConfigName}" +
-                                $"\nLogs: {testRunDirectory}" +
-                                $"\nTest Results: ";
+                                $"\nLogs: {testRunDirectory}";
 
                 Console.Out.WriteLine(summaryString);
 
