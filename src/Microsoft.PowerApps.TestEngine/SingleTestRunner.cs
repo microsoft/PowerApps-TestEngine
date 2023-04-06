@@ -67,14 +67,13 @@ namespace Microsoft.PowerApps.TestEngine
             // This flag is needed to check if test run is skipped
             var allTestsSkipped = true;
 
-
-            
             List<CaseInfo> caseList = new List<CaseInfo>();
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
             var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName}");
-
+            var desiredUrl = "";
+            
             Logger = _loggerFactory.CreateLogger(testSuiteId);
             _testState.SetLogger(Logger);
 
@@ -100,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupAsync();
                 Logger.LogDebug("Test infrastructure setup finished");
 
-                var desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
+                desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
                 Logger.LogInformation($"Desired URL: {desiredUrl}");
 
                 // Navigate to test url
@@ -122,7 +121,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    caseList.Add(new CaseInfo(){name = testCase.TestCaseName});
+                     caseList.Add(new CaseInfo(){name = testCase.TestCaseName});
                     var currentCaseIndex = caseList.FindIndex(x => x.name == testCase.TestCaseName);
 
                     TestSuccess = true;
@@ -236,7 +235,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 foreach (CaseInfo caseInfo in caseList)
                 {
-                    if (!caseInfo.casePassed)
+                    if (caseInfo.casePassed != true)
                     {
                         failedCaseList.Add(caseInfo);
                     }
@@ -246,9 +245,7 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                 }
 
-                string summaryString = $"\n-------------------------------\n" +
-                                $"{testSuiteName} TEST SUMMARY" +
-                                "\n-------------------------------" +
+                string summaryString = $"{testSuiteName} Test Summary" +
                                 "\n\nCases passed: " + passedCaseList.Count;
 
                 foreach (CaseInfo caseInfo in passedCaseList)
@@ -267,7 +264,7 @@ namespace Microsoft.PowerApps.TestEngine
                     summaryString += "\n - " + caseInfo.name + " | " + caseInfo.exception;
                 }
 
-                summaryString += $"\n\nTarget URL: ";
+                summaryString += $"\n\nTarget URL: {desiredUrl}";
 
                 Logger.LogInformation(summaryString);
 
