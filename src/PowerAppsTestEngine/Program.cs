@@ -157,5 +157,5 @@ else
 
     var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, domain, queryParams);
 
-    Console.Out.WriteLine($"\nTRX file: {testResult}\n");
+    Console.Out.WriteLine($"TRX file: {testResult}\n");
 }
