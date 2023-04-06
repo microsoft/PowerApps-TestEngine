@@ -94,20 +94,13 @@ namespace Microsoft.PowerApps.TestEngine
                     $"RUNNING TEST SUITE: {testSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n");
                 Logger.LogTrace( $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
-                
+
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
                 Logger.LogDebug("Test infrastructure setup finished");
 
                 desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
                 Logger.LogInformation($"Desired URL: {desiredUrl}");
-
-                var startString = $"\nRunning test suite: {testSuiteName}" +
-                $"\n\tTest results will be stored in: {testRunDirectory}" +
-                $"\n\tBrowser: {browserConfigName}" +
-                $"\n\tApp URL: {desiredUrl}";
-
-                Console.Out.WriteLine(startString);
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
@@ -128,9 +121,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    caseList.Add(new CaseInfo(){name = testCase.TestCaseName});
-                    Console.Out.WriteLine($"\nTest case: {testCase.TestCaseName}");
-
+                     caseList.Add(new CaseInfo(){name = testCase.TestCaseName});
                     var currentCaseIndex = caseList.FindIndex(x => x.name == testCase.TestCaseName);
 
                     TestSuccess = true;
@@ -140,7 +131,6 @@ namespace Microsoft.PowerApps.TestEngine
 
                     using (var scope = Logger.BeginScope(testId))
                     {
-                        
                         var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                         _testState.SetTestResultsDirectory(testCaseResultDirectory);
                         _fileSystem.CreateDirectory(testCaseResultDirectory);
@@ -167,13 +157,10 @@ namespace Microsoft.PowerApps.TestEngine
                             }
 
                             caseList[currentCaseIndex].casePassed = true;
-                            Console.Out.WriteLine("  Result: Passed");
                         }
                         catch (Exception ex)
                         {
                             caseList[currentCaseIndex].exception = ex.Message;
-                            Console.Out.WriteLine($"  Assertion failed: {ex.Message}");
-                            Console.Out.WriteLine("  Result: Failed");
 
                             caseException = ex.ToString();
                             TestException = ex;
@@ -258,11 +245,32 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                 }
 
-                string summaryString = $"\nTest suite summary\nTotal cases: {caseList.Count}" +
-                                $"\nCases passed: {passedCaseList.Count}" +
-                                $"\nCases failed: {failedCaseList.Count}";
+                string summaryString = $"{testSuiteName} Test Summary" +
+                                "\n\nCases passed: " + passedCaseList.Count;
+
+                foreach (CaseInfo caseInfo in passedCaseList)
+                {
+                    summaryString += "\n - " + caseInfo.name;
+                }
+
+                summaryString += "\n\nCases failed: " + failedCaseList.Count;
+
+                foreach (CaseInfo caseInfo in failedCaseList)
+                {
+                    if(caseInfo.exception == null){
+                        caseInfo.exception = "No exception message found.";
+                    }
+
+                    summaryString += "\n - " + caseInfo.name + " | " + caseInfo.exception;
+                }
+
+                summaryString += $"\n\nTarget URL: {desiredUrl}";
 
                 Logger.LogInformation(summaryString);
+
+                summaryString += $"\nBrowser: {browserConfigName}" +
+                                $"\nLogs: {testRunDirectory}";
+
                 Console.Out.WriteLine(summaryString);
 
                 // save log for the test suite
