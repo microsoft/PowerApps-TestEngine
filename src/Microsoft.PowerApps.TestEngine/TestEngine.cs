@@ -63,7 +63,7 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 Logger.LogDebug($"Using query: {queryParams}");
             }
-            Logger.LogDebug($"Using domain: {domain}");
+
             var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
             _fileSystem.CreateDirectory(testRunDirectory);
 

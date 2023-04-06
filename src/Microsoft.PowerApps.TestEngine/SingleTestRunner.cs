@@ -69,7 +69,9 @@ namespace Microsoft.PowerApps.TestEngine
 
             var casesTotal = 0;
             var casesPass = 0;
-            var casesFail = 0;
+            
+            List<string> caseList = new List<string>();
+            List<string> passingCaseList = new List<string>();
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
@@ -119,9 +121,11 @@ namespace Microsoft.PowerApps.TestEngine
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
                 allTestsSkipped = false;
+
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
+                    caseList.Add(testCase.TestCaseName);
                     TestSuccess = true;
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
                     _testReporter.StartTest(testRunId, testId);
@@ -154,14 +158,14 @@ namespace Microsoft.PowerApps.TestEngine
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
                             casesPass++;
+                            passingCaseList.Add(testCase.TestCaseName);
                         }
                         catch (Exception ex)
                         {
-                            casesFail++;
-                            Logger.LogError("Encountered an error. See the debug log for this test case for more information.");
                             caseException = ex.ToString();
                             TestException = ex;
                             TestSuccess = false;
+                            Logger.LogError("Encountered an error. See the debug log for this test case for more information.");
                         }
                         finally
                         {
@@ -225,20 +229,32 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                 }
 
-                Logger.LogInformation($"---------------------------------------------------------------------------\n" +
+                string summaryString = $"\n-------------------------------\n" +
                                 $"{testSuiteName} TEST SUMMARY" +
-                                "\n---------------------------------------------------------------------------" +
-                                "\nTotal cases: " + casesTotal +
-                                "\nTotal cases: " + casesPass +
-                                "\nTotal cases: " + casesFail + "\n");
+                                "\n-------------------------------" +
+                                "\n\nCases passed: " + casesPass;
 
-                Console.Out.WriteLine($"---------------------------------------------------------------------------\n" +
-                                $"{testSuiteName} in {browserConfigName} TEST SUMMARY" +
-                                "\n---------------------------------------------------------------------------" +
-                                "\nTotal cases: " + casesTotal +
-                                "\nTotal cases: " + casesPass +
-                                "\nTotal cases: " + casesFail + 
-                                $"\n\nLogs are stored in: {testRunDirectory}\n");
+                foreach (var passingCase in passingCaseList){
+                    summaryString += "\n  -- " + passingCase;
+                    caseList.Remove(passingCase);
+                }
+
+                summaryString += "\n\nCases failed: " + (casesTotal - casesPass);
+
+                foreach (var failedCase in caseList)
+                {
+                    summaryString += "\n  - " + failedCase;
+                }
+
+                summaryString += $"\n\nTarget URL: ";
+
+                Logger.LogInformation(summaryString);
+
+                summaryString += $"\nBrowser: {browserConfigName}" +
+                                $"\nLogs: {testRunDirectory}" +
+                                $"\nTest Results: ";
+
+                Console.Out.WriteLine(summaryString);
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
