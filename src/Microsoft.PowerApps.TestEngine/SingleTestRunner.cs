@@ -69,7 +69,6 @@ namespace Microsoft.PowerApps.TestEngine
 
             var casesTotal = 0;
             var casesPass = 0;
-            var casesFail = 0;
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
@@ -174,7 +173,6 @@ namespace Microsoft.PowerApps.TestEngine
                         {
                             Console.Out.WriteLine($"  Assertion failed: {ex.Message}");
                             Console.Out.WriteLine("  Result: Failed");
-                            casesFail++;
 
                             caseException = ex.ToString();
                             TestException = ex;
@@ -246,7 +244,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 string summaryString = $"\nTest suite summary\nTotal cases: {casesTotal}" +
                                 $"\nCases passed: {casesPass}" +
-                                $"\nCases failed: {casesFail}";
+                                $"\nCases failed: {(casesTotal - casesPass)}";
 
                 Logger.LogInformation(summaryString);
                 Console.Out.WriteLine(summaryString);
