@@ -114,36 +114,35 @@ else
         Console.Out.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default: Information");
     }
 
-    try{
-
-    var serviceProvider = new ServiceCollection()
-    .AddLogging(loggingBuilder =>
-    {
-        loggingBuilder
-        .ClearProviders()
-        .AddFilter(l => l >= logLevel)
-        .AddProvider(new TestLoggerProvider(new FileSystem()));
-    })
-    .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
-    .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
-    .AddScoped<IPowerFxEngine, PowerFxEngine>()
-    .AddScoped<IUserManager, UserManager>()
-    .AddSingleton<ITestState, TestState>()
-    .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
-    .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
-    .AddSingleton<ITestReporter, TestReporter>()
-    .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
-    .AddScoped<ISingleTestRunner, SingleTestRunner>()
-    .AddScoped<ILogger>((sp) => sp.GetRequiredService<ISingleTestInstanceState>().GetLogger())
-    .AddSingleton<IFileSystem, FileSystem>()
-    .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
-    .AddSingleton<TestEngine>()
-    .BuildServiceProvider();
-
-    TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
-
     try
     {
+
+        var serviceProvider = new ServiceCollection()
+        .AddLogging(loggingBuilder =>
+        {
+            loggingBuilder
+            .ClearProviders()
+            .AddFilter(l => l >= logLevel)
+            .AddProvider(new TestLoggerProvider(new FileSystem()));
+        })
+        .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
+        .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
+        .AddScoped<IPowerFxEngine, PowerFxEngine>()
+        .AddScoped<IUserManager, UserManager>()
+        .AddSingleton<ITestState, TestState>()
+        .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
+        .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
+        .AddSingleton<ITestReporter, TestReporter>()
+        .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
+        .AddScoped<ISingleTestRunner, SingleTestRunner>()
+        .AddScoped<ILogger>((sp) => sp.GetRequiredService<ISingleTestInstanceState>().GetLogger())
+        .AddSingleton<IFileSystem, FileSystem>()
+        .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
+        .AddSingleton<TestEngine>()
+        .BuildServiceProvider();
+
+        TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
+
         // Default value for optional arguments is set before the class library is invoked.
         // The class library expects actual types in its input arguments, so optional arguments
         // to the Test Engine entry point function RunTestAsync must be checked for null values and their
