@@ -3,7 +3,6 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.System;
-using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Reporting
 {
@@ -55,7 +54,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             if (!_fileSystem.IsValidFilePath(directoryPath))
             {
-                throw new ArgumentException(nameof(directoryPath));
+                throw new ArgumentException("[Error]: Invalid log file path");
             }
 
             // If no filter, get all logs
