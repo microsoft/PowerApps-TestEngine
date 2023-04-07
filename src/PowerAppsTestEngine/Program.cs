@@ -49,7 +49,7 @@ else
     {
         if (inputOptions.TestPlanFile.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: Test plan file field is blank.");
+            Console.Out.WriteLine("[Critical Error]: TestPlanFile field is blank.");
             return;
         }
     }
@@ -58,7 +58,7 @@ else
     {
         if (inputOptions.EnvironmentId.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: Environment ID field is blank.");
+            Console.Out.WriteLine("[Critical Error]: EnvironmentId field is blank.");
             return;
         }
     }
@@ -67,7 +67,7 @@ else
     {
         if (inputOptions.TenantId.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: Tenant ID field is blank.");
+            Console.Out.WriteLine("[Critical Error]: TenantId field is blank.");
             return;
         }
     }
@@ -76,7 +76,7 @@ else
     {
         if (inputOptions.OutputDirectory.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: Output Directory field is blank.");
+            Console.Out.WriteLine("[Critical Error]: OutputDirectory field is blank.");
             return;
         }
     }
@@ -85,16 +85,7 @@ else
     {
         if (inputOptions.LogLevel.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: Log Level field is blank.");
-            return;
-        }
-    }
-
-    if (!string.IsNullOrEmpty(inputOptions.QueryParams))
-    {
-        if (inputOptions.QueryParams.Substring(0, 1) == "-")
-        {
-            Console.Out.WriteLine("[Critical Error]: Query Params field is blank.");
+            Console.Out.WriteLine("[Critical Error]: LogLevel field is blank.");
             return;
         }
     }
@@ -104,6 +95,15 @@ else
         if (inputOptions.Domain.Substring(0, 1) == "-")
         {
             Console.Out.WriteLine("[Critical Error]: Domain field is blank.");
+            return;
+        }
+    }
+
+    if (!string.IsNullOrEmpty(inputOptions.QueryParams))
+    {
+        if (inputOptions.QueryParams.Substring(0, 1) == "-")
+        {
+            Console.Out.WriteLine("[CriticalError]: QueryParams field is blank.");
             return;
         }
     }
@@ -142,22 +142,42 @@ else
 
     TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
 
-    var queryParams = "";
-    var domain = "apps.powerapps.com";
-
-    if (!string.IsNullOrEmpty(inputOptions.QueryParams))
+    try
     {
-        queryParams = inputOptions.QueryParams;
-    }
+        // Default value for optional arguments is set before the class library is invoked.
+        // The class library expects actual types in its input arguments, so optional arguments
+        // to the Test Engine entry point function RunTestAsync must be checked for null values and their
+        // corresponding default values set beforehand.
+        var testPlanFile = new FileInfo(inputOptions.TestPlanFile);
+        var tenantId = Guid.Parse(inputOptions.TenantId);
+        var environmentId = inputOptions.EnvironmentId;
+        var domain = "apps.powerapps.com";
+        var queryParams = "";
 
-    if (!string.IsNullOrEmpty(inputOptions.Domain))
-    {
-        domain = inputOptions.Domain;
-    }
+        DirectoryInfo outputDirectory;
+        const string DefaultOutputDirectory = "TestOutput";
+        if (!string.IsNullOrEmpty(inputOptions.OutputDirectory))
+        {
+            outputDirectory = new DirectoryInfo(inputOptions.OutputDirectory);
+        }
+        else
+        {
+            outputDirectory = new DirectoryInfo(DefaultOutputDirectory);
+        }
 
-    var testResult = await testEngine.RunTestAsync(inputOptions.TestPlanFile, inputOptions.EnvironmentId, inputOptions.TenantId, inputOptions.OutputDirectory, domain, queryParams);
+        if (!string.IsNullOrEmpty(inputOptions.QueryParams))
+        {
+            queryParams = inputOptions.QueryParams;
+        }
 
-    Console.Out.WriteLine($"\nTRX file: {testResult}\n");
+        if (!string.IsNullOrEmpty(inputOptions.Domain))
+        {
+            domain = inputOptions.Domain;
+        }
+
+        //setting defaults for optional parameters outside RunTestAsync
+        var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
+        Console.Out.WriteLine($"Test results can be found here: {testResult}");
     }
     catch (Exception ex)
     {
