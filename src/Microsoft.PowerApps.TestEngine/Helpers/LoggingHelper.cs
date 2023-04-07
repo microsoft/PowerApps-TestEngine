@@ -27,14 +27,23 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
         public async void DebugInfo()
         {
-            ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();
-            if (debugInfo != null && debugInfo.ToString() != "undefined")
+            try
             {
-                Logger.LogTrace($"------------------------------\n Debug Info \n------------------------------");
-                foreach (var info in debugInfo)
+                ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();
+                if (debugInfo != null && debugInfo.ToString() != "undefined")
                 {
-                    Logger.LogTrace($"{info.Key}:\t{info.Value}");
+                    Logger.LogTrace($"------------------------------\n Debug Info \n------------------------------");
+                    foreach (var info in debugInfo)
+                    {
+                        Logger.LogTrace($"{info.Key}:\t{info.Value}");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogDebug("Issue getting DebugInfo. This can be a result of not being properly logged in.");
+                Logger.LogDebug(ex.ToString());
+                Console.Out.WriteLine("\nCould not access PowerApps. Confirm you are logged in properly.");
             }
         }
     }
