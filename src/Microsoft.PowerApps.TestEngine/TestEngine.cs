@@ -57,55 +57,58 @@ namespace Microsoft.PowerApps.TestEngine
 
             Logger = _loggerFactory.CreateLogger(testRunId);
 
-            _state.SetOutputDirectory(outputDirectory.FullName);
-            Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
-
-            if (string.IsNullOrEmpty(queryParams))
-            {
-                Logger.LogDebug($"Using no additional query parameters.");
-            }
-            else
-            {
-                Logger.LogDebug($"Using query: {queryParams}");
-            }
-            Logger.LogDebug($"Using domain: {domain}");
-            var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
-            _fileSystem.CreateDirectory(testRunDirectory);
-            Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
+            string testRunDirectory = string.Empty;
 
             try
             {
                 // Setup state
                 if (testConfigFile == null)
                 {
-                    Logger.LogError("testConfigFile cannot be null");
                     throw new ArgumentNullException(nameof(testConfigFile));
                 }
 
                 if (string.IsNullOrEmpty(environmentId))
                 {
-                    Logger.LogError("environmentId cannot be null");
                     throw new ArgumentNullException(nameof(environmentId));
                 }
 
                 if (tenantId == null || tenantId == Guid.Empty)
                 {
-                    Logger.LogError("tenantId cannot be null or empty");
                     throw new ArgumentNullException(nameof(tenantId));
+                }
+
+                if (outputDirectory == null)
+                {
+                    throw new ArgumentNullException(nameof(outputDirectory));
                 }
 
                 if (string.IsNullOrEmpty(domain))
                 {
-                    Logger.LogError("domain cannot be null");
                     throw new ArgumentNullException(nameof(domain));
+                }
+
+                if (string.IsNullOrEmpty(queryParams))
+                {
+                    Logger.LogDebug($"Using no additional query parameters.");
+                }
+                else
+                {
+                    Logger.LogDebug($"Using query: {queryParams}");
                 }
 
                 _state.ParseAndSetTestState(testConfigFile.FullName);
                 _state.SetEnvironment(environmentId);
                 _state.SetTenant(tenantId.ToString());
-                _state.SetDomain(domain);
 
+                _state.SetDomain(domain);
                 Logger.LogDebug($"Using domain: {domain}");
+
+                _state.SetOutputDirectory(outputDirectory.FullName);
+                Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
+
+                testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
+                _fileSystem.CreateDirectory(testRunDirectory);
+                Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 
                 await RunTestByWorkerCountAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);
