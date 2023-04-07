@@ -108,7 +108,7 @@ namespace Microsoft.PowerApps.TestEngine
                 var startString = $"\nRunning test suite: {testSuiteName}" +
                 $"\n\tTest results will be stored in: {testRunDirectory}" +
                 $"\n\tBrowser: {browserConfigName}" +
-                $"\n\tApp URL: {desiredUrl}";
+                $"\n\tApp URL: {desiredUrl.Replace("&source=testengine", String.Empty)}";
 
                 Console.Out.WriteLine(startString);
 
