@@ -289,7 +289,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             LoggingTestHelper.VerifyLogging(MockLogger, "Encountered an error. See the debug log for this test suite for more information.", LogLevel.Error, Times.AtLeastOnce());
-            VerifyFinallyExecution(testData.testResultDirectory, 1, 0, 0);
+            VerifyFinallyExecution(testData.testResultDirectory, 1, 0, 1);
         }
 
         [Fact]
