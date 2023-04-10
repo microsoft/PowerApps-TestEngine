@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -72,6 +73,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestState.Setup(x => x.SetTestResultsDirectory(It.IsAny<string>()));
             MockTestState.Setup(x => x.SetBrowserConfig(It.IsAny<BrowserConfiguration>()));
             MockTestState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
+            var MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
+            MockTestState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
 
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
             MockFileSystem.Setup(x => x.GetFiles(It.IsAny<string>())).Returns(additionalFiles);
@@ -272,6 +276,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testData = new TestDataOne();
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
+
+            var obj = new ExpandoObject();
+            obj.TryAdd("sessionID", "somesessionId");
+
+            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
 
             var exceptionToThrow = new InvalidOperationException("Test exception");
             additionalMockSetup(exceptionToThrow);
