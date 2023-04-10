@@ -171,7 +171,7 @@ namespace Microsoft.PowerApps.TestEngine
                         }
                         catch (Exception ex)
                         {
-                            Console.Out.WriteLine($"  Assertion failed: {ex.Message}");
+                            Console.Out.WriteLine($"  {ex.Message}");
                             Console.Out.WriteLine("  Result: Failed");
 
                             caseException = ex.ToString();
