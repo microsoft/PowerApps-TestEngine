@@ -1,7 +1,6 @@
 <Project>
     <PropertyGroup>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
         <LangVersion>10.0</LangVersion>
     </PropertyGroup>
 
