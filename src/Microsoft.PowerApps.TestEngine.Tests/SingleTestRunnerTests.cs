@@ -147,11 +147,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
         private void VerifyFinallyExecution(string testResultDirectory, int total, int pass, int skip, int fail)
         {
+            string summaryString = $"\nTest suite summary\nTotal cases: {total}" +
+                                $"\nCases passed: {pass}" +
+                                $"\nCases failed: {fail}";
+
             MockTestInfraFunctions.Verify(x => x.EndTestRunAsync(), Times.Once());
             MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory, null), Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Total cases: " + total, LogLevel.Information, Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Cases passed: " + pass, LogLevel.Information, Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, (string)"Cases failed: " + fail + "\n", LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, summaryString, LogLevel.Information, Times.Once());
         }
 
         [Theory]
