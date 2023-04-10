@@ -48,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Once());
-            LoggingTestHelper.VerifyLogging(MockLogger, "sessionID:\tsomesessionId", LogLevel.Information, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "sessionID:\tsomesessionId", LogLevel.Trace, Times.Once());
         }
     }
 }
