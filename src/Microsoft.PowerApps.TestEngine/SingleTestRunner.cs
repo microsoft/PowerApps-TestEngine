@@ -74,7 +74,7 @@ namespace Microsoft.PowerApps.TestEngine
             var testSuiteName = testSuiteDefinition.TestSuiteName;
             var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName}");
             var desiredUrl = "";
-            
+
             Logger = _loggerFactory.CreateLogger(testSuiteId);
             _testState.SetLogger(Logger);
 
@@ -96,8 +96,8 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteName}" +
                     $"\n---------------------------------------------------------------------------\n\n");
-                Logger.LogTrace( $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
-                
+                Logger.LogTrace($"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
+
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
                 Logger.LogDebug("Test infrastructure setup finished");
@@ -140,7 +140,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                     using (var scope = Logger.BeginScope(testId))
                     {
-                        
+
                         var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                         _testState.SetTestResultsDirectory(testCaseResultDirectory);
                         _fileSystem.CreateDirectory(testCaseResultDirectory);
