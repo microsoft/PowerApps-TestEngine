@@ -110,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _fileSystem.CreateDirectory(testRunDirectory);
                 Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 
-                await RunTestByWorkerCountAsync(testRunId, testRunDirectory, domain, queryParams);
+                await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);
                 return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
             }
@@ -129,7 +129,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
         }
 
-        private async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
+        private async Task RunTestByBrowserAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
         {
             var testSettings = _state.GetTestSettings();
 
