@@ -109,7 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
                 goStepByStep = true;
-                Logger.LogWarning($"Syntax check failed. Now attempting to execute lines step by step");
+                Logger.LogDebug($"Syntax check failed. Now attempting to execute lines step by step");
             }
 
             if (goStepByStep)
