@@ -171,7 +171,16 @@ namespace Microsoft.PowerApps.TestEngine
                         }
                         catch (Exception ex)
                         {
-                            Console.Out.WriteLine($"  {ex.Message}");
+                            // Print assertion if exception is the result of an Assert failure
+                            if (ex?.InnerException?.InnerException?.Message?.Contains("Assertion failed") == true)
+                            {
+                                Console.Out.WriteLine(ex.InnerException.InnerException.Message);
+                            }
+                            else
+                            {
+                                Console.Out.WriteLine($"  {ex.Message}");
+                            }
+
                             Console.Out.WriteLine("  Result: Failed");
 
                             caseException = ex.ToString();
