@@ -103,7 +103,7 @@ else
     {
         if (inputOptions.QueryParams.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[CriticalError]: QueryParams field is blank.");
+            Console.Out.WriteLine("[Critical Error]: QueryParams field is blank.");
             return;
         }
     }
