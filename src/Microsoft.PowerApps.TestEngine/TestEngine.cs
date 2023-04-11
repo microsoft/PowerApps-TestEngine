@@ -169,12 +169,12 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 if (string.IsNullOrEmpty(strLocale))
                 {
-                    Logger.LogWarning($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
+                    Logger.LogDebug($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
                 }
                 else
                 {
                     locale = new CultureInfo(strLocale);
-                    Logger.LogInformation($"Locale selected in Test Suite Definition: {locale.Name}");
+                    Logger.LogDebug($"Locale: {locale.Name}");
                 }
             }
             catch (ArgumentException)

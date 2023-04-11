@@ -14,8 +14,6 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
-
-
 var switchMappings = new Dictionary<string, string>()
 {
     { "-i", "TestPlanFile" },
@@ -51,7 +49,7 @@ else
     {
         if (inputOptions.TestPlanFile.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: TestPlanFile field is blank.");
+            Console.Out.WriteLine("[Critical Error]: TestPlanFile field is blank.");
             return;
         }
     }
@@ -60,7 +58,7 @@ else
     {
         if (inputOptions.EnvironmentId.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: EnvironmentId field is blank.");
+            Console.Out.WriteLine("[Critical Error]: EnvironmentId field is blank.");
             return;
         }
     }
@@ -69,7 +67,7 @@ else
     {
         if (inputOptions.TenantId.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: TenantId field is blank.");
+            Console.Out.WriteLine("[Critical Error]: TenantId field is blank.");
             return;
         }
     }
@@ -78,7 +76,7 @@ else
     {
         if (inputOptions.OutputDirectory.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: OutputDirectory field is blank.");
+            Console.Out.WriteLine("[Critical Error]: OutputDirectory field is blank.");
             return;
         }
     }
@@ -87,7 +85,7 @@ else
     {
         if (inputOptions.LogLevel.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: LogLevel field is blank.");
+            Console.Out.WriteLine("[Critical Error]: LogLevel field is blank.");
             return;
         }
     }
@@ -96,7 +94,7 @@ else
     {
         if (inputOptions.Domain.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: Domain field is blank.");
+            Console.Out.WriteLine("[Critical Error]: Domain field is blank.");
             return;
         }
     }
@@ -105,7 +103,7 @@ else
     {
         if (inputOptions.QueryParams.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Error]: QueryParams field is blank.");
+            Console.Out.WriteLine("[Critical Error]: QueryParams field is blank.");
             return;
         }
     }
@@ -116,34 +114,35 @@ else
         Console.Out.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default: Information");
     }
 
-    var serviceProvider = new ServiceCollection()
-    .AddLogging(loggingBuilder =>
-    {
-        loggingBuilder
-        .ClearProviders()
-        .AddFilter(l => l >= logLevel)
-        .AddProvider(new TestLoggerProvider(new FileSystem()));
-    })
-    .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
-    .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
-    .AddScoped<IPowerFxEngine, PowerFxEngine>()
-    .AddScoped<IUserManager, UserManager>()
-    .AddSingleton<ITestState, TestState>()
-    .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
-    .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
-    .AddSingleton<ITestReporter, TestReporter>()
-    .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
-    .AddScoped<ISingleTestRunner, SingleTestRunner>()
-    .AddScoped<ILogger>((sp) => sp.GetRequiredService<ISingleTestInstanceState>().GetLogger())
-    .AddSingleton<IFileSystem, FileSystem>()
-    .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
-    .AddSingleton<TestEngine>()
-    .BuildServiceProvider();
-
-    TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
-
     try
     {
+
+        var serviceProvider = new ServiceCollection()
+        .AddLogging(loggingBuilder =>
+        {
+            loggingBuilder
+            .ClearProviders()
+            .AddFilter(l => l >= logLevel)
+            .AddProvider(new TestLoggerProvider(new FileSystem()));
+        })
+        .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
+        .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
+        .AddScoped<IPowerFxEngine, PowerFxEngine>()
+        .AddScoped<IUserManager, UserManager>()
+        .AddSingleton<ITestState, TestState>()
+        .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
+        .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
+        .AddSingleton<ITestReporter, TestReporter>()
+        .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
+        .AddScoped<ISingleTestRunner, SingleTestRunner>()
+        .AddScoped<ILogger>((sp) => sp.GetRequiredService<ISingleTestInstanceState>().GetLogger())
+        .AddSingleton<IFileSystem, FileSystem>()
+        .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
+        .AddSingleton<TestEngine>()
+        .BuildServiceProvider();
+
+        TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
+
         // Default value for optional arguments is set before the class library is invoked.
         // The class library expects actual types in its input arguments, so optional arguments
         // to the Test Engine entry point function RunTestAsync must be checked for null values and their
@@ -181,6 +180,6 @@ else
     }
     catch (Exception ex)
     {
-        Console.Out.WriteLine(ex.Message, ex.StackTrace);
+        Console.Out.WriteLine("[Critical Error]: " + ex.Message);
     }
 }
