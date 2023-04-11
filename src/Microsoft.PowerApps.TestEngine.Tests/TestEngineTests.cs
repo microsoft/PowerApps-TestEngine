@@ -46,7 +46,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testSettings = new TestSettings()
             {
                 Locale = "en-US",
-                WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
                     new BrowserConfiguration()
@@ -98,7 +97,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testSettings = new TestSettings()
             {
                 Locale = "de=DEE",     // in case user enters a typo
-                WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
                     new BrowserConfiguration()
@@ -107,22 +105,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     }
                 }
             };
-            var testSuiteDefinition = new TestSuiteDefinition()
-            {
-                TestSuiteName = "Test1",
-                TestSuiteDescription = "First test",
-                AppLogicalName = "logicalAppName1",
-                Persona = "User1",
-                TestCases = new List<TestCase>()
-                {
-                    new TestCase
-                    {
-                        TestCaseName = "Test Case Name",
-                        TestCaseDescription = "Test Case Description",
-                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-                    }
-                }
-            };
+            var testSuiteDefinition = GetDefaultTestSuiteDefinition();
             var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
             var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
@@ -146,7 +129,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             var testSettings = new TestSettings()
             {
-                WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
                     new BrowserConfiguration()
@@ -155,22 +137,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     }
                 }
             };
-            var testSuiteDefinition = new TestSuiteDefinition()
-            {
-                TestSuiteName = "Test1",
-                TestSuiteDescription = "First test",
-                AppLogicalName = "logicalAppName1",
-                Persona = "User1",
-                TestCases = new List<TestCase>()
-                {
-                    new TestCase
-                    {
-                        TestCaseName = "Test Case Name",
-                        TestCaseDescription = "Test Case Description",
-                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-                    }
-                }
-            };
+            var testSuiteDefinition = GetDefaultTestSuiteDefinition();
             var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
             var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
@@ -191,6 +158,66 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             LoggingTestHelper.VerifyLogging(MockLogger, $"Locale property not specified in testSettings. Using current system locale: {CultureInfo.CurrentCulture.Name}", LogLevel.Debug, Times.Once());
 
             Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+        }
+
+        [Fact]
+        public async Task TestEngineWithMultipleBrowserConfigTest()
+        {
+            var testSettings = new TestSettings()
+            {
+                Locale = "en-US",
+                BrowserConfigurations = new List<BrowserConfiguration>()
+                {
+                    new BrowserConfiguration()
+                    {
+                        Browser = "Chromium"
+                    },
+                    new BrowserConfiguration()
+                    {
+                        Browser = "Firefox"
+                    }
+                }
+            };
+            var testSuiteDefinition = GetDefaultTestSuiteDefinition();
+            var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
+            var environmentId = "defaultEnviroment";
+            var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
+            var outputDirectory = new DirectoryInfo("TestOutput");
+            var testRunId = Guid.NewGuid().ToString();
+            var expectedOutputDirectory = outputDirectory.FullName;
+            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var domain = "apps.powerapps.com";
+
+            var expectedTestReportPath = "C:\\test.trx";
+
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+
+            Assert.Equal(expectedTestReportPath, testReportPath);
+
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+        }
+
+        private TestSuiteDefinition GetDefaultTestSuiteDefinition()
+        {
+            return new TestSuiteDefinition()
+            {
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
+                AppLogicalName = "logicalAppName1",
+                Persona = "User1",
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
+            };
         }
 
         [Theory]
@@ -236,7 +263,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.GetOutputDirectory()).Returns(outputDirectory);
             MockState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
-            MockState.Setup(x => x.GetWorkerCount()).Returns(testSettings.WorkerCount);
 
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(testRunId);
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));
