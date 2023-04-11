@@ -20,6 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
 
+        public static string EmbeddedJSFolderPath = "contentFiles/JS";
         public static string PublishedAppIframeName = "fullscreen-app-host";
         public static string CheckPowerAppsTestEngineObject = "typeof PowerAppsTestEngine";
 
@@ -183,8 +184,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 catch (TimeoutException)
                 {
                     _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "CanvasAppSdk.js")), null);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
             }
             catch (Exception ex)

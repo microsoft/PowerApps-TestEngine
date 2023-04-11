@@ -42,14 +42,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="JS\" />
+    <Folder Include="contentFiles\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="JS\CanvasAppSdk.js">
+    <Content Update="contentFiles\JS\CanvasAppSdk.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-      <Content Update="JS\PublishedAppTesting.js">
+      <Content Update="contentFiles\JS\PublishedAppTesting.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
