@@ -46,10 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="contentFiles\JS\CanvasAppSdk.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-      <Content Update="contentFiles\JS\PublishedAppTesting.js">
+    <Content Include="contentFiles\\**">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
