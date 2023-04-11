@@ -46,7 +46,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testSettings = new TestSettings()
             {
                 Locale = "en-US",
-                WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
                     new BrowserConfiguration()
@@ -98,7 +97,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testSettings = new TestSettings()
             {
                 Locale = "de=DEE",     // in case user enters a typo
-                WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
                     new BrowserConfiguration()
@@ -146,7 +144,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             var testSettings = new TestSettings()
             {
-                WorkerCount = 2,
                 BrowserConfigurations = new List<BrowserConfiguration>()
                 {
                     new BrowserConfiguration()
@@ -236,7 +233,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.GetOutputDirectory()).Returns(outputDirectory);
             MockState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
-            MockState.Setup(x => x.GetWorkerCount()).Returns(testSettings.WorkerCount);
 
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(testRunId);
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));
