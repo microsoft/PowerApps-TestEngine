@@ -136,22 +136,12 @@ namespace Microsoft.PowerApps.TestEngine
             var locale = GetLocaleFromTestSettings(testSettings.Locale);
 
             var browserConfigurations = testSettings.BrowserConfigurations;
-            var allTestRuns = new List<Task>();
 
-            // Manage number of workers
+            // Run sequentially
             foreach (var browserConfig in browserConfigurations)
             {
-                allTestRuns.Add(Task.Run(() => RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale)));
-                if (allTestRuns.Count >= _state.GetWorkerCount())
-                {
-                    Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
-                    await Task.WhenAll(allTestRuns.ToArray());
-                    allTestRuns.Clear();
-                }
+                await RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale);
             }
-
-            Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
-            await Task.WhenAll(allTestRuns.ToArray());
         }
         private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
         {
