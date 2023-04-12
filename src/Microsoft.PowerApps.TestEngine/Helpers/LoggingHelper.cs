@@ -25,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             _singleTestInstanceState = singleTestInstanceState;
         }
 
-        public async void DebugInfo()
+        public async void DebugInfo(ITestEngineConsoleEvents consoleEventHandler)
         {
             try
             {
