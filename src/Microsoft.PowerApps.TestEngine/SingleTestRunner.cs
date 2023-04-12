@@ -110,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine
                 $"\n\tBrowser: {browserConfigName}" +
                 $"\n\tApp URL: {desiredUrl.Replace("&source=testengine", String.Empty)}";
 
-                Console.Out.WriteLine(startString);
+                SuiteBegin(startString);
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
@@ -131,7 +131,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    Console.Out.WriteLine($"\nTest case: {testCase.TestCaseName}");
+                    StatusUpdate($"\nTest case: {testCase.TestCaseName}");
 
                     TestSuccess = true;
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
@@ -166,13 +166,13 @@ namespace Microsoft.PowerApps.TestEngine
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
 
-                            Console.Out.WriteLine("  Result: Passed");
+                            StatusUpdate("  Result: Passed");
                             casesPass++;
                         }
                         catch (Exception ex)
                         {
-                            Console.Out.WriteLine($"  {ex.Message}");
-                            Console.Out.WriteLine("  Result: Failed");
+                            EncounteredException(ex);
+                            StatusUpdate("  Result: Failed");
 
                             caseException = ex.ToString();
                             TestException = ex;
@@ -247,7 +247,7 @@ namespace Microsoft.PowerApps.TestEngine
                                 $"\nCases failed: {(casesTotal - casesPass)}";
 
                 Logger.LogInformation(summaryString);
-                Console.Out.WriteLine(summaryString);
+                SuiteEnd(summaryString);
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))

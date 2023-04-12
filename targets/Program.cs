@@ -40,7 +40,6 @@ namespace targets
             catch
             {
                 RootDir = Directory.GetCurrentDirectory();
-                Console.WriteLine("Unable to find root directory using git, assuming this script is being run from root = " + RootDir);
                 gitExists = false;
             }
 
@@ -134,7 +133,6 @@ namespace targets
         static void CleanDirectory(string directoryPath)
         {
             directoryPath = Path.GetFullPath(directoryPath);
-            Console.WriteLine($"Cleaning directory: {directoryPath}");
             try {
                 if (Directory.Exists(directoryPath))
                 {
