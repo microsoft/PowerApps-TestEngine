@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
 
-        public static string EmbeddedJSFolderPath = "JS";
+        public static string EmbeddedJSFolderPath = "..\\JS";
         public static string PublishedAppIframeName = "fullscreen-app-host";
         public static string CheckPowerAppsTestEngineObject = "typeof PowerAppsTestEngine";
 

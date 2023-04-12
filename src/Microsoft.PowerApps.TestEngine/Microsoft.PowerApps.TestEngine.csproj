@@ -42,8 +42,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="JS\" />
-    <Content Include="JS\\**" SkipGetTargetFrameworkProperties="true">
+    <Folder Include="..\JS\" />
+    <Content Include="..\JS\**">
+      <Link>%(RecursiveDir)\JS\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
