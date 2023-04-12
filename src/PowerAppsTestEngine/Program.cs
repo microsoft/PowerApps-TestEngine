@@ -35,7 +35,7 @@ var inputOptions = new ConfigurationBuilder()
 
 if (inputOptions == null)
 {
-    EncounteredCriticalIssue("Input options are null");
+    consoleEventHandler?.EncounteredCriticalIssue("Input options are null");
     return;
 }
 else
@@ -49,7 +49,7 @@ else
     {
         if (inputOptions.TestPlanFile.Substring(0, 1) == "-")
         {
-            EncounteredCriticalIssue("TestPlanFile field is blank.");
+            consoleEventHandler?.EncounteredCriticalIssue("TestPlanFile field is blank.");
             return;
         }
     }
@@ -58,7 +58,7 @@ else
     {
         if (inputOptions.EnvironmentId.Substring(0, 1) == "-")
         {
-            EncounteredCriticalIssue("EnvironmentId field is blank.");
+            consoleEventHandler?.EncounteredCriticalIssue("EnvironmentId field is blank.");
             return;
         }
     }
@@ -67,7 +67,7 @@ else
     {
         if (inputOptions.TenantId.Substring(0, 1) == "-")
         {
-            EncounteredCriticalIssue("TenantId field is blank.");
+            consoleEventHandler?.EncounteredCriticalIssue("TenantId field is blank.");
             return;
         }
     }
@@ -76,7 +76,7 @@ else
     {
         if (inputOptions.OutputDirectory.Substring(0, 1) == "-")
         {
-            EncounteredCriticalIssue("OutputDirectory field is blank.");
+            consoleEventHandler?.EncounteredCriticalIssue("OutputDirectory field is blank.");
             return;
         }
     }
@@ -85,7 +85,7 @@ else
     {
         if (inputOptions.LogLevel.Substring(0, 1) == "-")
         {
-            EncounteredCriticalIssue("LogLevel field is blank.");
+            consoleEventHandler?.EncounteredCriticalIssue("LogLevel field is blank.");
             return;
         }
     }
@@ -94,7 +94,7 @@ else
     {
         if (inputOptions.Domain.Substring(0, 1) == "-")
         {
-            EncounteredCriticalIssue("Domain field is blank.");
+            consoleEventHandler?.EncounteredCriticalIssue("Domain field is blank.");
             return;
         }
     }
@@ -103,7 +103,7 @@ else
     {
         if (inputOptions.QueryParams.Substring(0, 1) == "-")
         {
-            EncounteredCriticalIssue("QueryParams field is blank.");
+            consoleEventHandler?.EncounteredCriticalIssue("QueryParams field is blank.");
             return;
         }
     }
@@ -176,10 +176,10 @@ else
 
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
-        TestReportPath($"{testResult}");
+        consoleEventHandler?.TestReportPath($"{testResult}");
     }
     catch (Exception ex)
     {
-        EncounteredCriticalException(ex);
+        consoleEventHandler?.EncounteredCriticalException(ex);
     }
 }
