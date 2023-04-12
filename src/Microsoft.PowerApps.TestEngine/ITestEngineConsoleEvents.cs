@@ -12,37 +12,37 @@ namespace Microsoft.PowerApps.TestEngine
     public interface ITestEngineConsoleEvents
     {
         /// <summary>
-        /// To be executed when an assertion fails
+        /// Handles the assertion message when the Assert() function fails
         /// </summary>
         public void AssertionFailed(string assertion);
 
         /// <summary>
-        /// Exception encountered when logger not available
+        /// Handles logging for an exception when logger not available
         /// </summary>
         public void EncounteredCriticalException(Exception ex);
 
         /// <summary>
-        /// Issue encountered when logger not available
+        /// Handles logging for an issue when logger not available
         /// </summary>
         public void EncounteredCriticalIssue(string message);
 
         /// <summary>
-        /// To be executed when an exception is encountered
+        /// Handles logging for an exception
         /// </summary>
         public void EncounteredException(Exception ex);
 
         /// <summary>
-        /// To be executed when starting the suite
+        /// Handles the starting suite output
         /// </summary>
         public void SuiteBegin(string suiteName, string directory, string browserName, string url);
 
         /// <summary>
-        /// To be executed when ending the suite
+        /// Handles the suite summary output
         /// </summary>
         public void SuiteEnd(int casesTotal, int casesPass, int casesFail);
 
         /// <summary>
-        /// Received test case name
+        /// Handles logging for the suite name
         /// </summary>
         public void TestCaseName(string name);
 
@@ -52,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine
         public void TestCasePassed(boolean result);
 
         /// <summary>
-        /// Contains test report path
+        /// Handles the output for test report path
         /// </summary>
         public void TestReportPath(string path);
     }
