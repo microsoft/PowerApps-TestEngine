@@ -37,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             LoggingTestHelper.SetupMock(MockLogger);
             var assertFunction = new AssertFunction(MockLogger.Object);
             var message = "This should fail";
-            Assert.Throws<InvalidOperationException>(() => assertFunction.Execute(BooleanValue.New(false), StringValue.New(message)));
+            Assert.Throws<Exception>(() => assertFunction.Execute(BooleanValue.New(false), StringValue.New(message)));
             LoggingTestHelper.VerifyLogging(MockLogger, "Assert failed. Property is not equal to the specified value.", LogLevel.Error, Times.Once());
         }
     }
