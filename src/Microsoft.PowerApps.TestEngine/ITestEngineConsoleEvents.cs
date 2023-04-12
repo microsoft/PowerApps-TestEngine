@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine
         /// <summary>
         /// To be executed when an assertion fails
         /// </summary>
-        public void AssertionFailed(string message);
+        public void AssertionFailed(string assertion);
 
         /// <summary>
         /// Exception encountered when logger not available
@@ -32,11 +32,6 @@ namespace Microsoft.PowerApps.TestEngine
         public void EncounteredException(Exception ex);
 
         /// <summary>
-        /// Handles result of a test case
-        /// </summary>
-        public void TestCasePassed(boolean result);
-
-        /// <summary>
         /// To be executed when starting the suite
         /// </summary>
         public void SuiteBegin(string suiteName, string directory, string browserName, string url);
@@ -50,6 +45,11 @@ namespace Microsoft.PowerApps.TestEngine
         /// Received test case name
         /// </summary>
         public void TestCaseName(string name);
+
+        /// <summary>
+        /// Handles result of a test case
+        /// </summary>
+        public void TestCasePassed(boolean result);
 
         /// <summary>
         /// Contains test report path
