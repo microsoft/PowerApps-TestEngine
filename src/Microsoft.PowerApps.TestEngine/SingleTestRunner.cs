@@ -89,6 +89,8 @@ namespace Microsoft.PowerApps.TestEngine
 
             string suiteException = null;
 
+            ITestEngineConsoleEvents consoleEventHandler = new ITestEngineConsoleEvents();
+
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
@@ -105,7 +107,7 @@ namespace Microsoft.PowerApps.TestEngine
                 desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
                 Logger.LogInformation($"Desired URL: {desiredUrl}");
 
-                ITestEngineConsoleEvents.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
+                consoleEventHandler.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
