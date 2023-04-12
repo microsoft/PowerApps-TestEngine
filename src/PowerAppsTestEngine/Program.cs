@@ -14,6 +14,8 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
+ITestEngineConsoleEvents consoleEventHandler;
+
 var switchMappings = new Dictionary<string, string>()
 {
     { "-i", "TestPlanFile" },
