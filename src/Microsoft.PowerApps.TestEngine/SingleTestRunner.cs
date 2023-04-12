@@ -105,12 +105,7 @@ namespace Microsoft.PowerApps.TestEngine
                 desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
                 Logger.LogInformation($"Desired URL: {desiredUrl}");
 
-                var startString = $"\nRunning test suite: {testSuiteName}" +
-                $"\n\tTest results will be stored in: {testRunDirectory}" +
-                $"\n\tBrowser: {browserConfigName}" +
-                $"\n\tApp URL: {desiredUrl.Replace("&source=testengine", String.Empty)}";
-
-                SuiteBegin(startString);
+                SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
@@ -247,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine
                                 $"\nCases failed: {(casesTotal - casesPass)}";
 
                 Logger.LogInformation(summaryString);
-                SuiteEnd(summaryString);
+                SuiteEnd(casesTotal, casesPass, (casesTotal - casesPass));
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))

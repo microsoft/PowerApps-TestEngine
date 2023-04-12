@@ -39,12 +39,12 @@ namespace Microsoft.PowerApps.TestEngine
         /// <summary>
         /// To be executed when starting the suite
         /// </summary>
-        public void SuiteBegin(string message);
+        public void SuiteBegin(string suiteName, string directory, string browserName, string url);
 
         /// <summary>
         /// To be executed when ending the suite
         /// </summary>
-        public void SuiteEnd(string message);
+        public void SuiteEnd(int casesTotal, int casesPass, int casesFail);
 
         /// <summary>
         /// Received test case name
