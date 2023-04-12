@@ -49,7 +49,7 @@ namespace Microsoft.PowerApps.TestEngine
         /// <param name="queryParams">Optional query parameters that would be passed to the Player URL for optional features or parameters.</param>
         /// <returns>The full path where the test results are saved.</returns>
         /// <exception cref="ArgumentNullException">Throws ArgumentNullException if any of testConfigFile, environmentId, tenantId or domain are missing or empty.</exception>
-        public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid tenantId, DirectoryInfo outputDirectory, string domain, string queryParams)
+        public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid tenantId, DirectoryInfo outputDirectory, string domain, string queryParams, ITestEngineConsoleEvents consoleEventHandler)
         {
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
@@ -110,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _fileSystem.CreateDirectory(testRunDirectory);
                 Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 
-                await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams);
+                await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams, consoleEventHandler);
                 _testReporter.EndTestRun(testRunId);
                 return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
             }
@@ -129,7 +129,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
         }
 
-        private async Task RunTestByBrowserAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
+        private async Task RunTestByBrowserAsync(string testRunId, string testRunDirectory, string domain, string queryParams, ITestEngineConsoleEvents consoleEventHandler)
         {
             var testSettings = _state.GetTestSettings();
 
@@ -140,15 +140,15 @@ namespace Microsoft.PowerApps.TestEngine
             // Run sequentially
             foreach (var browserConfig in browserConfigurations)
             {
-                await RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale);
+                await RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale, consoleEventHandler);
             }
         }
-        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
+        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale, ITestEngineConsoleEvents consoleEventHandler)
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
-                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale);
+                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale, consoleEventHandler);
             }
         }
 

@@ -175,7 +175,7 @@ else
         }
 
         //setting defaults for optional parameters outside RunTestAsync
-        var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
+        var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams, consoleEventHandler);
         consoleEventHandler?.TestReportPath($"{testResult}");
     }
     catch (Exception ex)
