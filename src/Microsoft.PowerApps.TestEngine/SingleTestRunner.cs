@@ -131,7 +131,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    StatusUpdate($"\nTest case: {testCase.TestCaseName}");
+                    TestCaseName(testCase.TestCaseName);
 
                     TestSuccess = true;
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
@@ -166,13 +166,13 @@ namespace Microsoft.PowerApps.TestEngine
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
 
-                            StatusUpdate("  Result: Passed");
+                            TestCasePassed(true);
                             casesPass++;
                         }
                         catch (Exception ex)
                         {
                             EncounteredException(ex);
-                            StatusUpdate("  Result: Failed");
+                            TestCasePassed(false);
 
                             caseException = ex.ToString();
                             TestException = ex;

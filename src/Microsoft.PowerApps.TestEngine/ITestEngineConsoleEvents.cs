@@ -32,9 +32,9 @@ namespace Microsoft.PowerApps.TestEngine
         public void EncounteredException(Exception ex);
 
         /// <summary>
-        /// Executed in order to give real-time status updates
+        /// Handles result of a test case
         /// </summary>
-        public void StatusUpdate(string message);
+        public void TestCasePassed(boolean result);
 
         /// <summary>
         /// To be executed when starting the suite
@@ -47,8 +47,13 @@ namespace Microsoft.PowerApps.TestEngine
         public void SuiteEnd(string message);
 
         /// <summary>
+        /// Received test case name
+        /// </summary>
+        public void TestCaseName(string name);
+
+        /// <summary>
         /// Contains test report path
         /// </summary>
-        public void TestReportPath(string message);
+        public void TestReportPath(string path);
     }
 }

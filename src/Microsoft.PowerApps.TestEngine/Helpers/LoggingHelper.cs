@@ -43,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             {
                 Logger.LogDebug("Issue getting DebugInfo. This can be a result of not being properly logged in.");
                 Logger.LogDebug(ex.ToString());
-                EncounteredCriticalIssue("\nCould not access PowerApps. Confirm you are logged in properly.");
+                EncounteredCriticalIssue("Could not access PowerApps. Confirm you are logged in properly.");
             }
         }
     }
