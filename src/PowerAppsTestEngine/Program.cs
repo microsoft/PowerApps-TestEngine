@@ -14,7 +14,7 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
-ITestEngineConsoleEvents consoleEventHandler;
+ITestEngineConsoleEvents consoleEventHandler = null;
 
 var switchMappings = new Dictionary<string, string>()
 {
