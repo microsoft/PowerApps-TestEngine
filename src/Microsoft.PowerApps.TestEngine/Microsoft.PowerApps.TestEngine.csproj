@@ -42,11 +42,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="contentFiles\" />
+    <Folder Include="JS\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="contentFiles\\**">
+    <Content Include="JS\\**">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
