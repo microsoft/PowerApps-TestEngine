@@ -40,14 +40,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <Folder Include="JS\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="JS\\**">
-      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
