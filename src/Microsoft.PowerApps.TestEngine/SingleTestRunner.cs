@@ -105,7 +105,7 @@ namespace Microsoft.PowerApps.TestEngine
                 desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
                 Logger.LogInformation($"Desired URL: {desiredUrl}");
 
-                SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
+                ITestEngineConsoleEvents.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
