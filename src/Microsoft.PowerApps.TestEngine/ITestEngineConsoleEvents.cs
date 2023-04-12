@@ -49,7 +49,7 @@ namespace Microsoft.PowerApps.TestEngine
         /// <summary>
         /// Handles result of a test case
         /// </summary>
-        public void TestCasePassed(boolean result);
+        public void TestCasePassed(bool result);
 
         /// <summary>
         /// Handles the output for test report path
