@@ -40,18 +40,12 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <Folder Include="JS\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="JS\CanvasAppSdk.js">
+    <Content Include="JS\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="JS\PublishedAppTesting.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MinVer" Version="2.3.0">
