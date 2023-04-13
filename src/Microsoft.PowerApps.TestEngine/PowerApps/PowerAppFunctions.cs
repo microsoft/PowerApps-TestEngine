@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
@@ -27,6 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
+        private string FileNotFoundErrorMessage = "Something went wrong when Test Engine tried to load required dependencies.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
@@ -63,14 +65,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private string GetFilePath(string file)
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var fullFilePath = Path.Combine(currentDirectory, file);
+            var assemblyLocation = Assembly.GetEntryAssembly().Location;
+            var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+            var fullFilePath = Path.Combine(assemblyDirectory, file);
             if (File.Exists(fullFilePath))
             {
                 return fullFilePath;
             }
-
-            return Path.Combine(Directory.GetParent(currentDirectory).FullName, "Microsoft.PowerApps.TestEngine", file);
+            else
+            {
+                throw new FileNotFoundException(FileNotFoundErrorMessage, file);
+            }
         }
 
         public async Task<bool> CheckIfAppIsIdleAsync()
