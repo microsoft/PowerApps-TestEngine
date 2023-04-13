@@ -42,10 +42,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="..\JS\" />
-    <Content Include="..\JS\**">
-      <Link>%(RecursiveDir)\JS\%(Filename)%(Extension)</Link>
+    <Content Include="JS\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
