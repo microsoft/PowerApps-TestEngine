@@ -34,8 +34,7 @@ namespace targets
             bool gitExists = true;
             try 
             {
-                RootDir = Read("git", "rev-parse --show-toplevel", noEcho: true).Trim();
-                gitHash = Read("git", "rev-parse HEAD", noEcho: true).Trim();               
+                RootDir = Read("git", "rev-parse --show-toplevel", noEcho: true).Trim();              
             }
             catch
             {
