@@ -29,8 +29,8 @@ namespace targets
 
         static void Main(string[] args)
         {
-            
-            string RootDir = "", gitHash = "";
+
+            string RootDir = "";
             bool gitExists = true;
             try 
             {
@@ -73,11 +73,7 @@ namespace targets
                 () => RunDotnet("restore", $"{EscapePath(solution)}", gitExists, LogDir));
 
             Target("build",
-                () => {
-                    if (gitExists)
-                        CreateBuildHashFile(ObjDir, gitHash);
-                    RunDotnet("build", $"{EscapePath(solution)} --configuration {options.Configuration} --no-restore", gitExists, LogDir);
-                });
+                () => RunDotnet("build", $"{EscapePath(solution)} --configuration {options.Configuration} --no-restore", gitExists, LogDir));
 
             Target("test",
                 () => RunDotnet("test", $"{EscapePath(solution)} --configuration {options.Configuration} --no-build --logger trx --results-directory {EscapePath(TestLogDir)}", gitExists, LogDir));
@@ -113,22 +109,6 @@ namespace targets
             var optionsLogPath = Path.Combine(LogDir, $"{verb}-{options.Configuration}");
             var logSettings = $"/clp:verbosity=minimal /flp:Verbosity=normal;LogFile={EscapePath(optionsLogPath + ".log")} /flp3:PerformanceSummary;Verbosity=diag;LogFile={EscapePath(optionsLogPath + ".diagnostics.log")}";
             Run("dotnet", $"{verb} {verbArgs} {logSettings} {gitDef} /nologo");
-        }
-
-        static void CreateBuildHashFile(string objDir, string gitHash)
-        {
-            var filePath = Path.Combine(objDir, "buildver.json");
-            var file = new System.IO.FileInfo(filePath);
-            file.Directory.Create();
-
-            var jsonContents = new {
-                CommitHash = gitHash,
-#if !ADOBuild
-                IsLocalBuild = true
-#endif
-            };
-            var text = JsonSerializer.Serialize(jsonContents);
-            File.WriteAllText(filePath, text);
         }
 
         static void CleanDirectory(string directoryPath)

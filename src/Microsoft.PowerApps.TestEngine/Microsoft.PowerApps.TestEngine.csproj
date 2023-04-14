@@ -40,12 +40,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
-
-  <ItemGroup Condition="'$(GitExists)' == true">
-    <EmbeddedResource Include="../../obj/buildver.json">
-      <Link>Build/BuildVer.json</Link>
-    </EmbeddedResource>
-  </ItemGroup>
   
   <ItemGroup>
     <Content Include="JS\**">
@@ -53,7 +47,7 @@
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(GitExists)' == true">
     <PackageReference Include="MinVer" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
