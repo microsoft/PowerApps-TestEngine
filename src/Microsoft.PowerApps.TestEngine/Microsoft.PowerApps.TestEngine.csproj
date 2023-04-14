@@ -25,12 +25,6 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
   </PropertyGroup>
-
-  <Target Name="TestEngine" AfterTargets="MinVer">
-    <PropertyGroup>
-      <AssemblyVersion>$(MinVer)</AssemblyVersion>
-    </PropertyGroup>
-  </Target>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0-preview.3.22175.4" />
@@ -47,7 +41,7 @@
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(GitExists)' == true">
     <PackageReference Include="MinVer" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
