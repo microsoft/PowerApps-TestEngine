@@ -65,7 +65,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private string GetFilePath(string file)
         {
-            var assemblyLocation = Assembly.GetEntryAssembly().Location;
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
             var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
             var fullFilePath = Path.Combine(assemblyDirectory, file);
             if (File.Exists(fullFilePath))
