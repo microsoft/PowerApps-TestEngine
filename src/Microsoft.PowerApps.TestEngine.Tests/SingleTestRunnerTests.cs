@@ -37,6 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<ILogger> MockLogger;
         private Mock<ITestLogger> MockTestLogger;
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
+        private Mock<ITestEngineConsoleEvents> MockConsoleEventHandler;
 
         public SingleTestRunnerTests()
         {
@@ -51,6 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockTestLogger = new Mock<ITestLogger>(MockBehavior.Strict);
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+            MockConsoleEventHandler = new Mock<ITestEngineConsoleEvents>(MockBehavior.Strict);
         }
 
         private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles, string testSuitelocale)
@@ -179,7 +181,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
             
-            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale, MockConsoleEventHandler.Object);
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
             VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testSuiteId, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl, locale);
@@ -207,7 +209,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
             
-            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale, MockConsoleEventHandler.Object);
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testSuiteId, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl, locale);
@@ -232,8 +234,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
             
-            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => { await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale); });
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale, MockConsoleEventHandler.Object);
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => { await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale, MockConsoleEventHandler.Object); });
         }
 
         [Fact]
@@ -254,7 +256,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
             
-            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale, MockConsoleEventHandler.Object);
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
             VerifyFinallyExecution(testData.testResultDirectory, 1, 0, 1);
@@ -285,7 +287,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
             
-            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale, MockConsoleEventHandler.Object);
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             LoggingTestHelper.VerifyLogging(MockLogger, "Encountered an error. See the debug log for this test suite for more information.", LogLevel.Error, Times.AtLeastOnce());
@@ -385,7 +387,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
-            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale, MockConsoleEventHandler.Object);
 
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
             LoggingTestHelper.VerifyLogging(MockLogger, "Encountered an error. See the debug log for this test suite for more information.", LogLevel.Error, Times.Once());

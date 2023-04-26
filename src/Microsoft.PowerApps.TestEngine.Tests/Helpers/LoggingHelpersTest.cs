@@ -15,13 +15,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         private Mock<ILogger> MockLogger;
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
+        private Mock<ITestEngineConsoleEvents> MockConsoleEventHandler;
 
         public LoggingHelpersTest()
         {            
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);            
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object); 
+            MockConsoleEventHandler = new Mock<ITestEngineConsoleEvents>(MockBehavior.Strict);
+
             LoggingTestHelper.SetupMock(MockLogger);
         }
 
@@ -30,7 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         {
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)null));
             var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
-            loggingHelper.DebugInfo();
+            loggingHelper.DebugInfo(MockConsoleEventHandler.Object);
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Never());
@@ -44,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
             var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
-            loggingHelper.DebugInfo();
+            loggingHelper.DebugInfo(MockConsoleEventHandler.Object);
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Once());
