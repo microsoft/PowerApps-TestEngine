@@ -25,35 +25,23 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
   </PropertyGroup>
-
-  <Target Name="TestEngine" AfterTargets="MinVer">
-    <PropertyGroup>
-      <AssemblyVersion>$(MinVer)</AssemblyVersion>
-    </PropertyGroup>
-  </Target>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0-preview.3.22175.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0-preview.3.22175.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.22.0" />
-    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="0.2.3-preview" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="0.2.3-preview.20221117-001" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <Folder Include="JS\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="JS\CanvasAppSdk.js">
+    <Content Include="JS\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="JS\PublishedAppTesting.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(GitExists)' == true">
     <PackageReference Include="MinVer" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
