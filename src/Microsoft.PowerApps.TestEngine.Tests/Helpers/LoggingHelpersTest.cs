@@ -33,7 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         {
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)null));
             var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
-            loggingHelper.DebugInfo(MockConsoleEventHandler.Object);
+            loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Never());
@@ -47,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
             var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
-            loggingHelper.DebugInfo(MockConsoleEventHandler.Object);
+            loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Once());

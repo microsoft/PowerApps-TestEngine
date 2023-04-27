@@ -14,8 +14,6 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using PowerAppsTestEngine;
 
-ITestEngineConsoleEvents consoleEventHandler = null;
-
 var switchMappings = new Dictionary<string, string>()
 {
     { "-i", "TestPlanFile" },
@@ -178,6 +176,7 @@ else
 
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
+        Console.Out.WriteLine($"Test results can be found here: {testResult}");
     }
     catch (Exception ex)
     {

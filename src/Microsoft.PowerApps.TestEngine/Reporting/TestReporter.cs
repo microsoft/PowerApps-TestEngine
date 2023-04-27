@@ -268,7 +268,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }
         }
 
-        public void GenerateTestReport(string testRunId, string resultsDirectory)
+        public string GenerateTestReport(string testRunId, string resultsDirectory)
         {
             var testRun = GetTestRun(testRunId);
             XmlSerializerNamespaces xsNS = new XmlSerializerNamespaces();
@@ -281,7 +281,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 _fileSystem.WriteTextToFile(testResultPath, writer.ToString());
             }
 
-            consoleEventHandler.TestReportPath($"{testResultPath}");
+            return testResultPath;
         }
 
         public TestRun GetTestRun(string testRunId)

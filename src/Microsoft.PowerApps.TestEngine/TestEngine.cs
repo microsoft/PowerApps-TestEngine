@@ -115,7 +115,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);
-                _testReporter.GenerateTestReport(testRunId, testRunDirectory);
+                return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
             }
             catch (Exception e)
             {
@@ -151,7 +151,7 @@ namespace Microsoft.PowerApps.TestEngine
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
-                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale, _consoleEventHandler);
+                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale);
             }
         }
 
