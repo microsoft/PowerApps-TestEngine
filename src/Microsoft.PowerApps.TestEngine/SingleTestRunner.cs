@@ -105,7 +105,7 @@ namespace Microsoft.PowerApps.TestEngine
                 desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
                 Logger.LogInformation($"Desired URL: {desiredUrl}");
 
-                consoleEventHandler?.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
+                 consoleEventHandler.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
@@ -126,7 +126,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    consoleEventHandler?.TestCaseName(testCase.TestCaseName);
+                     consoleEventHandler.TestCaseName(testCase.TestCaseName);
 
                     TestSuccess = true;
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
@@ -161,13 +161,13 @@ namespace Microsoft.PowerApps.TestEngine
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
 
-                            consoleEventHandler?.TestCasePassed(true);
+                             consoleEventHandler.TestCasePassed(true);
                             casesPass++;
                         }
                         catch (Exception ex)
                         {
-                            consoleEventHandler?.EncounteredException(ex);
-                            consoleEventHandler?.TestCasePassed(false);
+                             consoleEventHandler.EncounteredException(ex);
+                             consoleEventHandler.TestCasePassed(false);
 
                             caseException = ex.ToString();
                             TestException = ex;
@@ -242,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine
                                 $"\nCases failed: {(casesTotal - casesPass)}";
 
                 Logger.LogInformation(summaryString);
-                consoleEventHandler?.SuiteEnd(casesTotal, casesPass, (casesTotal - casesPass));
+                 consoleEventHandler.SuiteEnd(casesTotal, casesPass, (casesTotal - casesPass));
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
