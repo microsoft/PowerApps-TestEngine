@@ -20,6 +20,7 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly ITestReporter _testReporter;
         private readonly IFileSystem _fileSystem;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly ITestEngineConsoleEvents _consoleEventHandler;
 
         private ILogger Logger { get; set; }
 
@@ -27,13 +28,15 @@ namespace Microsoft.PowerApps.TestEngine
                           IServiceProvider serviceProvider,
                           ITestReporter testReporter,
                           IFileSystem fileSystem,
-                          ILoggerFactory loggerFactory)
+                          ILoggerFactory loggerFactory,
+                          ITestEngineConsoleEvents consoleEventHandler)
         {
             _state = state;
             _serviceProvider = serviceProvider;
             _testReporter = testReporter;
             _fileSystem = fileSystem;
             _loggerFactory = loggerFactory;
+            _consoleEventHandler = consoleEventHandler;
         }
 
         /// <summary>
@@ -49,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine
         /// <param name="queryParams">Optional query parameters that would be passed to the Player URL for optional features or parameters.</param>
         /// <returns>The full path where the test results are saved.</returns>
         /// <exception cref="ArgumentNullException">Throws ArgumentNullException if any of testConfigFile, environmentId, tenantId or domain are missing or empty.</exception>
-        public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid tenantId, DirectoryInfo outputDirectory, string domain, string queryParams, ITestEngineConsoleEvents consoleEventHandler)
+        public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid tenantId, DirectoryInfo outputDirectory, string domain, string queryParams)
         {
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
@@ -110,9 +113,9 @@ namespace Microsoft.PowerApps.TestEngine
                 _fileSystem.CreateDirectory(testRunDirectory);
                 Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 
-                await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams, consoleEventHandler);
+                await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);
-                return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
+                _testReporter.GenerateTestReport(testRunId, testRunDirectory);
             }
             catch (Exception e)
             {
@@ -129,7 +132,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
         }
 
-        private async Task RunTestByBrowserAsync(string testRunId, string testRunDirectory, string domain, string queryParams, ITestEngineConsoleEvents consoleEventHandler)
+        private async Task RunTestByBrowserAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
         {
             var testSettings = _state.GetTestSettings();
 
@@ -140,15 +143,15 @@ namespace Microsoft.PowerApps.TestEngine
             // Run sequentially
             foreach (var browserConfig in browserConfigurations)
             {
-                await RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale, consoleEventHandler);
+                await RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale);
             }
         }
-        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale, ITestEngineConsoleEvents consoleEventHandler)
+        private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
-                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale, consoleEventHandler);
+                await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale, _consoleEventHandler);
             }
         }
 

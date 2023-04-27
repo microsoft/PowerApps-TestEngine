@@ -71,6 +71,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="testRunId">Test run id</param>
         /// <param name="resultsDirectory">Directory to place the test report</param>
         /// <returns>Path to test report</returns>
-        public string GenerateTestReport(string testRunId, string resultsDirectory);
+        public void GenerateTestReport(string testRunId, string resultsDirectory);
     }
 }

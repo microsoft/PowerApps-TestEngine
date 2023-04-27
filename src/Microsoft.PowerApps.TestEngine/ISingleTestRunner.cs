@@ -20,6 +20,6 @@ namespace Microsoft.PowerApps.TestEngine
         /// <param name="browserConfig">Brower to run test on</param>
         /// <param name="locale">Locale used for the test suite</param>
         /// <returns>Task</returns>
-        public Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale, ITestEngineConsoleEvents consoleEventHandler);
+        public Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale);
     }
 }
