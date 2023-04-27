@@ -15,7 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         private Mock<ILogger> MockLogger;
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
-        private Mock<ITestEngineConsoleEvents> MockConsoleEventHandler;
+        private Mock<ITestEngineEvents> MockTestEngineEventHandler;
 
         public LoggingHelpersTest()
         {            
@@ -23,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object); 
-            MockConsoleEventHandler = new Mock<ITestEngineConsoleEvents>(MockBehavior.Strict);
+            MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
 
             LoggingTestHelper.SetupMock(MockLogger);
         }

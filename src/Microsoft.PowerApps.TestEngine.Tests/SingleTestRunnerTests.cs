@@ -37,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<ILogger> MockLogger;
         private Mock<ITestLogger> MockTestLogger;
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
-        private Mock<ITestEngineConsoleEvents> MockConsoleEventHandler;
+        private Mock<ITestEngineEvents> MockTestEngineEventHandler;
 
         public SingleTestRunnerTests()
         {
@@ -52,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockTestLogger = new Mock<ITestLogger>(MockBehavior.Strict);
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
-            MockConsoleEventHandler = new Mock<ITestEngineConsoleEvents>(MockBehavior.Strict);
+            MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
         }
 
         private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles, string testSuitelocale)
@@ -87,13 +87,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Returns(Task.CompletedTask);
             MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Returns(FormulaValue.NewBlank());
 
-            MockConsoleEventHandler.Setup(x => x.AssertionFailed(It.IsAny<string>()));
-            MockConsoleEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
-            MockConsoleEventHandler.Setup(x => x.SuiteBegin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
-            MockConsoleEventHandler.Setup(x => x.SuiteEnd(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
-            MockConsoleEventHandler.Setup(x => x.TestCaseName(It.IsAny<string>()));
-            MockConsoleEventHandler.Setup(x => x.TestCasePassed(It.IsAny<bool>()));
-            MockConsoleEventHandler.Setup(x => x.TestReportPath(It.IsAny<string>()));
+            MockTestEngineEventHandler.Setup(x => x.AssertionFailed(It.IsAny<string>()));
+            MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
+            MockTestEngineEventHandler.Setup(x => x.SuiteBegin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            MockTestEngineEventHandler.Setup(x => x.SuiteEnd(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
+            MockTestEngineEventHandler.Setup(x => x.TestCaseName(It.IsAny<string>()));
+            MockTestEngineEventHandler.Setup(x => x.TestCasePassed(It.IsAny<bool>()));
+            MockTestEngineEventHandler.Setup(x => x.TestReportPath(It.IsAny<string>()));
 
             if (powerFxTestSuccess)
             {
@@ -183,7 +183,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockUrlMapper.Object,
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
-                                                        MockConsoleEventHandler.Object);
+                                                        MockTestEngineEventHandler.Object);
 
             var testData = new TestDataOne();
 
@@ -212,7 +212,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockUrlMapper.Object,
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
-                                                        MockConsoleEventHandler.Object);
+                                                        MockTestEngineEventHandler.Object);
 
             var testData = new TestDataTwo();
 
@@ -238,7 +238,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockUrlMapper.Object,
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
-                                                        MockConsoleEventHandler.Object);
+                                                        MockTestEngineEventHandler.Object);
 
             var testData = new TestDataOne();
 
@@ -261,7 +261,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockUrlMapper.Object,
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
-                                                        MockConsoleEventHandler.Object);
+                                                        MockTestEngineEventHandler.Object);
 
             var testData = new TestDataOne();
 
@@ -285,7 +285,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockUrlMapper.Object,
                                                            MockFileSystem.Object,
                                                            MockLoggerFactory.Object,
-                                                           MockConsoleEventHandler.Object);
+                                                           MockTestEngineEventHandler.Object);
 
             var testData = new TestDataOne();
 
@@ -390,7 +390,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockUrlMapper.Object,
                                                            MockFileSystem.Object,
                                                            MockLoggerFactory.Object,
-                                                           MockConsoleEventHandler.Object);
+                                                           MockTestEngineEventHandler.Object);
 
             var testData = new TestDataOne();
 

@@ -9,7 +9,7 @@ namespace Microsoft.PowerApps.TestEngine
     /// <summary>
     /// Interface that handles all console related events
     /// </summary>
-    public interface ITestEngineConsoleEvents
+    public interface ITestEngineEvents
     {
         /// <summary>
         /// Handles the assertion message when the Assert() function fails

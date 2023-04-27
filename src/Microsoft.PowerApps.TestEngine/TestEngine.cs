@@ -20,7 +20,6 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly ITestReporter _testReporter;
         private readonly IFileSystem _fileSystem;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ITestEngineConsoleEvents _consoleEventHandler;
 
         private ILogger Logger { get; set; }
 
@@ -28,15 +27,13 @@ namespace Microsoft.PowerApps.TestEngine
                           IServiceProvider serviceProvider,
                           ITestReporter testReporter,
                           IFileSystem fileSystem,
-                          ILoggerFactory loggerFactory,
-                          ITestEngineConsoleEvents consoleEventHandler)
+                          ILoggerFactory loggerFactory)
         {
             _state = state;
             _serviceProvider = serviceProvider;
             _testReporter = testReporter;
             _fileSystem = fileSystem;
             _loggerFactory = loggerFactory;
-            _consoleEventHandler = consoleEventHandler;
         }
 
         /// <summary>
