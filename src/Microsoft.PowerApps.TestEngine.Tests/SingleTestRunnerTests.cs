@@ -88,8 +88,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Returns(FormulaValue.NewBlank());
 
             MockConsoleEventHandler.Setup(x => x.AssertionFailed(It.IsAny<string>()));
-            MockConsoleEventHandler.Setup(x => x.EncounteredCriticalException(It.IsAny<Exception>()));
-            MockConsoleEventHandler.Setup(x => x.EncounteredCriticalIssue(It.IsAny<string>()));
             MockConsoleEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
             MockConsoleEventHandler.Setup(x => x.SuiteBegin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
             MockConsoleEventHandler.Setup(x => x.SuiteEnd(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));

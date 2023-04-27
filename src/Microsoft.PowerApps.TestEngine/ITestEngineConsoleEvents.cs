@@ -17,16 +17,6 @@ namespace Microsoft.PowerApps.TestEngine
         public void AssertionFailed(string assertion);
 
         /// <summary>
-        /// Handles logging for an exception when logger not available
-        /// </summary>
-        public void EncounteredCriticalException(Exception ex);
-
-        /// <summary>
-        /// Handles logging for an issue when logger not available
-        /// </summary>
-        public void EncounteredCriticalIssue(string message);
-
-        /// <summary>
         /// Handles logging for an exception
         /// </summary>
         public void EncounteredException(Exception ex);

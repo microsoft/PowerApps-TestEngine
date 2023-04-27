@@ -37,7 +37,7 @@ var inputOptions = new ConfigurationBuilder()
 
 if (inputOptions == null)
 {
-     consoleEventHandler.EncounteredCriticalIssue("Input options are null");
+    Console.Out.WriteLine("[Critical Error]: Input options are null");
     return;
 }
 else
@@ -51,7 +51,7 @@ else
     {
         if (inputOptions.TestPlanFile.Substring(0, 1) == "-")
         {
-             consoleEventHandler.EncounteredCriticalIssue("TestPlanFile field is blank.");
+            Console.Out.WriteLine("[Critical Error]: TestPlanFile field is blank.");
             return;
         }
     }
@@ -60,7 +60,7 @@ else
     {
         if (inputOptions.EnvironmentId.Substring(0, 1) == "-")
         {
-             consoleEventHandler.EncounteredCriticalIssue("EnvironmentId field is blank.");
+            Console.Out.WriteLine("[Critical Error]: EnvironmentId field is blank.");
             return;
         }
     }
@@ -69,7 +69,7 @@ else
     {
         if (inputOptions.TenantId.Substring(0, 1) == "-")
         {
-             consoleEventHandler.EncounteredCriticalIssue("TenantId field is blank.");
+            Console.Out.WriteLine("[Critical Error]: TenantId field is blank.");
             return;
         }
     }
@@ -78,7 +78,7 @@ else
     {
         if (inputOptions.OutputDirectory.Substring(0, 1) == "-")
         {
-             consoleEventHandler.EncounteredCriticalIssue("OutputDirectory field is blank.");
+            Console.Out.WriteLine("[Critical Error]: OutputDirectory field is blank.");
             return;
         }
     }
@@ -87,7 +87,7 @@ else
     {
         if (inputOptions.LogLevel.Substring(0, 1) == "-")
         {
-             consoleEventHandler.EncounteredCriticalIssue("LogLevel field is blank.");
+            Console.Out.WriteLine("[Critical Error]: LogLevel field is blank.");
             return;
         }
     }
@@ -96,7 +96,7 @@ else
     {
         if (inputOptions.Domain.Substring(0, 1) == "-")
         {
-             consoleEventHandler.EncounteredCriticalIssue("Domain field is blank.");
+            Console.Out.WriteLine("[Critical Error]: Domain field is blank.");
             return;
         }
     }
@@ -105,7 +105,7 @@ else
     {
         if (inputOptions.QueryParams.Substring(0, 1) == "-")
         {
-             consoleEventHandler.EncounteredCriticalIssue("QueryParams field is blank.");
+            Console.Out.WriteLine("[Critical Error]: QueryParams field is blank.");
             return;
         }
     }
@@ -178,10 +178,10 @@ else
 
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams, consoleEventHandler);
-         consoleEventHandler.TestReportPath($"{testResult}");
+        consoleEventHandler.TestReportPath($"{testResult}");
     }
     catch (Exception ex)
     {
-         consoleEventHandler.EncounteredCriticalException(ex);
+        Console.Out.WriteLine("[Critical Error]: " + ex.Message);
     }
 }
