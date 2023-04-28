@@ -32,9 +32,9 @@ namespace Microsoft.PowerApps.TestEngine
         public void SuiteEnd(int casesTotal, int casesPass, int casesFail);
 
         /// <summary>
-        /// Handles logging for the suite name
+        /// Handles the starting case output
         /// </summary>
-        public void TestCaseName(string name);
+        public void TestCaseBegin(string name);
 
         /// <summary>
         /// Handles result of a test case
