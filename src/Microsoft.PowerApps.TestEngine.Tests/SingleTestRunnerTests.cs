@@ -90,9 +90,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestEngineEventHandler.Setup(x => x.AssertionFailed(It.IsAny<string>()));
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
             MockTestEngineEventHandler.Setup(x => x.SuiteBegin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
-            MockTestEngineEventHandler.Setup(x => x.SuiteEnd(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
-            MockTestEngineEventHandler.Setup(x => x.TestCaseName(It.IsAny<string>()));
-            MockTestEngineEventHandler.Setup(x => x.TestCasePassed(It.IsAny<bool>()));
+            MockTestEngineEventHandler.Setup(x => x.SuiteEnd());
+            MockTestEngineEventHandler.Setup(x => x.TestCaseBegin(It.IsAny<string>()));
+            MockTestEngineEventHandler.Setup(x => x.TestCaseEnd(It.IsAny<bool>()));
             MockTestEngineEventHandler.Setup(x => x.TestReportPath(It.IsAny<string>()));
 
             if (powerFxTestSuccess)

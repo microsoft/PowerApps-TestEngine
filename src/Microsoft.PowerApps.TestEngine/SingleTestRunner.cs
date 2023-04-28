@@ -129,7 +129,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
-                    _eventHandler.TestCaseName(testCase.TestCaseName);
+                    _eventHandler.TestCaseBegin(testCase.TestCaseName);
 
                     TestSuccess = true;
                     var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
@@ -164,13 +164,13 @@ namespace Microsoft.PowerApps.TestEngine
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
                             }
 
-                            _eventHandler.TestCasePassed(true);
+                            _eventHandler.TestCaseEnd(true);
                             casesPass++;
                         }
                         catch (Exception ex)
                         {
                             _eventHandler.EncounteredException(ex);
-                            _eventHandler.TestCasePassed(false);
+                            _eventHandler.TestCaseEnd(false);
 
                             caseException = ex.ToString();
                             TestException = ex;
@@ -245,7 +245,7 @@ namespace Microsoft.PowerApps.TestEngine
                                 $"\nCases failed: {(casesTotal - casesPass)}";
 
                 Logger.LogInformation(summaryString);
-                _eventHandler.SuiteEnd(casesTotal, casesPass, (casesTotal - casesPass));
+                _eventHandler.SuiteEnd();
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))

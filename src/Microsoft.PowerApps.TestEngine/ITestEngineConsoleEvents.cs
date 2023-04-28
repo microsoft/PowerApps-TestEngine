@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine
         /// <summary>
         /// Handles the suite summary output
         /// </summary>
-        public void SuiteEnd(int casesTotal, int casesPass, int casesFail);
+        public void SuiteEnd();
 
         /// <summary>
         /// Handles the starting case output
