@@ -13,37 +13,30 @@ namespace Microsoft.PowerApps.TestEngine
     {
         public void AssertionFailed(string assertion)
         {
-
         }
 
         public void EncounteredException(Exception ex)
         {
-
         }
 
         public void SuiteBegin(string suiteName, string directory, string browserName, string url)
         {
-
         }
 
         public void SuiteEnd()
         {
-
         }
 
         public void TestCaseBegin(string name)
         {
-
         }
 
         public void TestCaseEnd(bool result)
         {
-
         }
 
         public void TestReportPath(string path)
         {
-            
         }
     }
 }
