@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine
         public void AssertionFailed(string assertion)
         {
             Console.Write("Assertion failed: " + assertion);
-        };
+        }
 
         public void EncounteredException(Exception ex)
         {
