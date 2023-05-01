@@ -90,7 +90,7 @@ namespace Microsoft.PowerApps.TestEngine
 
             casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
             _eventHandler.SetNumberOfTotalCases(casesTotal);
-            
+
             string suiteException = null;
 
             try
