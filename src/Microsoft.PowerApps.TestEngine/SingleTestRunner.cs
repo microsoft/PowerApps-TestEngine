@@ -89,7 +89,7 @@ namespace Microsoft.PowerApps.TestEngine
             _testState.SetTestResultsDirectory(testResultDirectory);
 
             casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
-            SetNumberOfTotalCases(casesTotal);
+            _eventHandler.SetNumberOfTotalCases(casesTotal);
             
             string suiteException = null;
 
