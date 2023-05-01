@@ -11,7 +11,7 @@ namespace Microsoft.PowerApps.TestEngine
     /// </summary>
     public class TestEngineEvents : ITestEngineEvents
     {
-        public void AssertionFailed(string assertion)
+        public void SetNumberOfTotalCases(int numCases)
         {
         }
 
@@ -32,10 +32,6 @@ namespace Microsoft.PowerApps.TestEngine
         }
 
         public void TestCaseEnd(bool result)
-        {
-        }
-
-        public void TestReportPath(string path)
         {
         }
     }
