@@ -12,11 +12,6 @@ namespace Microsoft.PowerApps.TestEngine
     public interface ITestEngineEvents
     {
         /// <summary>
-        /// Handles the assertion message when the Assert() function fails
-        /// </summary>
-        public void AssertionFailed(string assertion);
-
-        /// <summary>
         /// Handles logging for an exception
         /// </summary>
         public void EncounteredException(Exception ex);
@@ -40,10 +35,5 @@ namespace Microsoft.PowerApps.TestEngine
         /// Handles result of a test case
         /// </summary>
         public void TestCaseEnd(bool result);
-
-        /// <summary>
-        /// Handles the output for test report path
-        /// </summary>
-        public void TestReportPath(string path);
     }
 }
