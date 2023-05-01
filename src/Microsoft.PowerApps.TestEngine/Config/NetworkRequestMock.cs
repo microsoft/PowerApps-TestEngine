@@ -28,5 +28,17 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets or sets the request's payload.
         /// </summary>
         public string RequestBodyFile { get; set; }
+
+        /// <summary>
+        /// Indicate if this request should be used for registed Network Module extensions
+        /// </summary>
+        /// <value></value>
+        public bool IsExtension { get;set; } = false;
+
+        /// <summary>
+        /// Extended parameters to be used by extension
+        /// </summary>
+        /// <value></value>
+        public Dictionary<string, string> ExtensionProperties { get; set; }
     }
 }

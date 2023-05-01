@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Modules;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -94,5 +95,17 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <returns>The timeout value</returns>
         public int GetTimeout();
+
+        /// <summary>
+        /// Add optional test engine modules
+        /// </summary>
+        /// <param name="modules"></param>
+        public void AddModules(IEnumerable<ITestEngineModule> modules);
+
+        /// <summary>
+        /// Get the list of registered Test engine extension models
+        /// </summary>
+        /// <param name="modules"></param>
+        public List<ITestEngineModule> GetTestEngineModules();
     }
 }

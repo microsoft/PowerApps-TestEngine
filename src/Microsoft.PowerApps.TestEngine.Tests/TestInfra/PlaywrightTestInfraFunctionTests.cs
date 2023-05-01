@@ -403,6 +403,45 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
         }
 
+         [Fact]
+        public async Task SetupNetworkRequestModule()
+        {
+            var mock = new NetworkRequestMock()
+            {
+                RequestURL = "https://make.powerapps.com",
+                IsExtension = true
+            };
+
+            var testSuiteDefinition = new TestSuiteDefinition()
+            {
+                TestSuiteName = "Test1",
+                TestSuiteDescription = "First test",
+                AppLogicalName = "logicalAppName1",
+                Persona = "User1",
+                NetworkRequestMocks = new List<NetworkRequestMock> { mock },
+                TestCases = new List<TestCase>()
+                {
+                    new TestCase
+                    {
+                        TestCaseName = "Test Case Name",
+                        TestCaseDescription = "Test Case Description",
+                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
+                    }
+                }
+            };
+
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<Modules.ITestEngineModule>());
+
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
+            MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, browserContext: MockBrowserContext.Object);
+            await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync();
+        }
+
         [Fact]
         public async Task GoToUrlTest()
         {
@@ -617,6 +656,5 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await playwrightTestInfraFunctions.RouteNetworkRequest(MockRoute.Object, mock);
             MockRoute.Verify(x => x.ContinueAsync(It.IsAny<RouteContinueOptions>()), Times.Once);
         }
-
     }
 }

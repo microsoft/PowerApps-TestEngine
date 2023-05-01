@@ -1,11 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
@@ -22,7 +25,8 @@ var switchMappings = new Dictionary<string, string>()
     { "-o", "OutputDirectory" },
     { "-l", "LogLevel" },
     { "-q", "QueryParams" },
-    { "-d", "Domain" }
+    { "-d", "Domain" },
+    { "-m", "Modules" }
 };
 
 var inputOptions = new ConfigurationBuilder()
@@ -174,6 +178,19 @@ else
             domain = inputOptions.Domain;
         }
 
+        List<ITestEngineModule> modules = new List<ITestEngineModule>();
+        if (!string.IsNullOrEmpty(inputOptions.Modules) && Directory.Exists(inputOptions.Modules)) {
+            // An aggregate catalog that combines multiple catalogs.
+            using var folderModulesCatalog = new DirectoryCatalog(inputOptions.Modules);
+            using var catalog = new AggregateCatalog(new AssemblyCatalog(typeof(TestEngine).Assembly), folderModulesCatalog);
+            using var container = new CompositionContainer(catalog);
+
+            var mefComponents = new MefComponents();
+            container.ComposeParts(mefComponents);
+            ITestState state = serviceProvider.GetService<ITestState>();
+            state.AddModules(mefComponents.MefModules.Select(v => v.Value).ToArray());
+        }
+
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
         Console.Out.WriteLine($"Test results can be found here: {testResult}");
@@ -183,3 +200,5 @@ else
         Console.Out.WriteLine("[Critical Error]: " + ex.Message);
     }
 }
+
+

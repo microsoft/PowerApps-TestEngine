@@ -128,20 +128,25 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             foreach (var mock in mocks)
             {
+                if ( mock.IsExtension ) {
+                    foreach ( var module in _testState.GetTestEngineModules() ) {
+                        await module.RegisterNetworkRoute(_singleTestInstanceState, _fileSystem, Page, mock);
+                    }
+                } else {
+                    if (string.IsNullOrEmpty(mock.RequestURL))
+                    {
+                        _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
+                        throw new InvalidOperationException();
+                    }
 
-                if (string.IsNullOrEmpty(mock.RequestURL))
-                {
-                    _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
-                    throw new InvalidOperationException();
-                }
+                    if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
+                    {
+                        _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
+                        throw new InvalidOperationException();
+                    }
 
-                if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
-                {
-                    _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
-                    throw new InvalidOperationException();
-                }
-
-                await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
+                    await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
+                }                
             }
         }
 

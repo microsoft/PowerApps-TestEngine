@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Modules;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -19,6 +20,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private string TenantId { get; set; }
 
         private string OutputDirectory { get; set; }
+
+        private List<ITestEngineModule> Modules { get; set; } = new List<ITestEngineModule>();
 
         private bool IsValid { get; set; } = false;
 
@@ -231,6 +234,14 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int GetTimeout()
         {
             return GetTestSettings().Timeout;
+        }
+
+        public void AddModules(IEnumerable<ITestEngineModule> modules) {
+            Modules.AddRange(modules);
+        }
+
+        public List<ITestEngineModule> GetTestEngineModules() {
+            return Modules;
         }
     }
 }

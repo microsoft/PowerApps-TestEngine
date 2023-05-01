@@ -50,5 +50,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Timeout in milliseconds. Default is 30000 (30s)
         /// </summary>
         public int Timeout { get; set; } = 30000;
+
+        /// <summary>
+        /// Determine if extension modules should be registered and used
+        /// Default is false.
+        /// if true then will load System.Component extensions from modules subfolder
+        /// </summary>
+        public bool EnableExtensionModules { get; set; } = false;
     }
 }

@@ -12,5 +12,6 @@ namespace PowerAppsTestEngine
         public string? LogLevel { get; set; }
         public string? QueryParams { get; set; }
         public string? Domain { get; set; }
+        public string? Modules { get; set; }
     }
 }

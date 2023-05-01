@@ -4,15 +4,19 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
@@ -27,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
-        private Mock<ILogger> MockLogger;
+        private Mock<Microsoft.Extensions.Logging.ILogger> MockLogger;
 
         public PowerFxEngineTests()
         {
@@ -36,7 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Strict);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
             LoggingTestHelper.SetupMock(MockLogger);
@@ -45,6 +49,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void SetupDoesNotThrow()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
         }
@@ -87,6 +93,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void ExecuteOneFunctionTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
             var result = powerFxEngine.Execute("1+1");
@@ -101,6 +109,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void ExecuteMultipleFunctionsTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+
             var powerFxExpression = "1+1; //some comment \n 2+2;\n Concatenate(\"hello\", \"world\");";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -174,6 +184,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void ExecuteFailsWhenPowerFXThrowsTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+
             var powerFxExpression = "someNonExistentPowerFxFunction(1, 2, 3)";
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -184,6 +196,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void ExecuteFailsWhenUsingNonExistentVariableTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -193,6 +207,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void ExecuteAssertFunctionTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            
             var powerFxExpression = "Assert(1+1=2, \"Adding 1 + 1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -206,6 +222,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public async Task ExecuteScreenshotFunctionTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns("C:\\testResults");
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
             MockTestInfraFunctions.Setup(x => x.ScreenshotAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
@@ -387,5 +405,44 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
+
+        [Fact]
+        public async Task ExecuteFooFromModuleFunction()
+        {
+            var testSettings = new TestSettings() { EnableExtensionModules = true };
+
+            var mockModule = new Mock<ITestEngineModule>();
+            var modules = new List<ITestEngineModule>() { mockModule.Object };
+
+            mockModule.Setup(x => x.RegisterPowerFxFunction(It.IsAny<PowerFxConfig>(), It.IsAny<ITestInfraFunctions>(), It.IsAny<IPowerAppFunctions>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<ITestState>(), It.IsAny<IFileSystem>()))
+                .Callback((PowerFxConfig powerFxConfig, ITestInfraFunctions functions, IPowerAppFunctions apps, ISingleTestInstanceState instanceState, ITestState state, IFileSystem fileSystem) => {
+                    powerFxConfig.AddFunction(new FooFunction());
+                });
+
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(modules);
+
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { }));
+
+            var powerFxExpression = "Foo()";
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            await powerFxEngine.UpdatePowerFxModelAsync();
+            powerFxEngine.Execute(powerFxExpression);
+        }
     }
-}
+
+    public class FooFunction : ReflectionFunction
+    {
+        public FooFunction() : base("Foo", FormulaType.Blank)
+        {
+        }
+
+        public BlankValue Execute()
+        {
+            return BlankValue.NewBlank();
+        }
+    }
+ }
