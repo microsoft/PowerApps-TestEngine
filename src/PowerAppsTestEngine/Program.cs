@@ -178,10 +178,15 @@ else
             domain = inputOptions.Domain;
         }
 
+        string modulePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
         List<ITestEngineModule> modules = new List<ITestEngineModule>();
         if (!string.IsNullOrEmpty(inputOptions.Modules) && Directory.Exists(inputOptions.Modules)) {
+            modulePath = inputOptions.Modules;
+        }
+
+        if ( Directory.Exists(modulePath) ) {
             // An aggregate catalog that combines multiple catalogs.
-            using var folderModulesCatalog = new DirectoryCatalog(inputOptions.Modules, "testengine.module.*.dll");
+            using var folderModulesCatalog = new DirectoryCatalog(modulePath, "testengine.module.*.dll");
             using var catalog = new AggregateCatalog(new AssemblyCatalog(typeof(TestEngine).Assembly), folderModulesCatalog);
             using var container = new CompositionContainer(catalog);
 
