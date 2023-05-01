@@ -18,7 +18,6 @@ testSettings:
   headless: false
   recordVideo: true
   enableExtensionModules: true
-  timeout: 1200000
   browserConfigurations:
     - browser: Firefox
 

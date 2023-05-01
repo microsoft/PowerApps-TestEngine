@@ -181,7 +181,7 @@ else
         List<ITestEngineModule> modules = new List<ITestEngineModule>();
         if (!string.IsNullOrEmpty(inputOptions.Modules) && Directory.Exists(inputOptions.Modules)) {
             // An aggregate catalog that combines multiple catalogs.
-            using var folderModulesCatalog = new DirectoryCatalog(inputOptions.Modules);
+            using var folderModulesCatalog = new DirectoryCatalog(inputOptions.Modules, "testengine.module.*.dll");
             using var catalog = new AggregateCatalog(new AssemblyCatalog(typeof(TestEngine).Assembly), folderModulesCatalog);
             using var container = new CompositionContainer(catalog);
 
