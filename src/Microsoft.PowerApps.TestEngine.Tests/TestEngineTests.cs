@@ -26,6 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private IServiceProvider ServiceProvider;
         private Mock<ILoggerFactory> MockLoggerFactory;
         private Mock<ILogger> MockLogger;
+        private Mock<ITestEngineEvents> MockTestEngineEventHandler;
 
         public TestEngineTests()
         {
@@ -38,6 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                             .BuildServiceProvider();
             MockLoggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
         }
 
         [Fact]

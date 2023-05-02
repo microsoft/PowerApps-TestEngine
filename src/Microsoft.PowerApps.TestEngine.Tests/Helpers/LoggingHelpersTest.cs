@@ -15,13 +15,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         private Mock<ILogger> MockLogger;
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
+        private Mock<ITestEngineEvents> MockTestEngineEventHandler;
 
         public LoggingHelpersTest()
         {            
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);            
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object); 
+            MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
+
             LoggingTestHelper.SetupMock(MockLogger);
         }
 
