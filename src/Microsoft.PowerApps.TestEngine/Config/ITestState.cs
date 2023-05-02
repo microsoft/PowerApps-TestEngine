@@ -71,6 +71,19 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <param name="outputDirectory">Output directory</param>
         public void SetOutputDirectory(string outputDirectory);
 
+
+        /// <summary>
+        /// Sets the test config file
+        /// </summary>
+        /// <param name="testConfigFile">The test config file</param>
+        public void SetTestConfigFile(FileInfo testConfigFile);
+
+        /// <summary>
+        /// Gets the test config file
+        /// </summary>
+        /// <returns>Test config file</returns>
+        public FileInfo GetTestConfigFile();
+
         /// <summary>
         /// Gets the directory that all tests outputs should be placed in.
         /// </summary>

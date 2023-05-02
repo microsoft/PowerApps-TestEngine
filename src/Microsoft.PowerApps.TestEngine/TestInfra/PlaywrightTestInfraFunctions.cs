@@ -135,7 +135,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 if ( mock.IsExtension ) {
                     foreach ( var module in _testState.GetTestEngineModules() ) {
-                        await module.RegisterNetworkRoute(_singleTestInstanceState, _fileSystem, Page, mock);
+                        await module.RegisterNetworkRoute(_testState, _singleTestInstanceState, _fileSystem, Page, mock);
                     }
                 } else {
                     if (string.IsNullOrEmpty(mock.RequestURL))

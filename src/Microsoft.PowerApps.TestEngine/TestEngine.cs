@@ -106,6 +106,8 @@ namespace Microsoft.PowerApps.TestEngine
                 _state.SetOutputDirectory(outputDirectory.FullName);
                 Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
 
+                _state.SetTestConfigFile(testConfigFile);
+
                 testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
                 _fileSystem.CreateDirectory(testRunDirectory);
                 Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");

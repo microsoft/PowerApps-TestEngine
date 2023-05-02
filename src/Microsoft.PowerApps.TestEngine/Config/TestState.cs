@@ -21,6 +21,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         private string OutputDirectory { get; set; }
 
+        private FileInfo TestConfigFile { get; set; }
+
         private List<ITestEngineModule> Modules { get; set; } = new List<ITestEngineModule>();
 
         private bool IsValid { get; set; } = false;
@@ -208,6 +210,19 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public string GetOutputDirectory()
         {
             return OutputDirectory;
+        }
+
+        public void SetTestConfigFile(FileInfo testConfig)
+        {
+            if (testConfig == null)
+            {
+                throw new ArgumentNullException(nameof(testConfig));
+            }
+            TestConfigFile = testConfig;
+        }
+        public FileInfo GetTestConfigFile()
+        {
+            return TestConfigFile;
         }
 
         public UserConfiguration GetUserConfiguration(string persona)

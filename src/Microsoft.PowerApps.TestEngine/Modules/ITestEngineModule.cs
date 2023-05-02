@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 using Microsoft.Playwright;
@@ -12,6 +12,6 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 {
     public interface ITestEngineModule {
         void RegisterPowerFxFunction(PowerFxConfig config, ITestInfraFunctions testInfraFunctions, IPowerAppFunctions powerAppFunctions, ISingleTestInstanceState singleTestInstanceState,  ITestState testState, IFileSystem fileSystem);
-        Task RegisterNetworkRoute(ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock);
+        Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock);
     }
 }

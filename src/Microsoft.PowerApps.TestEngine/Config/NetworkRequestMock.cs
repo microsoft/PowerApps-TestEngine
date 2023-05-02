@@ -39,6 +39,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Extended parameters to be used by extension
         /// </summary>
         /// <value></value>
-        public Dictionary<string, string> ExtensionProperties { get; set; }
+        public Dictionary<string, string> ExtensionProperties { get; set; } = new Dictionary<string, string>();
     }
 }

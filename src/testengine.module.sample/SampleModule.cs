@@ -22,8 +22,8 @@ namespace testengine.module.sample
             logger.LogInformation("Registered Sample()");
         }
 
-        public async Task RegisterNetworkRoute(ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock) {
-            //await Page.RouteAsync(mock.RequestURL, (IRoute route) => route.ContinueAsync(), null);
+        public async Task RegisterNetworkRoute(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock) {
+            return;
         }
     }
 }
