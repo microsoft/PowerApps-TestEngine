@@ -16,6 +16,11 @@ namespace testengine.module.sample
     [Export(typeof(ITestEngineModule))]
     public class TestEngineSampleModule : ITestEngineModule
     {
+        public void ExtendBrowserContextOptions(BrowserNewContextOptions options, TestSettings settings)
+        {
+
+        }
+
         public void RegisterPowerFxFunction(PowerFxConfig config, ITestInfraFunctions testInfraFunctions, IPowerAppFunctions powerAppFunctions, ISingleTestInstanceState singleTestInstanceState,  ITestState testState, IFileSystem fileSystem) {
             ILogger logger = singleTestInstanceState.GetLogger();
             config.AddFunction(new SampleFunction());

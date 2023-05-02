@@ -147,6 +147,67 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         }
 
         [Theory]
+        [InlineData("en-US")]
+        [InlineData("fr-FR")]
+        [InlineData("de-DE")]
+        public async Task SetupAsyncExtensionLocaleTest(string testLocale)
+        {
+            var browserConfig = new BrowserConfiguration()
+            {
+                Browser = "Firefox"
+            };
+
+            var testSettings = new TestSettings()
+            {
+                EnableExtensionModules = true
+            };
+
+            var devicesDictionary = new Dictionary<string, BrowserNewContextOptions>()
+            {
+                { "Pixel 2", new BrowserNewContextOptions() { UserAgent = "Pixel 2 User Agent "} },
+                { "iPhone 8", new BrowserNewContextOptions() { UserAgent = "iPhone 8 User Agent "} }
+            };
+
+            var mockTestEngineModule = new Mock<Modules.ITestEngineModule>();
+            mockTestEngineModule.Setup(x => x.ExtendBrowserContextOptions(It.IsAny<BrowserNewContextOptions>(), It.IsAny<TestSettings>()))
+                .Callback((BrowserNewContextOptions options, TestSettings settings) => options.Locale = testLocale);
+
+            MockSingleTestInstanceState.Setup(x => x.GetBrowserConfig()).Returns(browserConfig);
+            MockPlaywrightObject.SetupGet(x => x[It.IsAny<string>()]).Returns(MockBrowserType.Object);
+            MockPlaywrightObject.SetupGet(x => x.Devices).Returns(devicesDictionary);
+            MockBrowserType.Setup(x => x.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>())).Returns(Task.FromResult(MockBrowser.Object));
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<Modules.ITestEngineModule>() { mockTestEngineModule.Object });
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockBrowser.Setup(x => x.NewContextAsync(It.IsAny<BrowserNewContextOptions>())).Returns(Task.FromResult(MockBrowserContext.Object));
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, MockPlaywrightObject.Object);
+            await playwrightTestInfraFunctions.SetupAsync();
+
+            MockSingleTestInstanceState.Verify(x => x.GetBrowserConfig(), Times.Once());
+            MockPlaywrightObject.Verify(x => x[browserConfig.Browser], Times.Once());
+            MockBrowserType.Verify(x => x.LaunchAsync(It.Is<BrowserTypeLaunchOptions>(y => y.Headless == true && y.Timeout == testSettings.Timeout)), Times.Once());
+            MockTestState.Verify(x => x.GetTestSettings(), Times.Once());
+
+            if (browserConfig.Device != null)
+            {
+                MockPlaywrightObject.Verify(x => x.Devices, Times.Once());
+            }
+
+            var verifyBrowserContextOptions = (BrowserNewContextOptions options) =>
+            {
+                if (options.Locale != testLocale )
+                {
+                    return false;
+                }
+                return true;
+            };
+            MockBrowser.Verify(x => x.NewContextAsync(It.Is<BrowserNewContextOptions>(y => verifyBrowserContextOptions(y))), Times.Once());
+        }
+
+        [Theory]
         [InlineData("")]
         [InlineData(null)]
         [InlineData("Chrome")]

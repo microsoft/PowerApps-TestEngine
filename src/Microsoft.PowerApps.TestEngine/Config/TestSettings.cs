@@ -57,5 +57,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// if true then will load System.Component extensions from modules subfolder
         /// </summary>
         public bool EnableExtensionModules { get; set; } = false;
+
+        /// <summary>
+        /// Additional optional parameters for extension modules
+        /// </summary>
+        public Dictionary<string, string> ExtensionModuleParameters { get; set; } = new Dictionary<string, string>();
     }
 }

@@ -112,6 +112,14 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 };
             }
 
+            if ( testSettings.EnableExtensionModules )
+            {
+                foreach ( var module in _testState.GetTestEngineModules() )
+                {
+                    module.ExtendBrowserContextOptions(contextOptions, testSettings);
+                }
+            }
+
             BrowserContext = await Browser.NewContextAsync(contextOptions);
             _singleTestInstanceState.GetLogger().LogInformation("Browser context created");
         }
