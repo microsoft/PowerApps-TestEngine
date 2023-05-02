@@ -56,9 +56,21 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions, Logger));
 
             var settings = _testState.GetTestSettings();
-            if ( settings.EnableExtensionModules ) {
-                foreach ( var module in _testState.GetTestEngineModules() ) {
+            if (settings.EnableExtensionModules)
+            {
+                if (_testState.GetTestEngineModules().Count == 0)
+                {
+                    Logger.LogError("Extension enabled not none loaded");
+                }
+                foreach (var module in _testState.GetTestEngineModules())
+                {
                     module.RegisterPowerFxFunction(powerFxConfig, _testInfraFunctions, _powerAppFunctions, _singleTestInstanceState, _testState, _fileSystem);
+                }
+            }
+            else
+            {
+                if (_testState.GetTestEngineModules().Count > 0) { 
+                    Logger.LogInformation("Extension loaded but not enabled");
                 }
             }
 

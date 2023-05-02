@@ -50,6 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void SetupDoesNotThrow()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -83,6 +84,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -94,6 +96,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void ExecuteOneFunctionTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -110,6 +113,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void ExecuteMultipleFunctionsTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "1+1; //some comment \n 2+2;\n Concatenate(\"hello\", \"world\");";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -161,6 +165,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup(It.IsAny<CultureInfo>());
@@ -185,6 +190,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void ExecuteFailsWhenPowerFXThrowsTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "someNonExistentPowerFxFunction(1, 2, 3)";
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
@@ -197,6 +203,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void ExecuteFailsWhenUsingNonExistentVariableTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -208,6 +215,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void ExecuteAssertFunctionTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
             
             var powerFxExpression = "Assert(1+1=2, \"Adding 1 + 1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -223,6 +231,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public async Task ExecuteScreenshotFunctionTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns("C:\\testResults");
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
@@ -249,6 +258,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -269,6 +279,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
@@ -294,6 +305,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -316,6 +328,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -340,6 +353,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -374,6 +388,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -397,6 +412,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);

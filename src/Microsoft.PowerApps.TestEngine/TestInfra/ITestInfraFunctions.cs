@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
@@ -11,6 +12,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
     /// </summary>
     public interface ITestInfraFunctions
     {
+        /// <summary>
+        /// Return the current browser context
+        /// </summary>
+        /// <returns>The current browser context</returns>
+        public IBrowserContext GetContext();
+
         /// <summary>
         /// Setup the test infrastructure
         /// </summary>

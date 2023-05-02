@@ -193,7 +193,9 @@ else
             var mefComponents = new MefComponents();
             container.ComposeParts(mefComponents);
             ITestState state = serviceProvider.GetService<ITestState>();
-            state.AddModules(mefComponents.MefModules.Select(v => v.Value).ToArray());
+            var components = mefComponents.MefModules.Select(v => v.Value).ToArray();
+            Console.WriteLine($"{components.Count()} extension components found");
+            state.AddModules(components);
         }
 
         //setting defaults for optional parameters outside RunTestAsync

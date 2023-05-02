@@ -40,6 +40,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             BrowserContext = browserContext;
         }
 
+        public IBrowserContext GetContext()
+        {
+            return BrowserContext;
+        }
+
         public async Task SetupAsync()
         {
 
