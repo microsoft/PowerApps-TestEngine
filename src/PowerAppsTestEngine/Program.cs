@@ -186,6 +186,7 @@ else
 
         if ( Directory.Exists(modulePath) ) {
             // An aggregate catalog that combines multiple catalogs.
+            var expected = Directory.GetFiles(modulePath, "testengine.module.*.dll");
             using var folderModulesCatalog = new DirectoryCatalog(modulePath, "testengine.module.*.dll");
             using var catalog = new AggregateCatalog(new AssemblyCatalog(typeof(TestEngine).Assembly), folderModulesCatalog);
             using var container = new CompositionContainer(catalog);
@@ -194,7 +195,17 @@ else
             container.ComposeParts(mefComponents);
             ITestState state = serviceProvider.GetService<ITestState>();
             var components = mefComponents.MefModules.Select(v => v.Value).ToArray();
-            Console.WriteLine($"{components.Count()} extension components found");
+            var actual = components.Count();
+            if ( actual < expected.Length )
+            {
+                Console.Error.WriteLine($"Expected atleast {expected.Length} got {actual} extension components");
+            } 
+            else
+            {
+                Console.WriteLine($"{expected.Length} expected extensions");
+                Console.WriteLine($"{components.Count()} extension components found");
+            }
+            
             state.AddModules(components);
         }
 
