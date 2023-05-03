@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
+using Microsoft.PowerApps.TestEngine.System;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
@@ -29,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 _logger.LogTrace($"{message.Value}");
                 _logger.LogError("Assert failed. Property is not equal to the specified value.");
-                throw new Exception($"  Assertion failed: {message.Value}");
+                throw new AssertionFailureException(message.Value);
             }
 
             _logger.LogTrace(message.Value);
