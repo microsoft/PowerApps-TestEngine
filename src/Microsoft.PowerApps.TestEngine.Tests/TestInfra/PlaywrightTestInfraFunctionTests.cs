@@ -288,7 +288,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var mock = new NetworkRequestMock()
             {
                 RequestURL = "https://make.powerapps.com",
-                ResponseDataFile = "response.json"
+                ResponseDataFile = "response.json",
+                IsExtension = false
             };
 
             var testSuiteDefinition = new TestSuiteDefinition()
@@ -312,14 +313,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
-            MockPage.Setup(x => x.RouteAsync(mock.RequestURL, It.IsAny<Action<IRoute>>(), It.IsAny<PageRouteOptions>())).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
+            MockPage.Setup(x => x.RouteAsync(mock.RequestURL, It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
             await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync();
 
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once);
-            MockPage.Verify(x => x.RouteAsync(mock.RequestURL, It.IsAny<Action<IRoute>>(), It.IsAny<PageRouteOptions>()), Times.Once);
+            MockPage.Verify(x => x.RouteAsync(mock.RequestURL, It.IsAny<Func<IRoute, Task>>(), It.IsAny<PageRouteOptions>()), Times.Once);
             MockFileSystem.Verify(x => x.IsValidFilePath(mock.ResponseDataFile), Times.Once());
         }
 
