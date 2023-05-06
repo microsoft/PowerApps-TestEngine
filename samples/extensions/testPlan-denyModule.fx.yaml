@@ -1,0 +1,28 @@
+testSuite:
+  testSuiteName: Extension example
+  testSuiteDescription: Demonstrate the use of PowerFx extension
+  persona: User1
+  appLogicalName: new_buttonclicker_0a877
+
+  testCases:
+    - testCaseName: Run Sample
+      testCaseDescription: Test case will fail as the Sample Power Fx function is not loaded
+      testSteps: |
+        = Sample();
+
+testSettings:
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+    denyModule:
+    - sample
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
+

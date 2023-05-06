@@ -11,8 +11,6 @@ using Microsoft.Playwright;
 
 namespace testengine.module.sample
 {
-    
-
     [Export(typeof(ITestEngineModule))]
     public class TestEngineSampleModule : ITestEngineModule
     {

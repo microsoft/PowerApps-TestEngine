@@ -31,18 +31,31 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
         }
 
         [Theory]
-        [InlineData("", "", "", "AssemblyCatalog")]
-        [InlineData("*", "foo", "testengine.module.foo.dll", "AssemblyCatalog")]
-        [InlineData("foo", "*", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
-        [InlineData("Foo", "*", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
-        [InlineData("*", "foo*", "testengine.module.foo1.dll", "AssemblyCatalog")]
-        public void ModuleMatch(string allow, string deny, string files, string expected)
+        [InlineData(false,false,"", "", "", "AssemblyCatalog")]
+        [InlineData(false, false, "*", "foo", "testengine.module.foo.dll", "AssemblyCatalog")]
+        [InlineData(false, false, "foo", "*", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
+        [InlineData(false, false, "Foo", "*", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
+        [InlineData(false, false, "*", "foo*", "testengine.module.foo1.dll", "AssemblyCatalog")]
+        [InlineData(true, false, "*", "", "testengine.module.foo.dll", "AssemblyCatalog")]
+        [InlineData(true, true, "*", "", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
+        public void ModuleMatch(bool checkAssemblies, bool checkResult, string allow, string deny, string files, string expected)
         {
-            var setting = new TestSettingExtensions() { Enable = true };
+            var setting = new TestSettingExtensions() { 
+                Enable = true,
+                CheckAssemblies = checkAssemblies
+            };
+            Mock<TestEngineExtensionChecker> mockChecker = new Mock<TestEngineExtensionChecker>();
+
             var loader = new TestEngineModuleMEFLoader(MockLogger.Object);
             loader.DirectoryGetFiles = (location, pattern) => files.Split(",");
             // Use current test assembly as test
             loader.LoadAssembly = (file) => new AssemblyCatalog(this.GetType().Assembly);
+            loader.Checker = mockChecker.Object;
+
+            if ( checkAssemblies )
+            {
+                mockChecker.Setup(x => x.Validate(It.IsAny<TestSettingExtensions>(), files)).Returns(checkResult);
+            }
 
             if ( !string.IsNullOrEmpty(allow) )
             {

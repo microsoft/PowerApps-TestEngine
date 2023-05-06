@@ -18,11 +18,14 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
         public Func<string, AssemblyCatalog> LoadAssembly { get; set; } = (string file) => new AssemblyCatalog(file);
 
+        public TestEngineExtensionChecker Checker { get; set; }
+
         ILogger _logger;
 
         public TestEngineModuleMEFLoader(ILogger logger)
         {
             _logger = logger;
+            Checker = new TestEngineExtensionChecker(logger);
         }
 
         /// <summary>
@@ -35,6 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         {
             
             List<ComposablePartCatalog> match = new List<ComposablePartCatalog>() {  };
+            
             
             if ( settings.Enable )
             {
@@ -52,13 +56,20 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         if ( ! string.IsNullOrEmpty(file) )
                         {
                             _logger.LogInformation(Path.GetFileName(file));
+                            if ( settings.CheckAssemblies )
+                            {
+                                if ( !Checker.Validate(settings, file) )
+                                {
+                                    continue;
+                                }
+                            }
                             match.Add(LoadAssembly(file));
                         }
                     }
                 }
 
                 // Check if need to deny a module or a specific list of modules are allowed
-                if (settings.DenyModule.Count > 0 || (settings.AllowModule.Count() > 1 && !settings.AllowModule[0].Equals("*")))
+                if (settings.DenyModule.Count > 0 || (settings.AllowModule.Count() > 1))
                 {
                     _logger.LogInformation("Load modules from " + location);
                     var possibleModules = DirectoryGetFiles(location, "testengine.module.*.dll");
@@ -82,6 +93,13 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             //  2. No deny match found, allow is found
                             if ( deny && allow && allowLongest.Length > denyLongest.Length || allow && !deny )
                             {
+                                if (settings.CheckAssemblies)
+                                {
+                                    if (!Checker.Validate(settings, possibleModule))
+                                    {
+                                        continue;
+                                    }
+                                }
                                 _logger.LogInformation(Path.GetFileName(possibleModule));
                                 match.Add(LoadAssembly(possibleModule));
                             }

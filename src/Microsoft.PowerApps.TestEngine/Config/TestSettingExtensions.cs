@@ -14,6 +14,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public bool Enable { get; set; } = false;
 
         /// <summary>
+        /// Determine if extension modules should be checks for Namespace rules
+        /// </summary>
+        public bool CheckAssemblies { get; set; } = true;
+
+        /// <summary>
         /// List of allowed Test Engine Modules that can be referenced.
         /// </summary>
         public List<string> AllowModule { get; set; } = new List<string>() { "*" };
