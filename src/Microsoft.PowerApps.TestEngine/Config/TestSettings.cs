@@ -52,15 +52,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int Timeout { get; set; } = 30000;
 
         /// <summary>
-        /// Determine if extension modules should be registered and used
-        /// Default is false.
-        /// if true then will load System.Component extensions from modules subfolder
+        /// Define settings for Test Engine Extensions
         /// </summary>
-        public bool EnableExtensionModules { get; set; } = false;
-
-        /// <summary>
-        /// Additional optional parameters for extension modules
-        /// </summary>
-        public Dictionary<string, string> ExtensionModuleParameters { get; set; } = new Dictionary<string, string>();
+        public TestSettingExtensions ExtensionModules { get; set; } = new TestSettingExtensions();
     }
 }

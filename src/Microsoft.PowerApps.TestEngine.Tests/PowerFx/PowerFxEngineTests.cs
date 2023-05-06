@@ -425,7 +425,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public async Task ExecuteFooFromModuleFunction()
         {
-            var testSettings = new TestSettings() { EnableExtensionModules = true };
+            var testSettings = new TestSettings() { ExtensionModules = new TestSettingExtensions { Enable = true } };
 
             var mockModule = new Mock<ITestEngineModule>();
             var modules = new List<ITestEngineModule>() { mockModule.Object };

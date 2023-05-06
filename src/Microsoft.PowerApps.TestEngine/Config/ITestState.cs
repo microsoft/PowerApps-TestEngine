@@ -110,6 +110,17 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int GetTimeout();
 
         /// <summary>
+        /// Loads any matching Test Engine Modules
+        /// </summary>
+        public void LoadExtensionModules(ILogger logger);
+
+        /// <summary>
+        /// Sets path to locate option extension modules
+        /// </summary>
+        /// <param name="path">The path to set</param>
+        public void SetModulePath(string path);
+
+        /// <summary>
         /// Add optional test engine modules
         /// </summary>
         /// <param name="modules"></param>

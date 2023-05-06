@@ -264,6 +264,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockState.Setup(x => x.SetTestConfigFile(It.IsAny<FileInfo>()));
+            MockState.Setup(x => x.LoadExtensionModules(It.IsAny<ILogger>()));
 
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(testRunId);
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));

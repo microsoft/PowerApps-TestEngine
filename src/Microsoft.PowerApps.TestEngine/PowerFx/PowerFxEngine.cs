@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions, Logger));
 
             var settings = _testState.GetTestSettings();
-            if (settings.EnableExtensionModules)
+            if (settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {
                 if (_testState.GetTestEngineModules().Count == 0)
                 {

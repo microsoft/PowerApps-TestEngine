@@ -100,6 +100,8 @@ namespace Microsoft.PowerApps.TestEngine
                 _state.SetEnvironment(environmentId);
                 _state.SetTenant(tenantId.ToString());
 
+                _state.LoadExtensionModules(Logger);
+
                 _state.SetDomain(domain);
                 Logger.LogDebug($"Using domain: {domain}");
 

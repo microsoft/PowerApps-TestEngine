@@ -159,7 +159,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var testSettings = new TestSettings()
             {
-                EnableExtensionModules = true
+                ExtensionModules = new TestSettingExtensions() { Enable = true }
             };
 
             var devicesDictionary = new Dictionary<string, BrowserNewContextOptions>()
@@ -168,7 +168,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 { "iPhone 8", new BrowserNewContextOptions() { UserAgent = "iPhone 8 User Agent "} }
             };
 
-            var mockTestEngineModule = new Mock<Modules.ITestEngineModule>();
+            var mockTestEngineModule = new Mock<Microsoft.PowerApps.TestEngine.Modules.ITestEngineModule>();
             mockTestEngineModule.Setup(x => x.ExtendBrowserContextOptions(It.IsAny<BrowserNewContextOptions>(), It.IsAny<TestSettings>()))
                 .Callback((BrowserNewContextOptions options, TestSettings settings) => options.Locale = testLocale);
 
@@ -177,7 +177,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockPlaywrightObject.SetupGet(x => x.Devices).Returns(devicesDictionary);
             MockBrowserType.Setup(x => x.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>())).Returns(Task.FromResult(MockBrowser.Object));
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
-            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<Modules.ITestEngineModule>() { mockTestEngineModule.Object });
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<Microsoft.PowerApps.TestEngine.Modules.ITestEngineModule>() { mockTestEngineModule.Object });
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockBrowser.Setup(x => x.NewContextAsync(It.IsAny<BrowserNewContextOptions>())).Returns(Task.FromResult(MockBrowserContext.Object));
             LoggingTestHelper.SetupMock(MockLogger);
@@ -492,7 +492,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 }
             };
 
-            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<Modules.ITestEngineModule>());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<Microsoft.PowerApps.TestEngine.Modules.ITestEngineModule>());
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));

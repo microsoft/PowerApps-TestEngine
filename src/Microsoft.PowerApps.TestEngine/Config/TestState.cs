@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Modules;
 
@@ -22,6 +24,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private string OutputDirectory { get; set; }
 
         private FileInfo TestConfigFile { get; set; }
+
+        private string ModulePath { get; set; }
 
         private List<ITestEngineModule> Modules { get; set; } = new List<ITestEngineModule>();
 
@@ -249,6 +253,33 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int GetTimeout()
         {
             return GetTestSettings().Timeout;
+        }
+
+        public void SetModulePath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+            ModulePath = path;
+        }
+
+        /// <summary>
+        /// Load Managed Extensibility Framework (MEF) Test Engine modules
+        /// </summary>
+        public void LoadExtensionModules(ILogger logger)
+        {
+            var loader = new TestEngineModuleMEFLoader(logger);
+            var settings = this.GetTestSettings();
+            var catalogModules = loader.LoadModules(settings.ExtensionModules, this.ModulePath);
+
+            using var catalog = new AggregateCatalog(catalogModules);
+            using var container = new CompositionContainer(catalog);
+
+            var mefComponents = new MefComponents();
+            container.ComposeParts(mefComponents);
+            var components = mefComponents.MefModules.Select(v => v.Value).ToArray();
+            this.AddModules(components);
         }
 
         public void AddModules(IEnumerable<ITestEngineModule> modules) {

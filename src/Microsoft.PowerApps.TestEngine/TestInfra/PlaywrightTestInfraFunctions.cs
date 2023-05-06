@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -112,7 +113,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 };
             }
 
-            if ( testSettings.EnableExtensionModules )
+            if (testSettings.ExtensionModules != null && testSettings.ExtensionModules.Enable)
             {
                 foreach ( var module in _testState.GetTestEngineModules() )
                 {
