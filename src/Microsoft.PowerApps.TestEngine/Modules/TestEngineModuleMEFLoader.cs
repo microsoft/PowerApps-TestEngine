@@ -6,6 +6,7 @@ using System.ComponentModel.Composition.Primitives;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using NuGet.Configuration;
 
 namespace Microsoft.PowerApps.TestEngine.Modules
 {
@@ -14,6 +15,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
     /// </summary>
     public class TestEngineModuleMEFLoader
     {
+        public Func<string, bool> DirectoryExists { get; set; } = (string location) => Directory.Exists(location);
+
         public Func<string, string, string[]> DirectoryGetFiles { get; set; } = (string location, string searchPattern) => Directory.GetFiles(location, searchPattern);
 
         public Func<string, AssemblyCatalog> LoadAssembly { get; set; } = (string file) => new AssemblyCatalog(file);
@@ -34,79 +37,93 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         /// <param name="settings">The settings to use determine if extensions are enaabled and allow / deny settings</param>
         /// <param name="location">The file system location to read the modules from</param>
         /// <returns>Catalog of located modules</returns>
-        public AggregateCatalog LoadModules(TestSettingExtensions settings, string location)
+        public AggregateCatalog LoadModules(TestSettingExtensions settings)
         {
-            
             List<ComposablePartCatalog> match = new List<ComposablePartCatalog>() {  };
-            
-            
-            if ( settings.Enable )
+
+            if (settings.Enable)
             {
                 _logger.LogInformation("Extensions enabled");
                 match.Add(new AssemblyCatalog(typeof(TestEngine).Assembly));
 
-                // Check if want all modules in the location
-                if (settings.DenyModule.Count == 0 && settings.AllowModule.Count() == 1 && settings.AllowModule[0].Equals("*") || settings.AllowModule.Count() == 0)
+                foreach (var sourcelocation in settings.Source.InstallSource)
                 {
-                    _logger.LogInformation("Load all modules from " + location);
-
-                    var files = DirectoryGetFiles(location, "testengine.module.*.dll");
-                    foreach (var file in files)
+                    string location = sourcelocation;
+                    if (settings.Source.EnableNuGet)
                     {
-                        if ( ! string.IsNullOrEmpty(file) )
-                        {
-                            _logger.LogInformation(Path.GetFileName(file));
-                            if ( settings.CheckAssemblies )
-                            {
-                                if ( !Checker.Validate(settings, file) )
-                                {
-                                    continue;
-                                }
-                            }
-                            match.Add(LoadAssembly(file));
-                        }
+                        var nuGetSettings = Settings.LoadDefaultSettings(null);
+                        location = Path.Combine(SettingsUtility.GetGlobalPackagesFolder(nuGetSettings), location, "lib", "netstandard2.0");
                     }
-                }
 
-                // Check if need to deny a module or a specific list of modules are allowed
-                if (settings.DenyModule.Count > 0 || (settings.AllowModule.Count() > 1))
-                {
-                    _logger.LogInformation("Load modules from " + location);
-                    var possibleModules = DirectoryGetFiles(location, "testengine.module.*.dll");
-                    foreach (var possibleModule in possibleModules)
+                    if ( !DirectoryExists(location) )
                     {
-                        if (!string.IsNullOrEmpty(possibleModule))
-                        {
-                            // Convert from testegine.module.name.dll format to name for search comparision
-                            var moduleName = Path.GetFileNameWithoutExtension(possibleModule).Replace("testengine.module.","").ToLower();
-                            var allow = settings.AllowModule.Any(a => Regex.IsMatch(moduleName, WildCardToRegular(a.ToLower())));
-                            var deny = settings.DenyModule.Any(d => Regex.IsMatch(moduleName, WildCardToRegular(d.ToLower())));
-                            var allowLongest = settings.AllowModule.Max(a => Regex.IsMatch(moduleName, WildCardToRegular(a.ToLower()))? a : "");
-                            var denyLongest = settings.DenyModule.Max(d => Regex.IsMatch(moduleName, WildCardToRegular(d.ToLower())) ? d : "");
+                        _logger.LogDebug("Skipping " + location);
+                        continue;
+                    }
 
-                            // Two cases: 
-                            //  1. Found deny but also found allow. Assume that the allow has higher proirity if a longer match
-                            //      allow | deny | add
-                            //      *     | name | No
-                            //      name  | *    | Yes
-                            //      n*    | name | No
-                            //  2. No deny match found, allow is found
-                            if ( deny && allow && allowLongest.Length > denyLongest.Length || allow && !deny )
+                    // Check if want all modules in the location
+                    if (settings.DenyModule.Count == 0 && settings.AllowModule.Count() == 1 && settings.AllowModule[0].Equals("*") || settings.AllowModule.Count() == 0)
+                    {
+                        _logger.LogInformation("Load all modules from " + location);
+
+                        var files = DirectoryGetFiles(location, "testengine.module.*.dll");
+                        foreach (var file in files)
+                        {
+                            if (!string.IsNullOrEmpty(file))
                             {
+                                _logger.LogInformation(Path.GetFileName(file));
                                 if (settings.CheckAssemblies)
                                 {
-                                    if (!Checker.Validate(settings, possibleModule))
+                                    if (!Checker.Validate(settings, file))
                                     {
                                         continue;
                                     }
                                 }
-                                _logger.LogInformation(Path.GetFileName(possibleModule));
-                                match.Add(LoadAssembly(possibleModule));
+                                match.Add(LoadAssembly(file));
+                            }
+                        }
+                    }
+
+                    // Check if need to deny a module or a specific list of modules are allowed
+                    if (settings.DenyModule.Count > 0 || (settings.AllowModule.Count() > 1))
+                    {
+                        _logger.LogInformation("Load modules from " + location);
+                        var possibleModules = DirectoryGetFiles(location, "testengine.module.*.dll");
+                        foreach (var possibleModule in possibleModules)
+                        {
+                            if (!string.IsNullOrEmpty(possibleModule))
+                            {
+                                // Convert from testegine.module.name.dll format to name for search comparision
+                                var moduleName = Path.GetFileNameWithoutExtension(possibleModule).Replace("testengine.module.", "").ToLower();
+                                var allow = settings.AllowModule.Any(a => Regex.IsMatch(moduleName, WildCardToRegular(a.ToLower())));
+                                var deny = settings.DenyModule.Any(d => Regex.IsMatch(moduleName, WildCardToRegular(d.ToLower())));
+                                var allowLongest = settings.AllowModule.Max(a => Regex.IsMatch(moduleName, WildCardToRegular(a.ToLower())) ? a : "");
+                                var denyLongest = settings.DenyModule.Max(d => Regex.IsMatch(moduleName, WildCardToRegular(d.ToLower())) ? d : "");
+
+                                // Two cases: 
+                                //  1. Found deny but also found allow. Assume that the allow has higher proirity if a longer match
+                                //      allow | deny | add
+                                //      *     | name | No
+                                //      name  | *    | Yes
+                                //      n*    | name | No
+                                //  2. No deny match found, allow is found
+                                if (deny && allow && allowLongest.Length > denyLongest.Length || allow && !deny)
+                                {
+                                    if (settings.CheckAssemblies)
+                                    {
+                                        if (!Checker.Validate(settings, possibleModule))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    _logger.LogInformation(Path.GetFileName(possibleModule));
+                                    match.Add(LoadAssembly(possibleModule));
+                                }
                             }
                         }
                     }
                 }
-            } 
+            }
             else
             {
                 _logger.LogInformation("Extensions not enabled");

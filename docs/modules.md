@@ -68,5 +68,5 @@ This example can also be extended to specific methods for example System.Conole:
 
 Once you have explored Power Fx and Test Settings the following additional areas can be explored:
 
-- Leveraging modules extension to configure the BrowserSettings
-- Extending the Network Mocking with a module
+- Leveraging modules extension to configure the [BrowserNewContextOptions](https://playwright.dev/dotnet/docs/api/class-browser#browser-new-context)
+- Extending the Network Mocking with a module using [RouteAsync](https://playwright.dev/dotnet/docs/api/class-browsercontext#browser-context-route) to Abort, Fulfill from a local file or Continue

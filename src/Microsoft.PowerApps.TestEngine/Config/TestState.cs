@@ -271,7 +271,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             var loader = new TestEngineModuleMEFLoader(logger);
             var settings = this.GetTestSettings();
-            var catalogModules = loader.LoadModules(settings.ExtensionModules, this.ModulePath);
+            var catalogModules = loader.LoadModules(settings.ExtensionModules);
 
             using var catalog = new AggregateCatalog(catalogModules);
             using var container = new CompositionContainer(catalog);

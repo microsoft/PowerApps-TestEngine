@@ -13,6 +13,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         public bool Enable { get; set; } = false;
 
+        public TestSettingExtensionSource Source { get; set; } = new TestSettingExtensionSource() { };
+
         /// <summary>
         /// Determine if extension modules should be checks for Namespace rules
         /// </summary>
@@ -21,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// List of allowed Test Engine Modules that can be referenced.
         /// </summary>
-        public List<string> AllowModule { get; set; } = new List<string>() { "*" };
+        public List<string> AllowModule { get; set; } = new List<string>();
 
         /// <summary>
         /// List of allowed Test Engine Modules cannot be loaded unless there is an explict allow

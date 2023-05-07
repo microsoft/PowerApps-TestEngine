@@ -24,7 +24,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             var setting = new TestSettingExtensions() { Enable = false };
             var loader = new TestEngineModuleMEFLoader(MockLogger.Object);
 
-            var catalog = loader.LoadModules(setting, "");
+            var catalog = loader.LoadModules(setting);
 
             Assert.NotNull(catalog);
             Assert.Equal(0, catalog.Catalogs.Count);
@@ -67,7 +67,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
                 setting.DenyModule.Add(deny);
             }
 
-            var catalog = loader.LoadModules(setting, Path.GetDirectoryName(this.GetType().Assembly.Location));
+            var catalog = loader.LoadModules(setting);
 
             Assert.NotNull(catalog);
             Assert.Equal(expected, string.Join(",",catalog.Catalogs.Select(c => c.GetType().Name)));
