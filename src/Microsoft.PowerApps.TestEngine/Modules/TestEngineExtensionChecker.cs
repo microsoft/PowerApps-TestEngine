@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Mono.Cecil;
@@ -84,6 +85,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             return valid;
         }
 
+        /// <summary>
+        /// Load all the types from the assembly using Intermediate Langiage (IL) mode only
+        /// </summary>
+        /// <param name="assembly">The byte representation of the assembly</param>
+        /// <returns>The Dependancies, Types and Method calls found in the assembly</returns>
         private List<string> LoadTypes(byte[] assembly)
         {
             List<string> found = new List<string>();
@@ -93,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 stream.Position = 0;
                 ModuleDefinition module = ModuleDefinition.ReadModule(stream);
 
-
+                // Add each assembly reference
                 foreach (var reference in module.AssemblyReferences)
                 {
                     if ( ! found.Contains(reference.Name) )
@@ -106,6 +112,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 {
                     AddType(type, found);
                     
+                    // Load each constructor parameter and types in the body
                     foreach (var constructor in type.GetConstructors())
                     {
                         if (constructor.HasParameters)
@@ -117,6 +124,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             LoadMethodBodyTypes(constructor.Body, found);
                         }
                     }
+
+                    // Load any fields
                     foreach (var field in type.Fields)
                     {
                         if (found.Contains(field.FieldType.FullName) && !field.FieldType.IsValueType)
@@ -124,13 +133,31 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             found.Add(field.FieldType.FullName);
                         }
                     }
+
+                    // ... properties with get/set body if they exist
                     foreach (var property in type.Properties)
                     {
                         if (found.Contains(property.PropertyType.FullName) && !property.PropertyType.IsValueType)
                         {
                             found.Add(property.PropertyType.FullName);
                         }
+                        if ( property.GetMethod != null )
+                        {
+                            if ( property.GetMethod.HasBody )
+                            {
+                                LoadMethodBodyTypes(property.GetMethod.Body, found);
+                            }
+                        }
+                        if (property.SetMethod != null)
+                        {
+                            if (property.SetMethod.HasBody)
+                            {
+                                LoadMethodBodyTypes(property.SetMethod.Body, found);
+                            }
+                        }
                     }
+
+                    // and method parameters and types in the method body
                     foreach (var method in type.Methods)
                     {
                         if (method.HasParameters)
@@ -164,6 +191,12 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 found.Add(type.FullName);
             }
         }
+
+        /// <summary>
+        /// Add method body instructions to the found list
+        /// </summary>
+        /// <param name="body">The body instructions to be searched</param>
+        /// <param name="found">The list of matching code found</param>
         private void LoadMethodBodyTypes(MethodBody body, List<String> found)
         {
             foreach (var variable in body.Variables)
@@ -182,6 +215,12 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         {
                             // Remove the return type from the call definition
                             name = name.Substring(name.IndexOf(" ")+1);
+                            var start = name.IndexOf("(");
+                            var args = name.Substring(start + 1, name.Length - start - 2).Split(',');
+                            if (args.Length >= 1 && !string.IsNullOrEmpty(args[0]))
+                            {
+                                name = name.Substring(0, start) + GetArgs(args, instruction);
+                            }
                         }
                         if ( !found.Contains(name) )
                         {
@@ -190,6 +229,65 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Convert call arguments into values
+        /// </summary>
+        /// <param name="args">The arguments to be converted</param>
+        /// <param name="instruction">The call instruction that the arguments relate to</param>
+        /// <returns>The call text with primative values or argument types</returns>
+        private string GetArgs(string[] args, Instruction instruction)
+        {
+            StringBuilder result = new StringBuilder("(");
+
+            for ( var i = 0; i < args.Length; i++ )
+            {
+                var argValue = GetCallArgument(i, args.Length, instruction);
+                switch (args[i])
+                {
+                    case "System.String":
+                        if ( argValue.OpCode.Code == Code.Ldstr )
+                        {
+                            result.Append("\"");
+                            result.Append(argValue.Operand.ToString());
+                            result.Append("\"");
+                        } 
+                        else
+                        {
+                            result.Append(args[i]);
+                        }
+                        break;
+                    default:
+                        result.Append(args[i]);
+                        break;
+                }                
+                if (i != args.Length - 1)
+                {
+                    result.Append(",");
+                }
+            }
+
+            result.Append(")");
+            return result.ToString();
+        }
+
+        /// <summary>
+        /// Get an argument for a method. They should be the nth intruction loaded before the method call
+        /// </summary>
+        /// <param name="index">The argument instruction to load</param>
+        /// <param name="argCount">The total number of arguments</param>
+        /// <param name="instruction">The call instruction</param>
+        /// <returns></returns>
+        private Instruction GetCallArgument(int index, int argCount, Instruction instruction)
+        {
+            Instruction current = instruction;
+            while (index < argCount)
+            {
+                current = current.Previous;
+                index++;
+            }
+            return current;
         }
     }
 }
