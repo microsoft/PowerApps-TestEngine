@@ -74,9 +74,13 @@ public class TestScript {
         [InlineData("using System.IO;", @"File.Exists(""c:\\test.txt"");", true, "", "System.IO", false)] // Deny all System.IO
         [InlineData("", @"IPage page = null; page.EvaluateAsync(""alert()"").Wait();", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Constructor code - deny
         [InlineData("", @"} public string Foo { get { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); return ""a""; }", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Get Property Code deny
-        [InlineData("", @"} private int _foo; public int Foo { set { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); _foo = value; }", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Set property deby
+        [InlineData("", @"} private int _foo; public int Foo { set { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); _foo = value; }", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Set property deny
         [InlineData(@"using System; public class Other { private Action Foo {get;set; } = () => { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); }; }", "", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Action deny property
         [InlineData(@"using System; public class Other { private Action Foo = () => { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); }; }", "", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Action deny field
+        [InlineData("using System; public class Other { private string Foo = String.Format(\"A\"); }", "", true, "", "System.String::Format", false)] // Action deny field - Inline Function
+        [InlineData(@"using System; public class Other { private static Action Foo {get;set; } = () => { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); }; }", "", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Static Action deny property
+        [InlineData(@"using System; public class Other { private static Action Foo = () => { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); }; }", "", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Static Action deny field
+        [InlineData(@"using System; public class Other { static Other() { page.EvaluateAsync(""alert()"").Wait(); } static readonly IPage page = null; }", "", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Static Constructor
         public void IsValid(string usingStatements, string script, bool useTemplate, string allow, string deny, bool expected)
         {
             var assembly = CompileScript(useTemplate ? _template
