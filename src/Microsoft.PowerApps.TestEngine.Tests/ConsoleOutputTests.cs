@@ -24,7 +24,12 @@ using Xunit;
 namespace Microsoft.PowerApps.TestEngine.Tests
 {
     public class ConsoleOutputTests
-    {
+    {   TestEngineEventHandler _testEngineEventHandler;
+
+        public ConsoleOutputTests() {
+            _testEngineEventHandler = new TestEngineEventHandler();
+        }
+
         private void SetupMocks()
         {
             MockTestEngineEventHandler.Setup(x => x.SetNumberOfTotalCases(It.IsAny<int>()));
