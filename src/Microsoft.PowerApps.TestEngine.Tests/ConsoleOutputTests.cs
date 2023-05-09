@@ -148,7 +148,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Assert that the expected output matches the console output of the function
             Assert.AreEqual(printer.ToString(), expected);
         }
-
         [Fact]
         public void TestTestCaseEndFailed()
         {
