@@ -30,23 +30,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler = new TestEngineEventHandler();
         }
 
-        private void SetupMocks()
-        {
-            MockTestEngineEventHandler.Setup(x => x.SetNumberOfTotalCases(It.IsAny<int>()));
-            MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
-            MockTestEngineEventHandler.Setup(x => x.SuiteBegin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
-            MockTestEngineEventHandler.Setup(x => x.SuiteEnd());
-            MockTestEngineEventHandler.Setup(x => x.TestCaseBegin(It.IsAny<string>()));
-            MockTestEngineEventHandler.Setup(x => x.TestCaseEnd(It.IsAny<bool>()));
-        }
 
         [Fact]
         public void TestEncounteredException()
         {
-            // Setup Mocks
-            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
-            SetupMocks();
-            
             // Specify expected result and output object
             var expected = "   Message";
             var printer = new StringWriter();
@@ -56,19 +43,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Console.SetOut(printer);
 
             // Run function
-            MockTestEngineEventHandler.EncounteredException(ex);
+            _testEngineEventHandler.EncounteredException(ex);
 
             // Assert that the expected output matches the console output of the function
-            Assert.AreEqual(printer.ToString(), expected);
+            Assert.Equal(printer.ToString(), expected);
         }
         
         [Fact]
         public void TestSuiteBegin()
         {
-            // Setup Mocks
-            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
-            SetupMocks();
-            
             // Specify expected result and output object
             var expected = $"\nRunning test suite: TestSuiteName";
             expected += $"\n   Test results will be stored in: ./testDirectory";
@@ -81,19 +64,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Console.SetOut(printer);
 
             // Run function
-            MockTestEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Chromium", "make.powerapps.com/testapp&source=testengine");
+            _testEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Chromium", "make.powerapps.com/testapp&source=testengine");
 
             // Assert that the expected output matches the console output of the function
-            Assert.AreEqual(printer.ToString(), expected);
+            Assert.Equal(printer.ToString(), expected);
         }
 
         [Fact]
         public void TestSuiteEnd()
         {
-            // Setup Mocks
-            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
-            SetupMocks();
-            
             // Specify expected result and output object
             var expected = "\n\nTest suite summary";
             expected += $"Total cases: 11";
@@ -105,20 +84,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Set output
             Console.SetOut(printer);
 
+            _testEngineEventHandler._casesTotal = 11;
+            _testEngineEventHandler._casesPassed = 6;
+
             // Run function
-            MockTestEngineEventHandler.SuiteEnd(11, 6, 5);
+            _testEngineEventHandler.SuiteEnd();
 
             // Assert that the expected output matches the console output of the function
-            Assert.AreEqual(printer.ToString(), expected);
+            Assert.Equal(printer.ToString(), expected);
         }
 
         [Fact]
         public void TestTestCaseBegin()
         {
-            // Setup Mocks
-            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
-            SetupMocks();
-            
             // Specify expected result and output object
             var expected = "\n Test case: MyCase";
             var printer = new StringWriter();
@@ -127,20 +105,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Console.SetOut(printer);
 
             // Run function
-            MockTestEngineEventHandler.TestCaseBegin("MyCase");
+            _testEngineEventHandler.TestCaseBegin("MyCase");
 
             // Assert that the expected output matches the console output of the function
-            Assert.AreEqual(printer.ToString(), expected);
+            Assert.Equal(printer.ToString(), expected);
         }
 
         [Fact]
         public void TestTestCaseEndPassed()
         {
-            // Setup Mocks
-            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
-            SetupMocks();
-            
-            // Specify expected result and output object
+             // Specify expected result and output object
             var expected = "\n   Result: Passed";
             var printer = new StringWriter();
 
@@ -148,19 +122,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Console.SetOut(printer);
 
             // Run function
-            MockTestEngineEventHandler.TestCaseEnd(true);
+            _testEngineEventHandler.TestCaseEnd(true);
 
             // Assert that the expected output matches the console output of the function
-            Assert.AreEqual(printer.ToString(), expected);
+            Assert.Equal(printer.ToString(), expected);
         }
         
         [Fact]
         public void TestTestCaseEndFailed()
         {
-            // Setup Mocks
-            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
-            SetupMocks();
-            
             // Specify expected result and output object
             var expected = "\n   Result: Failed";
             var printer = new StringWriter();
@@ -169,10 +139,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Console.SetOut(printer);
 
             // Run function
-            MockTestEngineEventHandler.TestCaseEnd(false);
+            _testEngineEventHandler.TestCaseEnd(false);
 
             // Assert that the expected output matches the console output of the function
-            Assert.AreEqual(printer.ToString(), expected);
+            Assert.Equal(printer.ToString(), expected);
         }
     }
 }
