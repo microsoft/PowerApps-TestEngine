@@ -126,7 +126,7 @@ else
             .AddFilter(l => l >= logLevel)
             .AddProvider(new TestLoggerProvider(new FileSystem()));
         })
-        .AddSingleton<ITestEngineEvents, TestEngineEvents>()
+        .AddSingleton<ITestEngineEvents, TestEngineEventHandler>()
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
         .AddScoped<IPowerFxEngine, PowerFxEngine>()

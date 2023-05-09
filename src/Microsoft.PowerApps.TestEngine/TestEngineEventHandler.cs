@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
 
 namespace Microsoft.PowerApps.TestEngine
 {
@@ -36,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
         }
 
-        public void SuiteBegin(string suiteName, string directory, string browserName, System.Uri url)
+        public void SuiteBegin(string suiteName, string directory, string browserName, string url)
         {
             Console.WriteLine($"Running test suite: {suiteName}");
             Console.WriteLine($"   Test results will be stored in: {directory}");

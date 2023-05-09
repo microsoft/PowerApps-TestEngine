@@ -24,7 +24,7 @@ namespace Microsoft.PowerApps.TestEngine
         /// <summary>
         /// Handles the starting suite output
         /// </summary>
-        public void SuiteBegin(string suiteName, string directory, string browserName, System.Uri url);
+        public void SuiteBegin(string suiteName, string directory, string browserName, string url);
 
         /// <summary>
         /// Handles the suite summary output
