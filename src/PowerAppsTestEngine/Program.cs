@@ -109,7 +109,7 @@ else
     }
 
     var logLevel = LogLevel.Information; // Default log level
-    if (!string.IsNullOrEmpty(inputOptions.LogLevel))
+    if (string.IsNullOrEmpty(inputOptions.LogLevel))
     {
         Console.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default");
         Enum.TryParse(inputOptions.LogLevel, true, out logLevel);
@@ -126,7 +126,7 @@ else
             .AddFilter(l => l >= logLevel)
             .AddProvider(new TestLoggerProvider(new FileSystem()));
         })
-        .AddSingleton<ITestEngineEvents, TestEngineEvents>()
+        .AddSingleton<ITestEngineEvents, TestEngineEventHandler>()
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
         .AddScoped<IPowerFxEngine, PowerFxEngine>()
