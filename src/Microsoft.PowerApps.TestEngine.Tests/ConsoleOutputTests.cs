@@ -106,5 +106,68 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Assert that the expected output matches the console output of the function
             Assert.AreEqual(printer.ToString(), expected);
         }
+
+        [Fact]
+        public void TestTestCaseBegin()
+        {
+            // Setup Mocks
+            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
+            SetupMocks();
+            
+            // Specify expected result and output object
+            var expected = "\n Test case: MyCase";
+            var printer = new StringWriter();
+
+            // Set output
+            Console.SetOut(printer);
+
+            // Run function
+            MockTestEngineEventHandler.TestCaseBegin("MyCase");
+
+            // Assert that the expected output matches the console output of the function
+            Assert.AreEqual(printer.ToString(), expected);
+        }
+
+        [Fact]
+        public void TestTestCaseEndPassed()
+        {
+            // Setup Mocks
+            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
+            SetupMocks();
+            
+            // Specify expected result and output object
+            var expected = "\n   Result: Passed";
+            var printer = new StringWriter();
+
+            // Set output
+            Console.SetOut(printer);
+
+            // Run function
+            MockTestEngineEventHandler.TestCaseEnd(true);
+
+            // Assert that the expected output matches the console output of the function
+            Assert.AreEqual(printer.ToString(), expected);
+        }
+
+        [Fact]
+        public void TestTestCaseEndFailed()
+        {
+            // Setup Mocks
+            Mock<TestEngineEventHandler> MockTestEngineEventHandler = new Mock<TestEngineEventHandler>(MockBehavior.Strict);
+            SetupMocks();
+            
+            // Specify expected result and output object
+            var expected = "\n   Result: Failed";
+            var printer = new StringWriter();
+
+            // Set output
+            Console.SetOut(printer);
+
+            // Run function
+            MockTestEngineEventHandler.TestCaseEnd(false);
+
+            // Assert that the expected output matches the console output of the function
+            Assert.AreEqual(printer.ToString(), expected);
+        }
     }
 }
