@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.Reporting.Format;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
@@ -252,14 +251,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
-            MockPage.Setup(x => x.RouteAsync(mock.RequestURL, It.IsAny<Action<IRoute>>(), It.IsAny<PageRouteOptions>())).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
+            MockPage.Setup(x => x.RouteAsync(mock.RequestURL, It.IsAny<Func<IRoute, Task>>(), It.IsAny<PageRouteOptions>())).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
             await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync();
 
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once);
-            MockPage.Verify(x => x.RouteAsync(mock.RequestURL, It.IsAny<Action<IRoute>>(), It.IsAny<PageRouteOptions>()), Times.Once);
+            MockPage.Verify(x => x.RouteAsync(mock.RequestURL, It.IsAny<Func<IRoute, Task>>(), It.IsAny<PageRouteOptions>()), Times.Once);
             MockFileSystem.Verify(x => x.IsValidFilePath(mock.ResponseDataFile), Times.Once());
         }
 
@@ -620,43 +619,99 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         }
 
         [Fact]
-        public async Task DisposeAsyncTest()
+        public async Task HandleUserPasswordScreen()
         {
-            var browserConfig = new BrowserConfiguration()
-            {
-                Browser = "Chromium",
-                Device = null,
-                ScreenHeight = null,
-                ScreenWidth = null
-            };
+            string testSelector = "input:has-text('Password')";
+            string testTextEntry = "*****";
+            string desiredUrl = "https://make.powerapps.com";
 
-            var testSettings = new TestSettings()
-            {
-                RecordVideo = true,
-                Timeout = 15
-            };
-
-            MockSingleTestInstanceState.Setup(x => x.GetBrowserConfig()).Returns(browserConfig);
-            MockPlaywrightObject.SetupGet(x => x[It.IsAny<string>()]).Returns(MockBrowserType.Object);  
-            MockBrowserType.Setup(x => x.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>())).Returns(Task.FromResult(MockBrowser.Object));
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
-            MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns("C:\\TestResults");
-            MockBrowser.Setup(x => x.NewContextAsync(It.IsAny<BrowserNewContextOptions>())).Returns(Task.FromResult(MockBrowserContext.Object));
             LoggingTestHelper.SetupMock(MockLogger);
 
-            // Mock Dispose methods
-            MockPlaywrightObject.Setup(x => x.Dispose());
-            MockBrowserContext.Setup(x => x.DisposeAsync()).Returns(ValueTask.CompletedTask);            
+            var mockLocator = new Mock<ILocator>(MockBehavior.Strict);
+            MockPage.Setup(x => x.Locator(It.IsAny<string>(), null)).Returns(mockLocator.Object);
+            mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.CompletedTask);
+
+            MockPage.Setup(x => x.FillAsync(testSelector, testTextEntry, null)).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.ClickAsync("input[type=\"submit\"]", null)).Returns(Task.CompletedTask);
+            // Assume ask already logged in
+            MockPage.Setup(x => x.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", It.IsAny<PageWaitForSelectorOptions>())).Returns(Task.FromResult(MockElementHandle.Object));
+            // Simulate Click to stay signed in 
+            MockPage.Setup(x => x.ClickAsync("[id=\"idBtn_Back\"]", null)).Returns(Task.CompletedTask);
+            // Wait until login is complete and redirect to desired page
+            MockPage.Setup(x => x.WaitForURLAsync(desiredUrl, null)).Returns(Task.CompletedTask);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
-                MockFileSystem.Object, MockPlaywrightObject.Object, MockBrowserContext.Object);
-            await playwrightTestInfraFunctions.SetupAsync();
+               MockFileSystem.Object, browserContext: MockBrowserContext.Object, page: MockPage.Object);
 
-            await playwrightTestInfraFunctions.DisposeAsync();
+            await playwrightTestInfraFunctions.HandleUserPasswordScreen(testSelector, testTextEntry, desiredUrl);
 
-            MockPlaywrightObject.Verify(x => x.Dispose(), Times.Once());
-            MockBrowserContext.Verify(x => x.DisposeAsync(), Times.Once());
+            MockPage.Verify(x => x.Locator(It.Is<string>(v => v.Equals(testSelector)), null));
+            MockPage.Verify(x => x.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", It.Is<PageWaitForSelectorOptions>(v => v.Timeout >= 8000)));
         }
+
+        [Fact]
+        public async Task HandleUserPasswordScreenErrorEntry()
+        {
+            string testSelector = "input:has-text('Password')";
+            string testTextEntry = "*****";
+            string desiredUrl = "https://make.powerapps.com";
+
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var mockLocator = new Mock<ILocator>(MockBehavior.Strict);
+            MockPage.Setup(x => x.Locator(It.IsAny<string>(), null)).Returns(mockLocator.Object);
+            mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.CompletedTask);
+
+            MockPage.Setup(x => x.FillAsync(testSelector, testTextEntry, null)).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.ClickAsync("input[type=\"submit\"]", null)).Returns(Task.CompletedTask);
+            // Not ask to sign in as selector not found
+            MockPage.Setup(x => x.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", It.IsAny<PageWaitForSelectorOptions>())).Throws(new TimeoutException());
+            // Simulate error response for password error
+            MockPage.Setup(x => x.WaitForSelectorAsync("[id=\"passwordError\"]", It.IsAny<PageWaitForSelectorOptions>())).Returns(Task.FromResult(MockElementHandle.Object));
+            // Throw exception as not make it to desired url
+            MockPage.Setup(x => x.WaitForURLAsync(desiredUrl, null)).Throws(new TimeoutException());
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+               MockFileSystem.Object, browserContext: MockBrowserContext.Object, page: MockPage.Object);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.HandleUserPasswordScreen(testSelector, testTextEntry, desiredUrl));
+
+            MockPage.Verify(x => x.Locator(It.Is<string>(v => v.Equals(testSelector)), null));
+            MockPage.Verify(x => x.WaitForSelectorAsync("[id=\"passwordError\"]", It.Is<PageWaitForSelectorOptions>(v => v.Timeout >= 2000)));
+        }
+
+        [Fact]
+        public async Task HandleUserPasswordScreenUnknownError()
+        {
+            string testSelector = "input:has-text('Password')";
+            string testTextEntry = "*****";
+            string desiredUrl = "https://make.powerapps.com";
+
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var mockLocator = new Mock<ILocator>(MockBehavior.Strict);
+            MockPage.Setup(x => x.Locator(It.IsAny<string>(), null)).Returns(mockLocator.Object);
+            mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.CompletedTask);
+
+            MockPage.Setup(x => x.FillAsync(testSelector, testTextEntry, null)).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.ClickAsync("input[type=\"submit\"]", null)).Returns(Task.CompletedTask);
+            // Not ask to sign in as selector not found
+            MockPage.Setup(x => x.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", null)).Throws(new TimeoutException());
+            // Also not able to find password error, must be some other error
+            MockPage.Setup(x => x.WaitForSelectorAsync("[id=\"passwordError\"]", It.IsAny<PageWaitForSelectorOptions>())).Throws(new TimeoutException());
+            // Throw exception as not make it to desired url
+            MockPage.Setup(x => x.WaitForURLAsync(desiredUrl, null)).Throws(new TimeoutException());
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+               MockFileSystem.Object, browserContext: MockBrowserContext.Object, page: MockPage.Object);
+
+            await Assert.ThrowsAsync<TimeoutException>(async () => await playwrightTestInfraFunctions.HandleUserPasswordScreen(testSelector, testTextEntry, desiredUrl));
+
+            MockPage.Verify(x => x.Locator(It.Is<string>(v => v.Equals(testSelector)), null));
+        }
+
     }
 }
