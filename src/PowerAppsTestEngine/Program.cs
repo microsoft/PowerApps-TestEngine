@@ -109,7 +109,7 @@ else
     }
 
     var logLevel = LogLevel.Information; // Default log level
-    if (!string.IsNullOrEmpty(inputOptions.LogLevel))
+    if (string.IsNullOrEmpty(inputOptions.LogLevel))
     {
         Console.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default");
         Enum.TryParse(inputOptions.LogLevel, true, out logLevel);
