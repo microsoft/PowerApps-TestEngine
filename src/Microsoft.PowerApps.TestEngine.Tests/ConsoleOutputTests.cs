@@ -35,7 +35,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         public void TestEncounteredException()
         {
             // Specify expected result and output object
-            var expected = "   Message\r\n";
+            var expected = "   Message\n";
             var printer = new StringWriter();
             Exception ex = new Exception("Message");
 
@@ -53,10 +53,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         public void TestSuiteBegin()
         {
             // Specify expected result and output object
-            var expected = $"Running test suite: TestSuiteName\r";
-            expected += $"\n   Test results will be stored in: ./testDirectory\r";
-            expected += $"\n   Browser: Chromium\r";
-            expected += $"\n   App URL: make.powerapps.com/testapp\r\n";
+            var expected = $"Running test suite: TestSuiteName";
+            expected += $"\n   Test results will be stored in: ./testDirectory";
+            expected += $"\n   Browser: Chromium";
+            expected += $"\n   App URL: make.powerapps.com/testapp\n";
 
             var printer = new StringWriter();
 
@@ -74,10 +74,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         public void TestSuiteEnd()
         {
             // Specify expected result and output object
-            var expected = "\nTest suite summary\r\n";
-            expected += $"Total cases: 11\r\n";
-            expected += $"Cases passed: 6\r\n";
-            expected += $"Cases failed: 5\r\n";
+            var expected = "\nTest suite summary\n";
+            expected += $"Total cases: 11\n";
+            expected += $"Cases passed: 6\n";
+            expected += $"Cases failed: 5\n";
             
             var printer = new StringWriter();
 
@@ -98,7 +98,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         public void TestTestCaseBegin()
         {
             // Specify expected result and output object
-            var expected = "Test case: MyCase\r\n";
+            var expected = "Test case: MyCase\n";
             var printer = new StringWriter();
 
             // Set output
@@ -115,7 +115,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         public void TestTestCaseEndPassed()
         {
              // Specify expected result and output object
-            var expected = "   Result: Passed\r\n";
+            var expected = "   Result: Passed\n";
             var printer = new StringWriter();
 
             // Set output
@@ -132,7 +132,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         public void TestTestCaseEndFailed()
         {
             // Specify expected result and output object
-            var expected = "   Result: Failed\r\n";
+            var expected = "   Result: Failed\n";
             var printer = new StringWriter();
 
             // Set output
