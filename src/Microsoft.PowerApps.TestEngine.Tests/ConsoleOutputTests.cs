@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var expected = $"Running test suite: TestSuiteName";
             expected += $"\n   Test results will be stored in: ./testDirectory";
             expected += $"\n   Browser: Chromium";
-            expected += $"\n   App URL: make.powerapps.com/testapp\n";
+            expected += $"\n   App URL: make.powerapps.com/testapp";
 
             var printer = new StringWriter();
 
