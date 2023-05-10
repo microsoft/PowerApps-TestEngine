@@ -24,9 +24,11 @@ using Xunit;
 namespace Microsoft.PowerApps.TestEngine.Tests
 {
     public class ConsoleOutputTests
-    {   TestEngineEventHandler _testEngineEventHandler;
+    {
+        TestEngineEventHandler _testEngineEventHandler;
 
-        public ConsoleOutputTests() {
+        public ConsoleOutputTests()
+        {
             _testEngineEventHandler = new TestEngineEventHandler();
         }
 
@@ -48,7 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Assert that the expected output matches the console output of the function
             Assert.Contains(expected, printer.ToString());
         }
-        
+
         [Fact]
         public void TestSuiteBegin()
         {
@@ -108,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public void TestTestCaseEndPassed()
         {
-             // Specify expected result and output object
+            // Specify expected result and output object
             var expected = "   Result: Passed";
             var printer = new StringWriter();
 
@@ -121,7 +123,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Assert that the expected output matches the console output of the function
             Assert.Contains(expected, printer.ToString());
         }
-        
+
         [Fact]
         public void TestTestCaseEndFailed()
         {
