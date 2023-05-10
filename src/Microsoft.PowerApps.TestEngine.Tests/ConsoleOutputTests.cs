@@ -52,12 +52,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public void TestSuiteBegin()
         {
-            // Specify expected result and output object
-            var expected = $"Running test suite: TestSuiteName";
-            expected += $"\n   Test results will be stored in: ./testDirectory";
-            expected += $"\n   Browser: Chromium";
-            expected += $"\n   App URL: make.powerapps.com/testapp";
-
             var printer = new StringWriter();
 
             // Set output
@@ -67,18 +61,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Chromium", "make.powerapps.com/testapp&source=testengine");
 
             // Assert that the expected output matches the console output of the function
-            Assert.Contains(expected, printer.ToString());
+            Assert.Contains("Running test suite: TestSuiteName", printer.ToString());
+            Assert.Contains("\n   Test results will be stored in: ./testDirectory", printer.ToString());
+            Assert.Contains("\n   Browser: Chromium", printer.ToString());
+            Assert.Contains("\n   App URL: make.powerapps.com/testapp", printer.ToString());
         }
 
         [Fact]
         public void TestSuiteEnd()
         {
-            // Specify expected result and output object
-            var expected = "\nTest suite summary";
-            expected += $"Total cases: 11";
-            expected += $"Cases passed: 6";
-            expected += $"Cases failed: 5";
-            
             var printer = new StringWriter();
 
             // Set output
@@ -91,7 +82,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.SuiteEnd();
 
             // Assert that the expected output matches the console output of the function
-            Assert.Contains(expected, printer.ToString());
+            Assert.Contains("\nTest suite summary", printer.ToString());
+            Assert.Contains("Total cases: 11", printer.ToString());
+            Assert.Contains("Cases passed: 6", printer.ToString());
+            Assert.Contains("Cases failed: 5", printer.ToString());
         }
 
         [Fact]
