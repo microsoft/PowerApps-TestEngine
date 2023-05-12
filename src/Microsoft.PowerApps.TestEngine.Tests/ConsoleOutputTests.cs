@@ -32,7 +32,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler = new TestEngineEventHandler();
         }
 
-
         [Fact]
         public void TestEncounteredException()
         {
