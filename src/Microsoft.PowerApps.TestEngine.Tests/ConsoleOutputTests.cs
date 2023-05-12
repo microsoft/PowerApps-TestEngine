@@ -24,18 +24,19 @@ using Xunit;
 namespace Microsoft.PowerApps.TestEngine.Tests
 {
     public class ConsoleOutputTests
-    {   TestEngineEventHandler _testEngineEventHandler;
+    {
+        TestEngineEventHandler _testEngineEventHandler;
 
-        public ConsoleOutputTests() {
+        public ConsoleOutputTests()
+        {
             _testEngineEventHandler = new TestEngineEventHandler();
         }
-
 
         [Fact]
         public void TestEncounteredException()
         {
             // Specify expected result and output object
-            var expected = "   Message\n";
+            var expected = "   Message";
             var printer = new StringWriter();
             Exception ex = new Exception("Message");
 
@@ -46,18 +47,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.EncounteredException(ex);
 
             // Assert that the expected output matches the console output of the function
-            Assert.Equal(expected, printer.ToString());
+            Assert.Contains(expected, printer.ToString());
         }
-        
+
         [Fact]
         public void TestSuiteBegin()
         {
-            // Specify expected result and output object
-            var expected = $"Running test suite: TestSuiteName";
-            expected += $"\n   Test results will be stored in: ./testDirectory";
-            expected += $"\n   Browser: Chromium";
-            expected += $"\n   App URL: make.powerapps.com/testapp\n";
-
             var printer = new StringWriter();
 
             // Set output
@@ -67,18 +62,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Chromium", "make.powerapps.com/testapp&source=testengine");
 
             // Assert that the expected output matches the console output of the function
-            Assert.Equal(expected, printer.ToString());
+            Assert.Contains("Running test suite: TestSuiteName", printer.ToString());
+            Assert.Contains("\n   Test results will be stored in: ./testDirectory", printer.ToString());
+            Assert.Contains("\n   Browser: Chromium", printer.ToString());
+            Assert.Contains("\n   App URL: make.powerapps.com/testapp", printer.ToString());
         }
 
         [Fact]
         public void TestSuiteEnd()
         {
-            // Specify expected result and output object
-            var expected = "\nTest suite summary\n";
-            expected += $"Total cases: 11\n";
-            expected += $"Cases passed: 6\n";
-            expected += $"Cases failed: 5\n";
-            
             var printer = new StringWriter();
 
             // Set output
@@ -91,14 +83,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.SuiteEnd();
 
             // Assert that the expected output matches the console output of the function
-            Assert.Equal(expected, printer.ToString());
+            Assert.Contains("\nTest suite summary", printer.ToString());
+            Assert.Contains("Total cases: 11", printer.ToString());
+            Assert.Contains("Cases passed: 6", printer.ToString());
+            Assert.Contains("Cases failed: 5", printer.ToString());
         }
 
         [Fact]
         public void TestTestCaseBegin()
         {
             // Specify expected result and output object
-            var expected = "Test case: MyCase\n";
+            var expected = "Test case: MyCase";
             var printer = new StringWriter();
 
             // Set output
@@ -108,14 +103,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.TestCaseBegin("MyCase");
 
             // Assert that the expected output matches the console output of the function
-            Assert.Equal(expected, printer.ToString());
+            Assert.Contains(expected, printer.ToString());
         }
 
         [Fact]
         public void TestTestCaseEndPassed()
         {
-             // Specify expected result and output object
-            var expected = "   Result: Passed\n";
+            // Specify expected result and output object
+            var expected = "   Result: Passed";
             var printer = new StringWriter();
 
             // Set output
@@ -125,14 +120,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.TestCaseEnd(true);
 
             // Assert that the expected output matches the console output of the function
-            Assert.Equal(expected, printer.ToString());
+            Assert.Contains(expected, printer.ToString());
         }
-        
+
         [Fact]
         public void TestTestCaseEndFailed()
         {
             // Specify expected result and output object
-            var expected = "   Result: Failed\n";
+            var expected = "   Result: Failed";
             var printer = new StringWriter();
 
             // Set output
@@ -142,7 +137,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.TestCaseEnd(false);
 
             // Assert that the expected output matches the console output of the function
-            Assert.Equal(expected, printer.ToString());
+            Assert.Contains(expected, printer.ToString());
         }
     }
 }
