@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
@@ -594,6 +594,40 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
 
+        [Fact]
+        public async Task GetDebugInfoReturnsObject()
+        {
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+
+            var newSession = new ExpandoObject();
+            newSession.TryAdd("sessionID", "somesessionId");
+
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"))
+    .Returns(Task.FromResult((object)newSession));
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var actualValue = await powerAppFunctions.GetDebugInfo();
+
+            Assert.Equal(actualValue, (object)newSession);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetDebugInfoReturnsNull()
+        {
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"))
+    .Returns(Task.FromResult<object>(null));
+
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var actualValue = await powerAppFunctions.GetDebugInfo();
+
+            Assert.Null(actualValue);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"), Times.Once());
+        }
+
+        // Start Published App JSSDK not found tests
         [Fact]
         public async Task LoadPowerAppsObjectModelAsyncNoPublishedAppFunction()
         {
