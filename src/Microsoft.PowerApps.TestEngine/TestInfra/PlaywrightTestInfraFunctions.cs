@@ -295,75 +295,88 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
         }
 
+        // Justification: Limited ability to run unit tests for 
+        // Playwright actions on the sign-in page
+        [ExcludeFromCodeCoverage]
         public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
         {
             var logger = _singleTestInstanceState.GetLogger();
+
+            // Setting options fot the RunAndWaitForNavigationAsync function
+            PageRunAndWaitForNavigationOptions options = new PageRunAndWaitForNavigationOptions();
+
+            // URL that should be redirected to
+            options.UrlString = desiredUrl;
 
             ValidatePage();
 
             try
             {
-                // Find the password box
-                await Page.Locator(selector).WaitForAsync();
-
-                // Fill in the password
-                await Page.FillAsync(selector, value);
-
-                // Submit password form
-                await this.ClickAsync("input[type=\"submit\"]");
-
-                PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
-                selectorOptions.Timeout = 8000;
-
-                // For instances where there is a 'Stay signed in?' dialogue box
-                try
+                // Only continue if redirected to the correct page
+                await Page.RunAndWaitForNavigationAsync(async () =>
                 {
-                    logger.LogDebug("Checking if asked to stay signed in.");
+                    // Find the password box
+                    await Page.Locator(selector).WaitForAsync();
 
-                    // Check if we received a 'Stay signed in?' box?
-                    await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", selectorOptions);
-                    logger.LogDebug("Was asked to 'stay signed in'.");
+                    // Fill in the password
+                    await Page.FillAsync(selector, value);
 
-                    // Click to stay signed in
-                    await Page.ClickAsync("[id=\"idBtn_Back\"]");
-                }
-                // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
-                catch (Exception ssiException)
-                {
-                    logger.LogDebug("Exception encountered: " + ssiException.ToString());
+                    // Submit password form
+                    await this.ClickAsync("input[type=\"submit\"]");
 
-                    // Keep record if passwordError was encountered
-                    bool hasPasswordError = false;
+                    PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
+                    selectorOptions.Timeout = 8000;
 
+                    // For instances where there is a 'Stay signed in?' dialogue box
                     try
                     {
-                        selectorOptions.Timeout = 2000;
+                        logger.LogDebug("Checking if asked to stay signed in.");
 
-                        // Check if we received a password error
-                        await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
-                        hasPasswordError = true;
+                        // Check if we received a 'Stay signed in?' box?
+                        await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", selectorOptions);
+                        logger.LogDebug("Was asked to 'stay signed in'.");
+
+                        // Click to stay signed in
+                        await Page.ClickAsync("[id=\"idBtn_Back\"]");
                     }
-                    catch (Exception peException)
+                    // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
+                    catch (Exception ssiException)
                     {
-                        logger.LogDebug("Exception encountered: " + peException.ToString());
+                        logger.LogDebug("Exception encountered: " + ssiException.ToString());
+
+                        // Keep record if passwordError was encountered
+                        bool hasPasswordError = false;
+
+                        try
+                        {
+                            selectorOptions.Timeout = 2000;
+
+                            // Check if we received a password error
+                            await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
+                            hasPasswordError = true;
+                        }
+                        catch (Exception peException)
+                        {
+                            logger.LogDebug("Exception encountered: " + peException.ToString());
+                        }
+
+                        // If encountered password error, exit program
+                        if (hasPasswordError)
+                        {
+                            logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
+                            throw new InvalidOperationException();
+                        }
+                        // If not, continue
+                        else
+                        {
+                            logger.LogDebug("Did not encounter an invalid password error.");
+                        }
+
+                        logger.LogDebug("Was not asked to 'stay signed in'.");
                     }
 
-                    // If encountered password error, exit program
-                    if (hasPasswordError)
-                    {
-                        logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
-                        throw new InvalidOperationException();
-                    }
-                    // If not, continue
-                    else
-                    {
-                        logger.LogDebug("Did not encounter an invalid password error.");
-                    }
-
-                    logger.LogDebug("Was not asked to 'stay signed in'.");
-                }
-
-                await Page.WaitForURLAsync(desiredUrl);
+                    await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                }, options);
             }
             catch (TimeoutException)
             {
