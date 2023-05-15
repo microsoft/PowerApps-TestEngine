@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
@@ -20,10 +21,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
 
+        public static string EmbeddedJSFolderPath = "JS";
         public static string PublishedAppIframeName = "fullscreen-app-host";
+        public static string CheckPowerAppsTestEngineObject = "typeof PowerAppsTestEngine";
+
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
+        private string FileNotFoundErrorMessage = "Something went wrong when Test Engine tried to load required dependencies.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
@@ -60,14 +65,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private string GetFilePath(string file)
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var fullFilePath = Path.Combine(currentDirectory, file);
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+            var fullFilePath = Path.Combine(assemblyDirectory, file);
             if (File.Exists(fullFilePath))
             {
                 return fullFilePath;
             }
-
-            return Path.Combine(Directory.GetParent(currentDirectory).FullName, "Microsoft.PowerApps.TestEngine", file);
+            else
+            {
+                throw new FileNotFoundException(FileNotFoundErrorMessage, file);
+            }
         }
 
         public async Task<bool> CheckIfAppIsIdleAsync()
@@ -162,7 +170,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
             try
             {
-                result = await _testInfraFunctions.RunJavascriptAsync<string>("typeof PowerAppsTestEngine");
+                result = await _testInfraFunctions.RunJavascriptAsync<string>(CheckPowerAppsTestEngineObject);
             }
             catch (NullReferenceException) { }
 
@@ -181,8 +189,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 catch (TimeoutException)
                 {
                     _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "CanvasAppSdk.js")), null);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
             }
             catch (Exception ex)
@@ -387,6 +395,19 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             PollingHelper.Poll(getItemCount, (x) => !x.IsCompleted, null, _testState.GetTimeout(), _singleTestInstanceState.GetLogger(), GetItemCountErrorMessage);
 
             return getItemCount.GetResult();
+        }
+
+        public async Task<object> GetDebugInfo()
+        {
+            try
+            {
+                var expression = $"PowerAppsTestEngine.debugInfo";
+                return await _testInfraFunctions.RunJavascriptAsync<object>(expression);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Dynamic;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -96,7 +97,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             // Remove the leading = sign
-            if (testSteps.StartsWith('='))
+            if (testSteps.StartsWith("="))
             {
                 testSteps = testSteps.Remove(0, 1);
             }
@@ -108,7 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
                 goStepByStep = true;
-                Logger.LogWarning($"Syntax check failed. Now attempting to execute lines step by step");
+                Logger.LogDebug($"Syntax check failed. Now attempting to execute lines step by step");
             }
 
             if (goStepByStep)
@@ -147,6 +148,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 Engine.UpdateVariable(control.Key, control.Value);
             }
+        }
+
+        public IPowerAppFunctions GetPowerAppFunctions()
+        {
+            return _powerAppFunctions;
         }
     }
 }

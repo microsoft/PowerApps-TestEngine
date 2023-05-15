@@ -46,8 +46,8 @@ do
     done
   if [[ -n "${envId}" && -n "${tenantId}" && -n "${domain}" && -n "${testPlanFile}" && -n "${outputDir}" ]]; then     # null checks on args
     queryParam = "&PAOverrideFGRollout.OnePlayerStandaloneWebPlayer=false"; # force old player
-    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir} -q ${queryParam};
+    dotnet run -f net6.0 -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir} -q ${queryParam};
     queryParam = "&PAOverrideFGRollout.OnePlayerStandaloneWebPlayer=true"; # force new player
-    dotnet run -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir} -q ${queryParam};
+    dotnet run -f net6.0 -- -e ${envId} -t ${tenantId} -d ${domain} -i ${testPlanFile} -o ${outputDir} -q ${queryParam};
   fi
 done

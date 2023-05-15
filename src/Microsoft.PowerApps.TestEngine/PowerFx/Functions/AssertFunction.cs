@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 
@@ -29,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             {
                 _logger.LogTrace($"{message.Value}");
                 _logger.LogError("Assert failed. Property is not equal to the specified value.");
-                throw new InvalidOperationException();
+                throw new AssertionFailureException(message.Value);
             }
 
             _logger.LogTrace(message.Value);

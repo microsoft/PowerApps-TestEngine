@@ -1,0 +1,157 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+  - main
+
+pr: none
+
+pool:
+  vmImage: 'windows-latest'
+
+jobs:
+- job: Build_PowerAppsTestEngine
+  displayName: 'Build PowerAppsTestEngine Solution'
+
+  strategy:
+    matrix:
+      Debug:
+        BuildConfiguration: 'Debug'
+      Release:
+        BuildConfiguration: 'Release'
+
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Use dotnet sdk 6.0'
+    inputs:
+      version: 6.0.x
+      installationPath: '$(Agent.ToolsDirectory)/dotnet'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build and test'
+    inputs:
+      command: 'run'
+      projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+      arguments: '-- ci -c $(BuildConfiguration)'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*-*.trx'
+      searchFolder: '$(Build.SourcesDirectory)/obj/'
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+
+  - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
+    displayName: 'ESRP sign Microsoft.PowerAppsTestEngine.dll'
+    inputs:
+      ConnectedServiceName: 'ESRPCodeSigningConnection'
+      FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/Microsoft.PowerApps.TestEngine/'
+      Pattern: '*.dll'
+      signConfigType: inlineSignParams
+      inlineOperation: |
+        [
+            {
+                  "keyCode": "CP-233863-SN",
+                  "operationSetCode": "StrongNameSign",
+                  "parameters": [ ],
+                  "toolName": "sign",
+                  "toolVersion": "1.0"
+            },
+            {
+                "keyCode": "CP-230012",
+                "operationSetCode": "SigntoolSign",
+                "parameters": [
+                {
+                    "parameterName": "OpusName",
+                    "parameterValue": "Microsoft"
+                },
+                {
+                    "parameterName": "OpusInfo",
+                    "parameterValue": "http://www.microsoft.com"
+                },
+                {
+                    "parameterName": "Append",
+                    "parameterValue": "/as"
+                },
+                {
+                    "parameterName": "FileDigest",
+                    "parameterValue": "/fd \"SHA256\""
+                },
+                {
+                    "parameterName": "PageHash",
+                    "parameterValue": "/NPH"
+                },
+                {
+                    "parameterName": "TimeStamp",
+                    "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+                }
+                ],
+                "toolName": "sign",
+                "toolVersion": "1.0"
+            }
+        ]
+      ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Pack'
+    inputs:
+      command: 'run'
+      projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+      arguments: '-- pack -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
+    displayName: 'ESRP sign nuget packages'
+    inputs:
+      ConnectedServiceName: 'ESRPCodeSigningConnection'
+      FolderPath: '$(Build.ArtifactStagingDirectory)'
+      Pattern: '*.nupkg'
+      signConfigType: inlineSignParams
+      inlineOperation: |
+        [
+          {
+            "keyCode": "CP-401405",
+            "operationSetCode": "NuGetSign",
+            "parameters": [],
+            "toolName": "sign",
+            "toolVersion": "1.0"
+          },
+          {
+            "keyCode": "CP-401405",
+            "operationSetCode": "NuGetVerify",
+            "parameters": [],
+            "toolName": "sign",
+            "toolVersion": "1.0"
+          }
+        ]
+      ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
+      publishLocation: 'Container'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: NuGetAuthenticate@0
+    displayName: "NuGet Authenticate"
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: NuGetCommand@2
+    displayName: "NuGet push"
+    inputs:
+      command: push
+      nuGetFeedType: "internal"
+      packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
+      publishVstsFeed: $(InternalFeed)
+      allowPackageConflicts: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: tagBuildOrRelease@0
+    inputs:
+      type: 'Build'
+      tags: 'deployable'
+    condition: eq(variables['PreviewRelease'], 'true')  

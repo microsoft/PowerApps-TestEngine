@@ -94,11 +94,5 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <returns>The timeout value</returns>
         public int GetTimeout();
-
-        /// <summary>
-        /// Gets the number of workers from the test settings.
-        /// </summary>
-        /// <returns>Number of workers</returns>
-        public int GetWorkerCount();
     }
 }
