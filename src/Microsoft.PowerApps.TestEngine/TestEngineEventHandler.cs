@@ -4,7 +4,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.Helpers;
 
 namespace Microsoft.PowerApps.TestEngine
 {
