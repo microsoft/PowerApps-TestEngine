@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Helpers;
 
 namespace Microsoft.PowerApps.TestEngine
 {
@@ -22,6 +23,18 @@ namespace Microsoft.PowerApps.TestEngine
         public void SetNumberOfTotalCases(int numCases)
         {
             _casesTotal = numCases;
+        }
+
+        public void LegacyPlayerType(bool value)
+        {
+            if (value)
+            {
+                Console.WriteLine("Legacy WebPlayer in use.");
+            }
+            else
+            {
+                Console.WriteLine("OnePlayer in use.");
+            }
         }
 
         public void EncounteredException(Exception ex)
