@@ -185,10 +185,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 try
                 {
                     await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
+                    Console.WriteLine("OnePlayer in use.");
                 }
                 catch (TimeoutException)
                 {
+                    Console.WriteLine("Legacy WebPlayer in use.");
                     _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
+
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "CanvasAppSdk.js")), null);
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
