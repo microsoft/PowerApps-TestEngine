@@ -24,18 +24,6 @@ namespace Microsoft.PowerApps.TestEngine
             _casesTotal = numCases;
         }
 
-        public void LegacyPlayerType(bool value)
-        {
-            if (value)
-            {
-                Console.WriteLine("Legacy WebPlayer in use.");
-            }
-            else
-            {
-                Console.WriteLine("OnePlayer in use.");
-            }
-        }
-
         public void EncounteredException(Exception ex)
         {
             // Print assertion if exception is the result of an Assert failure

@@ -30,14 +30,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
         private string FileNotFoundErrorMessage = "Something went wrong when Test Engine tried to load required dependencies.";
         private TypeMapping TypeMapping = new TypeMapping();
-        private readonly ITestEngineEvents _eventHandler;
 
-        public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState, ITestEngineEvents eventHandler)
+        public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
         {
             _testInfraFunctions = testInfraFunctions;
             _singleTestInstanceState = singleTestInstanceState;
             _testState = testState;
-            _eventHandler = eventHandler;
         }
 
         private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
@@ -187,13 +185,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 try
                 {
                     await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger());
-                    _eventHandler.LegacyPlayerType(false);
                 }
                 catch (TimeoutException)
                 {
-                    _eventHandler.LegacyPlayerType(true);
                     _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
-
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "CanvasAppSdk.js")), null);
                     await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "PublishedAppTesting.js")), PublishedAppIframeName);
                 }

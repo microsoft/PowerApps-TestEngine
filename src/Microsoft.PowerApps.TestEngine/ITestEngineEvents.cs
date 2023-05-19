@@ -17,11 +17,6 @@ namespace Microsoft.PowerApps.TestEngine
         public void SetNumberOfTotalCases(int numCases);
 
         /// <summary>
-        /// Logs player type for our purposes
-        /// </summary>
-        public void LegacyPlayerType(bool value);
-
-        /// <summary>
         /// Handles logging for an exception
         /// </summary>
         public void EncounteredException(Exception ex);
