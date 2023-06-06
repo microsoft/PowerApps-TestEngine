@@ -26,6 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
 
             var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
+            .IgnoreUnmatchedProperties()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
 

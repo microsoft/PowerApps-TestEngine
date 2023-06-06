@@ -43,18 +43,21 @@ cd PowerApps-TestEngine\src\PowerAppsTestEngine
 # Build
 dotnet build
 
-# Install browsers required by Playwright - replace <net-version> with actual output folder name, eg. net6.0.
-.\bin\Debug\<net-version>\playwright.ps1 install
+# Install browsers required by Playwright
+..\..\bin\Debug\\PowerAppsTestEngine\playwright.ps1 install
 ```
+
 If you face trouble running dotnet build try [Clean locally](https://github.com/microsoft/PowerApps-TestEngine#clean-locally) first.
 
 ### Clean locally
 
 Run the command below in PowerShell to clean untracked files. Please make sure to run this in the root folder.
+
 ```bash
 # Clean
 .\clean.cmd
 ```
+
 Once done, continue following [Build locally](https://github.com/microsoft/PowerApps-TestEngine#build-locally)
 
 ### Using the provided samples
@@ -77,12 +80,15 @@ Create a `config.dev.json` file inside the `PowerAppsTestEngine` folder.
 
 Here is an example of its contents (a file `config.json` is provided in the repo as an example):
 
-```
+```json
 {
   "environmentId": "",
   "tenantId": "",
   "testPlanFile": "",
-  "outputDirectory": ""
+  "outputDirectory": "",
+  "logLevel": "",
+  "domain": "",
+  "queryParams": ""
 }
 ```
 
@@ -234,7 +240,7 @@ You are invited to contribute corrections to both code and documentation. See th
 
 ## Contributing to Test Engine code and documentation
 
-This project welcomes contributions and suggestions to both code and documentation. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+This project welcomes contributions and suggestions to both code and documentation. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>.
 
 > **Note:** We are not accepting contributions for content within the [JS folder](https://github.com/microsoft/PowerApps-TestEngine/tree/main/src/Microsoft.PowerApps.TestEngine/JS).
 

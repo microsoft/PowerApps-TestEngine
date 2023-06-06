@@ -241,7 +241,58 @@ environmentVariables:
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);
             Assert.Equal("user1Password", testPlan.EnvironmentVariables?.Users[0].PasswordKey);
+        }
 
+        // Ensure that the serializer will ignore any properties which don't deserialize into a TestPlanDefinition
+        [Fact]
+        public void YamlTestConfigParserParseTestPlanWithUnsupportedTestSettingSuccess()
+        {
+            var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            var parser = new YamlTestConfigParser(mockFileSystem.Object);
+            var yamlFile = $@"testSuite:
+  testSuiteName: Button Clicker
+  testSuiteDescription: Verifies that counter increments when the button is clicked
+  persona: User1
+  appId: 1253535
+
+  testCases:
+    - testCaseName: Case1
+      testCaseDescription: Optional
+      testSteps: |
+        = Screenshot(""buttonclicker_loaded.png"");;
+          // Wait for the label to be set to 0
+          //Wait(Label1.Text = ""0"");;
+          Wait(Label1; ""Text""; ""0"");;
+          // Click the button
+          Select(Button1);;
+          Assert(Text(Label1.Text) = ""1""; ""Counter should be incremented to 1"");;
+          Screenshot(""buttonclicker_end.png"");;
+      invalidProp: 10
+
+testSettings:
+    recordVideo: true
+    browserConfigurations:
+        - browser: Chromium
+        - browser: Firefox
+    headless: false
+    enablePowerFxOverlay: false
+    invalidProp: 10
+
+environmentVariables:
+    users:
+        - personaName: User1
+          emailKey: user1Email
+          passwordKey: user1Password
+          invalidProp: 10
+
+invalidProp: 10";
+
+            var filePath = "testplan.fx.yaml";
+            mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
+            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath);
+
+            // Just confirm we did not throw an exception and a test plan was generated
+            Assert.NotNull(testPlan);
         }
 
         [Fact]
