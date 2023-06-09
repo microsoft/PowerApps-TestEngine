@@ -116,7 +116,11 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation("Successfully navigated to target URL");
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(desiredUrl);
+                // await _userManager.LoginAsUserAsync(desiredUrl);
+
+                // IF USING "LOCAL USER MANUAL LOGIN", THEN CONSIDER
+                // WAITING HERE FOR THE USER TO LOG IN & REDIRECT
+                // BACK TO THE APP
 
                 // Set up network request mocking if any
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
