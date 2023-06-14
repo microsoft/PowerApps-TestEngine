@@ -231,7 +231,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task DisposeAsync()
         {
             PlaywrightObject.Dispose();
-            await BrowserContext.CloseAsync();            
+            await BrowserContext.DisposeAsync();            
         }
 
         private void ValidatePage()
