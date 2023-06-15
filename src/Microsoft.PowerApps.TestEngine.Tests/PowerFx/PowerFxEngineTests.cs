@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -423,18 +422,30 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                 await powerFxEngine.UpdatePowerFxModelAsync();
             }).Returns(Task.FromResult(true));
 
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            var oldUICulture = CultureInfo.CurrentUICulture;
+            var frenchCulture = new CultureInfo("fr");
+            CultureInfo.CurrentUICulture = frenchCulture;
+            powerFxEngine.Setup(frenchCulture);
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
 
-            // Assert
-            var result = powerFxEngine.Execute("Select(Label1/*Label;;22*/);\"Just stirng \n;literal\";Select(Label2)\n;Select(Label3);Assert(1=1, \"Supposed to pass;;\");Max(1,2)");
+            // Act
+            var result = powerFxEngine.Execute("Select(Label1/*Label;;22*/);;\"Just stirng \n;literal\";;Select(Label2)\n;;Select(Label3);;Assert(1=1; \"Supposed to pass;;\");;Max(1,2)");
+
+            try
+            {
+                CultureInfo.CurrentUICulture = oldUICulture;
+            }
+            catch
+            {
+                // no op
+            }
 
             // Assert
             Assert.Equal(2, stepCounter);
             Assert.Equal(FormulaType.Number, result.Type);
-            Assert.Equal(2, (result as NumberValue).Value);
+            Assert.Equal(1.2, (result as NumberValue).Value);
         }
 
         private PowerFxEngine GetPowerFxEngine()
