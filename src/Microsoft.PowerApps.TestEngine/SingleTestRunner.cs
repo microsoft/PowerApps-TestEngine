@@ -260,8 +260,7 @@ namespace Microsoft.PowerApps.TestEngine
                     var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                     testLogger.WriteExceptionToDebugLogsFile(testResultDirectory, suiteException);
                 }
-
-                await _testInfraFunctions.DisposeAsync(); 
+                await _testInfraFunctions.DisposeAsync();
             }
         }
     }
