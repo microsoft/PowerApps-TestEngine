@@ -28,8 +28,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
+        private Mock<ILogger> MockLogger;
 
-        protected Mock<ILogger> MockLogger;
         public PowerFxEngineTests()
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
