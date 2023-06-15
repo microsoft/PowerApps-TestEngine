@@ -619,7 +619,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockRoute.Verify(x => x.ContinueAsync(It.IsAny<RouteContinueOptions>()), Times.Once);
         }
 
-
         [Fact]
         public async Task DisposeAsyncTest()
         {
