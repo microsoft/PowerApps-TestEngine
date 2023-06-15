@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -27,8 +28,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
-        private Mock<ILogger> MockLogger;
 
+        protected Mock<ILogger> MockLogger;
         public PowerFxEngineTests()
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
@@ -386,6 +387,59 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task TestStepByStep()
+        {
+            // Arrange
+            var powerFxEngine = GetPowerFxEngine();
+            int stepCounter = 0;
+            var otherRecordType = RecordType.Empty().Add("Foo", FormulaType.String);
+            var label1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label1");
+            var label2 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label2");
+            var label3 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label3");
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(() =>
+            {
+                if (stepCounter == 0)
+                {
+                    ++stepCounter;
+                    return Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } });
+                }
+                else if (stepCounter == 1)
+                {
+                    ++stepCounter;
+                    return Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label2", label2 } });
+                }
+                else
+                {
+                    return Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label3", label3 } });
+                }
+            });
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Callback(async () =>
+            {
+                await powerFxEngine.UpdatePowerFxModelAsync();
+            }).Returns(Task.FromResult(true));
+
+            powerFxEngine.Setup(new CultureInfo("fr"));
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            await powerFxEngine.UpdatePowerFxModelAsync();
+
+            // Assert
+            var result = powerFxEngine.Execute("Select(Label1/*Label;;22*/);;\"Just stirng \n;;literal\";;Select(Label2)\n;;Select(Label3);;Assert(1=1; \"Supposed to pass;;\");;Max(1,2)");
+
+            // Assert
+            Assert.Equal(2, stepCounter);
+            Assert.Equal(FormulaType.Number, result.Type);
+            Assert.Equal(1.2, (result as NumberValue).Value);
+        }
+
+        private PowerFxEngine GetPowerFxEngine()
+        {
+            return new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
         }
     }
 }
