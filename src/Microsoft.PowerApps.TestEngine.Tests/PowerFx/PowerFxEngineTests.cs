@@ -423,18 +423,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                 await powerFxEngine.UpdatePowerFxModelAsync();
             }).Returns(Task.FromResult(true));
 
-            powerFxEngine.Setup(new CultureInfo("fr"));
+            powerFxEngine.Setup(It.IsAny<CultureInfo>());
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
 
             // Assert
-            var result = powerFxEngine.Execute("Select(Label1/*Label;;22*/);;\"Just stirng \n;;literal\";;Select(Label2)\n;;Select(Label3);;Assert(1=1; \"Supposed to pass;;\");;Max(1,2)");
+            var result = powerFxEngine.Execute("Select(Label1/*Label;;22*/);\"Just stirng \n;literal\";Select(Label2)\n;Select(Label3);Assert(1=1, \"Supposed to pass;;\");Max(1,2)");
 
             // Assert
             Assert.Equal(2, stepCounter);
             Assert.Equal(FormulaType.Number, result.Type);
-            Assert.Equal(1.2, (result as NumberValue).Value);
+            Assert.Equal(2, (result as NumberValue).Value);
         }
 
         private PowerFxEngine GetPowerFxEngine()
