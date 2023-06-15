@@ -239,7 +239,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 PlaywrightObject.Dispose();
                 PlaywrightObject = null;
-            }       
+            }
         }
 
         private void ValidatePage()
