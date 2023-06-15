@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Reporting.Format;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
@@ -618,5 +619,45 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockRoute.Verify(x => x.ContinueAsync(It.IsAny<RouteContinueOptions>()), Times.Once);
         }
 
+
+        [Fact]
+        public async Task DisposeAsyncTest()
+        {
+            var browserConfig = new BrowserConfiguration()
+            {
+                Browser = "Chromium",
+                Device = null,
+                ScreenHeight = null,
+                ScreenWidth = null
+            };
+
+            var testSettings = new TestSettings()
+            {
+                RecordVideo = true,
+                Timeout = 15
+            };
+
+            MockSingleTestInstanceState.Setup(x => x.GetBrowserConfig()).Returns(browserConfig);
+            MockPlaywrightObject.SetupGet(x => x[It.IsAny<string>()]).Returns(MockBrowserType.Object);  
+            MockBrowserType.Setup(x => x.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>())).Returns(Task.FromResult(MockBrowser.Object));
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns("C:\\TestResults");
+            MockBrowser.Setup(x => x.NewContextAsync(It.IsAny<BrowserNewContextOptions>())).Returns(Task.FromResult(MockBrowserContext.Object));
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            // Mock Dispose methods
+            MockPlaywrightObject.Setup(x => x.Dispose());
+            MockBrowserContext.Setup(x => x.DisposeAsync()).Returns(ValueTask.CompletedTask);            
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, MockPlaywrightObject.Object, MockBrowserContext.Object);
+            await playwrightTestInfraFunctions.SetupAsync();
+
+            await playwrightTestInfraFunctions.DisposeAsync();
+
+            MockPlaywrightObject.Verify(x => x.Dispose(), Times.Once());
+            MockBrowserContext.Verify(x => x.DisposeAsync(), Times.Once());
+        }
     }
 }
