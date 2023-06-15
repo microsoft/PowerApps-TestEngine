@@ -232,7 +232,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             if (BrowserContext != null)
             {
-               await BrowserContext.DisposeAsync();
+                await BrowserContext.DisposeAsync();
             }
             if (PlaywrightObject != null)
             {
