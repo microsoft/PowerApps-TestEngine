@@ -230,8 +230,14 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task DisposeAsync()
         {
-            PlaywrightObject.Dispose();
-            await BrowserContext.DisposeAsync();
+            if (BrowserContext != null)
+            {
+               await BrowserContext.DisposeAsync();
+            }
+            if (PlaywrightObject != null)
+            {
+                PlaywrightObject.Dispose();
+            }
 
             PlaywrightObject = null;
             BrowserContext = null;
