@@ -28,7 +28,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             var chainOperatorTokens = engine.Tokenize(expression).Where(tok => tok.Kind == TokKind.Semicolon).OrderBy(tok => tok.Span.Min);
             var formulas = new List<string>();
             var lowerBound = 0;
-
             foreach (var chainOpToken in chainOperatorTokens) 
             {
                 if (lowerBound < expression.Length)
@@ -37,7 +36,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     var formula = expression.Substring(lowerBound, upperBound - lowerBound);
                     formulas.Add(formula);  
                 }
-
                 lowerBound = chainOpToken.Span.Lim;
             }
 
