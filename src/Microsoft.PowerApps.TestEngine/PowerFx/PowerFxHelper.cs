@@ -28,13 +28,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             var chainOperatorTokens = engine.Tokenize(expression).Where(tok => tok.Kind == TokKind.Semicolon).OrderBy(tok => tok.Span.Min);
             var formulas = new List<string>();
             var lowerBound = 0;
-            foreach (var chainOpToken in chainOperatorTokens) 
+            foreach (var chainOpToken in chainOperatorTokens)
             {
                 if (lowerBound < expression.Length)
                 {
                     var upperBound = chainOpToken.Span.Min;
                     var formula = expression.Substring(lowerBound, upperBound - lowerBound);
-                    formulas.Add(formula);  
+                    formulas.Add(formula);
                 }
                 lowerBound = chainOpToken.Span.Lim;
             }
