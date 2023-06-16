@@ -13,6 +13,7 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
@@ -386,6 +387,77 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task TestStepByStep()
+        {
+            // Arrange
+            var powerFxEngine = GetPowerFxEngine();
+            int updateCounter = 0;
+            var otherRecordType = RecordType.Empty().Add("Foo", FormulaType.String);
+            var label1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label1");
+            var label2 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label2");
+            var label3 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label3");
+            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(() =>
+            {
+                if (updateCounter == 0)
+                {
+                    ++updateCounter;
+                    return Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } });
+                }
+                else if (updateCounter == 1)
+                {
+                    ++updateCounter;
+                    return Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label2", label2 } });
+                }
+                else
+                {
+                    return Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label3", label3 } });
+                }
+            });
+            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Callback(async () =>
+            {
+                await powerFxEngine.UpdatePowerFxModelAsync();
+            }).Returns(Task.FromResult(true));
+
+            var oldUICulture = CultureInfo.CurrentUICulture;
+            var frenchCulture = new CultureInfo("fr");
+            CultureInfo.CurrentUICulture = frenchCulture;
+            powerFxEngine.Setup(frenchCulture);
+            var testSettings = new TestSettings() { Timeout = 3000 };
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            var expression = "Select(Label1/*Label;;22*/);;\"Just stirng \n;literal\";;Select(Label2)\n;;Select(Label3);;Assert(1=1; \"Supposed to pass;;\");;Max(1,2)";
+
+            // Act 
+
+            // Engine.Eval should throw an exception when none of the used first names exist in the underlying symbol table yet.
+            // This confirms that we would be hitting goStepByStep branch
+            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(expression));
+            await powerFxEngine.UpdatePowerFxModelAsync();
+            var result = powerFxEngine.Execute(expression);
+
+            try
+            {
+                CultureInfo.CurrentUICulture = oldUICulture;
+            }
+            catch
+            {
+                // no op
+            }
+
+            // Assert
+            Assert.Equal(2, updateCounter);
+            Assert.Equal(FormulaType.Number, result.Type);
+            Assert.Equal(1.2, (result as NumberValue).Value);
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Syntax check failed. Now attempting to execute lines step by step", LogLevel.Debug, Times.Exactly(2));
+        }
+
+        private PowerFxEngine GetPowerFxEngine()
+        {
+            return new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
         }
     }
 }

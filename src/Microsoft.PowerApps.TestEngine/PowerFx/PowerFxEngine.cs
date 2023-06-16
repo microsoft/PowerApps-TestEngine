@@ -11,6 +11,7 @@ using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
+using Microsoft.PowerFx.Syntax;
 using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
@@ -114,10 +115,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             if (goStepByStep)
             {
-                // TODO: This is a temporary hack to allow for multiple screens
-                // Will need to come up with a better solution
-                var splitSteps = testSteps.Split(';');
+                var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, testSteps);
                 FormulaValue result = FormulaValue.NewBlank();
+
                 foreach (var step in splitSteps)
                 {
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
