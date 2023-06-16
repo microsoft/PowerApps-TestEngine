@@ -115,8 +115,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             if (goStepByStep)
             {
-                // TODO: This is a temporary hack to allow for multiple screens
-                // Will need to come up with a better solution
                 var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, testSteps);
                 FormulaValue result = FormulaValue.NewBlank();
 
