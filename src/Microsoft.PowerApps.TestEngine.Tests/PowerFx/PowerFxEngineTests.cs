@@ -431,7 +431,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             var expression = "Select(Label1/*Label;;22*/);;\"Just stirng \n;literal\";;Select(Label2)\n;;Select(Label3);;Assert(1=1; \"Supposed to pass;;\");;Max(1,2)";
 
-
             // Act 
 
             // Engine.Eval should throw an exception when none of the used first names exist in the underlying symbol table yet.
