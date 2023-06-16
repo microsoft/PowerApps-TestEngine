@@ -37,6 +37,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task EndTestRunAsync();
 
         /// <summary>
+        /// Dispose the instances
+        /// </summary>
+        /// <returns>Task</returns>
+        public Task DisposeAsync();
+
+        /// <summary>
         /// Takes a screenshot
         /// </summary>
         /// <param name="screenshotFilePath">Path for screenshot file</param>
