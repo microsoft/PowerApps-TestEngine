@@ -206,7 +206,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
 
             // TODO: consider whether to make waiting for network idle state part of the function input
-            var response = await Page.GotoAsync(url, new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
+            var response = await Page.GotoAsync(url, new PageGotoOptions() { WaitUntil = WaitUntilState.DOMContentLoaded });
 
             // The response might be null because "The method either throws an error or returns a main resource response.
             // The only exceptions are navigation to about:blank or navigation to the same URL with a different hash, which would succeed and return null."
