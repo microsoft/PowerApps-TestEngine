@@ -228,6 +228,20 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
+        public async Task DisposeAsync()
+        {
+            if (BrowserContext != null)
+            {
+                await BrowserContext.DisposeAsync();
+                BrowserContext = null;
+            }
+            if (PlaywrightObject != null)
+            {
+                PlaywrightObject.Dispose();
+                PlaywrightObject = null;
+            }
+        }
+
         private void ValidatePage()
         {
             if (Page == null)
