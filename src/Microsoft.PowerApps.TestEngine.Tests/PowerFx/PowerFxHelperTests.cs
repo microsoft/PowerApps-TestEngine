@@ -53,12 +53,23 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             // Arrange
             FeatureFlags.StringInterpolation = true;
+            var oldUICulture = CultureInfo.CurrentUICulture;
+            var culture = new CultureInfo(locale);
+            CultureInfo.CurrentUICulture = culture;
             var (result, engine) = GetCheckResultAndEngine(expression, locale);
 
             // Act
             var actualFormulas = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(engine, result);
 
             // Assert
+            try
+            {
+                CultureInfo.CurrentUICulture = oldUICulture;
+            }
+            catch
+            {
+                // no op
+            }
             Assert.Equal(expectedFormulas, actualFormulas);
         }
 
