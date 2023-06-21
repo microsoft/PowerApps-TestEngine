@@ -3,12 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.Reporting.Format;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
@@ -418,12 +416,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await playwrightTestInfraFunctions.GoToUrlAsync(urlToVisit);
 
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once);
-            MockPage.Verify(x => x.GotoAsync(urlToVisit, It.Is<PageGotoOptions>((options) => options.WaitUntil == WaitUntilState.NetworkIdle)), Times.Once);
+            MockPage.Verify(x => x.GotoAsync(urlToVisit, It.Is<PageGotoOptions>((options) => options.WaitUntil == WaitUntilState.DOMContentLoaded)), Times.Once);
 
             var secondUrlToVisit = "https://powerapps.com";
             await playwrightTestInfraFunctions.GoToUrlAsync(secondUrlToVisit);
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once, "Should only create a new page once");
-            MockPage.Verify(x => x.GotoAsync(secondUrlToVisit, It.Is<PageGotoOptions>((options) => options.WaitUntil == WaitUntilState.NetworkIdle)), Times.Once);
+            MockPage.Verify(x => x.GotoAsync(secondUrlToVisit, It.Is<PageGotoOptions>((options) => options.WaitUntil == WaitUntilState.DOMContentLoaded)), Times.Once);
         }
 
         [Theory]
@@ -637,7 +635,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             };
 
             MockSingleTestInstanceState.Setup(x => x.GetBrowserConfig()).Returns(browserConfig);
-            MockPlaywrightObject.SetupGet(x => x[It.IsAny<string>()]).Returns(MockBrowserType.Object);  
+            MockPlaywrightObject.SetupGet(x => x[It.IsAny<string>()]).Returns(MockBrowserType.Object);
             MockBrowserType.Setup(x => x.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>())).Returns(Task.FromResult(MockBrowser.Object));
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
@@ -647,7 +645,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             // Mock Dispose methods
             MockPlaywrightObject.Setup(x => x.Dispose());
-            MockBrowserContext.Setup(x => x.DisposeAsync()).Returns(ValueTask.CompletedTask);            
+            MockBrowserContext.Setup(x => x.DisposeAsync()).Returns(ValueTask.CompletedTask);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object, MockBrowserContext.Object);
