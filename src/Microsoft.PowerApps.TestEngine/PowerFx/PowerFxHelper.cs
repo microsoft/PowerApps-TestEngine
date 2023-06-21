@@ -31,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 return spansForFormulasSeparatedAcrossMultipleDepths.Select(span => result.Parse.Text.Substring(span.Start, span.End - span.Start));
             }
 
-            var spansForTopMostSeparatedFormulas = DetermineNearestFormulaSeparationForSpansVisitor.GetSpansForTopMostSeparatorFormulas(spansForFormulasSeparatedAcrossMultipleDepths, result.Parse.Root);
+            var spansForTopMostSeparatedFormulas = DetermineNearestFormulaSeparationForSpansVisitor.GetSpansForFormulasSeparatedAtTopMostLevel(spansForFormulasSeparatedAcrossMultipleDepths, result.Parse.Root);
             return spansForTopMostSeparatedFormulas.Select(span => result.Parse.Text.Substring(span.Start, span.End - span.Start));
         }
 

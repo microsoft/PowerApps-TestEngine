@@ -211,7 +211,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <returns>Spans representing formulas  separated at the top most level. 
         ///          Spans for formulas separated at depth > 1 are merged into nearest spans that represent formulas separated at the top most level.
         /// </returns>
-        public static IEnumerable<Span> GetSpansForTopMostSeparatorFormulas(IEnumerable<Span> separatedFormulaSpansIncludingNested, TexlNode root)
+        public static IEnumerable<Span> GetSpansForFormulasSeparatedAtTopMostLevel(IEnumerable<Span> separatedFormulaSpansIncludingNested, TexlNode root)
         {
             var visitor = new DetermineNearestFormulaSeparationForSpansVisitor(separatedFormulaSpansIncludingNested, root);
             root.Accept(visitor);
