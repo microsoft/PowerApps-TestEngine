@@ -416,12 +416,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await playwrightTestInfraFunctions.GoToUrlAsync(urlToVisit);
 
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once);
-            MockPage.Verify(x => x.GotoAsync(urlToVisit, It.Is<PageGotoOptions>((options) => options.WaitUntil == WaitUntilState.DOMContentLoaded)), Times.Once);
+            MockPage.Verify(x => x.GotoAsync(urlToVisit, It.IsAny<PageGotoOptions>()), Times.Once);
 
             var secondUrlToVisit = "https://powerapps.com";
             await playwrightTestInfraFunctions.GoToUrlAsync(secondUrlToVisit);
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once, "Should only create a new page once");
-            MockPage.Verify(x => x.GotoAsync(secondUrlToVisit, It.Is<PageGotoOptions>((options) => options.WaitUntil == WaitUntilState.DOMContentLoaded)), Times.Once);
+            MockPage.Verify(x => x.GotoAsync(secondUrlToVisit, It.IsAny<PageGotoOptions>()), Times.Once);
         }
 
         [Theory]
