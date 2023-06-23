@@ -76,8 +76,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Set output
             Console.SetOut(printer);
 
-            _testEngineEventHandler._casesTotal = 11;
-            _testEngineEventHandler._casesPassed = 6;
+            _testEngineEventHandler.CasesTotal = 11;
+            _testEngineEventHandler.CasesPassed = 6;
 
             // Run function
             _testEngineEventHandler.SuiteEnd();

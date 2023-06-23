@@ -87,7 +87,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Returns(Task.CompletedTask);
             MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Returns(FormulaValue.NewBlank());
 
-            MockTestEngineEventHandler.Setup(x => x.SetNumberOfTotalCases(It.IsAny<int>()));
+            MockTestEngineEventHandler.Setup(x => x.setAndInitializeCounters(It.IsAny<int>()));
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
             MockTestEngineEventHandler.Setup(x => x.SuiteBegin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
             MockTestEngineEventHandler.Setup(x => x.SuiteEnd());

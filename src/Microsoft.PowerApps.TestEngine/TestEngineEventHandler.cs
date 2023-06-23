@@ -12,16 +12,20 @@ namespace Microsoft.PowerApps.TestEngine
     /// </summary>
     public class TestEngineEventHandler : ITestEngineEvents
     {
-        public int _casesTotal = 0;
-        public int _casesPassed = 0;
+        private int _casesTotal = 0;
+        private int _casesPassed = 0;
+
+        public int CasesPassed { get => _casesPassed; set => _casesPassed = value; }
+        public int CasesTotal { get => _casesTotal; set => _casesTotal = value; }
 
         public TestEngineEventHandler()
         {
         }
 
-        public void SetNumberOfTotalCases(int numCases)
+        public void setAndInitializeCounters(int numCases)
         {
             _casesTotal = numCases;
+            _casesPassed = 0;
         }
 
         public void EncounteredException(Exception ex)
