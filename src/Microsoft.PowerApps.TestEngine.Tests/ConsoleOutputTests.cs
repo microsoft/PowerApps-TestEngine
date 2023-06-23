@@ -139,5 +139,44 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Assert that the expected output matches the console output of the function
             Assert.Contains(expected, printer.ToString());
         }
+
+        [Fact]
+        public void TestMultipleBrowserRuns()
+        {
+            var printer = new StringWriter();
+
+            // Set output
+            Console.SetOut(printer);
+
+            // Run tests on first Browser
+            _testEngineEventHandler.setAndInitializeCounters(2);
+            _testEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Chromium", "make.powerapps.com/testapp&source=testengine");
+            _testEngineEventHandler.TestCaseBegin("Case1");
+            _testEngineEventHandler.TestCaseEnd(true);
+            _testEngineEventHandler.TestCaseBegin("Case2");
+            _testEngineEventHandler.TestCaseEnd(false);
+            _testEngineEventHandler.SuiteEnd();
+
+            // Assert that the expected console output matches for this browser run
+            Assert.Contains("\nTest suite summary", printer.ToString());
+            Assert.Contains("Total cases: 2", printer.ToString());
+            Assert.Contains("Cases passed: 1", printer.ToString());
+            Assert.Contains("Cases failed: 1", printer.ToString());
+
+            // Run tests on first Browser
+            _testEngineEventHandler.setAndInitializeCounters(2);
+            _testEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Firefox", "make.powerapps.com/testapp&source=testengine");
+            _testEngineEventHandler.TestCaseBegin("Case1");
+            _testEngineEventHandler.TestCaseEnd(true);
+            _testEngineEventHandler.TestCaseBegin("Case2");
+            _testEngineEventHandler.TestCaseEnd(false);
+            _testEngineEventHandler.SuiteEnd();
+
+            // Assert that the expected console output matches for this browser run
+            Assert.Contains("\nTest suite summary", printer.ToString());
+            Assert.Contains("Total cases: 2", printer.ToString());
+            Assert.Contains("Cases passed: 1", printer.ToString());
+            Assert.Contains("Cases failed: 1", printer.ToString());
+        }
     }
 }
