@@ -149,7 +149,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Console.SetOut(printer);
 
             // Run tests on first Browser
-            _testEngineEventHandler.setAndInitializeCounters(2);
+            _testEngineEventHandler.SetAndInitializeCounters(2);
             _testEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Chromium", "make.powerapps.com/testapp&source=testengine");
             _testEngineEventHandler.TestCaseBegin("Case1");
             _testEngineEventHandler.TestCaseEnd(true);
@@ -164,7 +164,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Assert.Contains("Cases failed: 1", printer.ToString());
 
             // Run tests on first Browser
-            _testEngineEventHandler.setAndInitializeCounters(2);
+            _testEngineEventHandler.SetAndInitializeCounters(2);
             _testEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Firefox", "make.powerapps.com/testapp&source=testengine");
             _testEngineEventHandler.TestCaseBegin("Case1");
             _testEngineEventHandler.TestCaseEnd(true);

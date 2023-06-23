@@ -91,7 +91,7 @@ namespace Microsoft.PowerApps.TestEngine
             casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
 
             // Number of total cases are recorded and also initialize the passed cases to 0 for this test run
-            _eventHandler.setAndInitializeCounters(casesTotal);
+            _eventHandler.SetAndInitializeCounters(casesTotal);
 
             string suiteException = null;
 

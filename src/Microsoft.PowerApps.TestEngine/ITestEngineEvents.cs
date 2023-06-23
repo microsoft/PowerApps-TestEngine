@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestEngine
         /// <summary>
         /// Sets number of total cases to expect and resets number of passed cases to 0
         /// </summary>
-        public void setAndInitializeCounters(int numCases);
+        public void SetAndInitializeCounters(int numCases);
 
         /// <summary>
         /// Handles logging for an exception

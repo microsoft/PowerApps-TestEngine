@@ -22,7 +22,7 @@ namespace Microsoft.PowerApps.TestEngine
         {
         }
 
-        public void setAndInitializeCounters(int numCases)
+        public void SetAndInitializeCounters(int numCases)
         {
             _casesTotal = numCases;
             _casesPassed = 0;
