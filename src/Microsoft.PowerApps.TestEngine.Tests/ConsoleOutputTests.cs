@@ -157,13 +157,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.TestCaseEnd(false);
             _testEngineEventHandler.SuiteEnd();
 
-            // Assert that the expected console output matches for this browser run
-            Assert.Contains("\nTest suite summary", printer.ToString());
-            Assert.Contains("Total cases: 2", printer.ToString());
-            Assert.Contains("Cases passed: 1", printer.ToString());
-            Assert.Contains("Cases failed: 1", printer.ToString());
-
-            // Run tests on first Browser
+            // Run tests on second Browser
             _testEngineEventHandler.SetAndInitializeCounters(2);
             _testEngineEventHandler.SuiteBegin("TestSuiteName", "./testDirectory", "Firefox", "make.powerapps.com/testapp&source=testengine");
             _testEngineEventHandler.TestCaseBegin("Case1");
@@ -172,11 +166,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             _testEngineEventHandler.TestCaseEnd(false);
             _testEngineEventHandler.SuiteEnd();
 
-            // Assert that the expected console output matches for this browser run
+            // Assert that the expected console output matches 
             Assert.Contains("\nTest suite summary", printer.ToString());
             Assert.Contains("Total cases: 2", printer.ToString());
             Assert.Contains("Cases passed: 1", printer.ToString());
             Assert.Contains("Cases failed: 1", printer.ToString());
+
+            // Assert none of the browser runs failed to show incorrect failed cases
+            Assert.DoesNotContain("Cases failed: 0", printer.ToString());
         }
     }
 }
