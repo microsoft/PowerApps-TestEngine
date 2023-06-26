@@ -12,9 +12,9 @@ namespace Microsoft.PowerApps.TestEngine
     public interface ITestEngineEvents
     {
         /// <summary>
-        /// Sets number of total cases to expect
+        /// Sets number of total cases to expect and resets number of passed cases to 0
         /// </summary>
-        public void SetNumberOfTotalCases(int numCases);
+        public void SetAndInitializeCounters(int numCases);
 
         /// <summary>
         /// Handles logging for an exception
