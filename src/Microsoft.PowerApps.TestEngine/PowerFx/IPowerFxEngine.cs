@@ -42,5 +42,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// get PowerAppFunctions
         /// </summary>
         public IPowerAppFunctions GetPowerAppFunctions();
+
+        /// <summary>
+        /// Disables checking Power Apps state checks
+        /// </summary>
+        public bool PowerAppIntegrationEnabled { get; set; }
     }
 }

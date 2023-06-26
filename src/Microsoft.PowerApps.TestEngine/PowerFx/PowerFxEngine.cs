@@ -74,6 +74,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 }
             }
 
+            if (settings.ExtensionModules.Parameters.ContainsKey("DisablePowerApps"))
+            {
+                PowerAppIntegrationEnabled = false;
+            }
+
             WaitRegisterExtensions.RegisterAll(powerFxConfig, _testState.GetTimeout(), Logger);
 
             Engine = new RecalcEngine(powerFxConfig);
@@ -160,6 +165,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 throw new InvalidOperationException();
             }
 
+            if (!PowerAppIntegrationEnabled)
+            {
+                return;
+            }
+
             await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _powerAppFunctions.CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
 
@@ -174,5 +184,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             return _powerAppFunctions;
         }
+
+        public bool PowerAppIntegrationEnabled { get; set; } = true;
     }
 }
