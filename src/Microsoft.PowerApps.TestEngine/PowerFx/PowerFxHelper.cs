@@ -16,36 +16,54 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// Operator is ";" when decimal separator for the locale is "." and is ";;" when decimal separator is ","
         /// </summary>
         /// <param name="engine">Instance of an engine configured with the desired locale</param>
-        /// <param name="expression">Expression from which formulas separated by chaining operator would be extracted</param>
+        /// <param name="result">Check result instance created after processing the expression</param>
         /// <returns>An enumerable of formulas extracted from the expression that are separated by chaining operator</returns>
-        public static IEnumerable<string> ExtractFormulasSeparatedByChainingOperator(Engine engine, string expression)
+        public static IEnumerable<string> ExtractFormulasSeparatedByChainingOperator(Engine engine, CheckResult result)
         {
-            if (string.IsNullOrWhiteSpace(expression))
+            if (string.IsNullOrEmpty(result?.Parse?.Text))
             {
                 return new string[0];
             }
 
+            var spansForFormulasSeparatedAcrossMultipleDepths = ExtractSpansOfFormulasSeparatedByChainingOperator(engine, result?.Parse.Text);
+            if (result?.Parse?.Root == null)
+            {
+                return spansForFormulasSeparatedAcrossMultipleDepths.Select(span => result.Parse.Text.Substring(span.Start, span.End - span.Start));
+            }
+
+            var spansForTopMostSeparatedFormulas = DetermineNearestFormulaSeparationForSpansVisitor.GetSpansForFormulasSeparatedAtTopMostLevel(spansForFormulasSeparatedAcrossMultipleDepths, result.Parse.Root);
+            return spansForTopMostSeparatedFormulas.Select(span => result.Parse.Text.Substring(span.Start, span.End - span.Start));
+        }
+
+        /// <summary>
+        /// Extracts the span that represent formulas separated by chaining operator at multiple levels and depths
+        /// </summary>
+        /// <param name="engine">Instance of an engine configured with the desired locale</param>
+        /// <param name="expression">Expression from which formulas separated by chaining operator would be extracted</param>
+        /// <returns>Spans that represent formulas separated by chaining operator at multiple levels and depths</returns>
+        private static IEnumerable<Span> ExtractSpansOfFormulasSeparatedByChainingOperator(Engine engine, string expression)
+        {
             var chainOperatorTokens = engine.Tokenize(expression).Where(tok => tok.Kind == TokKind.Semicolon).OrderBy(tok => tok.Span.Min);
-            var formulas = new List<string>();
+            var formulas = new List<Span>();
             var lowerBound = 0;
+
             foreach (var chainOpToken in chainOperatorTokens)
             {
                 if (lowerBound < expression.Length)
                 {
                     var upperBound = chainOpToken.Span.Min;
                     var formula = expression.Substring(lowerBound, upperBound - lowerBound);
-                    formulas.Add(formula);
+                    formulas.Add(new Span(lowerBound, upperBound));
                 }
                 lowerBound = chainOpToken.Span.Lim;
             }
 
             if (lowerBound < expression.Length)
             {
-                formulas.Add(expression.Substring(lowerBound));
+                formulas.Add(new Span(lowerBound, expression.Length));
             }
 
             return formulas;
         }
-
     }
 }

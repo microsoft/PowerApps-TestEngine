@@ -115,7 +115,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             if (goStepByStep)
             {
-                var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, testSteps);
+                var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, checkResult);
                 FormulaValue result = FormulaValue.NewBlank();
 
                 foreach (var step in splitSteps)
