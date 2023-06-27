@@ -688,16 +688,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             string testTextEntry = "*****";
             string desiredUrl = "https://make.powerapps.com";
 
-            MockSingleTestInstanceState.Setup(x => x.GetBrowserConfig()).Returns(browserConfig);
-            MockPlaywrightObject.SetupGet(x => x[It.IsAny<string>()]).Returns(MockBrowserType.Object);
-            MockBrowserType.Setup(x => x.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>())).Returns(Task.FromResult(MockBrowser.Object));
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
+            var mockLocator = new Mock<ILocator>(MockBehavior.Strict);
+            MockPage.Setup(x => x.Locator(It.IsAny<string>(), null)).Returns(mockLocator.Object);
+            mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.CompletedTask);
 
-            // Mock Dispose methods
-            MockPlaywrightObject.Setup(x => x.Dispose());
-            MockBrowserContext.Setup(x => x.DisposeAsync()).Returns(ValueTask.CompletedTask);
+            MockPage.Setup(x => x.FillAsync(testSelector, testTextEntry, null)).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.ClickAsync("input[type=\"submit\"]", null)).Returns(Task.CompletedTask);
+            // Not ask to sign in as selector not found
+            MockPage.Setup(x => x.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", null)).Throws(new TimeoutException());
+            // Also not able to find password error, must be some other error
+            MockPage.Setup(x => x.WaitForSelectorAsync("[id=\"passwordError\"]", It.IsAny<PageWaitForSelectorOptions>())).Throws(new TimeoutException());
+            // Throw exception as not make it to desired url
+            MockPage.Setup(x => x.WaitForURLAsync(desiredUrl, null)).Throws(new TimeoutException());
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                MockFileSystem.Object, browserContext: MockBrowserContext.Object, page: MockPage.Object);
