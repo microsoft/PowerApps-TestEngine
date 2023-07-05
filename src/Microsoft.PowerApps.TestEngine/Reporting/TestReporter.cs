@@ -264,7 +264,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 testResult.Outcome = FailedResultOutcome;
                 testResult.Output.ErrorInfo = new TestErrorInfo();
                 testResult.Output.ErrorInfo.Message = errorMessage;
-                testResult.Output.ErrorInfo.StackTrace = stackTrace;
             }
         }
 
