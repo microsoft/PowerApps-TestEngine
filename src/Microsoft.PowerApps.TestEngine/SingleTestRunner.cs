@@ -206,7 +206,7 @@ namespace Microsoft.PowerApps.TestEngine
                             }
 
                             var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
-                            _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
+                            _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message);
                         }
                     }
                 }

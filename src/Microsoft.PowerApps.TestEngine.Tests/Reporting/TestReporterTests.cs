@@ -287,12 +287,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testSuiteId = testReporter.CreateTestSuite(testRunId, "testSuite");
             var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, testLocation);
 
-            Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage, stackTrace));
+            Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage));
 
             testReporter.StartTest(testRunId, testId);
 
             var before = DateTime.Now;
-            testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage, stackTrace);
+            testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage);
             var after = DateTime.Now;
 
             var testRun = testReporter.GetTestRun(testRunId);
@@ -326,7 +326,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 Assert.Equal(errorMessage, testRun.Results.UnitTestResults[0].Output.ErrorInfo.Message);
             }
 
-            Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage, stackTrace));
+            Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage));
         }
 
         [Fact]
@@ -374,7 +374,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             testReporter.StartTest(testRunId, testId);
 
-            testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles, null, null);
+            testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles, null);
 
             testReporter.EndTestRun(testRunId);
 

@@ -55,8 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="stdout">Standard output</param>
         /// <param name="additionalFiles">Any additional test files</param>
         /// <param name="errorMessage">Error message if test was unsuccessful</param>
-        /// <param name="stackTrace">Stack trace if test was unsuccessful</param>
-        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace);
+        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage);
 
         /// <summary>
         /// End test.
