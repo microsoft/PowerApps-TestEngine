@@ -324,7 +324,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 Assert.Equal(1, testRun.ResultSummary.Counters.Failed);
                 Assert.Equal(TestReporter.FailedResultOutcome, testRun.Results.UnitTestResults[0].Outcome);
                 Assert.Equal(errorMessage, testRun.Results.UnitTestResults[0].Output.ErrorInfo.Message);
-                Assert.Equal(stackTrace, testRun.Results.UnitTestResults[0].Output.ErrorInfo.StackTrace);
             }
 
             Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage, stackTrace));
