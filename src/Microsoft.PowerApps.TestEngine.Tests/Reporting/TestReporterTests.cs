@@ -39,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             Assert.Throws<ArgumentException>(() => testReporter.EndTestRun(testRunId));
             Assert.Throws<ArgumentException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "c:\\testplan.fx.yaml"));
             Assert.Throws<ArgumentException>(() => testReporter.StartTest(testRunId, Guid.NewGuid().ToString()));
-            Assert.Throws<ArgumentException>(() => testReporter.EndTest(testRunId, Guid.NewGuid().ToString(), true, "", new List<string>(), null, null));
+            Assert.Throws<ArgumentException>(() => testReporter.EndTest(testRunId, Guid.NewGuid().ToString(), true, "", new List<string>(), null));
             Assert.Throws<ArgumentException>(() => testReporter.GenerateTestReport(testRunId, "c:\\results"));
         }
 
@@ -268,12 +268,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         }
 
         [Theory]
-        [InlineData(true, "some logs", new string[] { }, null, null)]
-        [InlineData(true, "some logs", new string[] { "file1.txt", "file2.txt", "file3.txt" }, null, null)]
-        [InlineData(false, "some logs", new string[] { }, null, null)]
-        [InlineData(true, "some logs", new string[] { }, "error message", null)]
-        [InlineData(true, "some logs", new string[] { }, "error message", "stack trace")]
-        public void EndTestTest(bool success, string stdout, string[] additionalFiles, string errorMessage, string stackTrace)
+        [InlineData(true, "some logs", new string[] { }, null)]
+        [InlineData(true, "some logs", new string[] { "file1.txt", "file2.txt", "file3.txt" }, null)]
+        [InlineData(false, "some logs", new string[] { }, null)]
+        [InlineData(true, "some logs", new string[] { }, "error message")]
+        public void EndTestTest(bool success, string stdout, string[] additionalFiles, string errorMessage)
         {
             var testRunName = "testRunName";
             var testUser = "testUser";
