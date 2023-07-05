@@ -226,7 +226,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testResult.Outcome = FailedResultOutcome;
         }
 
-        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
+        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage)
         {
             var testRun = GetTestRun(testRunId);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
@@ -264,7 +264,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 testResult.Outcome = FailedResultOutcome;
                 testResult.Output.ErrorInfo = new TestErrorInfo();
                 testResult.Output.ErrorInfo.Message = errorMessage;
-                testResult.Output.ErrorInfo.StackTrace = stackTrace;
             }
         }
 

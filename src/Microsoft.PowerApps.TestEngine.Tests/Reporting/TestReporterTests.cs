@@ -39,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             Assert.Throws<ArgumentException>(() => testReporter.EndTestRun(testRunId));
             Assert.Throws<ArgumentException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "c:\\testplan.fx.yaml"));
             Assert.Throws<ArgumentException>(() => testReporter.StartTest(testRunId, Guid.NewGuid().ToString()));
-            Assert.Throws<ArgumentException>(() => testReporter.EndTest(testRunId, Guid.NewGuid().ToString(), true, "", new List<string>(), null, null));
+            Assert.Throws<ArgumentException>(() => testReporter.EndTest(testRunId, Guid.NewGuid().ToString(), true, "", new List<string>(), null));
             Assert.Throws<ArgumentException>(() => testReporter.GenerateTestReport(testRunId, "c:\\results"));
         }
 
@@ -268,12 +268,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         }
 
         [Theory]
-        [InlineData(true, "some logs", new string[] { }, null, null)]
-        [InlineData(true, "some logs", new string[] { "file1.txt", "file2.txt", "file3.txt" }, null, null)]
-        [InlineData(false, "some logs", new string[] { }, null, null)]
-        [InlineData(true, "some logs", new string[] { }, "error message", null)]
-        [InlineData(true, "some logs", new string[] { }, "error message", "stack trace")]
-        public void EndTestTest(bool success, string stdout, string[] additionalFiles, string errorMessage, string stackTrace)
+        [InlineData(true, "some logs", new string[] { }, null)]
+        [InlineData(true, "some logs", new string[] { "file1.txt", "file2.txt", "file3.txt" }, null)]
+        [InlineData(false, "some logs", new string[] { }, null)]
+        [InlineData(true, "some logs", new string[] { }, "error message")]
+        public void EndTestTest(bool success, string stdout, string[] additionalFiles, string errorMessage)
         {
             var testRunName = "testRunName";
             var testUser = "testUser";
@@ -287,12 +286,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testSuiteId = testReporter.CreateTestSuite(testRunId, "testSuite");
             var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, testLocation);
 
-            Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage, stackTrace));
+            Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage));
 
             testReporter.StartTest(testRunId, testId);
 
             var before = DateTime.Now;
-            testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage, stackTrace);
+            testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage);
             var after = DateTime.Now;
 
             var testRun = testReporter.GetTestRun(testRunId);
@@ -324,10 +323,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 Assert.Equal(1, testRun.ResultSummary.Counters.Failed);
                 Assert.Equal(TestReporter.FailedResultOutcome, testRun.Results.UnitTestResults[0].Outcome);
                 Assert.Equal(errorMessage, testRun.Results.UnitTestResults[0].Output.ErrorInfo.Message);
-                Assert.Equal(stackTrace, testRun.Results.UnitTestResults[0].Output.ErrorInfo.StackTrace);
             }
 
-            Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage, stackTrace));
+            Assert.Throws<InvalidOperationException>(() => testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles.ToList(), errorMessage));
         }
 
         [Fact]
@@ -375,7 +373,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             testReporter.StartTest(testRunId, testId);
 
-            testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles, null, null);
+            testReporter.EndTest(testRunId, testId, success, stdout, additionalFiles, null);
 
             testReporter.EndTestRun(testRunId);
 

@@ -63,7 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestReporter.Setup(x => x.CreateTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(testId);
             MockTestReporter.Setup(x => x.CreateTestSuite(It.IsAny<string>(), It.IsAny<string>())).Returns(testSuiteId);
             MockTestReporter.Setup(x => x.StartTest(It.IsAny<string>(), It.IsAny<string>()));
-            MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>()));
+            MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string>()));
             MockTestReporter.Setup(x => x.FailTest(It.IsAny<string>(), It.IsAny<string>()));
 
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
@@ -156,7 +156,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 additionalFilesList = additionalFiles.ToList();
             }
-            MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(testSuiteDefinition.TestCases[0].TestCaseName) && x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage, stackTrace), Times.Once());
+            MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(testSuiteDefinition.TestCases[0].TestCaseName) && x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage), Times.Once());
         }
 
         private void VerifyFinallyExecution(string testResultDirectory, int total, int pass, int fail)
