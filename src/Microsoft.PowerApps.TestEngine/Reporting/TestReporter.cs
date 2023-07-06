@@ -48,7 +48,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 ResultSummary = new TestResultSummary()
                 {
                     Outcome = "",
-                    Counters = new TestCounters()
+                    Counters = new TestCounters(),
+                    Output = new TestOutput()
                 },
                 TestLists = new TestLists()
                 {
@@ -130,7 +131,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             return testRun.TestLists.TestList.Where(x => x.Id == testSuiteId).Count() == 1;
         }
 
-        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation)
+        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation, string resultOutput)
         {
             var testRun = GetTestRun(testRunId);
 
@@ -195,6 +196,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testRun.TestEntries.Entries.Add(testEntry);
             testRun.Results.UnitTestResults.Add(unitTestResult);
             testRun.ResultSummary.Counters.Total++;
+            testRun.ResultSummary.Output.StdOut = resultOutput;
 
             return unitTestDefinition.Id;
         }
