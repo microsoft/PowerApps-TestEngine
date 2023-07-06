@@ -123,6 +123,11 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testRunId))
                 {
+                    if (!Directory.Exists(testRunDirectory))
+                    {
+                        _fileSystem.CreateDirectory(Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6)));
+                    }
+
                     var testLogger = TestLoggerProvider.TestLoggers[testRunId];
                     testLogger.WriteToLogsFile(testRunDirectory, null);
                 }

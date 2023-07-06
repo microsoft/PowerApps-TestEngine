@@ -185,6 +185,11 @@ namespace Microsoft.PowerApps.TestEngine
                         {
                             if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
                             {
+                                if (!Directory.Exists(testCaseResultDirectory))
+                                {
+                                    _fileSystem.CreateDirectory(testCaseResultDirectory);
+                                }
+
                                 var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                                 testLogger.WriteToLogsFile(testCaseResultDirectory, testId);
                             }
@@ -253,6 +258,11 @@ namespace Microsoft.PowerApps.TestEngine
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
                 {
+                    if (!Directory.Exists(testResultDirectory))
+                    {
+                        _fileSystem.CreateDirectory(testResultDirectory);
+                    }
+
                     var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                     testLogger.WriteToLogsFile(testResultDirectory, null);
                 }
