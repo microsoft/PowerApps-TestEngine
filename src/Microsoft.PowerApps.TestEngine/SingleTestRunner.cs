@@ -145,7 +145,6 @@ namespace Microsoft.PowerApps.TestEngine
                         var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                         _testState.SetTestResultsDirectory(testCaseResultDirectory);
                         _fileSystem.CreateDirectory(testCaseResultDirectory);
-
                         string caseException = null;
 
                         try
