@@ -97,7 +97,10 @@ namespace Microsoft.PowerApps.TestEngine
 
             try
             {
-                _fileSystem.CreateDirectory(testResultDirectory);
+                if (!_fileSystem.Exists(testResultDirectory))
+                {
+                    _fileSystem.CreateDirectory(testResultDirectory);
+                }
 
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteName}" +
@@ -144,7 +147,10 @@ namespace Microsoft.PowerApps.TestEngine
 
                         var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                         _testState.SetTestResultsDirectory(testCaseResultDirectory);
-                        _fileSystem.CreateDirectory(testCaseResultDirectory);
+                        if (!_fileSystem.Exists(testCaseResultDirectory))
+                        {
+                            _fileSystem.CreateDirectory(testCaseResultDirectory);
+                        }
                         string caseException = null;
 
                         try
@@ -185,7 +191,7 @@ namespace Microsoft.PowerApps.TestEngine
                         {
                             if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
                             {
-                                if (!Directory.Exists(testCaseResultDirectory))
+                                if (!_fileSystem.Exists(testCaseResultDirectory))
                                 {
                                     _fileSystem.CreateDirectory(testCaseResultDirectory);
                                 }
@@ -258,7 +264,12 @@ namespace Microsoft.PowerApps.TestEngine
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
                 {
-                    if (!Directory.Exists(testResultDirectory))
+                    if (!_fileSystem.Exists(testResultDirectory))
+                    {
+                        _fileSystem.CreateDirectory(testResultDirectory);
+                    }
+
+                    if (!_fileSystem.Exists(testResultDirectory))
                     {
                         _fileSystem.CreateDirectory(testResultDirectory);
                     }

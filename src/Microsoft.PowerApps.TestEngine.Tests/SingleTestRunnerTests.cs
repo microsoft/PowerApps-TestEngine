@@ -77,7 +77,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockTestState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
 
+            var directoryToCheckExists = It.IsAny<string>();
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
+            MockFileSystem.Setup(x => x.Exists(directoryToCheckExists)).Returns(Directory.Exists(directoryToCheckExists));
             MockFileSystem.Setup(x => x.GetFiles(It.IsAny<string>())).Returns(additionalFiles);
             MockFileSystem.Setup(x => x.RemoveInvalidFileNameChars(testSuiteDefinition.TestSuiteName)).Returns(testSuiteDefinition.TestSuiteName);
 
@@ -310,7 +312,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         [Fact]
-        public async Task CreateDirectoryThrowsTest()
+          public async Task CreateDirectoryThrowsTest()
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
