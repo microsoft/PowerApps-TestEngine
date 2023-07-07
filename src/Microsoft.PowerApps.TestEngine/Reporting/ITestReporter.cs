@@ -8,7 +8,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     /// </summary>
     public interface ITestReporter
     {
+        /// <summary>
+        /// Test Run App URL
         public string TestRunAppURL { get; set; }
+
+        /// <summary>
+        /// Test Results Directory
         public string TestResultsDirectory { get; set; }
 
         /// <summary>

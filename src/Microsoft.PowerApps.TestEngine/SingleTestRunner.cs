@@ -121,7 +121,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _testReporter.TestRunAppURL = desiredUrl;
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(desiredUrl);                
+                await _userManager.LoginAsUserAsync(desiredUrl);
 
                 // Set up network request mocking if any
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
