@@ -117,8 +117,11 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
                 Logger.LogInformation("Successfully navigated to target URL");
 
+                _testReporter.TestResultsDirectory = testRunDirectory;
+                _testReporter.TestRunAppURL = desiredUrl;
+
                 // Log in user
-                await _userManager.LoginAsUserAsync(desiredUrl);
+                await _userManager.LoginAsUserAsync(desiredUrl);                
 
                 // Set up network request mocking if any
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
@@ -135,8 +138,7 @@ namespace Microsoft.PowerApps.TestEngine
                     _eventHandler.TestCaseBegin(testCase.TestCaseName);
 
                     TestSuccess = true;
-                    var resultOutputMessage = $"{{ \"AppURL\": {desiredUrl}, \"TestResults\": {testRunDirectory}}}";
-                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO", resultOutputMessage);
+                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
 
@@ -239,8 +241,7 @@ namespace Microsoft.PowerApps.TestEngine
                     // Run test case one by one, mark it as failed
                     foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                     {
-                        var resultOutputMessage = $"{{ \"AppURL\": {desiredUrl}, \"TestResults\": {testRunDirectory}}}";
-                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO", resultOutputMessage);
+                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
                         _testReporter.FailTest(testRunId, testId);
                     }
                 }
