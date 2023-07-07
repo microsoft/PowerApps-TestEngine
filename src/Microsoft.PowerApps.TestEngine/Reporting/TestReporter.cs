@@ -117,7 +117,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         private void _updateResultSummaryOutPut(TestRun testRun)
         {
-            var resultOutputMessage = $"{{ \"AppURL\": {testRunAppURL}, \"TestResults\": {testResultsDirectory}}}";
+            var resultOutputMessage = $"{{ \"AppURL\": \"{testRunAppURL}\", \"TestResults\": \"{testResultsDirectory}\"}}";
             testRun.ResultSummary.Output.StdOut = resultOutputMessage;
         }
 
