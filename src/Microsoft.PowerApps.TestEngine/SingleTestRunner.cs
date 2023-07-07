@@ -117,6 +117,9 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
                 Logger.LogInformation("Successfully navigated to target URL");
 
+                _testReporter.TestResultsDirectory = testRunDirectory;
+                _testReporter.TestRunAppURL = desiredUrl;
+
                 // Log in user
                 await _userManager.LoginAsUserAsync(desiredUrl);
 
@@ -205,7 +208,7 @@ namespace Microsoft.PowerApps.TestEngine
                                 }
                             }
 
-                            var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
+                            var message = $"{{ \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
                             _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message);
                         }
                     }
