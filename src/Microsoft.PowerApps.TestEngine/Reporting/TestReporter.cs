@@ -16,6 +16,11 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public static string FailedResultOutcome = "Failed";
         public static string PassedResultOutcome = "Passed";
 
+        private string testRunAppURL;
+        private string testResultsDirectory;
+        public string TestRunAppURL { get => testRunAppURL; set => testRunAppURL = value; }     
+        public string TestResultsDirectory { get => testResultsDirectory; set => testResultsDirectory = value; }
+
         public TestReporter(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
@@ -105,6 +110,15 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             testRun.Times.Finish = DateTime.Now;
             testRun.ResultSummary.Outcome = "Completed";
+
+            // Update the ResultSummary Output
+            _updateResultSummaryOutPut(testRun);
+        }
+
+        private void _updateResultSummaryOutPut(TestRun testRun)
+        {
+            var resultOutputMessage = $"{{ \"AppURL\": {testRunAppURL}, \"TestResults\": {testResultsDirectory}}}";
+            testRun.ResultSummary.Output.StdOut = resultOutputMessage;
         }
 
         public string CreateTestSuite(string testRunId, string testSuiteName)
@@ -131,7 +145,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             return testRun.TestLists.TestList.Where(x => x.Id == testSuiteId).Count() == 1;
         }
 
-        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation, string resultOutput)
+        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation)
         {
             var testRun = GetTestRun(testRunId);
 
@@ -196,7 +210,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testRun.TestEntries.Entries.Add(testEntry);
             testRun.Results.UnitTestResults.Add(unitTestResult);
             testRun.ResultSummary.Counters.Total++;
-            testRun.ResultSummary.Output.StdOut = resultOutput;
 
             return unitTestDefinition.Id;
         }
