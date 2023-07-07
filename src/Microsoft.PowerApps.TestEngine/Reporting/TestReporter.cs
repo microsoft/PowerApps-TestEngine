@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         private string testRunAppURL;
         private string testResultsDirectory;
-        public string TestRunAppURL { get => testRunAppURL; set => testRunAppURL = value; }     
+        public string TestRunAppURL { get => testRunAppURL; set => testRunAppURL = value; }
         public string TestResultsDirectory { get => testResultsDirectory; set => testResultsDirectory = value; }
 
         public TestReporter(IFileSystem fileSystem)
