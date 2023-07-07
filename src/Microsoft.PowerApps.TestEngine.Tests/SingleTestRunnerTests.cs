@@ -315,6 +315,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
+                MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
                 MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>())).Throws(exceptionToThrow);
             });
         }
