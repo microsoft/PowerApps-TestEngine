@@ -97,10 +97,7 @@ namespace Microsoft.PowerApps.TestEngine
 
             try
             {
-                if (!_fileSystem.Exists(testResultDirectory))
-                {
-                    _fileSystem.CreateDirectory(testResultDirectory);
-                }
+                _fileSystem.CreateDirectory(testResultDirectory);
 
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteName}" +
@@ -147,10 +144,8 @@ namespace Microsoft.PowerApps.TestEngine
 
                         var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                         _testState.SetTestResultsDirectory(testCaseResultDirectory);
-                        if (!_fileSystem.Exists(testCaseResultDirectory))
-                        {
-                            _fileSystem.CreateDirectory(testCaseResultDirectory);
-                        }
+                        _fileSystem.CreateDirectory(testCaseResultDirectory);
+
                         string caseException = null;
 
                         try
@@ -264,11 +259,6 @@ namespace Microsoft.PowerApps.TestEngine
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
                 {
-                    if (!_fileSystem.Exists(testResultDirectory))
-                    {
-                        _fileSystem.CreateDirectory(testResultDirectory);
-                    }
-
                     if (!_fileSystem.Exists(testResultDirectory))
                     {
                         _fileSystem.CreateDirectory(testResultDirectory);
