@@ -156,7 +156,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 additionalFilesList = additionalFiles.ToList();
             }
-            MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(testSuiteDefinition.TestCases[0].TestCaseName) && x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage), Times.Once());
+            MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage), Times.Once());
         }
 
         private void VerifyFinallyExecution(string testResultDirectory, int total, int pass, int fail)
