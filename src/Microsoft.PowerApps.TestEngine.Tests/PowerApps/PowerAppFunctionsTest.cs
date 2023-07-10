@@ -158,7 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var result = await powerAppFunctions.SetPropertyAsync(itemPath, DateValue.NewDateOnly(dt.Date));
 
             Assert.True(result);
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{((DateValue)DateValue.NewDateOnly(dt.Date)).Value}\")}})"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{((DateValue)DateValue.NewDateOnly(dt.Date)).GetConvertedValue(null)}\")}})"), Times.Once());
         }
 
         [Fact]
@@ -542,8 +542,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-                        MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
-                .Returns(Task.FromResult("object"));
+            MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<string>("typeof PowerAppsTestEngine"))
+    .Returns(Task.FromResult("object"));
 
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))")).Returns(Task.FromResult("{}"));
             var testSettings = new TestSettings() { Timeout = 12000 };
@@ -570,7 +570,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<TimeoutException>(async () => { await powerAppFunctions.LoadPowerAppsObjectModelAsync(); });
-            
+
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>("PowerAppsTestEngine.buildObjectModel().then((objectModel) => JSON.stringify(objectModel))"), Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Start to load power apps object model", LogLevel.Debug, Times.Once());
         }
@@ -736,7 +736,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SetPropertyDateAsync(itemPath, DateValue.NewDateOnly(dt.Date)); });
 
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{((DateValue)DateValue.NewDateOnly(dt.Date)).Value}\")}})"), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{((DateValue)DateValue.NewDateOnly(dt.Date)).GetConvertedValue(null)}\")}})"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
