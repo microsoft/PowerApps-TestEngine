@@ -311,11 +311,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         [Fact]
-          public async Task CreateDirectoryThrowsTest()
+        public async Task CreateDirectoryThrowsTest()
         {
+            
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>())).Throws(exceptionToThrow);
+                var instanceCount = 0;
+                MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>())).Callback(() =>
+                {
+                    instanceCount++;
+                    if (instanceCount == 1)
+                    {
+                        throw exceptionToThrow;
+                    }
+                });
+                MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
             });
         }
 
@@ -327,6 +337,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockPowerFxEngine.Setup(x => x.Setup(It.IsAny<CultureInfo>())).Throws(exceptionToThrow);
             });
         }
+
 
         [Fact]
         public async Task PowerFxUpdatePowerFxModelAsyncThrowsTest()
