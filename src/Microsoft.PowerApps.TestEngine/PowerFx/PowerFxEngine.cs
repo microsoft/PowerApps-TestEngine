@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Dynamic;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -11,7 +10,6 @@ using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Syntax;
 using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
@@ -46,7 +44,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
         public void Setup(CultureInfo locale)
         {
-            var powerFxConfig = new PowerFxConfig(locale);
+            //TODO: Temporarily removed the locale input parameter from PowerFxConfig(...), make sure to add it back
+            //var powerFxConfig = new PowerFxConfig(locale);
+            var powerFxConfig = new PowerFxConfig();
 
             powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));

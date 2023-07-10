@@ -3,7 +3,6 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
@@ -206,17 +205,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Handling in the case that the property is a DateTime
             if (propType.GetType() == typeof(DateTimeValue))
             {
-                PollingCondition<DateTime>((x) => x != value.Value, () =>
+                PollingCondition<DateTime>((x) => x != value.GetConvertedValue(null), () =>
                 {
-                    return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
+                    return ((DateTimeValue)controlModel.GetField(propName.Value)).GetConvertedValue(null);
                 }, _timeout);
             }
             // Otherwise, the property should be be a Date
             else
             {
-                PollingCondition<DateTime>((x) => x != value.Value, () =>
+                PollingCondition<DateTime>((x) => x != value.GetConvertedValue(null), () =>
                 {
-                    return ((DateValue)controlModel.GetField(propName.Value)).Value;
+                    return ((DateValue)controlModel.GetField(propName.Value)).GetConvertedValue(null);
                 }, _timeout);
             }
 
@@ -249,9 +248,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Handling in the case that the property is a DateTime
             if (propType.GetType() == typeof(DateTimeValue))
             {
-                PollingCondition<DateTime>((x) => x != value.Value, () =>
+                PollingCondition<DateTime>((x) => x != value.GetConvertedValue(null), () =>
                 {
-                    return ((DateTimeValue)controlModel.GetField(propName.Value)).Value;
+                    return ((DateTimeValue)controlModel.GetField(propName.Value)).GetConvertedValue(null);
                 }, _timeout);
 
                 _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
@@ -260,9 +259,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Handling in the case that the property is a Date
             else if (propType.GetType() == typeof(DateValue))
             {
-                PollingCondition<DateTime>((x) => x != value.Value, () =>
+                PollingCondition<DateTime>((x) => x != value.GetConvertedValue(null), () =>
                 {
-                    return ((DateValue)controlModel.GetField(propName.Value)).Value;
+                    return ((DateValue)controlModel.GetField(propName.Value)).GetConvertedValue(null);
                 }, _timeout);
 
                 _logger.LogInformation("Successfully finished executing Wait function, condition was met.");
