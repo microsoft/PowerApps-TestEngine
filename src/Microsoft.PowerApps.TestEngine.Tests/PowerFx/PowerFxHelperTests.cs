@@ -4,7 +4,6 @@
 using System.Globalization;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Preview;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
@@ -52,7 +51,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void TestFormulasSeparatedByChainingOpAreExtractedCorrectly(string locale, string expression, params string[] expectedFormulas)
         {
             // Arrange
-            FeatureFlags.StringInterpolation = true;
+            // Setting this feature flag is no longer needed
+            //FeatureFlags.StringInterpolation = true;
             var oldUICulture = CultureInfo.CurrentUICulture;
             var culture = new CultureInfo(locale);
             CultureInfo.CurrentUICulture = culture;
@@ -75,7 +75,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
         private static Engine GetEngine(string locale)
         {
-            var recalcEngine = new RecalcEngine(new PowerFxConfig(new CultureInfo(locale)));
+            //TODO: Temporarily removed the locale input parameter from PowerFxConfig(...), make sure to add it back
+            //var recalcEngine = new RecalcEngine(new PowerFxConfig(new CultureInfo(locale)));
+            var recalcEngine = new RecalcEngine(new PowerFxConfig());
             return recalcEngine;
         }
 
