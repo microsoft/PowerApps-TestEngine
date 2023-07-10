@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
-using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Types;
@@ -146,7 +145,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // check to see if the value of DatePicker1's 'Value' property is the correct datetime (01/01/2030)
             Assert.IsType<BooleanValue>(result);
-            MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<DateValue>(dateVal => dateVal.Value == dt)), Times.Once());
+            MockPowerAppFunctions.Verify(x => x.SetPropertyAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), It.Is<DateValue>(dateVal => dateVal.GetConvertedValue(null) == dt)), Times.Once());
         }
 
         [Fact]
@@ -157,7 +156,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Make setPropertyFunction contain a component called Dropdown1
             var recordType = RecordType.Empty().Add("Selected", RecordType.Empty());
-            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object,"Dropdown1");
+            var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Dropdown1");
             var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Dropdown1's 'Selected' property to {"Value":"2"}

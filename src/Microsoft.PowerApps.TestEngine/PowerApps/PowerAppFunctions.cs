@@ -272,7 +272,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
                 var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-                var recordValue = value.Value;
+                var recordValue = value.GetConvertedValue(null);
 
                 // Date.parse() parses the date to unix timestamp
                 var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
