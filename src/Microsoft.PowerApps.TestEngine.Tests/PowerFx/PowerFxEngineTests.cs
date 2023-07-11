@@ -47,14 +47,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void SetupDoesNotThrow()
         {
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
         }
 
         [Fact]
         public void ExecuteThrowsOnNoSetupTest()
         {
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            Assert.Throws<InvalidOperationException>(() => powerFxEngine.Execute(""));
+            Assert.Throws<InvalidOperationException>(() => powerFxEngine.Execute("", It.IsAny<CultureInfo>()));
             LoggingTestHelper.VerifyLogging(MockLogger, "Engine is null, make sure to call Setup first", LogLevel.Error, Times.Once());
         }
 
@@ -80,7 +80,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await Assert.ThrowsAsync<TimeoutException>(() => powerFxEngine.UpdatePowerFxModelAsync());
             LoggingTestHelper.VerifyLogging(MockLogger, "Something went wrong when Test Engine tried to get App status.", LogLevel.Error, Times.Once());
         }
@@ -89,13 +89,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public void ExecuteOneFunctionTest()
         {
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
-            var result = powerFxEngine.Execute("1+1");
-            Assert.Equal(2, ((NumberValue)result).Value);
+            powerFxEngine.Setup();
+            var result = powerFxEngine.Execute("1+1", new CultureInfo("en-US"));
+            Assert.Equal(2, ((DecimalValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Once());
 
-            result = powerFxEngine.Execute("=1+1");
-            Assert.Equal(2, ((NumberValue)result).Value);
+            result = powerFxEngine.Execute("=1+1", new CultureInfo("en-US"));
+            Assert.Equal(2, ((DecimalValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Exactly(2));
         }
 
@@ -104,12 +104,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var powerFxExpression = "1+1; //some comment \n 2+2;\n Concatenate(\"hello\", \"world\");";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
-            var result = powerFxEngine.Execute(powerFxExpression);
+            powerFxEngine.Setup();
+            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.Equal("helloworld", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
 
-            result = powerFxEngine.Execute($"={powerFxExpression}");
+            result = powerFxEngine.Execute($"={powerFxExpression}", It.IsAny<CultureInfo>());
             Assert.Equal("helloworld", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
         }
@@ -154,18 +154,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
 
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
 
-            var result = powerFxEngine.Execute(powerFxExpression);
+            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Once());
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Once());
 
-            result = powerFxEngine.Execute($"={powerFxExpression}");
+            result = powerFxEngine.Execute($"={powerFxExpression}", It.IsAny<CultureInfo>());
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
             MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Exactly(2));
@@ -178,8 +178,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "someNonExistentPowerFxFunction(1, 2, 3)";
             MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(CultureInfo.CurrentCulture);
-            Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression));
+            powerFxEngine.Setup();
+            Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
@@ -187,8 +187,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
-            Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression));
+            powerFxEngine.Setup();
+            Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
@@ -196,12 +196,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var powerFxExpression = "Assert(1+1=2, \"Adding 1 + 1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
-            var result = powerFxEngine.Execute(powerFxExpression);
+            powerFxEngine.Setup();
+            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
 
             var failingPowerFxExpression = "Assert(1+1=3, \"Supposed to fail\")";
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(failingPowerFxExpression));
+            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(failingPowerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
@@ -212,12 +212,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestInfraFunctions.Setup(x => x.ScreenshotAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             var powerFxExpression = "Screenshot(\"1.jpg\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
-            var result = powerFxEngine.Execute(powerFxExpression);
+            powerFxEngine.Setup();
+            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
 
             var failingPowerFxExpression = "Screenshot(\"1.txt\")";
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(failingPowerFxExpression));
+            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(failingPowerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
@@ -235,10 +235,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
-            var result = powerFxEngine.Execute(powerFxExpression);
+            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Exactly(3));
         }
@@ -259,9 +259,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
+            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
@@ -280,9 +280,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
+            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
@@ -303,10 +303,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
 
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
-            var result = powerFxEngine.Execute(powerFxExpression);
+            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BooleanValue>(result);
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
@@ -327,9 +327,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
 
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
+            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
@@ -360,10 +360,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression);
-            var result = powerFxEngine.Execute(powerFxExpression);
+            await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
@@ -383,9 +383,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression));
+            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
             MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
         }
 
@@ -426,7 +426,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var oldUICulture = CultureInfo.CurrentUICulture;
             var frenchCulture = new CultureInfo("fr");
             CultureInfo.CurrentUICulture = frenchCulture;
-            powerFxEngine.Setup(frenchCulture);
+            powerFxEngine.Setup();
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             var expression = "Select(Label1/*Label;;22*/);;\"Just stirng \n;literal\";;Select(Label2)\n;;Select(Label3);;Assert(1=1; \"Supposed to pass;;\");;Max(1,2)";
@@ -435,9 +435,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             // Engine.Eval should throw an exception when none of the used first names exist in the underlying symbol table yet.
             // This confirms that we would be hitting goStepByStep branch
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(expression));
+            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(expression, frenchCulture));
             await powerFxEngine.UpdatePowerFxModelAsync();
-            var result = powerFxEngine.Execute(expression);
+            var result = powerFxEngine.Execute(expression, frenchCulture);
 
             try
             {
@@ -450,8 +450,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             // Assert
             Assert.Equal(2, updateCounter);
-            Assert.Equal(FormulaType.Number, result.Type);
-            Assert.Equal(1.2, (result as NumberValue).Value);
+            Assert.Equal(FormulaType.Decimal, result.Type);
+            Assert.Equal("1.2", (result as DecimalValue).Value.ToString());
             LoggingTestHelper.VerifyLogging(MockLogger, $"Syntax check failed. Now attempting to execute lines step by step", LogLevel.Debug, Times.Exactly(2));
         }
 
