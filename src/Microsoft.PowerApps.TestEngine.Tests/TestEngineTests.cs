@@ -203,7 +203,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         [Fact]
-        public async Task TestEngineWithNullOutputDirectoryTest()
+        public async Task TestEngineWithIncorrectOutputDirectoryTest()
         {
             var testSettings = new TestSettings()
             {
@@ -235,10 +235,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
             var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
-            var outputDirectory = new DirectoryInfo("TestOutput");
+            var outputDirectory = new DirectoryInfo("C:\\invalidTestDirectory");
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = outputDirectory.FullName;
-            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var testRunDirectory = Path.Combine("", testRunId.Substring(0, 6));
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
@@ -249,8 +249,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
-
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            LoggingTestHelper.VerifyLogging(MockLogger, $"[Critical Error]: Could not find a part of the path '{testRunDirectory}'.", LogLevel.Trace, Times.Once());
         }
 
         private TestSuiteDefinition GetDefaultTestSuiteDefinition()
