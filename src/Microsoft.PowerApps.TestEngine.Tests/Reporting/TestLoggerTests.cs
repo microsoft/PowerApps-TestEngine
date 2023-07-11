@@ -70,9 +70,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 createdLogs.Add(filePath, logs);
             });
 
-            testLogger.WriteToLogsFile("", "");
-            var listString = string.Join(" ", testLogger.Logs);
-            Assert.Contains($"[Critical Error]: Could not find a part of the path", listString);
+            var stringWriter = new StringWriter();
+            Console.SetOut(stringWriter);
+
+            testLogger.WriteToLogsFile("C:\\invalidPath", "");
+
+            var output = stringWriter.ToString();
+            Assert.Contains("[Critical Error]: Could not find a part of the path", output);
         }
 
         [Fact]
