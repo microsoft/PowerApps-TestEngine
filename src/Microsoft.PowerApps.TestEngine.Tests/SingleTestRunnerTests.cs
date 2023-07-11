@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -19,10 +20,12 @@ using Microsoft.PowerApps.TestEngine.Users;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Xunit;
+
 namespace Microsoft.PowerApps.TestEngine.Tests
 {
     public class SingleTestRunnerTests
     {
+
         private Mock<ITestReporter> MockTestReporter;
         private Mock<IPowerFxEngine> MockPowerFxEngine;
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
@@ -35,6 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<ITestLogger> MockTestLogger;
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<ITestEngineEvents> MockTestEngineEventHandler;
+
         public SingleTestRunnerTests()
         {
             MockTestReporter = new Mock<ITestReporter>(MockBehavior.Strict);
@@ -50,16 +54,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
         }
+
         private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles, string testSuitelocale)
         {
             LoggingTestHelper.SetupMock(MockLogger);
             MockLogger.Setup(x => x.BeginScope(It.IsAny<string>())).Returns(new TestLoggerScope("", () => { }));
+
             MockTestReporter.Setup(x => x.CreateTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(testId);
             MockTestReporter.Setup(x => x.CreateTestSuite(It.IsAny<string>(), It.IsAny<string>())).Returns(testSuiteId);
             MockTestReporter.Setup(x => x.StartTest(It.IsAny<string>(), It.IsAny<string>()));
             MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string>()));
             MockTestReporter.Setup(x => x.FailTest(It.IsAny<string>(), It.IsAny<string>()));
+
+            MockTestReporter.SetupSet(x => x.TestResultsDirectory = "TestRunDirectory");
+            MockTestReporter.SetupGet(x => x.TestResultsDirectory).Returns("TestRunDirectory");
+            MockTestReporter.SetupSet(x => x.TestRunAppURL = "https://fake-app-url.com");
+            MockTestReporter.SetupGet(x => x.TestRunAppURL).Returns("https://fake-app-url.com");
+
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+
             MockTestState.Setup(x => x.SetLogger(It.IsAny<ILogger>()));
             MockTestState.Setup(x => x.SetTestSuiteDefinition(It.IsAny<TestSuiteDefinition>()));
             MockTestState.Setup(x => x.SetTestRunId(It.IsAny<string>()));
@@ -73,16 +86,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockFileSystem.Setup(x => x.GetFiles(It.IsAny<string>())).Returns(additionalFiles);
             MockFileSystem.Setup(x => x.RemoveInvalidFileNameChars(testSuiteDefinition.TestSuiteName)).Returns(testSuiteDefinition.TestSuiteName);
 
+
             var locale = string.IsNullOrEmpty(testSuitelocale) ? CultureInfo.CurrentCulture : new CultureInfo(testSuitelocale);
             MockPowerFxEngine.Setup(x => x.Setup(locale));
             MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Returns(Task.CompletedTask);
             MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Returns(FormulaValue.NewBlank());
+
             MockTestEngineEventHandler.Setup(x => x.SetAndInitializeCounters(It.IsAny<int>()));
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
             MockTestEngineEventHandler.Setup(x => x.SuiteBegin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
             MockTestEngineEventHandler.Setup(x => x.SuiteEnd());
             MockTestEngineEventHandler.Setup(x => x.TestCaseBegin(It.IsAny<string>()));
             MockTestEngineEventHandler.Setup(x => x.TestCaseEnd(It.IsAny<bool>()));
+
             if (powerFxTestSuccess)
             {
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
@@ -92,17 +108,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>())).Throws(new Exception("something bad happened"));
             }
             MockPowerFxEngine.Setup(x => x.GetPowerAppFunctions()).Returns(MockPowerAppFunctions.Object);
+
             MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.DisposeAsync()).Returns(Task.CompletedTask);
+
             MockUserManager.Setup(x => x.LoginAsUserAsync(appUrl)).Returns(Task.CompletedTask);
+
             MockUrlMapper.Setup(x => x.GenerateTestUrl("", "")).Returns(appUrl);
+
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             MockTestLogger.Setup(x => x.WriteExceptionToDebugLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             TestLoggerProvider.TestLoggers.Add(testSuiteId, MockTestLogger.Object);
         }
+
         // When OnTestSuiteComplete exists, the test result directory will be set an extra time. 
         private void VerifyTestStateSetup(string testSuiteId, string testRunId, TestSuiteDefinition testSuiteDefinition, string testResultDirectory, BrowserConfiguration browserConfig, int setDirectoryTimes = 1)
         {
@@ -140,17 +161,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 additionalFilesList = additionalFiles.ToList();
             }
-            MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(testSuiteDefinition.TestCases[0].TestCaseName) && x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage), Times.Once());
+            MockTestReporter.Verify(x => x.EndTest(testRunId, testId, testSuccess, It.Is<string>(x => x.Contains(browserConfig.Browser)), additionalFilesList, errorMessage), Times.Once());
         }
+
         private void VerifyFinallyExecution(string testResultDirectory, int total, int pass, int fail)
         {
             string summaryString = $"\nTest suite summary\nTotal cases: {total}" +
                                 $"\nCases passed: {pass}" +
                                 $"\nCases failed: {fail}";
+
             MockTestInfraFunctions.Verify(x => x.EndTestRunAsync(), Times.Once());
             MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory, null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)summaryString, LogLevel.Information, Times.Once());
         }
+
         [Theory]
         [InlineData(null)]
         [InlineData(new object[] { new string[] { } })]
@@ -166,15 +190,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object);
+
             var testData = new TestDataOne();
+
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, additionalFiles, testData.testSuiteLocale);
+
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
             VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testSuiteId, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl, locale);
             VerifyFinallyExecution(testData.testResultDirectory, 1, 1, 0);
         }
+
         [Theory]
         [InlineData(null)]
         [InlineData(new object[] { new string[] { } })]
@@ -190,15 +219,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object);
+
             var testData = new TestDataTwo();
+
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, additionalFiles, testData.testSuiteLocale);
+
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             VerifySuccessfulTestExecution(testData.testCaseResultDirectory, testData.testSuiteDefinition, testData.browserConfig, testData.testSuiteId, testData.testRunId, testData.testId, true, additionalFiles, null, null, testData.appUrl, locale);
             VerifyFinallyExecution(testData.testResultDirectory, 1, 1, 0);
         }
+
         [Fact]
         public async Task SingleTestRunnerCanOnlyBeRunOnce()
         {
@@ -211,13 +245,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object);
+
             var testData = new TestDataOne();
+
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
+
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => { await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale); });
         }
+
         [Fact]
         public async Task SingleTestRunnerPowerFxTestFail()
         {
@@ -230,14 +268,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object);
+
             var testData = new TestDataOne();
+
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, false, testData.additionalFiles, testData.testSuiteLocale);
+
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
             VerifyFinallyExecution(testData.testResultDirectory, 1, 0, 1);
         }
+
         public async Task SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper(Action<Exception> additionalMockSetup)
         {
             var singleTestRunner = new SingleTestRunner(MockTestReporter.Object,
@@ -249,20 +292,28 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockFileSystem.Object,
                                                            MockLoggerFactory.Object,
                                                            MockTestEngineEventHandler.Object);
+
             var testData = new TestDataOne();
+
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
+
             var obj = new ExpandoObject();
             obj.TryAdd("sessionID", "somesessionId");
+
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
+
             var exceptionToThrow = new InvalidOperationException("Test exception");
             additionalMockSetup(exceptionToThrow);
+
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig);
             LoggingTestHelper.VerifyLogging(MockLogger, "Encountered an error. See the debug log for this test suite for more information.", LogLevel.Error, Times.AtLeastOnce());
             VerifyFinallyExecution(testData.testResultDirectory, 1, 0, 1);
         }
+
         [Fact]
         public async Task CreateDirectoryThrowsTest()
         {
@@ -289,6 +340,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Throws(exceptionToThrow);
             });
         }
+
         [Fact]
         public async Task TestInfraSetupThrowsTest()
         {
@@ -297,6 +349,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockTestInfraFunctions.Setup(x => x.SetupAsync()).Throws(exceptionToThrow);
             });
         }
+
         [Fact]
         public async Task LoginAsUserThrowsTest()
         {
@@ -305,6 +358,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<string>())).Throws(exceptionToThrow);
             });
         }
+
         [Fact]
         public async Task SetupNetworkRequestMockThrowsTest()
         {
@@ -313,6 +367,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Throws(exceptionToThrow);
             });
         }
+
         [Fact]
         public async Task GenerateAppUrlThrowsTest()
         {
@@ -321,6 +376,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockUrlMapper.Setup(x => x.GenerateTestUrl("", "")).Throws(exceptionToThrow);
             });
         }
+
         [Fact]
         public async Task GoToUrlThrowsTest()
         {
@@ -329,6 +385,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Throws(exceptionToThrow);
             });
         }
+
         [Fact]
         public async Task PowerFxExecuteThrowsTest()
         {
@@ -341,16 +398,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockFileSystem.Object,
                                                            MockLoggerFactory.Object,
                                                            MockTestEngineEventHandler.Object);
+
             var testData = new TestDataOne();
+
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
+
             var exceptionToThrow = new InvalidOperationException("Test exception");
+
             MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>())).Throws(exceptionToThrow);
+
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
+
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+
             VerifyTestStateSetup(testData.testSuiteId, testData.testRunId, testData.testSuiteDefinition, testData.testResultDirectory, testData.browserConfig, 2);
             LoggingTestHelper.VerifyLogging(MockLogger, "Encountered an error. See the debug log for this test suite for more information.", LogLevel.Error, Times.Once());
             VerifyFinallyExecution(testData.testResultDirectory, 1, 1, 0);
         }
+
         // Sample Test Data for test with OnTestCaseStart, OnTestCaseComplete and OnTestSuiteComplete
         class TestDataOne
         {
@@ -358,6 +423,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             public string testRunDirectory;
             public TestSuiteDefinition testSuiteDefinition;
             public BrowserConfiguration browserConfig;
+
             public string testId;
             public string appUrl;
             public string testSuiteId;
@@ -365,6 +431,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             public string testCaseResultDirectory;
             public string[] additionalFiles;
             public string testSuiteLocale;
+
             public TestDataOne()
             {
                 testRunId = Guid.NewGuid().ToString();
@@ -393,6 +460,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 {
                     Browser = "Chromium"
                 };
+
                 testId = Guid.NewGuid().ToString();
                 appUrl = "https://fake-app-url.com";
                 testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfig.Browser}_{testSuiteId.Substring(0, 6)}");
@@ -401,6 +469,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 testSuiteLocale = "en-US";
             }
         }
+
         // Sample Test Data for test
         class TestDataTwo
         {
@@ -409,12 +478,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             public string testRunDirectory;
             public TestSuiteDefinition testSuiteDefinition;
             public BrowserConfiguration browserConfig;
+
             public string testId;
             public string appUrl;
             public string testResultDirectory;
             public string testCaseResultDirectory;
             public string[] additionalFiles;
             public string testSuiteLocale;
+
             public TestDataTwo()
             {
                 testRunId = Guid.NewGuid().ToString();
@@ -440,6 +511,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 {
                     Browser = "Chromium"
                 };
+
                 testId = Guid.NewGuid().ToString();
                 appUrl = "https://fake-app-url.com";
                 testResultDirectory = Path.Combine(testRunDirectory, $"{testSuiteDefinition.TestSuiteName}_{browserConfig.Browser}_{testSuiteId.Substring(0, 6)}");
