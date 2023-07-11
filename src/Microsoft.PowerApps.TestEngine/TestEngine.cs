@@ -123,14 +123,7 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testRunId))
                 {
-                    if (!string.IsNullOrEmpty(testRunDirectory))
-                    {
-                        if (!Directory.Exists(testRunDirectory))
-                        {
-                            _fileSystem.CreateDirectory(testRunDirectory);
-                        }
-                    }
-                    else
+                    if (string.IsNullOrEmpty(testRunDirectory))
                     {
                         testRunDirectory = "../../log";
                     }

@@ -15,11 +15,6 @@ namespace Microsoft.PowerApps.TestEngine.System
             Directory.CreateDirectory(directoryName);
         }
 
-        public bool Exists(string directoryName)
-        {
-            return Directory.Exists(directoryName);
-        }
-
         public string[] GetFiles(string directoryName)
         {
             return Directory.GetFiles(directoryName);
