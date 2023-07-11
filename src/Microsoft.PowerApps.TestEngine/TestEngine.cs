@@ -125,7 +125,13 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     if (string.IsNullOrEmpty(testRunDirectory))
                     {
-                        testRunDirectory = "../../log";
+                        var criticalLogDirectory = "../../log";
+
+                        if (!_fileSystem.Exists(criticalLogDirectory))
+                        {
+                            _fileSystem.CreateDirectory(criticalLogDirectory);
+                        }
+                        testRunDirectory = criticalLogDirectory;
                     }
 
                     var testLogger = TestLoggerProvider.TestLoggers[testRunId];
