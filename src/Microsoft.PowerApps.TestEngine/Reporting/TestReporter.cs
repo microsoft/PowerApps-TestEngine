@@ -16,6 +16,11 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public static string FailedResultOutcome = "Failed";
         public static string PassedResultOutcome = "Passed";
 
+        private string testRunAppURL;
+        private string testResultsDirectory;
+        public string TestRunAppURL { get => testRunAppURL; set => testRunAppURL = value; }
+        public string TestResultsDirectory { get => testResultsDirectory; set => testResultsDirectory = value; }
+
         public TestReporter(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
@@ -48,7 +53,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 ResultSummary = new TestResultSummary()
                 {
                     Outcome = "",
-                    Counters = new TestCounters()
+                    Counters = new TestCounters(),
+                    Output = new TestOutput()
                 },
                 TestLists = new TestLists()
                 {
@@ -104,6 +110,15 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             testRun.Times.Finish = DateTime.Now;
             testRun.ResultSummary.Outcome = "Completed";
+
+            // Update the ResultSummary Output
+            _updateResultSummaryOutPut(testRun);
+        }
+
+        private void _updateResultSummaryOutPut(TestRun testRun)
+        {
+            var resultOutputMessage = $"{{ \"AppURL\": \"{testRunAppURL}\", \"TestResults\": \"{testResultsDirectory}\"}}";
+            testRun.ResultSummary.Output.StdOut = resultOutputMessage;
         }
 
         public string CreateTestSuite(string testRunId, string testSuiteName)

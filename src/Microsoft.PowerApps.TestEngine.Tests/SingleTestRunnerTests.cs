@@ -65,6 +65,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestReporter.Setup(x => x.StartTest(It.IsAny<string>(), It.IsAny<string>()));
             MockTestReporter.Setup(x => x.EndTest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string>()));
             MockTestReporter.Setup(x => x.FailTest(It.IsAny<string>(), It.IsAny<string>()));
+            
+            MockTestReporter.SetupSet(x => x.TestResultsDirectory = "TestRunDirectory");
+            MockTestReporter.SetupGet(x => x.TestResultsDirectory).Returns("TestRunDirectory");
+            MockTestReporter.SetupSet(x => x.TestRunAppURL = "https://fake-app-url.com");
+            MockTestReporter.SetupGet(x => x.TestRunAppURL).Returns("https://fake-app-url.com");
 
             MockTestReporter.SetupSet(x => x.TestResultsDirectory = "TestRunDirectory");
             MockTestReporter.SetupGet(x => x.TestResultsDirectory).Returns("TestRunDirectory");

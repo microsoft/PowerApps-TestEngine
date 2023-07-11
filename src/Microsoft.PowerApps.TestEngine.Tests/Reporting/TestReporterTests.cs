@@ -128,6 +128,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             Assert.Equal("Completed", testRun.ResultSummary.Outcome);
 
             Assert.Throws<InvalidOperationException>(() => testReporter.EndTestRun(testRunId));
+            Assert.Equal("{ \"AppURL\": \"\", \"TestResults\": \"\"}", testRun.ResultSummary.Output.StdOut);
         }
 
         [Fact]
@@ -365,6 +366,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var resultDirectory = "C:\\results";
             var testReporter = new TestReporter(MockFileSystem.Object);
             var testRunId = testReporter.CreateTestRun(testRunName, testUser);
+            testReporter.TestRunAppURL = "someAppURL";
+            testReporter.TestResultsDirectory = "someResultsDirectory";
 
             testReporter.StartTestRun(testRunId);
 
@@ -397,9 +400,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
                 Assert.Equal(JsonConvert.SerializeObject(testRun), JsonConvert.SerializeObject(deserializedTestRun));
 
+                // test the setting of result summary
+                Assert.Equal("{ \"AppURL\": \"someAppURL\", \"TestResults\": \"someResultsDirectory\"}", testRun.ResultSummary.Output.StdOut);
                 return true;
             };
             MockFileSystem.Verify(x => x.WriteTextToFile(expectedTrxPath, It.Is<string>(y => validateTestResults(y))), Times.Once());
         }
-    }
+    }  
 }

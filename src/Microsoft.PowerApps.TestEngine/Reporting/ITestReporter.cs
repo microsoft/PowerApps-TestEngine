@@ -9,6 +9,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     public interface ITestReporter
     {
         /// <summary>
+        /// Test Run App URL
+        public string TestRunAppURL { get; set; }
+
+        /// <summary>
+        /// Test Results Directory
+        public string TestResultsDirectory { get; set; }
+
+        /// <summary>
         /// Creates a test run
         /// </summary>
         /// <param name="testRunName">Name of the test run</param>
@@ -34,6 +42,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// Creates a test in a test run
         /// </summary>
         /// <param name="testRunId">Test run id</param>
+        /// <param name="testSuiteId">Test suite id</param>
         /// <param name="testName">Name of test</param>
         /// <param name="testLocation">Location of test file</param>
         /// <returns>Test id</returns>
