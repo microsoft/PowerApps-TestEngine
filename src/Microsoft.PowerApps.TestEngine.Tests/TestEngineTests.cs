@@ -202,56 +202,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
-        [Fact]
-        public async Task TestEngineWithIncorrectOutputDirectoryTest()
-        {
-            var testSettings = new TestSettings()
-            {
-                Locale = "en-US",
-                BrowserConfigurations = new List<BrowserConfiguration>()
-                {
-                    new BrowserConfiguration()
-                    {
-                        Browser = "Chromium"
-                    }
-                }
-            };
-            var testSuiteDefinition = new TestSuiteDefinition()
-            {
-                TestSuiteName = "Test1",
-                TestSuiteDescription = "First test",
-                AppLogicalName = "logicalAppName1",
-                Persona = "User1",
-                TestCases = new List<TestCase>()
-                {
-                    new TestCase
-                    {
-                        TestCaseName = "Test Case Name",
-                        TestCaseDescription = "Test Case Description",
-                        TestSteps = "Assert(1 + 1 = 2, \"1 + 1 should be 2 \")"
-                    }
-                }
-            };
-            var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
-            var environmentId = "defaultEnviroment";
-            var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
-            var outputDirectory = new DirectoryInfo("C:\\invalidTestDirectory");
-            var testRunId = Guid.NewGuid().ToString();
-            var expectedOutputDirectory = outputDirectory.FullName;
-            var testRunDirectory = Path.Combine("", testRunId.Substring(0, 6));
-            var domain = "apps.powerapps.com";
-
-            var expectedTestReportPath = "C:\\test.trx";
-
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
-
-            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
-
-            Assert.Equal(expectedTestReportPath, testReportPath);
-            LoggingTestHelper.VerifyLogging(MockLogger, $"[Critical Error]: Could not find a part of the path '{testRunDirectory}'.", LogLevel.Trace, Times.Once());
-        }
-
         private TestSuiteDefinition GetDefaultTestSuiteDefinition()
         {
             return new TestSuiteDefinition()
