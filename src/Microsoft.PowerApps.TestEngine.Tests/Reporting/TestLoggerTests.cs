@@ -2,12 +2,14 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
 using Xunit;
 
@@ -57,10 +59,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [Fact]
         public void WriteToLogsFileThrowsOnInvalidPathTest()
         {
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
             var testLogger = new TestLogger(MockFileSystem.Object);
-            Assert.Throws<ArgumentException>(() => testLogger.WriteToLogsFile("", ""));
-            MockFileSystem.Verify(x => x.IsValidFilePath(""), Times.Once());
+            var createdLogs = new Dictionary<string, string[]>();
+
+            MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
+            MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>())).Callback((string filePath, string[] logs) =>
+            {
+                createdLogs.Add(filePath, logs);
+            });
+
+            testLogger.WriteToLogsFile("", "");
+            var listString = string.Join(" ", testLogger.Logs);
+            Assert.Contains($"[Critical Error]: Could not find a part of the path", listString);
         }
 
         [Fact]
