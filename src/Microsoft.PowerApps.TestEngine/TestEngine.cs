@@ -132,8 +132,7 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                     else
                     {
-                        testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
-                        _fileSystem.CreateDirectory(testRunDirectory);
+                        testRunDirectory = "../../log";
                     }
 
                     var testLogger = TestLoggerProvider.TestLoggers[testRunId];
