@@ -138,7 +138,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{frpowerFxExpression}}}", LogLevel.Trace, Times.Once());
         }
 
-
         [Fact]
         public async Task ExecuteWithVariablesTest()
         {
