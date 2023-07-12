@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <param name="result">Check result instance created after processing the expression</param>
         /// <param name="culture">The locale to be used when excecuting tests</param>
         /// <returns>An enumerable of formulas extracted from the expression that are separated by chaining operator</returns>
-        public static IEnumerable<string> ExtractFormulasSeparatedByChainingOperator(Engine engine, CheckResult result, CultureInfo culture = null)
+        public static IEnumerable<string> ExtractFormulasSeparatedByChainingOperator(Engine engine, CheckResult result, CultureInfo culture)
         {
             if (string.IsNullOrEmpty(result?.Parse?.Text))
             {
@@ -44,7 +44,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <param name="expression">Expression from which formulas separated by chaining operator would be extracted</param>
         /// <param name="culture">The locale to be used when excecuting tests</param>
         /// <returns>Spans that represent formulas separated by chaining operator at multiple levels and depths</returns>
-        private static IEnumerable<Span> ExtractSpansOfFormulasSeparatedByChainingOperator(Engine engine, string expression, CultureInfo culture = null)
+        private static IEnumerable<Span> ExtractSpansOfFormulasSeparatedByChainingOperator(Engine engine, string expression, CultureInfo culture)
         {
             var chainOperatorTokens = engine.Tokenize(expression, culture).Where(tok => tok.Kind == TokKind.Semicolon).OrderBy(tok => tok.Span.Min);
             var formulas = new List<Span>();
