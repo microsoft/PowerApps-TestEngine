@@ -46,8 +46,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <returns>Spans that represent formulas separated by chaining operator at multiple levels and depths</returns>
         private static IEnumerable<Span> ExtractSpansOfFormulasSeparatedByChainingOperator(Engine engine, string expression, CultureInfo culture = null)
         {
-
-            var resultp = engine.Tokenize(expression, culture);
             var chainOperatorTokens = engine.Tokenize(expression, culture).Where(tok => tok.Kind == TokKind.Semicolon).OrderBy(tok => tok.Span.Min);
             var formulas = new List<Span>();
             var lowerBound = 0;
