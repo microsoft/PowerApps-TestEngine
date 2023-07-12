@@ -39,13 +39,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [InlineData("en-US", "Max(;;;1,2)", "Max(;;;1,2)")]
         [InlineData("en-US", ";;;;", "", "", "", "")]
         [InlineData("en-US", "")]
-        [InlineData("en-US", "Max(;22)", "Max(", "22)")]
+        [InlineData("en-US", "Max(;22)", "Max(;22)")]
         [InlineData("en-US", "Select(Button1/*Selecting button 1;;;*/);Assert(Button1.Text = Text(\"Ab\";\"Abcd\"))", "Select(Button1/*Selecting button 1;;;*/)", "Assert(Button1.Text = Text(\"Ab\";\"Abcd\"))")]
         [InlineData("en-US", "Select(Button1)", "Select(Button1)")]
         [InlineData("fr", "Max(1;;2;;3;30;;Max(230;;23;;33);;3)", "Max(1;;2;;3;30;;Max(230;;23;;33);;3)")]
-        // Once new powerfx version is consumed, this would fail due to recent PowerFx Lexer changes
-        // Fix would be to this to InlineData("en-US", "'Test;2212", "'Test", "2212")
-        [InlineData("en-US", "'Test;2212", "'Test;2212")]
+        [InlineData("en-US", "'Test;2212", "'Test", "2212")]
         [InlineData("en-US", "'Test;;2333';Max(1;'Button1;Button2';23;/*\n\n;;Comment\n\n*/33,100;Max(100;200,20;30)))", "'Test;;2333'", "Max(1;'Button1;Button2';23;/*\n\n;;Comment\n\n*/33,100;Max(100;200,20;30)))")]
         [InlineData("en-US", "'Test;;2333';Max(1;'Button1;Button2';23;/*\n\n;;Comment\n\n33,100;Max(100;200,20;30)))", "'Test;;2333'", "Max(1;'Button1;Button2';23;/*\n\n;;Comment\n\n33,100;Max(100;200,20;30)))")]
         public void TestFormulasSeparatedByChainingOpAreExtractedCorrectly(string locale, string expression, params string[] expectedFormulas)
@@ -59,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var (result, engine) = GetCheckResultAndEngine(expression, locale);
 
             // Act
-            var actualFormulas = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(engine, result);
+            var actualFormulas = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(engine, result, culture);
 
             // Assert
             try

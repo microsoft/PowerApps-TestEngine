@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Globalization;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Syntax;
 
@@ -17,15 +18,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         /// <param name="engine">Instance of an engine configured with the desired locale</param>
         /// <param name="result">Check result instance created after processing the expression</param>
+        /// <param name="culture">The locale to be used when excecuting tests</param>
         /// <returns>An enumerable of formulas extracted from the expression that are separated by chaining operator</returns>
-        public static IEnumerable<string> ExtractFormulasSeparatedByChainingOperator(Engine engine, CheckResult result)
+        public static IEnumerable<string> ExtractFormulasSeparatedByChainingOperator(Engine engine, CheckResult result, CultureInfo culture)
         {
             if (string.IsNullOrEmpty(result?.Parse?.Text))
             {
                 return new string[0];
             }
 
-            var spansForFormulasSeparatedAcrossMultipleDepths = ExtractSpansOfFormulasSeparatedByChainingOperator(engine, result?.Parse.Text);
+            var spansForFormulasSeparatedAcrossMultipleDepths = ExtractSpansOfFormulasSeparatedByChainingOperator(engine, result?.Parse.Text, culture);
             if (result?.Parse?.Root == null)
             {
                 return spansForFormulasSeparatedAcrossMultipleDepths.Select(span => result.Parse.Text.Substring(span.Start, span.End - span.Start));
@@ -40,10 +42,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         /// <param name="engine">Instance of an engine configured with the desired locale</param>
         /// <param name="expression">Expression from which formulas separated by chaining operator would be extracted</param>
+        /// <param name="culture">The locale to be used when excecuting tests</param>
         /// <returns>Spans that represent formulas separated by chaining operator at multiple levels and depths</returns>
-        private static IEnumerable<Span> ExtractSpansOfFormulasSeparatedByChainingOperator(Engine engine, string expression)
+        private static IEnumerable<Span> ExtractSpansOfFormulasSeparatedByChainingOperator(Engine engine, string expression, CultureInfo culture)
         {
-            var chainOperatorTokens = engine.Tokenize(expression).Where(tok => tok.Kind == TokKind.Semicolon).OrderBy(tok => tok.Span.Min);
+            var chainOperatorTokens = engine.Tokenize(expression, culture).Where(tok => tok.Kind == TokKind.Semicolon).OrderBy(tok => tok.Span.Min);
             var formulas = new List<Span>();
             var lowerBound = 0;
 
