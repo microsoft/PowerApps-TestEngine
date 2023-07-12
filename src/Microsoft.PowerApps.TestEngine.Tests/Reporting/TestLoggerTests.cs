@@ -62,8 +62,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testLogger = new TestLogger(MockFileSystem.Object);
             var createdLogs = new Dictionary<string, string[]>();
 
-            MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
+            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
             MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
             MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>())).Callback((string filePath, string[] logs) =>
             {
@@ -73,10 +74,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var stringWriter = new StringWriter();
             Console.SetOut(stringWriter);
 
-            testLogger.WriteToLogsFile("C:\\invalidPath", "");
+            testLogger.WriteToLogsFile("", "");
+            MockFileSystem.Verify(x => x.IsValidFilePath(""), Times.Once());
 
             var output = stringWriter.ToString();
-            Assert.Contains("[Critical Error]: Could not find a part of the path", output);
+            Assert.Contains("[Critical Error]: Encountered invalid file path. Outputting to 'logs' directory.", output);
         }
 
         [Fact]

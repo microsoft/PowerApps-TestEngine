@@ -55,12 +55,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             if (!_fileSystem.IsValidFilePath(directoryPath))
             {
+                Console.WriteLine("[Critical Error]: Encountered invalid file path. Outputting to 'logs' directory.");
                 var assemblyLocation = Assembly.GetExecutingAssembly().Location;
                 var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
                 directoryPath = Path.Combine(assemblyDirectory, "logs");
 
                 if (!_fileSystem.Exists(directoryPath))
                 {
+
                     _fileSystem.CreateDirectory(directoryPath);
                 }
             }
