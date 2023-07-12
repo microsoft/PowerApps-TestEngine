@@ -115,6 +115,31 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         }
 
         [Fact]
+        public void ExecuteMultipleFunctionsWithDifferentLocaleTest()
+        {
+            // en-US locale
+            var culture = new CultureInfo("en-US");
+            var enUSpowerFxExpression = "1+1;2+2;";
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            powerFxEngine.Setup();
+            var enUSResult = powerFxEngine.Execute(enUSpowerFxExpression, culture);            
+
+            // fr locale
+            culture = new CultureInfo("fr");
+            var frpowerFxExpression = "1+1;;2+2;;";
+            powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            powerFxEngine.Setup();
+            var frResult = powerFxEngine.Execute(frpowerFxExpression, culture);
+
+            // Assertions
+            Assert.Equal(4, ((DecimalValue)enUSResult).Value);
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{enUSpowerFxExpression}}}", LogLevel.Trace, Times.Once());
+            Assert.Equal(4, ((DecimalValue)frResult).Value);
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{frpowerFxExpression}}}", LogLevel.Trace, Times.Once());
+        }
+
+
+        [Fact]
         public async Task ExecuteWithVariablesTest()
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
