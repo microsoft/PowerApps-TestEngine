@@ -128,6 +128,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 // Set up Power Fx
                 _powerFxEngine.Setup(locale);
+                await _powerFxEngine.RunRequirementsCheckAsync();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
                 allTestsSkipped = false;

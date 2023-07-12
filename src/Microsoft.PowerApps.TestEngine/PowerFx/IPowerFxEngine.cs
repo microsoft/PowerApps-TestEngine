@@ -39,6 +39,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public Task UpdatePowerFxModelAsync();
 
         /// <summary>
+        /// Run requirements checks for the engine
+        /// </summary>
+        /// <returns>A task</returns>
+        public Task RunRequirementsCheckAsync();
+
+        /// <summary>
         /// get PowerAppFunctions
         /// </summary>
         public IPowerAppFunctions GetPowerAppFunctions();
