@@ -127,7 +127,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
 
                 // Set up Power Fx
-                _powerFxEngine.Setup(locale);
+                _powerFxEngine.Setup();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
                 allTestsSkipped = false;
@@ -159,15 +159,15 @@ namespace Microsoft.PowerApps.TestEngine
                             if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
                             {
                                 Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
-                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
+                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart, locale);
                             }
 
-                            await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps);
+                            await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps, locale);
 
                             if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
                             {
                                 Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
-                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
+                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete, locale);
                             }
 
                             _eventHandler.TestCaseEnd(true);
@@ -219,7 +219,7 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteName}");
                     _testState.SetTestResultsDirectory(testResultDirectory);
-                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
+                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete, locale);
                 }
             }
             catch (Exception ex)

@@ -42,10 +42,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             _fileSystem = fileSystem;
         }
 
-        public void Setup(CultureInfo locale)
+        public void Setup()
         {
-            //TODO: Temporarily removed the locale input parameter from PowerFxConfig(...), make sure to add it back
-            //var powerFxConfig = new PowerFxConfig(locale);
             var powerFxConfig = new PowerFxConfig();
 
             powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
@@ -60,7 +58,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             Engine = new RecalcEngine(powerFxConfig);
         }
 
-        public async Task ExecuteWithRetryAsync(string testSteps)
+        public async Task ExecuteWithRetryAsync(string testSteps, CultureInfo culture)
         {
             int currentRetry = 0;
             FormulaValue result = FormulaValue.NewBlank();
@@ -69,7 +67,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 try
                 {
-                    result = Execute(testSteps);
+                    result = Execute(testSteps, culture);
                     break;
                 }
                 catch (Exception e) when (e.Message.Contains("locale"))
@@ -89,7 +87,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
         }
 
-        public FormulaValue Execute(string testSteps)
+        public FormulaValue Execute(string testSteps, CultureInfo culture)
         {
             if (Engine == null)
             {
@@ -105,7 +103,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var goStepByStep = false;
             // Check if the syntax is correct
-            var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+            var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture });
             if (!checkResult.IsSuccess)
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
@@ -115,20 +113,20 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             if (goStepByStep)
             {
-                var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, checkResult);
+                var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, checkResult, culture);
                 FormulaValue result = FormulaValue.NewBlank();
 
                 foreach (var step in splitSteps)
                 {
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
-                    result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true });
+                    result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture });
                 }
                 return result;
             }
             else
             {
                 Logger.LogTrace($"Attempting:\n\n{{\n{testSteps}}}");
-                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture });
             }
         }
 
