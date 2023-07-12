@@ -417,7 +417,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             {
                 // check if ready function exists in the webplayer JSSDK, older versions won't have this new function
                 var checkIfReadyExists = await _testInfraFunctions.RunJavascriptAsync<string>(CheckPowerAppsTestEngineReadyFunction);
-                if(checkIfReadyExists != "undefined")
+                if (checkIfReadyExists != "undefined")
                 {
                     var expression = $"PowerAppsTestEngine.testEngineReady()";
                     return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
@@ -432,7 +432,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 // To support old apps without ready function, if the error returned is function not exists in published app
                 // then return true for this without interrupting the test run
                 if (ex.Message?.ToString() == ExceptionHandlingHelper.PublishedAppWithoutJSSDKErrorCode)
-                {                   
+                {
                     return true;
                 }
 

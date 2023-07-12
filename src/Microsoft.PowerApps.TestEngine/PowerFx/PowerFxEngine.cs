@@ -139,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 Logger.LogError("Engine is null, make sure to call Setup first");
                 throw new InvalidOperationException();
             }
-            
+
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _powerAppFunctions.CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
 
             var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
