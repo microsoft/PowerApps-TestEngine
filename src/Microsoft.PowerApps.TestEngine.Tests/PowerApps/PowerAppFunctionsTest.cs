@@ -627,6 +627,90 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"), Times.Once());
         }
 
+        [Fact]
+        public async Task TestEngineReadyReturnsTrue()
+        {
+            // Arrange
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction))
+                .Returns(Task.FromResult("function"));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>("PowerAppsTestEngine.testEngineReady()"))
+                .Returns(Task.FromResult(true));
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+
+            // Act
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var readyValue = await powerAppFunctions.TestEngineReady();
+
+            // Assertion
+            Assert.True(readyValue);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>("PowerAppsTestEngine.testEngineReady()"), Times.Once());
+        }
+
+        [Fact]
+        public async Task TestEngineReadyUndefinedWebplayerReturnsTrue()
+        {
+            // Arrange
+            // Mock to return undefined >> scenario where webplayer JSSDK does not have testEngineReady function
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction))
+                .Returns(Task.FromResult("undefined"));
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+
+            // Act
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var readyValue = await powerAppFunctions.TestEngineReady();
+
+            // Assertion
+            Assert.True(readyValue);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>("PowerAppsTestEngine.testEngineReady()"), Times.Never());
+        }
+
+        [Fact]
+        public async Task TestEngineReadyPublishedAppWithoutJSSDKErrorCodeReturnsTrue()
+        {
+            // Arrange
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction))
+                .Returns(Task.FromResult("function"));
+            // Mock to return error code 1
+            // Scenario where error thrown is PublishedAppWithoutJSSDKErrorCode
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>("PowerAppsTestEngine.testEngineReady()"))
+                .Throws(new Exception("1"));
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+
+            // Act
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var readyValue = await powerAppFunctions.TestEngineReady();
+
+            // Assertion
+            // readyValue still returns true >> supporting old msapps without ready function
+            Assert.True(readyValue);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>("PowerAppsTestEngine.testEngineReady()"), Times.Once());
+        }
+
+        [Fact]
+        public async Task TestEngineReadyNonPublishedAppWithoutJSSDKErrorCodeThrows()
+        {
+            // Arrange
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);            
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction))
+                .Returns(Task.FromResult("function"));
+            // Mock to return error code 0 
+            // Scenario where error thrown from app for reason other than PublishedAppWithoutJSSDKErrorCode
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<bool>("PowerAppsTestEngine.testEngineReady()"))
+                .Throws(new Exception("0"));
+            MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            // Act and Assertion
+            var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            await Assert.ThrowsAsync<Exception>(() => powerAppFunctions.TestEngineReady());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>("PowerAppsTestEngine.testEngineReady()"), Times.Once());
+            MockLogger.Verify();
+        }
+
         // Start Published App JSSDK not found tests
         [Fact]
         public async Task LoadPowerAppsObjectModelAsyncNoPublishedAppFunction()

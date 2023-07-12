@@ -140,7 +140,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 throw new InvalidOperationException();
             }
 
-            await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _powerAppFunctions.CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
 
             var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
@@ -153,6 +152,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public IPowerAppFunctions GetPowerAppFunctions()
         {
             return _powerAppFunctions;
+        }
+
+        public async Task RunRequirementsCheckAsync()
+        {
+            await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
+            await _powerAppFunctions.TestEngineReady();
         }
     }
 }
