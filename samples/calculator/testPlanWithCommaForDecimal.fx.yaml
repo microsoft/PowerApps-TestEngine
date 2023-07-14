@@ -3,7 +3,7 @@ testSuite:
   testSuiteDescription: Verifies that the calculator app works. The calculator is a component.
   persona: User1
   # appId: fd32a609-eaca-4d91-b5b4-31651d265133
-  appLogicalName: new_calculator_a3613
+  appLogicalName: new_calculator2_11d82
 
   # This sample has been written to demonstrate tests written in regions that use commas ',' instead of 
   # periods '.' for a decimal separator. E.g., "10,22" instead of "10.22". However since all of our tests 
