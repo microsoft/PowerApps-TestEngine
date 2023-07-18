@@ -28,12 +28,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
         private RecalcEngine Engine { get; set; }
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
-        private static ParserOptions TestEngineParserConfig(CultureInfo culture)
-        {
-            // Currently support for decimal is in progress for PowerApps
-            // Power Fx by default treats number as decimal. Hence setting NumberIsFloat config to true in our case
-            return new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true };
-        }
 
         public PowerFxEngine(ITestInfraFunctions testInfraFunctions,
                              IPowerAppFunctions powerAppFunctions,
@@ -109,7 +103,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var goStepByStep = false;
             // Check if the syntax is correct
-            var checkResult = Engine.Check(testSteps, null, TestEngineParserConfig(culture));
+            var checkResult = Engine.Check(testSteps, null, GetPowerFxParserOptions(culture));
             if (!checkResult.IsSuccess)
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
@@ -152,6 +146,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 Engine.UpdateVariable(control.Key, control.Value);
             }
+        }
+
+        private static ParserOptions GetPowerFxParserOptions(CultureInfo culture)
+        {
+            // Currently support for decimal is in progress for PowerApps
+            // Power Fx by default treats number as decimal. Hence setting NumberIsFloat config to true in our case
+            return new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true };
         }
 
         public IPowerAppFunctions GetPowerAppFunctions()
