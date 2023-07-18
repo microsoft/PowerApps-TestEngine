@@ -168,7 +168,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             var unitTestDefinition = new UnitTestDefinition
             {
                 Name = testName,
-                Storage = $"{ ResultsPrefix }{ testRunId }",
+                Storage = $"{ResultsPrefix}{testRunId}",
                 Id = Guid.NewGuid().ToString(),
                 Execution = new TestExecution()
                 {
