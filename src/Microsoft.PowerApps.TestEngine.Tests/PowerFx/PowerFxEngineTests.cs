@@ -13,7 +13,6 @@ using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
@@ -91,7 +90,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
 
             await powerFxEngine.RunRequirementsCheckAsync();
 
@@ -106,9 +105,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
 
-            await Assert.ThrowsAsync <Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
+            await Assert.ThrowsAsync<Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
 
             MockPowerAppFunctions.Verify(x => x.CheckAndHandleIfLegacyPlayerAsync(), Times.Once());
             MockPowerAppFunctions.Verify(x => x.TestEngineReady(), Times.Never());
@@ -121,7 +120,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Throws(new Exception());
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
 
             await Assert.ThrowsAsync<Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
 
@@ -166,7 +165,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var enUSpowerFxExpression = "1+1;2+2;";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
-            var enUSResult = powerFxEngine.Execute(enUSpowerFxExpression, culture);            
+            var enUSResult = powerFxEngine.Execute(enUSpowerFxExpression, culture);
 
             // fr locale
             culture = new CultureInfo("fr");
