@@ -139,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine
                     _eventHandler.TestCaseBegin(testCase.TestCaseName);
 
                     TestSuccess = true;
-                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
+                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
 
@@ -242,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine
                     // Run test case one by one, mark it as failed
                     foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                     {
-                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
+                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                         _testReporter.FailTest(testRunId, testId);
                     }
                 }
