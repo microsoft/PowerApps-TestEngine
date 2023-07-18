@@ -103,7 +103,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var goStepByStep = false;
             // Check if the syntax is correct
-            var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture });
+            var checkResult = Engine.Check(testSteps, null, GetPowerFxParserOptions(culture));
             if (!checkResult.IsSuccess)
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
@@ -119,14 +119,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 foreach (var step in splitSteps)
                 {
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
-                    result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture });
+                    result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
                 }
                 return result;
             }
             else
             {
                 Logger.LogTrace($"Attempting:\n\n{{\n{testSteps}}}");
-                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture });
+                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
             }
         }
 
@@ -145,6 +145,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 Engine.UpdateVariable(control.Key, control.Value);
             }
+        }
+
+        private static ParserOptions GetPowerFxParserOptions(CultureInfo culture)
+        {
+            // Currently support for decimal is in progress for PowerApps
+            // Power Fx by default treats number as decimal. Hence setting NumberIsFloat config to true in our case
+            return new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true };
         }
 
         public IPowerAppFunctions GetPowerAppFunctions()

@@ -135,11 +135,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute("1+1", new CultureInfo("en-US"));
-            Assert.Equal(2, ((DecimalValue)result).Value);
+            Assert.Equal(2, ((NumberValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Once());
 
             result = powerFxEngine.Execute("=1+1", new CultureInfo("en-US"));
-            Assert.Equal(2, ((DecimalValue)result).Value);
+            Assert.Equal(2, ((NumberValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Exactly(2));
         }
 
@@ -176,9 +176,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var frResult = powerFxEngine.Execute(frpowerFxExpression, culture);
 
             // Assertions
-            Assert.Equal(4, ((DecimalValue)enUSResult).Value);
+            Assert.Equal(4, ((NumberValue)enUSResult).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{enUSpowerFxExpression}}}", LogLevel.Trace, Times.Once());
-            Assert.Equal(4, ((DecimalValue)frResult).Value);
+            Assert.Equal(4, ((NumberValue)frResult).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{frpowerFxExpression}}}", LogLevel.Trace, Times.Once());
         }
 
@@ -518,8 +518,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             // Assert
             Assert.Equal(2, updateCounter);
-            Assert.Equal(FormulaType.Decimal, result.Type);
-            Assert.Equal("1.2", (result as DecimalValue).Value.ToString());
+            Assert.Equal(FormulaType.Number, result.Type);
+            Assert.Equal("1.2", (result as NumberValue).Value.ToString());
             LoggingTestHelper.VerifyLogging(MockLogger, $"Syntax check failed. Now attempting to execute lines step by step", LogLevel.Debug, Times.Exactly(2));
         }
 
