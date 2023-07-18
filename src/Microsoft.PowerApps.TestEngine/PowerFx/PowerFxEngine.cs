@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
         private static ParserOptions TestEngineParserConfig(CultureInfo culture)
         {
-            // Currently PowerApps does not support decimal but floating-point numbers
+            // Currently support for decimal is still in progress for PowerApps
             // Power Fx by default treats number as decimal. Hence setting NumberIsFloat config to true in our case
             return new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true };
         }
