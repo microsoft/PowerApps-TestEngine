@@ -146,7 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             return testRun.TestLists.TestList.Where(x => x.Id == testSuiteId).Count() == 1;
         }
 
-        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation)
+        public string CreateTest(string testRunId, string testSuiteId, string testName)
         {
             var testRun = GetTestRun(testRunId);
 
