@@ -15,6 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         public static string FailedResultOutcome = "Failed";
         public static string PassedResultOutcome = "Passed";
+        public static string ResultsPrefix = "Results_";
 
         private string testRunAppURL;
         private string testResultsDirectory;
@@ -167,7 +168,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             var unitTestDefinition = new UnitTestDefinition
             {
                 Name = testName,
-                Storage = testLocation,
+                Storage = $"{ ResultsPrefix }{ testRunId }",
                 Id = Guid.NewGuid().ToString(),
                 Execution = new TestExecution()
                 {
@@ -288,7 +289,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             XmlSerializerNamespaces xsNS = new XmlSerializerNamespaces();
             xsNS.Add("", "http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
             var serializer = new XmlSerializer(typeof(TestRun));
-            var testResultPath = Path.Combine(resultsDirectory, $"Results_{testRunId}.trx");
+            var testResultPath = Path.Combine(resultsDirectory, $"{ResultsPrefix}{testRunId}.trx");
             using (var writer = new StringWriter())
             {
                 serializer.Serialize(writer, testRun, xsNS);

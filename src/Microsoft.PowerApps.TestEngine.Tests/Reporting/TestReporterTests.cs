@@ -163,10 +163,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testRunName = "testRunName";
             var testUser = "testUser";
             var testName = "testName";
-            var testSuiteName = "testSuite";
-            var testLocation = "C:\\testplan.fx.yaml";
+            var testSuiteName = "testSuite";            
             var testReporter = new TestReporter(MockFileSystem.Object);
             var testRunId = testReporter.CreateTestRun(testRunName, testUser);
+            var testLocation = $"{TestReporter.ResultsPrefix}{testRunId}";
 
             Assert.Throws<InvalidOperationException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), testName, testLocation));
 
@@ -206,8 +206,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             Assert.Equal(1, testRun.ResultSummary.Counters.Total);
 
             var testName2 = "testName2";
-            var testLocation2 = "C:\\testplan2.fx.yaml";
-            var testId2 = testReporter.CreateTest(testRunId, testSuiteId, testName2, testLocation2);
+            var testLocation2 = $"{TestReporter.ResultsPrefix}{testRunId}";
+            var testId2 = testReporter.CreateTest(testRunId, testSuiteId, testName2, testLocation);
 
             testRun = testReporter.GetTestRun(testRunId);
 
@@ -238,6 +238,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             testReporter.EndTestRun(testRunId);
             Assert.Throws<InvalidOperationException>(() => testReporter.CreateTest(testRunId, Guid.NewGuid().ToString(), testName, testLocation));
+        }
+
+        [Fact]
+        public void CreateTestStorageNameTest()
+        {
+            var testRunName = "testRunName";
+            var testUser = "testUser";
+            var testName = "testName";
+            var testSuiteName = "testSuite";
+            var testReporter = new TestReporter(MockFileSystem.Object);
+            var testRunId = testReporter.CreateTestRun(testRunName, testUser);
+            testReporter.StartTestRun(testRunId);
+            var testSuiteId = testReporter.CreateTestSuite(testRunId, testSuiteName);
+            var testId = testReporter.CreateTest(testRunId, testSuiteId, testName, "");
+            var testRun = testReporter.GetTestRun(testRunId);
+
+            Assert.Equal($"{TestReporter.ResultsPrefix}{testRunId}", testRun.Definitions.UnitTests[0].Storage);
+            Assert.Equal(testId, testRun.Definitions.UnitTests[0].Id);
         }
 
         [Fact]
