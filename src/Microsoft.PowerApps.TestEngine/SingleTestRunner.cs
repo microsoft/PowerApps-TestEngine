@@ -127,7 +127,7 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
 
                 // Set up Power Fx
-                _powerFxEngine.Setup(locale);
+                _powerFxEngine.Setup();
                 await _powerFxEngine.RunRequirementsCheckAsync();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
@@ -139,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine
                     _eventHandler.TestCaseBegin(testCase.TestCaseName);
 
                     TestSuccess = true;
-                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
+                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
 
@@ -160,15 +160,15 @@ namespace Microsoft.PowerApps.TestEngine
                             if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
                             {
                                 Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
-                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
+                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart, locale);
                             }
 
-                            await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps);
+                            await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps, locale);
 
                             if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
                             {
                                 Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
-                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
+                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete, locale);
                             }
 
                             _eventHandler.TestCaseEnd(true);
@@ -220,7 +220,7 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteName}");
                     _testState.SetTestResultsDirectory(testResultDirectory);
-                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
+                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete, locale);
                 }
             }
             catch (Exception ex)
@@ -242,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine
                     // Run test case one by one, mark it as failed
                     foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                     {
-                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
+                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                         _testReporter.FailTest(testRunId, testId);
                     }
                 }

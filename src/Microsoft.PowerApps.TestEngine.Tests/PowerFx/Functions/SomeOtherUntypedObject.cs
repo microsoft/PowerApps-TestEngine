@@ -26,12 +26,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             throw new global::System.NotImplementedException();
         }
 
+        public decimal GetDecimal()
+        {
+            throw new global::System.NotImplementedException();
+        }
+
         public double GetDouble()
         {
             throw new global::System.NotImplementedException();
         }
 
         public string GetString()
+        {
+            throw new global::System.NotImplementedException();
+        }
+
+        public string GetUntypedNumber()
         {
             throw new global::System.NotImplementedException();
         }
