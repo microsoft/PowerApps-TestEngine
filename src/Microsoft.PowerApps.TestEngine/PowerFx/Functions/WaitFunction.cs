@@ -11,7 +11,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 {
     /// <summary>
     /// This will wait for the property of the control to equal the specified value.
-    /// TODO: Future intended function is of this format: `Wait(boolean expression)`. This is pending some improvements in Power FX to be available.
     /// </summary>
     public class WaitFunction : ReflectionFunction
     {
