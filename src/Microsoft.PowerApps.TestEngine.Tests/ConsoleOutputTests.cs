@@ -65,7 +65,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             Assert.Contains("Running test suite: TestSuiteName", printer.ToString());
             Assert.Contains("\n   Test results will be stored in: ./testDirectory", printer.ToString());
             Assert.Contains("\n   Browser: Chromium", printer.ToString());
-            Assert.Contains("\n   App URL: make.powerapps.com/testapp", printer.ToString());
+            Assert.Contains("\n   App URL: make.powerapps.com/testapp&source=testengine", printer.ToString());
         }
 
         [Fact]
