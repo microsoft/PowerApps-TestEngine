@@ -73,8 +73,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
         private static Engine GetEngine(string locale)
         {
-            //TODO: Temporarily removed the locale input parameter from PowerFxConfig(...), make sure to add it back
-            //var recalcEngine = new RecalcEngine(new PowerFxConfig(new CultureInfo(locale)));
             var recalcEngine = new RecalcEngine(new PowerFxConfig());
             return recalcEngine;
         }

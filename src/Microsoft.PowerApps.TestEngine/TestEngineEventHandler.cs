@@ -46,7 +46,7 @@ namespace Microsoft.PowerApps.TestEngine
             Console.WriteLine($"Running test suite: {suiteName}");
             Console.WriteLine($"   Test results will be stored in: {directory}");
             Console.WriteLine($"   Browser: {browserName}");
-            Console.WriteLine($"   App URL: {url.Replace("&source=testengine", string.Empty)}");
+            Console.WriteLine($"   App URL: {url}");
         }
 
         public void SuiteEnd()
