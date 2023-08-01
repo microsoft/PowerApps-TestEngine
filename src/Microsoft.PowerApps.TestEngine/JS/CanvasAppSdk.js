@@ -151,9 +151,6 @@ var PowerAppsTestEngine = {
     },
 
     debugInfo: {
-        appId: Core.Telemetry?.Log?.getAppId(),
-        appVersion: Core.Telemetry?.Log?.getAppVersion(),
-        environmentId: Core.Telemetry?.Log?.getEnvironmentId(),
-        sessionId: Core.Telemetry?.Log?._sessionId,
+        sessionID: Core.Telemetry?.Log?._sessionId
     }
 }

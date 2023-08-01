@@ -600,10 +600,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
 
             var newSession = new ExpandoObject();
-            newSession.TryAdd("appId", "someAppId");
-            newSession.TryAdd("appVersion", "someAppVersionId");
-            newSession.TryAdd("environmentId", "someEnvironmentId");
-            newSession.TryAdd("sessionId", "someSessionId");
+            newSession.TryAdd("sessionID", "somesessionId");
 
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.SetupSequence(x => x.RunJavascriptAsync<object>("PowerAppsTestEngine.debugInfo"))
