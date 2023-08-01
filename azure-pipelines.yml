@@ -11,6 +11,9 @@ pr: none
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  Codeql.Enabled: true
+
 jobs:
 - job: Build_PowerAppsTestEngine
   displayName: 'Build PowerAppsTestEngine Solution'
