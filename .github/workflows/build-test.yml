@@ -20,22 +20,35 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: csharp, javascript
+      
       - name: Install dependencies
         run: |
           cd src
           dotnet restore
+
       - name: Build
         run: |
           cd src
           dotnet build --configuration Release --no-restore
+
       - name: Test
         run: |
           cd src
           dotnet test --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+      
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
@@ -44,8 +57,10 @@ jobs:
           path: |
             **/*.trx
           reporter: dotnet-trx        # Format of test results
+
       - name: Copy Coverage report
         run: cp src/TestResults/**/coverage.cobertura.xml coverage.cobertura.xml
+
       - name: Code coverage report
         uses: irongut/CodeCoverageSummary@v1.2.0
         with:
@@ -56,12 +71,14 @@ jobs:
           indicators: true
           output: both
           thresholds: '85 90'
+
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
           recreate: true
           path: code-coverage-results.md
+
   yaml-integration-tests-prod:
     needs: build
     uses: ./.github/workflows/yaml-integration-tests.yml
@@ -78,6 +95,7 @@ jobs:
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'
     secrets: inherit
+
   yaml-integration-tests-preprod:
     needs: build
     uses: ./.github/workflows/yaml-integration-tests.yml
@@ -94,6 +112,7 @@ jobs:
           { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'
     secrets: inherit  
+
   yaml-integration-tests-test:
     needs: build
     uses: ./.github/workflows/yaml-integration-tests.yml
@@ -110,6 +129,7 @@ jobs:
           { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'     
     secrets: inherit
+
   notification:
     if: github.event_name == 'schedule' && (failure() || github.run_attempt > 1) #send notification only for schedule failure or reruns
     needs: [yaml-integration-tests-prod, yaml-integration-tests-preprod, yaml-integration-tests-test]
