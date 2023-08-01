@@ -298,10 +298,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
 
-            var obj = new ExpandoObject();
-            obj.TryAdd("sessionID", "somesessionId");
+            var debugObj = new ExpandoObject();
+            debugObj.TryAdd("appId", "someAppId");
+            debugObj.TryAdd("appVersion", "someAppVersionId");
+            debugObj.TryAdd("environmentId", "someEnvironmentId");
+            debugObj.TryAdd("sessionId", "someSessionId");
 
-            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
+            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)debugObj));
 
             var exceptionToThrow = new InvalidOperationException("Test exception");
             additionalMockSetup(exceptionToThrow);
