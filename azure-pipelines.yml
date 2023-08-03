@@ -11,6 +11,9 @@ pr: none
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  Codeql.Enabled: true
+
 jobs:
 - job: Build_PowerAppsTestEngine
   displayName: 'Build PowerAppsTestEngine Solution'
@@ -29,12 +32,16 @@ jobs:
       version: 6.0.x
       installationPath: '$(Agent.ToolsDirectory)/dotnet'
 
+  - task: CodeQL3000Init@0
+
   - task: DotNetCoreCLI@2
     displayName: 'Build and test'
     inputs:
       command: 'run'
       projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
       arguments: '-- ci -c $(BuildConfiguration)'
+
+  - task: CodeQL3000Finalize@0
 
   - task: PublishTestResults@2
     inputs:
