@@ -99,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             }
         }
 
-        // Will not print out error message
+        // Will not give an exception message
         private static void CheckIfTimedOut(DateTime startTime, int timeout, ILogger logger)
         {
             if ((DateTime.Now - startTime) > TimeSpan.FromMilliseconds(timeout))
