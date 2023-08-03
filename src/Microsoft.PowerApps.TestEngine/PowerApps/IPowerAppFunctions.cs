@@ -63,5 +63,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         /// Get Debug Info
         /// </summary>
         public Task<object> GetDebugInfo();
+
+        /// <summary>
+        /// TestEngine ready function returns true if the functions are ready
+        /// else it throws exception
+        /// </summary>
+        public Task<bool> TestEngineReady();
     }
 }

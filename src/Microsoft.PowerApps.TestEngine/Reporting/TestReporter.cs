@@ -15,6 +15,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         public static string FailedResultOutcome = "Failed";
         public static string PassedResultOutcome = "Passed";
+        public static string ResultsPrefix = "Results_";
+
+        private string testRunAppURL;
+        private string testResultsDirectory;
+        public string TestRunAppURL { get => testRunAppURL; set => testRunAppURL = value; }
+        public string TestResultsDirectory { get => testResultsDirectory; set => testResultsDirectory = value; }
 
         public TestReporter(IFileSystem fileSystem)
         {
@@ -48,7 +54,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 ResultSummary = new TestResultSummary()
                 {
                     Outcome = "",
-                    Counters = new TestCounters()
+                    Counters = new TestCounters(),
+                    Output = new TestOutput()
                 },
                 TestLists = new TestLists()
                 {
@@ -104,6 +111,15 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             testRun.Times.Finish = DateTime.Now;
             testRun.ResultSummary.Outcome = "Completed";
+
+            // Update the ResultSummary Output
+            _updateResultSummaryOutPut(testRun);
+        }
+
+        private void _updateResultSummaryOutPut(TestRun testRun)
+        {
+            var resultOutputMessage = $"{{ \"AppURL\": \"{testRunAppURL}\", \"TestResults\": \"{testResultsDirectory}\"}}";
+            testRun.ResultSummary.Output.StdOut = resultOutputMessage;
         }
 
         public string CreateTestSuite(string testRunId, string testSuiteName)
@@ -130,7 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             return testRun.TestLists.TestList.Where(x => x.Id == testSuiteId).Count() == 1;
         }
 
-        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation)
+        public string CreateTest(string testRunId, string testSuiteId, string testName)
         {
             var testRun = GetTestRun(testRunId);
 
@@ -152,7 +168,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             var unitTestDefinition = new UnitTestDefinition
             {
                 Name = testName,
-                Storage = testLocation,
+                Storage = $"{ResultsPrefix}{testRunId}",
                 Id = Guid.NewGuid().ToString(),
                 Execution = new TestExecution()
                 {
@@ -226,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             testResult.Outcome = FailedResultOutcome;
         }
 
-        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace)
+        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage)
         {
             var testRun = GetTestRun(testRunId);
             var testResult = testRun.Results.UnitTestResults.Where(x => x.TestId == testId).First();
@@ -264,7 +280,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 testResult.Outcome = FailedResultOutcome;
                 testResult.Output.ErrorInfo = new TestErrorInfo();
                 testResult.Output.ErrorInfo.Message = errorMessage;
-                testResult.Output.ErrorInfo.StackTrace = stackTrace;
             }
         }
 
@@ -274,7 +289,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             XmlSerializerNamespaces xsNS = new XmlSerializerNamespaces();
             xsNS.Add("", "http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
             var serializer = new XmlSerializer(typeof(TestRun));
-            var testResultPath = Path.Combine(resultsDirectory, $"Results_{testRunId}.trx");
+            var testResultPath = Path.Combine(resultsDirectory, $"{ResultsPrefix}{testRunId}.trx");
             using (var writer = new StringWriter())
             {
                 serializer.Serialize(writer, testRun, xsNS);

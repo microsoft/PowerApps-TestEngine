@@ -9,6 +9,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
     public interface ITestReporter
     {
         /// <summary>
+        /// Test Run App URL
+        public string TestRunAppURL { get; set; }
+
+        /// <summary>
+        /// Test Results Directory
+        public string TestResultsDirectory { get; set; }
+
+        /// <summary>
         /// Creates a test run
         /// </summary>
         /// <param name="testRunName">Name of the test run</param>
@@ -34,10 +42,10 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// Creates a test in a test run
         /// </summary>
         /// <param name="testRunId">Test run id</param>
+        /// <param name="testSuiteId">Test suite id</param>
         /// <param name="testName">Name of test</param>
-        /// <param name="testLocation">Location of test file</param>
         /// <returns>Test id</returns>
-        public string CreateTest(string testRunId, string testSuiteId, string testName, string testLocation);
+        public string CreateTest(string testRunId, string testSuiteId, string testName);
 
         /// <summary>
         /// Starts test. This records the start time of the test.
@@ -55,8 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// <param name="stdout">Standard output</param>
         /// <param name="additionalFiles">Any additional test files</param>
         /// <param name="errorMessage">Error message if test was unsuccessful</param>
-        /// <param name="stackTrace">Stack trace if test was unsuccessful</param>
-        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage, string stackTrace);
+        public void EndTest(string testRunId, string testId, bool success, string stdout, List<string> additionalFiles, string errorMessage);
 
         /// <summary>
         /// End test.

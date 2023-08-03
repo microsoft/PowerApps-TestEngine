@@ -11,7 +11,7 @@ using Microsoft.PowerApps.TestEngine.System;
 namespace Microsoft.PowerApps.TestEngine
 {
     /// <summary>
-    /// Test engine
+    /// This class covers the core functionality of Test Engine, including the entry point for executing tests.
     /// </summary>
     public class TestEngine
     {
@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly ITestReporter _testReporter;
         private readonly IFileSystem _fileSystem;
         private readonly ILoggerFactory _loggerFactory;
-        private const string DefaultOutputDirectory = "TestOutput";
+
         private ILogger Logger { get; set; }
 
         public TestEngine(ITestState state,
@@ -36,7 +36,20 @@ namespace Microsoft.PowerApps.TestEngine
             _loggerFactory = loggerFactory;
         }
 
-        public async Task<string> RunTestAsync(string testConfigFile, string environmentId, string tenantId, string outputDirectory, string domain, string queryParams)
+        /// <summary>
+        /// This is the entry point function for executing tests. This function expects the Test Plan file along with 
+        /// environment and tenant IDs along with other optional parameters and executes the specified tests on the app
+        /// in the provided tenant and environment.
+        /// </summary>
+        /// <param name="testConfigFile">The (absolute or relative) path to the test plan file.</param>
+        /// <param name="environmentId">The environment ID where the Power App is published.</param>
+        /// <param name="tenantId">The tenant ID where the Power App is published.</param>
+        /// <param name="outputDirectory">The output directory where the test results and logs are to be saved.</param>
+        /// <param name="domain">The domain of the Power Apps Canvas Designer application where the app is published (Example: "apps.powerapps.com").</param>
+        /// <param name="queryParams">Optional query parameters that would be passed to the Player URL for optional features or parameters.</param>
+        /// <returns>The full path where the test results are saved.</returns>
+        /// <exception cref="ArgumentNullException">Throws ArgumentNullException if any of testConfigFile, environmentId, tenantId or domain are missing or empty.</exception>
+        public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid tenantId, DirectoryInfo outputDirectory, string domain, string queryParams)
         {
             // Set up test reporting
             var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
@@ -44,60 +57,61 @@ namespace Microsoft.PowerApps.TestEngine
 
             Logger = _loggerFactory.CreateLogger(testRunId);
 
-            if (string.IsNullOrEmpty(outputDirectory))
-            {
-                Logger.LogDebug($"Using default output directory: {DefaultOutputDirectory}");
-                _state.SetOutputDirectory(DefaultOutputDirectory);
-            }
-            else
-            {
-                Logger.LogDebug($"Using output directory: {outputDirectory}");
-                _state.SetOutputDirectory(outputDirectory);
-            }
-
-            if (string.IsNullOrEmpty(queryParams))
-            {
-                Logger.LogDebug($"Using no additional query parameters.");
-            }
-            else
-            {
-                Logger.LogDebug($"Using query: {queryParams}");
-            }
-            Logger.LogDebug($"Using domain: {domain}");
-            var testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
-            _fileSystem.CreateDirectory(testRunDirectory);
-            Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
+            string testRunDirectory = string.Empty;
 
             try
             {
-
                 // Setup state
-                if (string.IsNullOrEmpty(testConfigFile))
+                if (testConfigFile == null)
                 {
-                    Logger.LogError("Test config file cannot be null");
                     throw new ArgumentNullException(nameof(testConfigFile));
                 }
 
                 if (string.IsNullOrEmpty(environmentId))
                 {
-                    Logger.LogError("Environment id cannot be null");
                     throw new ArgumentNullException(nameof(environmentId));
                 }
 
-                if (string.IsNullOrEmpty(tenantId))
+                if (tenantId == null)
                 {
-                    Logger.LogError("Tenant id cannot be null");
                     throw new ArgumentNullException(nameof(tenantId));
                 }
 
-                _state.ParseAndSetTestState(testConfigFile);
-                _state.SetEnvironment(environmentId);
-                _state.SetTenant(tenantId);
-                _state.SetDomain(domain);
+                if (outputDirectory == null)
+                {
+                    throw new ArgumentNullException(nameof(outputDirectory));
+                }
 
+                if (string.IsNullOrEmpty(domain))
+                {
+                    throw new ArgumentNullException(nameof(domain));
+                }
+
+                if (string.IsNullOrEmpty(queryParams))
+                {
+                    Logger.LogDebug($"Using no additional query parameters.");
+                }
+                else
+                {
+                    Logger.LogDebug($"Using query: {queryParams}");
+                }
+
+                // Create the output directory as early as possible so that any exceptions can be logged.
+                _state.SetOutputDirectory(outputDirectory.FullName);
+                Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
+
+                testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
+                _fileSystem.CreateDirectory(testRunDirectory);
+                Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
+
+                _state.ParseAndSetTestState(testConfigFile.FullName);
+                _state.SetEnvironment(environmentId);
+                _state.SetTenant(tenantId.ToString());
+
+                _state.SetDomain(domain);
                 Logger.LogDebug($"Using domain: {domain}");
 
-                await RunTestByWorkerCountAsync(testRunId, testRunDirectory, domain, queryParams);
+                await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);
                 return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
             }
@@ -116,29 +130,19 @@ namespace Microsoft.PowerApps.TestEngine
             }
         }
 
-        public async Task RunTestByWorkerCountAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
+        private async Task RunTestByBrowserAsync(string testRunId, string testRunDirectory, string domain, string queryParams)
         {
             var testSettings = _state.GetTestSettings();
 
             var locale = GetLocaleFromTestSettings(testSettings.Locale);
 
             var browserConfigurations = testSettings.BrowserConfigurations;
-            var allTestRuns = new List<Task>();
 
-            // Manage number of workers
+            // Run sequentially
             foreach (var browserConfig in browserConfigurations)
             {
-                allTestRuns.Add(Task.Run(() => RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale)));
-                if (allTestRuns.Count >= _state.GetWorkerCount())
-                {
-                    Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
-                    await Task.WhenAll(allTestRuns.ToArray());
-                    allTestRuns.Clear();
-                }
+                await RunOneTestAsync(testRunId, testRunDirectory, _state.GetTestSuiteDefinition(), browserConfig, domain, queryParams, locale);
             }
-
-            Logger.LogDebug($"Waiting for {allTestRuns.Count} test runs to complete");
-            await Task.WhenAll(allTestRuns.ToArray());
         }
         private async Task RunOneTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
         {
@@ -156,12 +160,12 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 if (string.IsNullOrEmpty(strLocale))
                 {
-                    Logger.LogWarning($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
+                    Logger.LogDebug($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
                 }
                 else
                 {
                     locale = new CultureInfo(strLocale);
-                    Logger.LogInformation($"Locale selected in Test Suite Definition: {locale.Name}");
+                    Logger.LogDebug($"Locale: {locale.Name}");
                 }
             }
             catch (ArgumentException)

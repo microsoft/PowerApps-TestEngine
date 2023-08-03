@@ -28,6 +28,7 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly IUrlMapper _urlMapper;
         private readonly IFileSystem _fileSystem;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly ITestEngineEvents _eventHandler;
         private ILogger Logger { get; set; }
 
         private bool TestSuccess { get; set; } = true;
@@ -41,7 +42,8 @@ namespace Microsoft.PowerApps.TestEngine
                                 ISingleTestInstanceState testState,
                                 IUrlMapper urlMapper,
                                 IFileSystem fileSystem,
-                                ILoggerFactory loggerFactory)
+                                ILoggerFactory loggerFactory,
+                                ITestEngineEvents eventHandler)
         {
             _testReporter = testReporter;
             _powerFxEngine = powerFxEngine;
@@ -51,6 +53,7 @@ namespace Microsoft.PowerApps.TestEngine
             _urlMapper = urlMapper;
             _fileSystem = fileSystem;
             _loggerFactory = loggerFactory;
+            _eventHandler = eventHandler;
         }
 
         public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
@@ -69,11 +72,11 @@ namespace Microsoft.PowerApps.TestEngine
 
             var casesTotal = 0;
             var casesPass = 0;
-            var casesFail = 0;
 
             var browserConfigName = string.IsNullOrEmpty(browserConfig.ConfigName) ? browserConfig.Browser : browserConfig.ConfigName;
             var testSuiteName = testSuiteDefinition.TestSuiteName;
             var testSuiteId = _testReporter.CreateTestSuite(testRunId, $"{testSuiteName} - {browserConfigName}");
+            var desiredUrl = "";
 
             Logger = _loggerFactory.CreateLogger(testSuiteId);
             _testState.SetLogger(Logger);
@@ -86,26 +89,36 @@ namespace Microsoft.PowerApps.TestEngine
             _testState.SetTestResultsDirectory(testResultDirectory);
 
             casesTotal = _testState.GetTestSuiteDefinition().TestCases.Count();
+
+            // Number of total cases are recorded and also initialize the passed cases to 0 for this test run
+            _eventHandler.SetAndInitializeCounters(casesTotal);
+
+            string suiteException = null;
+
             try
             {
                 _fileSystem.CreateDirectory(testResultDirectory);
 
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
                     $"RUNNING TEST SUITE: {testSuiteName}" +
-                    $"\n---------------------------------------------------------------------------\n\n" +
-                    $"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
-
+                    $"\n---------------------------------------------------------------------------\n\n");
+                Logger.LogInformation($"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
                 // Set up test infra
                 await _testInfraFunctions.SetupAsync();
                 Logger.LogInformation("Test infrastructure setup finished");
 
-                var desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
-                Logger.LogTrace($"Desired URL: {desiredUrl}");
+                desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);
+                Logger.LogInformation($"Desired URL: {desiredUrl}");
+
+                _eventHandler.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
                 Logger.LogInformation("Successfully navigated to target URL");
+
+                _testReporter.TestResultsDirectory = testRunDirectory;
+                _testReporter.TestRunAppURL = desiredUrl;
 
                 // Log in user
                 await _userManager.LoginAsUserAsync(desiredUrl);
@@ -114,51 +127,63 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.SetupNetworkRequestMockAsync();
 
                 // Set up Power Fx
-                _powerFxEngine.Setup(locale);
+                _powerFxEngine.Setup();
+                await _powerFxEngine.RunRequirementsCheckAsync();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
                 allTestsSkipped = false;
+
                 // Run test case one by one
                 foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                 {
+                    _eventHandler.TestCaseBegin(testCase.TestCaseName);
+
                     TestSuccess = true;
-                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
+                    var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                     _testReporter.StartTest(testRunId, testId);
                     _testState.SetTestId(testId);
 
                     using (var scope = Logger.BeginScope(testId))
                     {
+
                         var testCaseResultDirectory = Path.Combine(testResultDirectory, $"{testCase.TestCaseName}_{testId.Substring(0, 6)}");
                         _testState.SetTestResultsDirectory(testCaseResultDirectory);
                         _fileSystem.CreateDirectory(testCaseResultDirectory);
+                        string caseException = null;
 
                         try
                         {
-                            if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
-                            {
-                                Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
-                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart);
-                            }
-
                             Logger.LogInformation($"---------------------------------------------------------------------------\n" +
                                 $"RUNNING TEST CASE: {testCase.TestCaseName}" +
                                 $"\n---------------------------------------------------------------------------");
 
-                            await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps);
+                            if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseStart))
+                            {
+                                Logger.LogInformation($"Running OnTestCaseStart for test case: {testCase.TestCaseName}");
+                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart, locale);
+                            }
+
+                            await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps, locale);
 
                             if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
                             {
                                 Logger.LogInformation($"Running OnTestCaseComplete for test case: {testCase.TestCaseName}");
-                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete);
+                                await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete, locale);
                             }
+
+                            _eventHandler.TestCaseEnd(true);
                             casesPass++;
                         }
                         catch (Exception ex)
                         {
-                            casesFail++;
-                            Logger.LogError(ex.ToString());
+                            _eventHandler.EncounteredException(ex);
+                            _eventHandler.TestCaseEnd(false);
+
+                            caseException = ex.ToString();
                             TestException = ex;
                             TestSuccess = false;
+
+                            Logger.LogError("Encountered an error. See the debug log for this test case for more information.");
                         }
                         finally
                         {
@@ -166,6 +191,12 @@ namespace Microsoft.PowerApps.TestEngine
                             {
                                 var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                                 testLogger.WriteToLogsFile(testCaseResultDirectory, testId);
+                            }
+
+                            if (!string.IsNullOrEmpty(caseException))
+                            {
+                                var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
+                                testLogger.WriteExceptionToDebugLogsFile(testCaseResultDirectory, caseException);
                             }
 
                             var additionalFiles = new List<string>();
@@ -178,8 +209,8 @@ namespace Microsoft.PowerApps.TestEngine
                                 }
                             }
 
-                            var message = $"{{ \"TestName\": {testCase.TestCaseName}, \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
-                            _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message, TestException?.StackTrace);
+                            var message = $"{{ \"BrowserConfiguration\": {JsonConvert.SerializeObject(browserConfig)}}}";
+                            _testReporter.EndTest(testRunId, testId, TestSuccess, message, additionalFiles, TestException?.Message);
                         }
                     }
                 }
@@ -189,12 +220,13 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteName}");
                     _testState.SetTestResultsDirectory(testResultDirectory);
-                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete);
+                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete, locale);
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.ToString());
+                Logger.LogError("Encountered an error. See the debug log for this test suite for more information.");
+                suiteException = ex.ToString();
                 TestException = ex;
             }
             finally
@@ -210,19 +242,17 @@ namespace Microsoft.PowerApps.TestEngine
                     // Run test case one by one, mark it as failed
                     foreach (var testCase in _testState.GetTestSuiteDefinition().TestCases)
                     {
-                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}", "TODO");
+                        var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                         _testReporter.FailTest(testRunId, testId);
                     }
                 }
 
-                Logger.LogInformation($"---------------------------------------------------------------------------\n" +
-                                $"{testSuiteName} TEST SUMMARY" +
-                                $"\n---------------------------------------------------------------------------");
+                string summaryString = $"\nTest suite summary\nTotal cases: {casesTotal}" +
+                                $"\nCases passed: {casesPass}" +
+                                $"\nCases failed: {(casesTotal - casesPass)}";
 
-                Logger.LogInformation("Total cases: " + casesTotal);
-                Logger.LogInformation("Cases passed: " + casesPass);
-                Logger.LogInformation("Cases skipped: " + (casesTotal - (casesFail + casesPass)));
-                Logger.LogInformation("Cases failed: " + casesFail + "\n");
+                Logger.LogInformation(summaryString);
+                _eventHandler.SuiteEnd();
 
                 // save log for the test suite
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
@@ -230,6 +260,13 @@ namespace Microsoft.PowerApps.TestEngine
                     var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
                     testLogger.WriteToLogsFile(testResultDirectory, null);
                 }
+
+                if (!string.IsNullOrEmpty(suiteException))
+                {
+                    var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
+                    testLogger.WriteExceptionToDebugLogsFile(testResultDirectory, suiteException);
+                }
+                await _testInfraFunctions.DisposeAsync();
             }
         }
     }

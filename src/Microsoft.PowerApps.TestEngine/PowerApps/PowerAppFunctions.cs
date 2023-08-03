@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
@@ -20,12 +21,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestState _testState;
 
+        public static string EmbeddedJSFolderPath = "JS";
         public static string PublishedAppIframeName = "fullscreen-app-host";
         public static string CheckPowerAppsTestEngineObject = "typeof PowerAppsTestEngine";
+        public static string CheckPowerAppsTestEngineReadyFunction = "typeof PowerAppsTestEngine.testEngineReady";
 
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
+        private string FileNotFoundErrorMessage = "Something went wrong when Test Engine tried to load required dependencies.";
         private TypeMapping TypeMapping = new TypeMapping();
 
         public PowerAppFunctions(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState)
@@ -62,14 +66,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
         private string GetFilePath(string file)
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var fullFilePath = Path.Combine(currentDirectory, file);
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+            var fullFilePath = Path.Combine(assemblyDirectory, file);
             if (File.Exists(fullFilePath))
             {
                 return fullFilePath;
             }
-
-            return Path.Combine(Directory.GetParent(currentDirectory).FullName, "Microsoft.PowerApps.TestEngine", file);
+            else
+            {
+                throw new FileNotFoundException(FileNotFoundErrorMessage, file);
+            }
         }
 
         public async Task<bool> CheckIfAppIsIdleAsync()
@@ -183,8 +190,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 catch (TimeoutException)
                 {
                     _singleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "CanvasAppSdk.js")), null);
-                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine("JS", "PublishedAppTesting.js")), PublishedAppIframeName);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "CanvasAppSdk.js")), null);
+                    await _testInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "PublishedAppTesting.js")), PublishedAppIframeName);
                 }
             }
             catch (Exception ex)
@@ -247,7 +254,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 }
 
                 ValidateItemPath(itemPath, false);
-                // TODO: handle components
+
                 var expression = $"PowerAppsTestEngine.setPropertyValue({JsonConvert.SerializeObject(itemPath)}, {JsonConvert.SerializeObject(objectValue)})";
                 return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -266,7 +273,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
 
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
                 var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-                var recordValue = value.Value;
+                var recordValue = value.GetConvertedValue(null);
 
                 // Date.parse() parses the date to unix timestamp
                 var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
@@ -400,6 +407,37 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        public async Task<bool> TestEngineReady()
+        {
+            try
+            {
+                // check if ready function exists in the webplayer JSSDK, older versions won't have this new function
+                var checkIfReadyExists = await _testInfraFunctions.RunJavascriptAsync<string>(CheckPowerAppsTestEngineReadyFunction);
+                if (checkIfReadyExists != "undefined")
+                {
+                    var expression = $"PowerAppsTestEngine.testEngineReady()";
+                    return await _testInfraFunctions.RunJavascriptAsync<bool>(expression);
+                }
+
+                // To support webplayer version without ready function 
+                // return true for this without interrupting the test run
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // To support old apps without ready function, if the error returned is function not exists in published app
+                // then return true for this without interrupting the test run
+                if (ex.Message?.ToString() == ExceptionHandlingHelper.PublishedAppWithoutJSSDKErrorCode)
+                {
+                    return true;
+                }
+
+                // If the error returned is anything other than PublishedAppWithoutJSSDKErrorCode capture that and throw
+                _singleTestInstanceState.GetLogger().LogDebug(ex.ToString());
                 throw;
             }
         }

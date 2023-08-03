@@ -1,4 +1,4 @@
-﻿# ASP.NET
+# ASP.NET
 # Build and test ASP.NET projects.
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
@@ -10,6 +10,9 @@ pr: none
 
 pool:
   vmImage: 'windows-latest'
+
+variables:
+  Codeql.Enabled: true
 
 jobs:
 - job: Build_PowerAppsTestEngine
@@ -29,20 +32,16 @@ jobs:
       version: 6.0.x
       installationPath: '$(Agent.ToolsDirectory)/dotnet'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Build'
-    inputs:
-      command: 'build'
-      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
-      arguments: '-c $(BuildConfiguration)'
+  - task: CodeQL3000Init@0
 
   - task: DotNetCoreCLI@2
-    displayName: 'Test'
+    displayName: 'Build and test'
     inputs:
-      command: 'test'
-      projects: '$(Build.SourcesDirectory)/src/PowerAppsTestEngine.sln'
-      arguments: '-c $(BuildConfiguration) --no-build -l trx -r $(Build.SourcesDirectory)\obj\testResults'
-      publishTestResults: false
+      command: 'run'
+      projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+      arguments: '-- ci -c $(BuildConfiguration)'
+
+  - task: CodeQL3000Finalize@0
 
   - task: PublishTestResults@2
     inputs:
@@ -106,17 +105,16 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Pack'
     inputs:
-      command: pack
-      projects: '$(Build.SourcesDirectory)/src/Microsoft.PowerApps.TestEngine/Microsoft.PowerApps.TestEngine.csproj'
-      arguments: '-c $(BuildConfiguration)'
-      nobuild: true
-      packDirectory: '$(Build.SourcesDirectory)/pkg/PackResult'
+      command: 'run'
+      projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+      arguments: '-- pack -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@2
     displayName: 'ESRP sign nuget packages'
     inputs:
       ConnectedServiceName: 'ESRPCodeSigningConnection'
-      FolderPath: '$(Build.SourcesDirectory)/pkg/PackResult'
+      FolderPath: '$(Build.ArtifactStagingDirectory)'
       Pattern: '*.nupkg'
       signConfigType: inlineSignParams
       inlineOperation: |
@@ -137,16 +135,30 @@ jobs:
           }
         ]
       ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v1'
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.SourcesDirectory)/pkg/PackResult'
       ArtifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
       publishLocation: 'Container'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
-  
+
+  - task: NuGetAuthenticate@0
+    displayName: "NuGet Authenticate"
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
+  - task: NuGetCommand@2
+    displayName: "NuGet push"
+    inputs:
+      command: push
+      nuGetFeedType: "internal"
+      packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
+      publishVstsFeed: $(InternalFeed)
+      allowPackageConflicts: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+
   - task: tagBuildOrRelease@0
     inputs:
       type: 'Build'
       tags: 'deployable'
-    condition: eq(variables['PublicRelease'], 'true')  
+    condition: eq(variables['PreviewRelease'], 'true')  

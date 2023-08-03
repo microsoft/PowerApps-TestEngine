@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.System;
-using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Reporting
 {
@@ -55,7 +55,16 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             if (!_fileSystem.IsValidFilePath(directoryPath))
             {
-                throw new ArgumentException(nameof(directoryPath));
+                Console.WriteLine("[Critical Error]: Encountered invalid file path. Outputting to 'logs' directory.");
+                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+                directoryPath = Path.Combine(assemblyDirectory, "logs");
+
+                if (!_fileSystem.Exists(directoryPath))
+                {
+
+                    _fileSystem.CreateDirectory(directoryPath);
+                }
             }
 
             // If no filter, get all logs
@@ -64,6 +73,16 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
             _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "logs.txt"), Logs.Where(filterAction).Select(x => x.LogMessage).ToArray());
             _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), DebugLogs.Where(filterAction).Select(x => x.LogMessage).ToArray());
+        }
+
+        public void WriteExceptionToDebugLogsFile(string directoryPath, string exception)
+        {
+            if (!_fileSystem.IsValidFilePath(directoryPath))
+            {
+                throw new ArgumentException(nameof(directoryPath));
+            }
+
+            _fileSystem.WriteTextToFile(Path.Combine(directoryPath, "debugLogs.txt"), exception);
         }
 
         public void Log<TState>(LogLevel messageLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
@@ -89,8 +108,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 Logs.Add(new TestLog() { LogMessage = logString, ScopeFilter = scopeFilter });
             }
-
-            Console.Out.WriteLine(logString);
 
             DebugLogs.Add(new TestLog() { LogMessage = logString, ScopeFilter = scopeFilter });
         }

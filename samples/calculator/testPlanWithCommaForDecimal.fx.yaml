@@ -3,7 +3,7 @@ testSuite:
   testSuiteDescription: Verifies that the calculator app works. The calculator is a component.
   persona: User1
   # appId: fd32a609-eaca-4d91-b5b4-31651d265133
-  appLogicalName: new_calculator_a3613
+  appLogicalName: new_calculator2_11d82
 
   # This sample has been written to demonstrate tests written in regions that use commas ',' instead of 
   # periods '.' for a decimal separator. E.g., "10,22" instead of "10.22". However since all of our tests 
@@ -13,29 +13,29 @@ testSuite:
     - testCaseName: Default Check
       testSteps: |
         = Screenshot("calculator_loaded.png");;
-          Assert(Calculator_1.Number1Label.Text = "10.12"; "Validate default value for number 1 label");;
-          Assert(Calculator_1.Number2Label.Text = "2.2"; "Validate default value for number 2 label");;
+          Assert(Calculator_1.Number1Label.Text = "4.42"; "Validate default value for number 1 label");;
+          Assert(Calculator_1.Number2Label.Text = "2.5"; "Validate default value for number 2 label");;
     - testCaseName: Check Addition
       testSteps: |
         = Select(Calculator_1.Add);;
-          Assert(Calculator_1.ResultLabel.Text = "12.32"; "Validate result label has the results of addition");;
-          Assert(Calculator_1.CalculatorResult = 12,32; "Validate component output calculator result has the results of addition");;
+          Assert(Calculator_1.ResultLabel.Text = "6.92"; "Validate result label has the results of addition");;
+          Assert(Calculator_1.CalculatorResult = 6,92; "Validate component output calculator result has the results of addition");;
     - testCaseName: Check subtraction
       testSteps: |
         = Select(Calculator_1.Subtract);;
-          Assert(Calculator_1.ResultLabel.Text = "7.92"; "Validate result label has the results of subtraction");;
-          Assert(Calculator_1.CalculatorResult = 7,92; "Validate component output calculator result has the results of subtraction");;
+          Assert(Calculator_1.ResultLabel.Text = "1.92"; "Validate result label has the results of subtraction");;
+          Assert(Calculator_1.CalculatorResult = 1,92; "Validate component output calculator result has the results of subtraction");;
           
     - testCaseName: Check multiplication
       testSteps: |
         = Select(Calculator_1.Multiply);;
-          Assert(Calculator_1.ResultLabel.Text = "22.264"; "Validate result label has the results of multiplication");;
-          Assert(Calculator_1.CalculatorResult = 22,264; "Validate component output calculator result has the results of multiplication");;
+          Assert(Calculator_1.ResultLabel.Text = "11.05"; "Validate result label has the results of multiplication");;
+          Assert(Calculator_1.CalculatorResult = 11,05; "Validate component output calculator result has the results of multiplication");;
     - testCaseName: Check division
       testSteps: |      
         = Select(Calculator_1.Divide);;
-          Assert(Calculator_1.ResultLabel.Text = "4.6"; "Validate result label has the results of division");;
-          Assert(Calculator_1.CalculatorResult = 4,6; "Validate component output calculator result has the results of division");;
+          Assert(Calculator_1.ResultLabel.Text = "1.768"; "Validate result label has the results of division");;
+          Assert(Calculator_1.CalculatorResult = 1,768; "Validate component output calculator result has the results of division");;
           Screenshot("calculator_end.png");;
 
 testSettings:

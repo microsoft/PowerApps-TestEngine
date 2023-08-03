@@ -15,6 +15,12 @@ namespace Microsoft.PowerApps.TestEngine.System
         public void CreateDirectory(string directoryName);
 
         /// <summary>
+        /// Checks if a directory exists
+        /// </summary>
+        /// <param name="directoryName">Directory name</param>
+        public bool Exists(string directoryName);
+
+        /// <summary>
         /// Gets files in a directory
         /// </summary>
         /// <param name="directoryName">Directory name</param>
