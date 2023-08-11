@@ -72,7 +72,7 @@ namespace Microsoft.PowerApps.TestEngine
                     throw new ArgumentNullException(nameof(environmentId));
                 }
 
-                if (tenantId == null || tenantId == Guid.Empty)
+                if (tenantId == null)
                 {
                     throw new ArgumentNullException(nameof(tenantId));
                 }

@@ -308,7 +308,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Theory]
         [InlineData(null, "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
         [InlineData("C:\\testPlan.fx.yaml", "", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
-        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "00000000-0000-0000-0000-000000000000", "apps.powerapps.com")]
         [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "")]
         public async Task TestEngineThrowsOnNullArguments(string testConfigFilePath, string environmentId, Guid tenantId, string domain)
         {
