@@ -102,7 +102,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 {
                     userInputExceptionMessages.Add("Missing browser configuration from test plan");
                 }
-                else { 
+                else 
+                {
                     foreach (var browserConfig in TestPlanDefinition.TestSettings?.BrowserConfigurations)
                     {
                         if (string.IsNullOrWhiteSpace(browserConfig.Browser))
@@ -117,6 +118,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                         }
                     }
                 }
+
                 if (TestPlanDefinition.EnvironmentVariables == null)
                 {
                     userInputExceptionMessages.Add("Missing environment variables from test plan");
