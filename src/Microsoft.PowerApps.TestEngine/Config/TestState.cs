@@ -49,7 +49,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             List<string> userInputExceptionMessages = new List<string>();
             try
             {
-                TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile);
+                TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile, logger);
                 if (TestPlanDefinition.TestSuite != null)
                 {
                     TestCases = TestPlanDefinition.TestSuite.TestCases;
@@ -94,7 +94,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 }
                 else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings.FilePath))
                 {
-                    TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath);
+                    TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath, logger);
                 }
 
                 if (TestPlanDefinition.TestSettings.BrowserConfigurations == null
@@ -123,7 +123,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 }
                 else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
                 {
-                    TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath);
+                    TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath, logger);
                 }
 
                 if (TestPlanDefinition.EnvironmentVariables.Users == null
@@ -157,7 +157,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
             catch (UserInputException ex)
             {
-                logger.LogError($"Invalid User Input(s): {String.Join(", ",userInputExceptionMessages)}");
                 throw new UserInputException(ex.Message);
             }
 

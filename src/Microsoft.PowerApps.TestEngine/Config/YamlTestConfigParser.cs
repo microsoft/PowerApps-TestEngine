@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.System;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization.NamingConventions;
@@ -19,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             _fileSystem = fileSytem;
         }
 
-        public T ParseTestConfig<T>(string testConfigFilePath)
+        public T ParseTestConfig<T>(string testConfigFilePath, ILogger logger)
         {
             try
             {
@@ -30,6 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
                 if (!File.Exists(testConfigFilePath))
                 {
+                    logger.LogError($"Invalid User Input: {typeof(T).Name} in test config file.");
                     throw new UserInputException(UserInputException.errorMapping.UserInputExceptionInvalidFilePath.ToString());
                 }
 
@@ -41,6 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
             catch (YamlException)
             {
+                logger.LogError($"Invalid User Input: {typeof(T).Name} in test config file.");
                 throw new UserInputException(UserInputException.errorMapping.UserInputExceptionYAMLFormat.ToString());
             }
         }
