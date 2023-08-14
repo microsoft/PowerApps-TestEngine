@@ -79,7 +79,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
             if (string.IsNullOrEmpty(user))
             {
                 logger.LogError(("User email cannot be null"));
-                missingUserOrPassword = true; 
+                missingUserOrPassword = true;
             }
 
             if (string.IsNullOrEmpty(password))
@@ -88,7 +88,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
                 missingUserOrPassword = true;
             }
 
-            if(missingUserOrPassword)
+            if (missingUserOrPassword)
             {
                 throw new UserInputException(UserInputException.errorMapping.UserInputExceptionLoginCredential.ToString());
             }

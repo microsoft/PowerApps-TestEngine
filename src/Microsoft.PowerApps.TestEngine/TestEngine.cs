@@ -120,8 +120,8 @@ namespace Microsoft.PowerApps.TestEngine
                 _testReporter.EndTestRun(testRunId);
                 return _testReporter.GenerateTestReport(testRunId, testRunDirectory);
             }
-            catch (UserInputException e) 
-            { 
+            catch (UserInputException e)
+            {
                _eventHandler.EncounteredException(e);
                 return testRunDirectory;
             }
