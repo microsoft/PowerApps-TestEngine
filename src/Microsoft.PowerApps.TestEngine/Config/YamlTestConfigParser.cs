@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.PowerApps.TestEngine.System;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace Microsoft.PowerApps.TestEngine.Config
@@ -20,16 +21,28 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public T ParseTestConfig<T>(string testConfigFilePath)
         {
-            if (string.IsNullOrEmpty(testConfigFilePath))
+            try
             {
-                throw new ArgumentNullException(nameof(testConfigFilePath));
+                if (string.IsNullOrEmpty(testConfigFilePath))
+                {
+                    throw new ArgumentNullException(nameof(testConfigFilePath));
+                }
+
+                if (!File.Exists(testConfigFilePath))
+                {
+                    throw new UserInputException(UserInputException.errorMapping.UserInputExceptionInvalidFilePath.ToString());
+                }
+
+                var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+
+                return deserializer.Deserialize<T>(_fileSystem.ReadAllText(testConfigFilePath));
             }
-
-            var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-
-            return deserializer.Deserialize<T>(_fileSystem.ReadAllText(testConfigFilePath));
+            catch (YamlException)
+            {
+                throw new UserInputException(UserInputException.errorMapping.UserInputExceptionYAMLFormat.ToString());
+            }
         }
     }
 }

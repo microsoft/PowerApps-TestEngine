@@ -223,6 +223,10 @@ namespace Microsoft.PowerApps.TestEngine
                     _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete, locale);
                 }
             }
+            catch (UserInputException ex)
+            {
+                _eventHandler.EncounteredException(ex);
+            }
             catch (Exception ex)
             {
                 Logger.LogError("Encountered an error. See the debug log for this test suite for more information.");
