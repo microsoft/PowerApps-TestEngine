@@ -122,7 +122,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
             catch (UserInputException e)
             {
-               _eventHandler.EncounteredException(e);
+                _eventHandler.EncounteredException(e);
                 return testRunDirectory;
             }
             catch (Exception e)

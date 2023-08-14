@@ -57,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine
                     default:
                         Console.WriteLine($"   {ex.Message}");
                         break;
-                }           
+                }
             }
             else
             {
