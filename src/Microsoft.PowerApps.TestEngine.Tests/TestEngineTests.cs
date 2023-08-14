@@ -82,15 +82,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
 
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath, logger);
 
-            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings, logger);
         }
 
         [Fact]
@@ -118,10 +119,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
 
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath, logger);
 
-            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
 
             await Assert.ThrowsAsync<CultureNotFoundException>(() => testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
         }
@@ -150,16 +152,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
 
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath, logger);
 
-            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Locale property not specified in testSettings. Using current system locale: {CultureInfo.CurrentCulture.Name}", LogLevel.Debug, Times.Once());
 
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings, logger);
         }
 
         [Fact]
@@ -191,15 +194,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
 
-            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath, logger);
 
-            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings, logger);
         }
 
         private TestSuiteDefinition GetDefaultTestSuiteDefinition()
@@ -244,20 +248,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             }
 
             var expectedTestReportPath = "C:\\test.trx";
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
 
-            SetupMocks(expectedOutputDirectory.FullName, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
+            SetupMocks(expectedOutputDirectory.FullName, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath, logger);
 
-            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory.FullName, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory.FullName, testRunId, testRunDirectory, testSuiteDefinition, testSettings, logger);
         }
 
-        private void SetupMocks(string outputDirectory, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition, string testRunId, string testReportPath)
+        private void SetupMocks(string outputDirectory, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition, string testRunId, string testReportPath, Mock<ILogger> logger)
         {
-            MockState.Setup(x => x.ParseAndSetTestState(It.IsAny<string>()));
+            MockState.Setup(x => x.ParseAndSetTestState(It.IsAny<string>(), logger.Object));
             MockState.Setup(x => x.SetEnvironment(It.IsAny<string>()));
             MockState.Setup(x => x.SetTenant(It.IsAny<string>()));
             MockState.Setup(x => x.SetDomain(It.IsAny<string>()));
@@ -281,9 +286,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
 
         private void Verify(string testConfigFile, string environmentId, string tenantId, string domain, string queryParams,
-            string outputDirectory, string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, TestSettings testSettings)
+            string outputDirectory, string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, TestSettings testSettings, Mock<ILogger> logger)
         {
-            MockState.Verify(x => x.ParseAndSetTestState(testConfigFile), Times.Once());
+            MockState.Verify(x => x.ParseAndSetTestState(testConfigFile, logger.Object), Times.Once());
             MockState.Verify(x => x.SetEnvironment(environmentId), Times.Once());
             MockState.Verify(x => x.SetTenant(tenantId), Times.Once());
             MockState.Verify(x => x.SetDomain(domain), Times.Once());
@@ -318,7 +323,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.SetOutputDirectory(It.IsAny<string>()));
             MockState.Setup(x => x.GetOutputDirectory()).Returns("MockOutputDirectory");
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
-            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object);
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
 
             FileInfo testConfigFile;
             if (string.IsNullOrEmpty(testConfigFilePath))
