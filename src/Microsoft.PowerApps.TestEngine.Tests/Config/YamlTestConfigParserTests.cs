@@ -60,6 +60,7 @@ environmentVariables:
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
+            mockFileSystem.Setup(f => f.fileExists(It.IsAny<string>())).Returns(true);
             var logger = new Mock<ILogger>(MockBehavior.Strict);
             var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath, logger.Object);
 
@@ -139,7 +140,9 @@ environmentVariables:
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
+            mockFileSystem.Setup(f => f.fileExists(It.IsAny<string>())).Returns(true);
             var logger = new Mock<ILogger>(MockBehavior.Strict);
+
             var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath, logger.Object);
 
             Assert.NotNull(testPlan);
@@ -219,7 +222,9 @@ environmentVariables:
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
+            mockFileSystem.Setup(f => f.fileExists(It.IsAny<string>())).Returns(true);
             var logger = new Mock<ILogger>(MockBehavior.Strict);
+
             var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath, logger.Object);
 
             Assert.NotNull(testPlan);
@@ -264,7 +269,9 @@ environmentVariables:
 
             var filePath = "environmentVariables.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(environmentVariablesFile);
+            mockFileSystem.Setup(f => f.fileExists(It.IsAny<string>())).Returns(true);
             var logger = new Mock<ILogger>(MockBehavior.Strict);
+
             var environmentVariables = parser.ParseTestConfig<EnvironmentVariables>(filePath, logger.Object);
 
             Assert.NotNull(environmentVariables);
@@ -289,7 +296,9 @@ enablePowerFxOverlay: false";
 
             var filePath = "testSettings.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
+            mockFileSystem.Setup(f => f.fileExists(It.IsAny<string>())).Returns(true);
             var logger = new Mock<ILogger>(MockBehavior.Strict);
+
             var testSettings = parser.ParseTestConfig<TestSettings>(filePath, logger.Object);
 
             Assert.NotNull(testSettings);
@@ -317,7 +326,9 @@ enablePowerFxOverlay: false";
 
             var filePath = "testSettings.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
+            mockFileSystem.Setup(f => f.fileExists(It.IsAny<string>())).Returns(true);
             var logger = new Mock<ILogger>(MockBehavior.Strict);
+
             var testSettings = parser.ParseTestConfig<TestSettings>(filePath, logger.Object);
 
             Assert.NotNull(testSettings);

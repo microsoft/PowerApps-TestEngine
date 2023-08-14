@@ -92,31 +92,31 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 {
                     userInputExceptionMessages.Add("Missing test settings from test plan");
                 }
-                else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings.FilePath))
+                else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings?.FilePath))
                 {
                     TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath, logger);
                 }
 
-                if (TestPlanDefinition.TestSettings.BrowserConfigurations == null
-                    || TestPlanDefinition.TestSettings.BrowserConfigurations.Count == 0)
+                if (TestPlanDefinition.TestSettings?.BrowserConfigurations == null
+                    || TestPlanDefinition.TestSettings?.BrowserConfigurations?.Count == 0)
                 {
                     userInputExceptionMessages.Add("Missing browser configuration from test plan");
                 }
-
-                foreach (var browserConfig in TestPlanDefinition.TestSettings.BrowserConfigurations)
-                {
-                    if (string.IsNullOrWhiteSpace(browserConfig.Browser))
+                else { 
+                    foreach (var browserConfig in TestPlanDefinition.TestSettings?.BrowserConfigurations)
                     {
-                        userInputExceptionMessages.Add("Missing browser from browser configuration");
-                    }
+                        if (string.IsNullOrWhiteSpace(browserConfig.Browser))
+                        {
+                            userInputExceptionMessages.Add("Missing browser from browser configuration");
+                        }
 
-                    if (browserConfig.ScreenWidth == null && browserConfig.ScreenHeight != null
-                        || browserConfig.ScreenHeight == null && browserConfig.ScreenWidth != null)
-                    {
-                        userInputExceptionMessages.Add("Screen width and height both need to be specified or not specified");
+                        if (browserConfig.ScreenWidth == null && browserConfig.ScreenHeight != null
+                            || browserConfig.ScreenHeight == null && browserConfig.ScreenWidth != null)
+                        {
+                            userInputExceptionMessages.Add("Screen width and height both need to be specified or not specified");
+                        }
                     }
                 }
-
                 if (TestPlanDefinition.EnvironmentVariables == null)
                 {
                     userInputExceptionMessages.Add("Missing environment variables from test plan");
@@ -126,31 +126,33 @@ namespace Microsoft.PowerApps.TestEngine.Config
                     TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath, logger);
                 }
 
-                if (TestPlanDefinition.EnvironmentVariables.Users == null
-                    || TestPlanDefinition.EnvironmentVariables.Users.Count == 0)
+                if (TestPlanDefinition.EnvironmentVariables?.Users == null
+                    || TestPlanDefinition.EnvironmentVariables?.Users?.Count == 0)
                 {
                     userInputExceptionMessages.Add("At least one user must be specified");
                 }
-
-                foreach (var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
+                else
                 {
-                    if (string.IsNullOrEmpty(userConfig.PersonaName))
+                    foreach (var userConfig in TestPlanDefinition.EnvironmentVariables?.Users)
                     {
-                        userInputExceptionMessages.Add("Missing persona name");
-                    }
+                        if (string.IsNullOrEmpty(userConfig.PersonaName))
+                        {
+                            userInputExceptionMessages.Add("Missing persona name");
+                        }
 
-                    if (string.IsNullOrEmpty(userConfig.EmailKey))
-                    {
-                        userInputExceptionMessages.Add("Missing email key");
-                    }
+                        if (string.IsNullOrEmpty(userConfig.EmailKey))
+                        {
+                            userInputExceptionMessages.Add("Missing email key");
+                        }
 
-                    if (string.IsNullOrEmpty(userConfig.PasswordKey))
-                    {
-                        userInputExceptionMessages.Add("Missing password key");
+                        if (string.IsNullOrEmpty(userConfig.PasswordKey))
+                        {
+                            userInputExceptionMessages.Add("Missing password key");
+                        }
                     }
                 }
 
-                if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
+                if (TestPlanDefinition.EnvironmentVariables?.Users?.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
                 {
                     userInputExceptionMessages.Add("Persona specified in test is not listed in environment variables");
                 }

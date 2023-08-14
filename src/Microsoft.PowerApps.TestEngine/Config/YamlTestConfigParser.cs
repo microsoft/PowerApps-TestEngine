@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                     throw new ArgumentNullException(nameof(testConfigFilePath));
                 }
 
-                if (!File.Exists(testConfigFilePath))
+                if (!_fileSystem.fileExists(testConfigFilePath))
                 {
                     logger.LogError($"Invalid User Input: {typeof(T).Name} in test config file.");
                     throw new UserInputException(UserInputException.errorMapping.UserInputExceptionInvalidFilePath.ToString());
