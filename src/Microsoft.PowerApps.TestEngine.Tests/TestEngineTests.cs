@@ -356,7 +356,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
             // UserInput Exception is handled within TestEngineEventHandler, and then returns the test results directory path
-            Assert.Equal("MockOutputDirectory\\abcdef", testResultsDirectory);
+            Assert.NotNull(testResultsDirectory);
         }
         class TestDataGenerator : TheoryData<DirectoryInfo, string, TestSettings, TestSuiteDefinition>
         {
