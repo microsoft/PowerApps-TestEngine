@@ -109,6 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
 
             // Verify UserAppException is passed to TestEngineEventHandler
             MockTestEngineEventHandler.Verify(x => x.EncounteredException(It.IsAny<UserAppException>()), Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Issue getting DebugInfo. This can be a result of not being properly logged in.", LogLevel.Debug, Times.Once());
         }
     }
 }
