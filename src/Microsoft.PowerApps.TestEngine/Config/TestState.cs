@@ -70,21 +70,23 @@ namespace Microsoft.PowerApps.TestEngine.Config
                     }
                 }
 
-                if (TestCases.Count == 0)
+                if (TestCases == null || TestCases?.Count == 0)
                 {
                     userInputExceptionMessages.Add("Must be at least one test case");
                 }
-
-                foreach (var testCase in TestCases)
+                else
                 {
-                    if (string.IsNullOrEmpty(testCase.TestCaseName))
+                    foreach (var testCase in TestCases)
                     {
-                        userInputExceptionMessages.Add("Missing test case name from test definition");
-                    }
+                        if (string.IsNullOrEmpty(testCase.TestCaseName))
+                        {
+                            userInputExceptionMessages.Add("Missing test case name from test definition");
+                        }
 
-                    if (string.IsNullOrEmpty(testCase.TestSteps))
-                    {
-                        userInputExceptionMessages.Add("Missing test steps from test case");
+                        if (string.IsNullOrEmpty(testCase.TestSteps))
+                        {
+                            userInputExceptionMessages.Add("Missing test steps from test case");
+                        }
                     }
                 }
 

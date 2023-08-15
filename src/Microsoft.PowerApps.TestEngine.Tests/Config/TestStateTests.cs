@@ -505,9 +505,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             testPlanDefinition.EnvironmentVariables.Users[0].PersonaName = personaName;
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
-
+            var expectedErrorMessage = "Invalid User Input(s): Missing persona name, Persona specified in test is not listed in environment variables";
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -521,9 +524,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             testPlanDefinition.EnvironmentVariables.Users[0].EmailKey = emailKey;
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
-
+            var expectedErrorMessage = "Invalid User Input(s): Missing email key, Persona specified in test is not listed in environment variables";
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -537,9 +543,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             testPlanDefinition.EnvironmentVariables.Users[0].PasswordKey = passwordKey;
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
-
+            var expectedErrorMessage = "Invalid User Input(s): Missing password key, Persona specified in test is not listed in environment variables";
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -551,9 +560,34 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             testPlanDefinition.TestSuite.Persona = Guid.NewGuid().ToString();
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
-
+            var expectedErrorMessage = "Invalid User Input(s): Persona specified in test is not listed in environment variables";
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public void ParseAndSetTestStateThrowsOnMulitpleMissingValues()
+        {
+            var state = new TestState(MockTestConfigParser.Object);
+            var testConfigFile = "testPlan.fx.yaml";
+            var testPlanDefinition = GenerateTestPlanDefinition();
+            var expectedErrorMessage = "Invalid User Input(s): Must be at least one test case, Missing test settings from test plan, Missing browser configuration from test plan, Persona specified in test is not listed in environment variables";
+
+            // setting testcases to null
+            testPlanDefinition.TestSuite.TestCases = null;
+            testPlanDefinition.TestSettings = null;
+            testPlanDefinition.TestSuite.Persona = Guid.NewGuid().ToString();  
+            
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]

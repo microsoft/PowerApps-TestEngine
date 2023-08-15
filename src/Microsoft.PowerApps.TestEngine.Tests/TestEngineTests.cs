@@ -337,10 +337,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
         }
 
-        [Theory]
-        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
-        public async Task TestEngineReturnsPathOnUserInputErrors(string testConfigFilePath, string environmentId, Guid tenantId, string domain)
+        [Fact]
+        public async Task TestEngineReturnsPathOnUserInputErrors()
         {
+            FileInfo testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
+            string environmentId = "defaultEnviroment";
+            Guid tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
+            string domain = "apps.powerapps.com";
+
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns("abcdef");
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
@@ -351,11 +355,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestLoggerProvider.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
             var exceptionToThrow = new UserInputException();
-            MockState.Setup(x => x.ParseAndSetTestState(testConfigFilePath, MockLogger.Object)).Throws(exceptionToThrow);
+            MockState.Setup(x => x.ParseAndSetTestState(testConfigFile.FullName, MockLogger.Object)).Throws(exceptionToThrow);
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
-            FileInfo testConfigFile = new FileInfo(testConfigFilePath);
             var outputDirectory = new DirectoryInfo("TestOutput");
 
             var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
