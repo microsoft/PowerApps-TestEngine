@@ -14,7 +14,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Parses and sets up the test state.
         /// </summary>
         /// <param name="testConfigFile">Config file for test</param>
-        public void ParseAndSetTestState(string testConfigFile);
+        /// <param name="logger">Logger</param>
+        public void ParseAndSetTestState(string testConfigFile, ILogger logger);
 
         /// <summary>
         /// Gets the test suite defined for the test run.

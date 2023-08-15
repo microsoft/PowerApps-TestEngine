@@ -675,10 +675,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                MockFileSystem.Object, browserContext: MockBrowserContext.Object, page: MockPage.Object);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.HandleUserPasswordScreen(testSelector, testTextEntry, desiredUrl));
+            // scenario where password error or missing
+            var ex = await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.HandleUserPasswordScreen(testSelector, testTextEntry, desiredUrl));
 
             MockPage.Verify(x => x.Locator(It.Is<string>(v => v.Equals(testSelector)), null));
             MockPage.Verify(x => x.WaitForSelectorAsync("[id=\"passwordError\"]", It.Is<PageWaitForSelectorOptions>(v => v.Timeout >= 2000)));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
         }
 
         [Fact]

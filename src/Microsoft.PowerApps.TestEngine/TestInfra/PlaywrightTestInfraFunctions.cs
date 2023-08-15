@@ -365,7 +365,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     if (hasPasswordError)
                     {
                         logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
-                        throw new InvalidOperationException();
+                        throw new UserInputException(UserInputException.errorMapping.UserInputExceptionLoginCredential.ToString());
                     }
                     // If not, continue
                     else

@@ -2,23 +2,8 @@
 // Licensed under the MIT license.
 
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerFx;
-using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.PowerFx.Types;
-using Moq;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests
@@ -174,6 +159,45 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             // Assert none of the browser runs failed to show incorrect failed cases
             Assert.DoesNotContain("Cases failed: 0", printer.ToString());
+        }
+
+        [Fact]
+        public void TestEncounteredUserAppException()
+        {
+            // Specify expected result and output object
+            var expected = "[Critical Error] Could not access PowerApps. For more details, check the logs.";
+            var printer = new StringWriter();
+            Exception ex = new UserAppException();
+
+            // Set output
+            Console.SetOut(printer);
+
+            // Run function
+            _testEngineEventHandler.EncounteredException(ex);
+
+            // Assert that the expected output matches the console output of the function
+            Assert.Contains(expected, printer.ToString());
+        }
+
+        [Theory]
+        [InlineData(nameof(UserInputException.errorMapping.UserInputExceptionInvalidFilePath), "Invalid file path. For more details, check the logs.")]
+        [InlineData(nameof(UserInputException.errorMapping.UserInputExceptionLoginCredential), "Invalid login credential(s). For more details, check the logs.")]
+        [InlineData(nameof(UserInputException.errorMapping.UserInputExceptionTestConfig), "Invalid test config. For more details, check the logs.")]
+        [InlineData(nameof(UserInputException.errorMapping.UserInputExceptionYAMLFormat), "Invalid YAML format. For more details, check the logs.")]
+        public void TestEncounteredUserInputException(string exceptionName, string expectedMessage)
+        {
+            // Specify expected result and output object
+            var printer = new StringWriter();
+            Exception ex = new UserInputException(exceptionName);
+
+            // Set output
+            Console.SetOut(printer);
+
+            // Run function
+            _testEngineEventHandler.EncounteredException(ex);
+
+            // Assert that the expected output matches the console output of the function
+            Assert.Contains(expectedMessage, printer.ToString());
         }
     }
 }
