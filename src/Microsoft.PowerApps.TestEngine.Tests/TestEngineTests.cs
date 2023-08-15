@@ -335,6 +335,29 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
         }
 
+        [Theory]
+        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
+        public async Task TestEngineReturnsPathOnUserInputErrors(string testConfigFilePath, string environmentId, Guid tenantId, string domain)
+        {
+            MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns("abcdef");
+            MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            MockState.Setup(x => x.SetOutputDirectory(It.IsAny<string>()));
+            MockState.Setup(x => x.GetOutputDirectory()).Returns("MockOutputDirectory");            
+            MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
+
+            MockState.Setup(x => x.ParseAndSetTestState(testConfigFilePath, MockLogger.Object)).Throws(new UserInputException());
+            MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
+
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
+            FileInfo testConfigFile = new FileInfo(testConfigFilePath);
+            var outputDirectory = new DirectoryInfo("TestOutput");
+
+            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            // UserInput Exception is handled within TestEngineEventHandler, and then returns the test results directory path
+            Assert.Equal("MockOutputDirectory\\abcdef", testResultsDirectory);
+        }
         class TestDataGenerator : TheoryData<DirectoryInfo, string, TestSettings, TestSuiteDefinition>
         {
             public TestDataGenerator()

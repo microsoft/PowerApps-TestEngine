@@ -2,16 +2,27 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
 using Xunit;
+using YamlDotNet.Core;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Config
 {
     public class YamlTestConfigParserTests
     {
+        private Mock<ILoggerFactory> MockLoggerFactory;
+        private Mock<ILogger> MockLogger;
+
+        public YamlTestConfigParserTests() {
+            MockLoggerFactory = new Mock<ILoggerFactory>();
+            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+        } 
+
         [Fact]
         public void YamlTestConfigParserParseTestPlanWithAppLogicalNameTest()
         {
@@ -351,6 +362,37 @@ enablePowerFxOverlay: false";
             var logger = new Mock<ILogger>(MockBehavior.Strict);
 
             Assert.Throws<ArgumentNullException>(() => parser.ParseTestConfig<TestPlanDefinition>(filePath, logger.Object));
+        }
+
+        [Fact]
+        public void YamlTestConfigParserThrowsOnInvalidFilePath()
+        {
+            var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            var parser = new YamlTestConfigParser(mockFileSystem.Object);
+            mockFileSystem.Setup(f => f.fileExists(It.IsAny<string>())).Returns(false);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var ex = Assert.Throws<UserInputException>(() => parser.ParseTestConfig<TestSettings>("some invalid file path", MockLogger.Object));
+            Assert.Equal(ex.Message, UserInputException.errorMapping.UserInputExceptionInvalidFilePath.ToString());
+            // Verify the message is logged in this case
+            LoggingTestHelper.VerifyLogging(MockLogger, "Invalid file path: TestSettings in test config file.", LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public void YamlTestConfigParserThrowsOnInvalidYAMLFormat()
+        {
+            var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            var parser = new YamlTestConfigParser(mockFileSystem.Object);
+            mockFileSystem.Setup(f => f.fileExists(It.IsAny<string>())).Returns(true);
+            mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Throws(new YamlException("something bad happened"));
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);            
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var ex = Assert.Throws<UserInputException>(() => parser.ParseTestConfig<TestSettings>("validFilePath.yaml", MockLogger.Object));
+            Assert.Equal(ex.Message,UserInputException.errorMapping.UserInputExceptionYAMLFormat.ToString());
+            // Verify the message is logged in this case
+            LoggingTestHelper.VerifyLogging(MockLogger, "Invalid YAML format: TestSettings in test config file.", LogLevel.Error, Times.Once());
         }
     }
 }

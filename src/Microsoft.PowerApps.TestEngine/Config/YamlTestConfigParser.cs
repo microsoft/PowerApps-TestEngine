@@ -31,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
                 if (!_fileSystem.fileExists(testConfigFilePath))
                 {
-                    logger.LogError($"Invalid User Input: {typeof(T).Name} in test config file.");
+                    logger.LogError($"Invalid file path: {typeof(T).Name} in test config file.");
                     throw new UserInputException(UserInputException.errorMapping.UserInputExceptionInvalidFilePath.ToString());
                 }
 
@@ -43,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
             catch (YamlException)
             {
-                logger.LogError($"Invalid User Input: {typeof(T).Name} in test config file.");
+                logger.LogError($"Invalid YAML format: {typeof(T).Name} in test config file.");
                 throw new UserInputException(UserInputException.errorMapping.UserInputExceptionYAMLFormat.ToString());
             }
         }
