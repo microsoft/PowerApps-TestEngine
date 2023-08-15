@@ -102,7 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 {
                     userInputExceptionMessages.Add("Missing browser configuration from test plan");
                 }
-                else 
+                else
                 {
                     foreach (var browserConfig in TestPlanDefinition.TestSettings?.BrowserConfigurations)
                     {

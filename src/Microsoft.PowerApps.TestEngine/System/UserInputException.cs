@@ -5,6 +5,8 @@ namespace Microsoft.PowerApps.TestEngine.System
 {
     public class UserInputException : Exception
     {
+        // Error Mapping keys for hanlding user input exception
+        // This can be identified by the event handler for specifically handling error messages for these scenarios
         public enum errorMapping
         {
             UserInputExceptionAppURL,
