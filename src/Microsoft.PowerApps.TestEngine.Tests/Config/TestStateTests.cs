@@ -4,14 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-using Castle.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
 using Xunit;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Config
 {
@@ -19,6 +17,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
     {
         private Mock<ITestConfigParser> MockTestConfigParser;
         private List<TestCase> TestCases = new List<TestCase>();
+        private Mock<ILoggerFactory> MockLoggerFactory;
+        private Mock<ILogger> MockLogger;
 
         public TestStateTests()
         {
@@ -30,6 +30,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
                 TestSteps = "= 1+1"
             };
             TestCases.Add(testCase);
+            MockLoggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
         }
 
         private TestPlanDefinition GenerateTestPlanDefinition()
@@ -114,10 +116,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
 
             var testPlanDefinition = GenerateTestPlanDefinition();
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            state.ParseAndSetTestState(testConfigFile, logger.Object);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            state.ParseAndSetTestState(testConfigFile, MockLogger.Object);
 
             var testSuiteDefinitions = state.GetTestSuiteDefinition();
             Assert.NotNull(testSuiteDefinitions);
@@ -167,12 +169,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             testPlanDefinition.TestSettings.FilePath = testSettingsFile;
             testPlanDefinition.EnvironmentVariables.FilePath = environmentVariablesFile;
 
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestSettings>(It.IsAny<string>(), logger.Object)).Returns(testSettings);
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<EnvironmentVariables>(It.IsAny<string>(), logger.Object)).Returns(environmentVariables);
-            state.ParseAndSetTestState(testConfigFile, logger.Object);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestSettings>(It.IsAny<string>(), MockLogger.Object)).Returns(testSettings);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<EnvironmentVariables>(It.IsAny<string>(), MockLogger.Object)).Returns(environmentVariables);
+            state.ParseAndSetTestState(testConfigFile, MockLogger.Object);
 
             var actualTestSettings = state.GetTestSettings();
             Assert.NotNull(actualTestSettings);
@@ -190,9 +192,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         public void ParseAndSetTestStateThrowsOnInvalidTestConfigFile(string testConfigPath)
         {
             var state = new TestState(MockTestConfigParser.Object);
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
-            Assert.Throws<ArgumentNullException>(() => state.ParseAndSetTestState(testConfigPath, logger.Object));
+            Assert.Throws<ArgumentNullException>(() => state.ParseAndSetTestState(testConfigPath, MockLogger.Object));
         }
 
         [Fact]
@@ -202,11 +204,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite = null;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            var expectedErrorMessage = "Invalid User Input(s): Must be at least one test case, Persona specified in test is not listed in environment variables";
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            // Act and Arrange
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -218,11 +224,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.TestSuiteName = testName;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing test suite name from test suite definition";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -234,11 +243,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.Persona = persona;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing persona from test suite definition, Persona specified in test is not listed in environment variables";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);          
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -253,11 +265,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.AppLogicalName = appLogicalName;
             testPlanDefinition.TestSuite.AppId = appId;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): At least one of the app logical name or app id must be present in test suite definition";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -270,11 +285,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.AppLogicalName = appLogicalName;
             testPlanDefinition.TestSuite.AppId = appId;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            state.ParseAndSetTestState(testConfigFile, logger.Object);
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            state.ParseAndSetTestState(testConfigFile, MockLogger.Object);
             Assert.Equal(state.GetTestSuiteDefinition().AppLogicalName, appLogicalName);
             Assert.Equal(state.GetTestSuiteDefinition().AppId, appId);
         }
@@ -286,11 +301,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.TestCases = new List<TestCase>();
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Must be at least one test case";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -302,11 +320,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.TestCases[0].TestCaseName = testCaseName;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing test case name from test definition";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -318,11 +339,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.TestCases[0].TestSteps = testSteps;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing test steps from test case";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -332,11 +356,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSettings = null;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing test settings from test plan, Missing browser configuration from test plan";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -346,11 +373,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSettings.BrowserConfigurations = null;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing browser configuration from test plan";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -360,11 +390,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSettings.BrowserConfigurations = new List<BrowserConfiguration>();
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing browser configuration from test plan";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -376,11 +409,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSettings.BrowserConfigurations.Add(new BrowserConfiguration() { Browser = browser });
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing browser from browser configuration";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -397,11 +433,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
                 ScreenWidth = screenWidth,
                 ScreenHeight = screenHeight
             });
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Screen width and height both need to be specified or not specified";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -411,11 +450,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables = null;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): Missing environment variables from test plan, At least one user must be specified, Persona specified in test is not listed in environment variables";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -425,11 +467,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users = null;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): At least one user must be specified, Persona specified in test is not listed in environment variables";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -439,11 +484,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users = new List<UserConfiguration>();
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+            var expectedErrorMessage = "Invalid User Input(s): At least one user must be specified, Persona specified in test is not listed in environment variables";
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Theory]
@@ -455,11 +503,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users[0].PersonaName = personaName;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -471,11 +519,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users[0].EmailKey = emailKey;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]
@@ -487,11 +535,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.EnvironmentVariables.Users[0].PasswordKey = passwordKey;
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Fact]
@@ -501,11 +549,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             var testConfigFile = "testPlan.fx.yaml";
             var testPlanDefinition = GenerateTestPlanDefinition();
             testPlanDefinition.TestSuite.Persona = Guid.NewGuid().ToString();
-            var logger = new Mock<ILogger>(MockBehavior.Strict);
-            LoggingTestHelper.SetupMock(logger);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
 
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), logger.Object)).Returns(testPlanDefinition);
-            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, logger.Object));
+            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
+            Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
         }
 
         [Theory]

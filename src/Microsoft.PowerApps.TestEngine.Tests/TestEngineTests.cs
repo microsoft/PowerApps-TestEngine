@@ -27,6 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<ILoggerFactory> MockLoggerFactory;
         private Mock<ILogger> MockLogger;
         private Mock<ITestEngineEvents> MockTestEngineEventHandler;
+        private Mock<ILoggerProvider> MockTestLoggerProvider;
 
         public TestEngineTests()
         {
@@ -40,6 +41,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLoggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
+            MockTestLoggerProvider = new Mock<ILoggerProvider>(MockBehavior.Strict);
         }
 
         [Fact]
@@ -346,6 +348,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.SetOutputDirectory(It.IsAny<string>()));
             MockState.Setup(x => x.GetOutputDirectory()).Returns("MockOutputDirectory");            
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
+            MockTestLoggerProvider.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
             var exceptionToThrow = new UserInputException();
             MockState.Setup(x => x.ParseAndSetTestState(testConfigFilePath, MockLogger.Object)).Throws(exceptionToThrow);
