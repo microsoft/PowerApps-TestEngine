@@ -524,7 +524,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             testPlanDefinition.EnvironmentVariables.Users[0].EmailKey = emailKey;
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
-            var expectedErrorMessage = "Invalid User Input(s): Missing email key, Persona specified in test is not listed in environment variables";
+            var expectedErrorMessage = "Invalid User Input(s): Missing email key";
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
@@ -543,7 +543,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             testPlanDefinition.EnvironmentVariables.Users[0].PasswordKey = passwordKey;
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
-            var expectedErrorMessage = "Invalid User Input(s): Missing password key, Persona specified in test is not listed in environment variables";
+            var expectedErrorMessage = "Invalid User Input(s): Missing password key";
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
