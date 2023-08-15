@@ -1,5 +1,4 @@
 name: YAML Integration Tests
-
 on:
   workflow_call:
     inputs:
@@ -13,9 +12,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Integration Test
         env:
-          user1Email: "${{ secrets.POWER_PLATFORM_USER }}"
-          user1Password: "${{ secrets.POWER_PLATFORM_PASSWORD }}"
-        run: |
+            user1Email: '${{ secrets.POWER_PLATFORM_USER }}'
+            user1Password: '${{ secrets.POWER_PLATFORM_PASSWORD }}'
+        run: |   
           cd src/PowerAppsTestEngine
           dotnet build
           cd ../../
@@ -25,15 +24,15 @@ jobs:
           ./yaml-integration-tests.sh "${{ inputs.parameters }}"       # run the script with the parameter, contains logic to run the tests
       - name: Sample Test Report
         uses: dorny/test-reporter@v1.5.0
-        if: success() || failure() # run this step even if previous step failed
+        if: success() || failure()    # run this step even if previous step failed
         with:
-          name: Sample Tests # Name of the check run which will be created
-          path: "**/*.trx"
-          reporter: dotnet-trx # Format of test results
+          name: Sample Tests          # Name of the check run which will be created
+          path: '**/*.trx'            
+          reporter: dotnet-trx        # Format of test results      
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         if: ${{always()}}
         with:
-          name: "Test Run"
-          path: |
-            **/TestResults/**
+            name: 'Test Run'
+            path: |
+                **/TestResults/**
