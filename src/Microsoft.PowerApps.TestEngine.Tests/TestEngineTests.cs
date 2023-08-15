@@ -347,7 +347,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.GetOutputDirectory()).Returns("MockOutputDirectory");            
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
 
-            MockState.Setup(x => x.ParseAndSetTestState(testConfigFilePath, MockLogger.Object)).Throws(new UserInputException());
+            var exceptionToThrow = new UserInputException();
+            MockState.Setup(x => x.ParseAndSetTestState(testConfigFilePath, MockLogger.Object)).Throws(exceptionToThrow);
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
@@ -356,6 +357,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
             // UserInput Exception is handled within TestEngineEventHandler, and then returns the test results directory path
+            MockTestEngineEventHandler.Verify(x => x.EncounteredException(exceptionToThrow), Times.Once());
             Assert.NotNull(testResultsDirectory);
         }
         class TestDataGenerator : TheoryData<DirectoryInfo, string, TestSettings, TestSuiteDefinition>
