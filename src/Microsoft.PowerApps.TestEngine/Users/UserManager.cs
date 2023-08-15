@@ -78,13 +78,13 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             if (string.IsNullOrEmpty(user))
             {
-                logger.LogError(("User email cannot be null"));
+                logger.LogError(("User email cannot be null. Please check if the environment variable is set properly."));
                 missingUserOrPassword = true;
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                logger.LogError("Password cannot be null");
+                logger.LogError("Password cannot be null. Please check if the environment variable is set properly.");
                 missingUserOrPassword = true;
             }
 

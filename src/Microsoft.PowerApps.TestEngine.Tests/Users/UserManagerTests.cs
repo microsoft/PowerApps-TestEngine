@@ -190,6 +190,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             
             var ex = await Assert.ThrowsAsync<UserInputException>(async () => await userManager.LoginAsUserAsync("*"));
             Assert.Equal(UserInputException.errorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
+            if (String.IsNullOrEmpty(email))
+            {
+                LoggingTestHelper.VerifyLogging(MockLogger, "User email cannot be null. Please check if the environment variable is set properly.", LogLevel.Error, Times.Once());
+            }
+            if (String.IsNullOrEmpty(password))
+            {
+                LoggingTestHelper.VerifyLogging(MockLogger, "Password cannot be null. Please check if the environment variable is set properly.", LogLevel.Error, Times.Once());
+            }
         }
     }
 }
