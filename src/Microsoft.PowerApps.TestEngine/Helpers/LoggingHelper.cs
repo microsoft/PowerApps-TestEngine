@@ -31,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         {
             try
             {
-                ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();                
+                ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();
                 if (debugInfo != null && debugInfo.ToString() != "undefined")
                 {
                     Logger.LogInformation($"------------------------------\n Debug Info \n------------------------------");

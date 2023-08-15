@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine
                         break;
                 }
             }
-            else if (ex is UserAppException) 
+            else if (ex is UserAppException)
             {
                 Console.WriteLine($"[Critical Error] Could not access PowerApps. For more details, check the logs.");
             }
