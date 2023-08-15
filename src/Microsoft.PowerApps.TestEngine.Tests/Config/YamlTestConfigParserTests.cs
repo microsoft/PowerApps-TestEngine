@@ -49,7 +49,6 @@ testSettings:
         - browser: Chromium
         - browser: Firefox
     headless: false
-    enablePowerFxOverlay: false
 
 environmentVariables:
     users:
@@ -77,7 +76,6 @@ environmentVariables:
             Assert.False(string.IsNullOrEmpty(testPlan.TestSuite?.TestCases[0].TestSteps));
             Assert.True(testPlan.TestSettings?.RecordVideo);
             Assert.False(testPlan.TestSettings?.Headless);
-            Assert.False(testPlan.TestSettings?.EnablePowerFxOverlay);
             Assert.Equal(2, testPlan.TestSettings?.BrowserConfigurations?.Count);
             Assert.Equal("Chromium", testPlan.TestSettings?.BrowserConfigurations?[0].Browser);
             Assert.Equal("Firefox", testPlan.TestSettings?.BrowserConfigurations?[1].Browser);
@@ -126,7 +124,6 @@ testSettings:
         - browser: Chromium
         - browser: Firefox
     headless: false
-    enablePowerFxOverlay: false
 
 environmentVariables:
     users:
@@ -154,7 +151,6 @@ environmentVariables:
             Assert.False(string.IsNullOrEmpty(testPlan.TestSuite?.TestCases[0].TestSteps));
             Assert.True(testPlan.TestSettings?.RecordVideo);
             Assert.False(testPlan.TestSettings?.Headless);
-            Assert.False(testPlan.TestSettings?.EnablePowerFxOverlay);
             Assert.Equal(2, testPlan.TestSettings?.BrowserConfigurations?.Count);
             Assert.Equal("Chromium", testPlan.TestSettings?.BrowserConfigurations?[0].Browser);
             Assert.Equal("Firefox", testPlan.TestSettings?.BrowserConfigurations?[1].Browser);
@@ -204,7 +200,6 @@ testSettings:
         - browser: Chromium
         - browser: Firefox
     headless: false
-    enablePowerFxOverlay: false
 
 environmentVariables:
     users:
@@ -232,7 +227,6 @@ environmentVariables:
             Assert.False(string.IsNullOrEmpty(testPlan.TestSuite?.TestCases[0].TestSteps));
             Assert.True(testPlan.TestSettings?.RecordVideo);
             Assert.False(testPlan.TestSettings?.Headless);
-            Assert.False(testPlan.TestSettings?.EnablePowerFxOverlay);
             Assert.Equal(2, testPlan.TestSettings?.BrowserConfigurations?.Count);
             Assert.Equal("Chromium", testPlan.TestSettings?.BrowserConfigurations?[0].Browser);
             Assert.Equal("Firefox", testPlan.TestSettings?.BrowserConfigurations?[1].Browser);
@@ -275,8 +269,7 @@ environmentVariables:
 browserConfigurations:
     - browser: Chromium
     - browser: Firefox
-headless: false
-enablePowerFxOverlay: false";
+headless: false";
 
             var filePath = "testSettings.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
@@ -284,7 +277,6 @@ enablePowerFxOverlay: false";
             Assert.NotNull(testSettings);
             Assert.True(testSettings.RecordVideo);
             Assert.False(testSettings.Headless);
-            Assert.False(testSettings.EnablePowerFxOverlay);
             Assert.Equal(2, testSettings.BrowserConfigurations?.Count);
             Assert.Equal("Chromium", testSettings.BrowserConfigurations?[0].Browser);
             Assert.Equal("Firefox", testSettings.BrowserConfigurations?[1].Browser);
@@ -301,8 +293,7 @@ locale: ""de-DE""
 browserConfigurations:
     - browser: Chromium
     - browser: Firefox
-headless: false
-enablePowerFxOverlay: false";
+headless: false";
 
             var filePath = "testSettings.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
@@ -310,7 +301,6 @@ enablePowerFxOverlay: false";
             Assert.NotNull(testSettings);
             Assert.True(testSettings.RecordVideo);
             Assert.False(testSettings.Headless);
-            Assert.False(testSettings.EnablePowerFxOverlay);
             Assert.Equal(2, testSettings.BrowserConfigurations?.Count);
             Assert.Equal("Chromium", testSettings.BrowserConfigurations?[0].Browser);
             Assert.Equal("Firefox", testSettings.BrowserConfigurations?[1].Browser);

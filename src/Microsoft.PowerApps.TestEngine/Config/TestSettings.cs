@@ -40,13 +40,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public bool Headless { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets whether to show the Power FX command overlay.
-        /// Default is false.
-        /// If set to true, an overlay with the currently running Power FX command is placed on the screen.
-        /// </summary>
-        public bool EnablePowerFxOverlay { get; set; } = false;
-
-        /// <summary>
         /// Timeout in milliseconds. Default is 30000 (30s)
         /// </summary>
         public int Timeout { get; set; } = 30000;
