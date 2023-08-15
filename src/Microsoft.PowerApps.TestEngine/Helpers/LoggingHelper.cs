@@ -16,13 +16,15 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
     {
         private readonly IPowerAppFunctions _powerAppFunctions;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
+        private readonly ITestEngineEvents _eventHandler;
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
 
         public LoggingHelper(IPowerAppFunctions powerAppFunctions,
-                             ISingleTestInstanceState singleTestInstanceState)
+                             ISingleTestInstanceState singleTestInstanceState, ITestEngineEvents eventHandler)
         {
             _powerAppFunctions = powerAppFunctions;
             _singleTestInstanceState = singleTestInstanceState;
+            _eventHandler = eventHandler;
         }
 
         public async void DebugInfo()
@@ -43,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             {
                 Logger.LogDebug("Issue getting DebugInfo. This can be a result of not being properly logged in.");
                 Logger.LogDebug(ex.ToString());
-                Console.WriteLine("[Critical Error]: Could not access PowerApps. Confirm you are logged in properly.");
+                _eventHandler.EncounteredException(new UserAppException());
             }
         }
     }

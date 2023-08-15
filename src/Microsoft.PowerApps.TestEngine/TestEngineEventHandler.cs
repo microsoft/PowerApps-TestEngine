@@ -35,6 +35,31 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 Console.WriteLine($"   Assertion failed: {ex.InnerException.InnerException.Message}");
             }
+            else if (ex is UserInputException)
+            {
+                switch (ex.Message)
+                {
+                    case nameof(UserInputException.errorMapping.UserInputExceptionInvalidFilePath):
+                        Console.WriteLine($"Invalid file path. For more details, check the logs.");
+                        break;
+                    case nameof(UserInputException.errorMapping.UserInputExceptionLoginCredential):
+                        Console.WriteLine($"Invalid login credential(s). For more details, check the logs.");
+                        break;
+                    case nameof(UserInputException.errorMapping.UserInputExceptionTestConfig):
+                        Console.WriteLine($"Invalid test config. For more details, check the logs.");
+                        break;
+                    case nameof(UserInputException.errorMapping.UserInputExceptionYAMLFormat):
+                        Console.WriteLine($"Invalid YAML format. For more details, check the logs.");
+                        break;
+                    default:
+                        Console.WriteLine($"   {ex.Message}");
+                        break;
+                }
+            }
+            else if (ex is UserAppException)
+            {
+                Console.WriteLine($"[Critical Error] Could not access PowerApps. For more details, check the logs.");
+            }
             else
             {
                 Console.WriteLine($"   {ex.Message}");
