@@ -236,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 // Trying to log the debug info including session details
-                LoggingHelper loggingHelper = new LoggingHelper(_powerFxEngine.GetPowerAppFunctions(), _testState);
+                LoggingHelper loggingHelper = new LoggingHelper(_powerFxEngine.GetPowerAppFunctions(), _testState, _eventHandler);
                 loggingHelper.DebugInfo();
 
                 await _testInfraFunctions.EndTestRunAsync();

@@ -39,9 +39,6 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 switch (ex.Message)
                 {
-                    case nameof(UserInputException.errorMapping.UserInputExceptionAppURL):
-                        Console.WriteLine($"Invalid app URL. For more details, check the logs.");
-                        break;
                     case nameof(UserInputException.errorMapping.UserInputExceptionInvalidFilePath):
                         Console.WriteLine($"Invalid file path. For more details, check the logs.");
                         break;
@@ -58,6 +55,10 @@ namespace Microsoft.PowerApps.TestEngine
                         Console.WriteLine($"   {ex.Message}");
                         break;
                 }
+            }
+            else if (ex is UserAppException) 
+            {
+                Console.WriteLine($"[Critical Error] Could not access PowerApps. For more details, check the logs.");
             }
             else
             {

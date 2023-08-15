@@ -3,29 +3,19 @@
 
 namespace Microsoft.PowerApps.TestEngine.System
 {
-    public class UserInputException : Exception
+    public class UserAppException : Exception
     {
-        // Error Mapping keys for hanlding user input exception
-        // This can be identified by the event handler for specifically handling error messages for these scenarios
-        public enum errorMapping
-        {
-            UserInputExceptionAppURL,
-            UserInputExceptionInvalidFilePath,
-            UserInputExceptionLoginCredential,
-            UserInputExceptionTestConfig,
-            UserInputExceptionYAMLFormat
-        };
 
-        public UserInputException()
+        public UserAppException()
         {
         }
 
-        public UserInputException(string message)
+        public UserAppException(string message)
             : base(message)
         {
         }
 
-        public UserInputException(string message, Exception innerException)
+        public UserAppException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

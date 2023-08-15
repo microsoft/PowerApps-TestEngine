@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.System;
 using Moq;
 using Xunit;
 
@@ -32,7 +34,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         public async Task DebugInfoNullSessionTest()
         {
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)null));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
+            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
@@ -46,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             obj.TryAdd("sessionId", "somesessionId");
 
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
+            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
@@ -64,7 +66,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             obj.TryAdd("sessionId", "someSessionId");
 
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
+            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
@@ -85,7 +87,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             obj.TryAdd("sessionId", "someSessionId");
 
             MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object);
+            MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
+            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
             MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
@@ -94,6 +97,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             LoggingTestHelper.VerifyLogging(MockLogger, "appVersion:\t", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "environmentId:\t", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "sessionId:\tsomeSessionId", LogLevel.Information, Times.Once());
+        }
+
+        [Fact]
+        public async Task DebugInfoThrowsTest()
+        {
+            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Throws(new Exception()); ;
+            MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
+            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
+            loggingHelper.DebugInfo();
+
+            // Verify UserAppException is passed to TestEngineEventHandler
+            MockTestEngineEventHandler.Verify(x => x.EncounteredException(It.IsAny<UserAppException>()), Times.Once());
         }
     }
 }
