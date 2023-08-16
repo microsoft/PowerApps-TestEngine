@@ -1,8 +1,8 @@
 testSuite:
-  testSuiteName: EverythingApp-TopLevel
-  testSuiteDescription: Tests every function on every top-level (non-gallery/non-component) control
+  testSuiteName: EverythingApp-Gallery
+  testSuiteDescription: Tests every function on every control, inside of a gallery
   persona: User1
-  appLogicalName: cr693_differentvariabletypes_09b4b
+  appLogicalName: cr693_everythingappgallery_016b9
 
   testCases:
     - testCaseName: 3D_Object_Case_Case
