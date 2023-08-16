@@ -1,0 +1,1255 @@
+testSuite:
+  testSuiteName: EverythingApp-TopLevel
+  testSuiteDescription: Tests every function on every top-level (non-gallery/non-component) control
+  persona: User1
+  appLogicalName: cr693_differentvariabletypes_09b4b
+
+  testCases:
+    - testCaseName: 3D_Object_Case_Case
+      testSteps: |
+        = Screenshot("3d_object_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(ViewIn3D1, "Height", 98);
+          Wait(ViewIn3D1, "ShowReset", true);
+          Wait(ViewIn3D1, "Source", "https://raw.githubusercontent.com/microsoft/experimental-pcf-control-assets/master/default_cube.glb");
+
+          // Set input fields
+          SetProperty(ViewIn3D1.Height, 50);
+          SetProperty(ViewIn3D1.ShowReset, false);
+          SetProperty(ViewIn3D1.Source, "https://www.bing.com/");
+
+          // Confirm that they were set to the correct value
+          Assert(ViewIn3D1.Height = 50, "Validate height integer was changed.");
+          Assert(ViewIn3D1.ShowReset = false, "Validate reset button was toggled.");
+          Assert(ViewIn3D1.Source = "https://www.bing.com/", "Validate source string was changed.");
+
+          Screenshot("3d_object_type_end.png");
+    - testCaseName: Add_Picture_Case
+      testSteps: |
+        = Screenshot("add_picture_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(AddMediaWithImage1, "BorderThickness", 0);
+          Wait(AddMediaWithImage1, "AccessibleLabel", "Alt");
+          Wait(AddMediaWithImage1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(AddMediaWithImage1.BorderThickness, 5);
+          Assert(AddMediaWithImage1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(AddMediaWithImage1.AccessibleLabel, "Altered");
+          Assert(AddMediaWithImage1.AccessibleLabel = "Altered", "Validate Accessible Label description was changed.");
+
+          SetProperty(AddMediaWithImage1.Visible, false);
+          Assert(AddMediaWithImage1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("add_picture_type_end.png");
+    - testCaseName: Address_Input_Case
+      testSteps: |
+        = Screenshot("address_input_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(AddressInput1, "BorderThickness", 2);
+          Wait(AddressInput1, "Default", "123 Main Street");
+          Wait(AddressInput1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(AddressInput1.BorderThickness, 5);
+          Assert(AddressInput1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(AddressInput1.Default, "123 Main Street");
+          Assert(AddressInput1.Default = "123 Main Street", "Validate Default text was changed.");
+
+          SetProperty(AddressInput1.Visible, false);
+          Assert(AddressInput1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("address_input_type_end.png");
+    - testCaseName: Audio_Case
+      testSteps: |
+        = Screenshot("audio_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(Audio1, "BorderThickness", 0);
+          Wait(Audio1, "ContentLanguage", "English");
+          Wait(Audio1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(Audio1.BorderThickness, 5);
+          Assert(Audio1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(Audio1.ContentLanguage, "Japanese");
+          Assert(Audio1.ContentLanguage = "Japanese", "Validate ContentLanguage was changed.");
+
+          SetProperty(Audio1.Visible, false);
+          Assert(Audio1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("audio_type_end.png");
+    - testCaseName: Barcode_Scanner_Case
+      testSteps: |
+        = Screenshot("barcode_scanner_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(BarcodeReader1, "BorderThickness", 2);
+          Wait(BarcodeReader1, "Text", "Barcode Reader");
+          Wait(BarcodeReader1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(BarcodeReader1.BorderThickness, 5);
+          Assert(BarcodeReader1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(BarcodeReader1.Text, "Barcode Scanner");
+          Assert(BarcodeReader1.Text = "Barcode Scanner", "Validate text was changed.");
+
+          SetProperty(BarcodeReader1.Visible, false);
+          Assert(BarcodeReader1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("barcode_scanner_type_end.png");
+    - testCaseName: Business_Card_Reader_Case
+      testSteps: |
+        = Screenshot("business_card_reader_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(BusinessCardReader1, "BorderThickness", 1);
+          Wait(BusinessCardReader1, "Text", "Scan business card");
+          Wait(BusinessCardReader1, "Visible", true);
+
+          // Set & check input fields 
+          SetProperty(BusinessCardReader1.BorderThickness, 5);
+          Assert(BusinessCardReader1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(BusinessCardReader1.Text, "Scan card");
+          Assert(BusinessCardReader1.Text = "Scan card", "Validate text was changed.");
+
+          SetProperty(BusinessCardReader1.Visible, false);
+          Assert(BusinessCardReader1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("business_card_reader_type_end.png");
+    - testCaseName: Button_Case
+      testSteps: |
+        = Screenshot("button_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(Button1, "BorderThickness", 2);
+          Wait(Button1, "Text", "Button");
+          Wait(Button1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(Button1.BorderThickness, 5);
+          Assert(Button1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(Button1.Text, "The Button");
+          Assert(Button1.Text = "The Button", "Validate text was changed.");
+
+          SetProperty(Button1.Visible, false);
+          Assert(Button1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("button_type_end.png");
+    - testCaseName: Camera_Case
+      testSteps: |
+        = Screenshot("camera_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(Camera1, "BorderThickness", 0);
+          Wait(Camera1, "ContentLanguage", "English");
+          Wait(Camera1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(Camera1.BorderThickness, 5);
+          Assert(Camera1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(Camera1.ContentLanguage, "Japanese");
+          Assert(Camera1.ContentLanguage = "Japanese", "Validate content language was changed.");
+
+          SetProperty(Camera1.Visible, false);
+          Assert(Camera1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("camera_type_end.png");
+    - testCaseName: Check_Box_Case
+      testSteps: |
+        = Screenshot("checkbox_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(Checkbox1, "BorderThickness", 0);
+          Wait(Checkbox1, "Text", "Option");
+          Wait(Checkbox1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(Checkbox1.BorderThickness, 5);
+          Assert(Checkbox1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(Checkbox1.Text, "Option 1");
+          Assert(Checkbox1.Text = "Option 1", "Validate text was changed.");
+
+          SetProperty(Checkbox1.Visible, false);
+          Assert(Checkbox1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("checkbox_type_end.png");
+    - testCaseName: Column_Chart_Case
+      testSteps: |
+        = Screenshot("column_chart_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(CompositeColumnChart1, "BorderThickness", 0);
+          Wait(CompositeColumnChart1, "ContentLanguage", "English");
+          Wait(CompositeColumnChart1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(CompositeColumnChart1.BorderThickness, 5);
+          Assert(CompositeColumnChart1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(CompositeColumnChart1.ContentLanguage, "Japanese");
+          Assert(CompositeColumnChart1.ContentLanguage = "Japanese", "Validate content language was changed.");
+
+          SetProperty(CompositeColumnChart1.Visible, false);
+          Assert(CompositeColumnChart1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("column_chart_type_end.png");
+    - testCaseName: Combo_Box_Case
+      testSteps: |
+        = Screenshot("combo_box_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(ComboBox1, "BorderThickness", 2);
+          Wait(ComboBox1, "ContentLanguage", "English");
+          Wait(ComboBox1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(ComboBox1.BorderThickness, 5);
+          Assert(ComboBox1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(ComboBox1.ContentLanguage, "Japanese");
+          Assert(ComboBox1.ContentLanguage = "Japanese", "Validate content language was changed.");
+
+          SetProperty(ComboBox1.Visible, false);
+          Assert(ComboBox1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("combo_box_type_end.png");
+    - testCaseName: Container_Case
+      testSteps: |
+        = Screenshot("container_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(ComboBox1, "BorderThickness", 0);
+          Wait(ComboBox1, "ContentLanguage", "English");
+          Wait(ComboBox1, "Visible", true);
+
+          // Set & check input fields
+          SetProperty(ComboBox1.BorderThickness, 5);
+          Assert(ComboBox1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+
+          SetProperty(ComboBox1.ContentLanguage, "Japanese");
+          Assert(ComboBox1.ContentLanguage = "Japanese", "Validate content language was changed.");
+
+          SetProperty(ComboBox1.Visible, false);
+          Assert(ComboBox1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("container_type_end.png");
+    - testCaseName: Data_Table_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Date_Picker_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Display_Form_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Drop_Down_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Edit_Form_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Export_Data_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Flexible_Height_Gallery_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: HTML_Text_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Horizontal_Container_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Horizontal_Gallery_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Icon_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Image_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Import_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Line_Chart_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: List_Box_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Map_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Measuring_Camera_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Microphone_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: PDF_Viewer_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Pen_Input_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Pie_Chart_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Power_BI_Tile_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Radio_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Rating_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Rich_Text_Editor_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Shape_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Slider_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Stream_Video_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Text_Label_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Text_Input_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Timer_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Toggle_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Video_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Vertical_Container_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: Vertical_Gallery_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: View_in_MR_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+    - testCaseName: View_Shape_in_MR_Case
+      testSteps: |
+        = Screenshot("string_type_loaded.png");
+
+          // Wait for default values to load
+          Wait(TextInput1, "Text", "Comments");
+          Wait(Rating1, "Value", 3);
+          Wait(Toggle1, "Value", false);
+          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+
+          // Set input fields
+          SetProperty(TextInput1.Text, "Good job!");
+          SetProperty(Rating1.Value, 5);
+          SetProperty(Toggle1.Value, true);
+          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
+          SetProperty(Dropdown1.Selected, {Value:"2"});
+          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
+          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+
+          // Confirm that they were set to the correct value
+          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
+          Assert(Rating1.Value = 5, "Validate rating was changed.");
+          Assert(Toggle1.Value = true, "Validate toggle is now on");
+          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+
+          Screenshot("string_type_end.png");
+
+testSettings:
+  filePath: ../../samples/testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
