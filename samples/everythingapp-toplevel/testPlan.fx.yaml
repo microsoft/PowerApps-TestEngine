@@ -230,1020 +230,765 @@ testSuite:
         = Screenshot("container_type_loaded.png");
 
           // Wait for default values to load
-          Wait(ComboBox1, "BorderThickness", 0);
-          Wait(ComboBox1, "ContentLanguage", "English");
-          Wait(ComboBox1, "Visible", true);
+          Wait(Container1, "BorderThickness", 0);
+          Wait(Container1, "ContentLanguage", "English");
+          Wait(Container1, "Visible", true);
 
           // Set & check input fields
-          SetProperty(ComboBox1.BorderThickness, 5);
-          Assert(ComboBox1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
+          SetProperty(Container1.BorderThickness, 5);
+          Assert(Container1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          SetProperty(ComboBox1.ContentLanguage, "Japanese");
-          Assert(ComboBox1.ContentLanguage = "Japanese", "Validate content language was changed.");
+          SetProperty(Container1.ContentLanguage, "Japanese");
+          Assert(Container1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          SetProperty(ComboBox1.Visible, false);
-          Assert(ComboBox1.Visible = false, "Validate visibility was toggled off.");
+          SetProperty(Container1.Visible, false);
+          Assert(Container1.Visible = false, "Validate visibility was toggled off.");
 
           Screenshot("container_type_end.png");
     - testCaseName: Data_Table_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("data_table_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(DataTable1, "BorderThickness", 0);
+          Wait(DataTable1, "ContentLanguage", "English");
+          Wait(DataTable1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(DataTable1.BorderThickness, 5);
+          Assert(DataTable1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(DataTable1.ContentLanguage, "Japanese");
+          Assert(DataTable1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(DataTable1.Visible, false);
+          Assert(DataTable1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("data_table_type_end.png");
     - testCaseName: Date_Picker_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("date_picker_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(DatePicker1, "BorderThickness", 0);
+          Wait(DatePicker1, "ContentLanguage", "English");
+          Wait(DatePicker1, "DefaultDate", Date(2000, 01, 01));
+          Wait(DatePicker1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(DatePicker1.BorderThickness, 5);
+          Assert(DatePicker1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(DatePicker1.ContentLanguage, "Japanese");
+          Assert(DatePicker1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(DatePicker1.DefaultDate, Date(2022, 02, 02));
+          Assert(DatePicker1.ContentLanguage = Date(2022, 02, 02), "Validate default date was changed.");
+
+          SetProperty(DatePicker1.Visible, false);
+          Assert(DatePicker1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("date_picker_type_end.png");
     - testCaseName: Display_Form_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("display_form_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(FormViewer1, "BorderThickness", 0);
+          Wait(FormViewer1, "ContentLanguage", "English");
+          Wait(FormViewer1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(FormViewer1.BorderThickness, 5);
+          Assert(FormViewer1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(FormViewer1.ContentLanguage, "Japanese");
+          Assert(FormViewer1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(FormViewer1.Visible, false);
+          Assert(FormViewer1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("display_form_type_end.png");
     - testCaseName: Drop_Down_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("drop_down_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Dropdown1, "BorderThickness", 2);
+          Wait(Dropdown1, "ContentLanguage", "English");
+          Wait(Dropdown1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Dropdown1.BorderThickness, 5);
+          Assert(Dropdown1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Dropdown1.ContentLanguage, "Japanese");
+          Assert(Dropdown1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Dropdown1.Visible, false);
+          Assert(Dropdown1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("drop_down_type_end.png");
     - testCaseName: Edit_Form_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("edit_form_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Form1, "BorderThickness", 0);
+          Wait(Form1, "ContentLanguage", "");
+          Wait(Form1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Form1.BorderThickness, 5);
+          Assert(Form1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Form1.ContentLanguage, "Japanese");
+          Assert(Form1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Form1.Visible, false);
+          Assert(Form1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("edit_form_type_end.png");
     - testCaseName: Export_Data_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("export_data_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Export1, "BorderThickness", 0);
+          Wait(Export1, "ContentLanguage", "");
+          Wait(Export1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Export1.BorderThickness, 5);
+          Assert(Export1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Export1.ContentLanguage, "Japanese");
+          Assert(Export1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Export1.Visible, false);
+          Assert(Export1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("export_data_type_end.png");
     - testCaseName: Flexible_Height_Gallery_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("flexible_height_gallery_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Gallery3, "BorderThickness", 0);
+          Wait(Gallery3, "ContentLanguage", "");
+          Wait(Gallery3, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Gallery3.BorderThickness, 5);
+          Assert(Gallery3.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Gallery3.ContentLanguage, "Japanese");
+          Assert(Gallery3.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Gallery3.Visible, false);
+          Assert(Gallery3.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("flexible_height_gallery_type_end.png");
     - testCaseName: HTML_Text_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("html_text_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(HtmlText1, "BorderThickness", 0);
+          Wait(HtmlText1, "ContentLanguage", "");
+          Wait(HtmlText1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(HtmlText1.BorderThickness, 5);
+          Assert(HtmlText1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(HtmlText1.ContentLanguage, "Japanese");
+          Assert(HtmlText1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(HtmlText1.Visible, false);
+          Assert(HtmlText1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("html_text_type_end.png");
     - testCaseName: Horizontal_Container_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("horizontal_container_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Container2, "BorderThickness", 0);
+          Wait(Container2, "ContentLanguage", "");
+          Wait(Container2, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Container2.BorderThickness, 5);
+          Assert(Container2.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Container2.ContentLanguage, "Japanese");
+          Assert(Container2.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Container2.Visible, false);
+          Assert(Container2.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("horizontal_container_type_end.png");
     - testCaseName: Horizontal_Gallery_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("horizontal_gallery_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Gallery5, "BorderThickness", 0);
+          Wait(Gallery5, "ContentLanguage", "");
+          Wait(Gallery5, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Gallery5.BorderThickness, 5);
+          Assert(Gallery5.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Gallery5.ContentLanguage, "Japanese");
+          Assert(Gallery5.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Gallery5.Visible, false);
+          Assert(Gallery5.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("horizontal_gallery_type_end.png");
     - testCaseName: Icon_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("icon_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Icon1, "BorderThickness", 0);
+          Wait(Icon1, "ContentLanguage", "");
+          Wait(Icon1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Icon1.BorderThickness, 5);
+          Assert(Icon1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Icon1.ContentLanguage, "Japanese");
+          Assert(Icon1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Icon1.Visible, false);
+          Assert(Icon1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("icon_type_end.png");
     - testCaseName: Image_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("image_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Image5, "BorderThickness", 0);
+          Wait(Image5, "ContentLanguage", "");
+          Wait(Image5, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Image5.BorderThickness, 5);
+          Assert(Image5.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Image5.ContentLanguage, "Japanese");
+          Assert(Image5.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Image5.Visible, false);
+          Assert(Image5.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("image_type_end.png");
     - testCaseName: Import_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("import_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Import1, "BorderThickness", 2);
+          Wait(Import1, "ContentLanguage", "");
+          Wait(Import1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Import1.BorderThickness, 5);
+          Assert(Import1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Import1.ContentLanguage, "Japanese");
+          Assert(Import1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Import1.Visible, false);
+          Assert(Import1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("import_type_end.png");
     - testCaseName: Line_Chart_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("line_chart_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(CompositeLineChart1, "BorderThickness", 0);
+          Wait(CompositeLineChart1, "ContentLanguage", "");
+          Wait(CompositeLineChart1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(CompositeLineChart1.BorderThickness, 5);
+          Assert(CompositeLineChart1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(CompositeLineChart1.ContentLanguage, "Japanese");
+          Assert(CompositeLineChart1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(CompositeLineChart1.Visible, false);
+          Assert(CompositeLineChart1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("line_chart_type_end.png");
     - testCaseName: List_Box_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("list_box_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(ListBox1, "BorderThickness", 2);
+          Wait(ListBox1, "ContentLanguage", "");
+          Wait(ListBox1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(ListBox1.BorderThickness, 5);
+          Assert(ListBox1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(ListBox1.ContentLanguage, "Japanese");
+          Assert(ListBox1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(ListBox1.Visible, false);
+          Assert(ListBox1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("list_box_type_end.png");
     - testCaseName: Map_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("map_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Map1, "BorderThickness", 2);
+          Wait(Map1, "ContentLanguage", "");
+          Wait(Map1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Map1.BorderThickness, 5);
+          Assert(Map1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Map1.ContentLanguage, "Japanese");
+          Assert(Map1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Map1.Visible, false);
+          Assert(Map1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("map_type_end.png");
     - testCaseName: Measuring_Camera_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("measuring_camera_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(MeasureInMR1, "BorderThickness", 2);
+          Wait(MeasureInMR1, "ContentLanguage", "");
+          Wait(MeasureInMR1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(MeasureInMR1.BorderThickness, 5);
+          Assert(MeasureInMR1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(MeasureInMR1.ContentLanguage, "Japanese");
+          Assert(MeasureInMR1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(MeasureInMR1.Visible, false);
+          Assert(MeasureInMR1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("measuring_camera_type_end.png");
     - testCaseName: Microphone_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("microphone_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Microphone1, "BorderThickness", 0);
+          Wait(Microphone1, "ContentLanguage", "");
+          Wait(Microphone1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Microphone1.BorderThickness, 5);
+          Assert(Microphone1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Microphone1.ContentLanguage, "Japanese");
+          Assert(Microphone1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Microphone1.Visible, false);
+          Assert(Microphone1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("microphone_type_end.png");
     - testCaseName: PDF_Viewer_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("pdf_viewer_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(PdfViewer1, "BorderThickness", 0);
+          Wait(PdfViewer1, "ContentLanguage", "");
+          Wait(PdfViewer1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(PdfViewer1.BorderThickness, 5);
+          Assert(PdfViewer1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(PdfViewer1.ContentLanguage, "Japanese");
+          Assert(PdfViewer1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(PdfViewer1.Visible, false);
+          Assert(PdfViewer1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("pdf_viewer_type_end.png");
     - testCaseName: Pen_Input_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("pen_input_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(PenInput1, "BorderThickness", 2);
+          Wait(PenInput1, "ContentLanguage", "");
+          Wait(PenInput1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(PenInput1.BorderThickness, 5);
+          Assert(PenInput1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(PenInput1.ContentLanguage, "Japanese");
+          Assert(PenInput1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(PenInput1.Visible, false);
+          Assert(PenInput1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("pen_input_type_end.png");
     - testCaseName: Pie_Chart_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("pie_chart_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(CompositePieChart1, "BorderThickness", 0);
+          Wait(CompositePieChart1, "ContentLanguage", "");
+          Wait(CompositePieChart1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(CompositePieChart1.BorderThickness, 5);
+          Assert(CompositePieChart1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(CompositePieChart1.ContentLanguage, "Japanese");
+          Assert(CompositePieChart1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(CompositePieChart1.Visible, false);
+          Assert(CompositePieChart1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("pie_chart_type_end.png");
     - testCaseName: Power_BI_Tile_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("power_bi_tile_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(PowerBI1, "BorderThickness", 2);
+          Wait(PowerBI1, "ContentLanguage", "");
+          Wait(PowerBI1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(PowerBI1.BorderThickness, 5);
+          Assert(PowerBI1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(PowerBI1.ContentLanguage, "Japanese");
+          Assert(PowerBI1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(PowerBI1.Visible, false);
+          Assert(PowerBI1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("power_bi_tile_type_end.png");
     - testCaseName: Radio_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("radio_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Radio1, "BorderThickness", 0);
+          Wait(Radio1, "ContentLanguage", "");
+          Wait(Radio1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Radio1.BorderThickness, 5);
+          Assert(Radio1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Radio1.ContentLanguage, "Japanese");
+          Assert(Radio1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Radio1.Visible, false);
+          Assert(Radio1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("radio_type_end.png");
     - testCaseName: Rating_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("rating_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Rating1, "BorderThickness", 0);
+          Wait(Rating1, "ContentLanguage", "");
+          Wait(Rating1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Rating1.BorderThickness, 5);
+          Assert(Rating1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Rating1.ContentLanguage, "Japanese");
+          Assert(Rating1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Rating1.Visible, false);
+          Assert(Rating1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("rating_type_end.png");
     - testCaseName: Rich_Text_Editor_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("rich_text_editor_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(RichTextEditor1, "Height", 140);
+          Wait(RichTextEditor1, "ContentLanguage", "");
+          Wait(RichTextEditor1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(RichTextEditor1.Height, 5);
+          Assert(RichTextEditor1.Height = 5, "Validate Height integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(RichTextEditor1.ContentLanguage, "Japanese");
+          Assert(RichTextEditor1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(RichTextEditor1.Visible, false);
+          Assert(RichTextEditor1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("rich_text_editor_type_end.png");
     - testCaseName: Shape_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("shape_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Arrow1, "BorderThickness", 0);
+          Wait(Arrow1, "ContentLanguage", "");
+          Wait(Arrow1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Arrow1.BorderThickness, 5);
+          Assert(Arrow1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Arrow1.ContentLanguage, "Japanese");
+          Assert(Arrow1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Arrow1.Visible, false);
+          Assert(Arrow1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("shape_type_end.png");
     - testCaseName: Slider_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("slider_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Slider1, "BorderThickness", 0);
+          Wait(Slider1, "ContentLanguage", "");
+          Wait(Slider1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Slider1.BorderThickness, 5);
+          Assert(Slider1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Slider1.ContentLanguage, "Japanese");
+          Assert(Slider1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Slider1.Visible, false);
+          Assert(Slider1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("slider_type_end.png");
     - testCaseName: Stream_Video_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("stream_video_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(MicrosoftStream1, "BorderThickness", 0);
+          Wait(MicrosoftStream1, "ContentLanguage", "");
+          Wait(MicrosoftStream1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(MicrosoftStream1.BorderThickness, 5);
+          Assert(MicrosoftStream1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(MicrosoftStream1.ContentLanguage, "Japanese");
+          Assert(MicrosoftStream1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(MicrosoftStream1.Visible, false);
+          Assert(MicrosoftStream1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("stream_video_type_end.png");
     - testCaseName: Text_Label_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("text_tabel_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Label1, "BorderThickness", 0);
+          Wait(Label1, "ContentLanguage", "");
+          Wait(Label1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Label1.BorderThickness, 5);
+          Assert(Label1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Label1.ContentLanguage, "Japanese");
+          Assert(Label1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Label1.Visible, false);
+          Assert(Label1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("text_tabel_type_end.png");
     - testCaseName: Text_Input_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("text_input_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(TextInput1, "BorderThickness", 2);
+          Wait(TextInput1, "ContentLanguage", "");
+          Wait(TextInput1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(TextInput1.BorderThickness, 5);
+          Assert(TextInput1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(TextInput1.ContentLanguage, "Japanese");
+          Assert(TextInput1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(TextInput1.Visible, false);
+          Assert(TextInput1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("text_input_type_end.png");
     - testCaseName: Timer_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("timer_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Timer1, "BorderThickness", 2);
+          Wait(Timer1, "ContentLanguage", "");
+          Wait(Timer1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Timer1.BorderThickness, 5);
+          Assert(Timer1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Timer1.ContentLanguage, "Japanese");
+          Assert(Timer1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Timer1.Visible, false);
+          Assert(Timer1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("timer_type_end.png");
     - testCaseName: Toggle_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("toggle_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Toggle1, "BorderThickness", 0);
+          Wait(Toggle1, "ContentLanguage", "");
+          Wait(Toggle1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Toggle1.BorderThickness, 5);
+          Assert(Toggle1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Toggle1.ContentLanguage, "Japanese");
+          Assert(Toggle1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Toggle1.Visible, false);
+          Assert(Toggle1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("toggle_type_end.png");
     - testCaseName: Video_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("video_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Video1, "BorderThickness", 0);
+          Wait(Video1, "ContentLanguage", "");
+          Wait(Video1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Video1.BorderThickness, 5);
+          Assert(Video1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Video1.ContentLanguage, "Japanese");
+          Assert(Video1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Video1.Visible, false);
+          Assert(Video1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("video_type_end.png");
     - testCaseName: Vertical_Container_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("vertical_container_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Container3, "BorderThickness", 0);
+          Wait(Container3, "ContentLanguage", "");
+          Wait(Container3, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Container3.BorderThickness, 5);
+          Assert(Container3.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Container3.ContentLanguage, "Japanese");
+          Assert(Container3.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Container3.Visible, false);
+          Assert(Container3.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("vertical_container_type_end.png");
     - testCaseName: Vertical_Gallery_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("vertical_gallery_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(Gallery6, "BorderThickness", 0);
+          Wait(Gallery6, "ContentLanguage", "");
+          Wait(Gallery6, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(Gallery6.BorderThickness, 5);
+          Assert(Gallery6.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(Gallery6.ContentLanguage, "Japanese");
+          Assert(Gallery6.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(Gallery6.Visible, false);
+          Assert(Gallery6.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("vertical_gallery_type_end.png");
     - testCaseName: View_in_MR_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("view_in_mr_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(ViewInMR1, "BorderThickness", 2);
+          Wait(ViewInMR1, "ContentLanguage", "");
+          Wait(ViewInMR1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(ViewInMR1.BorderThickness, 5);
+          Assert(ViewInMR1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(ViewInMR1.ContentLanguage, "Japanese");
+          Assert(ViewInMR1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(ViewInMR1.Visible, false);
+          Assert(ViewInMR1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("view_in_mr_type_end.png");
     - testCaseName: View_Shape_in_MR_Case
       testSteps: |
-        = Screenshot("string_type_loaded.png");
+        = Screenshot("view_shape_in_mr_type_loaded.png");
 
           // Wait for default values to load
-          Wait(TextInput1, "Text", "Comments");
-          Wait(Rating1, "Value", 3);
-          Wait(Toggle1, "Value", false);
-          Wait(DatePicker1, "SelectedDate", Date(2030, 01, 01));
-          Wait(DatePicker1, "DefaultDate", Date(2030, 01, 01));
+          Wait(ViewShapeInMR1, "BorderThickness", 2);
+          Wait(ViewShapeInMR1, "ContentLanguage", "");
+          Wait(ViewShapeInMR1, "Visible", true);
 
-          // Set input fields
-          SetProperty(TextInput1.Text, "Good job!");
-          SetProperty(Rating1.Value, 5);
-          SetProperty(Toggle1.Value, true);
-          SetProperty(DatePicker1.SelectedDate, Date(2040, 01, 01));
-          SetProperty(Dropdown1.Selected, {Value:"2"});
-          SetProperty(ComboBox1.SelectedItems, Table({Value:"1"},{Value:"2"}));
-          SetProperty(ListBox1.SelectedItems, Table({Value:"1"},{Value:"3"}));
+          // Set & check input fields
+          SetProperty(ViewShapeInMR1.BorderThickness, 5);
+          Assert(ViewShapeInMR1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
 
-          // Confirm that they were set to the correct value
-          Assert(TextInput1.Text = "Good job!", "Validate comment box was changed.");
-          Assert(Rating1.Value = 5, "Validate rating was changed.");
-          Assert(Toggle1.Value = true, "Validate toggle is now on");
-          Assert(DatePicker1.SelectedDate = Date(2040, 01, 01), "Validate date was changed");
+          SetProperty(ViewShapeInMR1.ContentLanguage, "Japanese");
+          Assert(ViewShapeInMR1.ContentLanguage = "Japanese", "Validate content language was changed.");
 
-          Screenshot("string_type_end.png");
+          SetProperty(ViewShapeInMR1.Visible, false);
+          Assert(ViewShapeInMR1.Visible = false, "Validate visibility was toggled off.");
+
+          Screenshot("view_shape_in_mr_type_end.png");
 
 testSettings:
   filePath: ../../samples/testSettings.yaml
