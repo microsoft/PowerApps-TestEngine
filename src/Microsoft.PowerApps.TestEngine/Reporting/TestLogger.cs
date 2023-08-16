@@ -62,7 +62,6 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
                 if (!_fileSystem.Exists(directoryPath))
                 {
-
                     _fileSystem.CreateDirectory(directoryPath);
                 }
             }
