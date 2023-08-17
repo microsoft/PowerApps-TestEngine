@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -366,6 +367,42 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestEngineEventHandler.Verify(x => x.EncounteredException(exceptionToThrow), Times.Once());
             Assert.NotNull(testResultsDirectory);
         }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetLocaleFromTestSettingsUseSystemLocaleIfNull(string localeInput)
+        {
+            // Arrange
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            // Act
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
+            testEngine.Logger = MockLogger.Object;
+
+            // Assert
+            var locale = testEngine.GetLocaleFromTestSettings(localeInput);
+            Assert.Equal(CultureInfo.CurrentCulture, locale);
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Locale property not specified in testSettings. Using current system locale: {locale.Name}", LogLevel.Debug, Times.Once());
+        }
+
+        [Fact]
+        public async Task GetLocaleFromTestSettingsThrowsUserInputExceptionOnInvalidLocale()
+        {
+            // Arrange
+            LoggingTestHelper.SetupMock(MockLogger);
+            var localeInput = "invalidLocaleName";
+
+            // Act
+            var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
+            testEngine.Logger = MockLogger.Object;
+
+            // Assert
+            var ex = Assert.Throws<UserInputException>(() => testEngine.GetLocaleFromTestSettings(localeInput));
+            Assert.Equal(UserInputException.errorMapping.UserInputExceptionInvalidLocale.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, $"Locale from test suite definition {localeInput} unrecognized.", LogLevel.Error, Times.Once());
+        }
+
         class TestDataGenerator : TheoryData<DirectoryInfo, string, TestSettings, TestSuiteDefinition>
         {
             public TestDataGenerator()

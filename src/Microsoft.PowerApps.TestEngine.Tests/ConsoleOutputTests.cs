@@ -2,7 +2,9 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Xunit;
 
@@ -165,7 +167,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         public void TestEncounteredUserAppException()
         {
             // Specify expected result and output object
-            var expected = "[Critical Error] Could not access PowerApps. For more details, check the logs.";
+            var expected = TestEngineEventHandler.UserAppExceptionMessage;
             var printer = new StringWriter();
             Exception ex = new UserAppException();
 
@@ -175,15 +177,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Run function
             _testEngineEventHandler.EncounteredException(ex);
 
-            // Assert that the expected output matches the console output of the function
+            // Assert that the expected output matches the console output
             Assert.Contains(expected, printer.ToString());
         }
 
         [Theory]
-        [InlineData(nameof(UserInputException.errorMapping.UserInputExceptionInvalidFilePath), "Invalid file path. For more details, check the logs.")]
-        [InlineData(nameof(UserInputException.errorMapping.UserInputExceptionLoginCredential), "Invalid login credential(s). For more details, check the logs.")]
-        [InlineData(nameof(UserInputException.errorMapping.UserInputExceptionTestConfig), "Invalid test config. For more details, check the logs.")]
-        [InlineData(nameof(UserInputException.errorMapping.UserInputExceptionYAMLFormat), "Invalid YAML format. For more details, check the logs.")]
+        [ClassData(typeof(UserInputExceptionDataGenerator))]
         public void TestEncounteredUserInputException(string exceptionName, string expectedMessage)
         {
             // Specify expected result and output object
@@ -196,8 +195,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             // Run function
             _testEngineEventHandler.EncounteredException(ex);
 
-            // Assert that the expected output matches the console output of the function
+            // Assert that the expected output matches the console output
             Assert.Contains(expectedMessage, printer.ToString());
+        }
+
+        class UserInputExceptionDataGenerator : TheoryData<string, string>
+        {
+            public UserInputExceptionDataGenerator()
+            {
+                Add(nameof(UserInputException.errorMapping.UserInputExceptionInvalidLocale), TestEngineEventHandler.UserInputExceptionInvalidLocaleMessage);
+                Add(nameof(UserInputException.errorMapping.UserInputExceptionInvalidFilePath), TestEngineEventHandler.UserInputExceptionInvalidFilePathMessage);
+                Add(nameof(UserInputException.errorMapping.UserInputExceptionLoginCredential), TestEngineEventHandler.UserInputExceptionLoginCredentialMessage);
+                Add(nameof(UserInputException.errorMapping.UserInputExceptionTestConfig), TestEngineEventHandler.UserInputExceptionTestConfigMessage);
+                Add(nameof(UserInputException.errorMapping.UserInputExceptionYAMLFormat), TestEngineEventHandler.UserInputExceptionYAMLFormatMessage);
+            }
         }
     }
 }
