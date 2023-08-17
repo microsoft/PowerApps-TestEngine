@@ -4,7 +4,7 @@ testSuite:
   persona: User1
   appLogicalName: new_connectorapp_da583
   networkRequestMocks:
-    - requestURL: https://*.azure-apim.net/invoke
+    - requestURL: https://*.azure-api*.net/invoke
       method: POST
       headers:
         x-ms-request-method: GET
