@@ -5,15 +5,16 @@ testSuite:
   appLogicalName: cr693_everythingapptoplevel_858ff
 
   testCases:
-    - testCaseName: 3D_Object_Case_Case
+    - testCaseName: 3D_Object_Wait_Case
       testSteps: |
-        = Screenshot("3d_object_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(ViewIn3D1, "Height", 98);
           Wait(ViewIn3D1, "ShowReset", true);
           Wait(ViewIn3D1, "Source", "https://raw.githubusercontent.com/microsoft/experimental-pcf-control-assets/master/default_cube.glb");
-
+    - testCaseName: 3D_Object_Set_Assert_Case
+      testSteps: |
+        =
           // Set input fields
           SetProperty(ViewIn3D1.Height, 50);
           SetProperty(ViewIn3D1.ShowReset, false);
@@ -23,17 +24,16 @@ testSuite:
           Assert(ViewIn3D1.Height = 50, "Validate height integer was changed.");
           Assert(ViewIn3D1.ShowReset = false, "Validate reset button was toggled.");
           Assert(ViewIn3D1.Source = "https://www.bing.com/", "Validate source string was changed.");
-
-          Screenshot("3d_object_type_end.png");
-    - testCaseName: Add_Picture_Case
+    - testCaseName: Add_Picture_Wait_Case
       testSteps: |
-        = Screenshot("add_picture_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(AddMediaWithImage1, "BorderThickness", 0);
           Wait(AddMediaWithImage1, "AccessibleLabel", "Alt");
           Wait(AddMediaWithImage1, "Visible", true);
-
+    - testCaseName: Add_Picture_Set_Assert_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(AddMediaWithImage1.BorderThickness, 5);
           Assert(AddMediaWithImage1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -43,17 +43,16 @@ testSuite:
 
           SetProperty(AddMediaWithImage1.Visible, false);
           Assert(AddMediaWithImage1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("add_picture_type_end.png");
-    - testCaseName: Address_Input_Case
+    - testCaseName: Address_Input_Wait_Case
       testSteps: |
-        = Screenshot("address_input_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(AddressInput1, "BorderThickness", 2);
           Wait(AddressInput1, "Default", "123 Main Street");
           Wait(AddressInput1, "Visible", true);
-
+    - testCaseName: Address_Input_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(AddressInput1.BorderThickness, 5);
           Assert(AddressInput1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -64,16 +63,16 @@ testSuite:
           SetProperty(AddressInput1.Visible, false);
           Assert(AddressInput1.Visible = false, "Validate visibility was toggled off.");
 
-          Screenshot("address_input_type_end.png");
-    - testCaseName: Audio_Case
+    - testCaseName: Audio_Wait_Case
       testSteps: |
-        = Screenshot("audio_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Audio1, "BorderThickness", 0);
           Wait(Audio1, "ContentLanguage", "English");
           Wait(Audio1, "Visible", true);
-
+    - testCaseName: Audio_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Audio1.BorderThickness, 5);
           Assert(Audio1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -83,17 +82,16 @@ testSuite:
 
           SetProperty(Audio1.Visible, false);
           Assert(Audio1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("audio_type_end.png");
-    - testCaseName: Barcode_Scanner_Case
+    - testCaseName: Barcode_Scanner_Wait_Case
       testSteps: |
-        = Screenshot("barcode_scanner_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(BarcodeReader1, "BorderThickness", 2);
           Wait(BarcodeReader1, "Text", "Barcode Reader");
           Wait(BarcodeReader1, "Visible", true);
-
+    - testCaseName: Barcode_Scanner_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(BarcodeReader1.BorderThickness, 5);
           Assert(BarcodeReader1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -103,17 +101,16 @@ testSuite:
 
           SetProperty(BarcodeReader1.Visible, false);
           Assert(BarcodeReader1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("barcode_scanner_type_end.png");
-    - testCaseName: Business_Card_Reader_Case
+    - testCaseName: Business_Card_Reader_Wait_Case
       testSteps: |
-        = Screenshot("business_card_reader_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(BusinessCardReader1, "BorderThickness", 1);
           Wait(BusinessCardReader1, "Text", "Scan business card");
           Wait(BusinessCardReader1, "Visible", true);
-
+    - testCaseName: Business_Card_Reader_Case
+      testSteps: |
+        = 
           // Set & check input fields 
           SetProperty(BusinessCardReader1.BorderThickness, 5);
           Assert(BusinessCardReader1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -123,17 +120,16 @@ testSuite:
 
           SetProperty(BusinessCardReader1.Visible, false);
           Assert(BusinessCardReader1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("business_card_reader_type_end.png");
-    - testCaseName: Button_Case
+    - testCaseName: Button_Wait_Case
       testSteps: |
-        = Screenshot("button_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Button1, "BorderThickness", 2);
           Wait(Button1, "Text", "Button");
           Wait(Button1, "Visible", true);
-
+    - testCaseName: Button_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Button1.BorderThickness, 5);
           Assert(Button1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -144,16 +140,16 @@ testSuite:
           SetProperty(Button1.Visible, false);
           Assert(Button1.Visible = false, "Validate visibility was toggled off.");
 
-          Screenshot("button_type_end.png");
-    - testCaseName: Camera_Case
+    - testCaseName: Camera_Wait_Case
       testSteps: |
-        = Screenshot("camera_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Camera1, "BorderThickness", 0);
           Wait(Camera1, "ContentLanguage", "English");
           Wait(Camera1, "Visible", true);
-
+    - testCaseName: Camera_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Camera1.BorderThickness, 5);
           Assert(Camera1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -163,17 +159,16 @@ testSuite:
 
           SetProperty(Camera1.Visible, false);
           Assert(Camera1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("camera_type_end.png");
-    - testCaseName: Check_Box_Case
+    - testCaseName: Check_Box_Wait_Case
       testSteps: |
-        = Screenshot("checkbox_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Checkbox1, "BorderThickness", 0);
           Wait(Checkbox1, "Text", "Option");
           Wait(Checkbox1, "Visible", true);
-
+    - testCaseName: Check_Box_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Checkbox1.BorderThickness, 5);
           Assert(Checkbox1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -183,17 +178,16 @@ testSuite:
 
           SetProperty(Checkbox1.Visible, false);
           Assert(Checkbox1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("checkbox_type_end.png");
-    - testCaseName: Column_Chart_Case
+    - testCaseName: Column_Chart_Wait_Case
       testSteps: |
-        = Screenshot("column_chart_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(CompositeColumnChart1, "BorderThickness", 0);
           Wait(CompositeColumnChart1, "ContentLanguage", "English");
           Wait(CompositeColumnChart1, "Visible", true);
-
+    - testCaseName: Column_Chart_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(CompositeColumnChart1.BorderThickness, 5);
           Assert(CompositeColumnChart1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -203,17 +197,16 @@ testSuite:
 
           SetProperty(CompositeColumnChart1.Visible, false);
           Assert(CompositeColumnChart1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("column_chart_type_end.png");
-    - testCaseName: Combo_Box_Case
+    - testCaseName: Combo_Box_Wait_Case
       testSteps: |
-        = Screenshot("combo_box_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(ComboBox1, "BorderThickness", 2);
           Wait(ComboBox1, "ContentLanguage", "English");
           Wait(ComboBox1, "Visible", true);
-
+    - testCaseName: Combo_Box_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(ComboBox1.BorderThickness, 5);
           Assert(ComboBox1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -223,17 +216,16 @@ testSuite:
 
           SetProperty(ComboBox1.Visible, false);
           Assert(ComboBox1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("combo_box_type_end.png");
-    - testCaseName: Container_Case
+    - testCaseName: Container_Wait_Case
       testSteps: |
-        = Screenshot("container_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Container1, "BorderThickness", 0);
           Wait(Container1, "ContentLanguage", "English");
           Wait(Container1, "Visible", true);
-
+    - testCaseName: Container_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Container1.BorderThickness, 5);
           Assert(Container1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -243,17 +235,16 @@ testSuite:
 
           SetProperty(Container1.Visible, false);
           Assert(Container1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("container_type_end.png");
-    - testCaseName: Data_Table_Case
+    - testCaseName: Data_Table_Wait_Case
       testSteps: |
-        = Screenshot("data_table_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(DataTable1, "BorderThickness", 0);
           Wait(DataTable1, "ContentLanguage", "English");
           Wait(DataTable1, "Visible", true);
-
+    - testCaseName: Data_Table_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(DataTable1.BorderThickness, 5);
           Assert(DataTable1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -263,18 +254,17 @@ testSuite:
 
           SetProperty(DataTable1.Visible, false);
           Assert(DataTable1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("data_table_type_end.png");
-    - testCaseName: Date_Picker_Case
+    - testCaseName: Date_Picker_Wait_Case
       testSteps: |
-        = Screenshot("date_picker_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(DatePicker1, "BorderThickness", 0);
           Wait(DatePicker1, "ContentLanguage", "English");
           Wait(DatePicker1, "DefaultDate", Date(2000, 01, 01));
           Wait(DatePicker1, "Visible", true);
-
+    - testCaseName: Date_Picker_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(DatePicker1.BorderThickness, 5);
           Assert(DatePicker1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -287,17 +277,16 @@ testSuite:
 
           SetProperty(DatePicker1.Visible, false);
           Assert(DatePicker1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("date_picker_type_end.png");
-    - testCaseName: Display_Form_Case
+    - testCaseName: Display_Form_Wait_Case
       testSteps: |
-        = Screenshot("display_form_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(FormViewer1, "BorderThickness", 0);
           Wait(FormViewer1, "ContentLanguage", "English");
           Wait(FormViewer1, "Visible", true);
-
+    - testCaseName: Display_Form_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(FormViewer1.BorderThickness, 5);
           Assert(FormViewer1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -307,17 +296,16 @@ testSuite:
 
           SetProperty(FormViewer1.Visible, false);
           Assert(FormViewer1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("display_form_type_end.png");
-    - testCaseName: Drop_Down_Case
+    - testCaseName: Drop_Down_Wait_Case
       testSteps: |
-        = Screenshot("drop_down_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Dropdown1, "BorderThickness", 2);
           Wait(Dropdown1, "ContentLanguage", "English");
           Wait(Dropdown1, "Visible", true);
-
+    - testCaseName: Drop_Down_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Dropdown1.BorderThickness, 5);
           Assert(Dropdown1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -327,17 +315,16 @@ testSuite:
 
           SetProperty(Dropdown1.Visible, false);
           Assert(Dropdown1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("drop_down_type_end.png");
-    - testCaseName: Edit_Form_Case
+    - testCaseName: Edit_Form_Wait_Case
       testSteps: |
-        = Screenshot("edit_form_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Form1, "BorderThickness", 0);
           Wait(Form1, "ContentLanguage", "");
           Wait(Form1, "Visible", true);
-
+    - testCaseName: Edit_Form_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Form1.BorderThickness, 5);
           Assert(Form1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -347,17 +334,16 @@ testSuite:
 
           SetProperty(Form1.Visible, false);
           Assert(Form1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("edit_form_type_end.png");
-    - testCaseName: Export_Data_Case
+    - testCaseName: Export_Data_Wait_Case
       testSteps: |
-        = Screenshot("export_data_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Export1, "BorderThickness", 0);
           Wait(Export1, "ContentLanguage", "");
           Wait(Export1, "Visible", true);
-
+    - testCaseName: Export_Data_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Export1.BorderThickness, 5);
           Assert(Export1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -368,16 +354,16 @@ testSuite:
           SetProperty(Export1.Visible, false);
           Assert(Export1.Visible = false, "Validate visibility was toggled off.");
 
-          Screenshot("export_data_type_end.png");
-    - testCaseName: Flexible_Height_Gallery_Case
+    - testCaseName: Flexible_Height_Gallery_Wait_Case
       testSteps: |
-        = Screenshot("flexible_height_gallery_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Gallery3, "BorderThickness", 0);
           Wait(Gallery3, "ContentLanguage", "");
           Wait(Gallery3, "Visible", true);
-
+    - testCaseName: Flexible_Height_Gallery_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Gallery3.BorderThickness, 5);
           Assert(Gallery3.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -387,17 +373,16 @@ testSuite:
 
           SetProperty(Gallery3.Visible, false);
           Assert(Gallery3.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("flexible_height_gallery_type_end.png");
-    - testCaseName: HTML_Text_Case
+    - testCaseName: HTML_Text_Wait_Case
       testSteps: |
-        = Screenshot("html_text_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(HtmlText1, "BorderThickness", 0);
           Wait(HtmlText1, "ContentLanguage", "");
           Wait(HtmlText1, "Visible", true);
-
+    - testCaseName: HTML_Text_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(HtmlText1.BorderThickness, 5);
           Assert(HtmlText1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -407,17 +392,16 @@ testSuite:
 
           SetProperty(HtmlText1.Visible, false);
           Assert(HtmlText1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("html_text_type_end.png");
-    - testCaseName: Horizontal_Container_Case
+    - testCaseName: Horizontal_Container_Wait_Case
       testSteps: |
-        = Screenshot("horizontal_container_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Container2, "BorderThickness", 0);
           Wait(Container2, "ContentLanguage", "");
           Wait(Container2, "Visible", true);
-
+    - testCaseName: Horizontal_Container_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Container2.BorderThickness, 5);
           Assert(Container2.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -427,17 +411,16 @@ testSuite:
 
           SetProperty(Container2.Visible, false);
           Assert(Container2.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("horizontal_container_type_end.png");
-    - testCaseName: Horizontal_Gallery_Case
+    - testCaseName: Horizontal_Gallery_Wait_Case
       testSteps: |
-        = Screenshot("horizontal_gallery_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Gallery5, "BorderThickness", 0);
           Wait(Gallery5, "ContentLanguage", "");
           Wait(Gallery5, "Visible", true);
-
+    - testCaseName: Horizontal_Gallery_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Gallery5.BorderThickness, 5);
           Assert(Gallery5.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -447,17 +430,16 @@ testSuite:
 
           SetProperty(Gallery5.Visible, false);
           Assert(Gallery5.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("horizontal_gallery_type_end.png");
-    - testCaseName: Icon_Case
+    - testCaseName: Icon_Wait_Case
       testSteps: |
-        = Screenshot("icon_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Icon1, "BorderThickness", 0);
           Wait(Icon1, "ContentLanguage", "");
           Wait(Icon1, "Visible", true);
-
+    - testCaseName: Icon_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Icon1.BorderThickness, 5);
           Assert(Icon1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -467,17 +449,16 @@ testSuite:
 
           SetProperty(Icon1.Visible, false);
           Assert(Icon1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("icon_type_end.png");
-    - testCaseName: Image_Case
+    - testCaseName: Image_Wait_Case
       testSteps: |
-        = Screenshot("image_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Image5, "BorderThickness", 0);
           Wait(Image5, "ContentLanguage", "");
           Wait(Image5, "Visible", true);
-
+    - testCaseName: Image_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Image5.BorderThickness, 5);
           Assert(Image5.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -488,16 +469,16 @@ testSuite:
           SetProperty(Image5.Visible, false);
           Assert(Image5.Visible = false, "Validate visibility was toggled off.");
 
-          Screenshot("image_type_end.png");
-    - testCaseName: Import_Case
+    - testCaseName: Import_Wait_Case
       testSteps: |
-        = Screenshot("import_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Import1, "BorderThickness", 2);
           Wait(Import1, "ContentLanguage", "");
           Wait(Import1, "Visible", true);
-
+    - testCaseName: Import_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Import1.BorderThickness, 5);
           Assert(Import1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -507,17 +488,16 @@ testSuite:
 
           SetProperty(Import1.Visible, false);
           Assert(Import1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("import_type_end.png");
-    - testCaseName: Line_Chart_Case
+    - testCaseName: Line_Chart_Wait_Case
       testSteps: |
-        = Screenshot("line_chart_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(CompositeLineChart1, "BorderThickness", 0);
           Wait(CompositeLineChart1, "ContentLanguage", "");
           Wait(CompositeLineChart1, "Visible", true);
-
+    - testCaseName: Line_Chart_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(CompositeLineChart1.BorderThickness, 5);
           Assert(CompositeLineChart1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -527,17 +507,16 @@ testSuite:
 
           SetProperty(CompositeLineChart1.Visible, false);
           Assert(CompositeLineChart1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("line_chart_type_end.png");
-    - testCaseName: List_Box_Case
+    - testCaseName: List_Box_Wait_Case
       testSteps: |
-        = Screenshot("list_box_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(ListBox1, "BorderThickness", 2);
           Wait(ListBox1, "ContentLanguage", "");
           Wait(ListBox1, "Visible", true);
-
+    - testCaseName: List_Box_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(ListBox1.BorderThickness, 5);
           Assert(ListBox1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -547,17 +526,16 @@ testSuite:
 
           SetProperty(ListBox1.Visible, false);
           Assert(ListBox1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("list_box_type_end.png");
-    - testCaseName: Map_Case
+    - testCaseName: Map_Wait_Case
       testSteps: |
-        = Screenshot("map_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Map1, "BorderThickness", 2);
           Wait(Map1, "ContentLanguage", "");
           Wait(Map1, "Visible", true);
-
+    - testCaseName: Map_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Map1.BorderThickness, 5);
           Assert(Map1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -567,17 +545,16 @@ testSuite:
 
           SetProperty(Map1.Visible, false);
           Assert(Map1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("map_type_end.png");
-    - testCaseName: Measuring_Camera_Case
+    - testCaseName: Measuring_Camera_Wait_Case
       testSteps: |
-        = Screenshot("measuring_camera_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(MeasureInMR1, "BorderThickness", 2);
           Wait(MeasureInMR1, "ContentLanguage", "");
           Wait(MeasureInMR1, "Visible", true);
-
+    - testCaseName: Measuring_Camera_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(MeasureInMR1.BorderThickness, 5);
           Assert(MeasureInMR1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -587,17 +564,16 @@ testSuite:
 
           SetProperty(MeasureInMR1.Visible, false);
           Assert(MeasureInMR1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("measuring_camera_type_end.png");
-    - testCaseName: Microphone_Case
+    - testCaseName: Microphone_Wait_Case
       testSteps: |
-        = Screenshot("microphone_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Microphone1, "BorderThickness", 0);
           Wait(Microphone1, "ContentLanguage", "");
           Wait(Microphone1, "Visible", true);
-
+    - testCaseName: Microphone_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Microphone1.BorderThickness, 5);
           Assert(Microphone1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -607,17 +583,16 @@ testSuite:
 
           SetProperty(Microphone1.Visible, false);
           Assert(Microphone1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("microphone_type_end.png");
-    - testCaseName: PDF_Viewer_Case
+    - testCaseName: PDF_Viewer_Wait_Case
       testSteps: |
-        = Screenshot("pdf_viewer_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(PdfViewer1, "BorderThickness", 0);
           Wait(PdfViewer1, "ContentLanguage", "");
           Wait(PdfViewer1, "Visible", true);
-
+    - testCaseName: PDF_Viewer_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(PdfViewer1.BorderThickness, 5);
           Assert(PdfViewer1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -627,17 +602,16 @@ testSuite:
 
           SetProperty(PdfViewer1.Visible, false);
           Assert(PdfViewer1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("pdf_viewer_type_end.png");
-    - testCaseName: Pen_Input_Case
+    - testCaseName: Pen_Input_Wait_Case
       testSteps: |
-        = Screenshot("pen_input_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(PenInput1, "BorderThickness", 2);
           Wait(PenInput1, "ContentLanguage", "");
           Wait(PenInput1, "Visible", true);
-
+    - testCaseName: Pen_Input_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(PenInput1.BorderThickness, 5);
           Assert(PenInput1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -647,17 +621,16 @@ testSuite:
 
           SetProperty(PenInput1.Visible, false);
           Assert(PenInput1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("pen_input_type_end.png");
-    - testCaseName: Pie_Chart_Case
+    - testCaseName: Pie_Chart_Wait_Case
       testSteps: |
-        = Screenshot("pie_chart_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(CompositePieChart1, "BorderThickness", 0);
           Wait(CompositePieChart1, "ContentLanguage", "");
           Wait(CompositePieChart1, "Visible", true);
-
+    - testCaseName: Pie_Chart_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(CompositePieChart1.BorderThickness, 5);
           Assert(CompositePieChart1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -667,17 +640,16 @@ testSuite:
 
           SetProperty(CompositePieChart1.Visible, false);
           Assert(CompositePieChart1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("pie_chart_type_end.png");
-    - testCaseName: Power_BI_Tile_Case
+    - testCaseName: Power_BI_Tile_Wait_Case
       testSteps: |
-        = Screenshot("power_bi_tile_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(PowerBI1, "BorderThickness", 2);
           Wait(PowerBI1, "ContentLanguage", "");
           Wait(PowerBI1, "Visible", true);
-
+    - testCaseName: Power_BI_Tile_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(PowerBI1.BorderThickness, 5);
           Assert(PowerBI1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -687,17 +659,16 @@ testSuite:
 
           SetProperty(PowerBI1.Visible, false);
           Assert(PowerBI1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("power_bi_tile_type_end.png");
-    - testCaseName: Radio_Case
+    - testCaseName: Radio_Wait_Case
       testSteps: |
-        = Screenshot("radio_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Radio1, "BorderThickness", 0);
           Wait(Radio1, "ContentLanguage", "");
           Wait(Radio1, "Visible", true);
-
+    - testCaseName: Radio_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Radio1.BorderThickness, 5);
           Assert(Radio1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -707,17 +678,16 @@ testSuite:
 
           SetProperty(Radio1.Visible, false);
           Assert(Radio1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("radio_type_end.png");
-    - testCaseName: Rating_Case
+    - testCaseName: Rating_Wait_Case
       testSteps: |
-        = Screenshot("rating_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Rating1, "BorderThickness", 0);
           Wait(Rating1, "ContentLanguage", "");
           Wait(Rating1, "Visible", true);
-
+    - testCaseName: Rating_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Rating1.BorderThickness, 5);
           Assert(Rating1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -727,17 +697,16 @@ testSuite:
 
           SetProperty(Rating1.Visible, false);
           Assert(Rating1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("rating_type_end.png");
-    - testCaseName: Rich_Text_Editor_Case
+    - testCaseName: Rich_Text_Editor_Wait_Case
       testSteps: |
-        = Screenshot("rich_text_editor_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(RichTextEditor1, "Height", 140);
           Wait(RichTextEditor1, "ContentLanguage", "");
           Wait(RichTextEditor1, "Visible", true);
-
+    - testCaseName: Rich_Text_Editor_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(RichTextEditor1.Height, 5);
           Assert(RichTextEditor1.Height = 5, "Validate Height integer was changed.");
@@ -747,17 +716,16 @@ testSuite:
 
           SetProperty(RichTextEditor1.Visible, false);
           Assert(RichTextEditor1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("rich_text_editor_type_end.png");
-    - testCaseName: Shape_Case
+    - testCaseName: Shape_Wait_Case
       testSteps: |
-        = Screenshot("shape_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Arrow1, "BorderThickness", 0);
           Wait(Arrow1, "ContentLanguage", "");
           Wait(Arrow1, "Visible", true);
-
+    - testCaseName: Shape_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Arrow1.BorderThickness, 5);
           Assert(Arrow1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -767,17 +735,16 @@ testSuite:
 
           SetProperty(Arrow1.Visible, false);
           Assert(Arrow1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("shape_type_end.png");
-    - testCaseName: Slider_Case
+    - testCaseName: Slider_Wait_Case
       testSteps: |
-        = Screenshot("slider_type_loaded.png");
-
+        = 
           // Wait for default values to load
           Wait(Slider1, "BorderThickness", 0);
           Wait(Slider1, "ContentLanguage", "");
           Wait(Slider1, "Visible", true);
-
+    - testCaseName: Slider_Case
+      testSteps: |
+        = 
           // Set & check input fields
           SetProperty(Slider1.BorderThickness, 5);
           Assert(Slider1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -787,17 +754,16 @@ testSuite:
 
           SetProperty(Slider1.Visible, false);
           Assert(Slider1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("slider_type_end.png");
     - testCaseName: Stream_Video_Case
       testSteps: |
-        = Screenshot("stream_video_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(MicrosoftStream1, "BorderThickness", 0);
           Wait(MicrosoftStream1, "ContentLanguage", "");
           Wait(MicrosoftStream1, "Visible", true);
-
+    - testCaseName: Stream_Video_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(MicrosoftStream1.BorderThickness, 5);
           Assert(MicrosoftStream1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -807,17 +773,16 @@ testSuite:
 
           SetProperty(MicrosoftStream1.Visible, false);
           Assert(MicrosoftStream1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("stream_video_type_end.png");
-    - testCaseName: Text_Label_Case
+    - testCaseName: Text_Label_Wait_Case
       testSteps: |
-        = Screenshot("text_tabel_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Label1, "BorderThickness", 0);
           Wait(Label1, "ContentLanguage", "");
           Wait(Label1, "Visible", true);
-
+    - testCaseName: Text_Label_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Label1.BorderThickness, 5);
           Assert(Label1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -827,17 +792,16 @@ testSuite:
 
           SetProperty(Label1.Visible, false);
           Assert(Label1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("text_tabel_type_end.png");
-    - testCaseName: Text_Input_Case
+    - testCaseName: Text_Input_Wait_Case
       testSteps: |
-        = Screenshot("text_input_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(TextInput1, "BorderThickness", 2);
           Wait(TextInput1, "ContentLanguage", "");
           Wait(TextInput1, "Visible", true);
-
+    - testCaseName: Text_Input_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(TextInput1.BorderThickness, 5);
           Assert(TextInput1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -847,17 +811,16 @@ testSuite:
 
           SetProperty(TextInput1.Visible, false);
           Assert(TextInput1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("text_input_type_end.png");
-    - testCaseName: Timer_Case
+    - testCaseName: Timer_Wait_Case
       testSteps: |
-        = Screenshot("timer_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Timer1, "BorderThickness", 2);
           Wait(Timer1, "ContentLanguage", "");
           Wait(Timer1, "Visible", true);
-
+    - testCaseName: Timer_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Timer1.BorderThickness, 5);
           Assert(Timer1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -867,17 +830,16 @@ testSuite:
 
           SetProperty(Timer1.Visible, false);
           Assert(Timer1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("timer_type_end.png");
-    - testCaseName: Toggle_Case
+    - testCaseName: Toggle_Wait_Case
       testSteps: |
-        = Screenshot("toggle_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Toggle1, "BorderThickness", 0);
           Wait(Toggle1, "ContentLanguage", "");
           Wait(Toggle1, "Visible", true);
-
+    - testCaseName: Toggle_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Toggle1.BorderThickness, 5);
           Assert(Toggle1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -887,17 +849,16 @@ testSuite:
 
           SetProperty(Toggle1.Visible, false);
           Assert(Toggle1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("toggle_type_end.png");
-    - testCaseName: Video_Case
+    - testCaseName: Video_Wait_Case
       testSteps: |
-        = Screenshot("video_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Video1, "BorderThickness", 0);
           Wait(Video1, "ContentLanguage", "");
           Wait(Video1, "Visible", true);
-
+    - testCaseName: Video_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Video1.BorderThickness, 5);
           Assert(Video1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -907,17 +868,16 @@ testSuite:
 
           SetProperty(Video1.Visible, false);
           Assert(Video1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("video_type_end.png");
-    - testCaseName: Vertical_Container_Case
+    - testCaseName: Vertical_Container_Wait_Case
       testSteps: |
-        = Screenshot("vertical_container_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Container3, "BorderThickness", 0);
           Wait(Container3, "ContentLanguage", "");
           Wait(Container3, "Visible", true);
-
+    - testCaseName: Vertical_Container_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Container3.BorderThickness, 5);
           Assert(Container3.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -927,17 +887,16 @@ testSuite:
 
           SetProperty(Container3.Visible, false);
           Assert(Container3.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("vertical_container_type_end.png");
-    - testCaseName: Vertical_Gallery_Case
+    - testCaseName: Vertical_Gallery_Wait_Case
       testSteps: |
-        = Screenshot("vertical_gallery_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(Gallery6, "BorderThickness", 0);
           Wait(Gallery6, "ContentLanguage", "");
           Wait(Gallery6, "Visible", true);
-
+    - testCaseName: Vertical_Gallery_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(Gallery6.BorderThickness, 5);
           Assert(Gallery6.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -947,17 +906,16 @@ testSuite:
 
           SetProperty(Gallery6.Visible, false);
           Assert(Gallery6.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("vertical_gallery_type_end.png");
-    - testCaseName: View_in_MR_Case
+    - testCaseName: View_in_MR_Wait_Case
       testSteps: |
-        = Screenshot("view_in_mr_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(ViewInMR1, "BorderThickness", 2);
           Wait(ViewInMR1, "ContentLanguage", "");
           Wait(ViewInMR1, "Visible", true);
-
+    - testCaseName: View_in_MR_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(ViewInMR1.BorderThickness, 5);
           Assert(ViewInMR1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -967,17 +925,16 @@ testSuite:
 
           SetProperty(ViewInMR1.Visible, false);
           Assert(ViewInMR1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("view_in_mr_type_end.png");
-    - testCaseName: View_Shape_in_MR_Case
+    - testCaseName: View_Shape_in_MR_Wait_Case
       testSteps: |
-        = Screenshot("view_shape_in_mr_type_loaded.png");
-
+        =
           // Wait for default values to load
           Wait(ViewShapeInMR1, "BorderThickness", 2);
           Wait(ViewShapeInMR1, "ContentLanguage", "");
           Wait(ViewShapeInMR1, "Visible", true);
-
+    - testCaseName: View_Shape_in_MR_Case
+      testSteps: |
+        =
           // Set & check input fields
           SetProperty(ViewShapeInMR1.BorderThickness, 5);
           Assert(ViewShapeInMR1.BorderThickness = 5, "Validate Border Thickness integer was changed.");
@@ -987,8 +944,6 @@ testSuite:
 
           SetProperty(ViewShapeInMR1.Visible, false);
           Assert(ViewShapeInMR1.Visible = false, "Validate visibility was toggled off.");
-
-          Screenshot("view_shape_in_mr_type_end.png");
 
 testSettings:
   filePath: ../../samples/testSettings.yaml
