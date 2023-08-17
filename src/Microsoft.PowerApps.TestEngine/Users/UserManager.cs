@@ -90,7 +90,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
 
             if (missingUserOrPassword)
             {
-                throw new UserInputException(UserInputException.errorMapping.UserInputExceptionLoginCredential.ToString());
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
             }
 
             await _testInfraFunctions.HandleUserEmailScreen(EmailSelector, user);

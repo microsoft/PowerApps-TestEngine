@@ -24,7 +24,7 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly ILoggerFactory _loggerFactory;
         private readonly ITestEngineEvents _eventHandler;
 
-        private ILogger Logger { get; set; }
+        public ILogger Logger { get; set; }
 
         public TestEngine(ITestState state,
                           IServiceProvider serviceProvider,
@@ -163,7 +163,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
         }
 
-        private CultureInfo GetLocaleFromTestSettings(string strLocale)
+        public CultureInfo GetLocaleFromTestSettings(string strLocale)
         {
             var locale = CultureInfo.CurrentCulture;
             try
@@ -177,13 +177,13 @@ namespace Microsoft.PowerApps.TestEngine
                     locale = new CultureInfo(strLocale);
                     Logger.LogDebug($"Locale: {locale.Name}");
                 }
+                return locale;
             }
-            catch (ArgumentException)
+            catch (CultureNotFoundException)
             {
-                Logger.LogError($"Locale from test suite definition {strLocale} unrecognized");
-                throw;
+                Logger.LogError($"Locale from test suite definition {strLocale} unrecognized.");
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
-            return locale;
         }
     }
 }

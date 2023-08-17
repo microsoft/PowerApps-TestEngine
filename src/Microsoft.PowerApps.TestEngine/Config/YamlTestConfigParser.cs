@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 if (!_fileSystem.fileExists(testConfigFilePath))
                 {
                     logger.LogError($"Invalid file path: {typeof(T).Name} in test config file.");
-                    throw new UserInputException(UserInputException.errorMapping.UserInputExceptionInvalidFilePath.ToString());
+                    throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
                 }
 
                 var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
@@ -44,7 +44,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             catch (YamlException)
             {
                 logger.LogError($"Invalid YAML format: {typeof(T).Name} in test config file.");
-                throw new UserInputException(UserInputException.errorMapping.UserInputExceptionYAMLFormat.ToString());
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionYAMLFormat.ToString());
             }
         }
     }
