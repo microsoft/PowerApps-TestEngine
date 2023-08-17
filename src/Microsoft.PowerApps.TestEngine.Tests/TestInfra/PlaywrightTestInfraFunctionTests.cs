@@ -198,7 +198,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             // Act and Assert
             var ex = await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupAsync());
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionInvalidTestSettings.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, PlaywrightTestInfraFunctions.BrowserNotSupportedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -708,7 +708,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockPage.Verify(x => x.Locator(It.Is<string>(v => v.Equals(testSelector)), null));
             MockPage.Verify(x => x.WaitForSelectorAsync("[id=\"passwordError\"]", It.Is<PageWaitForSelectorOptions>(v => v.Timeout >= 2000)));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
         }
 
         [Fact]

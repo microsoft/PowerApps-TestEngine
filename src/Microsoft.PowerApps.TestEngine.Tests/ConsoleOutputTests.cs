@@ -203,11 +203,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             public UserInputExceptionDataGenerator()
             {
-                Add(nameof(UserInputException.errorMapping.UserInputExceptionInvalidTestSettings), TestEngineEventHandler.UserInputExceptionInvalidTestSettingsMessage);
-                Add(nameof(UserInputException.errorMapping.UserInputExceptionInvalidFilePath), TestEngineEventHandler.UserInputExceptionInvalidFilePathMessage);
-                Add(nameof(UserInputException.errorMapping.UserInputExceptionLoginCredential), TestEngineEventHandler.UserInputExceptionLoginCredentialMessage);
-                Add(nameof(UserInputException.errorMapping.UserInputExceptionTestConfig), TestEngineEventHandler.UserInputExceptionTestConfigMessage);
-                Add(nameof(UserInputException.errorMapping.UserInputExceptionYAMLFormat), TestEngineEventHandler.UserInputExceptionYAMLFormatMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings), TestEngineEventHandler.UserInputExceptionInvalidTestSettingsMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath), TestEngineEventHandler.UserInputExceptionInvalidFilePathMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionLoginCredential), TestEngineEventHandler.UserInputExceptionLoginCredentialMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionTestConfig), TestEngineEventHandler.UserInputExceptionTestConfigMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionYAMLFormat), TestEngineEventHandler.UserInputExceptionYAMLFormatMessage);
             }
         }
     }

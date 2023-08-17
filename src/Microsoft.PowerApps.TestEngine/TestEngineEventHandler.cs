@@ -49,19 +49,19 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 switch (ex.Message)
                 {
-                    case nameof(UserInputException.errorMapping.UserInputExceptionInvalidTestSettings):
+                    case nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings):
                         Console.WriteLine(UserInputExceptionInvalidTestSettingsMessage);
                         break;
-                    case nameof(UserInputException.errorMapping.UserInputExceptionInvalidFilePath):
+                    case nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath):
                         Console.WriteLine(UserInputExceptionInvalidFilePathMessage);
                         break;
-                    case nameof(UserInputException.errorMapping.UserInputExceptionLoginCredential):
+                    case nameof(UserInputException.ErrorMapping.UserInputExceptionLoginCredential):
                         Console.WriteLine(UserInputExceptionLoginCredentialMessage);
                         break;
-                    case nameof(UserInputException.errorMapping.UserInputExceptionTestConfig):
+                    case nameof(UserInputException.ErrorMapping.UserInputExceptionTestConfig):
                         Console.WriteLine(UserInputExceptionTestConfigMessage);
                         break;
-                    case nameof(UserInputException.errorMapping.UserInputExceptionYAMLFormat):
+                    case nameof(UserInputException.ErrorMapping.UserInputExceptionYAMLFormat):
                         Console.WriteLine(UserInputExceptionYAMLFormatMessage);
                         break;
                     default:

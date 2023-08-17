@@ -438,7 +438,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
             // Specific setup for this test
-            var exceptionToThrow = new UserInputException(UserInputException.errorMapping.UserInputExceptionLoginCredential.ToString());
+            var exceptionToThrow = new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
             MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<string>())).Throws(exceptionToThrow);
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));            
 

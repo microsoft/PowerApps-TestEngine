@@ -7,7 +7,7 @@ namespace Microsoft.PowerApps.TestEngine.System
     {
         // Error Mapping keys for hanlding user input exception
         // This can be identified by the event handler for specifically handling error messages for these scenarios
-        public enum errorMapping
+        public enum ErrorMapping
         {
             UserInputExceptionInvalidFilePath,
             UserInputExceptionInvalidTestSettings,

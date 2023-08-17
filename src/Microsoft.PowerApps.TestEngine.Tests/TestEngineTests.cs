@@ -406,7 +406,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             // Assert
             var ex = Assert.Throws<UserInputException>(() => testEngine.GetLocaleFromTestSettings(localeInput));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionInvalidTestSettings.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Locale from test suite definition {localeInput} unrecognized.", LogLevel.Error, Times.Once());
         }
 
