@@ -12,7 +12,7 @@ namespace Microsoft.PowerApps.TestEngine.System
             UserInputExceptionInvalidFilePath,
             UserInputExceptionInvalidLocale,
             UserInputExceptionLoginCredential,
-            UserInputExceptionTestConfig,            
+            UserInputExceptionTestConfig,
             UserInputExceptionYAMLFormat
         };
 

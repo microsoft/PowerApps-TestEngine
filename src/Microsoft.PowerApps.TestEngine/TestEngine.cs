@@ -175,7 +175,7 @@ namespace Microsoft.PowerApps.TestEngine
                 else
                 {
                     locale = new CultureInfo(strLocale);
-                    Logger.LogDebug($"Locale: {locale.Name}");                    
+                    Logger.LogDebug($"Locale: {locale.Name}");
                 }
                 return locale;
             }
