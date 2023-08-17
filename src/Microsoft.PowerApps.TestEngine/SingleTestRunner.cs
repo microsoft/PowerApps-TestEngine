@@ -97,6 +97,7 @@ namespace Microsoft.PowerApps.TestEngine
 
             try
             {
+                _testReporter.TestResultsDirectory = testRunDirectory;
                 _fileSystem.CreateDirectory(testResultDirectory);
 
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
@@ -116,8 +117,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
                 Logger.LogInformation("Successfully navigated to target URL");
-
-                _testReporter.TestResultsDirectory = testRunDirectory;
+                
                 _testReporter.TestRunAppURL = desiredUrl;
 
                 // Log in user

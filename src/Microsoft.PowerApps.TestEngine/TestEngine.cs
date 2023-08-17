@@ -182,7 +182,7 @@ namespace Microsoft.PowerApps.TestEngine
             catch (CultureNotFoundException)
             {
                 Logger.LogError($"Locale from test suite definition {strLocale} unrecognized.");
-                throw new UserInputException(UserInputException.errorMapping.UserInputExceptionInvalidLocale.ToString());
+                throw new UserInputException(UserInputException.errorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
         }
     }
