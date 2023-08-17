@@ -126,7 +126,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
 
-            await Assert.ThrowsAsync<CultureNotFoundException>(() => testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
+            await Assert.ThrowsAsync<UserInputException>(() => testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
         }
 
         [Fact]
