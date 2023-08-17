@@ -211,7 +211,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
 
             // Act and Arrange
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -230,7 +230,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -249,7 +249,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);          
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);          
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -271,7 +271,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -307,7 +307,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -326,7 +326,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -345,7 +345,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -362,7 +362,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -379,7 +379,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -396,7 +396,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -415,7 +415,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -439,7 +439,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);            
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -456,7 +456,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -473,7 +473,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -490,7 +490,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -509,7 +509,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -528,7 +528,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -547,7 +547,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -564,7 +564,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
@@ -586,7 +586,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
 
             var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
