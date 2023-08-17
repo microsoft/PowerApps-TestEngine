@@ -15,6 +15,16 @@ namespace Microsoft.PowerApps.TestEngine
         private int _casesTotal = 0;
         private int _casesPassed = 0;
 
+        // NOTE: Any changes to these messages need to be handled in the consuming tool's console event handler, like in pac cli tool.
+        // These console messages need to be considered for localization.
+        public static string UserInputExceptionInvalidLocaleMessage = "   Invalid locale specified in testconfig. For more details, check the logs.";
+        public static string UserInputExceptionInvalidFilePathMessage = "   Invalid file path. For more details, check the logs.";
+        public static string UserInputExceptionLoginCredentialMessage = "   Invalid login credential(s). For more details, check the logs.";
+        public static string UserInputExceptionTestConfigMessage = "   Invalid test config. For more details, check the logs.";
+        public static string UserInputExceptionYAMLFormatMessage = "   Invalid YAML format. For more details, check the logs.";
+
+        public static string UserAppExceptionMessage = "   [Critical Error] Could not access PowerApps. For more details, check the logs.";
+
         public int CasesPassed { get => _casesPassed; set => _casesPassed = value; }
         public int CasesTotal { get => _casesTotal; set => _casesTotal = value; }
 
@@ -39,17 +49,20 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 switch (ex.Message)
                 {
+                    case nameof(UserInputException.errorMapping.UserInputExceptionInvalidLocale):
+                        Console.WriteLine(UserInputExceptionInvalidLocaleMessage);
+                        break;
                     case nameof(UserInputException.errorMapping.UserInputExceptionInvalidFilePath):
-                        Console.WriteLine($"Invalid file path. For more details, check the logs.");
+                        Console.WriteLine(UserInputExceptionInvalidFilePathMessage);
                         break;
                     case nameof(UserInputException.errorMapping.UserInputExceptionLoginCredential):
-                        Console.WriteLine($"Invalid login credential(s). For more details, check the logs.");
+                        Console.WriteLine(UserInputExceptionLoginCredentialMessage);
                         break;
                     case nameof(UserInputException.errorMapping.UserInputExceptionTestConfig):
-                        Console.WriteLine($"Invalid test config. For more details, check the logs.");
+                        Console.WriteLine(UserInputExceptionTestConfigMessage);
                         break;
                     case nameof(UserInputException.errorMapping.UserInputExceptionYAMLFormat):
-                        Console.WriteLine($"Invalid YAML format. For more details, check the logs.");
+                        Console.WriteLine(UserInputExceptionYAMLFormatMessage);
                         break;
                     default:
                         Console.WriteLine($"   {ex.Message}");
@@ -58,7 +71,7 @@ namespace Microsoft.PowerApps.TestEngine
             }
             else if (ex is UserAppException)
             {
-                Console.WriteLine($"[Critical Error] Could not access PowerApps. For more details, check the logs.");
+                Console.WriteLine(UserAppExceptionMessage);
             }
             else
             {
