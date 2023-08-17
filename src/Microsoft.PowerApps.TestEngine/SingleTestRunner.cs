@@ -117,7 +117,7 @@ namespace Microsoft.PowerApps.TestEngine
                 // Navigate to test url
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
                 Logger.LogInformation("Successfully navigated to target URL");
-                
+
                 _testReporter.TestRunAppURL = desiredUrl;
 
                 // Log in user
