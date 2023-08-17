@@ -148,6 +148,30 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Theory]
         [InlineData("")]
         [InlineData(null)]
+        public async Task SetupAsyncThrowsOnNullOrEmptyBrowserTest(string browser)
+        {
+            var browserConfig = new BrowserConfiguration()
+            {
+                Browser = browser
+            };
+            MockSingleTestInstanceState.Setup(x => x.GetBrowserConfig()).Returns(browserConfig);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var testSettings = new TestSettings()
+            {
+                Headless = true,
+                Timeout = 15
+            };
+
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, null);
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+        }
+
+        [Theory]
         [InlineData("Chrome")]
         [InlineData("Safari")]
         [InlineData("INVALID_BROWSER_NAME")]
@@ -171,7 +195,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, null);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+
+            // Act and Assert
+            var ex = await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString(), ex.Message);
+            LoggingTestHelper.VerifyLogging(MockLogger, PlaywrightTestInfraFunctions.BrowserNotSupportedErrorMessage, LogLevel.Error, Times.Once());
         }
 
         [Fact]
@@ -680,7 +708,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockPage.Verify(x => x.Locator(It.Is<string>(v => v.Equals(testSelector)), null));
             MockPage.Verify(x => x.WaitForSelectorAsync("[id=\"passwordError\"]", It.Is<PageWaitForSelectorOptions>(v => v.Timeout >= 2000)));
-            Assert.Equal(UserInputException.errorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
         }
 
         [Fact]

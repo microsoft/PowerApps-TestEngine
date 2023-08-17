@@ -374,7 +374,7 @@ enablePowerFxOverlay: false";
             LoggingTestHelper.SetupMock(MockLogger);
 
             var ex = Assert.Throws<UserInputException>(() => parser.ParseTestConfig<TestSettings>("some invalid file path", MockLogger.Object));
-            Assert.Equal(ex.Message, UserInputException.errorMapping.UserInputExceptionInvalidFilePath.ToString());
+            Assert.Equal(ex.Message, UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
             // Verify the message is logged in this case
             LoggingTestHelper.VerifyLogging(MockLogger, "Invalid file path: TestSettings in test config file.", LogLevel.Error, Times.Once());
         }
@@ -390,7 +390,7 @@ enablePowerFxOverlay: false";
             LoggingTestHelper.SetupMock(MockLogger);
 
             var ex = Assert.Throws<UserInputException>(() => parser.ParseTestConfig<TestSettings>("validFilePath.yaml", MockLogger.Object));
-            Assert.Equal(ex.Message,UserInputException.errorMapping.UserInputExceptionYAMLFormat.ToString());
+            Assert.Equal(ex.Message,UserInputException.ErrorMapping.UserInputExceptionYAMLFormat.ToString());
             // Verify the message is logged in this case
             LoggingTestHelper.VerifyLogging(MockLogger, "Invalid YAML format: TestSettings in test config file.", LogLevel.Error, Times.Once());
         }

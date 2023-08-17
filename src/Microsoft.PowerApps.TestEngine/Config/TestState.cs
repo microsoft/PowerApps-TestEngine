@@ -169,7 +169,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             if (userInputExceptionMessages.Count() > 0)
             {
                 logger.LogError($"Invalid User Input(s): {String.Join(", ", userInputExceptionMessages)}");
-                throw new UserInputException(UserInputException.errorMapping.UserInputExceptionTestConfig.ToString());
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
             }
 
             IsValid = true;
