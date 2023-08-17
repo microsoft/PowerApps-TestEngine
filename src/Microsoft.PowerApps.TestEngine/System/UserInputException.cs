@@ -10,8 +10,9 @@ namespace Microsoft.PowerApps.TestEngine.System
         public enum errorMapping
         {
             UserInputExceptionInvalidFilePath,
+            UserInputExceptionInvalidLocale,
             UserInputExceptionLoginCredential,
-            UserInputExceptionTestConfig,
+            UserInputExceptionTestConfig,            
             UserInputExceptionYAMLFormat
         };
 
