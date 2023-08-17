@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Reporting;
+using Microsoft.PowerApps.TestEngine.Reporting.Format;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
@@ -124,9 +125,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
+            var exceptionToThrow = new UserInputException();
+            MockState.Setup(x => x.ParseAndSetTestState(testConfigFile.FullName, MockLogger.Object)).Throws(exceptionToThrow);
+            MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
 
-            await Assert.ThrowsAsync<UserInputException>(() => testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
+            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            // UserInput Exception is handled within TestEngineEventHandler, and then returns the test results directory path
+            MockTestEngineEventHandler.Verify(x => x.EncounteredException(exceptionToThrow), Times.Once());
+            Assert.NotNull(testResultsDirectory);
         }
 
         [Fact]
