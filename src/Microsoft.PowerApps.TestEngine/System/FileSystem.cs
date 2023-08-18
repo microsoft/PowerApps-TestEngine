@@ -58,9 +58,13 @@ namespace Microsoft.PowerApps.TestEngine.System
         {
             try
             {
-                Path.GetFullPath(filePath);
+                var path = Path.GetFullPath(filePath);
+                if(!File.Exists(path))
+                {
+                    return false;
+                }
             }
-            catch
+            catch (Exception)
             {
                 return false;
             }
