@@ -419,6 +419,35 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             VerifyFinallyExecution(testData.testResultDirectory, 1, 1, 0);
         }
 
+        [Fact]
+        public async Task UserInputExceptionHandlingTest()
+        {
+            // Arrange
+            var singleTestRunner = new SingleTestRunner(MockTestReporter.Object,
+                                                           MockPowerFxEngine.Object,
+                                                           MockTestInfraFunctions.Object,
+                                                           MockUserManager.Object,
+                                                           MockTestState.Object,
+                                                           MockUrlMapper.Object,
+                                                           MockFileSystem.Object,
+                                                           MockLoggerFactory.Object,
+                                                           MockTestEngineEventHandler.Object);
+
+            var testData = new TestDataOne();
+            SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
+            var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
+
+            // Specific setup for this test
+            var exceptionToThrow = new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
+            MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<string>())).Throws(exceptionToThrow);
+            MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));            
+
+            // Act
+            await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
+
+            // Assert
+            MockTestEngineEventHandler.Verify(x => x.EncounteredException(exceptionToThrow), Times.Once());
+        } 
         // Sample Test Data for test with OnTestCaseStart, OnTestCaseComplete and OnTestSuiteComplete
         class TestDataOne
         {

@@ -2,7 +2,7 @@ testSuite:
   testSuiteName: DifferentVariableTypes-AppId
   testSuiteDescription: Showcases usage of Assert/Wait/SetProperty with multiple types, using AppId instead of AppLogicalName
   persona: User1
-  appId: 5f30b052-2edc-4da7-b950-b894978a1eba
+  appId: 4bfa452c-a046-4927-8156-b24c6a0c1831
 
   testCases:
     - testCaseName: String_Case

@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Linq;
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.System;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -37,117 +39,137 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return TestCases;
         }
 
-        public void ParseAndSetTestState(string testConfigFile)
+        public void ParseAndSetTestState(string testConfigFile, ILogger logger)
         {
             if (string.IsNullOrEmpty(testConfigFile))
             {
                 throw new ArgumentNullException(nameof(testConfigFile));
             }
 
-            TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile);
-            if (TestPlanDefinition.TestSuite != null)
+            List<string> userInputExceptionMessages = new List<string>();
+            try
             {
-                TestCases = TestPlanDefinition.TestSuite.TestCases;
-
-                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.TestSuiteName))
+                TestPlanDefinition = _testConfigParser.ParseTestConfig<TestPlanDefinition>(testConfigFile, logger);
+                if (TestPlanDefinition.TestSuite != null)
                 {
-                    throw new InvalidOperationException("Missing test suite name from test suite definition");
+                    TestCases = TestPlanDefinition.TestSuite.TestCases;
+
+                    if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.TestSuiteName))
+                    {
+                        userInputExceptionMessages.Add("Missing test suite name from test suite definition");
+                    }
+
+                    if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Persona))
+                    {
+                        userInputExceptionMessages.Add("Missing persona from test suite definition");
+                    }
+
+                    if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName) && string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppId))
+                    {
+                        userInputExceptionMessages.Add("At least one of the app logical name or app id must be present in test suite definition");
+                    }
                 }
 
-                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.Persona))
+                if (TestCases == null || TestCases?.Count == 0)
                 {
-                    throw new InvalidOperationException("Missing persona from test suite definition");
+                    userInputExceptionMessages.Add("Must be at least one test case");
+                }
+                else
+                {
+                    foreach (var testCase in TestCases)
+                    {
+                        if (string.IsNullOrEmpty(testCase.TestCaseName))
+                        {
+                            userInputExceptionMessages.Add("Missing test case name from test definition");
+                        }
+
+                        if (string.IsNullOrEmpty(testCase.TestSteps))
+                        {
+                            userInputExceptionMessages.Add("Missing test steps from test case");
+                        }
+                    }
                 }
 
-                if (string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppLogicalName) && string.IsNullOrEmpty(TestPlanDefinition.TestSuite.AppId))
+                if (TestPlanDefinition.TestSettings == null)
                 {
-                    throw new InvalidOperationException("At least one of the app logical name or app id must be present in test suite definition");
+                    userInputExceptionMessages.Add("Missing test settings from test plan");
                 }
-            }
-
-            if (TestCases.Count == 0)
-            {
-                throw new InvalidOperationException("Must be at least one test case");
-            }
-
-            foreach (var testCase in TestCases)
-            {
-                if (string.IsNullOrEmpty(testCase.TestCaseName))
+                else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings?.FilePath))
                 {
-                    throw new InvalidOperationException("Missing test case name from test definition");
+                    TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath, logger);
                 }
 
-                if (string.IsNullOrEmpty(testCase.TestSteps))
+                if (TestPlanDefinition.TestSettings?.BrowserConfigurations == null
+                    || TestPlanDefinition.TestSettings?.BrowserConfigurations?.Count == 0)
                 {
-                    throw new InvalidOperationException("Missing test steps from test case");
+                    userInputExceptionMessages.Add("Missing browser configuration from test plan");
                 }
-            }
-
-            if (TestPlanDefinition.TestSettings == null)
-            {
-                throw new InvalidOperationException("Missing test settings from test plan");
-            }
-            else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings.FilePath))
-            {
-                TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath);
-            }
-
-            if (TestPlanDefinition.TestSettings.BrowserConfigurations == null
-                || TestPlanDefinition.TestSettings.BrowserConfigurations.Count == 0)
-            {
-                throw new InvalidOperationException("Missing browser configuration from test plan");
-            }
-
-            foreach (var browserConfig in TestPlanDefinition.TestSettings.BrowserConfigurations)
-            {
-                if (string.IsNullOrWhiteSpace(browserConfig.Browser))
+                else
                 {
-                    throw new InvalidOperationException("Missing browser from browser configuration");
+                    foreach (var browserConfig in TestPlanDefinition.TestSettings?.BrowserConfigurations)
+                    {
+                        if (string.IsNullOrWhiteSpace(browserConfig.Browser))
+                        {
+                            userInputExceptionMessages.Add("Missing browser from browser configuration");
+                        }
+
+                        if (browserConfig.ScreenWidth == null && browserConfig.ScreenHeight != null
+                            || browserConfig.ScreenHeight == null && browserConfig.ScreenWidth != null)
+                        {
+                            userInputExceptionMessages.Add("Screen width and height both need to be specified or not specified");
+                        }
+                    }
                 }
 
-                if (browserConfig.ScreenWidth == null && browserConfig.ScreenHeight != null
-                    || browserConfig.ScreenHeight == null && browserConfig.ScreenWidth != null)
+                if (TestPlanDefinition.EnvironmentVariables == null)
                 {
-                    throw new InvalidOperationException("Screen width and height both need to be specified or not specified");
+                    userInputExceptionMessages.Add("Missing environment variables from test plan");
                 }
-            }
-
-            if (TestPlanDefinition.EnvironmentVariables == null)
-            {
-                throw new InvalidOperationException("Missing environment variables from test plan");
-            }
-            else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
-            {
-                TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath);
-            }
-
-            if (TestPlanDefinition.EnvironmentVariables.Users == null
-                || TestPlanDefinition.EnvironmentVariables.Users.Count == 0)
-            {
-                throw new InvalidOperationException("At least one user must be specified");
-            }
-
-            foreach (var userConfig in TestPlanDefinition.EnvironmentVariables.Users)
-            {
-                if (string.IsNullOrEmpty(userConfig.PersonaName))
+                else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
                 {
-                    throw new InvalidOperationException("Missing persona name");
+                    TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath, logger);
                 }
 
-                if (string.IsNullOrEmpty(userConfig.EmailKey))
+                if (TestPlanDefinition.EnvironmentVariables?.Users == null
+                    || TestPlanDefinition.EnvironmentVariables?.Users?.Count == 0)
                 {
-                    throw new InvalidOperationException("Missing email key");
+                    userInputExceptionMessages.Add("At least one user must be specified");
+                }
+                else
+                {
+                    foreach (var userConfig in TestPlanDefinition.EnvironmentVariables?.Users)
+                    {
+                        if (string.IsNullOrEmpty(userConfig.PersonaName))
+                        {
+                            userInputExceptionMessages.Add("Missing persona name");
+                        }
+
+                        if (string.IsNullOrEmpty(userConfig.EmailKey))
+                        {
+                            userInputExceptionMessages.Add("Missing email key");
+                        }
+
+                        if (string.IsNullOrEmpty(userConfig.PasswordKey))
+                        {
+                            userInputExceptionMessages.Add("Missing password key");
+                        }
+                    }
                 }
 
-                if (string.IsNullOrEmpty(userConfig.PasswordKey))
+                if (TestPlanDefinition.EnvironmentVariables?.Users?.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
                 {
-                    throw new InvalidOperationException("Missing password key");
+                    userInputExceptionMessages.Add("Persona specified in test is not listed in environment variables");
                 }
             }
-
-            if (TestPlanDefinition.EnvironmentVariables.Users.Where(x => x.PersonaName == TestPlanDefinition.TestSuite?.Persona).FirstOrDefault() == null)
+            catch (UserInputException ex)
             {
-                throw new InvalidOperationException("Persona specified in test is not listed in environment variables");
+                throw new UserInputException(ex.Message);
+            }
+
+            if (userInputExceptionMessages.Count() > 0)
+            {
+                logger.LogError($"Invalid User Input(s): {String.Join(", ", userInputExceptionMessages)}");
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
             }
 
             IsValid = true;

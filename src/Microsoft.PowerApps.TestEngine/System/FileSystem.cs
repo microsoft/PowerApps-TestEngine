@@ -20,6 +20,11 @@ namespace Microsoft.PowerApps.TestEngine.System
             return Directory.Exists(directoryName);
         }
 
+        public bool fileExists(string fileName)
+        {
+            return File.Exists(fileName);
+        }
+
         public string[] GetFiles(string directoryName)
         {
             return Directory.GetFiles(directoryName);

@@ -97,6 +97,7 @@ namespace Microsoft.PowerApps.TestEngine
 
             try
             {
+                _testReporter.TestResultsDirectory = testRunDirectory;
                 _fileSystem.CreateDirectory(testResultDirectory);
 
                 Logger.LogInformation($"\n\n---------------------------------------------------------------------------\n" +
@@ -117,7 +118,6 @@ namespace Microsoft.PowerApps.TestEngine
                 await _testInfraFunctions.GoToUrlAsync(desiredUrl);
                 Logger.LogInformation("Successfully navigated to target URL");
 
-                _testReporter.TestResultsDirectory = testRunDirectory;
                 _testReporter.TestRunAppURL = desiredUrl;
 
                 // Log in user
@@ -223,6 +223,10 @@ namespace Microsoft.PowerApps.TestEngine
                     _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete, locale);
                 }
             }
+            catch (UserInputException ex)
+            {
+                _eventHandler.EncounteredException(ex);
+            }
             catch (Exception ex)
             {
                 Logger.LogError("Encountered an error. See the debug log for this test suite for more information.");
@@ -232,7 +236,7 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 // Trying to log the debug info including session details
-                LoggingHelper loggingHelper = new LoggingHelper(_powerFxEngine.GetPowerAppFunctions(), _testState);
+                LoggingHelper loggingHelper = new LoggingHelper(_powerFxEngine.GetPowerAppFunctions(), _testState, _eventHandler);
                 loggingHelper.DebugInfo();
 
                 await _testInfraFunctions.EndTestRunAsync();

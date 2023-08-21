@@ -3,22 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerFx;
-using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.PowerFx.Types;
-using Moq;
 using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests
@@ -174,6 +161,54 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             // Assert none of the browser runs failed to show incorrect failed cases
             Assert.DoesNotContain("Cases failed: 0", printer.ToString());
+        }
+
+        [Fact]
+        public void TestEncounteredUserAppException()
+        {
+            // Specify expected result and output object
+            var expected = TestEngineEventHandler.UserAppExceptionMessage;
+            var printer = new StringWriter();
+            Exception ex = new UserAppException();
+
+            // Set output
+            Console.SetOut(printer);
+
+            // Run function
+            _testEngineEventHandler.EncounteredException(ex);
+
+            // Assert that the expected output matches the console output
+            Assert.Contains(expected, printer.ToString());
+        }
+
+        [Theory]
+        [ClassData(typeof(UserInputExceptionDataGenerator))]
+        public void TestEncounteredUserInputException(string exceptionName, string expectedMessage)
+        {
+            // Specify expected result and output object
+            var printer = new StringWriter();
+            Exception ex = new UserInputException(exceptionName);
+
+            // Set output
+            Console.SetOut(printer);
+
+            // Run function
+            _testEngineEventHandler.EncounteredException(ex);
+
+            // Assert that the expected output matches the console output
+            Assert.Contains(expectedMessage, printer.ToString());
+        }
+
+        class UserInputExceptionDataGenerator : TheoryData<string, string>
+        {
+            public UserInputExceptionDataGenerator()
+            {
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings), TestEngineEventHandler.UserInputExceptionInvalidTestSettingsMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath), TestEngineEventHandler.UserInputExceptionInvalidFilePathMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionLoginCredential), TestEngineEventHandler.UserInputExceptionLoginCredentialMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionTestConfig), TestEngineEventHandler.UserInputExceptionTestConfigMessage);
+                Add(nameof(UserInputException.ErrorMapping.UserInputExceptionYAMLFormat), TestEngineEventHandler.UserInputExceptionYAMLFormatMessage);
+            }
         }
     }
 }

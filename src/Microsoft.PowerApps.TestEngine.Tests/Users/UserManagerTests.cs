@@ -187,7 +187,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await userManager.LoginAsUserAsync("*"));
+            
+            var ex = await Assert.ThrowsAsync<UserInputException>(async () => await userManager.LoginAsUserAsync("*"));
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
+            if (String.IsNullOrEmpty(email))
+            {
+                LoggingTestHelper.VerifyLogging(MockLogger, "User email cannot be null. Please check if the environment variable is set properly.", LogLevel.Error, Times.Once());
+            }
+            if (String.IsNullOrEmpty(password))
+            {
+                LoggingTestHelper.VerifyLogging(MockLogger, "Password cannot be null. Please check if the environment variable is set properly.", LogLevel.Error, Times.Once());
+            }
         }
     }
 }

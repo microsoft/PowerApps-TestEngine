@@ -19,6 +19,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
 
+        public static string BrowserNotSupportedErrorMessage = "Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers";
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
@@ -80,7 +81,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (browser == null)
             {
                 _singleTestInstanceState.GetLogger().LogError("Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers");
-                throw new InvalidOperationException("Browser not supported.");
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
 
             Browser = await browser.LaunchAsync(launchOptions);
@@ -365,7 +366,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     if (hasPasswordError)
                     {
                         logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
-                        throw new InvalidOperationException();
+                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
                     }
                     // If not, continue
                     else
