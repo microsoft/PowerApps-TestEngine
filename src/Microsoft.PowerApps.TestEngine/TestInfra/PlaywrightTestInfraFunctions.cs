@@ -133,13 +133,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 if (string.IsNullOrEmpty(mock.RequestURL))
                 {
                     _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
-                    throw new InvalidOperationException();
+                    throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
                 }
 
                 if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
                 {
                     _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
-                    throw new InvalidOperationException();
+                    throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
                 }
 
                 await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));

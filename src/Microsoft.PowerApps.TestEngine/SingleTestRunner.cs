@@ -123,13 +123,13 @@ namespace Microsoft.PowerApps.TestEngine
                 // Log in user
                 await _userManager.LoginAsUserAsync(desiredUrl);
 
-                // Set up network request mocking if any
-                await _testInfraFunctions.SetupNetworkRequestMockAsync();
-
                 // Set up Power Fx
                 _powerFxEngine.Setup();
                 await _powerFxEngine.RunRequirementsCheckAsync();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
+
+                // Set up network request mocking if any
+                await _testInfraFunctions.SetupNetworkRequestMockAsync();
 
                 allTestsSkipped = false;
 
@@ -236,6 +236,8 @@ namespace Microsoft.PowerApps.TestEngine
             finally
             {
                 // Trying to log the debug info including session details
+                // Consider avoiding calling DebugInfo in cases where the PowerAppsTestEngine object is not needed
+                // Like exceptions thrown during initialization failures or user input errors
                 LoggingHelper loggingHelper = new LoggingHelper(_powerFxEngine.GetPowerAppFunctions(), _testState, _eventHandler);
                 loggingHelper.DebugInfo();
 
