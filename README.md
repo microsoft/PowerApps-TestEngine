@@ -183,6 +183,12 @@ The way that the test plan files refer to the target app differs depending on wh
      1. Open the test plan YAML file for the app
      1. Fill in the **appId** with the new App ID
 
+## Power Platform CLI usage
+
+To get started, download and install the [Microsoft Power Platform CLI](https://docs.microsoft.com/en-us/powerapps/developer/data-platform/powerapps-cli).
+
+Review this documentation regarding the execution of Test Engine in Power Platform CLI [here](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/tests).
+
 ## Known limitations
 
 ### Unsupported controls
