@@ -276,6 +276,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             };
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
+            MockFileSystem.Setup(x => x.FileExists(It.IsAny<string>())).Returns(true);
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             MockPage.Setup(x => x.RouteAsync(mock.RequestURL, It.IsAny<Func<IRoute, Task>>(), It.IsAny<PageRouteOptions>())).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
@@ -286,6 +287,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once);
             MockPage.Verify(x => x.RouteAsync(mock.RequestURL, It.IsAny<Func<IRoute, Task>>(), It.IsAny<PageRouteOptions>()), Times.Once);
+            MockFileSystem.Verify(x => x.FileExists(mock.ResponseDataFile), Times.Once());
             MockFileSystem.Verify(x => x.IsValidFilePath(mock.ResponseDataFile), Times.Once());
         }
 
@@ -352,7 +354,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
         }
 
         [Fact]
@@ -384,13 +386,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
+            MockFileSystem.Setup(x => x.FileExists(It.IsAny<string>())).Returns(false);
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
         }
 
         [Fact]
@@ -422,12 +425,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
+            MockFileSystem.Setup(x => x.FileExists(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
         }
 
         [Fact]

@@ -136,7 +136,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
                 }
 
-                if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
+                if (!_fileSystem.IsValidFilePath(mock.ResponseDataFile) || !_fileSystem.FileExists(mock.ResponseDataFile))
                 {
                     _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
                     throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());

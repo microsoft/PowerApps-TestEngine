@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.System
             return Directory.Exists(directoryName);
         }
 
-        public bool fileExists(string fileName)
+        public bool FileExists(string fileName)
         {
             return File.Exists(fileName);
         }
@@ -56,19 +56,14 @@ namespace Microsoft.PowerApps.TestEngine.System
 
         public bool IsValidFilePath(string filePath)
         {
-            try
-            {
-                var path = Path.GetFullPath(filePath);
-                if(!File.Exists(path))
-                {
-                    return false;
-                }
-            }
-            catch (Exception)
+            if (string.IsNullOrEmpty(filePath))
             {
                 return false;
             }
-
+            if (filePath.Length < 3)
+            {
+                return false;
+            }
             string invalidPathChars = new string(Path.GetInvalidPathChars());
             Regex invalidPathCharsRegex = new Regex($"[{Regex.Escape($"{invalidPathChars}:?*\"")}]");
             if (invalidPathCharsRegex.IsMatch(filePath.Substring(3, filePath.Length - 3)))
@@ -77,6 +72,7 @@ namespace Microsoft.PowerApps.TestEngine.System
             }
             return true;
         }
+
         public string ReadAllText(string filePath)
         {
             return File.ReadAllText(filePath);

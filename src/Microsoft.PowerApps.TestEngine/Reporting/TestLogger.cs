@@ -53,16 +53,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         public void WriteToLogsFile(string directoryPath, string filter)
         {
-            if (!Directory.Exists(directoryPath))
+            if (!_fileSystem.Exists(directoryPath))
             {
                 var assemblyLocation = Assembly.GetExecutingAssembly().Location;
                 var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
                 directoryPath = Path.Combine(assemblyDirectory, "logs");
-
-                if (!_fileSystem.Exists(directoryPath))
-                {
-                    _fileSystem.CreateDirectory(directoryPath);
-                }
+                _fileSystem.CreateDirectory(directoryPath);
             }
 
             // If no filter, get all logs
@@ -75,7 +71,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 
         public void WriteExceptionToDebugLogsFile(string directoryPath, string exception)
         {
-            if (!_fileSystem.IsValidFilePath(directoryPath))
+            if (!_fileSystem.Exists(directoryPath))
             {
                 throw new ArgumentException(nameof(directoryPath));
             }
