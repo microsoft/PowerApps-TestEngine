@@ -354,7 +354,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            var ex = await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
         }
 
         [Fact]
@@ -393,7 +394,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            var ex = await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString(), ex.Message);
         }
 
         [Fact]
@@ -432,7 +434,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object);
-            await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            var ex = await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupNetworkRequestMockAsync());
+            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString(), ex.Message);
         }
 
         [Fact]
