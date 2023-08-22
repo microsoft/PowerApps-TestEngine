@@ -24,7 +24,7 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// Checks if a file exists
         /// </summary>
         /// <param name="directoryName">Directory name</param>
-        public bool fileExists(string fileName);
+        public bool FileExists(string fileName);
 
         /// <summary>
         /// Gets files in a directory
