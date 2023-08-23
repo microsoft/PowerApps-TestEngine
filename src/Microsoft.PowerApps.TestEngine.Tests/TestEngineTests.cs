@@ -415,7 +415,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             public TestDataGenerator()
             {
                 // Simple test
-                Add(new DirectoryInfo("TestOutput"),
+                Add(new DirectoryInfo("C:\\testResults"),
                     "GCC",
                     new TestSettings()
                     {
@@ -510,7 +510,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 // Simple test in en-US locale (this should be like every other test)
                 // For the rest of the tests where Locale = string.Empty, CurrentCulture should be used
                 // and the test should pass
-                Add(new DirectoryInfo("TestOutput"),
+                Add(new DirectoryInfo("C:\\testResults"),
                     "GCC",
                     new TestSettings()
                     {
@@ -541,7 +541,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Simple test in a different locale
-                Add(new DirectoryInfo("TestOutput"),
+                Add(new DirectoryInfo("C:\\testResults"),
                     "GCC",
                     new TestSettings()
                     {
@@ -572,7 +572,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple browsers
-                Add(new DirectoryInfo("TestOutput"),
+                Add(new DirectoryInfo("C:\\testResults"),
                     "Prod",
                     new TestSettings()
                     {
@@ -612,7 +612,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple tests
-                Add(new DirectoryInfo("TestOutput"),
+                Add(new DirectoryInfo("C:\\testResults"),
                     "Prod",
                     new TestSettings()
                     {
@@ -649,7 +649,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple tests and browsers
-                Add(new DirectoryInfo("TestOutput"),
+                Add(new DirectoryInfo("C:\\testResults"),
                     "Prod",
                     new TestSettings()
                     {
