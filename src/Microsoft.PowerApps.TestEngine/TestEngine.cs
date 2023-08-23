@@ -92,6 +92,11 @@ namespace Microsoft.PowerApps.TestEngine
                     throw new ArgumentNullException(nameof(domain));
                 }
 
+                if (!Directory.Exists(outputDirectory.FullName))
+                {
+                    throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidOutputPath.ToString());
+                }
+
                 if (string.IsNullOrEmpty(queryParams))
                 {
                     Logger.LogDebug($"Using no additional query parameters.");
@@ -104,6 +109,8 @@ namespace Microsoft.PowerApps.TestEngine
                 // Create the output directory as early as possible so that any exceptions can be logged.
                 _state.SetOutputDirectory(outputDirectory.FullName);
                 Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
+
+
 
                 testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
                 _fileSystem.CreateDirectory(testRunDirectory);

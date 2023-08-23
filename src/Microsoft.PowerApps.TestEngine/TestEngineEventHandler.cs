@@ -22,8 +22,8 @@ namespace Microsoft.PowerApps.TestEngine
         public static string UserInputExceptionLoginCredentialMessage = "   Invalid login credential(s). For more details, check the logs.";
         public static string UserInputExceptionTestConfigMessage = "   Invalid test config. For more details, check the logs.";
         public static string UserInputExceptionYAMLFormatMessage = "   Invalid YAML format. For more details, check the logs.";
-
         public static string UserAppExceptionMessage = "   [Critical Error] Could not access PowerApps. For more details, check the logs.";
+        public static string UserInputExceptionInvalidOutputPathMessage = "Invalid output directory; does not exist. For more details, check the logs.";
 
         public int CasesPassed { get => _casesPassed; set => _casesPassed = value; }
         public int CasesTotal { get => _casesTotal; set => _casesTotal = value; }
@@ -63,6 +63,9 @@ namespace Microsoft.PowerApps.TestEngine
                         break;
                     case nameof(UserInputException.ErrorMapping.UserInputExceptionYAMLFormat):
                         Console.WriteLine(UserInputExceptionYAMLFormatMessage);
+                        break;
+                    case nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidOutputPath):
+                        Console.WriteLine(UserInputExceptionInvalidOutputPathMessage);
                         break;
                     default:
                         Console.WriteLine($"   {ex.Message}");
