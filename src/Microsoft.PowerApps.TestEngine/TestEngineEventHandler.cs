@@ -19,7 +19,6 @@ namespace Microsoft.PowerApps.TestEngine
         // These console messages need to be considered for localization.
         public static string UserAppExceptionMessage = "   [Critical Error] Could not access PowerApps. For more details, check the logs.";
         public static string UserInputExceptionInvalidFilePathMessage = "   Invalid file path. For more details, check the logs.";
-        public static string UserInputExceptionInvalidOutputPathMessage = "Invalid output directory; does not exist. For more details, check the logs.";
         public static string UserInputExceptionInvalidTestSettingsMessage = "   Invalid test settings specified in testconfig. For more details, check the logs.";
         public static string UserInputExceptionLoginCredentialMessage = "   Invalid login credential(s). For more details, check the logs.";
         public static string UserInputExceptionTestConfigMessage = "   Invalid test config. For more details, check the logs.";
@@ -63,9 +62,6 @@ namespace Microsoft.PowerApps.TestEngine
                         break;
                     case nameof(UserInputException.ErrorMapping.UserInputExceptionYAMLFormat):
                         Console.WriteLine(UserInputExceptionYAMLFormatMessage);
-                        break;
-                    case nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidOutputPath):
-                        Console.WriteLine(UserInputExceptionInvalidOutputPathMessage);
                         break;
                     default:
                         Console.WriteLine($"   {ex.Message}");
