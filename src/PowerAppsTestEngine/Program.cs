@@ -182,10 +182,6 @@ else
         {
             Console.WriteLine($"Test results can be found here: {testResult}");
         }
-        else
-        {
-            Console.WriteLine($"[Critical Error]: The output directory provided is invalid.");
-        }
 
     }
     catch (Exception ex)

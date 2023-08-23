@@ -129,6 +129,7 @@ namespace Microsoft.PowerApps.TestEngine
             {
                 if (e.Message.Contains("Could not find a part of the path"))
                 {
+                    _eventHandler.EncounteredException(new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidOutputPath.ToString()));
                     return "InvalidOutputDirectory";
                 }
                 Logger.LogError(e.Message);
