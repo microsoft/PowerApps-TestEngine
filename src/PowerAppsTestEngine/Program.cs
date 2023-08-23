@@ -178,7 +178,15 @@ else
 
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
-        Console.WriteLine($"Test results can be found here: {testResult}");
+        if (testResult != "InvalidOutputDirectory")
+        {
+            Console.WriteLine($"Test results can be found here: {testResult}");
+        }
+        else
+        {
+            Console.WriteLine($"[Critical Error]: The output directory provided is invalid.");
+        }
+
     }
     catch (Exception ex)
     {
