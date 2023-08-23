@@ -79,7 +79,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
             var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
-            var outputDirectory = new DirectoryInfo(".");
+            var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = outputDirectory.FullName;
             var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
@@ -115,7 +115,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
             var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
-            var outputDirectory = new DirectoryInfo(".");
+            var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = outputDirectory.FullName;
             var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
@@ -153,7 +153,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
             var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
-            var outputDirectory = new DirectoryInfo(".");
+            var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = outputDirectory.FullName;
             var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
@@ -194,7 +194,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
             var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
-            var outputDirectory = new DirectoryInfo(".");
+            var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = outputDirectory.FullName;
             var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
@@ -244,7 +244,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var expectedOutputDirectory = outputDirectory;
             if (expectedOutputDirectory == null)
             {
-                expectedOutputDirectory = new DirectoryInfo(".");
+                expectedOutputDirectory = new DirectoryInfo("TestOutput");
             }
             var testRunDirectory = Path.Combine(expectedOutputDirectory.FullName, testRunId.Substring(0, 6));
 
@@ -341,7 +341,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 testConfigFile = new FileInfo(testConfigFilePath);
             }
-            var outputDirectory = new DirectoryInfo(".");
+            var outputDirectory = new DirectoryInfo("TestOutput");
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
         }
 
@@ -367,7 +367,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
-            var outputDirectory = new DirectoryInfo(".");
+            var outputDirectory = new DirectoryInfo("TestOutput");
 
             var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
             // UserInput Exception is handled within TestEngineEventHandler, and then returns the test results directory path
@@ -415,7 +415,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             public TestDataGenerator()
             {
                 // Simple test
-                Add(new DirectoryInfo("."),
+                Add(new DirectoryInfo("TestOutput"),
                     "GCC",
                     new TestSettings()
                     {
@@ -446,7 +446,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Simple test with null params
-                Add(new DirectoryInfo("."),
+                Add(new DirectoryInfo("TestOutput"),
                     null,
                     new TestSettings()
                     {
@@ -477,7 +477,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Simple test with empty string params
-                Add(new DirectoryInfo("."),
+                Add(new DirectoryInfo("TestOutput"),
                     "",
                     new TestSettings()
                     {
@@ -510,7 +510,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 // Simple test in en-US locale (this should be like every other test)
                 // For the rest of the tests where Locale = string.Empty, CurrentCulture should be used
                 // and the test should pass
-                Add(new DirectoryInfo("."),
+                Add(new DirectoryInfo("TestOutput"),
                     "GCC",
                     new TestSettings()
                     {
@@ -541,7 +541,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Simple test in a different locale
-                Add(new DirectoryInfo("."),
+                Add(new DirectoryInfo("TestOutput"),
                     "GCC",
                     new TestSettings()
                     {
@@ -572,7 +572,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple browsers
-                Add(new DirectoryInfo("."),
+                Add(new DirectoryInfo("TestOutput"),
                     "Prod",
                     new TestSettings()
                     {
@@ -612,7 +612,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple tests
-                Add(new DirectoryInfo("."),
+                Add(new DirectoryInfo("TestOutput"),
                     "Prod",
                     new TestSettings()
                     {
@@ -649,7 +649,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                     });
 
                 // Multiple tests and browsers
-                Add(new DirectoryInfo("."),
+                Add(new DirectoryInfo("TestOutput"),
                     "Prod",
                     new TestSettings()
                     {
