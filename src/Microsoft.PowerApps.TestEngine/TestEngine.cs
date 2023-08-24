@@ -125,6 +125,11 @@ namespace Microsoft.PowerApps.TestEngine
                 _eventHandler.EncounteredException(e);
                 return testRunDirectory;
             }
+            catch (DirectoryNotFoundException)
+            {
+                _eventHandler.EncounteredException(new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidOutputPath.ToString()));
+                return "InvalidOutputDirectory";
+            }
             catch (Exception e)
             {
                 Logger.LogError(e.Message);
