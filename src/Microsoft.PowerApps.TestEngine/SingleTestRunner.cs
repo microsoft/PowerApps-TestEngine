@@ -121,7 +121,11 @@ namespace Microsoft.PowerApps.TestEngine
                 _testReporter.TestRunAppURL = desiredUrl;
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(desiredUrl);
+                // await _userManager.LoginAsUserAsync(desiredUrl);
+
+                // IF USING "LOCAL USER MANUAL LOGIN", THEN CONSIDER
+                // WAITING HERE FOR THE USER TO LOG IN & REDIRECT
+                // BACK TO THE APP
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();

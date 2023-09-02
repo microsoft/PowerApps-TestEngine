@@ -71,11 +71,22 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 throw new InvalidOperationException();
             }
 
-            var launchOptions = new BrowserTypeLaunchOptions()
+            var launchOptions = new BrowserTypeLaunchPersistentContextOptions()
             {
                 Headless = testSettings.Headless,
-                Timeout = testSettings.Timeout
+                Timeout = testSettings.Timeout,
+                Channel = "msedge",
+                ViewportSize = new ViewportSize()
+                {
+                    Width = browserConfig.ScreenWidth ?? 800, 
+                    Height = browserConfig.ScreenHeight ?? 600
+                }
             };
+
+            if (testSettings.RecordVideo)
+            {
+                launchOptions.RecordVideoDir = _singleTestInstanceState.GetTestResultsDirectory();
+            }
 
             var browser = PlaywrightObject[browserConfig.Browser];
             if (browser == null)
@@ -84,31 +95,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
 
-            Browser = await browser.LaunchAsync(launchOptions);
-            _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");
+            BrowserContext = await browser.LaunchPersistentContextAsync(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), launchOptions);
+            Browser = BrowserContext.Browser;
 
-            var contextOptions = new BrowserNewContextOptions();
-
-            if (!string.IsNullOrEmpty(browserConfig.Device))
-            {
-                contextOptions = PlaywrightObject.Devices[browserConfig.Device];
-            }
-
-            if (testSettings.RecordVideo)
-            {
-                contextOptions.RecordVideoDir = _singleTestInstanceState.GetTestResultsDirectory();
-            }
-
-            if (browserConfig.ScreenWidth != null && browserConfig.ScreenHeight != null)
-            {
-                contextOptions.ViewportSize = new ViewportSize()
-                {
-                    Width = browserConfig.ScreenWidth.Value,
-                    Height = browserConfig.ScreenHeight.Value
-                };
-            }
-
-            BrowserContext = await Browser.NewContextAsync(contextOptions);
             _singleTestInstanceState.GetLogger().LogInformation("Browser context created");
         }
 
