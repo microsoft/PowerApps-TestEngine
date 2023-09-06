@@ -1,6 +1,6 @@
 # Date_Case and DateTime_Case
 
-Please note that the DatePicker control shows dates according to your system timezone.
+Please note that the DatePicker control shows date according to your system timezone.
 
 The dates used in the test plan here is written for EST timezone. 
 
