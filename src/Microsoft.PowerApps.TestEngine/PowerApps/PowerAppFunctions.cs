@@ -277,10 +277,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerApps
                 var recordValue = value.GetConvertedValue(null);
 
                 // Date.parse() parses the date to unix timestamp.
-                // SetProperty value expected from user is Date(yyyy, MM, dd)
-                // Setting the time value to T00:00.000Z to maintain uniformity across timezones.
-                // This value explicitly specifies the UTC timezone. 
-                // This helps in fetching the date value as it is in any timezone locally without considering one-off in day value.
+                // SetProperty value expected from user is in format Date(yyyy, MM, dd), setting the time value to T00:00.000Z to maintain uniformity across timezones.
+                // This value explicitly specifies the UTC timezone. This helps in fetching the date value as it is in any timezone locally without considering off by one in day value.
                 var dt = $"Date.parse(\"{recordValue.Date.ToString("yyyy-MM-dd")}{UTCTimeValue}\")";
                 var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{dt}}})";
 
