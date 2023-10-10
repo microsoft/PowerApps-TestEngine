@@ -1,12 +1,20 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+
 using Microsoft.PowerFx.Types;
+using NotImplementedException = System.NotImplementedException;
+using System.Collections.Generic;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 {
     public class SomeOtherUntypedObject : IUntypedObject
     {
         public IUntypedObject this[int index] => throw new global::System.NotImplementedException();
+
+        public bool TryGetPropertyNames(out IEnumerable<string> propertyNames)
+        {
+            throw new NotImplementedException();
+        }
 
         public FormulaType Type
         {

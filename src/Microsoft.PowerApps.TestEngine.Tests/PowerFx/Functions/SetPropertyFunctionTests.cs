@@ -102,7 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var setPropertyFunction = new SetPropertyFunction(MockPowerAppFunctions.Object, MockLogger.Object);
 
             // Set the value of Rating1's 'Value' property to 5
-            var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), NumberValue.New(5));
+            var result = setPropertyFunction.Execute(recordValue, StringValue.New("Value"), NumberValue.New(5d));
 
             // check to see if the value of Rating1's 'Value' property is 5
             Assert.IsType<BooleanValue>(result);

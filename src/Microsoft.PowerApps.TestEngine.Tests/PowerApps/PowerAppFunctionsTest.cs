@@ -122,7 +122,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             string itemPathString = "{\"controlName\":\"Rating1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Value\"}";
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
-            var value = 5;
+            var value = 5d;
             var numberValue = NumberValue.New(value);
             var jsonSerializedValue = JsonConvert.SerializeObject(numberValue.Value);
             var result = await powerAppFunctions.SetPropertyAsync(itemPath, numberValue);
