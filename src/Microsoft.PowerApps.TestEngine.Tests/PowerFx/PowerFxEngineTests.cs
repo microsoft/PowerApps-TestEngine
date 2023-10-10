@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -485,10 +486,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             });
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
             MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Callback(async () =>
-            {
-                await powerFxEngine.UpdatePowerFxModelAsync();
-            }).Returns(Task.FromResult(true));
+            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
 
             var oldUICulture = CultureInfo.CurrentUICulture;
             var frenchCulture = new CultureInfo("fr");
