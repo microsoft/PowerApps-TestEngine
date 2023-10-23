@@ -191,19 +191,7 @@ Review this documentation regarding the execution of Test Engine in Power Platfo
 
 ## Known limitations
 
-### Unsupported controls
-
-While work to provide full control coverage is in progress, support for the following controls are currently unavailable:
-
-- Charts
-- Media
-- Timer
-- Mixed Reality
-- Child controls within components
-
-### Authentication
-
-Multi-factor authentication is not supported. Use an account that requires only a username and password to run your tests.
+See the [Test Engine documentation](https://learn.microsoft.com/en-us/power-apps/developer/test-engine/overview#limitations) for known limitations.
 
 ## Frequently asked questions
 
