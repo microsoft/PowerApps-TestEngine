@@ -158,7 +158,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var result = await powerAppFunctions.SetPropertyAsync(itemPath, DateValue.NewDateOnly(dt.Date));
 
             Assert.True(result);
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{((DateValue)DateValue.NewDateOnly(dt.Date)).GetConvertedValue(null)}\")}})"), Times.Once());
+            var dateTimeValue = convertDateToDateTimeUTC(dt);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{dateTimeValue}\")}})"), Times.Once());
         }
 
         [Fact]
@@ -823,7 +824,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var powerAppFunctions = new PowerAppFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             await Assert.ThrowsAsync<Exception>(async () => { await powerAppFunctions.SetPropertyDateAsync(itemPath, DateValue.NewDateOnly(dt.Date)); });
 
-            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{((DateValue)DateValue.NewDateOnly(dt.Date)).GetConvertedValue(null)}\")}})"), Times.Once());
+            var dateTimeValue = convertDateToDateTimeUTC(dt);
+            MockTestInfraFunctions.Verify(x => x.RunJavascriptAsync<bool>($"PowerAppsTestEngine.setPropertyValue({itemPathString},{{\"SelectedDate\":Date.parse(\"{dateTimeValue}\")}})"), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());
         }
 
@@ -864,5 +866,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         // End Published App JSSDK not found tests
+        private string convertDateToDateTimeUTC(DateTime dt)
+        {
+            return $"{DateValue.NewDateOnly(dt.Date).GetConvertedValue(null).ToString("yyyy-MM-dd")}{PowerAppFunctions.UTCTimeValue}";
+        }
     }
 }
