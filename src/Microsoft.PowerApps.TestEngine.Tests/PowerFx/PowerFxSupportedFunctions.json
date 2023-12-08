@@ -1,0 +1,10 @@
+{
+    "MinVersion": "1.2.0-build.20231120-1003",
+    "HostObjects": [
+    ],
+    "FunctionNames": [
+        "Assert",
+        "Select",
+        "SetProperty"
+    ]
+}
