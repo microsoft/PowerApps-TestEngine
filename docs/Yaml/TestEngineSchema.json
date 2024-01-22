@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
+  "$comment": "1.0.0",
   "$id": "https://github.com/microsoft/PowerApps-Language-Tooling/blob/master/docs/TestEngine-schema.json",
   "title": "Microsoft Test Engine test schema",
   "description": "A schema for describing the structure of tests executed by the PowerApps test engine.",
@@ -35,6 +36,10 @@
         },
         "appId": {
           "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "examples": [
+            "5f30b052-2edc-4da7-b950-b894978a1eba"
+          ],
           "description": "The ID of the app that is to be launched. Required and used only when app logical name isn't present. App IDs should be used only for canvas apps that aren't in the solution."
         },
         "networkRequestMocks": {
@@ -67,10 +72,31 @@
         }
       },
       "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "appLogicalName"
+          ],
+          "not": {
+            "required": [
+              "appId"
+            ]
+          }
+        },
+        {
+          "required": [
+            "appId"
+          ],
+          "not": {
+            "required": [
+              "appLogicalName"
+            ]
+          }
+        }
+      ],
       "required": [
         "testSuiteName",
-        "persona",
-        "appLogicalName"
+        "persona"
       ]
     },
     "testSettings": {
@@ -89,42 +115,12 @@
               ]
             },
             "browserConfigurations": {
-              "type": "object",
-              "description": "The browser configurations to use for the test.",
-              "properties": {
-                "browserType": {
-                  "enum": [
-                    "Chromium",
-                    "Edge",
-                    "Firefox",
-                    "Safari",
-                    "IE"
-                  ],
-                  "description": "The browser type to use for the test.",
-                  "examples": [
-                    "Chromium"
-                  ]
-                },
-                "device": {
-                  "enum": [
-                    "Desktop",
-                    "Mobile"
-                  ],
-                  "description": "The device type to use for the test."
-                },
-                "screenHeight": {
-                  "type": "integer",
-                  "description": "The screen height to use for the test. If specified, screenWidth must also be specified."
-                },
-                "screenWidth": {
-                  "type": "integer",
-                  "description": "The screen width to use for the test. If specified, screenHeight must also be specified."
+              "type": "array",
+              "items": [
+                {
+                  "$ref": "#/$definitions/browserConfigurationInfo"
                 }
-              },
-              "required": [
-                "browserType"
-              ],
-              "additionalProperties": false
+              ]
             },
             "recordVideo": {
               "type": "boolean",
@@ -199,6 +195,45 @@
     "testSuite"
   ],
   "$definitions": {
+    "browserConfigurationInfo": {
+      "type": "object",
+      "description": "The browser configurations to use for the test.",
+      "properties": {
+        "browser": {
+          "enum": [
+            "Chromium",
+            "Edge",
+            "Firefox",
+            "Safari",
+            "IE"
+          ],
+          "description": "The browser type to use for the test.",
+          "examples": [
+            "Edge",
+            "IE"
+          ]
+        },
+        "device": {
+          "enum": [
+            "Desktop",
+            "Mobile"
+          ],
+          "description": "The device type to use for the test."
+        },
+        "screenHeight": {
+          "type": "integer",
+          "description": "The screen height to use for the test. If specified, screenWidth must also be specified."
+        },
+        "screenWidth": {
+          "type": "integer",
+          "description": "The screen width to use for the test. If specified, screenHeight must also be specified."
+        }
+      },
+      "required": [
+        "browser"
+      ],
+      "additionalProperties": false
+    },
     "networkRequestMockInfo": {
       "type": "object",
       "description": "Defines network request mocks needed for the test.",
@@ -223,7 +258,10 @@
         },
         "headers": {
           "type": "object",
-          "description": "The request headers consisting of pairs (fieldName, fieldValue)."
+          "description": "The request headers consisting of pairs [fieldName: fieldValue].",
+          "examples": [
+            "x-ms-request-method: GET"
+          ]
         },
         "requestBodyFile": {
           "type": "string",
@@ -231,13 +269,16 @@
         }
       },
       "required": [
-        "requestUrl",
+        "requestURL",
         "responseDataFile"
       ]
     },
     "networkRequestMockHeaderInfo": {
       "type": "object",
       "description": "Defines a network request mock header.",
+      "examples": [
+        "x-ms-request-method: GET"
+      ],
       "properties": {
         "fieldName": {
           "type": "string",
@@ -255,14 +296,13 @@
     },
     "testCase": {
       "type": "object",
-      "description": "Information about a test case.",
+      "description": "Information about a test case. ",
       "properties": {
         "testCaseName": {
           "type": "string",
           "description": "The name of the test case.",
           "examples": [
-            "MyTestCase",
-            "TheTestCase"
+            "My Test case"
           ]
         },
         "testCaseDescription": {
@@ -273,7 +313,11 @@
           ]
         },
         "testSteps": {
-          "type": "string"
+          "type": "string",
+          "description": "This is a sequence of Power Fx calls separated by ;. Use = as the first character.",
+          "examples": [
+            "Select(Calculator_1.Add);"
+          ]
         }
       },
       "additionalProperties": false,
