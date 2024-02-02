@@ -2,6 +2,8 @@
 
 [![CI Build](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml/badge.svg)](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml)
 
+> This is currently an experimental project.
+
 ## Overview
 
 Power Apps Test Engine is an open source project with the aim of providing makers with a single automated testing platform for all Power Apps apps.
