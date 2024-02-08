@@ -1,0 +1,363 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$comment": "1.0.0",
+  "$id": "https://github.com/microsoft/PowerApps-Language-Tooling/blob/master/docs/TestEngine-schema.json",
+  "title": "Microsoft Test Engine test schema",
+  "description": "A schema for describing the structure of tests executed by the PowerApps test engine.",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "testSuite": {
+      "type": "object",
+      "description": "Information about the test suite being run.",
+      "properties": {
+        "testSuiteName": {
+          "type": "string",
+          "description": "The name of the test suite.",
+          "examples": [
+            "MyTestSuite",
+            "TheTestSuite"
+          ]
+        },
+        "testSuiteDescription": {
+          "type": "string",
+          "description": "Additional information about the test suite.",
+          "examples": [
+            "This test suite contains tests for the MyTestApp app."
+          ]
+        },
+        "persona": {
+          "type": "string",
+          "description": "The user that is logged in to perform the test. The persona is defined by the personaName in the environmentVariables."
+        },
+        "appLogicalName": {
+          "type": "string",
+          "description": "The application logical name."
+        },
+        "appId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "examples": [
+            "5f30b052-2edc-4da7-b950-b894978a1eba"
+          ],
+          "description": "The ID of the app that is to be launched. Required and used only when app logical name isn't present. App IDs should be used only for canvas apps that aren't in the solution."
+        },
+        "networkRequestMocks": {
+          "type": "array",
+          "items": [
+            {
+              "$ref": "#/$definitions/networkRequestMockInfo"
+            }
+          ]
+        },
+        "onTestCaseStart": {
+          "type": "string",
+          "description": "The name of the function to be called when a test case starts."
+        },
+        "onTestCaseComplete": {
+          "type": "string",
+          "description": "The name of the function to be called when a test case completes."
+        },
+        "onTestSuiteComplete": {
+          "type": "string",
+          "description": "The name of the function to be called when a test suite completes."
+        },
+        "testCases": {
+          "type": "array",
+          "items": [
+            {
+              "$ref": "#/$definitions/testCase"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "appLogicalName"
+          ],
+          "not": {
+            "required": [
+              "appId"
+            ]
+          }
+        },
+        {
+          "required": [
+            "appId"
+          ],
+          "not": {
+            "required": [
+              "appLogicalName"
+            ]
+          }
+        }
+      ],
+      "required": [
+        "testSuiteName",
+        "persona"
+      ]
+    },
+    "testSettings": {
+      "description": "Settings defining the settings under which the tests are run.",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Options defining the test settings inline.",
+          "properties": {
+            "locale": {
+              "type": "string",
+              "description": "The locale to use for the test. See Global Support in Microsoft Power Fx for more information. If unspecified, the current culture is used for the locale by default for parsing the test steps.",
+              "examples": [
+                "en-us",
+                "de"
+              ]
+            },
+            "browserConfigurations": {
+              "type": "array",
+              "items": [
+                {
+                  "$ref": "#/$definitions/browserConfigurationInfo"
+                }
+              ]
+            },
+            "recordVideo": {
+              "type": "boolean",
+              "description": "Indicates whether to record a video of the test run. The video is saved in the test results folder."
+            },
+            "headless": {
+              "type": "boolean",
+              "description": "Indicates whether to run the test in headless mode. The default is True. Headless mode is a browser mode that runs without a UI."
+            },
+            "timeout": {
+              "type": "integer",
+              "description": "The timeout in milliseconds for the test run. The default is 300 seconds. If any operation takes longer than the timeout limit, it ends the test in a failure.",
+              "examples": [
+                "30000"
+              ]
+            }
+          },
+          "required": [
+            "locale",
+            "browserConfigurations"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "filePath": {
+              "type": "string",
+              "description": "The file path to a separate yaml file with all the test settings. If provided, it will override all the test settings in the test plan."
+            }
+          },
+          "required": [
+            "filePath"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "environmentVariables": {
+      "description": "The environment variables to use for the test. These can be provided inline (under users) or in a separate yaml file (under filePath).",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "users": {
+              "$ref": "#/$definitions/userInformation"
+            }
+          },
+          "required": [
+            "users"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "filePath": {
+              "type": "string",
+              "description": "The file path to a separate yaml file with all the environment variables."
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "filePath"
+          ]
+        }
+      ],
+      "additionalItems": false
+    }
+  },
+  "required": [
+    "testSuite"
+  ],
+  "$definitions": {
+    "browserConfigurationInfo": {
+      "type": "object",
+      "description": "The browser configurations to use for the test.",
+      "properties": {
+        "browser": {
+          "enum": [
+            "Chromium",
+            "Edge",
+            "Firefox",
+            "Safari",
+            "IE"
+          ],
+          "description": "The browser type to use for the test.",
+          "examples": [
+            "Edge",
+            "IE"
+          ]
+        },
+        "device": {
+          "enum": [
+            "Desktop",
+            "Mobile"
+          ],
+          "description": "The device type to use for the test."
+        },
+        "screenHeight": {
+          "type": "integer",
+          "description": "The screen height to use for the test. If specified, screenWidth must also be specified."
+        },
+        "screenWidth": {
+          "type": "integer",
+          "description": "The screen width to use for the test. If specified, screenHeight must also be specified."
+        }
+      },
+      "required": [
+        "browser"
+      ],
+      "additionalProperties": false
+    },
+    "networkRequestMockInfo": {
+      "type": "object",
+      "description": "Defines network request mocks needed for the test.",
+      "properties": {
+        "requestURL": {
+          "type": "string",
+          "description": "Defines network request mocks needed for the test."
+        },
+        "responseDataFile": {
+          "type": "string",
+          "description": "A text file with the mock response content. All text in this file is read as the response."
+        },
+        "method": {
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ],
+          "description": "The HTTP method of the request."
+        },
+        "headers": {
+          "type": "object",
+          "description": "The request headers consisting of pairs [fieldName: fieldValue].",
+          "examples": [
+            "x-ms-request-method: GET"
+          ]
+        },
+        "requestBodyFile": {
+          "type": "string",
+          "description": "A text file with the request body content. All text in this file is read as the request body."
+        }
+      },
+      "required": [
+        "requestURL",
+        "responseDataFile"
+      ]
+    },
+    "networkRequestMockHeaderInfo": {
+      "type": "object",
+      "description": "Defines a network request mock header.",
+      "examples": [
+        "x-ms-request-method: GET"
+      ],
+      "properties": {
+        "fieldName": {
+          "type": "string",
+          "description": "The name of the header field."
+        },
+        "fieldValue": {
+          "type": "string",
+          "description": "The value of the header field."
+        }
+      },
+      "required": [
+        "fieldName",
+        "fieldValue"
+      ]
+    },
+    "testCase": {
+      "type": "object",
+      "description": "Information about a test case. ",
+      "properties": {
+        "testCaseName": {
+          "type": "string",
+          "description": "The name of the test case.",
+          "examples": [
+            "My Test case"
+          ]
+        },
+        "testCaseDescription": {
+          "type": "string",
+          "description": "Additional information about the test case.",
+          "examples": [
+            "This test case contains tests for the MyTestApp app."
+          ]
+        },
+        "testSteps": {
+          "type": "string",
+          "description": "This is a sequence of Power Fx calls separated by ;. Use = as the first character.",
+          "examples": [
+            "Select(Calculator_1.Add);"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "testCaseName",
+        "testSteps"
+      ]
+    },
+    "userInformation": {
+      "type:": "object",
+      "description": "Information about a user.",
+      "properties": {
+        "personaName": {
+          "type": "string",
+          "description": "The name of environment variable containing the user name.",
+          "examples": [
+            "UserNameVar"
+          ]
+        },
+        "emailKey": {
+          "type": "string",
+          "description": "The environment variable used to get the user's email.",
+          "examples": [
+            "EmailKeyVar"
+          ]
+        },
+        "passwordKey": {
+          "type": "string",
+          "description": "The environment variable containing the user's password.",
+          "examples": [
+            "PasswordKeyVar"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "personaName",
+        "emailKey",
+        "passwordKey"
+      ]
+    }
+  }
+}
