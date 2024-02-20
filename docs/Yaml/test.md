@@ -1,4 +1,4 @@
-# test
+# testSuite
 
 This is used to define one test.
 
@@ -35,9 +35,9 @@ For Sharepoint/Dataverse/Connector apps, requestURL and Method can be the same f
 
 | Property | Required | Description |
 | -- | -- | -- |
-| testCaseName | Yes | This is the name of the test case, it will be used in reporting success and failure |
+| testCaseName | Yes | This is the name of the test case, that will be used in reporting success and failure |
 | testCaseDescription | No | Additional information describe what the test case does |
-| testSteps | Yes | A set of Power FX functions describing the steps needed to perform the test case |
+| testSteps | Yes | A set of Power Fx functions describing the steps needed to perform the test case |
 
 ### TestSteps
 
