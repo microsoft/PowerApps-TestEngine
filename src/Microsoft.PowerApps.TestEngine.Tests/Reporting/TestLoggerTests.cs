@@ -57,10 +57,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [Fact]
         public void WriteToLogsFileThrowsOnInvalidPathTest()
         {
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
             var testLogger = new TestLogger(MockFileSystem.Object);
-            Assert.Throws<ArgumentException>(() => testLogger.WriteToLogsFile("", ""));
-            MockFileSystem.Verify(x => x.IsValidFilePath(""), Times.Once());
+            var createdLogs = new Dictionary<string, string[]>();
+
+            MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
+            MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>())).Callback((string filePath, string[] logs) =>
+            {
+                createdLogs.Add(filePath, logs);
+            });
+
+            var stringWriter = new StringWriter();
+            Console.SetOut(stringWriter);
+
+            testLogger.WriteToLogsFile("", "");
+            MockFileSystem.Verify(x => x.Exists(""), Times.Once());
         }
 
         [Fact]
@@ -70,7 +82,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var scopeId2 = Guid.NewGuid().ToString();
             var createdLogs = new Dictionary<string, string[]>();
 
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
+            MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+            MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
             MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>())).Callback((string filePath, string[] logs) =>
             {
                 createdLogs.Add(filePath, logs);
@@ -130,7 +143,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var writeLogsToFileAndValidate = (string filter, string directoryPath, string[] expectedDebugLogs, string[] expectedLogs) =>
             {
                 testLogger.WriteToLogsFile(directoryPath, filter);
-                MockFileSystem.Verify(x => x.IsValidFilePath(directoryPath), Times.Once());
+                //assuming input directory names don't exist on the machine and have to be created
+                MockFileSystem.Verify(x => x.Exists(directoryPath), Times.Once());
+                MockFileSystem.Verify(x => x.CreateDirectory(directoryPath), Times.Never());
                 var debugLogPath = Path.Combine(directoryPath, "debugLogs.txt");
                 var logPath = Path.Combine(directoryPath, "logs.txt");
                 Assert.True(createdLogs.ContainsKey(debugLogPath));

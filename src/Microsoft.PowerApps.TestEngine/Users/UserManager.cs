@@ -74,16 +74,23 @@ namespace Microsoft.PowerApps.TestEngine.Users
             var user = _environmentVariable.GetVariable(userConfig.EmailKey);
             var password = _environmentVariable.GetVariable(userConfig.PasswordKey);
 
+            bool missingUserOrPassword = false;
+
             if (string.IsNullOrEmpty(user))
             {
-                logger.LogError(("User email cannot be null"));
-                throw new InvalidOperationException();
+                logger.LogError(("User email cannot be null. Please check if the environment variable is set properly."));
+                missingUserOrPassword = true;
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                logger.LogError("Password cannot be null");
-                throw new InvalidOperationException();
+                logger.LogError("Password cannot be null. Please check if the environment variable is set properly.");
+                missingUserOrPassword = true;
+            }
+
+            if (missingUserOrPassword)
+            {
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
             }
 
             await _testInfraFunctions.HandleUserEmailScreen(EmailSelector, user);

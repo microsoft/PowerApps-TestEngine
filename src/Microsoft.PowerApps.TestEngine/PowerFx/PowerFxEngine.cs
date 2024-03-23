@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Dynamic;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -43,9 +42,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             _fileSystem = fileSystem;
         }
 
-        public void Setup(CultureInfo locale)
+        public void Setup()
         {
-            var powerFxConfig = new PowerFxConfig(locale);
+            var powerFxConfig = new PowerFxConfig();
 
             powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
@@ -84,7 +83,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             Engine = new RecalcEngine(powerFxConfig);
         }
 
-        public async Task ExecuteWithRetryAsync(string testSteps)
+        public async Task ExecuteWithRetryAsync(string testSteps, CultureInfo culture)
         {
             int currentRetry = 0;
             FormulaValue result = FormulaValue.NewBlank();
@@ -93,7 +92,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 try
                 {
-                    result = Execute(testSteps);
+                    result = Execute(testSteps, culture);
                     break;
                 }
                 catch (Exception e) when (e.Message.Contains("locale"))
@@ -113,7 +112,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
         }
 
-        public FormulaValue Execute(string testSteps)
+        public FormulaValue Execute(string testSteps, CultureInfo culture)
         {
             if (Engine == null)
             {
@@ -129,7 +128,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var goStepByStep = false;
             // Check if the syntax is correct
-            var checkResult = Engine.Check(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+            var checkResult = Engine.Check(testSteps, null, GetPowerFxParserOptions(culture));
             if (!checkResult.IsSuccess)
             {
                 // If it isn't, we have to go step by step as the object model isn't fully loaded
@@ -139,21 +138,20 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             if (goStepByStep)
             {
-                // TODO: This is a temporary hack to allow for multiple screens
-                // Will need to come up with a better solution
-                var splitSteps = testSteps.Split(';');
+                var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, checkResult, culture);
                 FormulaValue result = FormulaValue.NewBlank();
+
                 foreach (var step in splitSteps)
                 {
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
-                    result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true });
+                    result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
                 }
                 return result;
             }
             else
             {
                 Logger.LogTrace($"Attempting:\n\n{{\n{testSteps}}}");
-                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true });
+                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
             }
         }
 
@@ -171,6 +169,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
+
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _powerAppFunctions.CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
 
             var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
@@ -180,11 +179,26 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
         }
 
+        private static ParserOptions GetPowerFxParserOptions(CultureInfo culture)
+        {
+            // Currently support for decimal is in progress for PowerApps
+            // Power Fx by default treats number as decimal. Hence setting NumberIsFloat config to true in our case
+            return new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true };
+        }
+
         public IPowerAppFunctions GetPowerAppFunctions()
         {
             return _powerAppFunctions;
         }
 
+<<<<<<< HEAD
         public bool PowerAppIntegrationEnabled { get; set; } = true;
+=======
+        public async Task RunRequirementsCheckAsync()
+        {
+            await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
+            await _powerAppFunctions.TestEngineReady();
+        }
+>>>>>>> main
     }
 }

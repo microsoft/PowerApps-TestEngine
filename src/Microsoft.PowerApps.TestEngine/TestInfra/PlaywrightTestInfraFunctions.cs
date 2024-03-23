@@ -20,6 +20,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
 
+        public static string BrowserNotSupportedErrorMessage = "Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers";
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
@@ -86,7 +87,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (browser == null)
             {
                 _singleTestInstanceState.GetLogger().LogError("Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers");
-                throw new InvalidOperationException("Browser not supported.");
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
 
             Browser = await browser.LaunchAsync(launchOptions);
@@ -150,17 +151,23 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     if (string.IsNullOrEmpty(mock.RequestURL))
                     {
                         _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
-                        throw new InvalidOperationException();
+                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
                     }
 
-                    if (string.IsNullOrEmpty(mock.ResponseDataFile) || !_fileSystem.IsValidFilePath(mock.ResponseDataFile))
+                    if (string.IsNullOrEmpty(mock.RequestURL))
+                    {
+                        _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
+                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
+                    }
+
+                    if (!_fileSystem.IsValidFilePath(mock.ResponseDataFile) || !_fileSystem.FileExists(mock.ResponseDataFile))
                     {
                         _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
-                        throw new InvalidOperationException();
+                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
                     }
 
                     await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
-                }                
+                }
             }
         }
 
@@ -224,8 +231,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 Page = await BrowserContext.NewPageAsync();
             }
 
-            // TODO: consider whether to make waiting for network idle state part of the function input
-            var response = await Page.GotoAsync(url, new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
+            var response = await Page.GotoAsync(url);
 
             // The response might be null because "The method either throws an error or returns a main resource response.
             // The only exceptions are navigation to about:blank or navigation to the same URL with a different hash, which would succeed and return null."
@@ -244,6 +250,20 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 await Task.Delay(200);
                 await BrowserContext.CloseAsync();
+            }
+        }
+
+        public async Task DisposeAsync()
+        {
+            if (BrowserContext != null)
+            {
+                await BrowserContext.DisposeAsync();
+                BrowserContext = null;
+            }
+            if (PlaywrightObject != null)
+            {
+                PlaywrightObject.Dispose();
+                PlaywrightObject = null;
             }
         }
 
@@ -314,9 +334,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
         }
 
-        // Justification: Limited ability to run unit tests for 
-        // Playwright actions on the sign-in page
-        [ExcludeFromCodeCoverage]
         public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
         {
             var logger = _singleTestInstanceState.GetLogger();
@@ -374,7 +391,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     if (hasPasswordError)
                     {
                         logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
-                        throw new InvalidOperationException();
+                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
                     }
                     // If not, continue
                     else
@@ -385,7 +402,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     logger.LogDebug("Was not asked to 'stay signed in'.");
                 }
 
-                await Page.WaitForURLAsync(desiredUrl);       
+                await Page.WaitForURLAsync(desiredUrl);
             }
             catch (TimeoutException)
             {

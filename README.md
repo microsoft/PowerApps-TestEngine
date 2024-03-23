@@ -43,8 +43,8 @@ cd PowerApps-TestEngine\src\PowerAppsTestEngine
 # Build
 dotnet build
 
-# Install browsers required by Playwright - replace <net-version> with actual output folder name, eg. net6.0.
-.\bin\Debug\<net-version>\playwright.ps1 install
+# Install browsers required by Playwright
+.\bin\Debug\PowerAppsTestEngine\playwright.ps1 install
 ```
 If you face trouble running dotnet build try [Clean locally](https://github.com/microsoft/PowerApps-TestEngine#clean-locally) first.
 
@@ -67,7 +67,7 @@ See [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blo
 
 #### 1. Import a sample solution
 
-Choose one of the packaged solutions within the Samples folder (e.g., `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_2.zip`). You can import solutions [using the Dataverse portal](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions), or by using the [PAC CLI command line tool](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/solution#pac-solution-import). Remember the environment that you imported the solution to.
+Choose one of the packaged solutions within the Samples folder (e.g., `PowerApps-TestEngine\samples\basicgallery\BasicGallery_1_0_0_3.zip`). You can import solutions [using the Dataverse portal](https://docs.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions), or by using the [PAC CLI command line tool](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/solution#pac-solution-import). Remember the environment that you imported the solution to.
 
 #### 2. Set up the config file
 
@@ -183,21 +183,15 @@ The way that the test plan files refer to the target app differs depending on wh
      1. Open the test plan YAML file for the app
      1. Fill in the **appId** with the new App ID
 
+## Power Platform CLI usage
+
+To get started, download and install the [Microsoft Power Platform CLI](https://docs.microsoft.com/en-us/powerapps/developer/data-platform/powerapps-cli).
+
+Review this documentation regarding the execution of Test Engine in Power Platform CLI [here](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/tests).
+
 ## Known limitations
 
-### Unsupported controls
-
-While work to provide full control coverage is in progress, support for the following controls are currently unavailable:
-
-- Charts
-- Media
-- Timer
-- Mixed Reality
-- Child controls within components
-
-### Authentication
-
-Multi-factor authentication is not supported. Use an account that requires only a username and password to run your tests.
+See the [Test Engine documentation](https://learn.microsoft.com/en-us/power-apps/developer/test-engine/overview#limitations) for known limitations.
 
 ## Frequently asked questions
 

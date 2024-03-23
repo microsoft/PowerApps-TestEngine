@@ -39,7 +39,7 @@ var inputOptions = new ConfigurationBuilder()
 
 if (inputOptions == null)
 {
-    Console.Out.WriteLine("Input options are null");
+    Console.WriteLine("[Critical Error]: Input options are null");
     return;
 }
 else
@@ -53,7 +53,7 @@ else
     {
         if (inputOptions.TestPlanFile.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: TestPlanFile field is blank.");
+            Console.WriteLine("[Critical Error]: TestPlanFile field is blank.");
             return;
         }
     }
@@ -62,7 +62,7 @@ else
     {
         if (inputOptions.EnvironmentId.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: EnvironmentId field is blank.");
+            Console.WriteLine("[Critical Error]: EnvironmentId field is blank.");
             return;
         }
     }
@@ -71,7 +71,7 @@ else
     {
         if (inputOptions.TenantId.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: TenantId field is blank.");
+            Console.WriteLine("[Critical Error]: TenantId field is blank.");
             return;
         }
     }
@@ -80,7 +80,7 @@ else
     {
         if (inputOptions.OutputDirectory.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: OutputDirectory field is blank.");
+            Console.WriteLine("[Critical Error]: OutputDirectory field is blank.");
             return;
         }
     }
@@ -89,7 +89,7 @@ else
     {
         if (inputOptions.LogLevel.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: LogLevel field is blank.");
+            Console.WriteLine("[Critical Error]: LogLevel field is blank.");
             return;
         }
     }
@@ -98,7 +98,7 @@ else
     {
         if (inputOptions.Domain.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: Domain field is blank.");
+            Console.WriteLine("[Critical Error]: Domain field is blank.");
             return;
         }
     }
@@ -107,15 +107,16 @@ else
     {
         if (inputOptions.QueryParams.Substring(0, 1) == "-")
         {
-            Console.Out.WriteLine("[Critical Error]: QueryParams field is blank.");
+            Console.WriteLine("[Critical Error]: QueryParams field is blank.");
             return;
         }
     }
 
     var logLevel = LogLevel.Information; // Default log level
-    if (!string.IsNullOrEmpty(inputOptions.LogLevel) && !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))
+    if (string.IsNullOrEmpty(inputOptions.LogLevel))
     {
-        Console.Out.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default: Information");
+        Console.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default");
+        Enum.TryParse(inputOptions.LogLevel, true, out logLevel);
     }
 
     try
@@ -129,6 +130,7 @@ else
             .AddFilter(l => l >= logLevel)
             .AddProvider(new TestLoggerProvider(new FileSystem()));
         })
+        .AddSingleton<ITestEngineEvents, TestEngineEventHandler>()
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
         .AddScoped<IPowerFxEngine, PowerFxEngine>()
@@ -189,11 +191,15 @@ else
 
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
-        Console.Out.WriteLine($"Test results can be found here: {testResult}");
+        if (testResult != "InvalidOutputDirectory")
+        {
+            Console.WriteLine($"Test results can be found here: {testResult}");
+        }
+
     }
     catch (Exception ex)
     {
-        Console.Out.WriteLine("[Critical Error]: " + ex.Message);
+        Console.WriteLine("[Critical Error]: " + ex.Message);
     }
 }
 

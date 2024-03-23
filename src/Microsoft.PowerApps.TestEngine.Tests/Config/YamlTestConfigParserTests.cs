@@ -2,15 +2,27 @@
 // Licensed under the MIT license.
 
 using System;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
 using Xunit;
+using YamlDotNet.Core;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Config
 {
     public class YamlTestConfigParserTests
     {
+        private Mock<ILoggerFactory> MockLoggerFactory;
+        private Mock<ILogger> MockLogger;
+
+        public YamlTestConfigParserTests()
+        {
+            MockLoggerFactory = new Mock<ILoggerFactory>();
+            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+        }
+
         [Fact]
         public void YamlTestConfigParserParseTestPlanWithAppLogicalNameTest()
         {
@@ -59,7 +71,10 @@ environmentVariables:
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
-            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath, logger.Object);
+
             Assert.NotNull(testPlan);
             Assert.Equal("Button Clicker", testPlan.TestSuite?.TestSuiteName);
             Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.TestSuite?.TestSuiteDescription);
@@ -136,7 +151,11 @@ environmentVariables:
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
-            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath, logger.Object);
+
             Assert.NotNull(testPlan);
             Assert.Equal("Button Clicker", testPlan.TestSuite?.TestSuiteName);
             Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.TestSuite?.TestSuiteDescription);
@@ -214,7 +233,11 @@ environmentVariables:
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
-            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var testPlan = parser.ParseTestConfig<TestPlanDefinition>(filePath, logger.Object);
+
             Assert.NotNull(testPlan);
             Assert.Equal("Button Clicker", testPlan.TestSuite?.TestSuiteName);
             Assert.Equal("Verifies that counter increments when the button is clicked", testPlan.TestSuite?.TestSuiteDescription);
@@ -257,7 +280,11 @@ environmentVariables:
 
             var filePath = "environmentVariables.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(environmentVariablesFile);
-            var environmentVariables = parser.ParseTestConfig<EnvironmentVariables>(filePath);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var environmentVariables = parser.ParseTestConfig<EnvironmentVariables>(filePath, logger.Object);
+
             Assert.NotNull(environmentVariables);
             Assert.Single(environmentVariables.Users);
             Assert.Equal("User1", environmentVariables.Users[0].PersonaName);
@@ -280,7 +307,11 @@ enablePowerFxOverlay: false";
 
             var filePath = "testSettings.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
-            var testSettings = parser.ParseTestConfig<TestSettings>(filePath);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var testSettings = parser.ParseTestConfig<TestSettings>(filePath, logger.Object);
+
             Assert.NotNull(testSettings);
             Assert.True(testSettings.RecordVideo);
             Assert.False(testSettings.Headless);
@@ -306,7 +337,11 @@ enablePowerFxOverlay: false";
 
             var filePath = "testSettings.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
-            var testSettings = parser.ParseTestConfig<TestSettings>(filePath);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var testSettings = parser.ParseTestConfig<TestSettings>(filePath, logger.Object);
+
             Assert.NotNull(testSettings);
             Assert.True(testSettings.RecordVideo);
             Assert.False(testSettings.Headless);
@@ -324,7 +359,40 @@ enablePowerFxOverlay: false";
         {
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
-            Assert.Throws<ArgumentNullException>(() => parser.ParseTestConfig<TestPlanDefinition>(filePath));
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            Assert.Throws<ArgumentNullException>(() => parser.ParseTestConfig<TestPlanDefinition>(filePath, logger.Object));
+        }
+
+        [Fact]
+        public void YamlTestConfigParserThrowsOnInvalidFilePath()
+        {
+            var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            var parser = new YamlTestConfigParser(mockFileSystem.Object);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(false);
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var ex = Assert.Throws<UserInputException>(() => parser.ParseTestConfig<TestSettings>("some invalid file path", MockLogger.Object));
+            Assert.Equal(ex.Message, UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
+            // Verify the message is logged in this case
+            LoggingTestHelper.VerifyLogging(MockLogger, "Invalid file path: TestSettings in test config file.", LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public void YamlTestConfigParserThrowsOnInvalidYAMLFormat()
+        {
+            var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            var parser = new YamlTestConfigParser(mockFileSystem.Object);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Throws(new YamlException("something bad happened"));
+            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            var ex = Assert.Throws<UserInputException>(() => parser.ParseTestConfig<TestSettings>("validFilePath.yaml", MockLogger.Object));
+            Assert.Equal(ex.Message, UserInputException.ErrorMapping.UserInputExceptionYAMLFormat.ToString());
+            // Verify the message is logged in this case
+            LoggingTestHelper.VerifyLogging(MockLogger, "Invalid YAML format: TestSettings in test config file.", LogLevel.Error, Times.Once());
         }
     }
 }
