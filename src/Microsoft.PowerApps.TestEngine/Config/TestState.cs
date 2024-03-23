@@ -5,6 +5,7 @@ using System.Linq;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.System;
 
 namespace Microsoft.PowerApps.TestEngine.Config

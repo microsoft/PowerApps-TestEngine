@@ -11,6 +11,7 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
+using NuGet.Configuration;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
 {
@@ -55,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions, Logger));
 
             var settings = _testState.GetTestSettings();
-            if (settings.ExtensionModules != null && settings.ExtensionModules.Enable)
+            if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {
                 if (_testState.GetTestEngineModules().Count == 0)
                 {
@@ -73,7 +74,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 }
             }
 
-            if (settings.ExtensionModules.Parameters.ContainsKey("DisablePowerApps"))
+            if (settings != null && settings.ExtensionModules.Parameters.ContainsKey("DisablePowerApps"))
             {
                 PowerAppIntegrationEnabled = false;
             }
@@ -168,8 +169,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 return;
             }
 
-            await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
-
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _powerAppFunctions.CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
 
             var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
@@ -190,15 +189,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             return _powerAppFunctions;
         }
-
-<<<<<<< HEAD
-        public bool PowerAppIntegrationEnabled { get; set; } = true;
-=======
+        
         public async Task RunRequirementsCheckAsync()
         {
             await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
             await _powerAppFunctions.TestEngineReady();
         }
->>>>>>> main
+
+        public bool PowerAppIntegrationEnabled { get; set; } = true;
     }
 }

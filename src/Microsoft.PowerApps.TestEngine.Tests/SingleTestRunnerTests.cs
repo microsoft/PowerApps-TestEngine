@@ -92,6 +92,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Setup(x => x.RunRequirementsCheckAsync()).Returns(Task.CompletedTask);
             MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Returns(Task.CompletedTask);
             MockPowerFxEngine.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<CultureInfo>())).Returns(FormulaValue.NewBlank());
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
 
             MockTestEngineEventHandler.Setup(x => x.SetAndInitializeCounters(It.IsAny<int>()));
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
@@ -249,6 +250,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var testData = new TestDataOne();
 
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
@@ -321,6 +323,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task CreateDirectoryThrowsTest()
         {
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>())).Throws(exceptionToThrow);
@@ -330,6 +333,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task PowerFxSetupThrowsTest()
         {
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockPowerFxEngine.Setup(x => x.Setup()).Throws(exceptionToThrow);
@@ -339,6 +343,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task PowerFxUpdatePowerFxModelAsyncThrowsTest()
         {
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) => {
                 MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Throws(exceptionToThrow);
             });
@@ -347,6 +352,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task TestInfraSetupThrowsTest()
         {
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockTestInfraFunctions.Setup(x => x.SetupAsync()).Throws(exceptionToThrow);
@@ -356,6 +362,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task LoginAsUserThrowsTest()
         {
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<string>())).Throws(exceptionToThrow);
@@ -365,6 +372,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task SetupNetworkRequestMockThrowsTest()
         {
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Throws(exceptionToThrow);
@@ -374,6 +382,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task GenerateAppUrlThrowsTest()
         {
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockUrlMapper.Setup(x => x.GenerateTestUrl("", "")).Throws(exceptionToThrow);
@@ -383,6 +392,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task GoToUrlThrowsTest()
         {
+            MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Throws(exceptionToThrow);

@@ -95,6 +95,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public async void RunRequirementsCheckAsyncTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.CompletedTask);
             MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
 
@@ -110,6 +113,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public async void RunRequirementsCheckAsyncThrowsOnCheckAndHandleIfLegacyPlayerTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Throws(new Exception());
             MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
 
@@ -125,9 +131,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public async void RunRequirementsCheckAsyncThrowsOnTestEngineReadyTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.CompletedTask);
             MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Throws(new Exception());
-
+            
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
 
@@ -144,6 +153,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute("1+1", new CultureInfo("en-US"));
             Assert.Equal(2, ((NumberValue)result).Value);
@@ -162,6 +172,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var powerFxExpression = "1+1; //some comment \n 2+2;\n Concatenate(\"hello\", \"world\");";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.Equal("helloworld", ((StringValue)result).Value);
@@ -175,6 +186,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void ExecuteMultipleFunctionsWithDifferentLocaleTest()
         {
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+
             // en-US locale
             var culture = new CultureInfo("en-US");
             var enUSpowerFxExpression = "1+1;2+2;";
@@ -580,9 +594,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             var powerFxExpression = "Foo()";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            powerFxEngine.Setup(It.IsAny<CultureInfo>());
+            powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            powerFxEngine.Execute(powerFxExpression);
+            powerFxEngine.Execute(powerFxExpression, CultureInfo.CurrentCulture);
         }
     }
 

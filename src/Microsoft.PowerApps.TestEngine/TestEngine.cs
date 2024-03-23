@@ -101,7 +101,7 @@ namespace Microsoft.PowerApps.TestEngine
                     Logger.LogDebug($"Using query: {queryParams}");
                 }
 
-                _state.ParseAndSetTestState(testConfigFile.FullName);
+                _state.ParseAndSetTestState(testConfigFile.FullName, Logger);
                 _state.SetEnvironment(environmentId);
                 _state.SetTenant(tenantId.ToString());
 
@@ -119,13 +119,6 @@ namespace Microsoft.PowerApps.TestEngine
                 testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
                 _fileSystem.CreateDirectory(testRunDirectory);
                 Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
-
-                _state.ParseAndSetTestState(testConfigFile.FullName, Logger);
-                _state.SetEnvironment(environmentId);
-                _state.SetTenant(tenantId.ToString());
-
-                _state.SetDomain(domain);
-                Logger.LogDebug($"Using domain: {domain}");
 
                 await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);
