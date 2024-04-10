@@ -1,13 +1,13 @@
-﻿using Microsoft.PowerFx.Types;
-using Microsoft.PowerFx;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.Playwright;
+using Microsoft.PowerFx;
+using Microsoft.PowerFx.Types;
 
 namespace testengine.module.sample
 {
@@ -19,13 +19,15 @@ namespace testengine.module.sample
 
         }
 
-        public void RegisterPowerFxFunction(PowerFxConfig config, ITestInfraFunctions testInfraFunctions, IPowerAppFunctions powerAppFunctions, ISingleTestInstanceState singleTestInstanceState,  ITestState testState, IFileSystem fileSystem) {
+        public void RegisterPowerFxFunction(PowerFxConfig config, ITestInfraFunctions testInfraFunctions, IPowerAppFunctions powerAppFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState, IFileSystem fileSystem)
+        {
             ILogger logger = singleTestInstanceState.GetLogger();
             config.AddFunction(new SampleFunction());
             logger.LogInformation("Registered Sample()");
         }
 
-        public async Task RegisterNetworkRoute(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock) {
+        public async Task RegisterNetworkRoute(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)
+        {
             return;
         }
     }

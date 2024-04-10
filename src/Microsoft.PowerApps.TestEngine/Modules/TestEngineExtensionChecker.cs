@@ -30,8 +30,10 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             _logger = logger;
         }
 
-        public ILogger Logger { 
-            get { 
+        public ILogger Logger
+        {
+            get
+            {
                 return _logger;
             }
             set
@@ -73,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 var allow = !String.IsNullOrEmpty(allowLongest);
                 var deny = !String.IsNullOrEmpty(denyLongest);
 
-                if ( allow && deny && denyLongest?.Length > allowLongest?.Length || !allow && deny )
+                if (allow && deny && denyLongest?.Length > allowLongest?.Length || !allow && deny)
                 {
                     _logger.LogInformation("Deny usage of " + item);
                     _logger.LogInformation("Allow rule " + allowLongest);
@@ -102,7 +104,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 // Add each assembly reference
                 foreach (var reference in module.AssemblyReferences)
                 {
-                    if ( ! found.Contains(reference.Name) )
+                    if (!found.Contains(reference.Name))
                     {
                         found.Add(reference.Name);
                     }
@@ -111,7 +113,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 foreach (TypeDefinition type in module.GetAllTypes())
                 {
                     AddType(type, found);
-                    
+
                     // Load each constructor parameter and types in the body
                     foreach (var constructor in type.GetConstructors())
                     {
@@ -141,9 +143,9 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         {
                             found.Add(property.PropertyType.FullName);
                         }
-                        if ( property.GetMethod != null )
+                        if (property.GetMethod != null)
                         {
-                            if ( property.GetMethod.HasBody )
+                            if (property.GetMethod.HasBody)
                             {
                                 LoadMethodBodyTypes(property.GetMethod.Body, found);
                             }
@@ -211,10 +213,10 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         var methodInfo = (IMethodSignature)instruction.Operand;
                         AddType(methodInfo.ReturnType, found);
                         var name = methodInfo.ToString();
-                        if ( name.IndexOf(" ") > 0 )
+                        if (name.IndexOf(" ") > 0)
                         {
                             // Remove the return type from the call definition
-                            name = name.Substring(name.IndexOf(" ")+1);
+                            name = name.Substring(name.IndexOf(" ") + 1);
                             var start = name.IndexOf("(");
                             var args = name.Substring(start + 1, name.Length - start - 2).Split(',');
                             if (args.Length >= 1 && !string.IsNullOrEmpty(args[0]))
@@ -222,7 +224,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                                 name = name.Substring(0, start) + GetArgs(args, instruction);
                             }
                         }
-                        if ( !found.Contains(name) )
+                        if (!found.Contains(name))
                         {
                             found.Add(name);
                         }
@@ -241,18 +243,18 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         {
             StringBuilder result = new StringBuilder("(");
 
-            for ( var i = 0; i < args.Length; i++ )
+            for (var i = 0; i < args.Length; i++)
             {
                 var argValue = GetCallArgument(i, args.Length, instruction);
                 switch (args[i])
                 {
                     case "System.String":
-                        if ( argValue.OpCode.Code == Code.Ldstr )
+                        if (argValue.OpCode.Code == Code.Ldstr)
                         {
                             result.Append("\"");
                             result.Append(argValue.Operand.ToString());
                             result.Append("\"");
-                        } 
+                        }
                         else
                         {
                             result.Append(args[i]);
@@ -261,7 +263,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     default:
                         result.Append(args[i]);
                         break;
-                }                
+                }
                 if (i != args.Length - 1)
                 {
                     result.Append(",");

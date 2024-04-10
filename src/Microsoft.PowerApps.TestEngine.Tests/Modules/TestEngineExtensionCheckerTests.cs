@@ -1,16 +1,16 @@
-﻿using Moq;
-using Xunit;
-using Microsoft.Extensions.Logging;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
-using Microsoft.PowerApps.TestEngine.Modules;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System;
-using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Modules;
+using Moq;
+using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Modules
 {

@@ -163,7 +163,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testRunName = "testRunName";
             var testUser = "testUser";
             var testName = "testName";
-            var testSuiteName = "testSuite";            
+            var testSuiteName = "testSuite";
             var testReporter = new TestReporter(MockFileSystem.Object);
             var testRunId = testReporter.CreateTestRun(testRunName, testUser);
             var testLocation = $"{TestReporter.ResultsPrefix}{testRunId}";
@@ -420,5 +420,5 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             };
             MockFileSystem.Verify(x => x.WriteTextToFile(expectedTrxPath, It.Is<string>(y => validateTestResults(y))), Times.Once());
         }
-    }  
+    }
 }

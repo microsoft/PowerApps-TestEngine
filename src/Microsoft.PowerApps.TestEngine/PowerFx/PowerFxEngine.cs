@@ -69,7 +69,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
             else
             {
-                if (_testState.GetTestEngineModules().Count > 0) { 
+                if (_testState.GetTestEngineModules().Count > 0)
+                {
                     Logger.LogInformation("Extension loaded but not enabled");
                 }
             }
@@ -189,7 +190,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             return _powerAppFunctions;
         }
-        
+
         public async Task RunRequirementsCheckAsync()
         {
             await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();

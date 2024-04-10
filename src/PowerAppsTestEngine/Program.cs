@@ -182,7 +182,8 @@ else
 
         string modulePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
         List<ITestEngineModule> modules = new List<ITestEngineModule>();
-        if (!string.IsNullOrEmpty(inputOptions.Modules) && Directory.Exists(inputOptions.Modules)) {
+        if (!string.IsNullOrEmpty(inputOptions.Modules) && Directory.Exists(inputOptions.Modules))
+        {
             modulePath = inputOptions.Modules;
         }
 

@@ -43,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("", "appLogicalName", "appId","tenantId")]
+        [InlineData("", "appLogicalName", "appId", "tenantId")]
         [InlineData(null, "appLogicalName", "appId", "tenantId")]
         [InlineData("environmentId", "", "", "tenantId")]
         [InlineData("environmentId", null, null, "tenantId")]

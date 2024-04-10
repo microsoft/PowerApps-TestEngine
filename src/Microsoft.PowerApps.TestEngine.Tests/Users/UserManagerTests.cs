@@ -187,7 +187,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Users
             LoggingTestHelper.SetupMock(MockLogger);
 
             var userManager = new UserManager(MockTestInfraFunctions.Object, MockTestState.Object, MockSingleTestInstanceState.Object, MockEnvironmentVariable.Object);
-            
+
             var ex = await Assert.ThrowsAsync<UserInputException>(async () => await userManager.LoginAsUserAsync("*"));
             Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
             if (String.IsNullOrEmpty(email))

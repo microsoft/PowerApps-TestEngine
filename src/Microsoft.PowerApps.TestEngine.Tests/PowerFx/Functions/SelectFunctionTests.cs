@@ -64,7 +64,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
 
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
-           
+
             var updaterFunctionCallCount = 0;
             var updaterFunction = () =>
             {
@@ -72,7 +72,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 return Task.CompletedTask;
             };
             var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
-            
+
             var result = selectFunction.Execute(recordValue);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
@@ -117,7 +117,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             var parentValue = new ControlRecordValue(parentRecordType, MockPowerAppFunctions.Object, "Gallery1");
             var rowOrColumn = NumberValue.New(1.0);
-            var childValue = new ControlRecordValue(childRecordType, MockPowerAppFunctions.Object,"Button1");
+            var childValue = new ControlRecordValue(childRecordType, MockPowerAppFunctions.Object, "Button1");
 
             var updaterFunctionCallCount = 0;
             var updaterFunction = () =>
@@ -126,7 +126,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 return Task.CompletedTask;
             };
             var selectFunction = new SelectThreeParamsFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
-            
+
             var result = selectFunction.Execute(parentValue, rowOrColumn, childValue);
             Assert.IsType<BlankValue>(result);
             MockPowerAppFunctions.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Once());
@@ -140,7 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             LoggingTestHelper.SetupMock(MockLogger);
             MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
-            
+
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
 
             var recordValue = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
@@ -150,7 +150,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             {
                 updaterFunctionCallCount++;
                 return Task.CompletedTask;
-            };            
+            };
             var selectFunction = new SelectOneParamFunction(MockPowerAppFunctions.Object, updaterFunction, MockLogger.Object);
 
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue));

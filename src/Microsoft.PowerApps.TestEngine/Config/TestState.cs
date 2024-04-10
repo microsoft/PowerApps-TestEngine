@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Linq;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.System;
@@ -304,11 +304,13 @@ namespace Microsoft.PowerApps.TestEngine.Config
             this.AddModules(components);
         }
 
-        public void AddModules(IEnumerable<ITestEngineModule> modules) {
+        public void AddModules(IEnumerable<ITestEngineModule> modules)
+        {
             Modules.AddRange(modules);
         }
 
-        public List<ITestEngineModule> GetTestEngineModules() {
+        public List<ITestEngineModule> GetTestEngineModules()
+        {
             return Modules;
         }
     }

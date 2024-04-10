@@ -696,7 +696,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task TestEngineReadyNonPublishedAppWithoutJSSDKErrorCodeThrows()
         {
             // Arrange
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);            
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(PowerAppFunctions.CheckPowerAppsTestEngineReadyFunction))
                 .Returns(Task.FromResult("function"));
             // Mock to return error code 0 

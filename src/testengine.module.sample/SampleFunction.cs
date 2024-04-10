@@ -1,5 +1,5 @@
-﻿using Microsoft.PowerFx.Types;
-using Microsoft.PowerFx;
+﻿using Microsoft.PowerFx;
+using Microsoft.PowerFx.Types;
 
 namespace testengine.module.sample
 {

@@ -10,9 +10,10 @@ using Microsoft.PowerFx;
 
 namespace Microsoft.PowerApps.TestEngine.Modules
 {
-    public interface ITestEngineModule {
+    public interface ITestEngineModule
+    {
         void ExtendBrowserContextOptions(BrowserNewContextOptions options, TestSettings settings);
-        void RegisterPowerFxFunction(PowerFxConfig config, ITestInfraFunctions testInfraFunctions, IPowerAppFunctions powerAppFunctions, ISingleTestInstanceState singleTestInstanceState,  ITestState testState, IFileSystem fileSystem);
+        void RegisterPowerFxFunction(PowerFxConfig config, ITestInfraFunctions testInfraFunctions, IPowerAppFunctions powerAppFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState, IFileSystem fileSystem);
         Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock);
     }
 }

@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading;
 using System.Reflection.Emit;
+using System.Threading;
 using System.Threading.Tasks;
 using Castle.Core.Logging;
 using Microsoft.Extensions.Logging;
@@ -136,7 +136,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.CompletedTask);
             MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Throws(new Exception());
-            
+
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
 
@@ -299,7 +299,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
-            
+
             var powerFxExpression = "Assert(1+1=2, \"Adding 1 + 1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
@@ -581,7 +581,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var modules = new List<ITestEngineModule>() { mockModule.Object };
 
             mockModule.Setup(x => x.RegisterPowerFxFunction(It.IsAny<PowerFxConfig>(), It.IsAny<ITestInfraFunctions>(), It.IsAny<IPowerAppFunctions>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<ITestState>(), It.IsAny<IFileSystem>()))
-                .Callback((PowerFxConfig powerFxConfig, ITestInfraFunctions functions, IPowerAppFunctions apps, ISingleTestInstanceState instanceState, ITestState state, IFileSystem fileSystem) => {
+                .Callback((PowerFxConfig powerFxConfig, ITestInfraFunctions functions, IPowerAppFunctions apps, ISingleTestInstanceState instanceState, ITestState state, IFileSystem fileSystem) =>
+                {
                     powerFxConfig.AddFunction(new FooFunction());
                 });
 
@@ -611,4 +612,4 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             return BlankValue.NewBlank();
         }
     }
- }
+}

@@ -197,7 +197,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var verifyBrowserContextOptions = (BrowserNewContextOptions options) =>
             {
-                if (options.Locale != testLocale )
+                if (options.Locale != testLocale)
                 {
                     return false;
                 }

@@ -39,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         /// <returns>Catalog of located modules</returns>
         public AggregateCatalog LoadModules(TestSettingExtensions settings)
         {
-            List<ComposablePartCatalog> match = new List<ComposablePartCatalog>() {  };
+            List<ComposablePartCatalog> match = new List<ComposablePartCatalog>() { };
 
             if (settings.Enable)
             {
@@ -55,7 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         location = Path.Combine(SettingsUtility.GetGlobalPackagesFolder(nuGetSettings), location, "lib", "netstandard2.0");
                     }
 
-                    if ( !DirectoryExists(location) )
+                    if (!DirectoryExists(location))
                     {
                         _logger.LogDebug("Skipping " + location);
                         continue;
@@ -128,7 +128,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             {
                 _logger.LogInformation("Extensions not enabled");
             }
-            
+
             AggregateCatalog results = new AggregateCatalog(match);
             return results;
         }

@@ -107,7 +107,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
 
             // Empty table
             Assert.True(typeMapping.TryGetType("*[]", out formulaType));
-            Assert.Equal(RecordType.Empty().ToTable(),formulaType);
+            Assert.Equal(RecordType.Empty().ToTable(), formulaType);
         }
 
         [Fact]
@@ -147,7 +147,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
 
             // Empty table
             Assert.True(typeMapping.TryGetType("![]", out formulaType));
-            Assert.Equal(RecordType.Empty(),formulaType);
+            Assert.Equal(RecordType.Empty(), formulaType);
         }
 
         [Fact]

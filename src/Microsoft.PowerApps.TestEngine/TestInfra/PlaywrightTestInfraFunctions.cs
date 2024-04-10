@@ -116,7 +116,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if (testSettings.ExtensionModules != null && testSettings.ExtensionModules.Enable)
             {
-                foreach ( var module in _testState.GetTestEngineModules() )
+                foreach (var module in _testState.GetTestEngineModules())
                 {
                     module.ExtendBrowserContextOptions(contextOptions, testSettings);
                 }
@@ -143,11 +143,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             foreach (var mock in mocks)
             {
-                if ( mock.IsExtension ) {
-                    foreach ( var module in _testState.GetTestEngineModules() ) {
+                if (mock.IsExtension)
+                {
+                    foreach (var module in _testState.GetTestEngineModules())
+                    {
                         await module.RegisterNetworkRoute(_testState, _singleTestInstanceState, _fileSystem, Page, mock);
                     }
-                } else {
+                }
+                else
+                {
                     if (string.IsNullOrEmpty(mock.RequestURL))
                     {
                         _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");

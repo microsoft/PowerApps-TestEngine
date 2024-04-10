@@ -31,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
         }
 
         [Theory]
-        [InlineData(false,false,"", "", "", "AssemblyCatalog")]
+        [InlineData(false, false, "", "", "", "AssemblyCatalog")]
         [InlineData(false, false, "*", "foo", "testengine.module.foo.dll", "AssemblyCatalog")]
         [InlineData(false, false, "foo", "*", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
         [InlineData(false, false, "Foo", "*", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
@@ -40,7 +40,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
         [InlineData(true, true, "*", "", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
         public void ModuleMatch(bool checkAssemblies, bool checkResult, string allow, string deny, string files, string expected)
         {
-            var setting = new TestSettingExtensions() { 
+            var setting = new TestSettingExtensions()
+            {
                 Enable = true,
                 CheckAssemblies = checkAssemblies
             };
@@ -52,12 +53,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             loader.LoadAssembly = (file) => new AssemblyCatalog(this.GetType().Assembly);
             loader.Checker = mockChecker.Object;
 
-            if ( checkAssemblies )
+            if (checkAssemblies)
             {
                 mockChecker.Setup(x => x.Validate(It.IsAny<TestSettingExtensions>(), files)).Returns(checkResult);
             }
 
-            if ( !string.IsNullOrEmpty(allow) )
+            if (!string.IsNullOrEmpty(allow))
             {
                 setting.AllowModule.Add(allow);
             }
@@ -70,7 +71,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             var catalog = loader.LoadModules(setting);
 
             Assert.NotNull(catalog);
-            Assert.Equal(expected, string.Join(",",catalog.Catalogs.Select(c => c.GetType().Name)));
+            Assert.Equal(expected, string.Join(",", catalog.Catalogs.Select(c => c.GetType().Name)));
         }
     }
 }
