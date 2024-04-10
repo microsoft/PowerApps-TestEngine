@@ -15,8 +15,14 @@
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy ..\..\bin\$(configuration)\testengine.module.sample\testengine.module.sample.dll ..\..\bin\$(configuration)\PowerAppsTestEngine\testengine.module.sample.dll" />
-  </Target>
+  <ItemGroup>
+      <MySourceFiles Include="..\..\bin\$(configuration)\testengine.module.sample\testengine.module.sample.dll"/>
+  </ItemGroup>
 
+  <Target Name="CopyFiles">
+      <Copy
+          SourceFiles="@(MySourceFiles)"
+          DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine"
+      />
+  </Target>
 </Project>
