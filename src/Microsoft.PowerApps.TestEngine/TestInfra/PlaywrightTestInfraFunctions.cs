@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
@@ -325,96 +325,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
 
             return await Page.EvaluateAsync<T>(jsExpression);
-        }
-
-        // Justification: Limited ability to run unit tests for 
-        // Playwright actions on the sign-in page
-        [ExcludeFromCodeCoverage]
-        public async Task HandleUserEmailScreen(string selector, string value)
-        {
-            ValidatePage();
-            await Page.Locator(selector).WaitForAsync();
-            await Page.TypeAsync(selector, value, new PageTypeOptions { Delay = 50 });
-            await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
-        }
-
-        public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
-        {
-            var logger = _singleTestInstanceState.GetLogger();
-
-            ValidatePage();
-
-            try
-            {
-                // Find the password box
-                await Page.Locator(selector).WaitForAsync();
-
-                // Fill in the password
-                await Page.FillAsync(selector, value);
-
-                // Submit password form
-                await this.ClickAsync("input[type=\"submit\"]");
-
-                PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
-                selectorOptions.Timeout = 8000;
-
-                // For instances where there is a 'Stay signed in?' dialogue box
-                try
-                {
-                    logger.LogDebug("Checking if asked to stay signed in.");
-
-                    // Check if we received a 'Stay signed in?' box?
-                    await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", selectorOptions);
-                    logger.LogDebug("Was asked to 'stay signed in'.");
-
-                    // Click to stay signed in
-                    await Page.ClickAsync("[id=\"idBtn_Back\"]");
-                }
-                // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
-                catch (Exception ssiException)
-                {
-                    logger.LogDebug("Exception encountered: " + ssiException.ToString());
-
-                    // Keep record if passwordError was encountered
-                    bool hasPasswordError = false;
-
-                    try
-                    {
-                        selectorOptions.Timeout = 2000;
-
-                        // Check if we received a password error
-                        await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
-                        hasPasswordError = true;
-                    }
-                    catch (Exception peException)
-                    {
-                        logger.LogDebug("Exception encountered: " + peException.ToString());
-                    }
-
-                    // If encountered password error, exit program
-                    if (hasPasswordError)
-                    {
-                        logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
-                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
-                    }
-                    // If not, continue
-                    else
-                    {
-                        logger.LogDebug("Did not encounter an invalid password error.");
-                    }
-
-                    logger.LogDebug("Was not asked to 'stay signed in'.");
-                }
-
-                await Page.WaitForURLAsync(desiredUrl);
-            }
-            catch (TimeoutException)
-            {
-                logger.LogError("Timed out during login attempt. In order to determine why, it may be beneficial to view the output recording. Make sure that your login credentials are correct.");
-                throw new TimeoutException();
-            }
-
-            logger.LogDebug("Logged in successfully.");
         }
     }
 }

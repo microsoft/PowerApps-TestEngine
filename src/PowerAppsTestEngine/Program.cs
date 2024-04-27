@@ -121,7 +121,6 @@ else
 
     try
     {
-
         var serviceProvider = new ServiceCollection()
         .AddLogging(loggingBuilder =>
         {
@@ -134,7 +133,16 @@ else
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
         .AddScoped<IPowerFxEngine, PowerFxEngine>()
-        .AddScoped<IUserManager, UserManager>()
+        .AddScoped<IUserManager>(sp => {
+            var logger = sp.GetRequiredService<ISingleTestInstanceState>().GetLogger();
+            var testState = sp.GetRequiredService<ITestState>();
+            var userManagers = testState.GetTestEngineUserManager();
+            if ( userManagers.Count == 0 ) {
+                testState.LoadExtensionModules(logger);
+                userManagers = testState.GetTestEngineUserManager();
+            }
+            return userManagers.First();
+        })
         .AddSingleton<ITestState, TestState>()
         .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
         .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
@@ -201,6 +209,7 @@ else
     catch (Exception ex)
     {
         Console.WriteLine("[Critical Error]: " + ex.Message);
+        Console.WriteLine(ex);
     }
 }
 

@@ -24,11 +24,13 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly IPowerFxEngine _powerFxEngine;
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly IUserManager _userManager;
+        private readonly ITestState _state;
         private readonly ISingleTestInstanceState _testState;
         private readonly IUrlMapper _urlMapper;
         private readonly IFileSystem _fileSystem;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ITestEngineEvents _eventHandler;
+        private readonly IEnvironmentVariable _environmentVariable;
         private ILogger Logger { get; set; }
 
         private bool TestSuccess { get; set; } = true;
@@ -39,21 +41,25 @@ namespace Microsoft.PowerApps.TestEngine
                                 IPowerFxEngine powerFxEngine,
                                 ITestInfraFunctions testInfraFunctions,
                                 IUserManager userManager,
+                                ITestState state,
                                 ISingleTestInstanceState testState,
                                 IUrlMapper urlMapper,
                                 IFileSystem fileSystem,
                                 ILoggerFactory loggerFactory,
-                                ITestEngineEvents eventHandler)
+                                ITestEngineEvents eventHandler, 
+                                IEnvironmentVariable environmentVariable)
         {
             _testReporter = testReporter;
             _powerFxEngine = powerFxEngine;
             _testInfraFunctions = testInfraFunctions;
             _userManager = userManager;
+            _state = state;
             _testState = testState;
             _urlMapper = urlMapper;
             _fileSystem = fileSystem;
             _loggerFactory = loggerFactory;
             _eventHandler = eventHandler;
+            _environmentVariable = environmentVariable;
         }
 
         public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
@@ -121,7 +127,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _testReporter.TestRunAppURL = desiredUrl;
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(desiredUrl);
+                await _userManager.LoginAsUserAsync(desiredUrl, _testInfraFunctions.GetContext(), _state, _testState, _environmentVariable);
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();

@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -30,6 +31,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private string ModulePath { get; set; }
 
         private List<ITestEngineModule> Modules { get; set; } = new List<ITestEngineModule>();
+
+        private List<IUserManager> UserManagers { get; set; } = new List<IUserManager>();
 
         private bool IsValid { get; set; } = false;
 
@@ -302,6 +305,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
             container.ComposeParts(mefComponents);
             var components = mefComponents.MefModules.Select(v => v.Value).ToArray();
             this.AddModules(components);
+
+            var userManagers = mefComponents.UserModules.Select(v => v.Value).ToArray();
+            this.AddUserModules(userManagers);
         }
 
         public void AddModules(IEnumerable<ITestEngineModule> modules)
@@ -309,9 +315,19 @@ namespace Microsoft.PowerApps.TestEngine.Config
             Modules.AddRange(modules);
         }
 
+        public void AddUserModules(IEnumerable<IUserManager> modules)
+        {
+            UserManagers.AddRange(modules);
+        }
+
         public List<ITestEngineModule> GetTestEngineModules()
         {
             return Modules;
+        }
+
+        public List<IUserManager> GetTestEngineUserManager()
+        {
+            return UserManagers;
         }
     }
 }

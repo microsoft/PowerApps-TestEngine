@@ -84,6 +84,13 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         }
                     }
 
+                    var possibleUserManager = DirectoryGetFiles(location, "testengine.user.*.dll");
+                    foreach (var possibleModule in possibleUserManager)
+                    {
+                        match.Add(LoadAssembly(possibleModule));
+                    }
+
+
                     // Check if need to deny a module or a specific list of modules are allowed
                     if (settings.DenyModule.Count > 0 || (settings.AllowModule.Count() > 1))
                     {

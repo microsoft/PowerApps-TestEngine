@@ -86,21 +86,5 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="jsExpression">Javascript expression to run</param>
         /// <returns>Return value of javascript</returns>
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
-
-        /// <summary>
-        /// Fills in user email 
-        /// </summary>
-        /// <param name="selector">Selector to find element</param>
-        /// <param name="value">Value to fill in</param>
-        /// <returns>Task</returns>
-        public Task HandleUserEmailScreen(string selector, string value);
-
-        /// <summary>
-        /// Fills in user password
-        /// </summary>
-        /// <param name="selector">Selector to find element</param>
-        /// <param name="value">Value to fill in</param>
-        /// <returns>Task</returns>
-        public Task HandleUserPasswordScreen(string selector, string value, string desiredUrl);
     }
 }
