@@ -112,7 +112,7 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogInformation($"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
                 // Set up test infra
-                await _testInfraFunctions.SetupAsync();
+                await _testInfraFunctions.SetupAsync(_userManager);
                 Logger.LogInformation("Test infrastructure setup finished");
 
                 desiredUrl = _urlMapper.GenerateTestUrl(domain, queryParams);

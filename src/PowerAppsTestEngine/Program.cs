@@ -26,7 +26,8 @@ var switchMappings = new Dictionary<string, string>()
     { "-l", "LogLevel" },
     { "-q", "QueryParams" },
     { "-d", "Domain" },
-    { "-m", "Modules" }
+    { "-m", "Modules" },
+    { "-u", "UserAuth" }
 };
 
 var inputOptions = new ConfigurationBuilder()
@@ -119,6 +120,12 @@ else
         Enum.TryParse(inputOptions.LogLevel, true, out logLevel);
     }
 
+    var userAuth ="browser"; // Default to brower authentication
+    if (!string.IsNullOrEmpty(inputOptions.UserAuth))
+    {
+        userAuth = inputOptions.UserAuth;
+    }
+
     try
     {
         var serviceProvider = new ServiceCollection()
@@ -141,7 +148,7 @@ else
                 testState.LoadExtensionModules(logger);
                 userManagers = testState.GetTestEngineUserManager();
             }
-            return userManagers.First();
+            return userManagers.Where(x => x.Name.Equals(userAuth)).First();
         })
         .AddSingleton<ITestState, TestState>()
         .AddScoped<IUrlMapper, PowerAppsUrlMapper>()

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
@@ -8,6 +8,7 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerApps;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -47,10 +48,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return BrowserContext;
         }
 
-        public async Task SetupAsync()
+        public async Task SetupAsync(IUserManager userManager)
         {
 
             var browserConfig = _singleTestInstanceState.GetBrowserConfig();
+
+            var staticContext = new BrowserTypeLaunchPersistentContextOptions();
 
             if (browserConfig == null)
             {
@@ -83,6 +86,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 Timeout = testSettings.Timeout
             };
 
+            staticContext.Headless = launchOptions.Headless;
+            staticContext.Timeout = launchOptions.Timeout;
+
             var browser = PlaywrightObject[browserConfig.Browser];
             if (browser == null)
             {
@@ -90,8 +96,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
 
-            Browser = await browser.LaunchAsync(launchOptions);
-            _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");
+            if ( !userManager.UseStaticContext ) {
+                Browser = await browser.LaunchAsync(launchOptions);
+                _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");
+            }
 
             var contextOptions = new BrowserNewContextOptions();
 
@@ -103,6 +111,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (testSettings.RecordVideo)
             {
                 contextOptions.RecordVideoDir = _singleTestInstanceState.GetTestResultsDirectory();
+                staticContext.RecordVideoDir = contextOptions.RecordVideoDir;
             }
 
             if (browserConfig.ScreenWidth != null && browserConfig.ScreenHeight != null)
@@ -111,6 +120,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 {
                     Width = browserConfig.ScreenWidth.Value,
                     Height = browserConfig.ScreenHeight.Value
+                };
+                staticContext.RecordVideoSize = new RecordVideoSize() { 
+                    Width = browserConfig.ScreenWidth.Value, 
+                    Height = browserConfig.ScreenHeight.Value,
                 };
             }
 
@@ -122,7 +135,20 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 }
             }
 
-            BrowserContext = await Browser.NewContextAsync(contextOptions);
+            if ( userManager.UseStaticContext ) {
+                _fileSystem.CreateDirectory(userManager.Location);
+                var location = userManager.Location;
+                if ( ! Path.IsPathRooted(location) )
+                {
+                    location = Path.Combine(Directory.GetCurrentDirectory(), location);
+                }
+                _singleTestInstanceState.GetLogger().LogInformation($"Using static context in '{location}' using {userManager.Name}");
+               
+                BrowserContext = await browser.LaunchPersistentContextAsync(location, staticContext);
+            } else {
+                BrowserContext = await Browser.NewContextAsync(contextOptions);
+            }
+            
             _singleTestInstanceState.GetLogger().LogInformation("Browser context created");
         }
 

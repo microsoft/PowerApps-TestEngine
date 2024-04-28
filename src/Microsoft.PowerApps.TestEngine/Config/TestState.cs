@@ -306,7 +306,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             var components = mefComponents.MefModules.Select(v => v.Value).ToArray();
             this.AddModules(components);
 
-            var userManagers = mefComponents.UserModules.Select(v => v.Value).ToArray();
+            var userManagers = mefComponents.UserModules.Select(v => v.Value).OrderByDescending(v => v.Priority).ToArray();
             this.AddUserModules(userManagers);
         }
 

@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -22,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Setup the test infrastructure
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupAsync();
+        public Task SetupAsync(IUserManager userManager);
 
         /// <summary>
         /// Setup the network request mocking

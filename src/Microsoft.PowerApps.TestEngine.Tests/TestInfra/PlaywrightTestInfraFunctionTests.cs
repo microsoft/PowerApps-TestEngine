@@ -9,6 +9,7 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerApps.TestEngine.Users;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
 using Xunit;
@@ -32,6 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         private Mock<IElementHandle> MockElementHandle;
         private Mock<ILogger> MockLogger;
         private Mock<ILoggerFactory> MockLoggerFactory;
+        private Mock<IUserManager> MockUserManager;
 
         public PlaywrightTestInfraFunctionTests()
         {
@@ -50,6 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockLoggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
+            MockUserManager = new Mock<IUserManager>(MockBehavior.Strict);
         }
 
         [Theory]
@@ -90,10 +93,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(testResultsDirectory);
             MockBrowser.Setup(x => x.NewContextAsync(It.IsAny<BrowserNewContextOptions>())).Returns(Task.FromResult(MockBrowserContext.Object));
             LoggingTestHelper.SetupMock(MockLogger);
+            MockUserManager.SetupGet(x => x.UseStaticContext).Returns(false);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
-            await playwrightTestInfraFunctions.SetupAsync();
+            await playwrightTestInfraFunctions.SetupAsync(MockUserManager.Object);
 
             MockSingleTestInstanceState.Verify(x => x.GetBrowserConfig(), Times.Once());
             MockPlaywrightObject.Verify(x => x[browserConfig.Browser], Times.Once());
@@ -180,10 +184,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockBrowser.Setup(x => x.NewContextAsync(It.IsAny<BrowserNewContextOptions>())).Returns(Task.FromResult(MockBrowserContext.Object));
             LoggingTestHelper.SetupMock(MockLogger);
+            MockUserManager.SetupGet(x => x.UseStaticContext).Returns(false);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
-            await playwrightTestInfraFunctions.SetupAsync();
+            await playwrightTestInfraFunctions.SetupAsync(MockUserManager.Object);
 
             MockSingleTestInstanceState.Verify(x => x.GetBrowserConfig(), Times.Once());
             MockPlaywrightObject.Verify(x => x[browserConfig.Browser], Times.Once());
@@ -229,7 +234,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, null);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync(MockUserManager.Object));
         }
 
         [Theory]
@@ -258,7 +263,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 MockFileSystem.Object, null);
 
             // Act and Assert
-            var ex = await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+            var ex = await Assert.ThrowsAsync<UserInputException>(async () => await playwrightTestInfraFunctions.SetupAsync(MockUserManager.Object));
             Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString(), ex.Message);
             LoggingTestHelper.VerifyLogging(MockLogger, PlaywrightTestInfraFunctions.BrowserNotSupportedErrorMessage, LogLevel.Error, Times.Once());
         }
@@ -279,7 +284,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync(MockUserManager.Object));
         }
 
         [Fact]
@@ -292,7 +297,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, MockPlaywrightObject.Object);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync(MockUserManager.Object));
         }
 
         [Fact]

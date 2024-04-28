@@ -13,5 +13,6 @@ namespace PowerAppsTestEngine
         public string? QueryParams { get; set; }
         public string? Domain { get; set; }
         public string? Modules { get; set; }
+        public string? UserAuth { get; set; }
     }
 }

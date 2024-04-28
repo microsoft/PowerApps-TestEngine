@@ -41,6 +41,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<IPowerAppFunctions> MockPowerAppFunctions;
         private Mock<ITestEngineEvents> MockTestEngineEventHandler;
         private Mock<IEnvironmentVariable> MockEnvironmentVariable;
+        private Mock<IBrowserContext> MockBrowserContext;
 
         public SingleTestRunnerTests()
         {
@@ -58,6 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
             MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
+            MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
         }
 
         private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles, string testSuitelocale)
@@ -116,11 +118,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             }
             MockPowerFxEngine.Setup(x => x.GetPowerAppFunctions()).Returns(MockPowerAppFunctions.Object);
 
-            MockTestInfraFunctions.Setup(x => x.SetupAsync()).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<IUserManager>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.DisposeAsync()).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(MockBrowserContext.Object);
 
             MockUserManager.Setup(x => x.LoginAsUserAsync(appUrl,
                 It.IsAny<IBrowserContext>(),
@@ -152,7 +155,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         {
             MockPowerFxEngine.Verify(x => x.Setup(), Times.Once());
             MockPowerFxEngine.Verify(x => x.UpdatePowerFxModelAsync(), Times.Once());
-            MockTestInfraFunctions.Verify(x => x.SetupAsync(), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.SetupAsync(It.IsAny<IUserManager>()), Times.Once());
             MockUserManager.Verify(x => x.LoginAsUserAsync(appUrl,
                 It.IsAny<IBrowserContext>(),
                 It.IsAny<ITestState>(),
@@ -380,7 +383,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockTestInfraFunctions.Setup(x => x.SetupAsync()).Throws(exceptionToThrow);
+                MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<IUserManager>())).Throws(exceptionToThrow);
             });
         }
 
