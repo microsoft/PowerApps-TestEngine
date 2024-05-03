@@ -28,18 +28,11 @@ cd ..\bin\PowerAppTestEngine
 .\playwright.ps1 install
 ```
 
-3. Setup you user and password
+3. Get the values for your environment and tenant id from the [Power Apps Portal](http://make.powerapps.com). See [Get the session ID for Power Apps](https://learn.microsoft.com/power-apps/maker/canvas-apps/get-sessionid#get-the-session-id-for-power-apps-makepowerappscom) for more information.
 
-```powershell
-$env:user1Email = "test@contoso.com"
-$env:user1Password = "XXXXXXXXXXXXXXXXXXXXXXX"
-```
+4. Ensure you have the [button clicker solution](..\..\samples\buttonclicker\ButtonClicker_1_0_0_3.zip) imported into your environment
 
-4. Get the values for your environment and tenant id from the [Power Apps Portal](http://make.powerapps.com). See [Get the session ID for Power Apps](https://learn.microsoft.com/power-apps/maker/canvas-apps/get-sessionid#get-the-session-id-for-power-apps-makepowerappscom) for more information.
-
-5. Ensure you have the [button clicker solution](..\..\samples\buttonclicker\ButtonClicker_1_0_0_3.zip) imported into your environment
-
-6. Run the sample using the environment if and tenant id
+5. Run the sample using the environment if and tenant id
 
 ```powershell
 cd samples\extensions

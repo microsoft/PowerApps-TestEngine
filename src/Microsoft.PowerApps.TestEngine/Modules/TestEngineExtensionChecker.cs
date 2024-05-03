@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -41,6 +42,168 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 _logger = value;
             }
         }
+
+        public Func<bool> CheckCertificates = () => VerifyCertificates();
+
+        /// <summary>
+        /// Verify that the provided file is signed by a trusted X509 root certificate authentication provider and the certificate is still valid
+        /// </summary>
+        /// <param name="settings">The test settings that should be evaluated</param>
+        /// <param name="file">The .Net Assembly file to validate</param>
+        /// <returns><c>True</c> if the assembly can be verified, <c>False</c> if not</returns>
+        public virtual bool Verify(TestSettingExtensions settings, string file)
+        {
+            if (!CheckCertificates())
+            {
+                return true;
+            }
+
+            var cert = X509Certificate.CreateFromSignedFile(file);
+            var cert2 = new X509Certificate2(cert.GetRawCertData());
+
+
+            X509Chain chain = new X509Chain();
+            chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+
+            var valid = true;
+            chain.Build(cert2);
+
+            var sources = GetTrustedSources(settings);
+
+            var allowUntrustedRoot = false;
+            if (settings.Parameters.ContainsKey("AllowUntrustedRoot"))
+            {
+                allowUntrustedRoot = bool.Parse(settings.Parameters["AllowUntrustedRoot"]);
+            }
+
+            foreach (var elem in chain.ChainElements)
+            {
+                foreach (var status in elem.ChainElementStatus)
+                {
+                    if (status.Status == X509ChainStatusFlags.UntrustedRoot && allowUntrustedRoot)
+                    {
+                        continue;
+                    }
+                    valid = false;
+                }
+            }
+
+            // Check if the chain of certificates is valid
+            if (!valid)
+            {
+                return false;
+            }
+
+            // Check for valid trust sources
+            foreach (var elem in chain.ChainElements)
+            {
+                foreach (var source in sources)
+                {
+                    if (!string.IsNullOrEmpty(source.Name) && elem.Certificate.IssuerName.Name.IndexOf($"CN={source.Name}") == -1)
+                    {
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(source.Organization) && elem.Certificate.IssuerName.Name.IndexOf($"O={source.Organization}") == -1)
+                    {
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(source.Location) && elem.Certificate.IssuerName.Name.IndexOf($"L={source.Location}") == -1)
+                    {
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(source.State) && elem.Certificate.IssuerName.Name.IndexOf($"S={source.State}") == -1)
+                    {
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(source.Country) && elem.Certificate.IssuerName.Name.IndexOf($"C={source.Country}") == -1)
+                    {
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(source.Thumbprint) && elem.Certificate.Thumbprint != source.Thumbprint)
+                    {
+                        continue;
+                    }
+                    // Found a trusted source
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool VerifyCertificates()
+        {
+#if RELEASE
+                return true;
+#endif
+            return false;
+        }
+
+        private List<TestEngineTrustSource> GetTrustedSources(TestSettingExtensions settings)
+        {
+            var sources = new List<TestEngineTrustSource>();
+
+            sources.Add(new TestEngineTrustSource()
+            {
+                Name = "Microsoft Root Certificate Authority",
+                Organization = "Microsoft Corporation",
+                Location = "Redmond",
+                State = "Washington",
+                Country = "US",
+                Thumbprint = "8F43288AD272F3103B6FB1428485EA3014C0BCFE"
+            });
+
+            if (settings.Parameters.ContainsKey("TrustedSource"))
+            {
+                var parts = settings.Parameters["TrustedSource"].Split(',');
+                var name = string.Empty;
+                var organization = string.Empty;
+                var location = string.Empty;
+                var state = string.Empty;
+                var country = string.Empty;
+                var thumbprint = string.Empty;
+
+                foreach (var part in parts)
+                {
+                    var nameValue = part.Trim().Split('=');
+                    switch (nameValue[0])
+                    {
+                        case "CN":
+                            name = nameValue[1];
+                            break;
+                        case "O":
+                            organization = nameValue[1];
+                            break;
+                        case "L":
+                            location = nameValue[1];
+                            break;
+                        case "S":
+                            state = nameValue[1];
+                            break;
+                        case "C":
+                            country = nameValue[1];
+                            break;
+                        case "T":
+                            thumbprint = nameValue[1];
+                            break;
+                    }
+                }
+                if (!string.IsNullOrEmpty(name))
+                {
+                    sources.Add(new TestEngineTrustSource()
+                    {
+                        Name = name,
+                        Organization = organization,
+                        Location = location,
+                        State = state,
+                        Country = country,
+                        Thumbprint = thumbprint
+                    });
+                }
+            }
+
+            return sources;
+        }
+
 
         /// <summary>
         /// Validate that the provided file is allowed or should be denied based on the test settings

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Pkcs;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
@@ -11,6 +14,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
 using Moq;
 using Xunit;
+using CertificateRequest = System.Security.Cryptography.X509Certificates.CertificateRequest;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.Modules
 {
@@ -100,6 +104,98 @@ public class TestScript {
             var result = checker.Validate(settings, "testengine.module.test.dll");
 
             Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData(false, true, false, "CN=Test", "CN=Test", 0, 1, true)]
+        [InlineData(false, false, false, "", "", 0, 1, true)]
+        [InlineData(true, true, true, "CN=Test", "CN=Test", -1, 1, true)] // Valid certificate
+        [InlineData(true, true, false, "CN=Test", "CN=Test", -1, 1, false)] // Valid certificate but with untrusted root
+        [InlineData(true, true, true, "CN=Test, O=Match", "CN=Test, O=Match", -1, 1, true)] // Valid certificate with O
+        [InlineData(true, true, true, "CN=Test, O=Match", "CN=Test, O=Other", -1, 1, false)] // Organization mismatch
+        [InlineData(true, true, true, "CN=Test, O=Match, S=WA", "CN=Test, O=Match, S=XX", -1, 1, false)] // State mismatch
+        [InlineData(true, true, true, "CN=Test, O=Match, S=WA, C=US", "CN=Test, O=Match, S=WA, C=XX", -1, 1, false)] // Country mismatch
+        [InlineData(true, true, true, "CN=Test", "CN=Test", -100, -1, false)] // Expired certificate
+        public void Verify(bool checkCertificates, bool sign, bool allowUntrustedRoot, string signWith, string trustedSource, int start, int end, bool expectedResult)
+        {
+            var assembly = CompileScript("var i = 1;");
+
+            byte[] dllBytes = assembly;
+            if (sign)
+            {
+                // Generate a key pair
+                X509Certificate2 certificate = GenerateSelfSignedCertificate(signWith, DateTime.Now.AddDays(start), DateTime.Now.AddDays(end));
+
+                // Create a ContentInfo object from the DLL bytes
+                ContentInfo contentInfo = new ContentInfo(dllBytes);
+
+                // Create a SignedCms object
+                SignedCms signedCms = new SignedCms(contentInfo);
+
+                // Create a CmsSigner object
+                CmsSigner cmsSigner = new CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, certificate);
+
+                // Sign the DLL bytes
+                signedCms.ComputeSignature(cmsSigner);
+
+                // Get the signed bytes
+                byte[] signedBytes = signedCms.Encode();
+
+                dllBytes = signedBytes;
+            }
+
+            var checker = new TestEngineExtensionChecker(MockLogger.Object);
+            checker.CheckCertificates = () => checkCertificates;
+            checker.GetExtentionContents = (file) => assembly;
+
+            var settings = new TestSettingExtensions()
+            {
+                Enable = true
+            };
+            if (!string.IsNullOrEmpty(trustedSource))
+            {
+                settings.Parameters.Add("TrustedSource", trustedSource);
+            }
+            if (allowUntrustedRoot)
+            {
+                settings.Parameters.Add("AllowUntrustedRoot", "True");
+            }
+
+            var valid = false;
+            try
+            {
+                var tempFile = $"test.deleteme.{Guid.NewGuid()}.dll";
+                File.WriteAllBytes(tempFile, dllBytes);
+                if (checker.Verify(settings, tempFile))
+                {
+                    valid = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            Assert.Equal(expectedResult, valid);
+        }
+
+        // Method to generate a self-signed X509Certificate2
+        static X509Certificate2 GenerateSelfSignedCertificate(string subjectName, DateTime validFrom, DateTime validTo)
+        {
+            using (RSA rsa = RSA.Create(2048)) // Generate a 2048-bit RSA key
+            {
+                var certRequest = new CertificateRequest(subjectName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+
+                // Set certificate properties
+                certRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, false, 0, true));
+                certRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.KeyEncipherment, false));
+                certRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(new OidCollection { new Oid("1.3.6.1.5.5.7.3.3") }, false));
+                certRequest.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(certRequest.PublicKey, false));
+
+                // Create the self-signed certificate
+                X509Certificate2 certificate = certRequest.CreateSelfSigned(validFrom, validTo);
+
+                return certificate;
+            }
         }
 
         private byte[] CompileScript(string script)

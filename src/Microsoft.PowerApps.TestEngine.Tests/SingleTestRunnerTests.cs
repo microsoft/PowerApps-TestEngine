@@ -393,7 +393,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUserManager.Setup(x => 
+                MockUserManager.Setup(x =>
                     x.LoginAsUserAsync(It.IsAny<string>(), It.IsAny<IBrowserContext>(), It.IsAny<ITestState>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<IEnvironmentVariable>())
                     ).Throws(exceptionToThrow);
             });

@@ -96,7 +96,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
 
-            if ( !userManager.UseStaticContext ) {
+            if (!userManager.UseStaticContext)
+            {
                 Browser = await browser.LaunchAsync(launchOptions);
                 _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");
             }
@@ -121,8 +122,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     Width = browserConfig.ScreenWidth.Value,
                     Height = browserConfig.ScreenHeight.Value
                 };
-                staticContext.RecordVideoSize = new RecordVideoSize() { 
-                    Width = browserConfig.ScreenWidth.Value, 
+                staticContext.RecordVideoSize = new RecordVideoSize()
+                {
+                    Width = browserConfig.ScreenWidth.Value,
                     Height = browserConfig.ScreenHeight.Value,
                 };
             }
@@ -135,20 +137,23 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 }
             }
 
-            if ( userManager.UseStaticContext ) {
+            if (userManager.UseStaticContext)
+            {
                 _fileSystem.CreateDirectory(userManager.Location);
                 var location = userManager.Location;
-                if ( ! Path.IsPathRooted(location) )
+                if (!Path.IsPathRooted(location))
                 {
                     location = Path.Combine(Directory.GetCurrentDirectory(), location);
                 }
                 _singleTestInstanceState.GetLogger().LogInformation($"Using static context in '{location}' using {userManager.Name}");
-               
+
                 BrowserContext = await browser.LaunchPersistentContextAsync(location, staticContext);
-            } else {
+            }
+            else
+            {
                 BrowserContext = await Browser.NewContextAsync(contextOptions);
             }
-            
+
             _singleTestInstanceState.GetLogger().LogInformation("Browser context created");
         }
 

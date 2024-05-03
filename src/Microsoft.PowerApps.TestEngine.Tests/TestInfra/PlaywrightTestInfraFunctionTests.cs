@@ -9,8 +9,8 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.Users;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.PowerApps.TestEngine.Users;
 using Moq;
 using Xunit;
 

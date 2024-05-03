@@ -46,7 +46,7 @@ namespace Microsoft.PowerApps.TestEngine
                                 IUrlMapper urlMapper,
                                 IFileSystem fileSystem,
                                 ILoggerFactory loggerFactory,
-                                ITestEngineEvents eventHandler, 
+                                ITestEngineEvents eventHandler,
                                 IEnvironmentVariable environmentVariable)
         {
             _testReporter = testReporter;

@@ -49,7 +49,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             Mock<TestEngineExtensionChecker> mockChecker = new Mock<TestEngineExtensionChecker>();
 
             var loader = new TestEngineModuleMEFLoader(MockLogger.Object);
-            loader.DirectoryGetFiles = (location, pattern) => {
+            loader.DirectoryGetFiles = (location, pattern) =>
+            {
                 var searchPattern = Regex.Escape(pattern).Replace(@"\*", ".*?");
                 return files.Split(",").Where(f => Regex.IsMatch(f, searchPattern)).ToArray();
             };
