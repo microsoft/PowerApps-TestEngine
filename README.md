@@ -12,6 +12,7 @@ Power Apps Test Engine is an open source project with the aim of providing maker
 - DOM abstraction - Tests are authored using references to control names that are defined at design-time. Test authors do not need to write JavaScript, and do not need to be familiar with the browser DOM of the app's rendered output.
 - Connector mocking - Test authors can optionally create mocks of network calls, typically used when Power Apps make calls to connectors. This allows the app to be tested without modification to the app itself while avoiding any unwanted side-effects of the external APIs.
 - Screenshot and video recording support - Test Engine can take screenshots at any point during your test execution, and records videos of the test run. This can be very helpful to diagnose failed tests and to understand what the actual experience of the failed test case was.
+- Managed Extensibility Framework (MEF) - Test Engine can take advantage of defined MEF interfaces to provide authetication, providers and Power FX actions using [extension](./docs/Extensions/README.md) assemblies.
 
 Build this project using the instructions below. This will create a local executable that can be used to run tests from your machine.
 
@@ -102,9 +103,26 @@ For more information about the config and the inputs to the command, please view
 
 ### Set up user authentication
 
-This refers to the account that Test Engine will use to execute the test.
+This refers to the account that Test Engine will use to execute the test. Test Engine supports an [Extension Model](./docs/Extensions/README.md) to allow different methods to authenticate the test system account using the UserAuth configuration parameter.
 
-Test Engine does not support multi-factor authentication. Use an account that requires only a username and password to sign in for your tests.
+The default UserAuth provider is BrowserContext.
+
+#### Browser context authentication
+
+Test Engine using Browser context authentication can support multi-factor authentication. Usinbg this approach an interactive login is first required to successfully authenticate with the Power Platform.
+
+Once the BrowserContext folder with the authentication tokens is available. You ccan use the Pause sample to generate a **BrowserContext** folder that you can use to login for other tests 
+
+```bash
+# Change to the compiled PowerAppsTestEngine folder
+cd bin\Debug\PowerAppsTestEngine
+# Run the pause sample
+dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\pause\testPlan.fx.yaml -e 12345678-1111-2222-3333-444444444444 -t aaaaaaaa-1111-2222-3333-444444444444
+```
+
+#### Environment variable authentication
+
+Test Engine using the environment variable based login does not support multi-factor authentication. Use an account that requires only a username and password to sign in for your tests.
 
 Test credentials cannot be stored in test plan files. Rather, they are stored in PowerShell environment variables. The test plan file contains references to which environment variables are used for credentials. For example, the following snippet indicates that the `user1Email` and `user1Password` environment variables will be used:
 

@@ -16,9 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.sample", "testengine.module.sample\testengine.module.sample.csproj", "{89C38E35-85CA-454C-B80A-F5BD5BFE9FE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.provider.canvas", "testengine.provider.canvas\testengine.provider.canvas.csproj", "{6AFE2228-38CA-4D73-9008-BF67F4442706}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.canvas", "testengine.provider.canvas\testengine.provider.canvas.csproj", "{6AFE2228-38CA-4D73-9008-BF67F4442706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.provider.canvas.tests", "testengine.provider.canvas.tests\testengine.provider.canvas.tests.csproj", "{1F097AC5-D840-4005-A8AF-527B51734138}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.canvas.tests", "testengine.provider.canvas.tests\testengine.provider.canvas.tests.csproj", "{1F097AC5-D840-4005-A8AF-527B51734138}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{63A04DC1-C37E-43E6-8FEA-A480483E11F8}"
 EndProject
@@ -35,6 +35,16 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.browser", "testengine.user.browser\testengine.user.browser.csproj", "{2778A59F-773D-414E-A1FF-9C5B5F90E28F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.browser.tests", "testengine.user.browser.tests\testengine.user.browser.tests.csproj", "{8AEAF6BD-38E3-4649-9221-6A67AD1E96EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D34E437A-6149-46EC-B7DA-FF449E55CEEA}"
+	ProjectSection(SolutionItems) = preProject
+		..\Extensions.md = ..\Extensions.md
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.pause", "testengine.module.pause\testengine.module.pause.csproj", "{B3A02421-223D-4E80-A8CE-977B425A6EB2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.pause.tests", "testengine.module.pause.tests\testengine.module.pause.tests.csproj", "{3D9F90F2-0937-486D-AA0B-BFE425354F4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +92,14 @@ Global
 		{8AEAF6BD-38E3-4649-9221-6A67AD1E96EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AEAF6BD-38E3-4649-9221-6A67AD1E96EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AEAF6BD-38E3-4649-9221-6A67AD1E96EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3A02421-223D-4E80-A8CE-977B425A6EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3A02421-223D-4E80-A8CE-977B425A6EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3A02421-223D-4E80-A8CE-977B425A6EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3A02421-223D-4E80-A8CE-977B425A6EB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D9F90F2-0937-486D-AA0B-BFE425354F4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D9F90F2-0937-486D-AA0B-BFE425354F4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D9F90F2-0937-486D-AA0B-BFE425354F4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D9F90F2-0937-486D-AA0B-BFE425354F4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +115,8 @@ Global
 		{B91EFA35-C28B-497E-BFDC-8497933393A0} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
 		{2778A59F-773D-414E-A1FF-9C5B5F90E28F} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
 		{8AEAF6BD-38E3-4649-9221-6A67AD1E96EC} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
+		{B3A02421-223D-4E80-A8CE-977B425A6EB2} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
+		{3D9F90F2-0937-486D-AA0B-BFE425354F4A} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E7B2C01-DDE2-4C5A-96C3-AF474B074331}
