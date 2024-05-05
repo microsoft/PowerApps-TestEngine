@@ -5,13 +5,14 @@ using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using NuGet.Configuration;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
 {
@@ -20,67 +21,71 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
     /// </summary>
     public class PowerFxEngine : IPowerFxEngine
     {
-        private readonly ITestInfraFunctions _testInfraFunctions;
-        private readonly IPowerAppFunctions _powerAppFunctions;
+        private readonly ITestInfraFunctions TestInfraFunctions;
+        private readonly ITestWebProvider _testWebProvider;
         private readonly IFileSystem _fileSystem;
-        private readonly ISingleTestInstanceState _singleTestInstanceState;
-        private readonly ITestState _testState;
+        private readonly ISingleTestInstanceState SingleTestInstanceState;
+        private readonly ITestState TestState;
         private int _retryLimit = 2;
 
         private RecalcEngine Engine { get; set; }
-        private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
+        private ILogger Logger { get { return SingleTestInstanceState.GetLogger(); } }
 
         public PowerFxEngine(ITestInfraFunctions testInfraFunctions,
-                             IPowerAppFunctions powerAppFunctions,
+                             ITestWebProvider testWebProvider,
                              ISingleTestInstanceState singleTestInstanceState,
                              ITestState testState,
                              IFileSystem fileSystem)
         {
-            _testInfraFunctions = testInfraFunctions;
-            _powerAppFunctions = powerAppFunctions;
-            _singleTestInstanceState = singleTestInstanceState;
-            _testState = testState;
+            TestInfraFunctions = testInfraFunctions;
+            _testWebProvider = testWebProvider;
+            SingleTestInstanceState = singleTestInstanceState;
+            TestState = testState;
             _fileSystem = fileSystem;
         }
 
         public void Setup()
         {
-            var powerFxConfig = new PowerFxConfig();
+            var powerFxConfig = new PowerFxConfig(Features.PowerFxV1);
 
-            powerFxConfig.AddFunction(new SelectOneParamFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
-            powerFxConfig.AddFunction(new SelectTwoParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
-            powerFxConfig.AddFunction(new SelectThreeParamsFunction(_powerAppFunctions, async () => await UpdatePowerFxModelAsync(), Logger));
-            powerFxConfig.AddFunction(new ScreenshotFunction(_testInfraFunctions, _singleTestInstanceState, _fileSystem, Logger));
+            var vals = new SymbolValues();
+            var symbols = (SymbolTable)vals.SymbolTable;
+            symbols.EnableMutationFunctions();
+            powerFxConfig.SymbolTable = symbols;
+
+            //TODO: Remove
+            powerFxConfig.EnableSetFunction();
+            //TODO: End
+
+            powerFxConfig.AddFunction(new SelectOneParamFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new SelectTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new SelectThreeParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new ScreenshotFunction(TestInfraFunctions, SingleTestInstanceState, _fileSystem, Logger));
             powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
-            powerFxConfig.AddFunction(new SetPropertyFunction(_powerAppFunctions, Logger));
+            powerFxConfig.AddFunction(new SetPropertyFunction(_testWebProvider, Logger));
 
-            var settings = _testState.GetTestSettings();
+            var settings = TestState.GetTestSettings();
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {
-                if (_testState.GetTestEngineModules().Count == 0)
+                if (TestState.GetTestEngineModules().Count == 0)
                 {
                     Logger.LogError("Extension enabled not none loaded");
                 }
-                foreach (var module in _testState.GetTestEngineModules())
+                foreach (var module in TestState.GetTestEngineModules())
                 {
-                    module.RegisterPowerFxFunction(powerFxConfig, _testInfraFunctions, _powerAppFunctions, _singleTestInstanceState, _testState, _fileSystem);
+                    module.RegisterPowerFxFunction(powerFxConfig, TestInfraFunctions, _testWebProvider, SingleTestInstanceState, TestState, _fileSystem);
                 }
             }
             else
             {
-                if (_testState.GetTestEngineModules().Count > 0)
+                if (TestState.GetTestEngineModules().Count > 0)
                 {
                     Logger.LogInformation("Extension loaded but not enabled");
                 }
             }
 
-            if (settings != null && settings.ExtensionModules.Parameters.ContainsKey("DisablePowerApps"))
-            {
-                PowerAppIntegrationEnabled = false;
-            }
-
-            WaitRegisterExtensions.RegisterAll(powerFxConfig, _testState.GetTimeout(), Logger);
+            WaitRegisterExtensions.RegisterAll(powerFxConfig, TestState.GetTimeout(), Logger);
 
             Engine = new RecalcEngine(powerFxConfig);
         }
@@ -129,6 +134,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             var goStepByStep = false;
+
             // Check if the syntax is correct
             var checkResult = Engine.Check(testSteps, null, GetPowerFxParserOptions(culture));
             if (!checkResult.IsSuccess)
@@ -152,6 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
             else
             {
+                var values = new SymbolValues();
                 Logger.LogTrace($"Attempting:\n\n{{\n{testSteps}}}");
                 return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
             }
@@ -170,9 +177,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 return;
             }
 
-            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _powerAppFunctions.CheckIfAppIsIdleAsync(), _testState.GetTestSettings().Timeout, _singleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _testWebProvider.CheckIsIdleAsync(), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
 
-            var controlRecordValues = await _powerAppFunctions.LoadPowerAppsObjectModelAsync();
+            var controlRecordValues = await _testWebProvider.LoadObjectModelAsync();
             foreach (var control in controlRecordValues)
             {
                 Engine.UpdateVariable(control.Key, control.Value);
@@ -186,15 +193,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             return new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true };
         }
 
-        public IPowerAppFunctions GetPowerAppFunctions()
+        public ITestWebProvider GetWebProvider()
         {
-            return _powerAppFunctions;
+            return _testWebProvider;
         }
 
         public async Task RunRequirementsCheckAsync()
         {
-            await _powerAppFunctions.CheckAndHandleIfLegacyPlayerAsync();
-            await _powerAppFunctions.TestEngineReady();
+            await _testWebProvider.CheckProviderAsync();
+            await _testWebProvider.TestEngineReady();
         }
 
         public bool PowerAppIntegrationEnabled { get; set; } = true;

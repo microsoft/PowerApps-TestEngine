@@ -30,19 +30,12 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.35.0" />
-    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="1.1.0" />
+    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="1.2.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NuGet.Configuration" Version="6.5.0" />
     <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Content Include="JS\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content>
   </ItemGroup>
   <ItemGroup Condition="'$(GitExists)' == true">
     <PackageReference Include="MinVer" Version="2.3.0">

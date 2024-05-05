@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
@@ -34,6 +35,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         private Mock<ILogger> MockLogger;
         private Mock<ILoggerFactory> MockLoggerFactory;
         private Mock<IUserManager> MockUserManager;
+        private Mock<ITestWebProvider> MockTestWebProvider;
 
         public PlaywrightTestInfraFunctionTests()
         {
@@ -53,6 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockLoggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
             MockUserManager = new Mock<IUserManager>(MockBehavior.Strict);
+            MockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
         }
 
         [Theory]
@@ -714,9 +717,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             LoggingTestHelper.SetupMock(MockLogger);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockPage.Setup(x => x.EvaluateAsync<string>(It.IsAny<string>(), It.IsAny<object?>())).Returns(Task.FromResult(expectedResponse));
+            MockTestWebProvider.SetupGet(x => x.CheckTestEngineObject).Returns("Sample");
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
-                MockFileSystem.Object, page: MockPage.Object);
+                MockFileSystem.Object, page: MockPage.Object, testWebProvider: MockTestWebProvider.Object);
             var result = await playwrightTestInfraFunctions.RunJavascriptAsync<string>(jsExpression);
             Assert.Equal(expectedResponse, result);
 

@@ -3,6 +3,7 @@
 
 using System.Globalization;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Providers;
 
 namespace Microsoft.PowerApps.TestEngine
 {

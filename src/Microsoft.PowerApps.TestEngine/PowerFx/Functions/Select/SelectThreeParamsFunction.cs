@@ -3,8 +3,8 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.Providers;
+using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 
@@ -16,13 +16,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// </summary>
     public class SelectThreeParamsFunction : ReflectionFunction
     {
-        private readonly IPowerAppFunctions _powerAppFunctions;
+        private readonly ITestWebProvider _testWebProvider;
         private readonly Func<Task> _updateModelFunction;
         protected readonly ILogger _logger;
 
-        public SelectThreeParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, RecordType.Empty(), FormulaType.Number, RecordType.Empty())
+        public SelectThreeParamsFunction(ITestWebProvider TestWebProvider, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, RecordType.Empty(), FormulaType.Number, RecordType.Empty())
         {
-            _powerAppFunctions = powerAppFunctions;
+            _testWebProvider = TestWebProvider;
             _updateModelFunction = updateModelFunction;
             _logger = logger;
         }
@@ -60,8 +60,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             };
 
             var recordType = RecordType.Empty().Add(childControlName, RecordType.Empty());
-            var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, childControlName, parentItemPath);
-            var result = await _powerAppFunctions.SelectControlAsync(powerAppControlModel.GetItemPath());
+            var powerAppControlModel = new ControlRecordValue(recordType, _testWebProvider, childControlName, parentItemPath);
+            var result = await _testWebProvider.SelectControlAsync(powerAppControlModel.GetItemPath());
 
             if (!result)
             {

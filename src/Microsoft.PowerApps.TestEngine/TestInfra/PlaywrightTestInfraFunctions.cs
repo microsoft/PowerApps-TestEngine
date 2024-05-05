@@ -6,7 +6,7 @@ using System.Runtime;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
 
@@ -20,23 +20,26 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ITestState _testState;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
+        private readonly ITestWebProvider _testWebProvider;
 
         public static string BrowserNotSupportedErrorMessage = "Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers";
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         private IPage Page { get; set; }
+        
 
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider)
         {
             _testState = testState;
             _singleTestInstanceState = singleTestInstanceState;
             _fileSystem = fileSystem;
+            _testWebProvider = testWebProvider;
         }
 
         // Constructor to aid with unit testing
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem,
-            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null) : this(testState, singleTestInstanceState, fileSystem)
+            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null, ITestWebProvider testWebProvider = null) : this(testState, singleTestInstanceState, fileSystem, testWebProvider)
         {
             PlaywrightObject = playwrightObject;
             Page = page;
@@ -350,7 +353,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             ValidatePage();
 
-            if (!jsExpression.Equals(PowerAppFunctions.CheckPowerAppsTestEngineObject))
+            if (!jsExpression.Equals(_testWebProvider.CheckTestEngineObject))
             {
                 _singleTestInstanceState.GetLogger().LogDebug("Run Javascript: " + jsExpression);
             }

@@ -11,8 +11,8 @@ using Castle.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.Providers;
+using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ITestState> MockTestState;
-        private Mock<IPowerAppFunctions> MockPowerAppFunctions;
+        private Mock<ITestWebProvider> MockTestWebProvider;
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<Microsoft.Extensions.Logging.ILogger> MockLogger;
@@ -38,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
-            MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+            MockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Strict);
@@ -53,14 +53,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
         }
 
         [Fact]
         public void ExecuteThrowsOnNoSetupTest()
         {
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             Assert.Throws<InvalidOperationException>(() => powerFxEngine.Execute("", It.IsAny<CultureInfo>()));
             LoggingTestHelper.VerifyLogging(MockLogger, "Engine is null, make sure to call Setup first", LogLevel.Error, Times.Once());
         }
@@ -68,7 +68,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public void UpdatePowerFxModelAsyncThrowsOnNoSetupTest()
         {
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.UpdatePowerFxModelAsync());
             LoggingTestHelper.VerifyLogging(MockLogger, "Engine is null, make sure to call Setup first", LogLevel.Error, Times.Once());
         }
@@ -77,16 +77,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public async void UpdatePowerFxModelAsyncThrowsOnCantGetAppStatusTest()
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
-            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
-            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(false));
+            var button1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Button1");
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(false));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await Assert.ThrowsAsync<TimeoutException>(() => powerFxEngine.UpdatePowerFxModelAsync());
             LoggingTestHelper.VerifyLogging(MockLogger, "Something went wrong when Test Engine tried to get App status.", LogLevel.Error, Times.Once());
@@ -98,16 +98,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.CompletedTask);
-            MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
+            MockTestWebProvider.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
 
             await powerFxEngine.RunRequirementsCheckAsync();
 
-            MockPowerAppFunctions.Verify(x => x.CheckAndHandleIfLegacyPlayerAsync(), Times.Once());
-            MockPowerAppFunctions.Verify(x => x.TestEngineReady(), Times.Once());
+            MockTestWebProvider.Verify(x => x.CheckProviderAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.TestEngineReady(), Times.Once());
         }
 
         [Fact]
@@ -116,16 +116,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Throws(new Exception());
-            MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Throws(new Exception());
+            MockTestWebProvider.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
 
             await Assert.ThrowsAsync<Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
 
-            MockPowerAppFunctions.Verify(x => x.CheckAndHandleIfLegacyPlayerAsync(), Times.Once());
-            MockPowerAppFunctions.Verify(x => x.TestEngineReady(), Times.Never());
+            MockTestWebProvider.Verify(x => x.CheckProviderAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.TestEngineReady(), Times.Never());
         }
 
         [Fact]
@@ -134,16 +134,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.CompletedTask);
-            MockPowerAppFunctions.Setup(x => x.TestEngineReady()).Throws(new Exception());
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
+            MockTestWebProvider.Setup(x => x.TestEngineReady()).Throws(new Exception());
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
 
             await Assert.ThrowsAsync<Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
 
-            MockPowerAppFunctions.Verify(x => x.CheckAndHandleIfLegacyPlayerAsync(), Times.Once());
-            MockPowerAppFunctions.Verify(x => x.TestEngineReady(), Times.Once());
+            MockTestWebProvider.Verify(x => x.CheckProviderAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.TestEngineReady(), Times.Once());
         }
 
         [Fact]
@@ -152,7 +152,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute("1+1", new CultureInfo("en-US"));
@@ -171,7 +171,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "1+1; //some comment \n 2+2;\n Concatenate(\"hello\", \"world\");";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
@@ -192,14 +192,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             // en-US locale
             var culture = new CultureInfo("en-US");
             var enUSpowerFxExpression = "1+1;2+2;";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             var enUSResult = powerFxEngine.Execute(enUSpowerFxExpression, culture);
 
             // fr locale
             culture = new CultureInfo("fr");
             var frpowerFxExpression = "1+1;;2+2;;";
-            powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             var frResult = powerFxEngine.Execute(frpowerFxExpression, culture);
 
@@ -214,8 +214,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public async Task ExecuteWithVariablesTest()
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
-            var label1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
-            var label2 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label2");
+            var label1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Label1");
+            var label2 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Label2");
             var powerFxExpression = "Concatenate(Text(Label1.Text), Text(Label2.Text))";
             var label1Text = "Hello";
             var label2Text = "World";
@@ -238,35 +238,35 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                 PropertyName = "Text"
             };
 
-            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label1")))
+            MockTestWebProvider.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label1")))
                 .Returns(JsonConvert.SerializeObject(label1JsProperty));
-            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label2")))
+            MockTestWebProvider.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == "Label2")))
                 .Returns(JsonConvert.SerializeObject(label2JsProperty));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 }, { "Label2", label2 } }));
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 }, { "Label2", label2 } }));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
 
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
 
             var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Once());
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Once());
+            MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Once());
+            MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Once());
 
             result = powerFxEngine.Execute($"={powerFxExpression}", It.IsAny<CultureInfo>());
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Exactly(2));
-            MockPowerAppFunctions.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Exactly(2));
+            MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Exactly(2));
+            MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Exactly(2));
         }
 
         [Fact]
@@ -276,8 +276,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "someNonExistentPowerFxFunction(1, 2, 3)";
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
@@ -289,7 +289,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
@@ -301,7 +301,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Assert(1+1=2, \"Adding 1 + 1\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
@@ -320,7 +320,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
             MockTestInfraFunctions.Setup(x => x.ScreenshotAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             var powerFxExpression = "Screenshot(\"1.jpg\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
@@ -333,47 +333,47 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         public async Task ExecuteSelectFunctionTest()
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
-            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            var button1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Button1");
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Select(Button1)";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
             var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Exactly(3));
+            MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Exactly(3));
         }
 
         [Fact]
         public async Task ExecuteSelectFunctionFailingTest()
         {
-            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
-            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            var button1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Button1");
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
             var powerFxExpression = "Select(Button1)";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
         [Fact]
@@ -381,77 +381,77 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var otherRecordType = RecordType.Empty().Add("Foo", FormulaType.String);
-            var button1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Button1");
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            var button1 = new ControlRecordValue(otherRecordType, MockTestWebProvider.Object, "Button1");
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Select(Button1)";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
         [Fact]
         public async Task ExecuteSetPropertyFunctionTest()
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
-            var button1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Button1");
+            var button1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Button1");
 
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
+            MockTestWebProvider.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
 
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
             var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BooleanValue>(result);
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
         [Fact]
         public async Task ExecuteSetPropertyFunctionThrowsOnDifferentRecordTypeTest()
         {
             var wrongRecordType = RecordType.Empty().Add("Foo", FormulaType.String);
-            var button1 = new ControlRecordValue(wrongRecordType, MockPowerAppFunctions.Object, "Button1");
+            var button1 = new ControlRecordValue(wrongRecordType, MockTestWebProvider.Object, "Button1");
 
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
 
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
         [Fact]
         public async Task ExecuteWaitFunctionTest()
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
-            var label1 = new ControlRecordValue(recordType, MockPowerAppFunctions.Object, "Label1");
+            var label1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Label1");
             var label1Text = "1";
             var label1JsProperty = new JSPropertyValueModel()
             {
@@ -463,24 +463,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                 PropertyName = "Text"
             };
 
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((input) => itemPath.ControlName == input.ControlName && itemPath.PropertyName == input.PropertyName)))
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
+            MockTestWebProvider.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((input) => itemPath.ControlName == input.ControlName && itemPath.PropertyName == input.PropertyName)))
                 .Returns(JsonConvert.SerializeObject(label1JsProperty));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
             var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
         [Fact]
@@ -488,21 +488,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var otherRecordType = RecordType.Empty().Add("Foo", FormulaType.String);
-            var label1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label1");
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
+            var label1 = new ControlRecordValue(otherRecordType, MockTestWebProvider.Object, "Label1");
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label1", label1 } }));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
-            MockPowerAppFunctions.Verify(x => x.LoadPowerAppsObjectModelAsync(), Times.Once());
+            MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
         public async Task TestStepByStep()
@@ -511,10 +511,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = GetPowerFxEngine();
             int updateCounter = 0;
             var otherRecordType = RecordType.Empty().Add("Foo", FormulaType.String);
-            var label1 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label1");
-            var label2 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label2");
-            var label3 = new ControlRecordValue(otherRecordType, MockPowerAppFunctions.Object, "Label3");
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(() =>
+            var label1 = new ControlRecordValue(otherRecordType, MockTestWebProvider.Object, "Label1");
+            var label2 = new ControlRecordValue(otherRecordType, MockTestWebProvider.Object, "Label2");
+            var label3 = new ControlRecordValue(otherRecordType, MockTestWebProvider.Object, "Label3");
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(() =>
             {
                 if (updateCounter == 0)
                 {
@@ -531,9 +531,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
                     return Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Label3", label3 } });
                 }
             });
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
 
             var oldUICulture = CultureInfo.CurrentUICulture;
             var frenchCulture = new CultureInfo("fr");
@@ -569,7 +569,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
         private PowerFxEngine GetPowerFxEngine()
         {
-            return new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            return new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
         }
 
         [Fact]
@@ -580,8 +580,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var mockModule = new Mock<ITestEngineModule>();
             var modules = new List<ITestEngineModule>() { mockModule.Object };
 
-            mockModule.Setup(x => x.RegisterPowerFxFunction(It.IsAny<PowerFxConfig>(), It.IsAny<ITestInfraFunctions>(), It.IsAny<IPowerAppFunctions>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<ITestState>(), It.IsAny<IFileSystem>()))
-                .Callback((PowerFxConfig powerFxConfig, ITestInfraFunctions functions, IPowerAppFunctions apps, ISingleTestInstanceState instanceState, ITestState state, IFileSystem fileSystem) =>
+            mockModule.Setup(x => x.RegisterPowerFxFunction(It.IsAny<PowerFxConfig>(), It.IsAny<ITestInfraFunctions>(), It.IsAny<ITestWebProvider>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<ITestState>(), It.IsAny<IFileSystem>()))
+                .Callback((PowerFxConfig powerFxConfig, ITestInfraFunctions functions, ITestWebProvider apps, ISingleTestInstanceState instanceState, ITestState state, IFileSystem fileSystem) =>
                 {
                     powerFxConfig.AddFunction(new FooFunction());
                 });
@@ -589,12 +589,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(modules);
 
-            MockPowerAppFunctions.Setup(x => x.CheckAndHandleIfLegacyPlayerAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.CheckIfAppIsIdleAsync()).Returns(Task.FromResult(true));
-            MockPowerAppFunctions.Setup(x => x.LoadPowerAppsObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { }));
+            MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
+            MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { }));
 
             var powerFxExpression = "Foo()";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             powerFxEngine.Execute(powerFxExpression, CultureInfo.CurrentCulture);

@@ -7,8 +7,11 @@ using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
 
 namespace Microsoft.PowerApps.TestEngine
 {
@@ -104,7 +107,6 @@ namespace Microsoft.PowerApps.TestEngine
                 _state.ParseAndSetTestState(testConfigFile.FullName, Logger);
                 _state.SetEnvironment(environmentId);
                 _state.SetTenant(tenantId.ToString());
-
                 _state.LoadExtensionModules(Logger);
 
                 _state.SetDomain(domain);

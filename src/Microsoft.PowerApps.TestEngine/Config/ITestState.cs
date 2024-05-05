@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.Config
@@ -135,8 +136,13 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<ITestEngineModule> GetTestEngineModules();
 
         /// <summary>
-        /// Get the list of registered Test engine user managaers
+        /// Get the list of registered Test engine user managers
         /// </summary>
         public List<IUserManager> GetTestEngineUserManager();
+
+        /// <summary>
+        /// Get the list of registered Test engine web test providers
+        /// </summary>
+        public List<ITestWebProvider> GetTestEngineWebProviders();
     }
 }

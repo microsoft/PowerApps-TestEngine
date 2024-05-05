@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
+    <PublicSign>true</PublicSign>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="JS\CanvasAppSdk.js" />
+    <None Remove="JS\PublishedAppTesting.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="JS\CanvasAppSdk.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
+    <Content Include="JS\PublishedAppTesting.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MySourceFiles Include="..\..\bin\$(configuration)\testengine.provider.canvas\testengine.provider.canvas.dll"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <MyJSFiles Include="JS\CanvasAppSdk.js;JS\PublishedAppTesting.js"/>
+  </ItemGroup>
+
+  <Target Name="CopyFiles" AfterTargets="AfterBuild">
+    <Copy
+        SourceFiles="@(MySourceFiles)"
+        DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine"
+      />
+    <Copy
+        SourceFiles="@(MyJSFiles)"
+        DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine\JS"
+      />
+  </Target>
+
+</Project>

@@ -44,6 +44,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             if (settings.Enable)
             {
                 _logger.LogInformation("Extensions enabled");
+
+                // Load MEF exports from this assembly 
                 match.Add(new AssemblyCatalog(typeof(TestEngine).Assembly));
 
                 foreach (var sourcelocation in settings.Source.InstallSource)
@@ -87,9 +89,20 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     var possibleUserManager = DirectoryGetFiles(location, "testengine.user.*.dll");
                     foreach (var possibleModule in possibleUserManager)
                     {
-                        match.Add(LoadAssembly(possibleModule));
+                        if ( Checker.Verify(settings, possibleModule))
+                        {
+                            match.Add(LoadAssembly(possibleModule));
+                        }
                     }
 
+                    var possibleWebProviderModule = DirectoryGetFiles(location, "testengine.provider.*.dll");
+                    foreach (var possibleModule in possibleWebProviderModule)
+                    {
+                        if (Checker.Verify(settings, possibleModule))
+                        {
+                            match.Add(LoadAssembly(possibleModule));
+                        }
+                    }
 
                     // Check if need to deny a module or a specific list of modules are allowed
                     if (settings.DenyModule.Count > 0 || (settings.AllowModule.Count() > 1))
@@ -124,7 +137,10 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                                         }
                                     }
                                     _logger.LogInformation(Path.GetFileName(possibleModule));
-                                    match.Add(LoadAssembly(possibleModule));
+                                    if (Checker.Verify(settings, possibleModule))
+                                    {
+                                        match.Add(LoadAssembly(possibleModule));
+                                    }
                                 }
                             }
                         }

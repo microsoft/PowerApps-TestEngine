@@ -6,6 +6,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
 
@@ -17,6 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestState : ITestState
     {
         private readonly ITestConfigParser _testConfigParser;
+
         private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
         private string EnvironmentId { get; set; }
@@ -33,6 +35,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private List<ITestEngineModule> Modules { get; set; } = new List<ITestEngineModule>();
 
         private List<IUserManager> UserManagers { get; set; } = new List<IUserManager>();
+
+        private List<ITestWebProvider> WebProviders { get; set; } = new List<ITestWebProvider>();
 
         private bool IsValid { get; set; } = false;
 
@@ -308,16 +312,27 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
             var userManagers = mefComponents.UserModules.Select(v => v.Value).OrderByDescending(v => v.Priority).ToArray();
             this.AddUserModules(userManagers);
+
+            var webProviders = mefComponents.WebProviderModules.Select(v => v.Value).ToArray();
+            this.AddWebProviderModules(webProviders);
         }
 
         public void AddModules(IEnumerable<ITestEngineModule> modules)
         {
+            Modules.Clear();
             Modules.AddRange(modules);
         }
 
         public void AddUserModules(IEnumerable<IUserManager> modules)
         {
+            UserManagers.Clear();
             UserManagers.AddRange(modules);
+        }
+
+        public void AddWebProviderModules(IEnumerable<ITestWebProvider> modules)
+        {
+            WebProviders.Clear();
+            WebProviders.AddRange(modules);
         }
 
         public List<ITestEngineModule> GetTestEngineModules()
@@ -328,6 +343,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<IUserManager> GetTestEngineUserManager()
         {
             return UserManagers;
+        }
+
+        public List<ITestWebProvider> GetTestEngineWebProviders()
+        {
+            return WebProviders;
         }
     }
 }

@@ -19,7 +19,7 @@
       <MySourceFiles Include="..\..\bin\$(configuration)\testengine.module.sample\testengine.module.sample.dll"/>
   </ItemGroup>
 
-  <Target Name="CopyFiles">
+  <Target Name="CopyFiles" AfterTargets="AfterBuild">
       <Copy
           SourceFiles="@(MySourceFiles)"
           DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine"

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PowerAppsTestEngine": {
+      "commandName": "Project",
+      "commandLineArgs": "-i ..\\..\\..\\..\\samples\\pause\\testPlan.fx.yaml -e ad33a8f9-0a10-ec7a-9898-e55c1d4f150f -t 69c8d3dd-059f-42e8-a760-df901334a12f"
+    }
+  }
+}

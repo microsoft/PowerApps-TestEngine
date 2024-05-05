@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
@@ -34,11 +34,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<ILoggerFactory> MockLoggerFactory;
         private Mock<ITestState> MockTestState;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
-        private Mock<IUrlMapper> MockUrlMapper;
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ILogger> MockLogger;
         private Mock<ITestLogger> MockTestLogger;
-        private Mock<IPowerAppFunctions> MockPowerAppFunctions;
+        private Mock<ITestWebProvider> MockTestWebProvider;
         private Mock<ITestEngineEvents> MockTestEngineEventHandler;
         private Mock<IEnvironmentVariable> MockEnvironmentVariable;
         private Mock<IBrowserContext> MockBrowserContext;
@@ -52,11 +51,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLoggerFactory = new Mock<ILoggerFactory>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockUrlMapper = new Mock<IUrlMapper>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockTestLogger = new Mock<ITestLogger>(MockBehavior.Strict);
-            MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+            MockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
             MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
@@ -116,7 +114,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 MockPowerFxEngine.Setup(x => x.ExecuteWithRetryAsync(It.IsAny<string>(), It.IsAny<CultureInfo>())).Throws(new Exception("something bad happened"));
             }
-            MockPowerFxEngine.Setup(x => x.GetPowerAppFunctions()).Returns(MockPowerAppFunctions.Object);
+            MockPowerFxEngine.Setup(x => x.GetWebProvider()).Returns(MockTestWebProvider.Object);
 
             MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<IUserManager>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
@@ -132,7 +130,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 It.IsAny<IEnvironmentVariable>())
             ).Returns(Task.CompletedTask);
 
-            MockUrlMapper.Setup(x => x.GenerateTestUrl("", "")).Returns(appUrl);
+            MockTestWebProvider.Setup(x => x.GenerateTestUrl("", "")).Returns(appUrl);
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             MockTestLogger.Setup(x => x.WriteExceptionToDebugLogsFile(It.IsAny<string>(), It.IsAny<string>()));
@@ -162,7 +160,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 It.IsAny<ISingleTestInstanceState>(),
                 It.IsAny<IEnvironmentVariable>()), Times.Once());
             MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(), Times.Once());
-            MockUrlMapper.Verify(x => x.GenerateTestUrl("", ""), Times.Once());
+            MockTestWebProvider.Verify(x => x.GenerateTestUrl("", ""), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl), Times.Once());
             MockSingleTestInstanceState.Verify(x => x.GetTestSuiteDefinition(), Times.Exactly(2));
             MockTestReporter.Verify(x => x.CreateTest(testRunId, testSuiteId, testSuiteDefinition.TestCases[0].TestCaseName), Times.Once());
@@ -206,11 +204,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockUserManager.Object,
                                                         MockTestState.Object,
                                                         MockSingleTestInstanceState.Object,
-                                                        MockUrlMapper.Object,
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object,
-                                                        MockEnvironmentVariable.Object);
+                                                        MockEnvironmentVariable.Object,
+                                                        MockTestWebProvider.Object);
 
             var testData = new TestDataOne();
 
@@ -237,11 +235,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockUserManager.Object,
                                                         MockTestState.Object,
                                                         MockSingleTestInstanceState.Object,
-                                                        MockUrlMapper.Object,
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object,
-                                                        MockEnvironmentVariable.Object);
+                                                        MockEnvironmentVariable.Object,
+                                                        MockTestWebProvider.Object);
 
             var testData = new TestDataTwo();
 
@@ -265,11 +263,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockUserManager.Object,
                                                         MockTestState.Object,
                                                         MockSingleTestInstanceState.Object,
-                                                        MockUrlMapper.Object,
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object,
-                                                        MockEnvironmentVariable.Object);
+                                                        MockEnvironmentVariable.Object,
+                                                        MockTestWebProvider.Object);
 
             var testData = new TestDataOne();
 
@@ -291,11 +289,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockUserManager.Object,
                                                         MockTestState.Object,
                                                         MockSingleTestInstanceState.Object,
-                                                        MockUrlMapper.Object,
                                                         MockFileSystem.Object,
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object,
-                                                        MockEnvironmentVariable.Object);
+                                                        MockEnvironmentVariable.Object,
+                                                        MockTestWebProvider.Object);
 
             var testData = new TestDataOne();
 
@@ -317,11 +315,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockUserManager.Object,
                                                            MockTestState.Object,
                                                            MockSingleTestInstanceState.Object,
-                                                           MockUrlMapper.Object,
                                                            MockFileSystem.Object,
                                                            MockLoggerFactory.Object,
                                                            MockTestEngineEventHandler.Object,
-                                                           MockEnvironmentVariable.Object);
+                                                           MockEnvironmentVariable.Object,
+                                                           MockTestWebProvider.Object);
 
             var testData = new TestDataOne();
 
@@ -333,7 +331,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             debugObj.TryAdd("environmentId", "someEnvironmentId");
             debugObj.TryAdd("sessionId", "someSessionId");
 
-            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)debugObj));
+            MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)debugObj));
 
             var exceptionToThrow = new InvalidOperationException("Test exception");
             additionalMockSetup(exceptionToThrow);
@@ -415,7 +413,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockUrlMapper.Setup(x => x.GenerateTestUrl("", "")).Throws(exceptionToThrow);
+                MockTestWebProvider.Setup(x => x.GenerateTestUrl("", "")).Throws(exceptionToThrow);
             });
         }
 
@@ -438,11 +436,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockUserManager.Object,
                                                            MockTestState.Object,
                                                            MockSingleTestInstanceState.Object,
-                                                           MockUrlMapper.Object,
                                                            MockFileSystem.Object,
                                                            MockLoggerFactory.Object,
                                                            MockTestEngineEventHandler.Object,
-                                                           MockEnvironmentVariable.Object);
+                                                           MockEnvironmentVariable.Object,
+                                                           MockTestWebProvider.Object);
 
             var testData = new TestDataOne();
 
@@ -471,11 +469,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockUserManager.Object,
                                                            MockTestState.Object,
                                                            MockSingleTestInstanceState.Object,
-                                                           MockUrlMapper.Object,
                                                            MockFileSystem.Object,
                                                            MockLoggerFactory.Object,
                                                            MockTestEngineEventHandler.Object,
-                                                           MockEnvironmentVariable.Object);
+                                                           MockEnvironmentVariable.Object,
+                                                           MockTestWebProvider.Object);
 
             var testData = new TestDataOne();
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
