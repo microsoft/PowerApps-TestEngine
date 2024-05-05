@@ -49,7 +49,7 @@ The configuration settings allow you to have finer grained control of what modul
 
 ### Deny Module Load
 
-Extensions have a number of test settings that can be provided to control which extensions can be executed. The [testPlan-denyModule.fx.yaml](..\..\samples\extensions\testPlan-denyModule.fx.yaml) example demonstrates not to deny loading the sample module. When this sample is run it will fail as the Sample() Power Fx function will not be loaded.
+Extensions have a number of test settings that can be provided to control which extensions can be executed. The [testPlan-denyModule.fx.yaml](..\..\samples\extensions\testPlan-denyModule.fx.yaml) example demonstrates how to deny loading the sample module. When this sample is run it will fail as the Sample() Power Fx function will not be loaded.
 
 ### Deny .Net Namespace
 
@@ -61,5 +61,6 @@ This example can also be extended to specific methods for example System.Conole:
 
 Once you have explored Power Fx and Test Settings the following additional areas can be explored:
 
-- Leveraging modules extension to configure the [BrowserNewContextOptions](https://playwright.dev/dotnet/docs/api/class-browser#browser-new-context)
 - Extending the Network Mocking with a module using [RouteAsync](https://playwright.dev/dotnet/docs/api/class-browsercontext#browser-context-route) to Abort, Fulfill from a local file or Continue
+
+- Additional extensions could be considered by implementing the defined interfaces an making contributions and pull requests to increase use of Test Engine to cover additional test scenarios.

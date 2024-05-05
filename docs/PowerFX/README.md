@@ -4,6 +4,7 @@ There are several specifically defined functions for the test framework.
 
 - [Assert](./Assert.md)
 - [Screenshot](./Screenshot.md)
+- [Pause](./Pause.md)
 - [Select](./Select.md)
 - [SetProperty](./SetProperty.md)
 - [Wait](./Wait.md)
