@@ -32,11 +32,13 @@ cd ..\bin\PowerAppTestEngine
 
 4. Ensure you have the [button clicker solution](..\..\samples\buttonclicker\ButtonClicker_1_0_0_4.zip) imported into your environment
 
-5. Run the sample using the environment if and tenant id
+5. Update the [config.dev.json](..\..\src\PowerAppsTestEngine\config.dev.json) environment id and tenant id
+
+5. Run the sample
 
 ```powershell
 cd samples\pause
-dotnet ..\..\bin\Debug\PowerAppsTestEngine\PowerAppsTestEngine.dll -i testPlan.fx.yaml -e 12345678-1234-1234-1234-1234567890ab -t 11111111-2222-3333-4444-555555555555
+dotnet ..\..\bin\Debug\PowerAppsTestEngine\PowerAppsTestEngine.dll -i testPlan.fx.yaml
 ```
 
 ## Exploring Samples

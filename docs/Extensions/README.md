@@ -49,3 +49,26 @@ Test Engine will search the same folder as the Test Engine executables for the f
 The MEF extensibility model provides a method of extending the range of scenarios that Test Engine can cover. By implementing the defined MEF interfaces .Net assemblies can be implemented that provide alternative user authentication and web based tests.
 
 The ITestEngineModule interface allows new Power FX functions to be defined that simplify testing by extending the provider or adding low code functions that are implemented in .Net.
+
+## Local Development and ALM Process
+
+![Overview of end to end test process from local development to hosted build](./media/TestEngineOverview-E2E.svg)
+
+The end to end process for test engine could be th following:
+
+1. **Local Development** - Develop tests on local PC. At this stage the permissions of the maker can be used.
+
+2. **Share Test Assets** - Share the Power Apps with test user account. Provide access to Managed Identity or Service principal to the definition of the Power Apps, Power Automate flows or Co-pilot.
+
+   The user account that is setup with User permissions only. The user account must have created connection id to the required connectors.
+
+3. **Commit Changes** - Save the changes to source control which will trigger build.
+
+4. **Run Tests** - For unit tests they should be run with least privilege. Verify that:
+
+   - User accounts only have permissions to start the application
+   - By default that all Dataverse and Custom Connectors are mocked so that they cannot update source systems
+
+### Test Types
+
+Typically the majority of tests should be unit tests. Integration tests should be a smaller percentage of tests as the take longer to create and need to manage the state of system and secure access to secure resources. Finally UI tests conducted manual should be the smalled amount of tests as they require the greatest amount of review and human intervention to run and validate test results.
