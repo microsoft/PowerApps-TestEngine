@@ -30,18 +30,18 @@ cd ..\bin\PowerAppTestEngine
 
 3. Get the values for your environment and tenant id from the [Power Apps Portal](http://make.powerapps.com). See [Get the session ID for Power Apps](https://learn.microsoft.com/power-apps/maker/canvas-apps/get-sessionid#get-the-session-id-for-power-apps-makepowerappscom) for more information.
 
-4. Ensure you have the [button clicker solution](..\..\samples\buttonclicker\ButtonClicker_1_0_0_3.zip) imported into your environment
+4. Ensure you have the [button clicker solution](..\..\samples\buttonclicker\ButtonClicker_1_0_0_4.zip) imported into your environment
 
 5. Run the sample using the environment if and tenant id
 
 ```powershell
-cd samples\extensions
+cd samples\pause
 dotnet ..\..\bin\Debug\PowerAppsTestEngine\PowerAppsTestEngine.dll -i testPlan.fx.yaml -e 12345678-1234-1234-1234-1234567890ab -t 11111111-2222-3333-4444-555555555555
 ```
 
-## Exploring Sample
+## Exploring Samples
 
-To enable the Sample PowerFx function the testengine.module.sample library uses the [SampleModule](..\..\src\testengine.module.sample\SampleModule.cs) class to implement a MEF module to register the Power Fx function.
+To enable the Pause PowerFx function the testengine.module.pause library uses the [PauseModule](..\..\src\testengine.module.pause\PauseModule.cs) class to implement a MEF module to register the Power Fx function.
 
 ## Configuring extensions
 
