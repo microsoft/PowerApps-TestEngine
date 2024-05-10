@@ -19,6 +19,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public ISingleTestInstanceState? SingleTestInstanceState { get; set; }
 
         public ITestState? TestState { get; set; }
+
+        public ITestProviderState? ProviderState { get; set; }
         #nullable disable
 
         /// <summary>

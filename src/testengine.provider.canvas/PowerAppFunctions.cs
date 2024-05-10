@@ -8,7 +8,6 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.Users;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 
@@ -36,6 +35,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public ISingleTestInstanceState? SingleTestInstanceState { get; set; }
 
         public ITestState? TestState { get; set; }
+
+        public ITestProviderState? ProviderState { get; set; }
 
         public PowerAppFunctions()
         {
