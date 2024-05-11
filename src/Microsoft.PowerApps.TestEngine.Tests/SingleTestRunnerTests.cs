@@ -131,6 +131,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             ).Returns(Task.CompletedTask);
 
             MockTestWebProvider.Setup(x => x.GenerateTestUrl("", "")).Returns(appUrl);
+            MockTestWebProvider.SetupSet(x => x.TestInfraFunctions = MockTestInfraFunctions.Object);
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             MockTestLogger.Setup(x => x.WriteExceptionToDebugLogsFile(It.IsAny<string>(), It.IsAny<string>()));

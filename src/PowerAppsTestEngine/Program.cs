@@ -223,8 +223,6 @@ else
         ITestState state = serviceProvider.GetService<ITestState>();
         state.SetModulePath(modulePath);
 
-        
-        
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
         if (testResult != "InvalidOutputDirectory")
