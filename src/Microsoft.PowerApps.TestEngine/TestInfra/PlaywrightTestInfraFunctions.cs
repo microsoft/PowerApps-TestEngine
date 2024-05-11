@@ -270,10 +270,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 throw new InvalidOperationException();
             }
 
-            if (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp)
+            if ((uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
             {
-                _singleTestInstanceState.GetLogger().LogError("Url must be http/https");
-                throw new InvalidOperationException();
+                if ( url != "about:blank")
+                {
+                    _singleTestInstanceState.GetLogger().LogError("Url must be http/https");
+                    throw new InvalidOperationException();
+                }
             }
 
             if (Page == null)

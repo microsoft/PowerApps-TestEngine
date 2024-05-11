@@ -27,7 +27,8 @@ var switchMappings = new Dictionary<string, string>()
     { "-q", "QueryParams" },
     { "-d", "Domain" },
     { "-m", "Modules" },
-    { "-u", "UserAuth" }
+    { "-u", "UserAuth" },
+    { "-p", "Provider" }
 };
 
 var inputOptions = new ConfigurationBuilder()
@@ -127,6 +128,10 @@ else
     }
 
     var provider = "canvas";
+    if (!string.IsNullOrEmpty(inputOptions.Provider))
+    {
+        provider = inputOptions.Provider;
+    }
 
     try
     {

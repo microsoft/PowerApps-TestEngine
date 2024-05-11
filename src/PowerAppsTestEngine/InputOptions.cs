@@ -14,5 +14,6 @@ namespace PowerAppsTestEngine
         public string? Domain { get; set; }
         public string? Modules { get; set; }
         public string? UserAuth { get; set; }
+        public string? Provider { get; set; }
     }
 }
