@@ -4,8 +4,8 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.Providers;
+using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
@@ -18,12 +18,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// </summary>
     public class SetPropertyFunction : ReflectionFunction
     {
-        protected readonly IPowerAppFunctions _powerAppFunctions;
+        protected readonly ITestWebProvider _testWebProvider;
         protected readonly ILogger _logger;
 
-        public SetPropertyFunction(IPowerAppFunctions powerAppFunctions, ILogger logger) : base("SetProperty", FormulaType.Blank, RecordType.Empty(), FormulaType.String, FormulaType.Boolean)
+        public SetPropertyFunction(ITestWebProvider testWebProvider, ILogger logger) : base("SetProperty", FormulaType.Blank, RecordType.Empty(), FormulaType.String, FormulaType.Boolean)
         {
-            _powerAppFunctions = powerAppFunctions;
+            _testWebProvider = testWebProvider;
             _logger = logger;
         }
 
@@ -41,7 +41,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             NullCheckHelper.NullCheck(obj, propName, value, _logger);
 
             var controlModel = (ControlRecordValue)obj;
-            var result = await _powerAppFunctions.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
+            var result = await _testWebProvider.SetPropertyAsync(controlModel.GetItemPath(propName.Value), value);
 
             if (!result)
             {

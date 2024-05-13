@@ -2,11 +2,13 @@
 // Licensed under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -18,33 +20,43 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ITestState _testState;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
+        private readonly ITestWebProvider _testWebProvider;
 
         public static string BrowserNotSupportedErrorMessage = "Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers";
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         private IPage Page { get; set; }
+        
 
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider)
         {
             _testState = testState;
             _singleTestInstanceState = singleTestInstanceState;
             _fileSystem = fileSystem;
+            _testWebProvider = testWebProvider;
         }
 
         // Constructor to aid with unit testing
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem,
-            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null) : this(testState, singleTestInstanceState, fileSystem)
+            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null, ITestWebProvider testWebProvider = null) : this(testState, singleTestInstanceState, fileSystem, testWebProvider)
         {
             PlaywrightObject = playwrightObject;
             Page = page;
             BrowserContext = browserContext;
         }
 
-        public async Task SetupAsync()
+        public IBrowserContext GetContext()
+        {
+            return BrowserContext;
+        }
+
+        public async Task SetupAsync(IUserManager userManager)
         {
 
             var browserConfig = _singleTestInstanceState.GetBrowserConfig();
+
+            var staticContext = new BrowserTypeLaunchPersistentContextOptions();
 
             if (browserConfig == null)
             {
@@ -77,6 +89,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 Timeout = testSettings.Timeout
             };
 
+            staticContext.Headless = launchOptions.Headless;
+            staticContext.Timeout = launchOptions.Timeout;
+
             var browser = PlaywrightObject[browserConfig.Browser];
             if (browser == null)
             {
@@ -84,8 +99,17 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
 
-            Browser = await browser.LaunchAsync(launchOptions);
-            _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");
+            if (!userManager.UseStaticContext)
+            {
+                // Check if a channel has been specified
+                if (testSettings.BrowserConfigurations.Any(c => !string.IsNullOrEmpty(c.Channel)))
+                {
+                    launchOptions.Channel = testSettings.BrowserConfigurations.First(c => !string.IsNullOrEmpty(c.Channel)).Channel;
+                }
+
+                Browser = await browser.LaunchAsync(launchOptions);
+                _singleTestInstanceState.GetLogger().LogInformation("Browser setup finished");
+            }
 
             var contextOptions = new BrowserNewContextOptions();
 
@@ -97,6 +121,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (testSettings.RecordVideo)
             {
                 contextOptions.RecordVideoDir = _singleTestInstanceState.GetTestResultsDirectory();
+                staticContext.RecordVideoDir = contextOptions.RecordVideoDir;
             }
 
             if (browserConfig.ScreenWidth != null && browserConfig.ScreenHeight != null)
@@ -106,9 +131,44 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     Width = browserConfig.ScreenWidth.Value,
                     Height = browserConfig.ScreenHeight.Value
                 };
+                staticContext.RecordVideoSize = new RecordVideoSize()
+                {
+                    Width = browserConfig.ScreenWidth.Value,
+                    Height = browserConfig.ScreenHeight.Value,
+                };
             }
 
-            BrowserContext = await Browser.NewContextAsync(contextOptions);
+            if (testSettings.ExtensionModules != null && testSettings.ExtensionModules.Enable)
+            {
+                foreach (var module in _testState.GetTestEngineModules())
+                {
+                    module.ExtendBrowserContextOptions(contextOptions, testSettings);
+                }
+            }
+
+            if (userManager.UseStaticContext)
+            {
+                _fileSystem.CreateDirectory(userManager.Location);
+                var location = userManager.Location;
+                if (!Path.IsPathRooted(location))
+                {
+                    location = Path.Combine(Directory.GetCurrentDirectory(), location);
+                }
+                _singleTestInstanceState.GetLogger().LogInformation($"Using static context in '{location}' using {userManager.Name}");
+
+                // Check if a channel has been specified
+                if (testSettings.BrowserConfigurations.Any(c => !string.IsNullOrEmpty(c.Channel)))
+                {
+                    staticContext.Channel = testSettings.BrowserConfigurations.First(c => !string.IsNullOrEmpty(c.Channel)).Channel;
+                }
+                
+                BrowserContext = await browser.LaunchPersistentContextAsync(location, staticContext);
+            }
+            else
+            {
+                BrowserContext = await Browser.NewContextAsync(contextOptions);
+            }
+
             _singleTestInstanceState.GetLogger().LogInformation("Browser context created");
         }
 
@@ -129,20 +189,35 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             foreach (var mock in mocks)
             {
-
-                if (string.IsNullOrEmpty(mock.RequestURL))
+                if (mock.IsExtension)
                 {
-                    _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
-                    throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
+                    foreach (var module in _testState.GetTestEngineModules())
+                    {
+                        await module.RegisterNetworkRoute(_testState, _singleTestInstanceState, _fileSystem, Page, mock);
+                    }
                 }
-
-                if (!_fileSystem.IsValidFilePath(mock.ResponseDataFile) || !_fileSystem.FileExists(mock.ResponseDataFile))
+                else
                 {
-                    _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
-                    throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
-                }
+                    if (string.IsNullOrEmpty(mock.RequestURL))
+                    {
+                        _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
+                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
+                    }
 
-                await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
+                    if (string.IsNullOrEmpty(mock.RequestURL))
+                    {
+                        _singleTestInstanceState.GetLogger().LogError("RequestURL cannot be null");
+                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
+                    }
+
+                    if (!_fileSystem.IsValidFilePath(mock.ResponseDataFile) || !_fileSystem.FileExists(mock.ResponseDataFile))
+                    {
+                        _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
+                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
+                    }
+
+                    await Page.RouteAsync(mock.RequestURL, async route => await RouteNetworkRequest(route, mock));
+                }
             }
         }
 
@@ -195,10 +270,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 throw new InvalidOperationException();
             }
 
-            if (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp)
+            if ((uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
             {
-                _singleTestInstanceState.GetLogger().LogError("Url must be http/https");
-                throw new InvalidOperationException();
+                if ( url != "about:blank")
+                {
+                    _singleTestInstanceState.GetLogger().LogError("Url must be http/https");
+                    throw new InvalidOperationException();
+                }
             }
 
             if (Page == null)
@@ -290,102 +368,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             ValidatePage();
 
-            if (!jsExpression.Equals(PowerAppFunctions.CheckPowerAppsTestEngineObject))
+            if (!jsExpression.Equals(_testWebProvider.CheckTestEngineObject))
             {
                 _singleTestInstanceState.GetLogger().LogDebug("Run Javascript: " + jsExpression);
             }
 
             return await Page.EvaluateAsync<T>(jsExpression);
-        }
-
-        // Justification: Limited ability to run unit tests for 
-        // Playwright actions on the sign-in page
-        [ExcludeFromCodeCoverage]
-        public async Task HandleUserEmailScreen(string selector, string value)
-        {
-            ValidatePage();
-            await Page.Locator(selector).WaitForAsync();
-            await Page.TypeAsync(selector, value, new PageTypeOptions { Delay = 50 });
-            await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
-        }
-
-        public async Task HandleUserPasswordScreen(string selector, string value, string desiredUrl)
-        {
-            var logger = _singleTestInstanceState.GetLogger();
-
-            ValidatePage();
-
-            try
-            {
-                // Find the password box
-                await Page.Locator(selector).WaitForAsync();
-
-                // Fill in the password
-                await Page.FillAsync(selector, value);
-
-                // Submit password form
-                await this.ClickAsync("input[type=\"submit\"]");
-
-                PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
-                selectorOptions.Timeout = 8000;
-
-                // For instances where there is a 'Stay signed in?' dialogue box
-                try
-                {
-                    logger.LogDebug("Checking if asked to stay signed in.");
-
-                    // Check if we received a 'Stay signed in?' box?
-                    await Page.WaitForSelectorAsync("[id=\"KmsiCheckboxField\"]", selectorOptions);
-                    logger.LogDebug("Was asked to 'stay signed in'.");
-
-                    // Click to stay signed in
-                    await Page.ClickAsync("[id=\"idBtn_Back\"]");
-                }
-                // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
-                catch (Exception ssiException)
-                {
-                    logger.LogDebug("Exception encountered: " + ssiException.ToString());
-
-                    // Keep record if passwordError was encountered
-                    bool hasPasswordError = false;
-
-                    try
-                    {
-                        selectorOptions.Timeout = 2000;
-
-                        // Check if we received a password error
-                        await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
-                        hasPasswordError = true;
-                    }
-                    catch (Exception peException)
-                    {
-                        logger.LogDebug("Exception encountered: " + peException.ToString());
-                    }
-
-                    // If encountered password error, exit program
-                    if (hasPasswordError)
-                    {
-                        logger.LogError("Incorrect password entered. Make sure you are using the correct credentials.");
-                        throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
-                    }
-                    // If not, continue
-                    else
-                    {
-                        logger.LogDebug("Did not encounter an invalid password error.");
-                    }
-
-                    logger.LogDebug("Was not asked to 'stay signed in'.");
-                }
-
-                await Page.WaitForURLAsync(desiredUrl);
-            }
-            catch (TimeoutException)
-            {
-                logger.LogError("Timed out during login attempt. In order to determine why, it may be beneficial to view the output recording. Make sure that your login credentials are correct.");
-                throw new TimeoutException();
-            }
-
-            logger.LogDebug("Logged in successfully.");
         }
     }
 }

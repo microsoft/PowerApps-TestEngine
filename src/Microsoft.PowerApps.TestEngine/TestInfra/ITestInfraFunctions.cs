@@ -2,7 +2,9 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -12,10 +14,16 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
     public interface ITestInfraFunctions
     {
         /// <summary>
+        /// Return the current browser context
+        /// </summary>
+        /// <returns>The current browser context</returns>
+        public IBrowserContext GetContext();
+
+        /// <summary>
         /// Setup the test infrastructure
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupAsync();
+        public Task SetupAsync(IUserManager userManager);
 
         /// <summary>
         /// Setup the network request mocking
@@ -79,21 +87,5 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="jsExpression">Javascript expression to run</param>
         /// <returns>Return value of javascript</returns>
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
-
-        /// <summary>
-        /// Fills in user email 
-        /// </summary>
-        /// <param name="selector">Selector to find element</param>
-        /// <param name="value">Value to fill in</param>
-        /// <returns>Task</returns>
-        public Task HandleUserEmailScreen(string selector, string value);
-
-        /// <summary>
-        /// Fills in user password
-        /// </summary>
-        /// <param name="selector">Selector to find element</param>
-        /// <param name="value">Value to fill in</param>
-        /// <returns>Task</returns>
-        public Task HandleUserPasswordScreen(string selector, string value, string desiredUrl);
     }
 }

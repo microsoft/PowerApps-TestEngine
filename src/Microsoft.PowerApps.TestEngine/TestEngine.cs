@@ -7,8 +7,11 @@ using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
 
 namespace Microsoft.PowerApps.TestEngine
 {
@@ -101,20 +104,23 @@ namespace Microsoft.PowerApps.TestEngine
                     Logger.LogDebug($"Using query: {queryParams}");
                 }
 
+                _state.ParseAndSetTestState(testConfigFile.FullName, Logger);
+                _state.SetEnvironment(environmentId);
+                _state.SetTenant(tenantId.ToString());
+                _state.LoadExtensionModules(Logger);
+
+                _state.SetDomain(domain);
+                Logger.LogDebug($"Using domain: {domain}");
+
                 // Create the output directory as early as possible so that any exceptions can be logged.
                 _state.SetOutputDirectory(outputDirectory.FullName);
                 Logger.LogDebug($"Using output directory: {outputDirectory.FullName}");
 
+                _state.SetTestConfigFile(testConfigFile);
+
                 testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
                 _fileSystem.CreateDirectory(testRunDirectory);
                 Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
-
-                _state.ParseAndSetTestState(testConfigFile.FullName, Logger);
-                _state.SetEnvironment(environmentId);
-                _state.SetTenant(tenantId.ToString());
-
-                _state.SetDomain(domain);
-                Logger.LogDebug($"Using domain: {domain}");
 
                 await RunTestByBrowserAsync(testRunId, testRunDirectory, domain, queryParams);
                 _testReporter.EndTestRun(testRunId);

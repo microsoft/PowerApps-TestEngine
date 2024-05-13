@@ -2,6 +2,9 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.Providers;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -71,6 +74,19 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <param name="outputDirectory">Output directory</param>
         public void SetOutputDirectory(string outputDirectory);
 
+
+        /// <summary>
+        /// Sets the test config file
+        /// </summary>
+        /// <param name="testConfigFile">The test config file</param>
+        public void SetTestConfigFile(FileInfo testConfigFile);
+
+        /// <summary>
+        /// Gets the test config file
+        /// </summary>
+        /// <returns>Test config file</returns>
+        public FileInfo GetTestConfigFile();
+
         /// <summary>
         /// Gets the directory that all tests outputs should be placed in.
         /// </summary>
@@ -95,5 +111,38 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <returns>The timeout value</returns>
         public int GetTimeout();
+
+        /// <summary>
+        /// Loads any matching Test Engine Modules
+        /// </summary>
+        public void LoadExtensionModules(ILogger logger);
+
+        /// <summary>
+        /// Sets path to locate option extension modules
+        /// </summary>
+        /// <param name="path">The path to set</param>
+        public void SetModulePath(string path);
+
+        /// <summary>
+        /// Add optional test engine modules
+        /// </summary>
+        /// <param name="modules"></param>
+        public void AddModules(IEnumerable<ITestEngineModule> modules);
+
+        /// <summary>
+        /// Get the list of registered Test engine extension models
+        /// </summary>
+        /// <param name="modules"></param>
+        public List<ITestEngineModule> GetTestEngineModules();
+
+        /// <summary>
+        /// Get the list of registered Test engine user managers
+        /// </summary>
+        public List<IUserManager> GetTestEngineUserManager();
+
+        /// <summary>
+        /// Get the list of registered Test engine web test providers
+        /// </summary>
+        public List<ITestWebProvider> GetTestEngineWebProviders();
     }
 }

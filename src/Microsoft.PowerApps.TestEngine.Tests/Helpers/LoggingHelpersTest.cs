@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Moq;
 using Xunit;
@@ -15,16 +15,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
     public class LoggingHelpersTest
     {
         private Mock<ILogger> MockLogger;
-        private Mock<IPowerAppFunctions> MockPowerAppFunctions;
+        private Mock<ITestWebProvider> MockTestWebProvider;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<ITestEngineEvents> MockTestEngineEventHandler;
 
         public LoggingHelpersTest()
-        {            
-            MockPowerAppFunctions = new Mock<IPowerAppFunctions>(MockBehavior.Strict);
+        {
+            MockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object); 
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
 
             LoggingTestHelper.SetupMock(MockLogger);
@@ -33,11 +33,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public async Task DebugInfoNullSessionTest()
         {
-            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)null));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
+            MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)null));
+            var loggingHelper = new LoggingHelper(MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
-            MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
+            MockTestWebProvider.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Never());
         }
 
@@ -47,11 +47,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             var obj = new ExpandoObject();
             obj.TryAdd("sessionId", "somesessionId");
 
-            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
+            MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
+            var loggingHelper = new LoggingHelper(MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
-            MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
+            MockTestWebProvider.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "sessionId:\tsomesessionId", LogLevel.Information, Times.Once());
         }
@@ -65,11 +65,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             obj.TryAdd("environmentId", "someEnvironmentId");
             obj.TryAdd("sessionId", "someSessionId");
 
-            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
+            MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
+            var loggingHelper = new LoggingHelper(MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
-            MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
+            MockTestWebProvider.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "appId:\tsomeAppId", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "appVersion:\tsomeAppVersionId", LogLevel.Information, Times.Once());
@@ -86,12 +86,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
             obj.TryAdd("environmentId", null);
             obj.TryAdd("sessionId", "someSessionId");
 
-            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
+            MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
+            var loggingHelper = new LoggingHelper(MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
-            MockPowerAppFunctions.Verify(x => x.GetDebugInfo(), Times.Once());
+            MockTestWebProvider.Verify(x => x.GetDebugInfo(), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n Debug Info \n------------------------------", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "appId:\tsomeAppId", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "appVersion:\t", LogLevel.Information, Times.Once());
@@ -102,9 +102,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public async Task DebugInfoThrowsTest()
         {
-            MockPowerAppFunctions.Setup(x => x.GetDebugInfo()).Throws(new Exception()); ;
+            MockTestWebProvider.Setup(x => x.GetDebugInfo()).Throws(new Exception()); ;
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
-            var loggingHelper = new LoggingHelper(MockPowerAppFunctions.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
+            var loggingHelper = new LoggingHelper(MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
             loggingHelper.DebugInfo();
 
             // Verify UserAppException is passed to TestEngineEventHandler

@@ -1,12 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
@@ -22,7 +25,10 @@ var switchMappings = new Dictionary<string, string>()
     { "-o", "OutputDirectory" },
     { "-l", "LogLevel" },
     { "-q", "QueryParams" },
-    { "-d", "Domain" }
+    { "-d", "Domain" },
+    { "-m", "Modules" },
+    { "-u", "UserAuth" },
+    { "-p", "Provider" }
 };
 
 var inputOptions = new ConfigurationBuilder()
@@ -115,32 +121,63 @@ else
         Enum.TryParse(inputOptions.LogLevel, true, out logLevel);
     }
 
+    var userAuth ="browser"; // Default to brower authentication
+    if (!string.IsNullOrEmpty(inputOptions.UserAuth))
+    {
+        userAuth = inputOptions.UserAuth;
+    }
+
+    var provider = "canvas";
+    if (!string.IsNullOrEmpty(inputOptions.Provider))
+    {
+        provider = inputOptions.Provider;
+    }
+
     try
     {
-
-        var serviceProvider = new ServiceCollection()
-        .AddLogging(loggingBuilder =>
-        {
-            loggingBuilder
+        using var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder
             .ClearProviders()
             .AddFilter(l => l >= logLevel)
-            .AddProvider(new TestLoggerProvider(new FileSystem()));
-        })
+            .AddProvider(new TestLoggerProvider(new FileSystem())));
+
+        var logger = loggerFactory.CreateLogger<Program>();
+
+        var serviceProvider = new ServiceCollection()
+        .AddSingleton<ILoggerFactory>(loggerFactory)
         .AddSingleton<ITestEngineEvents, TestEngineEventHandler>()
-        .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
         .AddScoped<IPowerFxEngine, PowerFxEngine>()
-        .AddScoped<IUserManager, UserManager>()
+        .AddScoped<IUserManager>(sp =>
+        {
+            var testState = sp.GetRequiredService<ITestState>();
+            var userManagers = testState.GetTestEngineUserManager();
+            if (userManagers.Count == 0)
+            {
+                testState.LoadExtensionModules(logger);
+                userManagers = testState.GetTestEngineUserManager();
+            }
+            return userManagers.Where(x => x.Name.Equals(userAuth)).First();
+        })
+        .AddTransient<ITestWebProvider>(sp => {
+            var testState = sp.GetRequiredService<ITestState>();
+            var testWebProviders = testState.GetTestEngineWebProviders();
+            if (testWebProviders.Count == 0)
+            {
+                testState.LoadExtensionModules(logger);
+                testWebProviders = testState.GetTestEngineWebProviders();
+            }
+            return testWebProviders.Where(x => x.Name.Equals(provider)).First();
+        })
         .AddSingleton<ITestState, TestState>()
-        .AddScoped<IUrlMapper, PowerAppsUrlMapper>()
-        .AddScoped<IPowerAppFunctions, PowerAppFunctions>()
         .AddSingleton<ITestReporter, TestReporter>()
         .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
         .AddScoped<ISingleTestRunner, SingleTestRunner>()
         .AddScoped<ILogger>((sp) => sp.GetRequiredService<ISingleTestInstanceState>().GetLogger())
         .AddSingleton<IFileSystem, FileSystem>()
+        .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
         .AddSingleton<TestEngine>()
+        
         .BuildServiceProvider();
 
         TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
@@ -176,6 +213,16 @@ else
             domain = inputOptions.Domain;
         }
 
+        string modulePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+        List<ITestEngineModule> modules = new List<ITestEngineModule>();
+        if (!string.IsNullOrEmpty(inputOptions.Modules) && Directory.Exists(inputOptions.Modules))
+        {
+            modulePath = inputOptions.Modules;
+        }
+
+        ITestState state = serviceProvider.GetService<ITestState>();
+        state.SetModulePath(modulePath);
+
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
         if (testResult != "InvalidOutputDirectory")
@@ -187,5 +234,8 @@ else
     catch (Exception ex)
     {
         Console.WriteLine("[Critical Error]: " + ex.Message);
+        Console.WriteLine(ex);
     }
 }
+
+

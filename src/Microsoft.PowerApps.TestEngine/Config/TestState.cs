@@ -1,9 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -13,6 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestState : ITestState
     {
         private readonly ITestConfigParser _testConfigParser;
+
         private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
         private string EnvironmentId { get; set; }
@@ -21,6 +27,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private string TenantId { get; set; }
 
         private string OutputDirectory { get; set; }
+
+        private FileInfo TestConfigFile { get; set; }
+
+        private string ModulePath { get; set; }
+
+        private List<ITestEngineModule> Modules { get; set; } = new List<ITestEngineModule>();
+
+        private List<IUserManager> UserManagers { get; set; } = new List<IUserManager>();
+
+        private List<ITestWebProvider> WebProviders { get; set; } = new List<ITestWebProvider>();
 
         private bool IsValid { get; set; } = false;
 
@@ -229,6 +245,19 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return OutputDirectory;
         }
 
+        public void SetTestConfigFile(FileInfo testConfig)
+        {
+            if (testConfig == null)
+            {
+                throw new ArgumentNullException(nameof(testConfig));
+            }
+            TestConfigFile = testConfig;
+        }
+        public FileInfo GetTestConfigFile()
+        {
+            return TestConfigFile;
+        }
+
         public UserConfiguration GetUserConfiguration(string persona)
         {
             if (!IsValid)
@@ -253,6 +282,72 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int GetTimeout()
         {
             return GetTestSettings().Timeout;
+        }
+
+        public void SetModulePath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+            ModulePath = path;
+        }
+
+        /// <summary>
+        /// Load Managed Extensibility Framework (MEF) Test Engine modules
+        /// </summary>
+        public void LoadExtensionModules(ILogger logger)
+        {
+            var loader = new TestEngineModuleMEFLoader(logger);
+            var settings = this.GetTestSettings();
+            var catalogModules = loader.LoadModules(settings.ExtensionModules);
+
+            using var catalog = new AggregateCatalog(catalogModules);
+            using var container = new CompositionContainer(catalog);
+
+            var mefComponents = new MefComponents();
+            container.ComposeParts(mefComponents);
+            var components = mefComponents.MefModules.Select(v => v.Value).ToArray();
+            this.AddModules(components);
+
+            var userManagers = mefComponents.UserModules.Select(v => v.Value).OrderByDescending(v => v.Priority).ToArray();
+            this.AddUserModules(userManagers);
+
+            var webProviders = mefComponents.WebProviderModules.Select(v => v.Value).ToArray();
+            this.AddWebProviderModules(webProviders);
+        }
+
+        public void AddModules(IEnumerable<ITestEngineModule> modules)
+        {
+            Modules.Clear();
+            Modules.AddRange(modules);
+        }
+
+        public void AddUserModules(IEnumerable<IUserManager> modules)
+        {
+            UserManagers.Clear();
+            UserManagers.AddRange(modules);
+        }
+
+        public void AddWebProviderModules(IEnumerable<ITestWebProvider> modules)
+        {
+            WebProviders.Clear();
+            WebProviders.AddRange(modules);
+        }
+
+        public List<ITestEngineModule> GetTestEngineModules()
+        {
+            return Modules;
+        }
+
+        public List<IUserManager> GetTestEngineUserManager()
+        {
+            return UserManagers;
+        }
+
+        public List<ITestWebProvider> GetTestEngineWebProviders()
+        {
+            return WebProviders;
         }
     }
 }

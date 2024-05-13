@@ -1,0 +1,25 @@
+testSuite:
+  testSuiteName: Button Clicker
+  testSuiteDescription: Verifies that counter increments when the button is clicked
+  persona: User1
+  appLogicalName: new_buttonclicker_0a877
+  onTestCaseStart: Screenshot("buttonclicker_onTestCaseStart.png");
+  onTestCaseComplete: Select(ResetButton);
+  onTestSuiteComplete: Screenshot("buttonclicker_onTestSuiteComplete.png");
+
+  testCases:
+    - testCaseName: Case1
+      testCaseDescription: Run sample action
+      testSteps: |
+        = Sample();
+
+testSettings:
+  locale: "en-US"
+  headless: false
+  recordVideo: true
+  enableExtensionModules: true
+  browserConfigurations:
+    - browser: Firefox
+
+environmentVariables:
+  filePath: ../../samples/environmentVariables.yaml

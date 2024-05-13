@@ -3,8 +3,8 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.PowerApps;
-using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.Providers;
+using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 
@@ -16,13 +16,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// </summary>
     public class SelectTwoParamsFunction : ReflectionFunction
     {
-        private readonly IPowerAppFunctions _powerAppFunctions;
+        private readonly ITestWebProvider _TestWebProvider;
         private readonly Func<Task> _updateModelFunction;
         private readonly ILogger _logger;
 
-        public SelectTwoParamsFunction(IPowerAppFunctions powerAppFunctions, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, RecordType.Empty(), FormulaType.Number)
+        public SelectTwoParamsFunction(ITestWebProvider TestWebProvider, Func<Task> updateModelFunction, ILogger logger) : base("Select", FormulaType.Blank, RecordType.Empty(), FormulaType.Number)
         {
-            _powerAppFunctions = powerAppFunctions;
+            _TestWebProvider = TestWebProvider;
             _updateModelFunction = updateModelFunction;
             _logger = logger;
         }
@@ -52,9 +52,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             };
 
             var recordType = RecordType.Empty().Add(controlName, RecordType.Empty());
-            var powerAppControlModel = new ControlRecordValue(recordType, _powerAppFunctions, controlName);
+            var powerAppControlModel = new ControlRecordValue(recordType, _TestWebProvider, controlName);
 
-            var result = await _powerAppFunctions.SelectControlAsync(itemPath);
+            var result = await _TestWebProvider.SelectControlAsync(itemPath);
 
             if (!result)
             {

@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: Pause tests
+  testSuiteDescription: Pause the browser and open the Playwright Inspector inside the Power App using browser authentication method
+  persona: User1
+  appLogicalName: new_buttonclicker_0a877
+  onTestSuiteComplete: Screenshot("pause_onTestSuiteComplete.png");
+
+  testCases:
+    - testCaseName: Pause
+      testCaseDescription: Pause example
+      testSteps: |
+        = Pause();
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

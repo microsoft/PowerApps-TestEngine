@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Authors>Microsoft</Authors>
+    <Company>crmsdk,Microsoft</Company>
+    <Description>Alpha Release: Sample action MEF extension</Description>
+    <PackageReleaseNotes>
+      Notice:
+      This package is an ALPHA release. - Use at your own risk.
+
+      Intial Alpha release of Microsoft.PowerAppsTestEngine
+    </PackageReleaseNotes>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
+    <PublicSign>true</PublicSign>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <MySourceFiles Include="..\..\bin\$(configuration)\testengine.module.sample\testengine.module.sample.dll"/>
+  </ItemGroup>
+
+  <Target Name="CopyFiles" AfterTargets="AfterBuild">
+      <Copy
+          SourceFiles="@(MySourceFiles)"
+          DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine"
+      />
+  </Target>
+</Project>

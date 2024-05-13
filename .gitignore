@@ -354,3 +354,4 @@ MigrationBackup/
 # Power Apps Test Engine files
 /src/PowerAppsTestEngine/TestOutput
 /src/PowerAppsTestEngine/config.dev.json
+**/TestOutput

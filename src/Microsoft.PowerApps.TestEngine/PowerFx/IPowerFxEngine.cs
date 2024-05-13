@@ -3,7 +3,7 @@
 
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
@@ -47,8 +47,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public Task RunRequirementsCheckAsync();
 
         /// <summary>
-        /// get PowerAppFunctions
+        /// Get Web Provider instance
         /// </summary>
-        public IPowerAppFunctions GetPowerAppFunctions();
+        public ITestWebProvider GetWebProvider();
+
+        /// <summary>
+        /// Disables checking Power Apps state checks
+        /// </summary>
+        public bool PowerAppIntegrationEnabled { get; set; }
     }
 }
