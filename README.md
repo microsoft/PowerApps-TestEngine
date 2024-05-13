@@ -39,7 +39,7 @@ Run the commands below in PowerShell. These commands will clone the repo to your
 git clone https://github.com/microsoft/PowerApps-TestEngine.git
 
 # Change to the PowerAppsTestEngine folder
-cd PowerApps-TestEngine\src\PowerAppsTestEngine
+cd PowerApps-TestEngine\src
 
 # Build
 dotnet build
