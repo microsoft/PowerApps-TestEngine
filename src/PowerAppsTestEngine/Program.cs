@@ -115,10 +115,10 @@ else
     }
 
     var logLevel = LogLevel.Information; // Default log level
-    if (string.IsNullOrEmpty(inputOptions.LogLevel))
+    if (string.IsNullOrEmpty(inputOptions.LogLevel) || !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))
     {
         Console.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default");
-        Enum.TryParse(inputOptions.LogLevel, true, out logLevel);
+        logLevel = LogLevel.Information;
     }
 
     var userAuth ="browser"; // Default to brower authentication
