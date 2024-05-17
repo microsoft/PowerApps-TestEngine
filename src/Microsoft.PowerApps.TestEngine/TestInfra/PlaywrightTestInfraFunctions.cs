@@ -102,9 +102,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (!userManager.UseStaticContext)
             {
                 // Check if a channel has been specified
-                if (testSettings.BrowserConfigurations.Any(c => !string.IsNullOrEmpty(c.Channel)))
+                if (!string.IsNullOrEmpty(browserConfig.Channel))
                 {
-                    launchOptions.Channel = testSettings.BrowserConfigurations.First(c => !string.IsNullOrEmpty(c.Channel)).Channel;
+                    launchOptions.Channel = browserConfig.Channel;
                 }
 
                 Browser = await browser.LaunchAsync(launchOptions);
@@ -157,9 +157,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 _singleTestInstanceState.GetLogger().LogInformation($"Using static context in '{location}' using {userManager.Name}");
 
                 // Check if a channel has been specified
-                if (testSettings.BrowserConfigurations.Any(c => !string.IsNullOrEmpty(c.Channel)))
+                if (!string.IsNullOrEmpty(browserConfig.Channel))
                 {
-                    staticContext.Channel = testSettings.BrowserConfigurations.First(c => !string.IsNullOrEmpty(c.Channel)).Channel;
+                    staticContext.Channel = browserConfig.Channel;
                 }
                 
                 BrowserContext = await browser.LaunchPersistentContextAsync(location, staticContext);
