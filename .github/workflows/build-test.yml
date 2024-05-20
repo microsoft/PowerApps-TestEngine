@@ -49,7 +49,7 @@ jobs:
       - name: Test1
         run: |
           cd src
-          dotnet test --filter FullyQualifiedName~Microsoft.PowerApps.TestEngine.Tests.Modules.TestEngineExtensionCheckerTests.Verify --no-restore --verbosity detailed --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults1
+          dotnet test --configuration Release --filter FullyQualifiedName~Microsoft.PowerApps.TestEngine.Tests.Modules.TestEngineExtensionCheckerTests.Verify --no-restore --verbosity detailed --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults1
     
       # - name: Test
       #   run: |
