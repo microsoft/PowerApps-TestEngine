@@ -27,8 +27,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         private IPage Page { get; set; }
-        
-
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider)
         {
             _testState = testState;
