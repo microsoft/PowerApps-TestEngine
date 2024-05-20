@@ -46,15 +46,10 @@ jobs:
           cd src
           dotnet build --configuration Release --no-restore
 
-      - name: Test1
+      - name: Test
         run: |
           cd src
-          dotnet test --configuration Release --filter FullyQualifiedName~Microsoft.PowerApps.TestEngine.Tests.Modules.TestEngineExtensionCheckerTests.Verify --no-restore --verbosity detailed --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults1
-    
-      # - name: Test
-      #   run: |
-      #     cd src
-      #     dotnet test --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
+          dotnet test --configuration Release --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
