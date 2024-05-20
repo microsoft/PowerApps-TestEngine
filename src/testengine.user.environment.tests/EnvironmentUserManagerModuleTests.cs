@@ -1,12 +1,12 @@
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
-using Moq;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.Extensions.Logging;
+using Microsoft.PowerFx;
+using Moq;
 using testengine.user.environment;
 
 namespace testengine.user.environment.tests
@@ -272,7 +272,7 @@ namespace testengine.user.environment.tests
             // Wait until login is complete and redirect to desired page
             MockPage.Setup(x => x.WaitForURLAsync(desiredUrl, null)).Returns(Task.CompletedTask);
 
-            MockBrowserContext.SetupGet(x => x.Pages).Returns(new List<IPage>{ MockPage.Object});
+            MockBrowserContext.SetupGet(x => x.Pages).Returns(new List<IPage> { MockPage.Object });
 
             var userManagerModule = new EnvironmentUserManagerModule();
             userManagerModule.Page = MockPage.Object;
@@ -306,7 +306,7 @@ namespace testengine.user.environment.tests
             // Throw exception as not make it to desired url
             MockPage.Setup(x => x.WaitForURLAsync(desiredUrl, null)).Throws(new TimeoutException());
 
-            MockBrowserContext.SetupGet(x => x.Pages).Returns(new List<IPage> {MockPage.Object });
+            MockBrowserContext.SetupGet(x => x.Pages).Returns(new List<IPage> { MockPage.Object });
 
             var userManagerModule = new EnvironmentUserManagerModule();
             userManagerModule.Page = MockPage.Object;
@@ -341,7 +341,7 @@ namespace testengine.user.environment.tests
             // Throw exception as not make it to desired url
             MockPage.Setup(x => x.WaitForURLAsync(desiredUrl, null)).Throws(new TimeoutException());
 
-            MockBrowserContext.SetupGet(x => x.Pages).Returns(new List<IPage>{ MockPage.Object });
+            MockBrowserContext.SetupGet(x => x.Pages).Returns(new List<IPage> { MockPage.Object });
 
             var environmentUserManager = new EnvironmentUserManagerModule();
             environmentUserManager.Page = MockPage.Object;

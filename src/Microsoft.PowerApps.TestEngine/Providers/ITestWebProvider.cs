@@ -27,7 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// The name of the provider
         /// </summary>
         public string Name { get; }
-        
+
         /// <summary>
         /// Verify if provider is usable
         /// </summary>

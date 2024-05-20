@@ -1,11 +1,11 @@
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
-using Moq;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.Extensions.Logging;
+using Microsoft.PowerFx;
+using Moq;
 using testengine.user.environment;
 
 namespace testengine.user.environment.tests
@@ -44,10 +44,11 @@ namespace testengine.user.environment.tests
         public async Task LoginWithBrowserState(bool exists, bool isDirectoryCreated, string files, bool willPause)
         {
             // Arrange
-            if ( willPause ) {
-                 MockPage.Setup(x => x.PauseAsync()).Returns(Task.CompletedTask);
+            if (willPause)
+            {
+                MockPage.Setup(x => x.PauseAsync()).Returns(Task.CompletedTask);
             }
-            
+
             var created = false;
 
             var userManager = new BrowserUserManagerModule();

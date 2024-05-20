@@ -50,7 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             this.TestState = testState;
         }
 
-        public string Name {  get { return "canvas"; } }
+        public string Name { get { return "canvas"; } }
 
         private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {

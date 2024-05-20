@@ -24,5 +24,5 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
         }
 
-            }
+    }
 }

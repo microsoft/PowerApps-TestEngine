@@ -1,24 +1,24 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerFx;
+using System;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.Playwright;
-using System;
-using System.Text.RegularExpressions;
-using System.Linq;
 using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.PowerFx;
 
 namespace testengine.user.environment
 {
     [Export(typeof(IUserManager))]
     public class BrowserUserManagerModule : IUserManager
-    {   
+    {
         public string Name { get { return "browser"; } }
 
         public int Priority { get { return 100; } }
@@ -27,15 +27,15 @@ namespace testengine.user.environment
 
         public string Location { get; set; } = "BrowserContext";
 
-        private IBrowserContext? Context { get;set; }
+        private IBrowserContext? Context { get; set; }
 
-        public IPage? Page { get;set; }
+        public IPage? Page { get; set; }
 
-        public Func<string, bool> DirectoryExists { get;set; } = (location) => Directory.Exists(location);
+        public Func<string, bool> DirectoryExists { get; set; } = (location) => Directory.Exists(location);
 
-        public Action<string> CreateDirectory { get;set; } = (location) => Directory.CreateDirectory(location);
+        public Action<string> CreateDirectory { get; set; } = (location) => Directory.CreateDirectory(location);
 
-        public Func<string, string[]> GetFiles { get;set; } = (path) => Directory.GetFiles(path);
+        public Func<string, string[]> GetFiles { get; set; } = (path) => Directory.GetFiles(path);
 
         public async Task LoginAsUserAsync(
             string desiredUrl,
@@ -46,11 +46,13 @@ namespace testengine.user.environment
         {
             Context = context;
 
-            if ( ! DirectoryExists(Location)) {
+            if (!DirectoryExists(Location))
+            {
                 CreateDirectory(Location);
             }
 
-            if ( GetFiles(Location).Count() == 0 ) {
+            if (GetFiles(Location).Count() == 0)
+            {
                 ValidatePage();
                 await Page.PauseAsync();
             }

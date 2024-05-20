@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
-using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.PowerFx;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
@@ -121,7 +121,7 @@ else
         logLevel = LogLevel.Information;
     }
 
-    var userAuth ="browser"; // Default to brower authentication
+    var userAuth = "browser"; // Default to brower authentication
     if (!string.IsNullOrEmpty(inputOptions.UserAuth))
     {
         userAuth = inputOptions.UserAuth;
@@ -158,7 +158,8 @@ else
             }
             return userManagers.Where(x => x.Name.Equals(userAuth)).First();
         })
-        .AddTransient<ITestWebProvider>(sp => {
+        .AddTransient<ITestWebProvider>(sp =>
+        {
             var testState = sp.GetRequiredService<ITestState>();
             var testWebProviders = testState.GetTestEngineWebProviders();
             if (testWebProviders.Count == 0)
@@ -177,7 +178,7 @@ else
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
         .AddSingleton<TestEngine>()
-        
+
         .BuildServiceProvider();
 
         TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();

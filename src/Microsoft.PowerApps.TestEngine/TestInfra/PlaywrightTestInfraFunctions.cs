@@ -159,7 +159,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 {
                     staticContext.Channel = browserConfig.Channel;
                 }
-                
                 BrowserContext = await browser.LaunchPersistentContextAsync(location, staticContext);
             }
             else
@@ -270,7 +269,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if ((uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
             {
-                if ( url != "about:blank")
+                if (url != "about:blank")
                 {
                     _singleTestInstanceState.GetLogger().LogError("Url must be http/https");
                     throw new InvalidOperationException();

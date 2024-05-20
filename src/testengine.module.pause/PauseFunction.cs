@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerFx.Types;
-using Microsoft.PowerFx;
-using Microsoft.Playwright;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
+using Microsoft.PowerFx.Types;
 
 namespace testengine.module
 {

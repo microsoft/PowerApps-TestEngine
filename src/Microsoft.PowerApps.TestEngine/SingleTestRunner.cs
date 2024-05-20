@@ -4,8 +4,8 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.PowerFx;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;

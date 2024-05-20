@@ -1,11 +1,11 @@
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
-using Moq;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
+using Moq;
 
 namespace testengine.module.browserlocale.tests
 {
@@ -80,7 +80,7 @@ namespace testengine.module.browserlocale.tests
             MockTestState.Setup(x => x.GetTestSettings()).Returns(settings);
             MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(mockContext.Object);
             mockContext.Setup(x => x.Pages).Returns(new List<IPage>() { mockPage.Object });
-            
+
             MockLogger.Setup(x => x.Log(
                It.IsAny<LogLevel>(),
                It.IsAny<EventId>(),
