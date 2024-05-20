@@ -39,7 +39,7 @@ jobs:
       - name: Build
         run: |
           cd src
-          dotnet build --configuration Release --no-restore
+          dotnet build --configuration Debug --no-restore
 
       - name: Test
         run: |
