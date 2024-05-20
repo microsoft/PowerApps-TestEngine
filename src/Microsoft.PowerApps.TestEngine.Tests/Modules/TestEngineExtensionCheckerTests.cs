@@ -174,6 +174,7 @@ public class TestScript {
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
             Assert.Equal(expectedResult, valid);
         }
