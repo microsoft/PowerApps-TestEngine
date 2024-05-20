@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - integration
   pull_request:
     branches:
-      - main
+      - integration
 
 jobs:
   check-format:

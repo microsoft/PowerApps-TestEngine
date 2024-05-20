@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - integration
   pull_request:
     branches:
-      - main
+      - integration
   schedule:
     - cron: '0 6 * * 1,3,5'
 
