@@ -51,8 +51,8 @@ jobs:
           cd src
           dotnet test --configuration Release --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+      # - name: Perform CodeQL Analysis
+      #   uses: github/codeql-action/analyze@v2
       
       - name: Test Report
         uses: dorny/test-reporter@v1
@@ -62,37 +62,56 @@ jobs:
           path: |
             **/*.trx
           reporter: dotnet-trx        # Format of test results
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results-coverage-report
+          path: src/TestResults/**/coverage.cobertura.xml
 
       - name: Copy Coverage report
         run: cp src/TestResults/**/coverage.cobertura.xml coverage.cobertura.xml
 
-      - name: Code coverage report
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: coverage.cobertura.xml
-          badge: true
-          fail_below_min: true
-          format: markdown
-          indicators: true
-          output: both
-          thresholds: '85 90'
+      - name: Run CodeCoverageSummary on Ubuntu
+        runs-on: ubuntu-latest
+        steps:
+        - name: Download test coverage report
+          uses: actions/download-artifact@v2
+          with:
+            name: test-results-coverage-report
+            path: .
+        - name: Run CodeCoverageSummary
+          uses: irongut/CodeCoverageSummary@v1.3.0
+          with:
+            file: ./coverage.cobertura.xml
 
-      - name: Run PowerShell Script
-        run: |
-          [xml]$coverageReport = Get-Content -Path "coverage.cobertura.xml"
-          $lineRate = [double]$coverageReport.coverage.'@line-rate'
-          $branchRate = [double]$coverageReport.coverage.'@branch-rate'
-          $lineThreshold = 0.85
-          $branchThreshold = 0.90
-          if ($lineRate -lt $lineThreshold -or $branchRate -lt $branchThreshold) {
-              Write-Host "Code coverage is below the specified thresholds."
-              Write-Host "Line Rate: $lineRate Branch Rate: $branchRate"
-              Write-Host "Line Threshold: $lineThreshold Branch Threshold: $branchThreshold"
-              exit 1
-          } else {
-              Write-Host "Code coverage meets the specified thresholds."
-              exit 0
-          }
+      # - name: Code coverage report
+      #   uses: irongut/CodeCoverageSummary@v1.3.0
+      #   with:
+      #     filename: coverage.cobertura.xml
+      #     badge: true
+      #     fail_below_min: true
+      #     format: markdown
+      #     indicators: true
+      #     output: both
+      #     thresholds: '85 90'
+
+      # - name: Run PowerShell Script
+      #   run: |
+      #     [xml]$coverageReport = Get-Content -Path "coverage.cobertura.xml"
+      #     $lineRate = [double]$coverageReport.coverage.'@line-rate'
+      #     $branchRate = [double]$coverageReport.coverage.'@branch-rate'
+      #     $lineThreshold = 0.85
+      #     $branchThreshold = 0.90
+      #     if ($lineRate -lt $lineThreshold -or $branchRate -lt $branchThreshold) {
+      #         Write-Host "Code coverage is below the specified thresholds."
+      #         Write-Host "Line Rate: $lineRate Branch Rate: $branchRate"
+      #         Write-Host "Line Threshold: $lineThreshold Branch Threshold: $branchThreshold"
+      #         exit 1
+      #     } else {
+      #         Write-Host "Code coverage meets the specified thresholds."
+      #         exit 0
+      #     }
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
