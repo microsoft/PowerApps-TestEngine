@@ -16,9 +16,9 @@ jobs:
             user1Email: '${{ secrets.POWER_PLATFORM_USER }}'
             user1Password: '${{ secrets.POWER_PLATFORM_PASSWORD }}'
         run: |   
-          cd src/PowerAppsTestEngine
+          cd src
           dotnet build
-          cd ../../
+          cd ../
           pwsh bin/Debug/PowerAppsTestEngine/playwright.ps1 install
           cd build-pipelines/scripts
           chmod +x yaml-integration-tests.sh
