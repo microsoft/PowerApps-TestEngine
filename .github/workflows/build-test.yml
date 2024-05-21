@@ -69,32 +69,6 @@ jobs:
           name: test-results-coverage-report
           path: src/TestResults/**/coverage.cobertura.xml
 
-  test-coverage:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download test coverage report
-        uses: actions/download-artifact@v2
-        with:
-          name: test-results-coverage-report
-          path: .
-      - name: Run CodeCoverageSummary
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: ./**/coverage.cobertura.xml
-          badge: true
-          fail_below_min: true
-          format: markdown
-          indicators: true
-          output: both
-          thresholds: '1 1'
-      - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
-        with:
-          recreate: true
-          path: code-coverage-results.md    
-
   yaml-integration-tests-prod:
     needs: build
     uses: ./.github/workflows/yaml-integration-tests.yml
@@ -144,6 +118,34 @@ jobs:
           { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
           { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'     
     secrets: inherit
+
+  test-coverage:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download test coverage report
+        uses: actions/download-artifact@v2
+        with:
+          name: test-results-coverage-report
+          path: .
+      - name: Run CodeCoverageSummary
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: ./**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          indicators: true
+          output: both
+          thresholds: '1 1'
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md    
+
+
   notification:
     if: github.event_name == 'schedule' && (failure() || github.run_attempt > 1) #send notification only for schedule failure or reruns
     needs: [yaml-integration-tests-prod, yaml-integration-tests-preprod, yaml-integration-tests-test]
