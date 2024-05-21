@@ -112,7 +112,13 @@ jobs:
       - name: Run CodeCoverageSummary
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          file: ./coverage.cobertura.xml
+          filename: ./**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          indicators: true
+          output: both
+          thresholds: '85 90'
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
