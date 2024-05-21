@@ -89,7 +89,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     var possibleUserManager = DirectoryGetFiles(location, "testengine.user.*.dll");
                     foreach (var possibleModule in possibleUserManager)
                     {
-                        if ( Checker.Verify(settings, possibleModule))
+                        if (Checker.Verify(settings, possibleModule))
                         {
                             match.Add(LoadAssembly(possibleModule));
                         }

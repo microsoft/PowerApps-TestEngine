@@ -1,24 +1,24 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerFx;
+using System;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.Playwright;
-using System;
-using System.Text.RegularExpressions;
-using System.Linq;
 using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.PowerFx;
 
 namespace testengine.user.environment
 {
     [Export(typeof(IUserManager))]
     public class EnvironmentUserManagerModule : IUserManager
-    {   
+    {
         public string Name { get { return "environment"; } }
 
         public int Priority { get { return 0; } }
@@ -33,9 +33,9 @@ namespace testengine.user.environment
         public static string StaySignedInSelector = "[id=\"KmsiCheckboxField\"]";
         public static string KeepMeSignedInNoSelector = "[id=\"idBtn_Back\"]";
 
-        private IBrowserContext? Context { get;set; }
+        private IBrowserContext? Context { get; set; }
 
-        public IPage? Page { get;set; }
+        public IPage? Page { get; set; }
 
         public async Task LoginAsUserAsync(
             string desiredUrl,
@@ -103,7 +103,8 @@ namespace testengine.user.environment
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
             }
 
-            if ( Page == null ) {
+            if (Page == null)
+            {
                 Page = context.Pages.First();
             }
 

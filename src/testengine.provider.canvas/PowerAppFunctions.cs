@@ -26,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
-        //private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
+        private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
         private string FileNotFoundErrorMessage = "Something went wrong when Test Engine tried to load required dependencies.";
         private TypeMapping TypeMapping = new TypeMapping();
 
@@ -50,7 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             this.TestState = testState;
         }
 
-        public string Name {  get { return "canvas"; } }
+        public string Name { get { return "canvas"; } }
 
         private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
@@ -216,9 +216,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public async Task<Dictionary<string, ControlRecordValue>> LoadObjectModelAsync()
         {
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
-           // SingleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            //await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadObjectModelAsyncHelper(x), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger(), LoadObjectModelErrorMessage);
-            //SingleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
+            SingleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadObjectModelAsyncHelper(x), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger(), LoadObjectModelErrorMessage);
+            SingleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;
         }

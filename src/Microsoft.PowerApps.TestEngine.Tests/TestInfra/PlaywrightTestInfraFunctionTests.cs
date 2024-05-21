@@ -75,6 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var testSettings = new TestSettings()
             {
+                BrowserConfigurations = new List<BrowserConfiguration>() { browserConfig },
                 RecordVideo = true,
                 Timeout = 15
             };
@@ -165,6 +166,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var testSettings = new TestSettings()
             {
+                BrowserConfigurations = new List<BrowserConfiguration>() { browserConfig },
                 ExtensionModules = new TestSettingExtensions() { Enable = true }
             };
 

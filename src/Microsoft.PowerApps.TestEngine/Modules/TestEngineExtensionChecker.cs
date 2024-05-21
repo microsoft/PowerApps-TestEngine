@@ -133,9 +133,10 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         private static bool VerifyCertificates()
         {
 #if RELEASE
-                return true;
-#endif
+            return true;
+#else
             return false;
+#endif
         }
 
         private List<TestEngineTrustSource> GetTrustedSources(TestSettingExtensions settings)

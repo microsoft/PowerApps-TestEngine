@@ -13,7 +13,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     /// </summary>
     public interface ITestWebProvider
     {
-        #nullable enable
+#nullable enable
         public ITestInfraFunctions? TestInfraFunctions { get; set; }
 
         public ISingleTestInstanceState? SingleTestInstanceState { get; set; }
@@ -21,8 +21,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public ITestState? TestState { get; set; }
 
         public ITestProviderState? ProviderState { get; set; }
-        #nullable disable
 
+#nullable disable
         /// <summary>
         /// The name of the provider
         /// </summary>

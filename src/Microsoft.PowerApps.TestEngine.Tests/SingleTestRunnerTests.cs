@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.PowerFx;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
@@ -132,6 +132,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             MockTestWebProvider.Setup(x => x.GenerateTestUrl("", "")).Returns(appUrl);
             MockTestWebProvider.SetupSet(x => x.TestInfraFunctions = MockTestInfraFunctions.Object);
+            MockTestWebProvider.SetupSet(x => x.TestState = MockTestState.Object);
+            MockTestWebProvider.SetupSet(x => x.SingleTestInstanceState = MockSingleTestInstanceState.Object);
 
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             MockTestLogger.Setup(x => x.WriteExceptionToDebugLogsFile(It.IsAny<string>(), It.IsAny<string>()));

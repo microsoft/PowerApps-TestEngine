@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
-using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.PowerFx;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
@@ -115,13 +115,13 @@ else
     }
 
     var logLevel = LogLevel.Information; // Default log level
-    if (string.IsNullOrEmpty(inputOptions.LogLevel))
+    if (string.IsNullOrEmpty(inputOptions.LogLevel) || !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))
     {
         Console.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default");
-        Enum.TryParse(inputOptions.LogLevel, true, out logLevel);
+        logLevel = LogLevel.Information;
     }
 
-    var userAuth ="browser"; // Default to brower authentication
+    var userAuth = "browser"; // Default to brower authentication
     if (!string.IsNullOrEmpty(inputOptions.UserAuth))
     {
         userAuth = inputOptions.UserAuth;
@@ -158,7 +158,8 @@ else
             }
             return userManagers.Where(x => x.Name.Equals(userAuth)).First();
         })
-        .AddTransient<ITestWebProvider>(sp => {
+        .AddTransient<ITestWebProvider>(sp =>
+        {
             var testState = sp.GetRequiredService<ITestState>();
             var testWebProviders = testState.GetTestEngineWebProviders();
             if (testWebProviders.Count == 0)
@@ -177,7 +178,7 @@ else
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
         .AddSingleton<TestEngine>()
-        
+
         .BuildServiceProvider();
 
         TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();

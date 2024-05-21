@@ -27,8 +27,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         private IPage Page { get; set; }
-        
-
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider)
         {
             _testState = testState;
@@ -102,9 +100,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (!userManager.UseStaticContext)
             {
                 // Check if a channel has been specified
-                if (testSettings.BrowserConfigurations.Any(c => !string.IsNullOrEmpty(c.Channel)))
+                if (!string.IsNullOrEmpty(browserConfig.Channel))
                 {
-                    launchOptions.Channel = testSettings.BrowserConfigurations.First(c => !string.IsNullOrEmpty(c.Channel)).Channel;
+                    launchOptions.Channel = browserConfig.Channel;
                 }
 
                 Browser = await browser.LaunchAsync(launchOptions);
@@ -157,11 +155,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 _singleTestInstanceState.GetLogger().LogInformation($"Using static context in '{location}' using {userManager.Name}");
 
                 // Check if a channel has been specified
-                if (testSettings.BrowserConfigurations.Any(c => !string.IsNullOrEmpty(c.Channel)))
+                if (!string.IsNullOrEmpty(browserConfig.Channel))
                 {
-                    staticContext.Channel = testSettings.BrowserConfigurations.First(c => !string.IsNullOrEmpty(c.Channel)).Channel;
+                    staticContext.Channel = browserConfig.Channel;
                 }
-                
                 BrowserContext = await browser.LaunchPersistentContextAsync(location, staticContext);
             }
             else
@@ -272,7 +269,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             if ((uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
             {
-                if ( url != "about:blank")
+                if (url != "about:blank")
                 {
                     _singleTestInstanceState.GetLogger().LogError("Url must be http/https");
                     throw new InvalidOperationException();
