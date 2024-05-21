@@ -66,16 +66,33 @@ jobs:
       - name: Copy Coverage report
         run: cp src/TestResults/**/coverage.cobertura.xml coverage.cobertura.xml
 
-      - name: Code coverage report
-        uses: irongut/CodeCoverageSummary@v1.2.0
-        with:
-          filename: coverage.cobertura.xml
-          badge: true
-          fail_below_min: true
-          format: markdown
-          indicators: true
-          output: both
-          thresholds: '85 90'
+      # - name: Code coverage report
+      #   uses: irongut/CodeCoverageSummary@v1.2.0
+      #   with:
+      #     filename: coverage.cobertura.xml
+      #     badge: true
+      #     fail_below_min: true
+      #     format: markdown
+      #     indicators: true
+      #     output: both
+      #     thresholds: '85 90'
+
+      - name: Run PowerShell Script
+        run: |
+          [xml]$coverageReport = Get-Content -Path "coverage.cobertura.xml"
+          $lineRate = [double]$coverageReport.coverage.'@line-rate'
+          $branchRate = [double]$coverageReport.coverage.'@branch-rate'
+          $lineThreshold = 0.85
+          $branchThreshold = 0.90
+          if ($lineRate -lt $lineThreshold -or $branchRate -lt $branchThreshold) {
+              Write-Host "Code coverage is below the specified thresholds."
+              Write-Host "Line Rate: $lineRate Branch Rate: $branchRate"
+              Write-Host "Line Threshold: $lineThreshold Branch Threshold: $branchThreshold"
+              exit 1
+          } else {
+              Write-Host "Code coverage meets the specified thresholds."
+              exit 0
+          }
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
