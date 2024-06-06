@@ -43,7 +43,7 @@ To manage the synchronization of upstream changes on the command line please ref
 ## Local branch strategy
 
 When implementing your contributions in your forked repository it is recommended that you employ a feature branch strategy. This means that you will have a branch for each feature or bug fix that your contribute. This approach helps keep the review process as simple as possible.
-We recommend naming your feature branches in a way that identify the feature or bug fix your are working on by having the issue id in the branch name. For example yourgithubhandle-featurename-issuenumber **developer1-contributions-123** or featurename-issuenumber **contributions-333** if the feature relates to collaboration between multiple contributors.
+We recommend naming your feature branches in a way that identify the feature or bug fix your are working on by having the issue id in the branch name. For example yourgithubhandle/featurename-issuenumber **grant-archibald-ms/contributions-333** or featurename-issuenumber **contributions-333** if the feature relates to collaboration between multiple contributors.
 
 ## Pull Requests
 
