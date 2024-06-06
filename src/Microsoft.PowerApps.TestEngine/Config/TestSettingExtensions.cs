@@ -41,6 +41,17 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<string> DenyNamespaces { get; set; } = new List<string>();
 
         /// <summary>
+        /// List of allowed PowerFx Namespaces that can be referenced in a Test Engine Module
+        /// </summary>
+        public List<string> AllowPowerFxNamespaces { get; set; } = new List<string>();
+
+        /// <summary>
+        /// List of allowed PowerFx Namespaces that deny load unless explict allow is defined
+        /// </summary>
+        public List<string> DenyPowerFxNamespaces { get; set; } = new List<string>();
+
+
+        /// <summary>
         /// Additional optional parameters for extension modules
         /// </summary>
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
