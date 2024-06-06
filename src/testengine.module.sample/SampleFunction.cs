@@ -1,11 +1,12 @@
 ﻿using Microsoft.PowerFx;
+using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
 
 namespace testengine.module.sample
 {
     public class SampleFunction : ReflectionFunction
     {
-        public SampleFunction() : base("Sample", FormulaType.Blank)
+        public SampleFunction() : base(DPath.Root.Append(new DName("TestEngine")), "Sample", FormulaType.Blank)
         {
         }
 
