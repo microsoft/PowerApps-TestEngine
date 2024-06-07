@@ -7,6 +7,7 @@ There are several specifically defined functions for the test framework.
 - [Pause](./Pause.md)
 - [Select](./Select.md)
 - [SetProperty](./SetProperty.md)
+- [TestEngine.PlaywrightScript](./TestEngine.PlaywrightScript.md)
 - [Wait](./Wait.md)
 
 ## Naming
