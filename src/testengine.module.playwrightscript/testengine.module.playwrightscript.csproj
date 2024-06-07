@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MySourceFiles Include="$(userprofile)\.nuget\packages\microsoft.codeanalysis.scripting.common\4.5.0\lib\netstandard2.0\*.dll;$(userprofile)\.nuget\packages\microsoft.codeanalysis.csharp.scripting\4.5.0\lib\netstandard2.0\*.dll;$(userprofile)\.nuget\packages\microsoft.codeanalysis.csharp\4.5.0\lib\netstandard2.0\*.dll;$(userprofile)\.nuget\packages\microsoft.codeanalysis.common\4.5.0\lib\netstandard2.0\*.dll;..\..\bin\$(configuration)\testengine.module.playwrightscript\testengine.module.playwrightscript.dll"/>
+  </ItemGroup>
+
+  <Target Name="CopyFiles" AfterTargets="AfterBuild">
+    <Copy
+        SourceFiles="@(MySourceFiles)"
+        DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine"
+      />
+  </Target>
+
+</Project>
