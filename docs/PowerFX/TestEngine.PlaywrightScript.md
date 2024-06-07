@@ -8,7 +8,7 @@ You can use the playwright inspector to record C# commands to build the C# scrip
 
 ## C# Script
 
-This action takes advantage of [dotnet-script](https://github.com/dotnet-script/dotnet-script) and the underlying [Rosyln](https://github.com/dotnet/roslyn) compiler ro allow projectless scripting of Playwright code. The Action assumes the following:
+This action takes advantage of [dotnet-script](https://github.com/dotnet-script/dotnet-script) and the underlying [Rosyln](https://github.com/dotnet/roslyn) compiler to allow projectless scripting of Playwright code. The Action assumes the following:
 
 1. Any required .Net Assemblies are globally available or in the current folder and can be loaded using #r compiler directive
 2. A public class named **PlaywrightScript** MUST exist
