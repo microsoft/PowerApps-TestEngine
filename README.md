@@ -6,18 +6,18 @@
 
 ## Overview
 
-Power Apps Test Engine is an open source project with the aim of providing makers with a single automated testing platform for all Power Apps apps. Test Engine has the following benefits:
+Power Apps Test Engine is an open source project with the aim of providing makers with a single automated testing platform for all Power Apps apps.
 
-- Power Fx test authoring - Makers can author tests in YAML format using the familiar Power Fx language.
+Test Engine currently supports Power Apps canvas apps. Model driven apps are not currently supported.
+
+Test Engine has the following benefits:
+
+- Power Fx test authoring - Makers author tests in YAML format using the familiar Power Fx language.
 - DOM abstraction - Tests are authored using references to control names that are defined at design-time. Test authors do not need to write JavaScript, and do not need to be familiar with the browser DOM of the app's rendered output.
 - Connector mocking - Test authors can optionally create mocks of network calls, typically used when Power Apps make calls to connectors. This allows the app to be tested without modification to the app itself while avoiding any unwanted side-effects of the external APIs.
-- Screenshot and video recording support - Test Engine can take screenshots at any point during your test execution, and records videos of the test run. This can be very helpful to diagnose failed tests and to understand what the actual experience of the failed test case was.
+- Screenshot and video recording support - The Test Engine can take screenshots at any point during your test execution, and may records videos of the test run. This can be very helpful to diagnose failed tests.
 
 Build this project using the instructions below. This will create a local executable that can be used to run tests from your machine.
-
-Test Engine uses [Playwright](https://playwright.dev) to orchestrate the tests.
-
-Test Engine currently supports Power Apps canvas apps.
 
 ## Getting Started
 
@@ -25,7 +25,7 @@ To get started, you will need to clone the Test Engine code from GitHub, locally
 
 ### Prerequisites for building Test Engine
 
-1. Install [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+1. Install [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) or later
 1. Ensure that your `MSBuildSDKsPath` environment variable is pointing to [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 1. Make sure [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2) is installed.
 
@@ -106,7 +106,7 @@ This refers to the account that Test Engine will use to execute the test.
 
 Test Engine does not support multi-factor authentication. Use an account that requires only a username and password to sign in for your tests.
 
-Test credentials cannot be stored in test plan files. Rather, they are stored in PowerShell environment variables. The test plan file contains references to which environment variables are used for credentials. For example, the following snippet indicates that the `user1Email` and `user1Password` environment variables will be used:
+For safety reasons test credentials cannot be stored in test plan files. Rather, they are stored in environment variables. The test plan file contains references to which environment variables are used for credentials. For example, the following snippet indicates that the `user1Email` and `user1Password` environment variables will be used:
 
 ```yaml
 environmentVariables:
