@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
+using NuGet.Configuration;
 
 namespace Microsoft.PowerApps.TestEngine.Users
 {
@@ -49,6 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
             IBrowserContext context,
             ITestState testState,
             ISingleTestInstanceState singleTestInstanceState,
-            IEnvironmentVariable environmentVariable);
+            IEnvironmentVariable environmentVariable,
+            IUserCertificateProvider userCertificateProvider);
     }
 }
