@@ -177,6 +177,7 @@ else
         .AddSingleton<IFileSystem, FileSystem>()
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
+        .AddSingleton<IUserCertificateProvider, LocalUserCertificateProvider>()
         .AddSingleton<TestEngine>()
 
         .BuildServiceProvider();

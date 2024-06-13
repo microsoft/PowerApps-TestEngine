@@ -42,7 +42,8 @@ namespace testengine.user.environment
             IBrowserContext context,
             ITestState testState,
             ISingleTestInstanceState singleTestInstanceState,
-            IEnvironmentVariable environmentVariable)
+            IEnvironmentVariable environmentVariable,
+            IUserCertificateProvider userCertificateProvider)
         {
             Context = context;
 
