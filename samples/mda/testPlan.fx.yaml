@@ -2,8 +2,7 @@ testSuite:
   testSuiteName: MDA tests
   testSuiteDescription: Verify model driven application
   persona: User1
-  appLogicalName: new_buttonclicker_0a877
-  onTestSuiteComplete: Screenshot("pause_onTestSuiteComplete.png");
+  appLogicalName: NotNeeded
 
   testCases:
     - testCaseName: Verify

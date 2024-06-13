@@ -6,7 +6,31 @@ The Model Driven Application Provider implements a [Managed Extensibility Framew
 
 The provider encapsulates the XRM SDK using Playwright by allowing tests to be created with low code Power Fx commands for test for automation, ensuring a seamless and efficient testing process.
 
-This extension build on the Test Engine YAML definitions to define and execute test suites and cases, generating test results as TRX files, which can be integrated into CI/CD processes.
+This extension build on the Test Engine Yaml definitions to define and execute test suites and cases, generating test results as TRX files, which can be integrated into CI/CD processes.
+
+## Testing Model-Driven Apps with Power Apps Test Engine
+
+When testing model-driven apps with the Power Apps Test Engine, you have a spectrum of choices ranging from unit tests with mocked data operations to full integration tests against a Dataverse environment. It's important to consider several key factors to ensure robust and efficient testing.
+
+### Key Points to Consider:
+
+- **Speed of Execution**
+  - **Unit Tests with Mock Data**: Typically faster as they do not interact with the actual Dataverse environment.
+  - **Integration Tests with Dataverse**: Slower due to real-time interaction with the Dataverse environment, but provide more comprehensive validation.
+
+- **Management of Test State as Dataverse Records vs Mock Data**
+  - **Mock Data**: Easier to control and reset between tests, ensuring consistency and reliability of test results.
+  - **Dataverse Records**: Requires careful management to avoid data pollution and ensure the environment is in a known state before each test.
+
+- **Setup and Configuration of Dataverse Environment**
+  - **Test Environment Setup**: Establishing a dedicated test environment that mirrors your production setup is crucial for realistic integration testing.
+  - **Data Seeding**: Pre-loading necessary test data into the Dataverse environment can save time during test execution.
+
+- **Testing Multiple Personas and Security Roles**
+  - **Security Roles**: Ensure that different security roles are accurately represented in your tests to validate role-based access and permissions.
+  - **User Personas**: Simulate different user personas to test how varying roles and permissions affect the application's behavior.
+
+By carefully considering these factors, you can create a balanced and effective testing strategy that leverages the strengths of both unit tests and integration tests for your model-driven apps.
 
 ## Key Features
 
@@ -68,7 +92,7 @@ This extension build on the Test Engine YAML definitions to define and execute t
 
 ## Examples
 
-[Basic MDA - Assert Form Properties](../../samples/mda/testPlan.fx.yaml)
+[Basic MDA - Assert Form Properties](../../../samples/mda/README.md) and associated [testPlan.fx.yaml](../../../samples/mda/testPlan.fx.yaml)
 
 ## Capabilities
 
@@ -76,23 +100,24 @@ The following table outlines the scope of testing Model Driven Applications and 
 
 | Capability               | Description                                                                                     | Supported |
 |--------------------------|-------------------------------------------------------------------------------------------------|-----------|
+| Command Bars and Actions | Ability to interact with command bars to automate and validate command bar actions and custom buttons.|
 | Forms (Get)              | Ability to read all [controls](./controls.md) as Power Fx variables.                                           | Y
 | Forms (Set)              | Ability to set Power Fx variables which change form data.       |
 | Navigation               | Provides methods for navigating forms and items in Model Driven Apps.                           |
 | Panels                   | Provides a method to display a web page in the side pane of Model Driven Apps forms.            |
 | Views (Get)              | Ability to query grids
 | Views (Actions)          | Ability to select and take actions on view items.                |
-| Web API                  | Supports operations with both Online and Offline Web API.                                       |
+| Security and Roles       | Provides methods to manage and test role-based security within the application.                 |
+| Custom Pages             | The ability to test custom pages |
+| Web API                  | Supports operations for both Online and Offline Web API.                                       |
 | Data Operations          | Allows CRUD (Create, Read, Update, Delete) operations on records within Model Driven Apps.      |
+| Mock Data Operations     | Provide the ability to provide mock values for CRUD (Create, Read, Update, Delete) operations on records within Model Driven Apps.      |
 | Workflow Execution       | Enables triggering workflows and monitoring their progress.                                     |
 | Business Logic           | Ability to trigger and test custom business logic and validations.                            |
-| Security and Roles       | Provides methods to manage and test role-based security within the application.                 |
 | Notifications            | Capability to display and manage system and user notifications within the application.          |
 | Entities and Attributes  | Powers querying and manipulation of entity attributes and relationships.                        |
 | User Context             | Methods to retrieve and utilize user context information within tests.                          |
 | Global Variables         | Supports the use of global variables for maintaining state and shared data across tests.        |
 | Audit and Logs           | Ability to access and interact with audit logs and system logs for compliance and debugging.    |
 | Solutions                | Allows for importing, exporting, and managing solutions within the application.                 |
-| Command Bars and Actions | - Ability to interact with command bars to automate and validate command bar actions and custom buttons.|
-| Custom Pages             | The ability to test custom pages |
 | Localization             | Ability to specify locale for localization of navigation, commands and labels |
