@@ -44,7 +44,7 @@ namespace testengine.user.environment
             ITestState testState,
             ISingleTestInstanceState singleTestInstanceState,
             IEnvironmentVariable environmentVariable,
-            IUserCertificateProvider userCertificateProvider)
+            IUserManagerLogin userManagerLogin)
         {
             Context = context;
 
@@ -84,7 +84,18 @@ namespace testengine.user.environment
                 logger.LogError(("User email cannot be null. Please check if the environment variable is set properly."));
                 missingUserOrCert = true;
             }
-            var cert = userCertificateProvider.RetrieveCertificateForUser(user);
+            X509Certificate2 cert = null;
+            var userCertificateProvider = userManagerLogin.UserCertificateProvider;
+            if (userCertificateProvider != null)
+            {
+                cert = userCertificateProvider.RetrieveCertificateForUser(user);
+            }
+            else 
+            {
+                logger.LogError("Certificate provider cannot be null. Please ensure certificate provider for user.");
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
+            }
+
             if (cert == null)
             {
                 logger.LogError("Certificate cannot be null. Please ensure certificate for user.");

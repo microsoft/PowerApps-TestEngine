@@ -43,7 +43,7 @@ namespace testengine.user.environment
             ITestState testState,
             ISingleTestInstanceState singleTestInstanceState,
             IEnvironmentVariable environmentVariable,
-            IUserCertificateProvider userCertificateProvider)
+            IUserManagerLogin userManagerLogin)
         {
             Context = context;
 

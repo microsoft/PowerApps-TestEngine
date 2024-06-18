@@ -51,6 +51,6 @@ namespace Microsoft.PowerApps.TestEngine.Users
             ITestState testState,
             ISingleTestInstanceState singleTestInstanceState,
             IEnvironmentVariable environmentVariable,
-            IUserCertificateProvider userCertificateProvider);
+            IUserManagerLogin userManagerLogin);
     }
 }

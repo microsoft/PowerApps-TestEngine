@@ -178,8 +178,8 @@ else
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
         .AddSingleton<IUserCertificateProvider, LocalUserCertificateProvider>()
+        .AddSingleton<IUserManagerLogin, UserManagerLogin>()
         .AddSingleton<TestEngine>()
-
         .BuildServiceProvider();
 
         TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
