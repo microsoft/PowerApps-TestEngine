@@ -7,6 +7,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 {
     public interface IUserCertificateProvider
     {
+        public string Name { get; }
         public X509Certificate2 RetrieveCertificateForUser(string username);
     }
 }

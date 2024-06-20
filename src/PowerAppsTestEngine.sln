@@ -46,7 +46,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.pause", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.pause.tests", "testengine.module.pause.tests\testengine.module.pause.tests.csproj", "{3D9F90F2-0937-486D-AA0B-BFE425354F4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.user.certificate", "testengine.user.certificate\testengine.user.certificate.csproj", "{998935DC-E292-4818-A47E-3CCA365B7C5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.certificate", "testengine.user.certificate\testengine.user.certificate.csproj", "{998935DC-E292-4818-A47E-3CCA365B7C5E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.auth.localcertificate", "testengine.auth.localcertificate\testengine.auth.localcertificate.csproj", "{340111C2-8434-46CF-BE93-12E7C484C955}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,6 +110,10 @@ Global
 		{998935DC-E292-4818-A47E-3CCA365B7C5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{998935DC-E292-4818-A47E-3CCA365B7C5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{998935DC-E292-4818-A47E-3CCA365B7C5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{340111C2-8434-46CF-BE93-12E7C484C955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{340111C2-8434-46CF-BE93-12E7C484C955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{340111C2-8434-46CF-BE93-12E7C484C955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{340111C2-8434-46CF-BE93-12E7C484C955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +132,8 @@ Global
 		{B3A02421-223D-4E80-A8CE-977B425A6EB2} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 		{3D9F90F2-0937-486D-AA0B-BFE425354F4A} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 		{998935DC-E292-4818-A47E-3CCA365B7C5E} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
+		{F5DD02A2-1BA8-481C-A7ED-E36577C2CB15} = {63A04DC1-C37E-43E6-8FEA-A480483E11F8}
+		{340111C2-8434-46CF-BE93-12E7C484C955} = {F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E7B2C01-DDE2-4C5A-96C3-AF474B074331}

@@ -1,14 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
 
-namespace Microsoft.PowerApps.TestEngine.Config
+using System.ComponentModel.Composition;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.PowerApps.TestEngine.Config;
+
+namespace testengine.auth
 {
-    public class LocalUserCertificateProvider : IUserCertificateProvider
+    /// <summary>
+    /// Functions for interacting with the Power App
+    /// </summary>
+    [Export(typeof(IUserCertificateProvider))]
+    public class LocalUserCertificateProvider: IUserCertificateProvider
     {
+        public string Name { get { return "localcert"; } }
+
         private Dictionary<string, X509Certificate2> emailCertificateDict = new Dictionary<string, X509Certificate2>();
 
         public LocalUserCertificateProvider()
@@ -37,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
             }
         }
 
-        public X509Certificate2 RetrieveCertificateForUser(string username)
+        public X509Certificate2? RetrieveCertificateForUser(string username)
         {
             if (emailCertificateDict.TryGetValue(username, out X509Certificate2 certificate))
             {

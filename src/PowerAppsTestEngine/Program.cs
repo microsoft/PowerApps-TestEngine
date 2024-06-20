@@ -28,7 +28,8 @@ var switchMappings = new Dictionary<string, string>()
     { "-d", "Domain" },
     { "-m", "Modules" },
     { "-u", "UserAuth" },
-    { "-p", "Provider" }
+    { "-p", "Provider" },
+    { "-a", "UserAuthType"}
 };
 
 var inputOptions = new ConfigurationBuilder()
@@ -133,6 +134,12 @@ else
         provider = inputOptions.Provider;
     }
 
+    var auth = "localcert";
+    if (!string.IsNullOrEmpty(inputOptions.UserAuthType))
+    {
+        auth = inputOptions.UserAuthType;
+    }
+
     try
     {
         using var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder
@@ -169,6 +176,17 @@ else
             }
             return testWebProviders.Where(x => x.Name.Equals(provider)).First();
         })
+        .AddSingleton<IUserCertificateProvider>(sp =>
+        {
+            var testState = sp.GetRequiredService<ITestState>();
+            var testAuthProviders = testState.GetTestEngineAuthProviders();
+            if (testAuthProviders.Count == 0)
+            {
+                testState.LoadExtensionModules(logger);
+                testAuthProviders = testState.GetTestEngineAuthProviders();
+            }
+            return testAuthProviders.Where(x => x.Name.Equals(auth)).First();
+        })
         .AddSingleton<ITestState, TestState>()
         .AddSingleton<ITestReporter, TestReporter>()
         .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
@@ -177,7 +195,6 @@ else
         .AddSingleton<IFileSystem, FileSystem>()
         .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
         .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
-        .AddSingleton<IUserCertificateProvider, LocalUserCertificateProvider>()
         .AddSingleton<IUserManagerLogin, UserManagerLogin>()
         .AddSingleton<TestEngine>()
         .BuildServiceProvider();

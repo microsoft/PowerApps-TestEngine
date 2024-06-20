@@ -126,10 +126,14 @@ namespace testengine.user.environment
 
             // Handle pre-authentication dialogs
             var workOrSchoolAccount = Page.GetByRole(AriaRole.Button, new() { Name = "Work or school account" });
-            var useCertificateAuth = Page.GetByRole(AriaRole.Link, new() { Name = "Use a certificate or smart card" }).Or(Page.GetByRole(AriaRole.Button, new() { Name = "certificate" })); ;
+            var useCertificateAuth = Page.GetByRole(AriaRole.Link, new() { Name = "Use a certificate or smart card" }).Or(Page.GetByRole(AriaRole.Button, new() { Name = "certificate" }));
             await Task.WhenAny(workOrSchoolAccount.Or(useCertificateAuth).IsVisibleAsync(), responseReceived.Task);
 
-            if (responseReceived.Task.IsCompletedSuccessfully) return;
+            if (responseReceived.Task.IsCompletedSuccessfully)
+            {
+                await ClickStaySignedIn();
+                return;
+            }
 
             if (await workOrSchoolAccount.IsVisibleAsync())
             {
@@ -137,16 +141,26 @@ namespace testengine.user.environment
                 await Task.WhenAny(useCertificateAuth.WaitForAsync(), responseReceived.Task);
             }
 
-            if (responseReceived.Task.IsCompletedSuccessfully) return;
+            if (responseReceived.Task.IsCompletedSuccessfully)
+            {
+                await ClickStaySignedIn();
+                return;
+            }
 
             await useCertificateAuth.ClickAsync();
 
             // Wait for certificate authentication response
             await responseReceived.Task;
+            await ClickStaySignedIn();
+        }
 
-            await Page.PauseAsync();
-            await Task.Delay(500);
-
+        private async Task ClickStaySignedIn()
+        {
+            var staySignedIn = Page.GetByRole(AriaRole.Button, new() { Name = "Yes" });
+            if (await staySignedIn.IsVisibleAsync())
+            {
+                await staySignedIn.ClickAsync();
+            }
         }
 
         public async Task HandleUserEmailScreen(string selector, string value)
