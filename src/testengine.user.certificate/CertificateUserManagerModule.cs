@@ -35,6 +35,7 @@ namespace testengine.user.environment
         public static string EmailSelector = "input[type=\"email\"]";
         public static string SubmitButtonSelector = "input[type=\"submit\"]";
         public static string StaySignedInSelector = "[id=\"KmsiCheckboxField\"]";
+        public static string KeepMeSignedInNoSelector = "[id=\"idBtn_Back\"]";
 
         private TaskCompletionSource<bool> responseReceived = new TaskCompletionSource<bool>();
 
@@ -131,36 +132,87 @@ namespace testengine.user.environment
 
             if (responseReceived.Task.IsCompletedSuccessfully)
             {
-                await ClickStaySignedIn();
+                await ClickStaySignedIn(desiredUrl, logger);
                 return;
             }
 
             if (await workOrSchoolAccount.IsVisibleAsync())
             {
                 await workOrSchoolAccount.ClickAsync();
-                await Task.WhenAny(useCertificateAuth.WaitForAsync(), responseReceived.Task);
             }
+            await Task.WhenAny(useCertificateAuth.WaitForAsync(), responseReceived.Task);
+            
 
             if (responseReceived.Task.IsCompletedSuccessfully)
             {
-                await ClickStaySignedIn();
+                await ClickStaySignedIn(desiredUrl, logger);
                 return;
             }
 
-            await useCertificateAuth.ClickAsync();
+            if (await useCertificateAuth.IsVisibleAsync())
+            {
+                await useCertificateAuth.ClickAsync();
+            }
 
             // Wait for certificate authentication response
             await responseReceived.Task;
-            await ClickStaySignedIn();
+            await ClickStaySignedIn(desiredUrl, logger);
         }
 
-        private async Task ClickStaySignedIn()
+        private async Task ClickStaySignedIn(string desiredUrl, ILogger logger)
         {
-            var staySignedIn = Page.GetByRole(AriaRole.Button, new() { Name = "Yes" });
-            if (await staySignedIn.IsVisibleAsync())
+            PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
+            selectorOptions.Timeout = 8000;
+
+            // For instances where there is a 'Stay signed in?' dialogue box
+            try
             {
-                await staySignedIn.ClickAsync();
+                logger.LogDebug("Checking if asked to stay signed in.");
+
+                // Check if we received a 'Stay signed in?' box?
+                await Page.WaitForSelectorAsync(StaySignedInSelector, selectorOptions);
+                logger.LogDebug("Was asked to 'stay signed in'.");
+
+                // Click to stay signed in
+                await Page.ClickAsync(KeepMeSignedInNoSelector);
             }
+            // If there is no 'Stay signed in?' box, an exception will throw; just catch and continue
+            catch (Exception ssiException)
+            {
+                logger.LogDebug("Exception encountered: " + ssiException.ToString());
+
+                // Keep record if certificateError was encountered
+                bool hasCertficateError = false;
+
+                try
+                {
+                    selectorOptions.Timeout = 2000;
+
+                    // Check if we received a password error
+                    //await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
+                    hasCertficateError = true;
+                }
+                catch (Exception peException)
+                {
+                    logger.LogDebug("Exception encountered: " + peException.ToString());
+                }
+
+                // If encountered password error, exit program
+                if (hasCertficateError)
+                {
+                    logger.LogError("Incorrect certificate entered. Make sure you are using the correct credentials.");
+                    throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
+                }
+                // If not, continue
+                else
+                {
+                    logger.LogDebug("Did not encounter an invalid certificate error.");
+                }
+
+                logger.LogDebug("Was not asked to 'stay signed in'.");
+            }
+
+            await Page.WaitForURLAsync(desiredUrl);
         }
 
         public async Task HandleUserEmailScreen(string selector, string value)
