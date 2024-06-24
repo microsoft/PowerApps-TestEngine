@@ -30,6 +30,7 @@ namespace Microsoft.PowerApps.TestEngine
         private readonly ILoggerFactory _loggerFactory;
         private readonly ITestEngineEvents _eventHandler;
         private readonly IEnvironmentVariable _environmentVariable;
+        private readonly IUserManagerLogin _userManagerLoginType;
         private ITestWebProvider _testWebProvider;
 
         private ILogger Logger { get; set; }
@@ -48,7 +49,8 @@ namespace Microsoft.PowerApps.TestEngine
                                 ILoggerFactory loggerFactory,
                                 ITestEngineEvents eventHandler,
                                 IEnvironmentVariable environmentVariable,
-                                ITestWebProvider testWebProvider)
+                                ITestWebProvider testWebProvider,
+                                IUserManagerLogin userManagerLogin)
         {
             _testReporter = testReporter;
             _powerFxEngine = powerFxEngine;
@@ -61,6 +63,7 @@ namespace Microsoft.PowerApps.TestEngine
             _eventHandler = eventHandler;
             _environmentVariable = environmentVariable;
             _testWebProvider = testWebProvider;
+            _userManagerLoginType = userManagerLogin;
         }
 
         public async Task RunTestAsync(string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig, string domain, string queryParams, CultureInfo locale)
@@ -132,7 +135,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _testReporter.TestRunAppURL = desiredUrl;
 
                 // Log in user
-                await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable);
+                await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();

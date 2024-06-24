@@ -104,6 +104,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         }
                     }
 
+                    var possibleAuthTypeProviderModule = DirectoryGetFiles(location, "testengine.auth.*.dll");
+                    foreach (var possibleModule in possibleAuthTypeProviderModule)
+                    {
+                        if (Checker.Verify(settings, possibleModule))
+                        {
+                            match.Add(LoadAssembly(possibleModule));
+                        }
+                    }
+
                     // Check if need to deny a module or a specific list of modules are allowed
                     if (settings.DenyModule.Count > 0 || (settings.AllowModule.Count() > 1))
                     {

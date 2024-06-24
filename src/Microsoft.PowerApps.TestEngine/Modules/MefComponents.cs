@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.ComponentModel.Composition;
+using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Users;
 
@@ -21,6 +22,9 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
         [ImportMany]
         public IEnumerable<Lazy<ITestWebProvider>> WebProviderModules;
+
+        [ImportMany]
+        public IEnumerable<Lazy<IUserCertificateProvider>> CertificateProviderModules;
 #pragma warning restore 0649
     }
 }
