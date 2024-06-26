@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.ComponentModel.Composition;
-using System.Collections.Generic;
 using System.Dynamic;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -11,7 +10,7 @@ using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
-using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -33,20 +32,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ILogger? Logger { get; set; }
 
-        public static string QueryFormField = "try {{ JSON.stringify({{PropertyValue: getCurrentXrmStatus().mainForm.ui.controls.getByName('{0}').getValue()}}) }} catch {{ '#ERROR#' }}";
-        public static string ControlPropertiesQuery = @"var data = [];
-        var controlDescriptor = getCurrentXrmStatus().mainForm.ui.controls.getByName('{0}').controlDescriptor;
-        data.push({{Key:'Disabled', Value:controlDescriptor.Disabled}});
-        if ( controlDescriptor.ShowLabel ) {{
-            data.push({{Key:'Label', Value:controlDescriptor.Label}});
-        }}
-        data.push({{Key:'Visible', Value:controlDescriptor.Visible}});
-        data.push({{Key:'IsRequired', Value:controlDescriptor.IsRequired}});
-        JSON.stringify(data)";
+        public static string QueryFormField = "JSON.stringify({{PropertyValue: PowerAppsTestEngine.getValue('{0}') }})";
+
+        public static string ControlPropertiesQuery = "PowerAppsTestEngine.getControlProperties('{0}')";
 
         private string GetItemCountErrorMessage = "Something went wrong when Test Engine tried to get item count.";
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
+        private string LoadPowerAppsMDAErrorMessage = "Something went wrong when Test Engine tried to load Power Apps Model Driven Application helper.";
+
         public ModelDrivenApplicationProvider()
         {
 
@@ -86,22 +80,33 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         var expression = string.Format(QueryFormField, itemPath.ControlName);
                         var getValue = () => TestInfraFunctions.RunJavascriptAsync<string>(expression).Result;
 
-                        var result = PollingHelper.Poll<string>(null, x => x == null || x == "#ERROR#", getValue, TestState.GetTimeout(), SingleTestInstanceState.GetLogger(), GetPropertyValueErrorMessage);
+                        var result = PollingHelper.Poll<string>(null, x => x == null, getValue, TestState.GetTimeout(), SingleTestInstanceState.GetLogger(), GetPropertyValueErrorMessage);
 
                         return (T)((object)result);
                     default:
                         var controlExpression = string.Format(ControlPropertiesQuery, itemPath.ControlName);
                         var propertiesString = await TestInfraFunctions.RunJavascriptAsync<string>(controlExpression);
-                        var nameValues = JsonConvert.DeserializeObject<List<KeyValuePair<string, string>>>(propertiesString);
-                        if ( nameValues.Any(k => k.Key == itemPath.PropertyName))
+                        propertiesString = propertiesString.Replace("Value: False", "Value: false");
+                        propertiesString = propertiesString.Replace("Value: True", "Value: true");
+                        var nameValues = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(propertiesString);
+                        if (nameValues.Any(k => k.Key == itemPath.PropertyName))
                         {
                             var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;
-                            switch (value.GetType().ToString()) {
-                                case "System.String":
-                                    return (T)(object)("{PropertyValue: '" + value.ToString() + "'}");
+                            switch (itemPath.PropertyName.ToLower()) {
+                                case "disabled":
+                                case "visible":
+                                    return (T)(object)("{PropertyValue: " +  value.ToString().ToLower() + "}");
                                 default:
-                                    return (T)(object)("{PropertyValue: " + value.ToString() + "}");
+                                    switch (value.GetType().ToString())
+                                    {
+                                        case "System.String":
+                                            return (T)(object)("{PropertyValue: '" + value.ToString() + "'}");
+                                        default:
+                                            return (T)(object)("{PropertyValue: " + value.ToString() + "}");
+                                    }
                             }
+
+                            
                         }
                         break;
                 }
@@ -127,8 +132,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             try
             {
-                // TODO handle view not just form
-                var expression = "typeof getCurrentXrmStatus === \"function\" && getCurrentXrmStatus().mainForm != null ? 'Idle' : 'Loading'";
+                var expression = "UCWorkBlockTracker?.isAppIdle() ? 'Idle' : 'Loading'";
                 return (await TestInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
             catch (Exception ex)
@@ -142,28 +146,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 SingleTestInstanceState.GetLogger().LogDebug(ex.ToString());
                 return false;
             }
-
         }
 
         private async Task<Dictionary<string, ControlRecordValue>> LoadObjectModelAsyncHelper(Dictionary<string, ControlRecordValue> controlDictionary)
         {
             try
             {
-                // TODO - Load Grid and Other control type
-                var expression = @"JSON.stringify({Controls: getCurrentXrmStatus().mainForm.ui.controls.getAll().map( item => { 
-    control = {};
-    control.Name = item.getName();
-    control.Properties = [];
-    control.Properties.push({PropertyName:'Disabled', PropertyType: 'b'});
-    control.Properties.push({PropertyName:'Label', PropertyType: 's'});
-    control.Properties.push({PropertyName:'Visible', PropertyType: 'b'});
-    control.Properties.push({PropertyName:'Type', PropertyType: 's'});
-    switch ( item.getControlType() ) {
-        case 'standard':
-            control.Properties.push({PropertyName:'Text', PropertyType: 's'});
-            break;
-    }
-    return control; } )})";
+                var expression = @"PowerAppsTestEngine.buildControlObjectModel()";
                 var controlObjectModelJsonString = await TestInfraFunctions.RunJavascriptAsync<string>(expression);
                 if (!string.IsNullOrEmpty(controlObjectModelJsonString))
                 {
@@ -226,14 +215,41 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public async Task CheckProviderAsync()
         {
-            // TODO
+            var pages = TestInfraFunctions.GetContext().Pages;
+            if (pages.Count() > 0)
+            {
+                await pages.First().CloseAsync();
+                TestInfraFunctions.Page = TestInfraFunctions.GetContext().Pages.First();
+            }
+            
+            var resourceName = "testengine.provider.mda.PowerAppsTestEngineMDA.js";
+            var assembly = Assembly.GetExecutingAssembly();
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                await TestInfraFunctions.AddScriptContentAsync(await reader.ReadToEndAsync());
+            }
+
+            SingleTestInstanceState.GetLogger().LogDebug("Start to load PowerAppsTestEngine");
+
+            await PollingHelper.PollAsync(
+                true,
+                (x) => x == true,
+                async (x) => {
+                    return await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine === 'undefined'");
+                },
+                TestState.GetTimeout(),
+                SingleTestInstanceState.GetLogger(),
+                LoadPowerAppsMDAErrorMessage);
+
+            SingleTestInstanceState.GetLogger().LogDebug($"Finish loading PowerAppsTestEngine.");
         }
 
         public async Task<Dictionary<string, ControlRecordValue>> LoadObjectModelAsync()
         {
             var controlDictionary = new Dictionary<string, ControlRecordValue>();
             SingleTestInstanceState.GetLogger().LogDebug("Start to load power apps object model");
-            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadObjectModelAsyncHelper(x), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger(), LoadObjectModelErrorMessage);
+            await PollingHelper.PollAsync(controlDictionary, (x) => x.Keys.Count == 0, (x) => LoadObjectModelAsyncHelper(x), TestState.GetTimeout(), SingleTestInstanceState.GetLogger(), LoadObjectModelErrorMessage);
             SingleTestInstanceState.GetLogger().LogDebug($"Finish loading. Loaded {controlDictionary.Keys.Count} controls");
 
             return controlDictionary;
@@ -440,10 +456,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             try
             {
-                //TODO
-                //var expression = "1";
-                //return await TestInfraFunctions.RunJavascriptAsync<object>(expression);
-                return new ExpandoObject();
+                dynamic debugInfo = new ExpandoObject();
+
+                debugInfo.PageCount = TestInfraFunctions.GetContext().Pages.Count;
+                debugInfo.PowerAppsTestEngineLoaded = await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine !== 'undefined'");
+
+                return debugInfo;
             }
             catch (Exception)
             {
@@ -455,28 +473,29 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             try
             {
-                var getLoaded = () => TestInfraFunctions.RunJavascriptAsync<string>(@"
-                if ( window.formLoaded ) {
-                    window.formLoaded
-                } else {
-                    if ( typeof getCurrentXrmStatus === 'function' ) {
-                        var status = getCurrentXrmStatus();
-                        if ( status.mainForm && status.mainForm.ui && typeof status.mainForm.ui.addOnLoad === 'function') {
-                            status.mainForm.ui.addOnLoad(t =>  window.formLoaded = true);
-                        }
+                // TODO Inject any common JavaScript
+
+                var isIdle = await CheckIsIdleAsync();
+
+                if (!isIdle)
+                {
+                    return false;
+                }
+
+                var helperDefined = await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine === 'undefined'");
+
+                if ( !helperDefined )
+                {
+                    var resourceName = "testengine.provider.mda.PowerAppsTestEngineMDA.js";
+                    var assembly = Assembly.GetExecutingAssembly();
+                    using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        await TestInfraFunctions.RunJavascriptAsync<object>(await reader.ReadToEndAsync());
                     }
                 }
-                ").Result;
 
-                var result = PollingHelper.Poll<string>(String.Empty, (x) => x == "true", getLoaded, TestState.GetTimeout(), SingleTestInstanceState.GetLogger(), GetPropertyValueErrorMessage);
-
-                var logger = SingleTestInstanceState.GetLogger();
-                logger.LogDebug("Form loaded");
-
-                // TODO: Determine when MainForm is fully loaded
-                Thread.Sleep(10000);
-
-                return result == "true";
+                return await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine === 'undefined'");
             }
             catch (Exception ex)
             {

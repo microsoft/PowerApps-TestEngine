@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Runtime;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -26,7 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
-        private IPage Page { get; set; }
+        public IPage Page { get; set; }
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider)
         {
             _testState = testState;
@@ -371,6 +372,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
 
             return await Page.EvaluateAsync<T>(jsExpression);
+        }
+
+        public async Task AddScriptContentAsync(string content)
+        {
+            ValidatePage();
+
+            await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = content });
         }
     }
 }
