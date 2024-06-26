@@ -121,3 +121,14 @@ The following table outlines the scope of testing Model Driven Applications and 
 | Audit and Logs           | Ability to access and interact with audit logs and system logs for compliance and debugging.    |
 | Solutions                | Allows for importing, exporting, and managing solutions within the application.                 |
 | Localization             | Ability to specify locale for localization of navigation, commands and labels |
+
+## Page Types
+
+Model driven applications provide a range of different page types
+
+| Page Type               | Description                                                                                     | Supported |
+|--------------------------|-------------------------------------------------------------------------------------------------|-----------|
+| Custom | [Overview of custom pages for model-driven apps](https://learn.microsoft.com/power-apps/maker/model-driven-apps/model-app-page-overview)|N
+| Dashboards | [Track your progress with dashboards and charts](https://learn.microsoft.com/power-apps/user/track-your-progress-with-dashboard-and-charts) | N
+| Forms | [Create and design model-driven app forms](https://learn.microsoft.com/power-apps/maker/model-driven-apps/create-design-forms) | Y
+| Views | [Understand model-driven app views](https://learn.microsoft.com/power-apps/maker/model-driven-apps/create-edit-views) | N

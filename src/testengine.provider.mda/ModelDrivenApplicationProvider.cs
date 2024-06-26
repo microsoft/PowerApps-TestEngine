@@ -349,8 +349,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 RecordValueObject json = new RecordValueObject(val);
                 var checkVal = JsonConvert.SerializeObject(json);
 
-                // TODO - Set the Xrm SDK Value and update state for any JS to run
-
                 var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);

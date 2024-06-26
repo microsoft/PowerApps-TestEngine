@@ -57,7 +57,11 @@ class PowerAppsTestEngine {
 
     static getValue(name) {
         switch (PowerAppsTestEngine.pageType()) {
+            case 'custom':
+                break;
             case 'entityrecord':
+                // TODO: Handle multiple control types. For example lookup, grids
+
                 // References:
                 // https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/controls
                 // https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/controls/getvalue
@@ -68,6 +72,12 @@ class PowerAppsTestEngine {
     static getControlProperties(name) {
         var data = [];
         switch (PowerAppsTestEngine.pageType()) {
+            case 'custom':
+                // TODO: Get custom page properties
+                break;
+            case 'entitylist':
+                // TODO: Get Grid properties
+                break;
             case 'entityrecord':
                 // WARNING:
                 // controlDescriptor JavaScript object is subject to change. Do not take dependencies on the object or properties returned as they could change without notice.
@@ -86,5 +96,60 @@ class PowerAppsTestEngine {
                 break;
         }
         return JSON.stringify(data);
+    }
+    
+    static setPropertyValue(item, data) {
+        switch (PowerAppsTestEngine.pageType()) {
+            case 'custom':
+                // TODO set custom page value
+                break;
+            case 'entityrecord':
+                var control = Xrm.Page.ui.controls.getByName(item.controlName);
+                var propertyName = typeof item.propertyName === 'string' ? item.propertyName.toLowerCase() : ''
+                // TODO - Set the Xrm SDK Value and update state for any JS to run
+                // TODO: Handle Grid
+                switch (propertyName) {
+                    case '':
+                    case 'text':
+                        // https://learn.microsoft.com/power-apps/developer/model-driven-apps/clientapi/reference/controls/getattribute
+                        var attribute = control.getAttribute();
+                        // https://learn.microsoft.com/power-apps/developer/model-driven-apps/clientapi/reference/attributes/setvalue
+                        // TODO: Handle different control types. For example lookup, options
+                        attribute.setValue(data);
+                        attribute.fireOnChange();
+                        return true;
+                    case 'label':
+                        // https://learn.microsoft.com/power-apps/developer/model-driven-apps/clientapi/reference/controls/setlabel
+                        control.setLabel(data);
+                        return true;
+                    case 'disabled':
+                        // https://learn.microsoft.com/power-apps/developer/model-driven-apps/clientapi/reference/controls/setdisabled
+                        control.setDisabled(data);
+                        return true;
+                    case 'visible':
+                        // https://learn.microsoft.com/power-apps/developer/model-driven-apps/clientapi/reference/controls/setvisible
+                        control.setVisible(data);
+                        return true;
+                }
+                return false;
+                break;
+        }
+        return false;
+    }
+    
+    static getItemCount(item) {
+        switch (PowerAppsTestEngine.pageType()) {
+            case 'entityrecord':
+                // TODO - Get count of items for name
+                break;
+        }
+    }
+
+    static select(item) {
+        switch (PowerAppsTestEngine.pageType()) {
+            case 'entityrecord':
+                // TODO - Select item
+                break;
+        }
     }
 }

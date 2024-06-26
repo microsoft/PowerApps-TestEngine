@@ -50,6 +50,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.mda", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.mda.tests", "testengine.provider.mda.tests\testengine.provider.mda.tests.csproj", "{B7C8ED63-A77B-4FA0-B441-A07BE40E3264}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModelDrivenApplicationProvider", "ModelDrivenApplicationProvider", "{A465E028-ED7F-4113-B37B-4B830A5512D5}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\Extensions\ModelDrivenApplicationProvider\controls.md = ..\docs\Extensions\ModelDrivenApplicationProvider\controls.md
+		..\docs\Extensions\ModelDrivenApplicationProvider\README.md = ..\docs\Extensions\ModelDrivenApplicationProvider\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +137,7 @@ Global
 		{3D9F90F2-0937-486D-AA0B-BFE425354F4A} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 		{25CEB2CE-B6D5-4BE1-ACD7-3CF00441EF94} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
 		{B7C8ED63-A77B-4FA0-B441-A07BE40E3264} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
+		{A465E028-ED7F-4113-B37B-4B830A5512D5} = {D34E437A-6149-46EC-B7DA-FF449E55CEEA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E7B2C01-DDE2-4C5A-96C3-AF474B074331}

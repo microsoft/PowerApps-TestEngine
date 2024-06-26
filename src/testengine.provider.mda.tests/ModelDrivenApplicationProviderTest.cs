@@ -10,6 +10,7 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
 
@@ -187,7 +188,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             };
         }
 
-
         [Theory]
         [MemberData(nameof(GetControlData))]
         public async Task BuildEntityRecordControls(string javaScript, string controlName, string fields)
@@ -274,7 +274,96 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             };
         }
 
-        [Fact]
+        [Theory]
+        [MemberData(nameof(GetSetValueData))]
+        public async Task SetValue(string javaScript, string controlName, string propertyName, string targetProperty, object value)
+        {
+            var engine = new Engine();
+            engine.Execute(javaScript);
+
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+
+            MockTestInfraFunctions = new Mock<ITestInfraFunctions>();
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>(It.IsAny<string>()))
+            .Returns(
+                async (string query) => engine.Evaluate(query).AsString()
+            );
+
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>()))
+            .Returns(
+                async (string query) => engine.Evaluate(query).AsBoolean()
+            );
+
+            FormulaValue providerValue = null;
+            if ( value is string )
+            {
+                providerValue = StringValue.New((string)value);
+            }
+
+            if (value is bool)
+            {
+                providerValue = BooleanValue.New((bool)value);
+            }
+
+
+            // Act
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var result = await provider.SetPropertyAsync(new ItemPath {  ControlName = controlName, PropertyName = propertyName}, providerValue);
+
+            // Assert
+            object controlValue = null;
+            if (value is string)
+            {
+                controlValue = engine.Evaluate($"mockControl.{targetProperty}").AsString();
+
+                var changed = engine.Evaluate($"mockControl.changed").AsBoolean();
+                Assert.True(changed);
+            }
+            if (value is bool)
+            {
+                controlValue = engine.Evaluate($"mockControl.{targetProperty}").AsBoolean();
+            }
+
+            Assert.Equal(value, controlValue);
+        }
+
+        /// <summary>
+        /// Test data for <see cref="SetValue"/>
+        /// </summary>
+        /// <returns>MemberData items</returns>
+        public static IEnumerable<object[]> GetSetValueData()
+        {
+            // Default Values
+            yield return new object[] {
+                    MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    "test",
+                    "Text",
+                    "value",
+                    "Hello"
+            };
+
+            // Visible Values
+            yield return new object[] {
+                    MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    "test",
+                    "Visible",
+                    "visible",
+                    true
+            };
+
+            // Disabled Values
+            yield return new object[] {
+                    MockJavaScript("", "entityrecord"),
+                    "test",
+                    "Disabled",
+                    "disabled",
+                    true
+            };
+        }
+
+            [Fact]
         public async Task CheckProviderAsync()
         {
             // Arrange

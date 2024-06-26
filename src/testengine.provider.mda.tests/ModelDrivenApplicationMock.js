@@ -21,6 +21,12 @@ var mockControlDescriptor = class {
 }
 
 var mockControl = class {
+    static value = null;
+    static disabled = false;
+    static label = '';
+    static visible = true;
+    static changed = false;
+
     static controlDescriptor = mockControlDescriptor;
 
     static getName() {
@@ -33,6 +39,30 @@ var mockControl = class {
 
     static getControlType() {
         return mockControlType;
+    }
+
+    static getAttribute() {
+        return class {
+            static setValue(data) {
+                mockControl.value = data;
+            }
+
+            static fireOnChange() {
+                mockControl.changed = true;
+            }
+        }
+    }
+
+    static setLabel(data) {
+        mockControl.label = data;
+    }
+
+    static setDisabled(data) {
+        mockControl.disabled = data;
+    }
+
+    static setVisible(data) {
+        mockControl.visible = data;
     }
 }
 
