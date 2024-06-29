@@ -1,4 +1,8 @@
-// Provide mock intereface for Model driven application for testing
+//----------------------------------------------------------------------------
+// MDA - Entity Detail
+//----------------------------------------------------------------------------
+
+// Provide mock interface for Model driven application for testing
 
 var mockPageType = 'entityrecord'
 // Other possible types
@@ -94,3 +98,110 @@ class Xrm {
         }
     }
 }
+
+var mockLookup = class {
+}
+
+//----------------------------------------------------------------------------
+// Custom Page Mocks
+//----------------------------------------------------------------------------
+
+var mockCanvasControl = class {
+    static modelProperties = class {
+        static X = class {
+            static getValue() {
+                return 1;
+            }
+        }
+
+        static Y = class {
+            static getValue() {
+                return 2;
+            }
+        }
+
+        static Text = class {
+            static getValue() {
+                return mockValue;
+            }
+        }
+    }
+
+    static controlWidget = class {
+        static controlProperties = class {
+            static X = class {
+                static propertyType = 'n'
+            }
+            static Y = class {
+                static propertyType = 'n'
+            }
+            static Text = class {
+                static propertyType = 's'
+            }
+        }
+    }
+}
+
+var mockAppMagic = class {
+
+    static AuthoringTool = class {
+        static Runtime = class {
+            static getNamedControl(controlName, componentBindingContext) {
+                return OpenAjaxWrapper;
+            }
+        } 
+    }
+
+    static Controls = class {
+        static GlobalContextManager = class {
+            static bindingContext = class {
+                static controlContexts = class {
+                    static TextInput1 = mockCanvasControl
+                }
+
+                static componentBindingContexts = class {
+                    static lookup(controlName) {
+                        return undefined;
+                    }
+                }
+            }
+        }
+    }
+}
+
+var AppDependencyHandler = class {
+    static prebuiltContainerId = ''
+
+    static containers = class {
+        static test = class {
+            static AppMagic = mockAppMagic
+        }
+    }
+}
+
+var OpenAjaxClass = class {
+    static uniqueId = ''
+    static _icontrol = ''
+
+    static getAuthoringControlContext() {
+        return class {
+            static _replicatedContext = null;
+        }
+    }
+
+    static setPropertyValueInternal(propertyName, value, galleryBindingContext) {
+
+    }
+
+    static widget = class {
+        static byId(name) {
+            return OpenAjaxWrapper
+        }
+    }
+}
+
+var OpenAjaxWrapper = class {
+    static OpenAjax = OpenAjaxClass
+}
+
+var OpenAjax = OpenAjaxClass

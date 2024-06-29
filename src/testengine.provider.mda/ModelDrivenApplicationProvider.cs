@@ -70,45 +70,40 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             try
             {
                 ValidateItemPath(itemPath, true);
-                var itemPathString = JsonConvert.SerializeObject(itemPath); 
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
 
-                // TODO Handle other property types
-
-                switch (itemPath.PropertyName.ToLower())
+                if (itemPath.PropertyName.ToLower() == "text" && (await TestInfraFunctions.RunJavascriptAsync<object>("PowerAppsTestEngine.pageType()"))?.ToString() == "entityrecord")
                 {
-                    case "text":
-                        var expression = string.Format(QueryFormField, itemPath.ControlName);
-                        var getValue = () => TestInfraFunctions.RunJavascriptAsync<string>(expression).Result;
+                    // Special case assume Text property relates to getValue of entity record
+                    var expression = string.Format(QueryFormField, itemPath.ControlName);
+                    var getValue = () => TestInfraFunctions.RunJavascriptAsync<object>(expression).Result;
 
-                        var result = PollingHelper.Poll<string>(null, x => x == null, getValue, TestState.GetTimeout(), SingleTestInstanceState.GetLogger(), GetPropertyValueErrorMessage);
+                    var result = PollingHelper.Poll<object>(null, x => x == null, getValue, TestState.GetTimeout(), SingleTestInstanceState.GetLogger(), GetPropertyValueErrorMessage);
 
-                        return (T)((object)result);
-                    default:
-                        var controlExpression = string.Format(ControlPropertiesQuery, itemPath.ControlName);
-                        var propertiesString = await TestInfraFunctions.RunJavascriptAsync<string>(controlExpression);
-                        propertiesString = propertiesString.Replace("Value: False", "Value: false");
-                        propertiesString = propertiesString.Replace("Value: True", "Value: true");
-                        var nameValues = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(propertiesString);
-                        if (nameValues.Any(k => k.Key == itemPath.PropertyName))
-                        {
-                            var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;
-                            switch (itemPath.PropertyName.ToLower()) {
-                                case "disabled":
-                                case "visible":
-                                    return (T)(object)("{PropertyValue: " +  value.ToString().ToLower() + "}");
+                    return (T)((object)result);
+                }
+
+                var controlExpression = string.Format(ControlPropertiesQuery, itemPath.ControlName);
+                var propertiesString = (await TestInfraFunctions.RunJavascriptAsync<object>(controlExpression)).ToString();
+                propertiesString = propertiesString.Replace("Value: False", "Value: false");
+                propertiesString = propertiesString.Replace("Value: True", "Value: true");
+                var nameValues = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(propertiesString);
+                if (nameValues.Any(k => k.Key == itemPath.PropertyName))
+                {
+                    var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;
+                    switch (itemPath.PropertyName.ToLower()) {
+                        case "disabled":
+                        case "visible":
+                            return (T)(object)("{PropertyValue: " +  value.ToString().ToLower() + "}");
+                        default:
+                            switch (value.GetType().ToString())
+                            {
+                                case "System.String":
+                                    return (T)(object)("{PropertyValue: '" + value.ToString() + "'}");
                                 default:
-                                    switch (value.GetType().ToString())
-                                    {
-                                        case "System.String":
-                                            return (T)(object)("{PropertyValue: '" + value.ToString() + "'}");
-                                        default:
-                                            return (T)(object)("{PropertyValue: " + value.ToString() + "}");
-                                    }
+                                    return (T)(object)("{PropertyValue: " + value.ToString() + "}");
                             }
-
-                            
-                        }
-                        break;
+                    }
                 }
                 throw new Exception($"Unexpected property {itemPathString}");
             }
@@ -301,9 +296,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
                 ValidateItemPath(itemPath, false);
 
-                // TODO - Set the Xrm SDK Value and update state for any JS to run
                 var expression = $"PowerAppsTestEngine.setPropertyValue({JsonConvert.SerializeObject(itemPath)}, {JsonConvert.SerializeObject(objectValue)})";
-                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                await TestInfraFunctions.RunJavascriptAsync<object>(expression);
+                return true;
             }
             catch (Exception ex)
             {
@@ -458,6 +453,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
                 debugInfo.PageCount = TestInfraFunctions.GetContext().Pages.Count;
                 debugInfo.PowerAppsTestEngineLoaded = await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine !== 'undefined'");
+                debugInfo.PageType = await TestInfraFunctions.RunJavascriptAsync<string>("PowerAppsTestEngine.pageType()");
 
                 return debugInfo;
             }

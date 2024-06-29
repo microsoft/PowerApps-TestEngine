@@ -3,7 +3,7 @@
 
 using System.Dynamic;
 using System.Reflection;
-using System.Text;
+using System.Reflection.PortableExecutable;
 using Jint;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -39,29 +39,77 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}", "", "'ABC'", "ABC")]
-        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Visible\"}", "[{Key:'Visible',Value: false}]", "", false)]
-        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Visible\"}", "[{Key:'Visible',Value: true}]", "", true)]
+        [MemberData(nameof(TestJavaScript))]
+        public void ValidJavaScript(string javaScript, bool includeMocks, bool includeInterface)
+        {
+            var engine = new Engine();
+            engine.Evaluate(Common.MockJavaScript(javaScript, "custom", includeMocks, includeInterface));
+        }
 
-        public void GetPropertyValueValues(string itemPathString, string json, object inputValue, object expectedOutput)
+        public static IEnumerable<object[]> TestJavaScript()
+        {
+            yield return new object[] { "var a = 1", false, false };
+
+            yield return new object[] { "", false, false };
+
+            yield return new object[] { "", true, false };
+
+            yield return new object[] { "", false, true };
+
+            yield return new object[] { "", true, true };
+
+            yield return new object[] { "mockValue = 'test'", true, true };
+
+            yield return new object[] { "PowerAppsTestEngine.pageType()", true, true };
+
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic()", true, true };
+
+            yield return new object[] { "PowerAppsModelDrivenCanvas.parseControl('TextInput1', mockCanvasControl)", true, true };
+
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic().Controls?.GlobalContextManager?.bindingContext", true, true };
+
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic().Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup('TextInput1')", true, true };
+
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getBindingContext({controlName: 'TextInput1', propertyName: 'Text'})", true, true };
+
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getPropertyValueFromControl({controlName: 'TextInput1', propertyName: 'Text'})", true, true };
+        }
+
+        [Theory]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Text\"}", "", "'ABC'", "entityrecord", "ABC")]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Visible\"}", "[{Key:'Visible',Value: false}]", "", "entityrecord", false)]
+        [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Visible\"}", "[{Key:'Visible',Value: true}]", "", "entityrecord", true)]
+
+        public void GetPropertyValueValues(string itemPathString, string json, object inputValue, string pageType, object expectedOutput)
         {
             // Arrange
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
             var itemPath = JsonConvert.DeserializeObject<ItemPath>(itemPathString);
             var inputPropertyValue = "{PropertyValue:" + inputValue + "}";
 
+            if (itemPath.PropertyName == "Text")
+            {
+                MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>("PowerAppsTestEngine.pageType()")).Returns(Task.FromResult("entityrecord"));
+            }
+
             MockTestState.Setup(m => m.GetTimeout()).Returns(30000);
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
+            if (!string.IsNullOrEmpty(pageType))
+            {
+                MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>("PowerAppsTestEngine.pageType()"))
+                    .Returns(Task.FromResult((object)pageType));
+            }
+
             if (string.IsNullOrEmpty(json))
             {
-                MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>(string.Format(ModelDrivenApplicationProvider.QueryFormField, itemPath.ControlName)))
-                    .Returns(Task.FromResult(inputPropertyValue));
+                MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(string.Format(ModelDrivenApplicationProvider.QueryFormField, itemPath.ControlName)))
+                    .Returns(Task.FromResult((object)inputPropertyValue));
             }
             else
             {
-                MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>(string.Format(ModelDrivenApplicationProvider.ControlPropertiesQuery, itemPath.ControlName)))
-                    .Returns(Task.FromResult(json));
+                MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(string.Format(ModelDrivenApplicationProvider.ControlPropertiesQuery, itemPath.ControlName)))
+                    .Returns(Task.FromResult((object)json));
             }
 
             // Act
@@ -140,7 +188,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>();
+
             MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>(It.IsAny<string>()))
+            .Returns(
+                async (string query) => engine.Evaluate(query).AsString()
+            );
+
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(It.IsAny<string>()))
             .Returns(
                 async (string query) => engine.Evaluate(query).AsString()
             );
@@ -156,16 +210,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             dynamic dynamicValue = JsonConvert.DeserializeObject<ExpandoObject>(result);
 
             // Assert
-            
+
             Assert.Equal(expectedResult, dynamicValue.PropertyValue);
         }
-
 
         public static IEnumerable<object[]> GetPropertyValueFromControlData()
         {
             // Special case text should use the getValue()
             yield return new object[] {
-                    MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
                     "prefix_Name",
                     "Text",
                     "Hello"
@@ -173,7 +226,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Disabled by default controlDescriptor property
             yield return new object[] {
-                    MockJavaScript("", "entityrecord"),
+                    Common.MockJavaScript("", "entityrecord"),
                     "prefix_Name",
                     "Disabled",
                     false
@@ -181,7 +234,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // test Disabled in controlDescriptor property
             yield return new object[] {
-                    MockJavaScript("mockControlDescriptor.Disabled = true", "entityrecord"),
+                    Common.MockJavaScript("mockControlDescriptor.Disabled = true", "entityrecord"),
                     "prefix_Name",
                     "Disabled",
                     true
@@ -200,10 +253,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>();
-            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>(It.IsAny<string>()))
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>("PowerAppsTestEngine.buildControlObjectModel()"))
             .Returns(
                 async (string query) => engine.Evaluate(query).AsString()
             );
+
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(It.IsNotIn("PowerAppsTestEngine.buildControlObjectModel()")))
+            .Returns(
+                async (string query) => (object)engine.Evaluate(query).AsString()
+            );
+
 
             MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>()))
             .Returns(
@@ -220,9 +279,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             var controlFields = result[controlName].Fields;
 
-            var fieldData = JsonConvert.DeserializeObject<Dictionary<string,object>>(fields);
+            var fieldData = JsonConvert.DeserializeObject<Dictionary<string, object>>(fields);
 
-            foreach ( var key in fieldData.Keys )
+            foreach (var key in fieldData.Keys)
             {
                 var match = controlFields.Where(f => f.Name == key).FirstOrDefault();
                 Assert.True(match != null, $"Field {key} not found");
@@ -240,35 +299,35 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Default Values
             yield return new object[] {
-                    MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
                     "test",
                     "{ Disabled: false, Text: 'Hello', ShowLabel: true, Label: null, Visible: true, IsRequired: false }"
             };
 
             // Change control name
             yield return new object[] {
-                    MockJavaScript("mockControlName = 'test2';mockValue = 'New value'", "entityrecord"),
+                    Common.MockJavaScript("mockControlName = 'test2';mockValue = 'New value'", "entityrecord"),
                     "test2",
                     "{ Disabled: false, Text: 'New value', ShowLabel: true, Label: null, Visible: true, IsRequired: false }"
             };
 
             // Change Label
             yield return new object[] {
-                    MockJavaScript("mockControlDescriptor.Label = 'Item'", "entityrecord"),
+                    Common.MockJavaScript("mockControlDescriptor.Label = 'Item'", "entityrecord"),
                     "test",
                     "{ Label: 'Item' }"
             };
 
             // Change Visible
             yield return new object[] {
-                    MockJavaScript("mockControlDescriptor.Visible = false", "entityrecord"),
+                    Common.MockJavaScript("mockControlDescriptor.Visible = false", "entityrecord"),
                     "test",
                     "{ Visible: false }"
             };
 
             // Change IsRequired
             yield return new object[] {
-                    MockJavaScript("mockControlDescriptor.IsRequired = true", "entityrecord"),
+                    Common.MockJavaScript("mockControlDescriptor.IsRequired = true", "entityrecord"),
                     "test",
                     "{ IsRequired: true }"
             };
@@ -291,13 +350,29 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 async (string query) => engine.Evaluate(query).AsString()
             );
 
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(It.IsAny<string>()))
+            .Returns(
+                async (string query) => {
+                    var result = engine.Evaluate(query);
+                    if ( result.IsBoolean() )
+                    {
+                        return result.AsBoolean();
+                    }
+                    if (result.IsString())
+                    {
+                        return result.AsString();
+                    }
+                    return "undefined";
+                }
+            );
+
             MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>()))
             .Returns(
                 async (string query) => engine.Evaluate(query).AsBoolean()
             );
 
             FormulaValue providerValue = null;
-            if ( value is string )
+            if (value is string)
             {
                 providerValue = StringValue.New((string)value);
             }
@@ -310,7 +385,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Act
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var result = await provider.SetPropertyAsync(new ItemPath {  ControlName = controlName, PropertyName = propertyName}, providerValue);
+            var result = await provider.SetPropertyAsync(new ItemPath { ControlName = controlName, PropertyName = propertyName }, providerValue);
 
             // Assert
             object controlValue = null;
@@ -337,7 +412,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Default Values
             yield return new object[] {
-                    MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
                     "test",
                     "Text",
                     "value",
@@ -346,7 +421,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Visible Values
             yield return new object[] {
-                    MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
                     "test",
                     "Visible",
                     "visible",
@@ -355,7 +430,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Disabled Values
             yield return new object[] {
-                    MockJavaScript("", "entityrecord"),
+                    Common.MockJavaScript("", "entityrecord"),
                     "test",
                     "Disabled",
                     "disabled",
@@ -363,7 +438,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             };
         }
 
-            [Fact]
+        [Fact]
         public async Task CheckProviderAsync()
         {
             // Arrange
@@ -386,34 +461,57 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
         }
 
-
-
-
-        private static string MockJavaScript(string text, string pageType)
+        [Theory]
+        [MemberData(nameof(DebugInfoProperties))]
+        public async Task DebugInfo(string propertyName, object expectedValue, string javaScript)
         {
-            StringBuilder javaScript = new StringBuilder();
+            var engine = new Engine();
+            engine.Execute(javaScript);
 
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "testengine.provider.mda.tests.ModelDrivenApplicationMock.js";
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                string mock = reader.ReadToEnd();
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
 
-                javaScript.Append(mock + ";");
-            }
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
-            assembly = typeof(ModelDrivenApplicationProvider).Assembly;
-            resourceName = "testengine.provider.mda.PowerAppsTestEngineMDA.js";
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                javaScript.Append(reader.ReadToEnd());
+            MockBrowserContext.Setup(m => m.Pages).Returns(new List<IPage>());
 
-                javaScript.Append(text + ";");
+            MockTestInfraFunctions = new Mock<ITestInfraFunctions>();
 
-                return javaScript.ToString();
-            }
+            MockTestInfraFunctions.Setup(m => m.GetContext()).Returns(MockBrowserContext.Object);
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>(It.IsAny<string>()))
+            .Returns(
+                async (string query) => engine.Evaluate(query).AsString()
+            );
+
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>()))
+            .Returns(
+                async (string query) => engine.Evaluate(query).AsBoolean()
+            );
+
+            // Act
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var result = (IDictionary<string, object>) (await provider.GetDebugInfo());
+
+            // Assert
+            Assert.Equal(expectedValue, result[propertyName]);
+        }
+
+        /// <summary>
+        /// Test data for <see cref="DebugInfo"/>
+        /// </summary>
+        /// <returns>MemberData items</returns>
+        public static IEnumerable<object[]> DebugInfoProperties()
+        {
+            yield return new object[] {
+                    "PageType",
+                    "entityrecord",
+                     Common.MockJavaScript("", "entityrecord"),
+            };
+
+            yield return new object[] {
+                    "PageCount",
+                    0,
+                    Common.MockJavaScript("", "entityrecord"),
+            };
         }
     }
 }

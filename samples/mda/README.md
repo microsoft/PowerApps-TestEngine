@@ -20,9 +20,16 @@ This Power Apps Test Engine sample demonstrates how to assert the values of cont
 | etn=test | The name of the entity being validated |
 | id=26bafa27-ca7d-ee11-8179-0022482a91f4 | The unique identifier the record being edited |
 
-5. Execute the test
+5. Execute the test for entityrecord
 
 ```pwsh
 cd bin\Debug\PowerAppsEngine
-dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda\testPlan.fx.yaml -e 00000000-0000-0000-0000-000000000000 -t 00000000-0000-0000-0000-000000000000 -u browser -p mda -l Debug -d https://orgc08dc7f0.crm.dynamics.com/main.aspx?appid=a1234567-cccc-44444-9999-a1234567891234&pagetype=entityrecord&etn=test&id=26bafa27-ca7d-ee11-8179-0022482a91f4
+dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda\testPlan.fx.yaml -e 00000000-0000-0000-0000-000000000000 -t 00000000-0000-0000-0000-000000000000 -u browser -p mda -l Debug -d https://contoso.crm.dynamics.com/main.aspx?appid=a1234567-cccc-44444-9999-a1234567891234&pagetype=entityrecord&etn=test&id=26bafa27-ca7d-ee11-8179-0022482a91f4
+```
+
+6. Execute the test for custom page
+
+```pwsh
+cd bin\Debug\PowerAppsEngine
+dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda\testPlan.fx.yaml -e 00000000-0000-0000-0000-000000000000 -t 00000000-0000-0000-0000-000000000000 -u browser -p mda -l Debug -d https://contoso.crm.dynamics.com/main.aspx?appid=a1234567-cccc-44444-9999-a1234567891234&pagetype=custom&etn=test&name=cat_homepagereimagined_709bf"
 ```
