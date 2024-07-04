@@ -357,8 +357,13 @@ class PowerAppsTestEngine {
         }
     }    
 
-    static getControlProperties(name) {
+    static getControlProperties(itemPath) {
         var data = [];
+
+        if (typeof itemPath === 'string') {
+            itemPath = JSON.parse(itemPath)
+        }
+
         switch (PowerAppsTestEngine.pageType()) {
             case 'custom':
                 var appMagic = PowerAppsModelDrivenCanvas.getAppMagic()
@@ -372,13 +377,13 @@ class PowerAppsTestEngine {
                     controls = controls.concat(controlList);
                 });
 
-                var match = controls.filter(c => c.name == name);
-                if (match.length >= 0) {
+                var match = controls.filter(c => c.name == itemPath.controlName);
+                if (match.length >= 0 && typeof match[0] == 'object') {
                     match[0].properties.forEach((item) => {
                         data.push(
                             {
                                 Key: item.propertyName,
-                                Value: PowerAppsModelDrivenCanvas.getPropertyValueFromControl({ controlName: name, propertyName: item.propertyName })?.propertyValue
+                                Value: PowerAppsModelDrivenCanvas.getPropertyValueFromControl({ controlName: itemPath.controlName, propertyName: item.propertyName })?.propertyValue
                             })
                     })
                 }
@@ -386,11 +391,12 @@ class PowerAppsTestEngine {
                 break;
             case 'entitylist':
                 // TODO: Get Grid properties
+                var row = getCurrentXrmStatus().mainGrid.getGrid().getRows().get(0).data.entity.attributes.getAll();
                 break;
             case 'entityrecord':
                 // WARNING:
                 // controlDescriptor JavaScript object is subject to change. Do not take dependencies on the object or properties returned as they could change without notice.
-                var controlDescriptor = Xrm.Page.ui.controls.getByName(name).controlDescriptor;
+                var controlDescriptor = Xrm.Page.ui.controls.getByName(itemPath.controlName).controlDescriptor;
 
                 // Alternative: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/controls/getdisabled
                 data.push({ Key: 'Disabled', Value: controlDescriptor.Disabled.toString().toLowerCase() });
@@ -448,6 +454,8 @@ class PowerAppsTestEngine {
     static getItemCount(item) {
         switch (PowerAppsTestEngine.pageType()) {
             case 'custom':
+                return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
+            case 'entitylist':
                 return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
             case 'entityrecord':
                 // TODO - Get count of items for name

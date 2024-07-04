@@ -4,7 +4,8 @@
 
 // Provide mock interface for Model driven application for testing
 
-var mockPageType = 'entityrecord'
+var mockPageType = 'entityrecord';
+
 // Other possible types
 // - entitylist
 // - custom
@@ -19,7 +20,7 @@ var mockControlType = "standard";
 var mockControlDescriptor = class {
     static Disabled = false;
     static ShowLabel = true;
-    static Label = "";
+    static Label = "Text Input";
     static Visible = true;
     static IsRequired = false;
 }
@@ -205,3 +206,65 @@ var OpenAjaxWrapper = class {
 }
 
 var OpenAjax = OpenAjaxClass
+
+//----------------------------------------------------------------------------
+// Entity List Mocks
+//----------------------------------------------------------------------------
+
+var mockColumns = class {
+    static test = class {
+        static DisplayName = "Test"
+        static Type = "string"
+    }
+}
+
+var mockRow = class {
+    static getValue() {
+        return 'value';
+    }
+}
+
+var mockRows = [
+    class {
+        static data = class {
+            static entity = class {
+                static attributes = class {
+                    static getAll() {
+                        return [mockRow];
+                    }
+                }
+            }
+        }
+    }
+]
+
+// https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/grids/grid
+var mockGrid = class {
+    // https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/grids/grid/gettotalrecordcount
+    static getTotalRowCount() {
+        return mockRows.length
+    }
+
+    // https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/grids/grid/getrows
+    static getRows() {
+        return class {
+            static get(index) {
+                return mockRows[index]
+            }
+        }
+    }
+}
+
+var getCurrentXrmStatus = () => {
+    return class {
+        static mainGrid = class {
+            static getColumnInfo() {
+                return mockColumns
+            }
+
+            static getGrid() {
+                return mockGrid;
+            }
+        }
+    }
+}

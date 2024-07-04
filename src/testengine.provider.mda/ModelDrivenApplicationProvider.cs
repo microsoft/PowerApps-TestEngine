@@ -83,7 +83,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     return (T)((object)result);
                 }
 
-                var controlExpression = string.Format(ControlPropertiesQuery, itemPath.ControlName);
+                var controlExpression = string.Format(ControlPropertiesQuery, JsonConvert.SerializeObject(itemPath));
                 var propertiesString = (await TestInfraFunctions.RunJavascriptAsync<object>(controlExpression)).ToString();
                 propertiesString = propertiesString.Replace("Value: False", "Value: false");
                 propertiesString = propertiesString.Replace("Value: True", "Value: true");

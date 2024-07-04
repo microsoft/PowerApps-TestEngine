@@ -80,7 +80,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Visible\"}", "[{Key:'Visible',Value: false}]", "", "entityrecord", false)]
         [InlineData("{\"controlName\":\"Label1\",\"index\":null,\"parentControl\":null,\"propertyName\":\"Visible\"}", "[{Key:'Visible',Value: true}]", "", "entityrecord", true)]
 
-        public void GetPropertyValueValues(string itemPathString, string json, object inputValue, string pageType, object expectedOutput)
+        public void GetPropertyValue(string itemPathString, string json, object inputValue, string pageType, object expectedOutput)
         {
             // Arrange
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
@@ -108,7 +108,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             }
             else
             {
-                MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(string.Format(ModelDrivenApplicationProvider.ControlPropertiesQuery, itemPath.ControlName)))
+                MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(string.Format(ModelDrivenApplicationProvider.ControlPropertiesQuery, JsonConvert.SerializeObject(itemPath))))
                     .Returns(Task.FromResult((object)json));
             }
 
@@ -287,8 +287,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 Assert.True(match != null, $"Field {key} not found");
                 Assert.Equal(fieldData[key], match.Value.ToObject());
             }
-
-
         }
 
         /// <summary>
@@ -301,14 +299,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             yield return new object[] {
                     Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
                     "test",
-                    "{ Disabled: false, Text: 'Hello', ShowLabel: true, Label: null, Visible: true, IsRequired: false }"
+                    "{ Disabled: false, Text: 'Hello', ShowLabel: true, Label: 'Text Input', Visible: true, IsRequired: false }"
             };
 
             // Change control name
             yield return new object[] {
                     Common.MockJavaScript("mockControlName = 'test2';mockValue = 'New value'", "entityrecord"),
                     "test2",
-                    "{ Disabled: false, Text: 'New value', ShowLabel: true, Label: null, Visible: true, IsRequired: false }"
+                    "{ Disabled: false, Text: 'New value', ShowLabel: true, Label: 'Text Input', Visible: true, IsRequired: false }"
             };
 
             // Change Label
