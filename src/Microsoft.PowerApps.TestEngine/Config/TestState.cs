@@ -341,7 +341,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         }
 
         public void AddCertificateProviders(IEnumerable<IUserCertificateProvider> modules)
-        {  
+        {
             CertificateProviders.Clear();
             CertificateProviders.AddRange(modules);
         }
