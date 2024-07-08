@@ -27,18 +27,10 @@ namespace testengine.auth
 
                 foreach (var pfxFile in pfxFiles)
                 {
-                    try
-                    {
-                        // Load the certificate
-                        X509Certificate2 cert = new X509Certificate2(pfxFile, password);
-                        string fileName = Path.GetFileNameWithoutExtension(pfxFile);
-                        emailCertificateDict.Add(fileName, cert);
-                    }
-                    catch (Exception ex)
-                    {
-                        // Handle exceptions (e.g., incorrect password, invalid certificate file)
-                        Console.WriteLine($"Error loading certificate from file '{pfxFile}': {ex.Message}");
-                    }
+                    // Load the certificate
+                    X509Certificate2 cert = new X509Certificate2(pfxFile, password);
+                    string fileName = Path.GetFileNameWithoutExtension(pfxFile);
+                    emailCertificateDict.Add(fileName, cert);
                 }
             }
         }

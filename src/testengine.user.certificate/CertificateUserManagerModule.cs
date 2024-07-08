@@ -51,7 +51,7 @@ namespace testengine.user.environment
 
             var testSuiteDefinition = singleTestInstanceState.GetTestSuiteDefinition();
             var logger = singleTestInstanceState.GetLogger();
-
+            logger.LogDebug("Beginning certificate login authentication.");
             if (testSuiteDefinition == null)
             {
                 logger.LogError("Test definition cannot be null");
@@ -120,7 +120,7 @@ namespace testengine.user.environment
             var interceptUri = await GetCertAuthGlob(ep);
 
             // start listener to intercept certificate auth call
-            await InterceptRestApiCallsAsync(Page, interceptUri, cert);
+            await InterceptRestApiCallsAsync(Page, interceptUri, cert, logger);
 
             await Page.ClickAsync(SubmitButtonSelector);
 
@@ -227,16 +227,16 @@ namespace testengine.user.environment
         {
             return $"https://*certauth.{endpoint}/**";
         }
-        public async Task InterceptRestApiCallsAsync(IPage page, string endpoint, X509Certificate2 cert)
+        public async Task InterceptRestApiCallsAsync(IPage page, string endpoint, X509Certificate2 cert, ILogger logger)
         {
             // Define the route to intercept
             await page.RouteAsync(endpoint, async route =>
             {
-                await HandleRequest(route, cert);
+                await HandleRequest(route, cert, logger);
             });
         }
 
-        private async Task HandleRequest(IRoute route, X509Certificate2 cert)
+        private async Task HandleRequest(IRoute route, X509Certificate2 cert, ILogger logger)
         {
             var request = route.Request;
 
@@ -245,7 +245,7 @@ namespace testengine.user.environment
             {
                 try
                 {
-                    var response = await DoCertAuthPostAsync(request, cert);
+                    var response = await DoCertAuthPostAsync(request, cert, logger);
 
                     // Convert HttpResponseMessage to Playwright response
                     var headers = new Dictionary<string, string>();
@@ -265,7 +265,7 @@ namespace testengine.user.environment
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine($"Failed to handle request: {ex.Message}");
+                    logger.LogError($"Failed to handle request: {ex.Message}");
                     await route.AbortAsync("failed");
                 }
             }
@@ -275,7 +275,7 @@ namespace testengine.user.environment
             }
         }
 
-        public async Task<HttpResponseMessage> DoCertAuthPostAsync(IRequest request, X509Certificate2 cert)
+        public async Task<HttpResponseMessage> DoCertAuthPostAsync(IRequest request, X509Certificate2 cert, ILogger logger)
         {
             using (var handler = new HttpClientHandler())
             {
@@ -308,7 +308,7 @@ namespace testengine.user.environment
                     }
                     catch (Exception ex)
                     {
-                        Console.Error.WriteLine($"Failed to send cert auth request: {ex.Message}");
+                        logger.LogError($"Failed to send cert auth request: {ex.Message}");
                         throw;
                     }
                 }
