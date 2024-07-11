@@ -56,11 +56,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public async Task<bool> CheckIsIdleAsync()
         {
-            await TestInfraFunctions.GetContext().Pages.FirstOrDefault().PauseAsync();
-
             try
             {
-                var expression = "var element = document.getElementById('O365_MainLink_Settings'); if (typeof(element) != 'undefined' && element != null) { return 'Idle' } else { return 'Loading' }";
+                var expression = "var element = document.getElementById('O365_MainLink_Settings'); if (typeof(element) != 'undefined' && element != null) { 'Idle' } else { 'Loading' }";
                 return (await TestInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
             catch (Exception ex)
@@ -99,7 +97,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
             try
             {
-                result = await TestInfraFunctions.RunJavascriptAsync<string>(CheckTestEngineObject);
+                // TODO: Get object model
+                //result = await TestInfraFunctions.RunJavascriptAsync<string>(CheckTestEngineObject);
+                return "{}";
             }
             catch (NullReferenceException) { }
 
@@ -113,7 +113,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 // See if using legacy player
                 try
                 {
-                    await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger());
+                    // TODO: Update as needed
+                    //await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger());
                 }
                 catch (TimeoutException)
                 {

@@ -5,10 +5,14 @@ testSuite:
   appLogicalName: NA
 
   testCases:
-    - testCaseName: Test
-      testCaseDescription: Pause example
+    - testCaseName: Query connections
+      testCaseDescription: Query connections in environment
       testSteps: |
-        = Pause();
+        = With( 
+            { connections: TestEngine.GetConnections() }, 
+            Assert(CountRows(connections) > 0, "Connections found");
+            Assert(CountRows(Filter(connections, Name = "shared_commondataserviceforapps")) > 0, "Dataverse connection found")
+          );
 
 testSettings:
   headless: false
