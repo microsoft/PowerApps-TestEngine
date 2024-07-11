@@ -8,7 +8,7 @@ testSuite:
     - testCaseName: Test
       testCaseDescription: Pause example
       testSteps: |
-        = Assert(1, 1);
+        = Pause();
 
 testSettings:
   headless: false

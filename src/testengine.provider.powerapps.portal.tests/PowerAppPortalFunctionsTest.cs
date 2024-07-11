@@ -46,5 +46,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             // Assert
             Assert.Equal("powerapps.portal", name);
         }
+
+        [Theory]
+        [InlineData("", "11112222-3333-4444-5555-66667777888", "https://make.powerapps.com/environments/11112222-3333-4444-5555-66667777888", "?source=testengine")]
+        [InlineData("gcc", "11112222-3333-4444-5555-66667777888", "https://make.gov.powerapps.us/environments/11112222-3333-4444-5555-66667777888", "?source=testengine")]
+        [InlineData("gcchigh", "11112222-3333-4444-5555-66667777888", "https://make.high.powerapps.us/environments/11112222-3333-4444-5555-66667777888", "?source=testengine")]
+        [InlineData("dod", "11112222-3333-4444-5555-66667777888", "https://make.apps.appsplatform.us/environments/11112222-3333-4444-5555-66667777888", "?source=testengine")]
+        public void GenerateExpectedTestUrlForDomainAndEnvironment(string domain, string environmentId, string expectedBaseUrl, string expectedParameters)
+        {
+            // Arrange
+            var provider = new PowerAppPortalFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
+            MockTestState.Setup(x => x.SetDomain(expectedBaseUrl));
+
+            // Act
+            var url = provider.GenerateTestUrl(domain, String.Empty);
+
+            // Assert
+            Assert.Equal(expectedBaseUrl + expectedParameters, url);
+        }
     }
 }
