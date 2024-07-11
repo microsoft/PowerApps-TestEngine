@@ -1,0 +1,26 @@
+testSuite:
+  testSuiteName: CoE Starter Kit Setup Wizard
+  testSuiteDescription: Verify custom page
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Verify
+      testCaseDescription: Pause example
+      testSteps: |
+        = Pause();
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

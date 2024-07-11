@@ -213,8 +213,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             var pages = TestInfraFunctions.GetContext().Pages;
             if (pages.Count() > 0)
             {
-                await pages.First().CloseAsync();
-                TestInfraFunctions.Page = TestInfraFunctions.GetContext().Pages.First();
+                var blank = pages.Where(p => p.Url == "about:blank").FirstOrDefault();
+                if ( blank != null )
+                {
+                    await blank.CloseAsync();
+                }
+                TestInfraFunctions.Page = TestInfraFunctions.GetContext().Pages.Where(p => p.Url != "about:blank").First();
             }
             
             var resourceName = "testengine.provider.mda.PowerAppsTestEngineMDA.js";
