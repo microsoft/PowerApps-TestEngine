@@ -2,7 +2,7 @@
   "profiles": {
     "PowerAppsTestEngine": {
       "commandName": "Project",
-      "commandLineArgs": "-i ..\\..\\..\\samples\\pause\\testPlan.fx.yaml -u browser"
+      "commandLineArgs": "-i ..\\..\\..\\samples\\portal\\testPlan.fx.yaml -u browser -e 11112222-3333-4444-"
     }
   }
 }
