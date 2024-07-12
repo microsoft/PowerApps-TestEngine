@@ -14,7 +14,7 @@ using Microsoft.PowerFx.Types;
 namespace testengine.module
 {
     /// <summary>
-    /// This provide the ability to query connections. Compatible with PowerApps.Portal provider
+    /// This provide the ability to query connections. Compatible with powerApps.portal provider
     /// </summary>
     public class GetConnectionsFunction : ReflectionFunction
     {
@@ -54,7 +54,7 @@ namespace testengine.module
         {
             Page = await _testInfraFunctions.GetContext().NewPageAsync();
 
-            var url = _testState.GetDomain() + "/connections?source=testengine";
+            var url = new Uri(new Uri(_testState.GetDomain()), "/connections?source=testengine").ToString();
 
             await Page.GotoAsync(url);
 
