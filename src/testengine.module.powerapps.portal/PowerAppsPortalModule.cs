@@ -28,6 +28,8 @@ namespace testengine.module
             logger.LogInformation("Registered TestEngine.GetConnections()");
             config.AddFunction(new CreateConnectionFunction(testInfraFunctions, testState, logger));
             logger.LogInformation("Registered TestEngine.CreateConnection()");
+            config.AddFunction(new CheckConnectionExistsFunction(testInfraFunctions, testState, logger));
+            logger.LogInformation("Registered TestEngine.CheckConnectionExists()");
         }
 
         public async Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)
