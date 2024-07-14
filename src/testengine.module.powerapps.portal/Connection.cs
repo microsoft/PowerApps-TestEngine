@@ -3,7 +3,7 @@
 
 namespace testengine.module
 {
-    internal class Connection
+    public class Connection
     {
         public string? Name { get; set; }
 

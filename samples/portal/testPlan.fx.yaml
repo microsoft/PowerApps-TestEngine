@@ -8,10 +8,12 @@ testSuite:
     - testCaseName: Query connections
       testCaseDescription: Query connections in environment
       testSteps: |
-        = With( 
+        = TestEngine.CreateConnection(Table({Name: "shared_webcontents", Interactive: true, Parameters: "{'Base Resource URL': 'https://graph.microsoft.com', 'Microsoft Entra ID Resource URI (Application ID URI)':'https://graph.microsoft.com'}"}));
+          With( 
             { connections: TestEngine.GetConnections() }, 
             Assert(CountRows(connections) > 0, "Connections found");
-            Assert(CountRows(Filter(connections, Name = "shared_commondataserviceforapps")) > 0, "Dataverse connection found")
+            Assert(CountRows(Filter(connections, Name = "shared_commondataserviceforapps")) > 0, "Dataverse connection found");
+            Assert(CountRows(Filter(connections, Name = "shared_webcontents")) > 0, "HTTP with preathorized found")
           );
 
 testSettings:

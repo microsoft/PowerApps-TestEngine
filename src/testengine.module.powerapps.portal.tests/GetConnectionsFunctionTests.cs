@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
@@ -6,6 +9,7 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Moq;
+using testengine.module.powerapps.portal;
 
 namespace testengine.module.powerappsportal.tests
 {
@@ -37,28 +41,27 @@ namespace testengine.module.powerappsportal.tests
         }
 
         [Theory]
-        [InlineData("[]", "http://make.powerapps.com", 0)]
-        [InlineData("[]", "http://make.powerapps.com/", 0)]
-        [InlineData("[{\"Name\":\"Test\",\"Id\":\"\",\"Status\":\"\"}]", "http://make.powerapps.com/", 1)]
-        public void ExecuteGetConnections(string json, string baseDomain, int expectedCount)
+        [InlineData("", "", "", 0)]
+        [InlineData("test", "1", "Connected", 1)]
+        public void ExecuteGetConnections(string name, string id, string status, int expectedCount)
         {
             // Arrange
             MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(MockBrowserContext.Object);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
-            MockTestState.Setup(x => x.GetDomain()).Returns(baseDomain);
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://make.powerapps.com");
 
             // Goto and return json
-            MockPage.Setup(x => x.GotoAsync(new Uri(new Uri(baseDomain), "connections?source=testengine").ToString(), It.IsAny<PageGotoOptions>())).Returns(Task.FromResult(new Mock<IResponse>().Object));
-            MockPage.Setup(x => x.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).Returns(Task.FromResult(new Mock<IElementHandle>().Object));
-            MockPage.Setup(x => x.EvaluateAsync<string>(It.IsAny<string>(), null)).Returns(Task.FromResult(json));
-            MockPage.Setup(x => x.CloseAsync(null)).Returns(Task.CompletedTask);
-            
-            // Wait until the container exists
-            var mockLocator = new Mock<ILocator>();
-            MockPage.Setup(x => x.Locator(".connections-list-container", null)).Returns(mockLocator.Object);
-            mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.FromResult(Task.CompletedTask));
+            var mockConnectionHelper = new Mock<ConnectionHelper>();
+            var connections = new List<Connection>();
+            if (!string.IsNullOrEmpty(name))
+            {
+                connections.Add(new Connection {  Name = name, Id = id, Status = status });
+            }
+            mockConnectionHelper.Setup(x => x.GetConnections(MockBrowserContext.Object, "https://make.powerapps.com")).Returns(Task.FromResult(connections));
 
             var function = new GetConnectionsFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
+
+            function.GetConnectionHelper = () => mockConnectionHelper.Object;
 
             // Act
             var result = function.Execute();

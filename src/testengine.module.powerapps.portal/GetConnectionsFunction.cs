@@ -10,6 +10,7 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
+using testengine.module.powerapps.portal;
 
 namespace testengine.module
 {
@@ -22,6 +23,8 @@ namespace testengine.module
         private readonly ITestState _testState;
         private readonly ILogger _logger;
         private IPage? Page { get; set; }
+
+        public Func<ConnectionHelper> GetConnectionHelper = () => new ConnectionHelper();
 
         private static RecordType recordType = RecordType.Empty()
                .Add(new NamedFormulaType("Name", FormulaType.String, displayName: "Name"))
@@ -52,21 +55,7 @@ namespace testengine.module
 
         private async Task<TableValue> ExecuteAsync()
         {
-            Page = await _testInfraFunctions.GetContext().NewPageAsync();
-
-            var url = new Uri(new Uri(_testState.GetDomain()), "/connections?source=testengine").ToString();
-
-            await Page.GotoAsync(url);
-
-            await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = LoadResource("PowerAppsPortalConnections.js") });
-
-            await Page.Locator(".connections-list-container").WaitForAsync();
-
-            var connectionsJson = await Page.EvaluateAsync<string>("PowerAppsPortalConnections.getConnections()");
-
-            await Page.CloseAsync();
-
-            var connections = JsonSerializer.Deserialize<List<Connection>>(connectionsJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var connections = await GetConnectionHelper().GetConnections(_testInfraFunctions.GetContext(), _testState.GetDomain());
 
             var result = TableValue.NewTable(recordType);
 
@@ -81,17 +70,7 @@ namespace testengine.module
             return result;
         }
 
-        private string LoadResource(string name)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = $"testengine.module.powerapps.portal.{name}";
-
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
-        }
+        
     }
 }
 

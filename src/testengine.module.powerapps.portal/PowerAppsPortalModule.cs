@@ -26,6 +26,8 @@ namespace testengine.module
             ILogger logger = singleTestInstanceState.GetLogger();
             config.AddFunction(new GetConnectionsFunction(testInfraFunctions, testState, logger));
             logger.LogInformation("Registered TestEngine.GetConnections()");
+            config.AddFunction(new CreateConnectionFunction(testInfraFunctions, testState, logger));
+            logger.LogInformation("Registered TestEngine.CreateConnection()");
         }
 
         public async Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)
