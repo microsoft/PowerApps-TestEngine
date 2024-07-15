@@ -2,7 +2,7 @@
   "profiles": {
     "PowerAppsTestEngine": {
       "commandName": "Project",
-      "commandLineArgs": "-i ..\\..\\..\\samples\\mda\\coe-kit-setup-wizard.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u browser -p mda -d \"https://contoso.crm.dynamics.com/main.aspx?appid=06f88e88-163e-ef11-840a-0022481fcc8d&pagetype=custom&name=admin_initialsetuppage_d45cf\""
+      "commandLineArgs": "-i ..\\..\\..\\samples\\coe-kit-setup-wizard\\testPlan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u browser -p mda -d \"https://orge6696087.crm.dynamics.com/main.aspx?appid=06f88e88-163e-ef11-840a-0022481fcc8d&pagetype=custom&name=admin_initialsetuppage_d45cf\""
     }
   }
 }
