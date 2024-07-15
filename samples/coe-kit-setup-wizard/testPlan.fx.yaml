@@ -1,6 +1,6 @@
 testSuite:
   testSuiteName: CoE Starter Kit Setup Wizard
-  testSuiteDescription: Verify custom page
+  testSuiteDescription: Verify custom page of CoE Starter Kit Setup Wizard and step through install
   persona: User1
   appLogicalName: NotNeeded
 
@@ -8,7 +8,7 @@ testSuite:
     - testCaseName: Verify
       testCaseDescription: Pause example
       testSteps: |
-        = Pause();
+        = TestEngine.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
 
 testSettings:
   headless: false
