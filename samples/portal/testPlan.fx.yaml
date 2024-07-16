@@ -24,6 +24,7 @@ testSuite:
               {Name: "shared_powerplatformforadmins", Interactive: true},
               {Name: "shared_powerplatformadminv2", Interactive: true},
               {Name: "shared_rss"},
+              {Name: "shared_teams", Interactive: true},
               {Name: "shared_webcontents", Interactive: true, Parameters: "{'Base Resource URL': 'https://graph.microsoft.com', 'Microsoft Entra ID Resource URI (Application ID URI)':'https://graph.microsoft.com'}"}
             )
           );

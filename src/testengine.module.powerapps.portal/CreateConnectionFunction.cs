@@ -146,7 +146,7 @@ namespace testengine.module
                             Thread.Sleep(1000);
                             if (DateTime.Now.Subtract(started).TotalMilliseconds > timeout)
                             {
-                                throw new Exception("Timout waiting for dialog to close");
+                                throw new Exception($"Timout waiting for dialog to close {name}");
                             }
                         }
 
@@ -156,7 +156,7 @@ namespace testengine.module
                             Thread.Sleep(1000);
                             if (DateTime.Now.Subtract(started).TotalMilliseconds > timeout)
                             {
-                                throw new Exception("Timout waiting for connection");
+                                throw new Exception($"Timout waiting for connection {name}");
                             }
                         }
                     }
