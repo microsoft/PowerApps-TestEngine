@@ -5,15 +5,27 @@ testSuite:
   appLogicalName: NA
 
   testCases:
-    - testCaseName: Query connections
-      testCaseDescription: Query connections in environment
+    - testCaseName: Create connections
+      testCaseDescription: Create connections in environment required for CoE Starter Kit
       testSteps: |
-        = TestEngine.CreateConnection(Table({Name: "shared_webcontents", Interactive: true, Parameters: "{'Base Resource URL': 'https://graph.microsoft.com', 'Microsoft Entra ID Resource URI (Application ID URI)':'https://graph.microsoft.com'}"}));
-          With( 
-            { connections: TestEngine.GetConnections() }, 
-            Assert(CountRows(connections) > 0, "Connections found");
-            Assert(CountRows(Filter(connections, Name = "shared_commondataserviceforapps")) > 0, "Dataverse connection found");
-            Assert(CountRows(Filter(connections, Name = "shared_webcontents")) > 0, "HTTP with preathorized found")
+        = TestEngine.CreateConnection(
+            Table(
+              {Name: "shared_approvals"},
+              {Name: "shared_arm", Interactive: true},
+              {Name: "shared_commondataserviceforapps", Interactive: true},
+              {Name: "shared_dataflows", Interactive: true},
+              {Name: "shared_flowmanagement", Interactive: true},
+              {Name: "shared_microsoftflowforadmins", Interactive: true},
+              {Name: "shared_office365", Interactive: true},
+              {Name: "shared_office365groups", Interactive: true},
+              {Name: "shared_office365users", Interactive: true},
+              {Name: "shared_powerappsforadmins", Interactive: true},
+              {Name: "shared_powerappsforappmakers", Interactive: true},
+              {Name: "shared_powerplatformforadmins", Interactive: true},
+              {Name: "shared_powerplatformadminv2", Interactive: true},
+              {Name: "shared_rss"},
+              {Name: "shared_webcontents", Interactive: true, Parameters: "{'Base Resource URL': 'https://graph.microsoft.com', 'Microsoft Entra ID Resource URI (Application ID URI)':'https://graph.microsoft.com'}"}
+            )
           );
 
 testSettings:

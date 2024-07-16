@@ -94,9 +94,10 @@ namespace testengine.module
                     if ( recordValue.GetField("Name").TryGetPrimitiveValue(out name) )
                     {
                        
-                        var url = _testState.GetDomain();
+                        var baseUrl = _testState.GetDomain();
+                        var url = baseUrl; 
 
-                        if (await GetConnectionHelper().Exists(_testInfraFunctions.GetContext(), url, name as string))
+                        if (await GetConnectionHelper().Exists(_testInfraFunctions.GetContext(), baseUrl, name as string))
                         {
                             _logger.LogInformation($"Skipping connection {name}, already exists");
                             continue;
@@ -146,6 +147,16 @@ namespace testengine.module
                             if (DateTime.Now.Subtract(started).TotalMilliseconds > timeout)
                             {
                                 throw new Exception("Timout waiting for dialog to close");
+                            }
+                        }
+
+                        // Wait until connection is created
+                        while (!await GetConnectionHelper().Exists(_testInfraFunctions.GetContext(), baseUrl, name as string))
+                        {
+                            Thread.Sleep(1000);
+                            if (DateTime.Now.Subtract(started).TotalMilliseconds > timeout)
+                            {
+                                throw new Exception("Timout waiting for connection");
                             }
                         }
                     }

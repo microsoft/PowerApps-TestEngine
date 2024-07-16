@@ -102,7 +102,9 @@ namespace testengine.module.powerappsportal.tests
             var table = TableValue.NewTable(recordType, rv1);
 
             var connectionHelper = new Mock<ConnectionHelper>(MockBehavior.Strict);
-            connectionHelper.Setup(x => x.Exists(MockBrowserContext.Object, "https://make.powerapps.com", name)).Returns(Task.FromResult(false));
+            connectionHelper.SetupSequence(x => x.Exists(MockBrowserContext.Object, "https://make.powerapps.com", name))
+                .Returns(Task.FromResult(false))
+                .Returns(Task.FromResult(true));
 
 
             var function = new CreateConnectionFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
