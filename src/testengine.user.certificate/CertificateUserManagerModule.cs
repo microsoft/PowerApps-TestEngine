@@ -4,6 +4,7 @@
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
@@ -15,11 +16,16 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using Microsoft.PowerFx;
 
+[assembly: InternalsVisibleTo("testengine.user.certificate.tests")]
 namespace testengine.user.environment
 {
     [Export(typeof(IUserManager))]
     public class CertificateUserManagerModule : IUserManager
     {
+        // defining these 2 for improved testability
+        internal static Func<HttpClientHandler> GetHttpClientHandler = () => new HttpClientHandler();
+        internal static Func<HttpClientHandler, HttpClient> GetHttpClient = handler => new HttpClient(handler);
+
         public string Name { get { return "certificate"; } }
 
         public int Priority { get { return 50; } }
@@ -159,7 +165,7 @@ namespace testengine.user.environment
             await ClickStaySignedIn(desiredUrl, logger);
         }
 
-        private async Task ClickStaySignedIn(string desiredUrl, ILogger logger)
+        internal async Task ClickStaySignedIn(string desiredUrl, ILogger logger)
         {
             PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
             selectorOptions.Timeout = 8000;
@@ -236,7 +242,7 @@ namespace testengine.user.environment
             });
         }
 
-        private async Task HandleRequest(IRoute route, X509Certificate2 cert, ILogger logger)
+        internal async Task HandleRequest(IRoute route, X509Certificate2 cert, ILogger logger)
         {
             var request = route.Request;
 
@@ -277,12 +283,12 @@ namespace testengine.user.environment
 
         public async Task<HttpResponseMessage> DoCertAuthPostAsync(IRequest request, X509Certificate2 cert, ILogger logger)
         {
-            using (var handler = new HttpClientHandler())
+            using (var handler = GetHttpClientHandler())
             {
                 handler.ClientCertificates.Add(cert);
                 handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
-                using (var httpClient = new HttpClient(handler))
+                using (var httpClient = GetHttpClient(handler))
                 {
                     // Prepare the request
                     var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Url);

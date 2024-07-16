@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Net;
+using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -9,10 +11,11 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Moq;
+using Moq.Protected;
 using testengine.auth;
 using testengine.user.environment;
 
-namespace testengine.user.certificate.tests
+namespace testengine.user.environment.tests
 {
     public class CertificateUserManagerModuleTests
     {
@@ -29,6 +32,7 @@ namespace testengine.user.certificate.tests
         private Mock<IFileSystem> MockFileSystem;
         private Mock<IUserManagerLogin> MockUserManagerLogin;
         private Mock<IUserCertificateProvider> MockUserCertificateProvider;
+        private X509Certificate2 MockCert;
 
         public CertificateUserManagerModuleTests()
         {
@@ -60,6 +64,12 @@ namespace testengine.user.certificate.tests
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             MockUserManagerLogin = new Mock<IUserManagerLogin>(MockBehavior.Strict);
             MockUserCertificateProvider = new Mock<IUserCertificateProvider>(MockBehavior.Strict);
+            using (var rsa = RSA.Create(2048))
+            {
+                var request = new CertificateRequest($"CN=test", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                var certificate = request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
+                MockCert = new X509Certificate2(certificate.Export(X509ContentType.Pfx));
+            }
         }
 
         [Fact]
@@ -98,17 +108,7 @@ namespace testengine.user.certificate.tests
             // Now wait for the requested URL assuming login now complete
             MockPage.Setup(x => x.WaitForURLAsync("*", null)).Returns(Task.CompletedTask);
 
-            X509Certificate2 mockCert;
-            using (var rsa = RSA.Create(2048))
-            {
-                var request = new CertificateRequest($"CN=test", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-
-                var certificate = request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
-
-                mockCert = new X509Certificate2(certificate.Export(X509ContentType.Pfx));
-            }
-
-            MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(mockCert);
+            MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(MockCert);
             MockUserManagerLogin.Setup(x => x.UserCertificateProvider).Returns(MockUserCertificateProvider.Object);
 
             MockPage.Setup(x => x.Url).Returns("https://contoso.powerappsportals.com");
@@ -261,19 +261,10 @@ namespace testengine.user.certificate.tests
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.EmailKey)).Returns(email);
-            X509Certificate2 mockCert;
-            using (var rsa = RSA.Create(2048))
-            {
-                var request = new CertificateRequest($"CN=test", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-
-                var certificate = request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
-
-                mockCert = new X509Certificate2(certificate.Export(X509ContentType.Pfx));
-            }
-
+            
             if (setAsNull == "setProvider")
             {
-                MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(mockCert);
+                MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(MockCert);
                 MockUserManagerLogin.Setup(x => x.UserCertificateProvider).Returns((IUserCertificateProvider)null);
             }
             else if(setAsNull == "setCert")
@@ -283,7 +274,7 @@ namespace testengine.user.certificate.tests
             }
             else 
             {
-                MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(mockCert);
+                MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(MockCert);
                 MockUserManagerLogin.Setup(x => x.UserCertificateProvider).Returns(MockUserCertificateProvider.Object);
             }
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
@@ -305,6 +296,190 @@ namespace testengine.user.certificate.tests
             {
                 LoggingTestHelper.VerifyLogging(MockLogger, message, LogLevel.Error, Times.Once());
             }
+        }
+
+        [Fact]
+        public async Task GetCertAuthGlob_ReturnsCorrectUrl()
+        {
+            // Arrange
+            var userManager = new CertificateUserManagerModule();
+            string endpoint = "example.com";
+            string expected = "https://*certauth.example.com/**";
+
+            // Act
+            string result = await userManager.GetCertAuthGlob(endpoint);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public async Task HandleRequest_PostMethod_Success()
+        {
+            // Arrange
+            var mockRequest = new Mock<IRequest>();
+            mockRequest.Setup(r => r.Method).Returns("POST");
+            mockRequest.Setup(r => r.Url).Returns("https://example.com");
+            mockRequest.Setup(r => r.PostData).Returns("postData");
+            mockRequest.Setup(r => r.Headers).Returns(new Dictionary<string, string>());
+            var mockRoute = new Mock<IRoute>();
+            mockRoute.Setup(r => r.Request).Returns(mockRequest.Object);
+
+            var handlerMock = new Mock<HttpClientHandler>();
+            handlerMock.Protected().Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>()).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+            CertificateUserManagerModule.GetHttpClientHandler = () => handlerMock.Object;
+            CertificateUserManagerModule.GetHttpClient = handler => new HttpClient(handler);
+            var handler = new CertificateUserManagerModule();
+
+            // Mock the DoCertAuthPostAsync method
+            var httpResponse = new HttpResponseMessage
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent("response content")
+            };
+
+            // Act
+            await handler.HandleRequest(mockRoute.Object, MockCert, MockLogger.Object);
+
+            // Assert
+            mockRoute.Verify(r => r.FulfillAsync(It.IsAny<RouteFulfillOptions>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task HandleRequest_PostMethod_Failure()
+        {
+            // Arrange
+            var mockRequest = new Mock<IRequest>();
+            mockRequest.Setup(r => r.Method).Returns("POST");
+            mockRequest.Setup(r => r.Url).Returns("https://example.com");
+            mockRequest.Setup(r => r.PostData).Returns("postData");
+            mockRequest.Setup(r => r.Headers).Returns(new Dictionary<string, string>());
+            var mockRoute = new Mock<IRoute>();
+            mockRoute.Setup(r => r.Request).Returns(mockRequest.Object);
+            var loggerMock = new Mock<ILogger>();
+
+            var handlerMock = new Mock<HttpClientHandler>();
+            handlerMock.Protected().Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>()).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
+            CertificateUserManagerModule.GetHttpClientHandler = () => handlerMock.Object;
+            CertificateUserManagerModule.GetHttpClient = handler => new HttpClient(handler);
+            
+            var handler = new CertificateUserManagerModule();
+
+            // Act
+            await handler.HandleRequest(mockRoute.Object, MockCert, loggerMock.Object);
+
+            // Assert
+            loggerMock.Verify(
+                x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true), // It.IsAnyType is used to match any state
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), // Function to format the log message
+            Times.AtLeastOnce);
+            mockRoute.Verify(r => r.AbortAsync("failed"), Times.Once);
+        }
+
+        [Fact]
+        public async Task HandleRequest_NonPostMethod()
+        {
+            // Arrange
+            var mockRoute = new Mock<IRoute>();
+            var mockRequest = new Mock<IRequest>();
+            mockRequest.Setup(x => x.Method).Returns("GET");
+            mockRoute.Setup(r => r.Request).Returns(mockRequest.Object);
+
+            var handler = new CertificateUserManagerModule();
+
+            // Act
+            await handler.HandleRequest(mockRoute.Object, MockCert, MockLogger.Object);
+
+            // Assert
+            mockRoute.Verify(r => r.ContinueAsync(null), Times.Once);
+        }
+
+        [Fact]
+        public async Task DoCertAuthPostAsync_SuccessfulResponse_ReturnsResponse()
+        {
+            // Arrange
+            var request = new Mock<IRequest>();
+            request.Setup(r => r.Url).Returns("https://example.com");
+            request.Setup(r => r.PostData).Returns("postData");
+            request.Setup(r => r.Headers).Returns(new Dictionary<string, string>());
+
+
+            var handlerMock = new Mock<HttpClientHandler>();
+            handlerMock.Protected().Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>()).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+
+            CertificateUserManagerModule.GetHttpClientHandler = () => handlerMock.Object;
+            CertificateUserManagerModule.GetHttpClient = handler => new HttpClient(handler);
+
+            var module = new CertificateUserManagerModule();
+
+            // Act
+            var response = await module.DoCertAuthPostAsync(request.Object, MockCert, MockLogger.Object);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task DoCertAuthPostAsync_UnsuccessfulResponse_ThrowsHttpRequestException()
+        {
+            // Arrange
+            var request = new Mock<IRequest>();
+            request.Setup(r => r.Url).Returns("https://example.com");
+            request.Setup(r => r.PostData).Returns("postData");
+            request.Setup(r => r.Headers).Returns(new Dictionary<string, string>());
+            var loggerMock = new Mock<ILogger>();
+            var handlerMock = new Mock<HttpClientHandler>();
+            handlerMock.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
+
+            CertificateUserManagerModule.GetHttpClientHandler = () => handlerMock.Object;
+            CertificateUserManagerModule.GetHttpClient = handler => new HttpClient(handler);
+
+            var module = new CertificateUserManagerModule();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<HttpRequestException>(async () =>
+                await module.DoCertAuthPostAsync(request.Object, MockCert, loggerMock.Object));
+        }
+
+        [Fact]
+        public async Task DoCertAuthPostAsync_ExceptionThrown_LogsErrorAndThrows()
+        {
+            // Arrange
+            var request = new Mock<IRequest>();
+            request.Setup(r => r.Url).Returns("https://example.com");
+            request.Setup(r => r.PostData).Returns("postData");
+            request.Setup(r => r.Headers).Returns(new Dictionary<string, string>());
+
+            var handlerMock = new Mock<HttpClientHandler>();
+            handlerMock.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ThrowsAsync(new HttpRequestException("Request failed"));
+
+            CertificateUserManagerModule.GetHttpClientHandler = () => handlerMock.Object;
+            CertificateUserManagerModule.GetHttpClient = handler => new HttpClient(handler);
+            var loggerMock = new Mock<ILogger>();
+            var module = new CertificateUserManagerModule();
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
+            await module.DoCertAuthPostAsync(request.Object, MockCert, loggerMock.Object));
+
+            // Verify logging
+            loggerMock.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true), // It.IsAnyType is used to match any state
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), // Function to format the log message
+            Times.Once);
         }
     }
 }
