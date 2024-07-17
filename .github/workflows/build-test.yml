@@ -88,7 +88,7 @@ jobs:
       - name: Run CodeCoverageSummary
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: ./*/coverage.cobertura.xml
+          filename: ./runneradmin_fv*/**/coverage.cobertura.xml
           badge: true
           fail_below_min: true
           format: markdown
