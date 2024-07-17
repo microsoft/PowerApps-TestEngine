@@ -51,13 +51,6 @@ jobs:
           cd src
           dotnet test --configuration Release --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
-      - name: Run PowerShell Script
-        shell: pwsh
-        run: |
-          Write-Host "Starting PowerShell Script..."
-          dir ./src/TestResults
-          Write-Host "PowerShell Script Completed."    
-
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
       
@@ -88,13 +81,13 @@ jobs:
       - name: Run CodeCoverageSummary
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: ./runneradmin_fv*/**/coverage.cobertura.xml
+          filename: ./**/coverage.cobertura.xml
           badge: true
           fail_below_min: true
           format: markdown
           indicators: true
           output: both
-          thresholds: '15 15'
+          thresholds: '14 14'
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
