@@ -55,7 +55,7 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "Starting PowerShell Script..."
-          dir ./TestResults
+          dir ./src/TestResults
           Write-Host "PowerShell Script Completed."    
 
       - name: Perform CodeQL Analysis
