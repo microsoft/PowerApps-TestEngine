@@ -51,6 +51,13 @@ jobs:
           cd src
           dotnet test --configuration Release --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
+      - name: Run PowerShell Script
+        shell: pwsh
+        run: |
+          Write-Host "Starting PowerShell Script..."
+          dir ./TestResults
+          Write-Host "PowerShell Script Completed."    
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
       
