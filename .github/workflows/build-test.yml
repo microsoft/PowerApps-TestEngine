@@ -88,7 +88,7 @@ jobs:
       - name: Run CodeCoverageSummary
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: ./^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/coverage.cobertura.xml
+          filename: ./*/coverage.cobertura.xml
           badge: true
           fail_below_min: true
           format: markdown
