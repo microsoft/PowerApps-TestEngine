@@ -42,4 +42,48 @@ var PowerAppsPortalConnections = class {
         return JSON.stringify(connections)
 
     }
+
+    static getInstanceUrl() {
+        var dom = document.getElementsByClassName('ms-Dialog-content');
+
+        if (dom.length == 0) {
+            return "";
+        }
+
+        dom = dom[0]
+
+        const key = Object.keys(dom).find(key => {
+            return key.startsWith("__reactFiber$") // react 17+
+                || key.startsWith("__reactInternalInstance$"); // react <17
+        });
+        const domFiber = dom[key];
+        if (domFiber == null) return null;
+
+        var match = null
+
+
+        var current = dom[key]
+        
+        // Search for content item of dialog
+        while (match == null && current.child != null) {
+            if (typeof current.memoizedProps.className === 'string' && current.memoizedProps.className.indexOf('content-') >= 0) {
+                match = current;
+            } else {
+                current = current.child;
+            }
+        }
+
+        if (match != null) {
+            var url = "";
+            // Search for the instance url
+            match.memoizedProps.children.forEach(item => {
+                // TODO Handle Localization
+                if (item.props.children[0].trim().toLowerCase() == 'instance url:') {
+                    url = item.props.children[1]
+                }
+            })
+        }
+
+        return url;
+    }
 }

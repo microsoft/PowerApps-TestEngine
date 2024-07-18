@@ -8,7 +8,7 @@ testSuite:
     - testCaseName: Create connections
       testCaseDescription: Create connections in environment required for CoE Starter Kit
       testSteps: |
-        = TestEngine.CreateConnection(
+        =   TestEngine.CreateConnection(
             Table(
               {Name: "shared_approvals"},
               {Name: "shared_arm", Interactive: true},
@@ -28,7 +28,11 @@ testSuite:
               {Name: "shared_webcontents", Interactive: true, Parameters: "{'Base Resource URL': 'https://graph.microsoft.com', 'Microsoft Entra ID Resource URI (Application ID URI)':'https://graph.microsoft.com'}"}
             )
           );
-
+    - testCaseName: Update Connection References
+      testCaseDescription: Connect created connections with connection references
+      testSteps: |
+        =  TestEngine.UpdateConnectionReferences();
+          
 testSettings:
   headless: false
   locale: "en-US"

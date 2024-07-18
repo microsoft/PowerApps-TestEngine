@@ -57,7 +57,7 @@ namespace testengine.module.powerappsportal.tests
             {
                 connections.Add(new Connection {  Name = name, Id = id, Status = status });
             }
-            mockConnectionHelper.Setup(x => x.GetConnections(MockBrowserContext.Object, "https://make.powerapps.com")).Returns(Task.FromResult(connections));
+            mockConnectionHelper.Setup(x => x.GetConnections(MockBrowserContext.Object, "https://make.powerapps.com", null)).Returns(Task.FromResult(connections));
 
             var function = new GetConnectionsFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
 

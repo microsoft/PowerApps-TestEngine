@@ -78,9 +78,14 @@ namespace testengine.module
         {
             Page = await _testInfraFunctions.GetContext().NewPageAsync();
 
-            _logger.LogInformation($"{create.Count} connections to be created");
+            var rowCount = create.Rows.Count();
+
+            _logger.LogInformation($"{rowCount} connections to be created");
 
             var timeout = _testState.GetTimeout();
+
+            var baseUrl = _testState.GetDomain();
+            var connections = await GetConnectionHelper().GetConnections(_testInfraFunctions.GetContext(), baseUrl);
 
             foreach ( var row in create.Rows)
             {
@@ -93,11 +98,9 @@ namespace testengine.module
 
                     if ( recordValue.GetField("Name").TryGetPrimitiveValue(out name) )
                     {
-                       
-                        var baseUrl = _testState.GetDomain();
                         var url = baseUrl; 
 
-                        if (await GetConnectionHelper().Exists(_testInfraFunctions.GetContext(), baseUrl, name as string))
+                        if (connections.Any(c => c.Name == name as string))
                         {
                             _logger.LogInformation($"Skipping connection {name}, already exists");
                             continue;

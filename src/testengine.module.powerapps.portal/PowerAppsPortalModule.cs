@@ -30,6 +30,8 @@ namespace testengine.module
             logger.LogInformation("Registered TestEngine.CreateConnection()");
             config.AddFunction(new CheckConnectionExistsFunction(testInfraFunctions, testState, logger));
             logger.LogInformation("Registered TestEngine.CheckConnectionExists()");
+            config.AddFunction(new UpdateConnectionReferencesFunction(testInfraFunctions, testState, logger));
+            logger.LogInformation("Registered TestEngine.UpdateConnectionReferences()");
         }
 
         public async Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)

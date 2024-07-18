@@ -98,12 +98,14 @@ namespace testengine.module.powerappsportal.tests
                 new NamedValue("Parameters", FormulaValue.New(parameters))
             );
 
-
             var table = TableValue.NewTable(recordType, rv1);
 
             var connectionHelper = new Mock<ConnectionHelper>(MockBehavior.Strict);
+
+            connectionHelper.Setup(x => x.GetConnections(MockBrowserContext.Object, "https://make.powerapps.com", null))
+                .Returns(Task.FromResult(new List<Connection>()));
+
             connectionHelper.SetupSequence(x => x.Exists(MockBrowserContext.Object, "https://make.powerapps.com", name))
-                .Returns(Task.FromResult(false))
                 .Returns(Task.FromResult(true));
 
 
