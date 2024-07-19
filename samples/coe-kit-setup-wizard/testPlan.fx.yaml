@@ -6,7 +6,7 @@ testSuite:
 
   testCases:
     - testCaseName: Verify
-      testCaseDescription: Pause example
+      testCaseDescription: Verify setup and upgrade Wizard of the CoE Starter Kit
       testSteps: |
         = TestEngine.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
 
