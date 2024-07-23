@@ -1,0 +1,24 @@
+testSuite:
+  testSuiteName: Generate Docs
+  testSuiteDescription: Verifies that can generate test state document
+  persona: User1
+  appLogicalName: NA
+
+  testCases:
+    - testCaseName: Can generate test state document
+      testSteps: |
+        = TestEngine.GenerateTestStateDocument("test.txt")
+
+testSettings:
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NA
+      passwordKey: NA
