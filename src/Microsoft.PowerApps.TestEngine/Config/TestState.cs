@@ -6,9 +6,11 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.PowerFx;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -18,6 +20,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestState : ITestState
     {
         private readonly ITestConfigParser _testConfigParser;
+
+        private PowerFxState _powerFxState;
 
         private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
@@ -348,6 +352,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<ITestWebProvider> GetTestEngineWebProviders()
         {
             return WebProviders;
+        }
+
+        public void SetPowerFxState(PowerFxState state)
+        {
+            _powerFxState = state;
+        }
+
+        public PowerFxState GetPowerFxState()
+        {
+            return _powerFxState;
         }
     }
 }

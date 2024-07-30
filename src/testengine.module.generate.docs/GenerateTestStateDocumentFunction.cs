@@ -6,12 +6,13 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
+using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
 
 namespace testengine.module
 {
     /// <summary>
-    /// This will pause the current test and allow the user to interact with the browser and inspect state when headless mode is false
+    /// This will Generate Test State Document
     /// </summary>
     public class GenerateTestStateDocumentFunction : ReflectionFunction
     {
@@ -21,7 +22,7 @@ namespace testengine.module
         private readonly PowerFxConfig _config;
 
         public GenerateTestStateDocumentFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger, PowerFxConfig config)
-            : base("GenerateTestStateDocument", FormulaType.Blank, StringType.String)
+            : base(DPath.Root.Append(new DName("TestEngine")), "GenerateTestStateDocument", FormulaType.Blank, StringType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
@@ -33,17 +34,35 @@ namespace testengine.module
         {
             using ( var output = new StreamWriter(file.Value) )
             {
+                var state = _testState.GetPowerFxState();
+
                 output.WriteLine("Functions");
-                foreach (var function in _config.SymbolTable.FunctionNames)
+#pragma warning disable CS0618 // Type or member is obsolete
+                // TODO: Determin SymbolTable alternatice
+                foreach ( var function in state.Config.FunctionInfos )
+#pragma warning restore CS0618 // Type or member is obsolete
                 {
-                    output.WriteLine(function);
+                    output.WriteLine( function.Name );
                 }
 
                 output.WriteLine("Variables");
-                foreach ( var symbol in _config.SymbolTable.SymbolNames)
+                foreach ( var variable in state.Symbols.SymbolNames )
                 {
-                    output.WriteLine(symbol.DisplayName.Value);
+                    output.WriteLine(variable.Name);
+
+                    if (variable.Type is RecordType)
+                    {
+                        var record = variable.Type as RecordType;
+                        if (record != null)
+                        {
+                            foreach (var item in record.FieldNames)
+                            {
+                                output.WriteLine($"  > {item}");
+                            }
+                        }
+                    }
                 }
+
                 output.WriteLine();
             }
             return FormulaValue.NewBlank();

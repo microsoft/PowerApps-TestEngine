@@ -3,8 +3,10 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.PowerFx;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -144,5 +146,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Get the list of registered Test engine web test providers
         /// </summary>
         public List<ITestWebProvider> GetTestEngineWebProviders();
+
+        /// <summary>
+        /// Sets the current Power Fx state
+        /// </summary>
+        /// <param name="state" >The state to set</param>
+        void SetPowerFxState(PowerFxState state);
+
+        /// <summary>
+        /// Gets the current Power Fx state
+        /// </summary>
+        PowerFxState GetPowerFxState();
     }
 }

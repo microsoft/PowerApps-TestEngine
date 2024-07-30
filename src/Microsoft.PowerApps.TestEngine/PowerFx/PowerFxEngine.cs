@@ -158,6 +158,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 var values = new SymbolValues();
                 Logger.LogTrace($"Attempting:\n\n{{\n{testSteps}}}");
+
+                TestState.SetPowerFxState(
+                    new PowerFxState() {
+                        Config = Engine.Config,
+                        Symbols = Engine.EngineSymbols }
+                );
+
                 return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
             }
         }
