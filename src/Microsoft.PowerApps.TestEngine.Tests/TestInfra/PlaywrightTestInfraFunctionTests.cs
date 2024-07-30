@@ -767,5 +767,30 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await playwrightTestInfraFunctions.RouteNetworkRequest(MockRoute.Object, mock);
             MockRoute.Verify(x => x.ContinueAsync(It.IsAny<RouteContinueOptions>()), Times.Once);
         }
+
+        [Fact]
+        public async Task LoadScriptContent()
+        {
+            // Arrange
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, browserContext: MockBrowserContext.Object);
+
+            playwrightTestInfraFunctions.Page = MockPage.Object;
+
+            PageAddScriptTagOptions tagOptions = null;
+
+            MockPage.Setup(m => m.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>()))
+                .Callback((PageAddScriptTagOptions options) => tagOptions = options)
+                .Returns(Task.FromResult(MockElementHandle.Object));
+
+            var javaScript = "var test = 1";
+
+            // Act
+
+            await playwrightTestInfraFunctions.AddScriptContentAsync(javaScript);
+
+            // Assert
+            Assert.Equal(javaScript, tagOptions.Content);
+        }
     }
 }

@@ -110,6 +110,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
                 if (jsPropertyValueModel != null)
                 {
+                    if ( string.IsNullOrEmpty(jsPropertyValueModel.PropertyValue) )
+                    {
+                        result = null;
+                        return false;
+                    }
+
                     if (fieldType is NumberType)
                     {
                         result = NumberValue.New(double.Parse(jsPropertyValueModel.PropertyValue));

@@ -1,0 +1,26 @@
+testSuite:
+  testSuiteName: MDA tests
+  testSuiteDescription: Verify model driven application
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Verify
+      testCaseDescription: Pause example
+      testSteps: |
+        = Assert(AutoWidthLabel1_2.Text = "Approvals Kit", "Name text");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded
