@@ -54,7 +54,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.localcertif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.certificate.tests", "testengine.user.certificate.tests\testengine.user.certificate.tests.csproj", "{11605494-3C4E-41E8-B68E-FA347A3CA8E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.auth.localcertificate.tests", "testengine.auth.localcertificate.tests\testengine.auth.localcertificate.tests.csproj", "{7183776B-21BB-4318-958B-62B325CC1A7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.localcertificate.tests", "testengine.auth.localcertificate.tests\testengine.auth.localcertificate.tests.csproj", "{7183776B-21BB-4318-958B-62B325CC1A7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.certificatestore", "testengine.auth.certificatestore\testengine.auth.certificatestore.csproj", "{EF3A270A-53A4-4C08-B45B-7C6993593446}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.auth.certificatestore.tests", "testengine.auth.certificatestore.tests\testengine.auth.certificatestore.tests.csproj", "{36F79923-74AD-424E-8A74-6902628FBF58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -126,6 +130,14 @@ Global
 		{7183776B-21BB-4318-958B-62B325CC1A7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7183776B-21BB-4318-958B-62B325CC1A7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7183776B-21BB-4318-958B-62B325CC1A7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF3A270A-53A4-4C08-B45B-7C6993593446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF3A270A-53A4-4C08-B45B-7C6993593446}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF3A270A-53A4-4C08-B45B-7C6993593446}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF3A270A-53A4-4C08-B45B-7C6993593446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36F79923-74AD-424E-8A74-6902628FBF58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36F79923-74AD-424E-8A74-6902628FBF58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36F79923-74AD-424E-8A74-6902628FBF58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36F79923-74AD-424E-8A74-6902628FBF58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,6 +160,8 @@ Global
 		{340111C2-8434-46CF-BE93-12E7C484C955} = {F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}
 		{11605494-3C4E-41E8-B68E-FA347A3CA8E4} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
 		{7183776B-21BB-4318-958B-62B325CC1A7D} = {F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}
+		{EF3A270A-53A4-4C08-B45B-7C6993593446} = {F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}
+		{36F79923-74AD-424E-8A74-6902628FBF58} = {F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E7B2C01-DDE2-4C5A-96C3-AF474B074331}
