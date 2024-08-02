@@ -24,6 +24,7 @@ namespace testengine.user.environment.tests
         private Mock<IPage> MockPage;
         private Mock<IElementHandle> MockElementHandle;
         private Mock<IFileSystem> MockFileSystem;
+        private Mock<IUserManagerLogin> MockUserManagerLogin;
 
         public EnvironmentUserManagerModuleTests()
         {
@@ -53,6 +54,7 @@ namespace testengine.user.environment.tests
             MockPage = new Mock<IPage>(MockBehavior.Strict);
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            MockUserManagerLogin = new Mock<IUserManagerLogin>(MockBehavior.Strict);
         }
 
         [Fact]
@@ -103,7 +105,8 @@ namespace testengine.user.environment.tests
                 MockBrowserState.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
-                MockEnvironmentVariable.Object);
+                MockEnvironmentVariable.Object,
+                MockUserManagerLogin.Object);
 
             MockSingleTestInstanceState.Verify(x => x.GetTestSuiteDefinition(), Times.Once());
             MockTestState.Verify(x => x.GetUserConfiguration(userConfiguration.PersonaName), Times.Once());
@@ -125,7 +128,8 @@ namespace testengine.user.environment.tests
                 MockBrowserState.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
-                MockEnvironmentVariable.Object));
+                MockEnvironmentVariable.Object,
+                MockUserManagerLogin.Object));
         }
 
         [Theory]
@@ -159,7 +163,8 @@ namespace testengine.user.environment.tests
                 MockBrowserState.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
-                MockEnvironmentVariable.Object));
+                MockEnvironmentVariable.Object,
+                MockUserManagerLogin.Object));
         }
 
         [Fact]
@@ -177,7 +182,8 @@ namespace testengine.user.environment.tests
                 MockBrowserState.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
-                MockEnvironmentVariable.Object));
+                MockEnvironmentVariable.Object,
+                MockUserManagerLogin.Object));
         }
 
         [Theory]
@@ -204,7 +210,8 @@ namespace testengine.user.environment.tests
                 MockBrowserState.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
-                MockEnvironmentVariable.Object));
+                MockEnvironmentVariable.Object,
+                MockUserManagerLogin.Object));
         }
 
         [Theory]
@@ -236,7 +243,8 @@ namespace testengine.user.environment.tests
                 MockBrowserState.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
-                MockEnvironmentVariable.Object));
+                MockEnvironmentVariable.Object,
+                MockUserManagerLogin.Object));
 
             Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
             if (String.IsNullOrEmpty(email))
