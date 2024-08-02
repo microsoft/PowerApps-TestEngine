@@ -24,13 +24,13 @@ namespace testengine.auth
         {   
         }
 
-        public X509Certificate2? RetrieveCertificateForUser(string username)
+        public X509Certificate2? RetrieveCertificateForUser(string userIdentifier)
         {
-            if (string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(userIdentifier))
             {
-                throw new ArgumentException("Username cannot be null or empty", nameof(username));
+                return null;
             }
-            username = username.Trim();
+            userIdentifier = userIdentifier.Trim();
 
             X509Store store = GetCertStore();
             store.Open(OpenFlags.ReadOnly);
@@ -39,26 +39,13 @@ namespace testengine.auth
             {
                 foreach (X509Certificate2 certificate in store.Certificates)
                 {
-                    if (certificate.SubjectName.Name != null && certificate.SubjectName.Name.Contains($"CN={username}", StringComparison.OrdinalIgnoreCase))
+                    if (certificate.SubjectName.Name != null && certificate.SubjectName.Name.Contains(userIdentifier, StringComparison.OrdinalIgnoreCase))
                     {
                         return certificate;
                     }
-
-                    foreach (X509Extension extension in certificate.Extensions)
-                    {
-                        if (extension.Oid.Value.Equals("2.5.29.17")) //san
-                        {
-                            var asnEncodedData = new AsnEncodedData(extension.Oid, extension.RawData);
-                            string sanString = asnEncodedData.Format(false);
-                            if (sanString.Contains(username, StringComparison.OrdinalIgnoreCase))
-                            {
-                                return certificate;
-                            }
-                        }
-                    }
                 }
 
-                throw new InvalidOperationException($"Certificate for user {username} not found.");
+                return null;
             }
             finally
             {

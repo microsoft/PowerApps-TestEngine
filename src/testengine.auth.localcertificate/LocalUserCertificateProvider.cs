@@ -29,15 +29,14 @@ namespace testengine.auth
                 {
                     // Load the certificate
                     X509Certificate2 cert = new X509Certificate2(pfxFile, password);
-                    string fileName = Path.GetFileNameWithoutExtension(pfxFile);
-                    emailCertificateDict.Add(fileName, cert);
+                    emailCertificateDict.Add(cert.SubjectName.Name, cert);
                 }
             }
         }
 
-        public X509Certificate2? RetrieveCertificateForUser(string username)
+        public X509Certificate2? RetrieveCertificateForUser(string userIdentifier)
         {
-            if (emailCertificateDict.TryGetValue(username, out X509Certificate2 certificate))
+            if (emailCertificateDict.TryGetValue(userIdentifier, out X509Certificate2 certificate))
             {
                 return certificate;
             }

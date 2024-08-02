@@ -39,7 +39,7 @@ namespace testengine.auth.tests
             var provider = new LocalUserCertificateProvider();
 
             // Assert
-            Assert.NotNull(provider.RetrieveCertificateForUser("testcert"));
+            Assert.NotNull(provider.RetrieveCertificateForUser("CN=testcert"));
 
             // Cleanup
             Directory.Delete(certDir, true);

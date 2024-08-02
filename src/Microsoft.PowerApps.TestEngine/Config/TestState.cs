@@ -166,11 +166,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
                         {
                             userInputExceptionMessages.Add("Missing email key");
                         }
-
-                        if (string.IsNullOrEmpty(userConfig.PasswordKey))
-                        {
-                            userInputExceptionMessages.Add("Missing password key");
-                        }
                     }
                 }
 

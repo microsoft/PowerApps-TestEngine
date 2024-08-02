@@ -78,16 +78,19 @@ namespace testengine.user.environment.tests
             var userConfiguration = new UserConfiguration()
             {
                 PersonaName = "User1",
-                EmailKey = "user1Email"
+                EmailKey = "user1Email",
+                CertificateSubjectKey = "user1CertificateSubject"
             };
 
             var email = "someone@example.com";
+            var certSubject = "CN=test";
 
             MockLogger = new Mock<ILogger>();
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.EmailKey)).Returns(email);
+            MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.CertificateSubjectKey)).Returns(certSubject);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             var keyboard = new Mock<IKeyboard>(MockBehavior.Strict);
@@ -246,22 +249,26 @@ namespace testengine.user.environment.tests
         }
 
         [Theory]
-        [InlineData(null, "set", "User email cannot be null. Please check if the environment variable is set properly.")]
-        [InlineData("", "set", "User email cannot be null. Please check if the environment variable is set properly.")]
-        [InlineData("someone@example.com", "setProvider", "Certificate provider cannot be null. Please ensure certificate provider for user.")]
-        [InlineData("someone@example.com", "setCert", "Certificate cannot be null. Please ensure certificate for user.")]
-        public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string email, string setAsNull, string message)
+        [InlineData(null, "", "set", "User email cannot be null. Please check if the environment variable is set properly.")]
+        [InlineData("", "", "set", "User email cannot be null. Please check if the environment variable is set properly.")]
+        [InlineData("someone@example.com", "CN=test", "setProvider", "Certificate provider cannot be null. Please ensure certificate provider for user.")]
+        [InlineData("someone@example.com", "CN=test", "setCert", "Certificate cannot be null. Please ensure certificate for user.")]
+        [InlineData("someone@example.com", null, "set", "User certificate subject name cannot be null. Please check if the environment variable is set properly.")]
+        [InlineData("someone@example.com", "", "set", "User certificate subject name cannot be null. Please check if the environment variable is set properly.")]
+        public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string email, string certname, string setAsNull, string message)
         {
             UserConfiguration userConfiguration = new UserConfiguration()
             {
                 PersonaName = "User1",
-                EmailKey = "user1Email"
+                EmailKey = "user1Email",
+                CertificateSubjectKey = "user1CertificateSubject"
             };
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
             MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.EmailKey)).Returns(email);
-            
+            MockEnvironmentVariable.Setup(x => x.GetVariable(userConfiguration.CertificateSubjectKey)).Returns(certname);
+
             if (setAsNull == "setProvider")
             {
                 MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(MockCert);
@@ -292,7 +299,7 @@ namespace testengine.user.environment.tests
                 MockUserManagerLogin.Object));
 
             Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString(), ex.Message);
-            if (String.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(certname))
             {
                 LoggingTestHelper.VerifyLogging(MockLogger, message, LogLevel.Error, Times.Once());
             }

@@ -84,18 +84,35 @@ namespace testengine.user.environment
                 throw new InvalidOperationException();
             }
 
+            if (string.IsNullOrEmpty(userConfig.CertificateSubjectKey))
+            {
+                logger.LogError("Certificate subject name key for persona cannot be empty");
+                throw new InvalidOperationException();
+            }
+
             var user = environmentVariable.GetVariable(userConfig.EmailKey);
+            var certName = environmentVariable.GetVariable(userConfig.CertificateSubjectKey);
             bool missingUserOrCert = false;
             if (string.IsNullOrEmpty(user))
             {
-                logger.LogError(("User email cannot be null. Please check if the environment variable is set properly."));
+                logger.LogError("User email cannot be null. Please check if the environment variable is set properly.");
                 missingUserOrCert = true;
             }
+            if (string.IsNullOrEmpty(certName))
+            {
+                logger.LogError("User certificate subject name cannot be null. Please check if the environment variable is set properly.");
+                missingUserOrCert = true;
+            }
+            if (missingUserOrCert)
+            {
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
+            }
+
             X509Certificate2 cert = null;
             var userCertificateProvider = userManagerLogin.UserCertificateProvider;
             if (userCertificateProvider != null)
             {
-                cert = userCertificateProvider.RetrieveCertificateForUser(user);
+                cert = userCertificateProvider.RetrieveCertificateForUser(certName);
             }
             else 
             {
