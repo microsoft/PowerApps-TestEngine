@@ -110,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
                 if (jsPropertyValueModel != null)
                 {
-                    if ( string.IsNullOrEmpty(jsPropertyValueModel.PropertyValue) )
+                    if (string.IsNullOrEmpty(jsPropertyValueModel.PropertyValue) )
                     {
                         result = null;
                         return false;
