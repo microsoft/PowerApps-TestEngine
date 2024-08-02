@@ -41,6 +41,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<ITestEngineEvents> MockTestEngineEventHandler;
         private Mock<IEnvironmentVariable> MockEnvironmentVariable;
         private Mock<IBrowserContext> MockBrowserContext;
+        private Mock<IUserManagerLogin> MockUserManagerLogin;
 
         public SingleTestRunnerTests()
         {
@@ -58,6 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestEngineEventHandler = new Mock<ITestEngineEvents>(MockBehavior.Strict);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
+            MockUserManagerLogin = new Mock<IUserManagerLogin>(MockBehavior.Strict);
         }
 
         private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles, string testSuitelocale)
@@ -127,7 +129,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 It.IsAny<IBrowserContext>(),
                 It.IsAny<ITestState>(),
                 It.IsAny<ISingleTestInstanceState>(),
-                It.IsAny<IEnvironmentVariable>())
+                It.IsAny<IEnvironmentVariable>(),
+                It.IsAny<IUserManagerLogin>())
             ).Returns(Task.CompletedTask);
 
             MockTestWebProvider.Setup(x => x.GenerateTestUrl("", "")).Returns(appUrl);
@@ -161,7 +164,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                 It.IsAny<IBrowserContext>(),
                 It.IsAny<ITestState>(),
                 It.IsAny<ISingleTestInstanceState>(),
-                It.IsAny<IEnvironmentVariable>()), Times.Once());
+                It.IsAny<IEnvironmentVariable>(),
+                It.IsAny<IUserManagerLogin>()), Times.Once());
             MockTestInfraFunctions.Verify(x => x.SetupNetworkRequestMockAsync(), Times.Once());
             MockTestWebProvider.Verify(x => x.GenerateTestUrl("", ""), Times.Once());
             MockTestInfraFunctions.Verify(x => x.GoToUrlAsync(appUrl), Times.Once());
@@ -211,7 +215,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object,
                                                         MockEnvironmentVariable.Object,
-                                                        MockTestWebProvider.Object);
+                                                        MockTestWebProvider.Object,
+                                                        MockUserManagerLogin.Object);
 
             var testData = new TestDataOne();
 
@@ -242,7 +247,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object,
                                                         MockEnvironmentVariable.Object,
-                                                        MockTestWebProvider.Object);
+                                                        MockTestWebProvider.Object,
+                                                        MockUserManagerLogin.Object);
 
             var testData = new TestDataTwo();
 
@@ -270,7 +276,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object,
                                                         MockEnvironmentVariable.Object,
-                                                        MockTestWebProvider.Object);
+                                                        MockTestWebProvider.Object,
+                                                        MockUserManagerLogin.Object);
 
             var testData = new TestDataOne();
 
@@ -296,7 +303,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockLoggerFactory.Object,
                                                         MockTestEngineEventHandler.Object,
                                                         MockEnvironmentVariable.Object,
-                                                        MockTestWebProvider.Object);
+                                                        MockTestWebProvider.Object,
+                                                        MockUserManagerLogin.Object);
 
             var testData = new TestDataOne();
 
@@ -322,7 +330,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockLoggerFactory.Object,
                                                            MockTestEngineEventHandler.Object,
                                                            MockEnvironmentVariable.Object,
-                                                           MockTestWebProvider.Object);
+                                                           MockTestWebProvider.Object,
+                                                           MockUserManagerLogin.Object);
 
             var testData = new TestDataOne();
 
@@ -395,7 +404,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
                 MockUserManager.Setup(x =>
-                    x.LoginAsUserAsync(It.IsAny<string>(), It.IsAny<IBrowserContext>(), It.IsAny<ITestState>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<IEnvironmentVariable>())
+                    x.LoginAsUserAsync(It.IsAny<string>(), It.IsAny<IBrowserContext>(), It.IsAny<ITestState>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<IEnvironmentVariable>(), It.IsAny<IUserManagerLogin>())
                     ).Throws(exceptionToThrow);
             });
         }
@@ -443,7 +452,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockLoggerFactory.Object,
                                                            MockTestEngineEventHandler.Object,
                                                            MockEnvironmentVariable.Object,
-                                                           MockTestWebProvider.Object);
+                                                           MockTestWebProvider.Object,
+                                                           MockUserManagerLogin.Object);
 
             var testData = new TestDataOne();
 
@@ -476,7 +486,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                            MockLoggerFactory.Object,
                                                            MockTestEngineEventHandler.Object,
                                                            MockEnvironmentVariable.Object,
-                                                           MockTestWebProvider.Object);
+                                                           MockTestWebProvider.Object,
+                                                           MockUserManagerLogin.Object);
 
             var testData = new TestDataOne();
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
@@ -484,7 +495,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             // Specific setup for this test
             var exceptionToThrow = new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
-            MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<string>(), It.IsAny<IBrowserContext>(), It.IsAny<ITestState>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<IEnvironmentVariable>())).Throws(exceptionToThrow);
+            MockUserManager.Setup(x => x.LoginAsUserAsync(It.IsAny<string>(), It.IsAny<IBrowserContext>(), It.IsAny<ITestState>(), It.IsAny<ISingleTestInstanceState>(), It.IsAny<IEnvironmentVariable>(), It.IsAny<IUserManagerLogin>())).Throws(exceptionToThrow);
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
 
             // Act

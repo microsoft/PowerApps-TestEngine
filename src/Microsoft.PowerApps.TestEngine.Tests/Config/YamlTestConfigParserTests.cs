@@ -67,7 +67,8 @@ environmentVariables:
     users:
         - personaName: User1
           emailKey: user1Email
-          passwordKey: user1Password";
+          passwordKey: user1Password
+          certificateSubjectKey: user1CertificateSubject";
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
@@ -100,7 +101,7 @@ environmentVariables:
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);
             Assert.Equal("user1Password", testPlan.EnvironmentVariables?.Users[0].PasswordKey);
-
+            Assert.Equal("user1CertificateSubject", testPlan.EnvironmentVariables?.Users[0].CertificateSubjectKey);
         }
 
         [Fact]
@@ -147,7 +148,8 @@ environmentVariables:
     users:
         - personaName: User1
           emailKey: user1Email
-          passwordKey: user1Password";
+          passwordKey: user1Password
+          certificateSubjectKey: user1CertificateSubject";
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
@@ -181,7 +183,7 @@ environmentVariables:
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);
             Assert.Equal("user1Password", testPlan.EnvironmentVariables?.Users[0].PasswordKey);
-
+            Assert.Equal("user1CertificateSubject", testPlan.EnvironmentVariables?.Users[0].CertificateSubjectKey);
         }
 
         [Fact]
@@ -229,7 +231,8 @@ environmentVariables:
     users:
         - personaName: User1
           emailKey: user1Email
-          passwordKey: user1Password";
+          passwordKey: user1Password
+          certificateSubjectKey: user1CertificateSubject";
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
@@ -264,7 +267,7 @@ environmentVariables:
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);
             Assert.Equal("user1Password", testPlan.EnvironmentVariables?.Users[0].PasswordKey);
-
+            Assert.Equal("user1CertificateSubject", testPlan.EnvironmentVariables?.Users[0].CertificateSubjectKey);
         }
 
         [Fact]
@@ -276,7 +279,8 @@ environmentVariables:
             var environmentVariablesFile = @"users:
   - personaName: User1
     emailKey: user1Email
-    passwordKey: user1Password";
+    passwordKey: user1Password
+    certificateSubjectKey: user1CertificateSubject";
 
             var filePath = "environmentVariables.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(environmentVariablesFile);
@@ -290,6 +294,7 @@ environmentVariables:
             Assert.Equal("User1", environmentVariables.Users[0].PersonaName);
             Assert.Equal("user1Email", environmentVariables.Users[0].EmailKey);
             Assert.Equal("user1Password", environmentVariables.Users[0].PasswordKey);
+            Assert.Equal("user1CertificateSubject", environmentVariables.Users[0].CertificateSubjectKey);
         }
 
         [Fact]
