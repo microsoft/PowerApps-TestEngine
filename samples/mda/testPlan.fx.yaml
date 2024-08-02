@@ -1,16 +1,15 @@
 testSuite:
-  testSuiteName: MDA tests
+  testSuiteName: MDA Custom Page tests
   testSuiteDescription: Verify model driven application
   persona: User1
   appLogicalName: NotNeeded
 
   testCases:
-    - testCaseName: Verify
-      testCaseDescription: Pause example
+    - testCaseName: Open Page
+      testCaseDescription: Check initial state
       testSteps: |
-        = Assert(cat_name.Text = "Machine Requests", "Name text");
-          Assert(cat_name.Label = "Name", "Name Label")
-
+        = Assert(Total.Text, "0");
+        
 testSettings:
   headless: false
   locale: "en-US"

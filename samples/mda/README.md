@@ -19,18 +19,11 @@ This Power Apps Test Engine sample demonstrates how to assert the values of cont
 | appid=a1234567-cccc-44444-9999-a123456789123 | The unique identifier of your model driven application |
 | etn=test | The name of the entity being validated |
 | id=26bafa27-ca7d-ee11-8179-0022482a91f4 | The unique identifier the record being edited |
-| pagetype=entityrecord | The type of page to open
+| pagetype=entityrecord | The type of page to open.
 
-5. Execute the test for entityrecord
-
-```pwsh
-cd bin\Debug\PowerAppsEngine
-dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda\testPlan.fx.yaml -e 00000000-0000-0000-0000-000000000000 -t 00000000-0000-0000-0000-000000000000 -u browser -p mda -l Debug -d "https://contoso.crm.dynamics.com/main.aspx?appid=a1234567-cccc-44444-9999-a1234567891234&pagetype=entityrecord&etn=test&id=26bafa27-ca7d-ee11-8179-0022482a91f4
-```
-
-6. Execute the test for custom page
+5. Execute the test for custom page changing the example below to the url of your organization
 
 ```pwsh
 cd bin\Debug\PowerAppsEngine
-dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda\testPlan.fx.yaml -e 00000000-0000-0000-0000-000000000000 -t 00000000-0000-0000-0000-000000000000 -u browser -p mda -l Debug -d "https://contoso.crm.dynamics.com/main.aspx?appid=a1234567-cccc-44444-9999-a1234567891234&pagetype=custom&etn=test&name=cat_homepagereimagined_709bf"
+dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda\testPlan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u browser -p mda -d "https://contoso.crm4.dynamics.com/main.aspx?appid=9e9c25f3-1851-ef11-bfe2-6045bd8f802c&pagetype=custom&name=sample_custom_cf8e6"
 ```
