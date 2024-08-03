@@ -68,7 +68,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 if (TestState.GetTestEngineModules().Count == 0)
                 {
-                    Logger.LogError("Extension enabled not none loaded");
+                    Logger.LogError("Extension enabled, none loaded");
                 }
                 foreach (var module in TestState.GetTestEngineModules())
                 {

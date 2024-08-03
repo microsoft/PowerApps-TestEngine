@@ -1,0 +1,26 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests
+  testSuiteDescription: Verify model driven application
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Open Page
+      testCaseDescription: Check initial state
+      testSteps: |
+        = Assert(Total.Text, "0");
+        
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

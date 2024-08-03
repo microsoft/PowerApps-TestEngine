@@ -58,7 +58,32 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.localcertif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.certificatestore", "testengine.auth.certificatestore\testengine.auth.certificatestore.csproj", "{EF3A270A-53A4-4C08-B45B-7C6993593446}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.auth.certificatestore.tests", "testengine.auth.certificatestore.tests\testengine.auth.certificatestore.tests.csproj", "{36F79923-74AD-424E-8A74-6902628FBF58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.certificatestore.tests", "testengine.auth.certificatestore.tests\testengine.auth.certificatestore.tests.csproj", "{36F79923-74AD-424E-8A74-6902628FBF58}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items (2)", "Solution Items (2)", "{910250A5-D84E-4A3F-A5C6-C0A7AE27C8BD}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{4E409805-A766-4F65-B058-C5264BA1F1CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{1009A533-2243-4EBF-BA85-8A8CC02F3FB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{65FAC4EC-553A-4293-8484-2427A76BB4A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.mda", "testengine.provider.mda\testengine.provider.mda.csproj", "{25CEB2CE-B6D5-4BE1-ACD7-3CF00441EF94}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.mda.tests", "testengine.provider.mda.tests\testengine.provider.mda.tests.csproj", "{B7C8ED63-A77B-4FA0-B441-A07BE40E3264}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModelDrivenApplicationProvider", "ModelDrivenApplicationProvider", "{A465E028-ED7F-4113-B37B-4B830A5512D5}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\Extensions\ModelDrivenApplicationProvider\controls.md = ..\docs\Extensions\ModelDrivenApplicationProvider\controls.md
+		..\docs\Extensions\ModelDrivenApplicationProvider\README.md = ..\docs\Extensions\ModelDrivenApplicationProvider\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.mda", "testengine.module.mda\testengine.module.mda.csproj", "{16C931C8-47F8-4ABA-A657-3349DC8BEBF3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.mda.tests", "testengine.module.mda.tests\testengine.module.mda.tests.csproj", "{1BEF602B-9010-4455-811A-7597B700AC4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +163,22 @@ Global
 		{36F79923-74AD-424E-8A74-6902628FBF58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36F79923-74AD-424E-8A74-6902628FBF58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36F79923-74AD-424E-8A74-6902628FBF58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25CEB2CE-B6D5-4BE1-ACD7-3CF00441EF94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25CEB2CE-B6D5-4BE1-ACD7-3CF00441EF94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25CEB2CE-B6D5-4BE1-ACD7-3CF00441EF94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25CEB2CE-B6D5-4BE1-ACD7-3CF00441EF94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C8ED63-A77B-4FA0-B441-A07BE40E3264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C8ED63-A77B-4FA0-B441-A07BE40E3264}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7C8ED63-A77B-4FA0-B441-A07BE40E3264}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C8ED63-A77B-4FA0-B441-A07BE40E3264}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16C931C8-47F8-4ABA-A657-3349DC8BEBF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16C931C8-47F8-4ABA-A657-3349DC8BEBF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16C931C8-47F8-4ABA-A657-3349DC8BEBF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16C931C8-47F8-4ABA-A657-3349DC8BEBF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BEF602B-9010-4455-811A-7597B700AC4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BEF602B-9010-4455-811A-7597B700AC4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BEF602B-9010-4455-811A-7597B700AC4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BEF602B-9010-4455-811A-7597B700AC4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,6 +203,11 @@ Global
 		{7183776B-21BB-4318-958B-62B325CC1A7D} = {F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}
 		{EF3A270A-53A4-4C08-B45B-7C6993593446} = {F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}
 		{36F79923-74AD-424E-8A74-6902628FBF58} = {F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}
+		{25CEB2CE-B6D5-4BE1-ACD7-3CF00441EF94} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
+		{B7C8ED63-A77B-4FA0-B441-A07BE40E3264} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
+		{A465E028-ED7F-4113-B37B-4B830A5512D5} = {D34E437A-6149-46EC-B7DA-FF449E55CEEA}
+		{16C931C8-47F8-4ABA-A657-3349DC8BEBF3} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
+		{1BEF602B-9010-4455-811A-7597B700AC4C} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E7B2C01-DDE2-4C5A-96C3-AF474B074331}

@@ -14,6 +14,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
     public interface ITestInfraFunctions
     {
         /// <summary>
+        /// The current page to execute actions
+        /// </summary>
+        public IPage Page { get; set; }
+
+        /// <summary>
         /// Return the current browser context
         /// </summary>
         /// <returns>The current browser context</returns>
@@ -79,6 +84,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="frameName">Frame name to add the script to. If null, it will be added to the main page.</param>
         /// <returns>Task</returns>
         public Task AddScriptTagAsync(string scriptTag, string frameName);
+
+        /// <summary>
+        /// Adds a script content to page
+        /// </summary>
+        /// <param name="content">The script to add</param>
+        /// <returns>Task</returns>
+        public Task AddScriptContentAsync(string content);
 
         /// <summary>
         /// Runs javascript on the page
