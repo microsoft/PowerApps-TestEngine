@@ -41,7 +41,7 @@ namespace testengine.module.powerapps.portal.tests
 
             // Wait until the container exists
             var mockLocator = new Mock<ILocator>();
-            MockPage.Setup(x => x.Locator(".connections-list-container", null)).Returns(mockLocator.Object);
+            MockPage.Setup(x => x.Locator(".connections-list", null)).Returns(mockLocator.Object);
             mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.FromResult(Task.CompletedTask));
 
             var helper = new ConnectionHelper();
@@ -74,7 +74,7 @@ namespace testengine.module.powerapps.portal.tests
 
             // Wait until the container exists
             var mockLocator = new Mock<ILocator>();
-            MockPage.Setup(x => x.Locator(".connections-list-container", null)).Returns(mockLocator.Object);
+            MockPage.Setup(x => x.Locator(".connections-list", null)).Returns(mockLocator.Object);
             mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.FromResult(Task.CompletedTask));
 
             var helper = new ConnectionHelper();
@@ -118,7 +118,7 @@ namespace testengine.module.powerapps.portal.tests
 
             // Assume will wait for list of connections to be visable
             var mockLocator = new Mock<ILocator>();
-            page.Setup(x => x.Locator(".connections-list-container", null)).Returns(mockLocator.Object);
+            page.Setup(x => x.Locator(".connections-list", null)).Returns(mockLocator.Object);
             mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.CompletedTask);
 
             // Interaction pattern to open settings dialog and get instace url

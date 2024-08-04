@@ -39,7 +39,7 @@ namespace testengine.module.powerapps.portal
 
             await page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = LoadResource("PowerAppsPortalConnections.js") });
 
-            await page.Locator(".connections-list-container").WaitForAsync();
+            await page.Locator(".connections-list").WaitForAsync();
 
             var connectionsJson = await page.EvaluateAsync<string>("PowerAppsPortalConnections.getConnections()");
 
