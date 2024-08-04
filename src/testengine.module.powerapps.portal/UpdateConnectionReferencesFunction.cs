@@ -27,7 +27,7 @@ namespace testengine.module
         public IPage? Page { get; set; }
 
         public Func<ConnectionHelper> GetConnectionHelper = () => new ConnectionHelper();
-      
+
         // NOTE: Order of calling base is name, return type then argument types
         public UpdateConnectionReferencesFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
             : base(DPath.Root.Append(new DName("TestEngine")), "UpdateConnectionReferences", FormulaType.Blank)
@@ -55,7 +55,7 @@ namespace testengine.module
         private async Task ExecuteAsync()
         {
             var baseUrl = _testState.GetDomain();
-            var url = baseUrl; 
+            var url = baseUrl;
 
             await GetConnectionHelper().UpdateConnectionReferences(_testInfraFunctions.GetContext(), baseUrl, _logger);
         }

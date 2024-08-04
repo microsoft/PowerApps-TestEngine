@@ -59,7 +59,7 @@ namespace testengine.module.powerappsportal.tests
             MockPage.Setup(x => x.Locator(".btn.btn-primary.add:has-text(\"Create\")", null)).Returns(mocKLocator.Object);
             MockPage.Setup(x => x.IsVisibleAsync(".pa-model", null)).Returns(Task.FromResult(false));
 
-            if ( interactive )
+            if (interactive)
             {
                 var mockAuthPage = new Mock<IPage>(MockBehavior.Strict);
                 mockAuthPage.Setup(x => x.Url).Returns("https://login.microsoft.com/oauth");
@@ -77,7 +77,7 @@ namespace testengine.module.powerappsportal.tests
 
             string parameters = "";
 
-            if ( ! string.IsNullOrEmpty(parameterName) )
+            if (!string.IsNullOrEmpty(parameterName))
             {
                 var mockParameterLocator = new Mock<ILocator>(MockBehavior.Strict);
                 parameters = $"{{'{parameterName}':'{parameterValue}'}}";
@@ -131,7 +131,7 @@ namespace testengine.module.powerappsportal.tests
 
             var name = testCase;
 
-            if ( json.Length > 2 )
+            if (json.Length > 2)
             {
                 var mockLocator = new Mock<ILocator>();
                 MockPage.Setup(x => x.Locator($"[aria-label=\"{key}\"]", null)).Returns(mockLocator.Object);
@@ -195,14 +195,15 @@ namespace testengine.module.powerappsportal.tests
             // Arrange
             MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(MockBrowserContext.Object);
             var pages = new List<IPage>();
-            foreach (var url in urls.Split(',')) {
+            foreach (var url in urls.Split(','))
+            {
                 var mockPage = new Mock<IPage>();
                 mockPage.Setup(x => x.Url).Returns(url);
                 pages.Add(mockPage.Object);
             }
             MockBrowserContext.Setup(x => x.Pages).Returns(pages);
             var function = new CreateConnectionFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
-           
+
             // Act
             await Assert.ThrowsAsync<Exception>(async () => await function.HandleInteractiveLogin(0));
 

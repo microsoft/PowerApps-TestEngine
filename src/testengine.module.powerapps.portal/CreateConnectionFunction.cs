@@ -87,18 +87,18 @@ namespace testengine.module
             var baseUrl = _testState.GetDomain();
             var connections = await GetConnectionHelper().GetConnections(_testInfraFunctions.GetContext(), baseUrl);
 
-            foreach ( var row in create.Rows)
+            foreach (var row in create.Rows)
             {
 
-                if ( ! row.IsBlank )
+                if (!row.IsBlank)
                 {
                     var recordValue = row.Value;
 
                     object name = string.Empty;
 
-                    if ( recordValue.GetField("Name").TryGetPrimitiveValue(out name) )
+                    if (recordValue.GetField("Name").TryGetPrimitiveValue(out name))
                     {
-                        var url = baseUrl; 
+                        var url = baseUrl;
 
                         if (connections.Any(c => c.Name == name as string))
                         {
@@ -108,7 +108,7 @@ namespace testengine.module
 
                         _logger.LogInformation($"Creating connection {name}");
 
-                        if ( ! url.EndsWith("/") )
+                        if (!url.EndsWith("/"))
                         {
                             url += "/";
                         }
@@ -131,7 +131,7 @@ namespace testengine.module
                         }
 
                         await CreateConnection(timeout);
-                        
+
 
                         if (recordValue.Fields.Any(f => f.Name == "Interactive"))
                         {
@@ -144,7 +144,7 @@ namespace testengine.module
                         }
 
                         DateTime started = DateTime.Now;
-                        while ( await Page.IsVisibleAsync(".pa-model") )
+                        while (await Page.IsVisibleAsync(".pa-model"))
                         {
                             Thread.Sleep(1000);
                             if (DateTime.Now.Subtract(started).TotalMilliseconds > timeout)
@@ -265,7 +265,7 @@ namespace testengine.module
 
             _logger.LogInformation($"Found login page");
 
-            if ( authPage == null)
+            if (authPage == null)
             {
                 throw new Exception("Authentication page not found");
             }
@@ -280,7 +280,7 @@ namespace testengine.module
 
             // Assume that after user selected that the auth dialog will close
             started = DateTime.Now;
-            while ( !authPage.IsClosed )
+            while (!authPage.IsClosed)
             {
                 Thread.Sleep(1000);
                 if (DateTime.Now.Subtract(started).TotalMilliseconds > timeout)

@@ -158,7 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             try
             {
-                return new Dictionary< string,object>();
+                return new Dictionary<string, object>();
             }
             catch (Exception)
             {
@@ -195,7 +195,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             }
 
             // TODO: Other sovereign cloud
-            switch (domain) {
+            switch (domain)
+            {
                 case "gcc":
                     // Source: https://learn.microsoft.com/power-platform/admin/powerapps-us-government
                     domain = "https://make.gov.powerapps.us";
@@ -210,7 +211,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     break;
             }
 
-            if ( string.IsNullOrEmpty(domain) )
+            if (string.IsNullOrEmpty(domain))
             {
                 // Assume global commerical cloud maker base url
                 domain = "https://make.powerapps.com";

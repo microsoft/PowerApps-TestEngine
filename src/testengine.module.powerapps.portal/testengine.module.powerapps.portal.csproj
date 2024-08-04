@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <Authors>Microsoft</Authors>
     <Company>crmsdk,Microsoft</Company>
-    <Description>Alpha Release: Pause browser PowerFx action MEF extension</Description>
+    <Description>Alpha Release: Power Apps Portal browser PowerFx action MEF extension</Description>
     <PackageReleaseNotes>
       Notice:
       This package is an ALPHA release. - Use at your own risk.

@@ -15,7 +15,7 @@ namespace testengine.module.powerapps.portal.tests
         private Mock<IBrowserContext> MockBrowserContext;
         private Mock<ILogger> MockLogger;
 
-        private static string POWER_APPS_PORTAL =  "https://make.powerapps.com";
+        private static string POWER_APPS_PORTAL = "https://make.powerapps.com";
 
         public ConnectionHelperTests()
         {
@@ -42,6 +42,8 @@ namespace testengine.module.powerapps.portal.tests
             // Wait until the container exists
             var mockLocator = new Mock<ILocator>();
             MockPage.Setup(x => x.Locator(".connections-list", null)).Returns(mockLocator.Object);
+            MockPage.Setup(x => x.IsVisibleAsync(".ba-DetailsList-empty", null)).Returns(Task.FromResult((bool)false));
+            MockPage.Setup(x => x.IsVisibleAsync(".connections-list-container", null)).Returns(Task.FromResult((bool)true));
             mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.FromResult(Task.CompletedTask));
 
             var helper = new ConnectionHelper();
@@ -57,7 +59,7 @@ namespace testengine.module.powerapps.portal.tests
         [InlineData("", "", false)]
         [InlineData("Test", "", false)]
         [InlineData("Test", "Connected", true)]
-        public async Task Exists(string name, string status,  bool exists)
+        public async Task Exists(string name, string status, bool exists)
         {
             // Arrange
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
@@ -66,7 +68,8 @@ namespace testengine.module.powerapps.portal.tests
             MockPage.Setup(x => x.GotoAsync(new Uri(new Uri("http://make.powerapps.com"), "connections?source=testengine").ToString(), It.IsAny<PageGotoOptions>())).Returns(Task.FromResult(new Mock<IResponse>().Object));
             MockPage.Setup(x => x.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).Returns(Task.FromResult(new Mock<IElementHandle>().Object));
             var connection = new List<Connection>();
-            if (!string.IsNullOrEmpty(name)) {
+            if (!string.IsNullOrEmpty(name))
+            {
                 connection.Add(new Connection { Name = name, Status = status });
             }
             MockPage.Setup(x => x.EvaluateAsync<string>(It.IsAny<string>(), null)).Returns(Task.FromResult(System.Text.Json.JsonSerializer.Serialize(connection)));
@@ -75,6 +78,8 @@ namespace testengine.module.powerapps.portal.tests
             // Wait until the container exists
             var mockLocator = new Mock<ILocator>();
             MockPage.Setup(x => x.Locator(".connections-list", null)).Returns(mockLocator.Object);
+            MockPage.Setup(x => x.IsVisibleAsync(".ba-DetailsList-empty", null)).Returns(Task.FromResult((bool)false));
+            MockPage.Setup(x => x.IsVisibleAsync(".connections-list-container", null)).Returns(Task.FromResult((bool)true));
             mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.FromResult(Task.CompletedTask));
 
             var helper = new ConnectionHelper();
@@ -93,6 +98,9 @@ namespace testengine.module.powerapps.portal.tests
             // Arrange
             var mockPortalPage = MockPowerAppsPortalGetConnections(connectionsJson, instanceUrl);
             var mockDataversePage = MockDataverseQueryAndUpdateConnectionReferences(instanceUrl, connectionReferenceId, connectionId, connectionReferencesBeforeJson, connectionReferenceAfterJson);
+
+            mockPortalPage.Setup(x => x.IsVisibleAsync(".ba-DetailsList-empty", null)).Returns(Task.FromResult((bool)false));
+            mockPortalPage.Setup(x => x.IsVisibleAsync(".connections-list-container", null)).Returns(Task.FromResult((bool)true));
 
             MockBrowserContext.SetupSequence(x => x.NewPageAsync())
                 .Returns(Task.FromResult(mockPortalPage.Object))
@@ -119,6 +127,8 @@ namespace testengine.module.powerapps.portal.tests
             // Assume will wait for list of connections to be visable
             var mockLocator = new Mock<ILocator>();
             page.Setup(x => x.Locator(".connections-list", null)).Returns(mockLocator.Object);
+            MockPage.Setup(x => x.IsVisibleAsync(".ba-DetailsList-empty", null)).Returns(Task.FromResult((bool)false));
+            MockPage.Setup(x => x.IsVisibleAsync(".connections-list-container", null)).Returns(Task.FromResult((bool)true));
             mockLocator.Setup(x => x.WaitForAsync(null)).Returns(Task.CompletedTask);
 
             // Interaction pattern to open settings dialog and get instace url
@@ -137,7 +147,7 @@ namespace testengine.module.powerapps.portal.tests
         {
             var page = new Mock<IPage>();
 
-            if ( !instanceUrl.EndsWith("/"))
+            if (!instanceUrl.EndsWith("/"))
             {
                 instanceUrl += "/";
             }

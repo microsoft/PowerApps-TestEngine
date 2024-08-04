@@ -55,7 +55,7 @@ namespace testengine.module.powerappsportal.tests
             var connections = new List<Connection>();
             if (!string.IsNullOrEmpty(name))
             {
-                connections.Add(new Connection {  Name = name, Id = id, Status = status });
+                connections.Add(new Connection { Name = name, Id = id, Status = status });
             }
             mockConnectionHelper.Setup(x => x.GetConnections(MockBrowserContext.Object, "https://make.powerapps.com", null)).Returns(Task.FromResult(connections));
 
@@ -69,6 +69,6 @@ namespace testengine.module.powerappsportal.tests
             // Assert
             Assert.Equal(expectedCount, result.Count());
         }
-        
+
     }
 }

@@ -39,11 +39,14 @@ namespace testengine.module.powerapps.portal
 
             await page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = LoadResource("PowerAppsPortalConnections.js") });
 
-            await page.Locator(".connections-list").WaitForAsync();
+            if (!await ConnectionListFound(page))
+            {
+                return new List<Connection>();
+            }
 
             var connectionsJson = await page.EvaluateAsync<string>("PowerAppsPortalConnections.getConnections()");
 
-            if ( lookup != null )
+            if (lookup != null)
             {
                 await lookup(page);
             }
@@ -51,6 +54,36 @@ namespace testengine.module.powerapps.portal
             await page.CloseAsync();
 
             return JsonSerializer.Deserialize<List<Connection>>(connectionsJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+
+        private async Task<bool> ConnectionListFound(IPage page)
+        {
+            await page.Locator(".connections-list").WaitForAsync();
+
+            var start = DateTime.Now;
+            var found = false;
+            while (!found)
+            {
+                if (await page.IsVisibleAsync(".ba-DetailsList-empty", null))
+                {
+                    return false;
+                }
+                if (await page.IsVisibleAsync(".connections-list-container", null))
+                {
+                    found = true;
+                }
+                if (!found)
+                {
+                    Thread.Sleep(1000);
+                }
+
+                if (DateTime.Now.Subtract(start).TotalSeconds > 60)
+                {
+                    throw new Exception("Unable to find connection list");
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -76,10 +109,10 @@ namespace testengine.module.powerapps.portal
                 instanceUrl = await connectionPage.EvaluateAsync<string>("PowerAppsPortalConnections.getInstanceUrl()");
 
                 await connectionPage.GetByText("Close").ClickAsync();
-            } );
+            });
 
-            var page = await context.NewPageAsync();          
-            if ( instanceUrl.Length > 0 && !instanceUrl.EndsWith("/") )
+            var page = await context.NewPageAsync();
+            if (instanceUrl.Length > 0 && !instanceUrl.EndsWith("/"))
             {
                 instanceUrl += "/";
             }
@@ -94,7 +127,8 @@ namespace testengine.module.powerapps.portal
 
             dynamic connectionReferencesData = await connectionReferences.JsonValueAsync<object>();
 
-            foreach ( var reference in connectionReferencesData.value ) {
+            foreach (var reference in connectionReferencesData.value)
+            {
                 var parts = reference.connectorid.Split(new[] { '/' });
                 var connectorName = parts[parts.Length - 1];
                 var match = connections.Where(c => c.Name == connectorName && c.Status == "Connected").FirstOrDefault();
