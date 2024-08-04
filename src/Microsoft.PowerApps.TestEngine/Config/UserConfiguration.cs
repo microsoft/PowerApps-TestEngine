@@ -22,5 +22,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets or sets the environment variable key for fetching the user password.
         /// </summary>
         public string PasswordKey { get; set; } = "";
+
+        /// <summary>
+        /// Gets or sets the environment variable key for fetching the user certificate subject.
+        /// </summary>
+        public string CertificateSubjectKey { get; set; } = "";
     }
 }

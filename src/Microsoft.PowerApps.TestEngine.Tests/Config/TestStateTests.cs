@@ -532,25 +532,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
             LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void ParseAndSetTestStateThrowsOnNoPasswordKeyInUserConfigurationInEnvironmentVariables(string passwordKey)
-        {
-            var state = new TestState(MockTestConfigParser.Object);
-            var testConfigFile = "testPlan.fx.yaml";
-            var testPlanDefinition = GenerateTestPlanDefinition();
-            testPlanDefinition.EnvironmentVariables.Users[0].PasswordKey = passwordKey;
-            MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
-            LoggingTestHelper.SetupMock(MockLogger);
-            var expectedErrorMessage = "Invalid User Input(s): Missing password key";
-            MockTestConfigParser.Setup(x => x.ParseTestConfig<TestPlanDefinition>(It.IsAny<string>(), MockLogger.Object)).Returns(testPlanDefinition);
-
-            var ex = Assert.Throws<UserInputException>(() => state.ParseAndSetTestState(testConfigFile, MockLogger.Object));
-            Assert.Equal(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString(), ex.Message);
-            LoggingTestHelper.VerifyLogging(MockLogger, expectedErrorMessage, LogLevel.Error, Times.Once());
-        }
-
         [Fact]
         public void ParseAndSetTestStateThrowsOnTestSuiteDefinitionUserNotDefined()
         {

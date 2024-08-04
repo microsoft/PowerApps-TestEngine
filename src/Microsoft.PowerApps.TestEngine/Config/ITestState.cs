@@ -144,5 +144,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Get the list of registered Test engine web test providers
         /// </summary>
         public List<ITestWebProvider> GetTestEngineWebProviders();
+
+        public List<IUserCertificateProvider> GetTestEngineAuthProviders();
     }
 }

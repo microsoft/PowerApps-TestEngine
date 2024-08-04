@@ -22,6 +22,7 @@ namespace testengine.user.environment.tests
         private Mock<IPage> MockPage;
         private Mock<IElementHandle> MockElementHandle;
         private Mock<IFileSystem> MockFileSystem;
+        private Mock<IUserManagerLogin> MockUserManagerLogin;
 
         public BrowserUserManagerModuleTests()
         {
@@ -35,6 +36,7 @@ namespace testengine.user.environment.tests
             MockPage = new Mock<IPage>(MockBehavior.Strict);
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            MockUserManagerLogin = new Mock<IUserManagerLogin>(MockBehavior.Strict);
         }
 
         [Theory]
@@ -62,7 +64,8 @@ namespace testengine.user.environment.tests
                 MockBrowserState.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
-                MockEnvironmentVariable.Object);
+                MockEnvironmentVariable.Object,
+                MockUserManagerLogin.Object);
 
             // Assert
             Assert.True(created == isDirectoryCreated);

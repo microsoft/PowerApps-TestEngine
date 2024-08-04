@@ -46,6 +46,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.pause", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.pause.tests", "testengine.module.pause.tests\testengine.module.pause.tests.csproj", "{3D9F90F2-0937-486D-AA0B-BFE425354F4A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.certificate", "testengine.user.certificate\testengine.user.certificate.csproj", "{998935DC-E292-4818-A47E-3CCA365B7C5E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{F5DD02A2-1BA8-481C-A7ED-E36577C2CB15}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.localcertificate", "testengine.auth.localcertificate\testengine.auth.localcertificate.csproj", "{340111C2-8434-46CF-BE93-12E7C484C955}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.certificate.tests", "testengine.user.certificate.tests\testengine.user.certificate.tests.csproj", "{11605494-3C4E-41E8-B68E-FA347A3CA8E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.localcertificate.tests", "testengine.auth.localcertificate.tests\testengine.auth.localcertificate.tests.csproj", "{7183776B-21BB-4318-958B-62B325CC1A7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.certificatestore", "testengine.auth.certificatestore\testengine.auth.certificatestore.csproj", "{EF3A270A-53A4-4C08-B45B-7C6993593446}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.auth.certificatestore.tests", "testengine.auth.certificatestore.tests\testengine.auth.certificatestore.tests.csproj", "{36F79923-74AD-424E-8A74-6902628FBF58}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.powerapps.portal", "testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj", "{D052E71E-A4D0-40E5-9EDA-89F7631B06D7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.powerapps,portal.tests", "testengine.provider.powerapps.portal.tests\testengine.provider.powerapps,portal.tests.csproj", "{066AFF5D-97D2-4B89-8E60-C6870FF44DE2}"
@@ -108,22 +122,6 @@ Global
 		{3D9F90F2-0937-486D-AA0B-BFE425354F4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D9F90F2-0937-486D-AA0B-BFE425354F4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D9F90F2-0937-486D-AA0B-BFE425354F4A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D052E71E-A4D0-40E5-9EDA-89F7631B06D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D052E71E-A4D0-40E5-9EDA-89F7631B06D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D052E71E-A4D0-40E5-9EDA-89F7631B06D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D052E71E-A4D0-40E5-9EDA-89F7631B06D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{066AFF5D-97D2-4B89-8E60-C6870FF44DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{066AFF5D-97D2-4B89-8E60-C6870FF44DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{066AFF5D-97D2-4B89-8E60-C6870FF44DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{066AFF5D-97D2-4B89-8E60-C6870FF44DE2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90401B05-7653-437A-B6C0-15A95FA70ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90401B05-7653-437A-B6C0-15A95FA70ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90401B05-7653-437A-B6C0-15A95FA70ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90401B05-7653-437A-B6C0-15A95FA70ABC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DFD84EFE-5564-4BEE-9B5D-B13433EB4935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFD84EFE-5564-4BEE-9B5D-B13433EB4935}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFD84EFE-5564-4BEE-9B5D-B13433EB4935}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFD84EFE-5564-4BEE-9B5D-B13433EB4935}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,10 +139,6 @@ Global
 		{8AEAF6BD-38E3-4649-9221-6A67AD1E96EC} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
 		{B3A02421-223D-4E80-A8CE-977B425A6EB2} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 		{3D9F90F2-0937-486D-AA0B-BFE425354F4A} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
-		{D052E71E-A4D0-40E5-9EDA-89F7631B06D7} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
-		{066AFF5D-97D2-4B89-8E60-C6870FF44DE2} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
-		{90401B05-7653-437A-B6C0-15A95FA70ABC} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
-		{DFD84EFE-5564-4BEE-9B5D-B13433EB4935} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E7B2C01-DDE2-4C5A-96C3-AF474B074331}

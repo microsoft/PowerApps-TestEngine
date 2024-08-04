@@ -38,6 +38,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         private List<ITestWebProvider> WebProviders { get; set; } = new List<ITestWebProvider>();
 
+        private List<IUserCertificateProvider> CertificateProviders { get; set; } = new List<IUserCertificateProvider>();
+
         private bool IsValid { get; set; } = false;
 
         public TestState(ITestConfigParser testConfigParser)
@@ -163,11 +165,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
                         if (string.IsNullOrEmpty(userConfig.EmailKey))
                         {
                             userInputExceptionMessages.Add("Missing email key");
-                        }
-
-                        if (string.IsNullOrEmpty(userConfig.PasswordKey))
-                        {
-                            userInputExceptionMessages.Add("Missing password key");
                         }
                     }
                 }
@@ -311,6 +308,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
             var webProviders = mefComponents.WebProviderModules.Select(v => v.Value).ToArray();
             this.AddWebProviderModules(webProviders);
+
+            var certificateProviders = mefComponents.CertificateProviderModules.Select(v => v.Value).ToArray();
+            this.AddCertificateProviders(certificateProviders);
         }
 
         public void AddModules(IEnumerable<ITestEngineModule> modules)
@@ -331,6 +331,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
             WebProviders.AddRange(modules);
         }
 
+        public void AddCertificateProviders(IEnumerable<IUserCertificateProvider> modules)
+        {
+            CertificateProviders.Clear();
+            CertificateProviders.AddRange(modules);
+        }
+
         public List<ITestEngineModule> GetTestEngineModules()
         {
             return Modules;
@@ -344,6 +350,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<ITestWebProvider> GetTestEngineWebProviders()
         {
             return WebProviders;
+        }
+
+        public List<IUserCertificateProvider> GetTestEngineAuthProviders()
+        {
+            return CertificateProviders;
         }
     }
 }
