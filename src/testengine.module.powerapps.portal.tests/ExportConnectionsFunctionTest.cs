@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -8,12 +9,13 @@ using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
+using Microsoft.PowerFx.Types;
 using Moq;
 using testengine.module.powerapps.portal;
 
 namespace testengine.module.powerappsportal.tests
 {
-    public class GetConnectionFunctionTests
+    public class ExportConnectionsFunctionTest
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ITestState> MockTestState;
@@ -26,7 +28,7 @@ namespace testengine.module.powerappsportal.tests
         private Mock<ILogger> MockLogger;
         private Mock<IBrowserContext> MockBrowserContext;
 
-        public GetConnectionFunctionTests()
+        public ExportConnectionsFunctionTest()
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
@@ -40,12 +42,11 @@ namespace testengine.module.powerappsportal.tests
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
         }
 
-        [Theory]
-        [InlineData("", "", "", 0)]
-        [InlineData("test", "1", "Connected", 1)]
-        public void ExecuteGetConnections(string name, string id, string status, int expectedCount)
+        [Fact]
+        public void ExecuteExportConnections()
         {
             // Arrange
+            var file = StringValue.New("test.json");
             MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(MockBrowserContext.Object);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             MockTestState.Setup(x => x.GetDomain()).Returns("https://make.powerapps.com");
@@ -53,21 +54,31 @@ namespace testengine.module.powerappsportal.tests
             // Goto and return json
             var mockConnectionHelper = new Mock<ConnectionHelper>();
             var connections = new List<Connection>();
-            if (!string.IsNullOrEmpty(name))
-            {
-                connections.Add(new Connection { Name = name, Id = id, Status = status });
-            }
+            connections.Add(new Connection { Name = "Test", Id = "1", Status = "Connected" });
             mockConnectionHelper.Setup(x => x.GetConnections(MockBrowserContext.Object, "https://make.powerapps.com", null)).Returns(Task.FromResult(connections));
 
-            var function = new GetConnectionsFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
+            var function = new ExportConnectionsFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
 
             function.GetConnectionHelper = () => mockConnectionHelper.Object;
+            string results = String.Empty;
+            string fileName = String.Empty;
+            function.WriteAllText = (file, json) =>
+            {
+                fileName = file;
+                results = json;
+            };
 
             // Act
-            var result = function.Execute();
+            function.Execute(file);
 
             // Assert
-            Assert.Equal(expectedCount, result.Count());
+            var data = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(results);
+            Assert.Single(data);
+            Assert.Equal("test.json", fileName);
+
+            Assert.Equal("Test", data[0]["Name"]);
+            Assert.Equal("1", data[0]["Id"]);
+            Assert.Equal("Connected", data[0]["Status"]);
         }
 
     }

@@ -26,6 +26,8 @@ namespace testengine.module
             ILogger logger = singleTestInstanceState.GetLogger();
             config.AddFunction(new GetConnectionsFunction(testInfraFunctions, testState, logger));
             logger.LogInformation("Registered TestEngine.GetConnections()");
+            config.AddFunction(new ExportConnectionsFunction(testInfraFunctions, testState, logger));
+            logger.LogInformation("Registered TestEngine.ExportConnections()");
             config.AddFunction(new CreateConnectionFunction(testInfraFunctions, testState, logger));
             logger.LogInformation("Registered TestEngine.CreateConnection()");
             config.AddFunction(new CheckConnectionExistsFunction(testInfraFunctions, testState, logger));

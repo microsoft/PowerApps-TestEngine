@@ -28,11 +28,11 @@ testSuite:
               {Name: "shared_webcontents", Interactive: true, Parameters: "{'Base Resource URL': 'https://graph.microsoft.com', 'Microsoft Entra ID Resource URI (Application ID URI)':'https://graph.microsoft.com'}"}
             )
           );
-    - testCaseName: Update Connection References
-      testCaseDescription: Connect created connections with connection references
+    - testCaseName: Export connections
+      testCaseDescription: Export the connections to json file
       testSteps: |
-        =  TestEngine.UpdateConnectionReferences();
-          
+        = TestEngine.ExportConnections("connections.json")
+
 testSettings:
   headless: false
   locale: "en-US"
