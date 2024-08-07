@@ -47,16 +47,15 @@ namespace testengine.user.environment
         {
             Context = context;
 
+            var logger = singleTestInstanceState.GetLogger();
+
             if (!DirectoryExists(Location))
             {
+                logger.LogInformation($"Creating {Location}");
                 CreateDirectory(Location);
             }
 
-            if (GetFiles(Location).Count() == 0)
-            {
-                ValidatePage();
-                await Page.PauseAsync();
-            }
+            await LoginComplete(desiredUrl, testState, environmentVariable, logger);
         }
 
         private void ValidatePage()
@@ -64,6 +63,72 @@ namespace testengine.user.environment
             if (Page == null)
             {
                 Page = Context.Pages.First();
+            }
+        }
+
+        public async Task LoginComplete(string desiredUrl, ITestState testState, IEnvironmentVariable environmentVariable, ILogger logger)
+        {
+            var complete = false;
+
+            var persona = testState.GetTestSuiteDefinition().Persona;
+            var personaEmail = environmentVariable.GetVariable(persona);
+
+            if ( string.IsNullOrEmpty(personaEmail) )
+            {
+                logger.LogInformation($"Missing user persona {persona} email. Prompting user");
+                Console.Write("Persona Email? ");
+                personaEmail = Console.ReadLine();
+            }
+
+            var started = DateTime.Now;
+
+            while ( ! complete )
+            {
+                foreach (var page in Context.Pages)
+                {
+                    var host = new Uri(desiredUrl).Host;
+                    if (page.Url.Contains($"https://{host}"))
+                    {
+                        logger.LogInformation($"Found destination url");
+                        complete = true;
+                        break;
+                    }
+
+                    if (page.Url.Contains("common/fido"))
+                    {
+                        logger.LogInformation($"Login required");
+                        Console.WriteLine("Login required");
+                        await page.PauseAsync();
+                    }
+
+                    if (page.Url.Contains("oauth2/authorize"))
+                    {
+                        if (await page.IsVisibleAsync($"[data-test-id=\"{personaEmail}\"]"))
+                        {
+                            logger.LogInformation($"Selecting {personaEmail}");
+                            await page.ClickAsync($"[data-test-id=\"{personaEmail}\"]");
+                        }
+                    }
+                    
+                    if (page.Url.Contains("mcas.ms/aad_login"))
+                    {
+                        // TODO: Handle localized values
+                        if (await page.GetByRole(AriaRole.Button, new() { Name = "Continue with current profile" }).IsVisibleAsync()) 
+                        {
+                            logger.LogInformation($"Continue with Microsoft Conditional Access");
+                            await page.GetByRole(AriaRole.Button, new() { Name = "Continue with current profile" }).ClickAsync();
+                        }
+                    }
+                }
+
+                if (!complete)
+                {
+                    if (DateTime.Now.Subtract(started).TotalMinutes > 5)
+                    {
+                        throw new Exception("Unable to complete login");
+                    }
+                    Thread.Sleep(500);
+                }
             }
         }
     }

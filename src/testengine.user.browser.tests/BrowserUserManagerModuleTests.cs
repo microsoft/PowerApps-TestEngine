@@ -12,7 +12,6 @@ namespace testengine.user.environment.tests
 {
     public class BrowserUserManagerModuleTests
     {
-        private Mock<IBrowserContext> MockBrowserState;
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ITestState> MockTestState;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
@@ -26,7 +25,6 @@ namespace testengine.user.environment.tests
 
         public BrowserUserManagerModuleTests()
         {
-            MockBrowserState = new Mock<IBrowserContext>(MockBehavior.Strict);
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
@@ -59,9 +57,24 @@ namespace testengine.user.environment.tests
             userManager.GetFiles = (path) => files.Split(',');
             userManager.Page = MockPage.Object;
 
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+
+            MockTestState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() {  Persona = "User1" });
+            MockEnvironmentVariable.Setup(x => x.GetVariable("User1")).Returns("user@contoso.com");
+
+            MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
+            MockPage.Setup(x => x.Url).Returns("https://localhost/test");
+
+            MockLogger.Setup(x => x.Log(
+                It.IsAny<LogLevel>(),
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
+
             // Act
-            await userManager.LoginAsUserAsync("*",
-                MockBrowserState.Object,
+            await userManager.LoginAsUserAsync("https://localhost/test",
+                MockBrowserContext.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
                 MockEnvironmentVariable.Object,
