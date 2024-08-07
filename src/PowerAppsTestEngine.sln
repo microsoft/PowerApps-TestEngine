@@ -38,7 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.browser.tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D34E437A-6149-46EC-B7DA-FF449E55CEEA}"
 	ProjectSection(SolutionItems) = preProject
+		Authoring.md = Authoring.md
 		..\Extensions.md = ..\Extensions.md
+		LanguageServer.md = LanguageServer.md
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
@@ -84,6 +86,23 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.mda", "testengine.module.mda\testengine.module.mda.csproj", "{16C931C8-47F8-4ABA-A657-3349DC8BEBF3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.mda.tests", "testengine.module.mda.tests\testengine.module.mda.tests.csproj", "{1BEF602B-9010-4455-811A-7597B700AC4C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LanguageServer", "LanguageServer", "{DED3A0D6-18A7-437F-B636-3139CA63DF09}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{77F1397A-C3C0-44F7-9987-E9A3D079EEC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{DFA306E9-8EFF-45AB-A065-7D1D65E125B9}"
+	ProjectSection(SolutionItems) = preProject
+		testengine.language.client\package.json = testengine.language.client\package.json
+		testengine.language.client\tsconfig.json = testengine.language.client\tsconfig.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.language.server", "testengine.language.server\testengine.language.server.csproj", "{E4020F67-C271-4B1A-B2DE-E85F531B6FD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F5FC5000-C7F3-477A-ACF4-6F963FFD02A0}"
+	ProjectSection(SolutionItems) = preProject
+		testengine.language.client\src\client.ts = testengine.language.client\src\client.ts
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,6 +198,10 @@ Global
 		{1BEF602B-9010-4455-811A-7597B700AC4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BEF602B-9010-4455-811A-7597B700AC4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BEF602B-9010-4455-811A-7597B700AC4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4020F67-C271-4B1A-B2DE-E85F531B6FD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4020F67-C271-4B1A-B2DE-E85F531B6FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4020F67-C271-4B1A-B2DE-E85F531B6FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4020F67-C271-4B1A-B2DE-E85F531B6FD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -208,6 +231,11 @@ Global
 		{A465E028-ED7F-4113-B37B-4B830A5512D5} = {D34E437A-6149-46EC-B7DA-FF449E55CEEA}
 		{16C931C8-47F8-4ABA-A657-3349DC8BEBF3} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 		{1BEF602B-9010-4455-811A-7597B700AC4C} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
+		{DED3A0D6-18A7-437F-B636-3139CA63DF09} = {63A04DC1-C37E-43E6-8FEA-A480483E11F8}
+		{77F1397A-C3C0-44F7-9987-E9A3D079EEC8} = {DED3A0D6-18A7-437F-B636-3139CA63DF09}
+		{DFA306E9-8EFF-45AB-A065-7D1D65E125B9} = {DED3A0D6-18A7-437F-B636-3139CA63DF09}
+		{E4020F67-C271-4B1A-B2DE-E85F531B6FD0} = {77F1397A-C3C0-44F7-9987-E9A3D079EEC8}
+		{F5FC5000-C7F3-477A-ACF4-6F963FFD02A0} = {DFA306E9-8EFF-45AB-A065-7D1D65E125B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E7B2C01-DDE2-4C5A-96C3-AF474B074331}
