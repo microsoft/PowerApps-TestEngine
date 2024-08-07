@@ -104,7 +104,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 if (!string.IsNullOrEmpty(browserConfig.Channel))
                 {
                     launchOptions.Channel = browserConfig.Channel;
-                } else
+                }
+                else
                 {
                     if (browserConfig.Browser?.ToLower() == "chromium")
                     {
@@ -166,10 +167,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 if (!string.IsNullOrEmpty(browserConfig.Channel))
                 {
                     staticContext.Channel = browserConfig.Channel;
-                    
                 }
-
-                //staticContext.Args = new string[] { "--profile-directory=Default" };
+                else
+                {
+                    if (browserConfig.Browser?.ToLower() == "chromium")
+                    {
+                        // Default to msedge browser
+                        launchOptions.Channel = "msedge";
+                    }
+                }
 
                 BrowserContext = await browser.LaunchPersistentContextAsync(location, staticContext);
             }

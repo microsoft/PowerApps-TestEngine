@@ -73,7 +73,7 @@ namespace testengine.user.environment
             var persona = testState.GetTestSuiteDefinition().Persona;
             var personaEmail = environmentVariable.GetVariable(persona);
 
-            if ( string.IsNullOrEmpty(personaEmail) )
+            if (string.IsNullOrEmpty(personaEmail))
             {
                 logger.LogInformation($"Missing user persona {persona} email. Prompting user");
                 Console.Write("Persona Email? ");
@@ -82,7 +82,7 @@ namespace testengine.user.environment
 
             var started = DateTime.Now;
 
-            while ( ! complete )
+            while (!complete)
             {
                 foreach (var page in Context.Pages)
                 {
@@ -109,11 +109,11 @@ namespace testengine.user.environment
                             await page.ClickAsync($"[data-test-id=\"{personaEmail}\"]");
                         }
                     }
-                    
+
                     if (page.Url.Contains("mcas.ms/aad_login"))
                     {
                         // TODO: Handle localized values
-                        if (await page.GetByRole(AriaRole.Button, new() { Name = "Continue with current profile" }).IsVisibleAsync()) 
+                        if (await page.GetByRole(AriaRole.Button, new() { Name = "Continue with current profile" }).IsVisibleAsync())
                         {
                             logger.LogInformation($"Continue with Microsoft Conditional Access");
                             await page.GetByRole(AriaRole.Button, new() { Name = "Continue with current profile" }).ClickAsync();

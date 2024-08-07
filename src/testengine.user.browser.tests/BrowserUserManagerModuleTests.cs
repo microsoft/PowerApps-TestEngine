@@ -59,7 +59,7 @@ namespace testengine.user.environment.tests
 
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
 
-            MockTestState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() {  Persona = "User1" });
+            MockTestState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() { Persona = "User1" });
             MockEnvironmentVariable.Setup(x => x.GetVariable("User1")).Returns("user@contoso.com");
 
             MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
