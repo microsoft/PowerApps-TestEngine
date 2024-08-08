@@ -31,9 +31,6 @@ On method you can use to generate tests is using the Power Apps Test Studio toge
 - **Auto-complete Features:**
   - Offers suggestions to speed up the authoring process.
 
-
-Sure, here is the markdown for the section "The Inner Loop of Test Development":
-
 ## The Inner Loop of Test Development
 
 ### Definition and Importance of the Inner Loop
@@ -72,8 +69,6 @@ To use this approach you will need:
 1. The Test Engine Language Server loaded
 2. A deployed Power App
 
-Sure, here is the markdown for the section "The Outer Loop of Test Development":
-
 ## The Outer Loop of Test Development
 
 ### Definition and Importance of the Outer Loop
@@ -95,8 +90,6 @@ Using version control systems like Git helps manage changes to test YAML files. 
 
 #### Collaborative Editing and Code Reviews
 Collaborative editing and code reviews are essential for maintaining high-quality test YAML files. Team members can review each other's work, provide feedback, and ensure that tests are comprehensive and accurate.
-
-Sure, here is the markdown for the section "Syntax Validation and Auto-completion":
 
 ## Syntax Validation and Auto-completion
 

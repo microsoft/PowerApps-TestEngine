@@ -38,9 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.browser.tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D34E437A-6149-46EC-B7DA-FF449E55CEEA}"
 	ProjectSection(SolutionItems) = preProject
-		Authoring.md = Authoring.md
+		..\docs\Authoring.md = ..\docs\Authoring.md
 		..\Extensions.md = ..\Extensions.md
-		LanguageServer.md = LanguageServer.md
+		..\docs\LanguageServer.md = ..\docs\LanguageServer.md
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
