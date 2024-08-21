@@ -1,0 +1,78 @@
+testSuite:
+  testSuiteName: MDA Custom Number Input Tests
+  testSuiteDescription: Verify model driven number input properties
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Test DefaultValue Property
+      testCaseDescription: Verify that the default value can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Value, 50);
+        Assert(NumberInput1.Value, 50);
+
+    - testCaseName: Test MinValue Property
+      testCaseDescription: Verify that the minimum value can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Min, 0);
+        Assert(NumberInput1.Min, 0);
+
+    - testCaseName: Test MaxValue Property
+      testCaseDescription: Verify that the maximum value can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Max, 100);
+        Assert(NumberInput1.Max, 100);
+
+    - testCaseName: Test Step Property
+      testCaseDescription: Verify that the step value can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Step, 1);
+        Assert(NumberInput1.Step, 1);
+
+    - testCaseName: Test DecimalPrecision Property
+      testCaseDescription: Verify that the decimal precision can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.DecimalPrecision, "Auto");
+        Assert(NumberInput1.DecimalPrecision, "Auto");
+
+    - testCaseName: Test AccessibleLabel Property
+      testCaseDescription: Verify that the accessible label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.AccessibleLabel, "No value");
+        Assert(NumberInput1.AccessibleLabel, "No value");
+
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the visibility can be toggled correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Visible, true);
+        Assert(NumberInput1.Visible, true);
+        SetProperty(NumberInput1.Visible, false);
+        Assert(NumberInput1.Visible, false);
+
+    - testCaseName: Test Size Property
+      testCaseDescription: Verify that the size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Size, "576 by 237");
+        Assert(NumberInput1.Size, "576 by 237");
+
+    - testCaseName: Test Position Property
+      testCaseDescription: Verify that the position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Position, "Not shown in image");
+        Assert(NumberInput1.Position, "Not shown in image");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+      
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: v-raghulraja@microsoft.com
+      passwordKey: NotNeeded
