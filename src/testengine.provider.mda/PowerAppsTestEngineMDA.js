@@ -468,7 +468,7 @@ class PowerAppsTestEngine {
             case 'custom':
                 return PowerAppsModelDrivenCanvas.selectControl(itemPath);
             case 'entityrecord':
-                // TODO - Select item
+                // TODO - Selectitem
                 break;
         }
     }
