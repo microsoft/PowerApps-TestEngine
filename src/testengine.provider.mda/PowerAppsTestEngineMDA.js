@@ -451,7 +451,7 @@ class PowerAppsTestEngine {
         return false;
     }
     
-    static getItemCount(item) {
+    static getItemCount(itemPath) {
         switch (PowerAppsTestEngine.pageType()) {
             case 'custom':
                 return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
@@ -463,12 +463,12 @@ class PowerAppsTestEngine {
         }
     }
 
-    static select(item) {
+    static select(itemPath) {
         switch (PowerAppsTestEngine.pageType()) {
             case 'custom':
                 return PowerAppsModelDrivenCanvas.selectControl(itemPath);
             case 'entityrecord':
-                // TODO - Select item
+                // TODO - Selectitem
                 break;
         }
     }
