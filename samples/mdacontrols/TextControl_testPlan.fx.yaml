@@ -1,0 +1,233 @@
+testSuite:
+  testSuiteName: Text Control Tests
+  testSuiteDescription: Verify text control properties
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Test Text Property
+      testCaseDescription: Verify that the text can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Text, "Sample Text");
+        Assert(TextControl1.Text, "Sample Text");
+
+    - testCaseName: Test Size Property
+      testCaseDescription: Verify that the size of the text can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Size, 22);
+        Assert(TextControl1.Size, 22);
+    
+    - testCaseName: Test Weight Property
+      testCaseDescription: Verify that the weight of the text can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Weight, "Bold");
+        Assert(TextControl1.Weight, "Bold");
+
+    - testCaseName: Test Align Property
+      testCaseDescription: Verify that the alignment can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Align, "Center");
+        Assert(TextControl1.Align, "Center");
+
+    - testCaseName: Test VerticalAlign Property
+      testCaseDescription: Verify that the vertical alignment can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.VerticalAlign, "Middle");
+        Assert(TextControl1.VerticalAlign, "Middle");   
+
+    - testCaseName: Test Font Property
+      testCaseDescription: Verify that the font can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Font, "Arial");
+        Assert(TextControl1.Font, "Arial");     
+
+    - testCaseName: Test BorderThickness Property
+      testCaseDescription: Verify that the border thickness can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.BorderThickness, 2);
+        Assert(TextControl1.BorderThickness, 2);
+
+    - testCaseName: Test BorderRadiusTopLeft Property
+      testCaseDescription: Verify that the top-left border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.BorderRadiusTopLeft, 5);
+        Assert(TextControl1.BorderRadiusTopLeft, 5);
+
+    - testCaseName: Test BorderRadiusTopRight Property
+      testCaseDescription: Verify that the top-right border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.BorderRadiusTopRight, 5);
+        Assert(TextControl1.BorderRadiusTopRight, 5);
+
+    - testCaseName: Test BorderRadiusBottomRight Property
+      testCaseDescription: Verify that the bottom-right border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.BorderRadiusBottomRight, 5);
+        Assert(TextControl1.BorderRadiusBottomRight, 5);
+
+    - testCaseName: Test BorderRadiusBottomLeft Property
+      testCaseDescription: Verify that the bottom-left border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.BorderRadiusBottomLeft, 5);
+        Assert(TextControl1.BorderRadiusBottomLeft, 5);
+
+    - testCaseName: Test PaddingTop Property
+      testCaseDescription: Verify that the top padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.PaddingTop, 10);
+        Assert(TextControl1.PaddingTop, 10);
+
+    - testCaseName: Test PaddingRight Property
+      testCaseDescription: Verify that the right padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.PaddingRight, 10);
+        Assert(TextControl1.PaddingRight, 10);
+
+    - testCaseName: Test PaddingBottom Property
+      testCaseDescription: Verify that the bottom padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.PaddingBottom, 10);
+        Assert(TextControl1.PaddingBottom, 10);
+
+    - testCaseName: Test PaddingLeft Property
+      testCaseDescription: Verify that the left padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.PaddingLeft, 10);
+        Assert(TextControl1.PaddingLeft, 10);
+
+    - testCaseName: Test ContentLanguage Property
+      testCaseDescription: Verify that the content language can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.ContentLanguage, "en-US");
+        Assert(TextControl1.ContentLanguage, "en-US");
+
+    - testCaseName: Test Height Property
+      testCaseDescription: Verify that the height can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Height, 100);
+        Assert(TextControl1.Height, 100);
+
+    - testCaseName: Test TabIndex Property
+      testCaseDescription: Verify that the tab index can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.TabIndex, 1);
+        Assert(TextControl1.TabIndex, 1);
+
+    - testCaseName: Test Tooltip Property
+      testCaseDescription: Verify that the tooltip can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Tooltip, "Sample Tooltip");
+        Assert(TextControl1.Tooltip, "Sample Tooltip");
+
+    - testCaseName: Test PCFTeamsTheme Property
+      testCaseDescription: Verify that the PCF Teams Theme can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.PCFTeamsTheme, "Dark");
+        Assert(TextControl1.PCFTeamsTheme, "Dark");
+
+    - testCaseName: Test X Position Property
+      testCaseDescription: Verify that the X position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.X, 50);
+        Assert(TextControl1.X, 50);
+
+    - testCaseName: Test Y Position Property
+      testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Y, 50);
+        Assert(TextControl1.Y, 50);
+
+    - testCaseName: Test Width Property
+      testCaseDescription: Verify that the width can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Width, 300);
+        Assert(TextControl1.Width, 300);
+
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the visibility can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Visible, true);
+        Assert(TextControl1.Visible, true);
+
+    - testCaseName: Test DisplayMode Property
+      testCaseDescription: Verify that the display mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.DisplayMode, "Edit");
+        Assert(TextControl1.DisplayMode, "Edit");
+
+    - testCaseName: Test ZIndex Property
+      testCaseDescription: Verify that the Z-Index can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.ZIndex, 2);
+        Assert(TextControl1.ZIndex, 2);
+
+    - testCaseName: Test AutoHeight Property
+      testCaseDescription: Verify that the auto height can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.AutoHeight, "true");
+        Assert(TextControl1.AutoHeight, "true");
+
+    - testCaseName: Test FontColor Property
+      testCaseDescription: Verify that the font color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.FontColor, "#FF0000");
+        Assert(TextControl1.FontColor, "#FF0000");
+
+    - testCaseName: Test FontItalic Property
+      testCaseDescription: Verify that the italic style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.FontItalic, true);
+        Assert(TextControl1.FontItalic, true);
+
+    - testCaseName: Test FontStrikethrough Property
+      testCaseDescription: Verify that the strikethrough style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.FontStrikethrough, false);
+        Assert(TextControl1.FontStrikethrough, false);
+
+    - testCaseName: Test FontUnderline Property
+      testCaseDescription: Verify that the underline style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.FontUnderline, true);
+        Assert(TextControl1.FontUnderline, true);
+
+    - testCaseName: Test Wrap Property
+      testCaseDescription: Verify that the wrap text property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Wrap, true);
+        Assert(TextControl1.Wrap, true);
+
+    - testCaseName: Test Fill Property
+      testCaseDescription: Verify that the fill color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.Fill, "#FFFFFF");
+        Assert(TextControl1.Fill, "#FFFFFF");
+
+    - testCaseName: Test BorderStyle Property
+      testCaseDescription: Verify that the border style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.BorderStyle, "Solid");
+        Assert(TextControl1.BorderStyle, "Solid");
+
+    - testCaseName: Test BorderColor Property
+      testCaseDescription: Verify that the border color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextControl1.BorderColor, "#000000");
+        Assert(TextControl1.BorderColor, "#000000");
+     
+        
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+      
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

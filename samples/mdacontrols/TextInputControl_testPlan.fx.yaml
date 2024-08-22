@@ -1,0 +1,346 @@
+testSuite:
+  testSuiteName: Text Input Control Tests
+  testSuiteDescription: Verify text input control properties
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Test Placeholder Property
+      testCaseDescription: Verify that the placeholder text can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Placeholder, "Enter text here");
+        Assert(TextInput1.Placeholder, "Enter text here");
+
+    - testCaseName: Test AccessibleLabel Property
+      testCaseDescription: Verify that the accessible label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.AccessibleLabel, "No value");
+        Assert(TextInput1.AccessibleLabel, "No value");
+
+    - testCaseName: Test Mode Property
+      testCaseDescription: Verify that the mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Mode, "Single line");
+        Assert(TextInput1.Mode, "Single line");
+
+    - testCaseName: Test Type Property
+      testCaseDescription: Verify that the type can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Type, "Text");
+        Assert(TextInput1.Type, "Text");
+
+    - testCaseName: Test DisplayMode Property
+      testCaseDescription: Verify that the display mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.DisplayMode, "Edit");
+        Assert(TextInput1.DisplayMode, "Edit");
+
+    - testCaseName: Test TriggerOutput Property
+      testCaseDescription: Verify that the trigger output can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.TriggerOutput, "Focus out");
+        Assert(TextInput1.TriggerOutput, "Focus out");
+
+    - testCaseName: Test Align Property
+      testCaseDescription: Verify that the alignment can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Align, "Start");
+        Assert(TextInput1.Align, "Start");
+
+    - testCaseName: Test Position Property
+      testCaseDescription: Verify that the position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Position, "690, 367");
+        Assert(TextInput1.Position, "690, 367");
+
+    - testCaseName: Test Size Property
+      testCaseDescription: Verify that the size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Size, "320, 32");
+        Assert(TextInput1.Size, "320, 32");
+
+    - testCaseName: Test Padding Property
+      testCaseDescription: Verify that the padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.PaddingTop, 10);
+        Assert(TextInput1.PaddingTop, 10);
+        SetProperty(TextInput1.PaddingRight, 10);
+        Assert(TextInput1.PaddingRight, 10);
+        SetProperty(TextInput1.PaddingBottom, 10);
+        Assert(TextInput1.PaddingBottom, 10);
+        SetProperty(TextInput1.PaddingLeft, 10);
+        Assert(TextInput1.PaddingLeft, 10);
+
+    - testCaseName: Test Style and Theme Property
+      testCaseDescription: Verify that the style and theme can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Style, "Filled Darker");
+        Assert(TextInput1.Style, "Filled Darker");
+
+    - testCaseName: Test Color Palette Property
+      testCaseDescription: Verify that the color palette can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.ColorPalette, "Default");
+        Assert(TextInput1.ColorPalette, "Default");
+
+    - testCaseName: Test Font Property
+      testCaseDescription: Verify that the font can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Font, "Arial");
+        Assert(TextInput1.Font, "Arial");
+
+    - testCaseName: Test Font Size Property
+      testCaseDescription: Verify that the font size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.FontSize, 14);
+        Assert(TextInput1.FontSize, 14);
+
+    - testCaseName: Test Font Weight Property
+      testCaseDescription: Verify that the font weight can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.FontWeight, "Bold");
+        Assert(TextInput1.FontWeight, "Bold");
+
+    - testCaseName: Test Font Style Property
+      testCaseDescription: Verify that the font style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.FontStyle, "Italic");
+        Assert(TextInput1.FontStyle, "Italic");
+
+    - testCaseName: Test Border Property
+      testCaseDescription: Verify that the border can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Border, "Solid");
+        Assert(TextInput1.Border, "Solid");
+    
+    - testCaseName: Test Border Property
+      testCaseDescription: Verify that the border can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Border, "Solid");
+        Assert(TextInput1.Border, "Solid");
+
+    - testCaseName: Test Border Property
+      testCaseDescription: Verify that the border can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Border, "Solid");
+        Assert(TextInput1.Border, "Solid");
+        SetProperty(TextInput1.Border, "Dashed");
+        Assert(TextInput1.Border, "Dashed");
+
+    - testCaseName: Test Border Radius Property
+      testCaseDescription: Verify that the border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.BorderRadius, 5);
+        Assert(TextInput1.BorderRadius, 5);
+        SetProperty(TextInput1.BorderRadius, 10);
+        Assert(TextInput1.BorderRadius, 10);    
+    
+    - testCaseName: Test AccessibleLabel Property
+      testCaseDescription: Verify that the accessible label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.AccessibleLabel, "");
+        Assert(TextInput1.AccessibleLabel, "");
+    
+    - testCaseName: Test Align Property
+      testCaseDescription: Verify that the alignment can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Align, "Start");
+        Assert(TextInput1.Align, "Start");
+
+    - testCaseName: Test Appearance Property
+      testCaseDescription: Verify that the appearance can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Appearance, "FilledDarker");
+        Assert(TextInput1.Appearance, "FilledDarker");
+    
+    - testCaseName: Test BorderRadius Property
+      testCaseDescription: Verify that the border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.BorderRadius, 5);
+        Assert(TextInput1.BorderRadius, 5);
+    
+    - testCaseName: Test BorderStyle Property
+      testCaseDescription: Verify that the border style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.BorderStyle, "Solid");
+        Assert(TextInput1.BorderStyle, "Solid");
+
+    - testCaseName: Test BorderThickness Property
+      testCaseDescription: Verify that the border thickness can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.BorderThickness, 2);
+        Assert(TextInput1.BorderThickness, 2);
+
+    - testCaseName: Test ContentLanguage Property
+      testCaseDescription: Verify that the content language can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.ContentLanguage, "en-US");
+        Assert(TextInput1.ContentLanguage, "en-US");
+    
+    - testCaseName: Test ContentLanguage Property
+      testCaseDescription: Verify that the content language can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.ContentLanguage, "en-US");
+        Assert(TextInput1.ContentLanguage, "en-US");
+ 
+    - testCaseName: Test MaxLength Property
+      testCaseDescription: Verify that the max length can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.MaxLength, -1);
+        Assert(TextInput1.MaxLength, -1);
+
+    - testCaseName: Test Mode Property
+      testCaseDescription: Verify that the mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Mode, "SingleLine");
+        Assert(TextInput1.Mode, "SingleLine");
+
+    - testCaseName: Test PaddingBottom Property
+      testCaseDescription: Verify that the bottom padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.PaddingBottom, 10);
+        Assert(TextInput1.PaddingBottom, 10);
+
+    - testCaseName: Test PaddingLeft Property
+      testCaseDescription: Verify that the left padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.PaddingLeft, 10);
+        Assert(TextInput1.PaddingLeft, 10);
+
+    - testCaseName: Test PaddingRight Property
+      testCaseDescription: Verify that the right padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.PaddingRight, 10);
+        Assert(TextInput1.PaddingRight, 10);
+
+    - testCaseName: Test PaddingTop Property
+      testCaseDescription: Verify that the top padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.PaddingTop, 10);
+        Assert(TextInput1.PaddingTop, 10);
+
+    - testCaseName: Test Placeholder Property
+      testCaseDescription: Verify that the placeholder can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Placeholder, "");
+        Assert(TextInput1.Placeholder, "");
+
+    - testCaseName: Test TriggerOutput Property
+      testCaseDescription: Verify that the trigger output can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.TriggerOutput, "FocusOut");
+        Assert(TextInput1.TriggerOutput, "FocusOut");
+    
+    - testCaseName: Test Type Property
+      testCaseDescription: Verify that the type can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Type, "Text");
+        Assert(TextInput1.Type, "Text");
+
+    - testCaseName: Test ValidationState Property
+      testCaseDescription: Verify that the validation state can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.ValidationState, "None");
+        Assert(TextInput1.ValidationState, "None");
+
+    - testCaseName: Test DisplayMode Property
+      testCaseDescription: Verify that the display mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.DisplayMode, "DisplayMode.Edit");
+        Assert(TextInput1.DisplayMode, "DisplayMode.Edit");
+
+    - testCaseName: Test Height Property
+      testCaseDescription: Verify that the height can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Height, 32);
+        Assert(TextInput1.Height, 32);    
+
+    - testCaseName: Test Width Property
+      testCaseDescription: Verify that the width can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Width, 320);
+        Assert(TextInput1.Width, 320);
+
+    - testCaseName: Test X Property
+      testCaseDescription: Verify that the X position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.X, 690);
+        Assert(TextInput1.X, 690);
+
+    - testCaseName: Test Y Property
+      testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Y, 367);
+        Assert(TextInput1.Y, 367);
+    
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the visibility can be toggled correctly.
+      testSteps: |
+        SetProperty(TextInput1.Visible, true);
+        Assert(TextInput1.Visible, true);
+        SetProperty(TextInput1.Visible, false);
+        Assert(TextInput1.Visible, false);
+
+    - testCaseName: Test Font Color Property
+      testCaseDescription: Verify that the font color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.FontColor, "#FF0000");
+        Assert(TextInput1.FontColor, "#FF0000");
+    
+    - testCaseName: Test OnChange Property
+      testCaseDescription: Verify that the OnChange property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.OnChange, "false");
+        Assert(TextInput1.OnChange, "false");
+    
+    - testCaseName: Test BasePaletteColor Property
+      testCaseDescription: Verify that the base palette color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.BasePaletteColor, "#FFFFFF");
+        Assert(TextInput1.BasePaletteColor, "#FFFFFF");
+    
+    - testCaseName: Test BorderColor Property
+      testCaseDescription: Verify that the border color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.BorderColor, "#000000");
+        Assert(TextInput1.BorderColor, "#000000");
+    
+    - testCaseName: Test FontItalic Property
+      testCaseDescription: Verify that the font italic property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.FontItalic, "false");
+        Assert(TextInput1.FontItalic, "false");
+
+    - testCaseName: Test FontStrikethrough Property
+      testCaseDescription: Verify that the font strikethrough property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.FontStrikethrough, "false");
+        Assert(TextInput1.FontStrikethrough, "false");
+
+    - testCaseName: Test FontUnderline Property
+      testCaseDescription: Verify that the font underline property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.FontUnderline, "false");
+        Assert(TextInput1.FontUnderline, "false");
+    
+    - testCaseName: Test Required Property
+      testCaseDescription: Verify that the required property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(TextInput1.Required, "false");
+        Assert(TextInput1.Required, "false");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+      
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
