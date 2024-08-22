@@ -10,6 +10,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.PowerApps.TestEngine.Users;
 using Moq;
 using Moq.Protected;
 using testengine.auth;
@@ -487,6 +488,87 @@ namespace testengine.user.environment.tests
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), // Function to format the log message
             Times.Once);
+        }
+
+        [Fact]
+        public async Task ClickStaySignedIn_ShouldClickStaySignedIn_WhenDialogIsPresent()
+        {
+            MockLogger = new Mock<ILogger>();
+            var MockSelectorOptions = new Mock<PageWaitForSelectorOptions>(MockBehavior.Strict);
+            // Arrange
+            MockPage.Setup(p => p.WaitForSelectorAsync(It.IsAny<string>(), It.IsAny<PageWaitForSelectorOptions>()))
+                     .ReturnsAsync(new Mock<IElementHandle>().Object);
+            MockPage.Setup(p => p.ClickAsync(It.IsAny<string>(), null))
+                     .Returns(Task.CompletedTask);
+            MockPage.Setup(p => p.WaitForURLAsync(It.IsAny<string>(), null))
+                     .Returns(Task.CompletedTask);
+
+            var handler = new CertificateUserManagerModule();
+            handler.Page = MockPage.Object;
+            // Act
+            await handler.ClickStaySignedIn("https://example.com", MockLogger.Object);
+
+            // Assert
+            MockLogger.Verify(logger => logger.Log(LogLevel.Debug, It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Was asked to 'stay signed in'.")),
+                null, It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+            MockPage.Verify(p => p.ClickAsync(It.IsAny<string>(), null), Times.Once);
+        }
+
+        [Fact]
+        public async Task ClickStaySignedIn_ShouldLogAndContinue_WhenNoStaySignedInDialogAndNoCertError()
+        {
+            MockLogger = new Mock<ILogger>();
+            // Arrange
+            MockPage.SetupSequence(p => p.WaitForSelectorAsync(It.IsAny<string>(), It.IsAny<PageWaitForSelectorOptions>()))
+                     .ThrowsAsync(new Exception()) // Simulate no 'Stay signed in?' dialog
+                     .ThrowsAsync(new Exception()); // Simulate no certificate error
+            MockPage.Setup(p => p.WaitForURLAsync(It.IsAny<string>(), null))
+                     .Returns(Task.CompletedTask);
+
+            var handler = new CertificateUserManagerModule();
+            handler.Page = MockPage.Object;
+            // Act
+            await handler.ClickStaySignedIn("https://example.com", MockLogger.Object);
+
+            // Assert
+            MockLogger.Verify(logger => logger.Log(LogLevel.Debug, It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Did not encounter an invalid certificate error.")),
+                null, It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task ClickStaySignedIn_ShouldThrowUserInputException_WhenCertErrorOccurs()
+        {
+            MockLogger = new Mock<ILogger>();
+            // Arrange
+            MockPage.SetupSequence(p => p.WaitForSelectorAsync(It.IsAny<string>(), It.IsAny<PageWaitForSelectorOptions>()))
+                     .ThrowsAsync(new Exception()) // Simulate no 'Stay signed in?' dialog
+                     .ReturnsAsync(new Mock<IElementHandle>().Object); // Simulate certificate error detected
+
+            var handler = new CertificateUserManagerModule();
+            handler.Page = MockPage.Object;
+            // Act & Assert
+            await Assert.ThrowsAsync<UserInputException>(() => handler.ClickStaySignedIn("http://desired.url", MockLogger.Object));
+        }
+
+        [Fact]
+        public async Task ClickStaySignedIn_ShouldWaitForUrlAfterActions()
+        {
+            MockLogger = new Mock<ILogger>();
+            // Arrange
+            MockPage.Setup(p => p.WaitForSelectorAsync(It.IsAny<string>(), It.IsAny<PageWaitForSelectorOptions>()))
+                     .ThrowsAsync(new Exception()); // Simulate no 'Stay signed in?' dialog and no cert error
+            MockPage.Setup(p => p.WaitForURLAsync(It.IsAny<string>(), null))
+                     .Returns(Task.CompletedTask);
+
+            var handler = new CertificateUserManagerModule();
+            handler.Page = MockPage.Object;
+            // Act
+            await handler.ClickStaySignedIn("http://desired.url", MockLogger.Object);
+
+            // Assert
+            MockPage.Verify(p => p.WaitForURLAsync("http://desired.url", null), Times.Once);
         }
     }
 }

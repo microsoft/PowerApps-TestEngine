@@ -4,6 +4,8 @@
 using System.Dynamic;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
+using System.Text;
 using Jint;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -446,6 +448,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(false));
 
             MockBrowserContext.Setup(m => m.Pages).Returns(new List<IPage>());
+            MockTestInfraFunctions.Setup(f => f.Page.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+            var mockElementHandle = new Mock<IElementHandle>();
+            MockTestInfraFunctions.Setup(f => f.Page.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).ReturnsAsync(mockElementHandle.Object);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
@@ -459,6 +464,85 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
         }
 
+        [Fact]
+        public async Task CheckProviderAsync_ShouldCloseBlankPage_IfExists()
+        {
+            // Arrange
+            var MockTestInfraFunctions1 = new Mock<ITestInfraFunctions>();
+            var blankPage = new Mock<IPage>();
+            blankPage.Setup(p => p.Url).Returns("about:blank");
+            var MockPage = new Mock<IPage>(MockBehavior.Strict);
+            MockPage.Setup(p => p.Url).Returns("https://example.com");
+            MockBrowserContext.Setup(c => c.Pages).Returns(new[] { blankPage.Object, MockPage.Object});
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions1.Setup(m => m.GetContext()).Returns(MockBrowserContext.Object);
+            MockTestInfraFunctions1.Setup(m => m.Page).Returns(MockPage.Object);
+            MockTestInfraFunctions1.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(false));
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            MockTestInfraFunctions1.Setup(f => f.Page.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+            var mockElementHandle = new Mock<IElementHandle>();
+            MockTestInfraFunctions1.Setup(f => f.Page.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).ReturnsAsync(mockElementHandle.Object);
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions1.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            // Act
+            await provider.CheckProviderAsync();
+
+            // Assert
+            blankPage.Verify(p => p.CloseAsync(null), Times.Once);
+            MockTestInfraFunctions1.VerifySet(f => f.Page = MockPage.Object);
+        }
+
+        [Fact]
+        public async Task CheckProviderAsync_ShouldNotClosePage_IfNoBlankPageExists()
+        {
+            // Arrange
+            var MockTestInfraFunctions1 = new Mock<ITestInfraFunctions>();
+
+            var otherPage = new Mock<IPage>();
+            otherPage.Setup(p => p.Url).Returns("http://example.com");
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions1.Setup(m => m.GetContext()).Returns(MockBrowserContext.Object);
+            MockTestInfraFunctions1.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(false));
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            MockTestInfraFunctions1.Setup(f => f.Page.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+
+            MockBrowserContext.Setup(c => c.Pages).Returns(new[] { otherPage.Object });
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions1.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Act
+            await provider.CheckProviderAsync();
+
+            // Assert
+            otherPage.Verify(p => p.CloseAsync(null), Times.Never);
+            MockTestInfraFunctions1.VerifySet(f => f.Page = otherPage.Object);
+        }
+
+
+        [Fact]
+        public async Task CheckProviderAsync_ShouldLogCorrectly()
+        {
+            // Arrange
+            MockTestInfraFunctions.Setup(m => m.GetContext()).Returns(MockBrowserContext.Object);
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            var mockElementHandle = new Mock<IElementHandle>();
+            MockTestInfraFunctions.Setup(f => f.Page.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).ReturnsAsync(mockElementHandle.Object);
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            MockBrowserContext.Setup(m => m.Pages).Returns(new List<IPage>());
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>())).Returns(Task.FromResult(false));
+
+            MockTestInfraFunctions.Setup(f => f.Page.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(m => m.AddScriptContentAsync(It.IsAny<string>())).Returns(() => Task.CompletedTask);
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Act
+            await provider.CheckProviderAsync();
+
+            // Assert
+            MockLogger.Verify(l => l.Log(LogLevel.Debug, It.IsAny<EventId>(), It.Is<It.IsAnyType>((o, t) => o.ToString() == "Start to load PowerAppsTestEngine"), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+            MockLogger.Verify(l => l.Log(LogLevel.Debug, It.IsAny<EventId>(), It.Is<It.IsAnyType>((o, t) => o.ToString() == "Finish loading PowerAppsTestEngine."), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+        }
+
+       
         [Theory]
         [MemberData(nameof(DebugInfoProperties))]
         public async Task DebugInfo(string propertyName, object expectedValue, string javaScript)
