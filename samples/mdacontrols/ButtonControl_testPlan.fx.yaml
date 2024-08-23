@@ -1,0 +1,278 @@
+testSuite:
+  testSuiteName: Button Control Tests
+  testSuiteDescription: Verify button control properties
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Test Text Property
+      testCaseDescription: Verify that the text can be set and retrieved correctly.
+      testSteps: |
+        Select(ButtonSave);
+        SetProperty(ButtonSave.Text, "Button");
+        Assert(ButtonSave.Text, "Button");
+
+    - testCaseName: Test Icon Property
+      testCaseDescription: Verify that the icon can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Icon, "icon_name");
+        Assert(ButtonSave.Icon, "icon_name");
+
+    - testCaseName: Test Layout Property
+      testCaseDescription: Verify that the layout can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Layout, "icon_before");
+        Assert(ButtonSave.Layout, "icon_before");
+
+    - testCaseName: Test AccessibleLabel Property
+      testCaseDescription: Verify that the accessible label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.AccessibleLabel, "No value");
+        Assert(ButtonSave.AccessibleLabel, "No value");
+
+    - testCaseName: Test DisplayMode Property
+      testCaseDescription: Verify that the display mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.DisplayMode, "edit");
+        Assert(ButtonSave.DisplayMode, "edit");
+
+    - testCaseName: Test Align Property
+      testCaseDescription: Verify that the align property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Align, "center");
+        Assert(ButtonSave.Align, "center");
+
+    - testCaseName: Test VerticalAlign Property
+      testCaseDescription: Verify that the vertical align property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.VerticalAlign, "center");
+        Assert(ButtonSave.VerticalAlign, "center");
+
+    - testCaseName: Test Position Property
+      testCaseDescription: Verify that the position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Position, {x: 198, y: 135});
+        Assert(ButtonSave.Position, {x: 198, y: 135});
+
+    - testCaseName: Test Size Property
+      testCaseDescription: Verify that the size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Size, {width: 96, height: 32});
+        Assert(ButtonSave.Size, {width: 96, height: 32});
+
+    - testCaseName: Test Padding Property
+      testCaseDescription: Verify that the padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Padding, {top: "No value", right: "No value", bottom: "No value", left: "No value"});
+        Assert(ButtonSave.Padding, {top: "No value", right: "No value", bottom: "No value", left: "No value"});
+           
+    - testCaseName: Test Font Property
+      testCaseDescription: Verify that the font can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Font, "Arial");
+        Assert(ButtonSave.Font, "Arial");   
+
+    - testCaseName: Test Weight Property
+      testCaseDescription: Verify that the weight of the text can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Weight, "Bold");
+        Assert(ButtonSave.Weight, "Bold");
+   
+    - testCaseName: Test BorderThickness Property
+      testCaseDescription: Verify that the border thickness can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.BorderThickness, 2);
+        Assert(ButtonSave.BorderThickness, 2);
+
+    - testCaseName: Test Icon Style Property
+      testCaseDescription: Verify that the icon style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.IconStyle, "Outline");
+        Assert(ButtonSave.IconStyle, "Outline");
+
+    - testCaseName: Test Font Size Property
+      testCaseDescription: Verify that the font size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.FontSize, 14);
+        Assert(ButtonSave.FontSize, 14);
+
+    - testCaseName: Test Font Weight Property
+      testCaseDescription: Verify that the font weight can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.FontWeight, "Bold");
+        Assert(ButtonSave.FontWeight, "Bold");
+
+    - testCaseName: Test Border Style Property
+      testCaseDescription: Verify that the border style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.BorderStyle, "Solid");
+        Assert(ButtonSave.BorderStyle, "Solid");
+
+    - testCaseName: Test Top Left Border Radius Property
+      testCaseDescription: Verify that the top left border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.TopLeftBorderRadius, 5);
+        Assert(ButtonSave.TopLeftBorderRadius, 5);
+
+    - testCaseName: Test Top Right Border Radius Property
+      testCaseDescription: Verify that the top right border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.TopRightBorderRadius, 5);
+        Assert(ButtonSave.TopRightBorderRadius, 5);
+
+    - testCaseName: Test Bottom Left Border Radius Property
+      testCaseDescription: Verify that the bottom left border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.BottomLeftBorderRadius, 5);
+        Assert(ButtonSave.BottomLeftBorderRadius, 5);
+
+    - testCaseName: Test Bottom Right Border Radius Property
+      testCaseDescription: Verify that the bottom right border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.BottomRightBorderRadius, 5);
+        Assert(ButtonSave.BottomRightBorderRadius, 5);
+
+    - testCaseName: Test OnSelect Property
+      testCaseDescription: Verify that the OnSelect property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.OnSelect, false);
+        Assert(ButtonSave.OnSelect, false);
+
+    - testCaseName: Test AccessibleLabel Property
+      testCaseDescription: Verify that the AccessibleLabel property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.AccessibleLabel, "");
+        Assert(ButtonSave.AccessibleLabel, "");
+
+    - testCaseName: Test Align Property
+      testCaseDescription: Verify that the Align property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Align, "");
+        Assert(ButtonSave.Align, "");
+    
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the visibility can be toggled correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Visible, true);
+        Assert(ButtonSave.Visible, true);
+        SetProperty(ButtonSave.Visible, false);
+        Assert(ButtonSave.Visible, false);
+    
+    - testCaseName: Test IconRotation Property
+      testCaseDescription: Verify that the icon rotation can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.IconRotation, 0);
+        Assert(ButtonSave.IconRotation, 0);
+        
+    - testCaseName: Test FontColor Property
+      testCaseDescription: Verify that the font color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.FontColor, "#FF0000");
+        Assert(ButtonSave.FontColor, "#FF0000");
+             	
+    - testCaseName: Test FontItalic Property
+      testCaseDescription: Verify that the italic style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.FontItalic, true);
+        Assert(ButtonSave.FontItalic, true);
+    
+    - testCaseName: Test Color Palette Property
+      testCaseDescription: Verify that the color palette can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.ColorPalette, "Default");
+        Assert(ButtonSave.ColorPalette, "Default");
+    
+    - testCaseName: Test AcceptsFocus Property
+      testCaseDescription: Verify that the AcceptsFocus property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.AcceptsFocus, true);
+        Assert(ButtonSave.AcceptsFocus, true);
+
+    - testCaseName: Test Type Property
+      testCaseDescription: Verify that the type of the button can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Type, "Primary");
+        Assert(ButtonSave.Type, "Primary");
+
+    - testCaseName: Test Font Style Property
+      testCaseDescription: Verify that the font style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.FontStyle, "Italic");
+        Assert(ButtonSave.FontStyle, "Italic");
+
+    - testCaseName: Test Type Property
+      testCaseDescription: Verify that the type can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Type, "button");
+        Assert(ButtonSave.Type, "button");
+
+    - testCaseName: Test Icon Style Property
+      testCaseDescription: Verify that the icon style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.IconStyle, "Outline");
+        Assert(ButtonSave.IconStyle, "Outline");
+
+    - testCaseName: Test Color Palette Property
+      testCaseDescription: Verify that the color palette can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.ColorPalette, "Default");
+        Assert(ButtonSave.ColorPalette, "Default");
+
+    - testCaseName: Test Font Color Property
+      testCaseDescription: Verify that the font color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.FontColor, "#FF0000");
+        Assert(ButtonSave.FontColor, "#FF0000");
+
+    - testCaseName: Test Font Style Property
+      testCaseDescription: Verify that the font style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.FontStyle, "Italic");
+        Assert(ButtonSave.FontStyle, "Italic");
+
+    - testCaseName: Test Border Property
+      testCaseDescription: Verify that the border can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.Border, 2);
+        Assert(ButtonSave.Border, 2);
+
+    - testCaseName: Test Top Border Left Radius Property
+      testCaseDescription: Verify that the top left border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.TopBorderLeftRadius, 5);
+        Assert(ButtonSave.TopBorderLeftRadius, 5);
+
+    - testCaseName: Test Top Right Border Radius Property
+      testCaseDescription: Verify that the top right border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.TopBorderRightRadius, 5);
+        Assert(ButtonSave.TopBorderRightRadius, 5);
+
+    - testCaseName: Test Bottom Left Border Radius Property
+      testCaseDescription: Verify that the bottom left border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.BottomLeftBorderRadius, 5);
+        Assert(ButtonSave.BottomLeftBorderRadius, 5);
+
+    - testCaseName: Test Bottom Right Border Radius Property
+      testCaseDescription: Verify that the bottom right border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(ButtonSave.BottomRightBorderRadius, 5);
+        Assert(ButtonSave.BottomRightBorderRadius, 5);
+
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+      
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
