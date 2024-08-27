@@ -570,13 +570,5 @@ namespace testengine.user.environment.tests
             // Assert
             MockPage.Verify(p => p.WaitForURLAsync("http://desired.url", null), Times.Once);
         }
-
-        [Fact]
-        public async Task GetCertAuthGlob_t()
-        {
-            // Assert
-            Assert.Equal("a", "b");
-        }
-
     }
 }
