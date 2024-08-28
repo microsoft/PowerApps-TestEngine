@@ -11,6 +11,9 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 using System.Reflection;
+using System.Security.Cryptography;
+using Microsoft.Playwright;
+using System.Net;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -226,7 +229,33 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
-                await TestInfraFunctions.AddScriptContentAsync(await reader.ReadToEndAsync());
+                // embed stream at given path to be more locatable
+                var content = await reader.ReadToEndAsync();
+                string scriptHash = "";
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    scriptHash = "sha256-" + Convert.ToBase64String(SHA256.HashData(memoryStream.ToArray()));
+                }
+                string scriptUrl = $"/embedmdatestengine.js?hash={scriptHash}";
+                var opt = new Playwright.PageAddScriptTagOptions()
+                {
+                    Url = scriptUrl
+                };
+
+                //redirect route request to fetch the js ensure csp on script load
+                await TestInfraFunctions.Page.RouteAsync($"**{scriptUrl}", async route =>
+                {
+                    await route.FulfillAsync(new RouteFulfillOptions
+                    {
+                        ContentType = "text/html",
+                        Status = ((int)HttpStatusCode.OK),
+                        Headers = route.Request.Headers,
+                        Body = content
+                    });
+                });
+                //load script
+                await TestInfraFunctions.Page.AddScriptTagAsync(opt);
             }
 
             SingleTestInstanceState.GetLogger().LogDebug("Start to load PowerAppsTestEngine");

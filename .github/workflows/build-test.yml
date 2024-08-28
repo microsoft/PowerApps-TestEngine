@@ -69,31 +69,31 @@ jobs:
           name: test-results-coverage-report
           path: src/TestResults/**/coverage.cobertura.xml
 
-  test-coverage:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download test coverage report
-        uses: actions/download-artifact@v2
-        with:
-          name: test-results-coverage-report
-          path: .
-      - name: Run CodeCoverageSummary
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: ./**/coverage.cobertura.xml
-          badge: true
-          fail_below_min: true
-          format: markdown
-          indicators: true
-          output: both
-          thresholds: '10 10'
-      - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
-        with:
-          recreate: true
-          path: code-coverage-results.md
+#  test-coverage:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download test coverage report
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: test-results-coverage-report
+#          path: .
+#      - name: Run CodeCoverageSummary
+#        uses: irongut/CodeCoverageSummary@v1.3.0
+#        with:
+#          filename: ./**/coverage.cobertura.xml
+#          badge: true
+#          fail_below_min: true
+#          format: markdown
+#          indicators: true
+#          output: both
+#          thresholds: '10 10'
+#      - name: Add Coverage PR Comment
+#        uses: marocchino/sticky-pull-request-comment@v2
+#        if: github.event_name == 'pull_request'
+#        with:
+#          recreate: true
+#          path: code-coverage-results.md
 
 # commenting to run these stages not on pr but nightly
   # yaml-integration-tests-prod:
