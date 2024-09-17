@@ -125,3 +125,46 @@ Facilitates the addition of custom Power Fx functions.
 - **Custom Functions:** Are used to extend the functionality by adding new Power Fx functions tailored to specific testing needs or each provider.
 
 This enhances the flexibility and power of the Test Engine, making it adaptable to varied testing requirements.
+
+#### Power Fx Abstraction
+
+The Power Fx Runtime creates Power Fx representation of controls on a page or elements to be tested. As properties and actions are executed then the Power Fx runtime calls the JavaScript integration layer for web based tests to update test state.
+
+## JavaScript Integration
+
+The Test Engine includes a set of client-side JavaScript classes that are used to abstract integration with Web Page components. These JavaScript classes provide the ability to interact with the JavaScript object model of the page. Common functionality the JavaScript classes provide:
+
+1.	Query a list of controls
+2.	Get and set properties of a control
+3.	Trigger actions of controls. For example, a test case could start the selected event of a button.
+After each operation is completed at the Power Fx runtime layer the JavaScript functions are called to get the state of the page and update the Power Fx representation of controls. 
+
+## Test Types
+
+The following test types could be considered as part of your testing strategy
+
+| Test Type	| Description	| Considerations
+|-----------|-------------|------------------|
+| Power Apps - Unit Test	| Test of a deployed Power Apps and use of mocking to interact with Dataverse and Connectors |	1.	Will require mock test state to be provided as part of definition
+| Power Automate – Unit Test	| Test of triggers, actions and logic of a Power Automate Cloud Flow |	1.	Mock state of triggers and actions to validate the expected outcome of cloud flows
+| Power Apps Integration Test |	Execution of Power App with out mocking of data	 | 1.	Power Fx commands to control the state and order of tests
+| | | 2.	Setup and Tear down functions to set known state of Data and Connected data
+| Power Automate Integration Tests |	Power Autoate Cloud Flows triggered from a Power Apps	| 1.	Setup and Tear down functions to set known state of Data and Connected data
+
+
+## Comparison with Playwright Testing
+
+If you are familiar with Playwright based testing or other similar browser based testing methods the following table provides a comparison to using Test Engine
+
+| Feature |	Playwright	| Test Engine |
+|---------|-------------|-------------|
+|Login | Process	Custom code to login and authenticate with login.microsoft.com. | Selectable authentication Provider for:<br/>1.	Browser using Persistent Cookies< <br/> 2.	Certificate Based Authentication
+| Authoring Language	| As documented in [Supported languages \| Playwright](https://playwright.dev/docs/languages) | Yaml test files, Test Steps in Power Fx, Extensibility model with C#
+| Record and Replay | [Test generator \| Playwright .NET](https://playwright.dev/dotnet/docs/codegen) | Test Studio Record and Export yaml. Record in Playwright and Execute C# Script | 
+| Support Power Automate | No |	Yes using Power Automate provider
+| Selector Model | Document Object Model and [Locators | Playwright](https://playwright.dev/docs/locators) JavaScript Object Model for Power Apps. Extend with Document Object Model and [Locators | Playwright](https://playwright.dev/docs/locators) for PCF and Components
+| Record Video |	Yes, [Videos \| Playwright](https://playwright.dev/docs/videos#record-video) | Yes
+| Navigation | GotoAsync in [Page \| Playwright .NET](https://playwright.dev/dotnet/docs/api/class-page#page-goto) | Power Fx Functions like Navigate
+| Mock API	| [Mock APIs](https://playwright.dev/dotnet/docs/mock) |  Route API with Power FX actions to mock APIs
+| Screenshots	| [Screenshots \| Playwright .NET](https://playwright.dev/dotnet/docs/screenshots) | Screenshot("name.jpg")
+| Update controls |	Locators and [Actions \| Playwright .NET](https://playwright.dev/dotnet/docs/input) | Update PowerFx state SetProperty(USerName.Value,"Test")
