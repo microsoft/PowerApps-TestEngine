@@ -2,6 +2,16 @@
 
 This document provides an architectural overview of the Power Apps Test Engine. The engine consists of multiple layers, each with specific responsibilities that contribute to delivering a comprehensive and automated testing framework for Power Apps. The layers include the Test Engine, Test Definition, Test Results, and Browser, with an extensibility model available for User Authentication, Providers, and Power Fx.
 
+![Test Engine Overview Diagram](./images/overview.png)
+
+The Power Apps Test Engine is a robust and modular framework that has been designed to facilitate comprehensive testing of various components within the Power Platform. At its core, the Test Engine features a Runner, which can be executed as part of the Power Platform Command Line Interface (PAC CLI) or through a build-from-source approach using open-source code. The PAC CLI option offers a supported and straightforward method to execute tests, while the build-from-source strategy, which requires the installation of the .Net SDK, lacks official support. 
+
+Test suites and cases are formatted as YAML files, combining test settings and Power Fx Test Steps to define, manage and version the test cases. 
+
+The test engine is made up of three extensible components for Authentication, Providers and Power Fx extensibility. Authentication is a foundational aspect, as test cases must authenticate with the Power Platform to run effectively. The Test Engine includes a set of modules, or Providers, that enable testing for Power Apps, including Canvas Applications and Model-Driven Applications, as well as experimental modules for Power Automate. The Power Fx Extensions allow for the extension of the Power Fx language, providing additional functions for Test Steps.
+
+The results of tests can be added to standard CI/CD pipelines or uploaded to Dataverse to summarize and report on the outcome of a test.
+
 ## Layers
 
 ### Test Engine
@@ -46,15 +56,40 @@ This layer ensures seamless interaction and manipulation of web elements during 
 ### User Authentication
 Provides the capability to authenticate the test session.
 
-- **Extensible Authentication Mechanisms:** Allows for different methods of authentication to be plugged in, ensuring secure test sessions.
+![Authentication provider overview diagram](./images/authentication.png)
+
+User authentication contains Extensible Authentication Mechanisms. They allows for different methods of authentication to be plugged in, ensuring secure test sessions.
+
+Current authentication providers and scenarios
+
+| Type |	Description	| Considerations |
+|------|------------------|-------------|
+|Browser Persistent Cookies | One time login and using persistent cookies for headless login	 | 1.	Storage of Browser Context that contains Persistent Cookies |
+|                           |  | 2.	Configuration of Persistent Cookie settings in Entra |
+|                           |  | 3.	Conditional Access Policies |
+| Certificate Based Authentication |	Configuration of Entra to allow Certificate Based Authentication |	1.	Issue and Revocation of Certificates
+|                           |  | 2.	Certificate renewal process
+| Conditional Access Policies	| Compliance with applied conditional Access polices	| 1.	Supported Browser type selection. For example, Edge, Chrome |
+|                           |  | 2.	Test Agent network locations |
+|                           |  | 3.	Risk profile of users |
+
+Projects like the [CoE Starter Kit](https://github.com/microsoft/coe-starter-kit) are in the process of using these authentication providers as part of their automated tests.
 
 ### Providers
+
+![Providers overview](./images/providers.png)
+
 Enables the testing of various aspects of Power Apps.
 
 - **Canvas Apps:** Supports testing of canvas applications.
 - **Model-driven Apps (MDA):** Supports testing of model-driven applications.
 
 This extensibility ensures that the Test Engine is versatile and can cater to different types of Power Apps.
+
+Notes:
+1. Providers for Co Pilot Studio, Power Pages are being considered.
+2.	The Canvas and Model Driven application providers have a dependency on installation of Playwright on the local environment or test agent to execute the web based tests.
+3.	Power Automate unit testing is executed against the definition of the Cloud Flow xml in memory or from Dataverse.
 
 #### Canvas Apps
 
