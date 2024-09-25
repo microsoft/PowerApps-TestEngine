@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Arrange
             var engine = new Engine();
-            engine.Execute(Common.MockJavaScript("mockPageType = 'custom'", "custom"));
+            engine.Execute(Common.MockJavaScript("mockPageType = 'custom'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" }));
             expected = expected == null ? "function" : expected;
 
             scenario += "";
@@ -109,7 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Arrange
             var engine = new Engine();
-            engine.Execute(Common.MockJavaScript("mockPageType = 'custom'", "custom"));
+            engine.Execute(Common.MockJavaScript("mockPageType = 'custom'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" }));
 
             // Act
             var result = engine.Evaluate(javaScript).AsString();
@@ -170,7 +170,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Special case text should use the getValue()
             yield return new object[] {
-                    Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom"),
+                    Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js"}),
                     "TextInput1",
                     "Text",
                     "Hello"
@@ -227,7 +227,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Default Values
             yield return new object[] {
-                    Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom"),
+                    Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js"}),
                     "TextInput1",
                     "{ Text: 'Hello' }"
             };

@@ -14,7 +14,9 @@ using System.Reflection;
 using System.Security.Cryptography;
 using Microsoft.Playwright;
 using System.Net;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("testengine.provider.mda.tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
     /// <summary>
@@ -217,46 +219,18 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             if (pages.Count() > 0)
             {
                 var blank = pages.Where(p => p.Url == "about:blank").FirstOrDefault();
-                if ( blank != null )
+                if (blank != null)
                 {
                     await blank.CloseAsync();
                 }
                 TestInfraFunctions.Page = TestInfraFunctions.GetContext().Pages.Where(p => p.Url != "about:blank").First();
             }
-            
-            var resourceName = "testengine.provider.mda.PowerAppsTestEngineMDA.js";
-            var assembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                // embed stream at given path to be more locatable
-                var content = await reader.ReadToEndAsync();
-                string scriptHash = "";
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    stream.CopyTo(memoryStream);
-                    scriptHash = "sha256-" + Convert.ToBase64String(SHA256.HashData(memoryStream.ToArray()));
-                }
-                string scriptUrl = $"/embedmdatestengine.js?hash={scriptHash}";
-                var opt = new Playwright.PageAddScriptTagOptions()
-                {
-                    Url = scriptUrl
-                };
 
-                //redirect route request to fetch the js ensure csp on script load
-                await TestInfraFunctions.Page.RouteAsync($"**{scriptUrl}", async route =>
-                {
-                    await route.FulfillAsync(new RouteFulfillOptions
-                    {
-                        ContentType = "text/html",
-                        Status = ((int)HttpStatusCode.OK),
-                        Headers = route.Request.Headers,
-                        Body = content
-                    });
-                });
-                //load script
-                await TestInfraFunctions.Page.AddScriptTagAsync(opt);
-            }
+            await EmbedMDAJSScripts("testengine.provider.mda.PowerAppsTestEngineMDA.js", "embedmdatestengine.js");
+            await EmbedMDAJSScripts("testengine.provider.mda.PowerAppsTestEngineMDADashboard.js", "embedmdatestenginemdad.js");
+            await EmbedMDAJSScripts("testengine.provider.mda.PowerAppsTestEngineMDACustom.js", "embedmdatestenginemdac.js");
+            await EmbedMDAJSScripts("testengine.provider.mda.PowerAppsTestEngineMDAEntityList.js", "embedmdatestenginemdael.js");
+            await EmbedMDAJSScripts("testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js", "embedmdatestenginemdaer.js");
 
             SingleTestInstanceState.GetLogger().LogDebug("Start to load PowerAppsTestEngine");
 
@@ -271,6 +245,48 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 LoadPowerAppsMDAErrorMessage);
 
             SingleTestInstanceState.GetLogger().LogDebug($"Finish loading PowerAppsTestEngine.");
+        }
+
+        // defining this for improved testability
+        internal static Func<Assembly> GetExecutingAssembly = () => Assembly.GetExecutingAssembly();
+
+        internal async Task EmbedMDAJSScripts(string resourceName, string embeddedScriptName)
+        {
+            var assembly = GetExecutingAssembly();
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    // embed stream at given path to be more locatable
+                    var content = await reader.ReadToEndAsync();
+                    stream.Position = 0;
+                    string scriptHash = "";
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(memoryStream);
+                        scriptHash = "sha256-" + Convert.ToBase64String(SHA256.HashData(memoryStream.ToArray()));
+                    }
+                    string scriptUrl = $"/{embeddedScriptName}?hash={scriptHash}";
+                    var opt = new PageAddScriptTagOptions()
+                    {
+                        Url = scriptUrl
+                    };
+
+                    //redirect route request to fetch the js ensure csp on script load
+                    await TestInfraFunctions.Page.RouteAsync($"**{scriptUrl}", async route =>
+                    {
+                        await route.FulfillAsync(new RouteFulfillOptions
+                        {
+                            ContentType = "text/html",
+                            Status = ((int)HttpStatusCode.OK),
+                            Headers = route.Request.Headers,
+                            Body = content
+                        });
+                    });
+                    //load script
+                    await TestInfraFunctions.Page.AddScriptTagAsync(opt);
+                }
+            }
         }
 
         public async Task<Dictionary<string, ControlRecordValue>> LoadObjectModelAsync()
