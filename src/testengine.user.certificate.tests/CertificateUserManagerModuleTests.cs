@@ -18,7 +18,7 @@ using testengine.user.environment;
 
 namespace testengine.user.environment.tests
 {
-    public class CertificateUserManagerModuleTests
+    public class CertificateUserManagerModuleTests: IDisposable
     {
         private Mock<IBrowserContext> MockBrowserState;
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
@@ -34,6 +34,18 @@ namespace testengine.user.environment.tests
         private Mock<IUserManagerLogin> MockUserManagerLogin;
         private Mock<IUserCertificateProvider> MockUserCertificateProvider;
         private X509Certificate2 MockCert;
+
+        //adding this to reset the behavior after each test case for the static function
+        private readonly Func<HttpClientHandler> GetHttpClientHandler = CertificateUserManagerModule.GetHttpClientHandler;
+        private readonly Func<HttpClientHandler, HttpClient> GetHttpClient = CertificateUserManagerModule.GetHttpClient;
+
+        //adding this IDispose function for tear down that runs after each test and resets the GetHttpClientHandlerMock since it is static and can carry over between testcases
+        public void Dispose()
+        {
+            // Reset static Func to its original value after each test
+            CertificateUserManagerModule.GetHttpClientHandler = GetHttpClientHandler;
+            CertificateUserManagerModule.GetHttpClient = GetHttpClient;
+        }
 
         public CertificateUserManagerModuleTests()
         {

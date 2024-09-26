@@ -247,7 +247,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             SingleTestInstanceState.GetLogger().LogDebug($"Finish loading PowerAppsTestEngine.");
         }
 
-        // defining this for improved testability
+        // defining this for improved testability, this needs the tear down (dispose method) for it to not carry over between tests
         internal static Func<Assembly> GetExecutingAssembly = () => Assembly.GetExecutingAssembly();
 
         internal async Task EmbedMDAJSScripts(string resourceName, string embeddedScriptName)

@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
-    public class ModelDrivenApplicationProviderTests
+    public class ModelDrivenApplicationProviderTests: IDisposable
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ITestState> MockTestState;
@@ -26,6 +26,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         private Mock<ILogger> MockLogger;
         private Mock<IBrowserContext> MockBrowserContext;
         private JSObjectModel JsObjectModel;
+
+        //adding this to reset the behavior after each test case for the assembly static function
+        private readonly Func<Assembly> originalGetExecutingAssembly = ModelDrivenApplicationProvider.GetExecutingAssembly;
+
+        //adding this IDispose function for tear down that runs after each test and resets the AssemblyMock since it is static and can carry over between testcases
+        public void Dispose()
+        {
+            // Reset static Func to its original value after each test
+            ModelDrivenApplicationProvider.GetExecutingAssembly = originalGetExecutingAssembly;
+        }
 
         public ModelDrivenApplicationProviderTests()
         {
@@ -490,7 +500,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions1.Setup(f => f.Page.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
             var mockElementHandle = new Mock<IElementHandle>();
             MockTestInfraFunctions1.Setup(f => f.Page.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).ReturnsAsync(mockElementHandle.Object);
-
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions1.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             // Act
             await provider.CheckProviderAsync();
