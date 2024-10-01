@@ -108,9 +108,12 @@ namespace testengine.user.environment.tests
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             var keyboard = new Mock<IKeyboard>(MockBehavior.Strict);
 
+            var mockEmailLocatorObject = new Mock<ILocator>();
+
+
             // Email Address
-            MockPage.Setup(x => x.Locator(CertificateUserManagerModule.EmailSelector, null)).Returns(new Mock<ILocator>().Object);
-            MockPage.Setup(x => x.TypeAsync(CertificateUserManagerModule.EmailSelector, email, It.IsAny<PageTypeOptions>())).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.Locator(CertificateUserManagerModule.EmailSelector, null)).Returns(mockEmailLocatorObject.Object);
+            mockEmailLocatorObject.Setup(x => x.PressSequentiallyAsync(email, It.IsAny<LocatorPressSequentiallyOptions>())).Returns(Task.CompletedTask);
             keyboard.Setup(x => x.PressAsync("Tab", It.IsAny<KeyboardPressOptions>()))
                     .Returns(Task.CompletedTask);
             MockPage.SetupGet(x => x.Keyboard).Returns(keyboard.Object);
@@ -185,7 +188,7 @@ namespace testengine.user.environment.tests
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public async Task LoginUserAsyncThrowsOnInvalidPersonaTest(string persona)
+        public async Task LoginUserAsyncThrowsOnInvalidPersonaTest(string? persona)
         {
             var testSuiteDefinition = new TestSuiteDefinition()
             {
@@ -239,7 +242,7 @@ namespace testengine.user.environment.tests
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public async Task LoginUserAsyncThrowsOnInvalidUserConfigTest(string emailKey)
+        public async Task LoginUserAsyncThrowsOnInvalidUserConfigTest(string? emailKey)
         {
             UserConfiguration userConfiguration = new UserConfiguration()
             {
@@ -268,7 +271,7 @@ namespace testengine.user.environment.tests
         [InlineData("someone@example.com", "CN=test", "setCert", "Certificate cannot be null. Please ensure certificate for user.")]
         [InlineData("someone@example.com", null, "set", "User certificate subject name cannot be null. Please check if the environment variable is set properly.")]
         [InlineData("someone@example.com", "", "set", "User certificate subject name cannot be null. Please check if the environment variable is set properly.")]
-        public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string email, string certname, string setAsNull, string message)
+        public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string? email, string? certname, string setAsNull, string message)
         {
             UserConfiguration userConfiguration = new UserConfiguration()
             {

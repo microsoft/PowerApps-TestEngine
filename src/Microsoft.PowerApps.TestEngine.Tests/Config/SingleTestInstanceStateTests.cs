@@ -44,7 +44,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetTestRunIdThrowsOnInvalidInputTest(string invalidInput)
+        public void SetTestRunIdThrowsOnInvalidInputTest(string? invalidInput)
         {
             var state = new SingleTestInstanceState();
             Assert.Throws<ArgumentNullException>(() => state.SetTestRunId(invalidInput));
@@ -53,7 +53,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetTestIdThrowsOnInvalidInputTest(string invalidInput)
+        public void SetTestIdThrowsOnInvalidInputTest(string? invalidInput)
         {
             var state = new SingleTestInstanceState();
             Assert.Throws<ArgumentNullException>(() => state.SetTestId(invalidInput));
@@ -62,7 +62,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetTestResultsDirectoryThrowsOnInvalidInputTest(string invalidInput)
+        public void SetTestResultsDirectoryThrowsOnInvalidInputTest(string? invalidInput)
         {
             var state = new SingleTestInstanceState();
             Assert.Throws<ArgumentNullException>(() => state.SetTestResultsDirectory(invalidInput));

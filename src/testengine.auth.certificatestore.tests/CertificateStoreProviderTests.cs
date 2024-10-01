@@ -79,7 +79,7 @@ namespace testengine.auth.certificatestore.tests
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void RetrieveCertificateForUser_NullOrEmptyUsername_ThrowsArgumentException(string userSubjectName)
+        public void RetrieveCertificateForUser_NullOrEmptyUsername_ThrowsArgumentException(string? userSubjectName)
         {
             // Act & Assert
             Assert.Null(provider.RetrieveCertificateForUser(userSubjectName));

@@ -1,21 +1,20 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.PowerFx;
 
-namespace testengine.user.environment
+namespace testengine.user.browser
 {
+    /// <summary>
+    /// Implement single sign on to a test resource from a login.microsoftonline.com resource assuming Persisant Session State
+    /// </summary>
+    /// <remarks>
+    /// Requires the user to select "Stay signed in" or Conditional access policies enabled to allow browser persitance that does not <c href="https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-persistent-browser-session">Require reauthentication and disable browser persistence</c>
+    /// </remarks>
     [Export(typeof(IUserManager))]
     public class BrowserUserManagerModule : IUserManager
     {
@@ -56,6 +55,31 @@ namespace testengine.user.environment
             {
                 ValidatePage();
                 await Page.PauseAsync();
+            }
+
+            var state = await context.StorageStateAsync();
+
+            // Check for persistant authentication cookie
+            // Source: https://learn.microsoft.com/entra/identity/authentication/concept-authentication-web-browser-cookies
+            if (!state.Contains("ESTSAUTHPERSISTENT"))
+            {
+                // No persistant cookie found ... pause to allow the user to login
+                ValidatePage();
+                await Page.PauseAsync();
+            } else
+            {
+                // Assume that the persistant cookie is still valid
+            }
+
+            var pages = context.Pages;
+            var blank = pages.Where(p => p.Url == "about:blank").ToList();
+            if (blank.Count() > 0)
+            {
+                // Close any blank pages
+                foreach ( var blankPage in blank )
+                {
+                    await blankPage.CloseAsync();
+                }
             }
         }
 

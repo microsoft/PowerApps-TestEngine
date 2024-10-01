@@ -3,12 +3,10 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerApps.TestEngine.Tests.Helpers;
-using Microsoft.PowerFx;
 using Moq;
-using testengine.user.environment;
+using testengine.user.browser;
 
-namespace testengine.user.environment.tests
+namespace testengine.user.browser.tests
 {
     public class BrowserUserManagerModuleTests
     {
@@ -18,7 +16,6 @@ namespace testengine.user.environment.tests
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<IEnvironmentVariable> MockEnvironmentVariable;
         private Mock<ILogger> MockLogger;
-        private Mock<IBrowserContext> MockBrowserContext;
         private Mock<IPage> MockPage;
         private Mock<IElementHandle> MockElementHandle;
         private Mock<IFileSystem> MockFileSystem;
@@ -32,7 +29,6 @@ namespace testengine.user.environment.tests
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
-            MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
             MockPage = new Mock<IPage>(MockBehavior.Strict);
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
@@ -40,10 +36,13 @@ namespace testengine.user.environment.tests
         }
 
         [Theory]
-        [InlineData(false, true, "", true)]
-        [InlineData(true, false, "", true)]
-        [InlineData(true, false, "a.txt", false)]
-        public async Task LoginWithBrowserState(bool exists, bool isDirectoryCreated, string files, bool willPause)
+        [InlineData(false, true, "", true, "", "")]
+        [InlineData(true, false, "", true, "", "")]
+        [InlineData(true, false, "a.txt", false, "ESTSAUTHPERSISTENT", "")]
+        [InlineData(true, false, "a.txt", true, "", "")]
+        [InlineData(true, false, "a.txt", true, "", "about:blank")]
+        [InlineData(true, false, "a.txt", true, "", "https://localhost")]
+        public async Task LoginWithBrowserState(bool exists, bool isDirectoryCreated, string files, bool willPause, string state, string pages)
         {
             // Arrange
             if (willPause)
@@ -58,6 +57,30 @@ namespace testengine.user.environment.tests
             userManager.CreateDirectory = (path) => created = true;
             userManager.GetFiles = (path) => files.Split(',');
             userManager.Page = MockPage.Object;
+
+            MockBrowserState.Setup(x => x.StorageStateAsync(It.IsAny<BrowserContextStorageStateOptions>())).Returns(Task.FromResult(state));
+
+            if (string.IsNullOrEmpty(pages))
+            {
+                MockBrowserState.Setup(x => x.Pages).Returns(new List<IPage>());
+            } else
+            {
+                var mockPages = new List<IPage>();
+                foreach (var page in pages.Split(new[] {','}))
+                {
+
+                    var mockPage = new Mock<IPage>(MockBehavior.Strict);
+                    mockPage.SetupGet(x => x.Url).Returns(page);
+
+                    if (page == "about:blank")
+                    {
+                        mockPage.Setup(x => x.CloseAsync(null)).Returns(Task.CompletedTask);
+                    }
+
+                    mockPages.Add(mockPage.Object);
+                }
+                MockBrowserState.Setup(x => x.Pages).Returns(mockPages);
+            }
 
             // Act
             await userManager.LoginAsUserAsync("*",

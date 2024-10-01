@@ -146,7 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("class UCWorkBlockTracker {}", false)]
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return false; } }", false)]
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
-        public void IsIdle(string javaScript, bool expectedIdle)
+        public async Task IsIdle(string javaScript, bool expectedIdle)
         {
             var engine = new Engine();
             engine.Execute(javaScript);
@@ -158,7 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Act
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var result = provider.CheckIsIdleAsync().Result;
+            var result = await provider.CheckIsIdleAsync();
 
             // Assert
             Assert.Equal(expectedIdle, result);
@@ -169,7 +169,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("class UCWorkBlockTracker {}", false)]
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return false; } }", false)]
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
-        public void IsReady(string javaScript, bool expectedIdle)
+        public async Task IsReady(string javaScript, bool expectedIdle)
         {
             var engine = new Engine();
             engine.Execute(javaScript);
@@ -189,7 +189,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Act
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var result = provider.TestEngineReady().Result;
+            var result = await provider.TestEngineReady();
 
             // Assert
             Assert.Equal(expectedIdle, result);

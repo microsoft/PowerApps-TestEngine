@@ -28,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             var catalog = loader.LoadModules(setting);
 
             Assert.NotNull(catalog);
-            Assert.Equal(0, catalog.Catalogs.Count);
+            Assert.Empty(catalog.Catalogs);
         }
 
         [Theory]
