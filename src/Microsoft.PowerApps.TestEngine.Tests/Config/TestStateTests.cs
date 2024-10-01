@@ -189,7 +189,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnInvalidTestConfigFile(string testConfigPath)
+        public void ParseAndSetTestStateThrowsOnInvalidTestConfigFile(string? testConfigPath)
         {
             var state = new TestState(MockTestConfigParser.Object);
             MockLoggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
@@ -218,7 +218,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnNoNameInTestSuiteDefinition(string testName)
+        public void ParseAndSetTestStateThrowsOnNoNameInTestSuiteDefinition(string? testName)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -237,7 +237,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnNoPersonaInTestSuiteDefinition(string persona)
+        public void ParseAndSetTestStateThrowsOnNoPersonaInTestSuiteDefinition(string? persona)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -258,7 +258,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [InlineData("", "")]
         [InlineData(null, "")]
         [InlineData("", null)]
-        public void ParseAndSetTestStateThrowsOnNoAppLogicalNameOrAppIdInTestSuiteDefinition(string appLogicalName, string appId)
+        public void ParseAndSetTestStateThrowsOnNoAppLogicalNameOrAppIdInTestSuiteDefinition(string? appLogicalName, string? appId)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -278,7 +278,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("appLogicalName", null)]
         [InlineData(null, "appId")]
-        public void ParseAndSetTestStateDoesNotThrowWhenEitherOfAppLogicalNameOrAppIdInTestSuiteDefinition(string appLogicalName, string appId)
+        public void ParseAndSetTestStateDoesNotThrowWhenEitherOfAppLogicalNameOrAppIdInTestSuiteDefinition(string? appLogicalName, string? appId)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -314,7 +314,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnNoTestCaseNameInTestCase(string testCaseName)
+        public void ParseAndSetTestStateThrowsOnNoTestCaseNameInTestCase(string? testCaseName)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -333,7 +333,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnNoTestStepsInTestCase(string testSteps)
+        public void ParseAndSetTestStateThrowsOnNoTestStepsInTestCase(string? testSteps)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -403,7 +403,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ParseAndSetTestStateThrowsOnNoBrowserInBrowserConfigurationInTestSettings(string browser)
+        public void ParseAndSetTestStateThrowsOnNoBrowserInBrowserConfigurationInTestSettings(string? browser)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -497,7 +497,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void ParseAndSetTestStateThrowsOnNoPersonaNameInUserConfigurationInEnvironmentVariables(string personaName)
+        public void ParseAndSetTestStateThrowsOnNoPersonaNameInUserConfigurationInEnvironmentVariables(string? personaName)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -516,7 +516,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void ParseAndSetTestStateThrowsOnNoEmailKeyInUserConfigurationInEnvironmentVariables(string emailKey)
+        public void ParseAndSetTestStateThrowsOnNoEmailKeyInUserConfigurationInEnvironmentVariables(string? emailKey)
         {
             var state = new TestState(MockTestConfigParser.Object);
             var testConfigFile = "testPlan.fx.yaml";
@@ -574,7 +574,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetEnvironmentThrowsOnNullInput(string environment)
+        public void SetEnvironmentThrowsOnNullInput(string? environment)
         {
             var state = new TestState(MockTestConfigParser.Object);
             Assert.Throws<ArgumentNullException>(() => state.SetEnvironment(environment));
@@ -583,7 +583,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetDomainThrowsOnNullInput(string domain)
+        public void SetDomainThrowsOnNullInput(string? domain)
         {
             var state = new TestState(MockTestConfigParser.Object);
             Assert.Throws<ArgumentNullException>(() => state.SetDomain(domain));
@@ -592,7 +592,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetTenantThrowsOnNullInput(string tenant)
+        public void SetTenantThrowsOnNullInput(string? tenant)
         {
             var state = new TestState(MockTestConfigParser.Object);
             Assert.Throws<ArgumentNullException>(() => state.SetTenant(tenant));
@@ -601,7 +601,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetOutputDirectoryThrowsOnNullInput(string outputDirectory)
+        public void SetOutputDirectoryThrowsOnNullInput(string? outputDirectory)
         {
             var state = new TestState(MockTestConfigParser.Object);
             Assert.Throws<ArgumentNullException>(() => state.SetOutputDirectory(outputDirectory));

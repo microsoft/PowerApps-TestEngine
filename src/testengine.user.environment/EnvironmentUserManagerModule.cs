@@ -137,7 +137,7 @@ namespace testengine.user.environment
         {
             ValidatePage();
             await Page.Locator(selector).WaitForAsync();
-            await Page.TypeAsync(selector, value, new PageTypeOptions { Delay = 50 });
+            await Page.Locator(selector).PressSequentiallyAsync(value, new LocatorPressSequentiallyOptions { Delay = 50 });
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
         }
 

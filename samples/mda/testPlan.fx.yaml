@@ -18,6 +18,7 @@ testSettings:
     enable: true
   browserConfigurations:
     - browser: Chromium
+      channel: msedge
 
 environmentVariables:
   users:
