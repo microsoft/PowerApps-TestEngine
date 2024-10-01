@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.ComponentModel.Composition;
+using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
@@ -51,24 +52,37 @@ namespace testengine.user.browser
                 CreateDirectory(Location);
             }
 
-            if (GetFiles(Location).Count() == 0)
+            var started = DateTime.Now;
+            var timeout = testState.GetTimeout();
+            var logger = singleTestInstanceState.GetLogger();
+            var foundMatch = false;
+
+            logger.LogDebug($"Waiting for ${timeout} milliseconds for desired url");
+            while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch)
             {
-                ValidatePage();
-                await Page.PauseAsync();
+                foreach (var page in context.Pages)
+                {
+                    if (page.Url.IndexOf(desiredUrl) >= 0)
+                    {
+                        foundMatch = true;
+                        break;
+                    }
+                }
+
+                if (!foundMatch)
+                {
+                    logger.LogDebug($"Desired page not found, waiting {DateTime.Now.Subtract(started).TotalSeconds}");
+                    System.Threading.Thread.Sleep(1000);
+                } else
+                {
+                    logger.LogInformation($"Test page found");
+                }
             }
 
-            var state = await context.StorageStateAsync();
-
-            // Check for persistant authentication cookie
-            // Source: https://learn.microsoft.com/entra/identity/authentication/concept-authentication-web-browser-cookies
-            if (!state.Contains("ESTSAUTHPERSISTENT"))
+            if (!foundMatch)
             {
-                // No persistant cookie found ... pause to allow the user to login
-                ValidatePage();
-                await Page.PauseAsync();
-            } else
-            {
-                // Assume that the persistant cookie is still valid
+                logger.LogError($"Desired url ${desiredUrl} not found");
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
             }
 
             var pages = context.Pages;

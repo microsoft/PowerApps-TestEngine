@@ -4,7 +4,6 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Moq;
-using testengine.user.browser;
 
 namespace testengine.user.browser.tests
 {
@@ -36,19 +35,22 @@ namespace testengine.user.browser.tests
         }
 
         [Theory]
-        [InlineData(false, true, "", true, "", "")]
-        [InlineData(true, false, "", true, "", "")]
-        [InlineData(true, false, "a.txt", false, "ESTSAUTHPERSISTENT", "")]
-        [InlineData(true, false, "a.txt", true, "", "")]
-        [InlineData(true, false, "a.txt", true, "", "about:blank")]
-        [InlineData(true, false, "a.txt", true, "", "https://localhost")]
-        public async Task LoginWithBrowserState(bool exists, bool isDirectoryCreated, string files, bool willPause, string state, string pages)
+        [InlineData(false, true, "", "https://localhost")]
+        [InlineData(true, false, "", "https://localhost")]
+        [InlineData(true, false, "a.txt", "https://localhost")]
+        [InlineData(true, false, "a.txt", "about:blank,https://localhost")]
+        public async Task LoginWithBrowserState(bool exists, bool isDirectoryCreated, string files, string pages)
         {
             // Arrange
-            if (willPause)
-            {
-                MockPage.Setup(x => x.PauseAsync()).Returns(Task.CompletedTask);
-            }
+            MockTestState.Setup(x => x.GetTimeout()).Returns(1000);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+
+            MockLogger.Setup(x => x.Log(
+               It.IsAny<LogLevel>(),
+               It.IsAny<EventId>(),
+               It.IsAny<It.IsAnyType>(),
+               It.IsAny<Exception>(),
+               (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
 
             var created = false;
 
@@ -58,32 +60,24 @@ namespace testengine.user.browser.tests
             userManager.GetFiles = (path) => files.Split(',');
             userManager.Page = MockPage.Object;
 
-            MockBrowserState.Setup(x => x.StorageStateAsync(It.IsAny<BrowserContextStorageStateOptions>())).Returns(Task.FromResult(state));
+            var mockPages = new List<IPage>();
+            foreach (var page in pages.Split(new[] {','}))
+            {
 
-            if (string.IsNullOrEmpty(pages))
-            {
-                MockBrowserState.Setup(x => x.Pages).Returns(new List<IPage>());
-            } else
-            {
-                var mockPages = new List<IPage>();
-                foreach (var page in pages.Split(new[] {','}))
+                var mockPage = new Mock<IPage>(MockBehavior.Strict);
+                mockPage.SetupGet(x => x.Url).Returns(page);
+
+                if (page == "about:blank")
                 {
-
-                    var mockPage = new Mock<IPage>(MockBehavior.Strict);
-                    mockPage.SetupGet(x => x.Url).Returns(page);
-
-                    if (page == "about:blank")
-                    {
-                        mockPage.Setup(x => x.CloseAsync(null)).Returns(Task.CompletedTask);
-                    }
-
-                    mockPages.Add(mockPage.Object);
+                    mockPage.Setup(x => x.CloseAsync(null)).Returns(Task.CompletedTask);
                 }
-                MockBrowserState.Setup(x => x.Pages).Returns(mockPages);
+
+                mockPages.Add(mockPage.Object);
             }
+            MockBrowserState.Setup(x => x.Pages).Returns(mockPages);
 
             // Act
-            await userManager.LoginAsUserAsync("*",
+            await userManager.LoginAsUserAsync("https://localhost",
                 MockBrowserState.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,
@@ -92,6 +86,44 @@ namespace testengine.user.browser.tests
 
             // Assert
             Assert.True(created == isDirectoryCreated);
+        }
+
+        [Fact]
+        public async Task ThrowExceptionIfDesiredUrlNotFound()
+        {
+            // Arrange
+            MockTestState.Setup(x => x.GetTimeout()).Returns(100);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+
+            MockLogger.Setup(x => x.Log(
+               It.IsAny<LogLevel>(),
+               It.IsAny<EventId>(),
+               It.IsAny<It.IsAnyType>(),
+               It.IsAny<Exception>(),
+               (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
+
+            var userManager = new BrowserUserManagerModule();
+            userManager.DirectoryExists = (path) => true;
+            userManager.CreateDirectory = (path) => { };
+            userManager.GetFiles = (path) => new[] { "a.txt "};
+            userManager.Page = MockPage.Object;
+
+            var mockPages = new List<IPage>();
+            
+            var mockPage = new Mock<IPage>(MockBehavior.Strict);
+            mockPage.SetupGet(x => x.Url).Returns("about:blank");
+            mockPages.Add(mockPage.Object);
+
+            MockBrowserState.Setup(x => x.Pages).Returns(mockPages);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UserInputException>(() => userManager.LoginAsUserAsync(
+                        "https://localhost",
+                        MockBrowserState.Object,
+                        MockTestState.Object,
+                        MockSingleTestInstanceState.Object,
+                        MockEnvironmentVariable.Object,
+                        MockUserManagerLogin.Object));
         }
     }
 }
