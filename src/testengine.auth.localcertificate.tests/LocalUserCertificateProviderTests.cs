@@ -1,6 +1,6 @@
-﻿using Moq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Moq;
 
 namespace testengine.auth.tests
 {

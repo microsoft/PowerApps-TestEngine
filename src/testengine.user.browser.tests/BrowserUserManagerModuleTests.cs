@@ -61,7 +61,7 @@ namespace testengine.user.browser.tests
             userManager.Page = MockPage.Object;
 
             var mockPages = new List<IPage>();
-            foreach (var page in pages.Split(new[] {','}))
+            foreach (var page in pages.Split(new[] { ',' }))
             {
 
                 var mockPage = new Mock<IPage>(MockBehavior.Strict);
@@ -105,11 +105,11 @@ namespace testengine.user.browser.tests
             var userManager = new BrowserUserManagerModule();
             userManager.DirectoryExists = (path) => true;
             userManager.CreateDirectory = (path) => { };
-            userManager.GetFiles = (path) => new[] { "a.txt "};
+            userManager.GetFiles = (path) => new[] { "a.txt " };
             userManager.Page = MockPage.Object;
 
             var mockPages = new List<IPage>();
-            
+
             var mockPage = new Mock<IPage>(MockBehavior.Strict);
             mockPage.SetupGet(x => x.Url).Returns("about:blank");
             mockPages.Add(mockPage.Object);

@@ -115,7 +115,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings?.FilePath))
                 {
                     var testSettingFile = TestPlanDefinition.TestSettings.FilePath;
-                    if ( ! Path.IsPathRooted(testSettingFile))
+                    if (!Path.IsPathRooted(testSettingFile))
                     {
                         // Generate a absolte path relative to the test file
                         testSettingFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(testConfigFile), testSettingFile));

@@ -18,7 +18,7 @@ using testengine.user.environment;
 
 namespace testengine.user.environment.tests
 {
-    public class CertificateUserManagerModuleTests: IDisposable
+    public class CertificateUserManagerModuleTests : IDisposable
     {
         private Mock<IBrowserContext> MockBrowserState;
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
@@ -146,14 +146,14 @@ namespace testengine.user.environment.tests
             mockLocatorObject.Setup(re => re.Or(mockLocatorObject.Object)).Returns(mockLocatorObject.Object);
 
             var userManager = new CertificateUserManagerModule();
-            
+
             var responseReceivedField = typeof(CertificateUserManagerModule).GetField("responseReceived", BindingFlags.NonPublic | BindingFlags.Instance);
             var mockResponseReceived = new TaskCompletionSource<bool>();
             mockResponseReceived.SetResult(true);
             responseReceivedField.SetValue(userManager, mockResponseReceived);
 
             userManager.Page = MockPage.Object;
-            
+
 
             await userManager.LoginAsUserAsync("*",
                 MockBrowserState.Object,
@@ -290,12 +290,12 @@ namespace testengine.user.environment.tests
                 MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(MockCert);
                 MockUserManagerLogin.Setup(x => x.UserCertificateProvider).Returns((IUserCertificateProvider)null);
             }
-            else if(setAsNull == "setCert")
+            else if (setAsNull == "setCert")
             {
                 MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns((X509Certificate2)null);
                 MockUserManagerLogin.Setup(x => x.UserCertificateProvider).Returns(MockUserCertificateProvider.Object);
             }
-            else 
+            else
             {
                 MockUserCertificateProvider.Setup(x => x.RetrieveCertificateForUser(It.IsAny<string>())).Returns(MockCert);
                 MockUserManagerLogin.Setup(x => x.UserCertificateProvider).Returns(MockUserCertificateProvider.Object);
@@ -385,7 +385,7 @@ namespace testengine.user.environment.tests
             handlerMock.Protected().Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>()).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
             CertificateUserManagerModule.GetHttpClientHandler = () => handlerMock.Object;
             CertificateUserManagerModule.GetHttpClient = handler => new HttpClient(handler);
-            
+
             var handler = new CertificateUserManagerModule();
 
             // Act

@@ -55,7 +55,7 @@ namespace testengine.auth.certificatestore.tests
                 Assert.Equal(mockCertificate, certificate);
 
             }
-            finally 
+            finally
             {
                 using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
                 {

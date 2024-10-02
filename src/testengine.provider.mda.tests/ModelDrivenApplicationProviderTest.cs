@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
-    public class ModelDrivenApplicationProviderTests: IDisposable
+    public class ModelDrivenApplicationProviderTests : IDisposable
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ITestState> MockTestState;

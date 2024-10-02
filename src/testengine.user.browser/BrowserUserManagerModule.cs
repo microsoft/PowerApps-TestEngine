@@ -73,7 +73,8 @@ namespace testengine.user.browser
                 {
                     logger.LogDebug($"Desired page not found, waiting {DateTime.Now.Subtract(started).TotalSeconds}");
                     System.Threading.Thread.Sleep(1000);
-                } else
+                }
+                else
                 {
                     logger.LogInformation($"Test page found");
                 }
@@ -90,7 +91,7 @@ namespace testengine.user.browser
             if (blank.Count() > 0)
             {
                 // Close any blank pages
-                foreach ( var blankPage in blank )
+                foreach (var blankPage in blank)
                 {
                     await blankPage.CloseAsync();
                 }

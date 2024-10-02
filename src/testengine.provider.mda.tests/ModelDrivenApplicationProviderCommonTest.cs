@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     javaScript.Append(mock + ";");
                 }
             }
-            
+
             if (includeInterface)
             {
                 assembly = typeof(ModelDrivenApplicationProvider).Assembly;

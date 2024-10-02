@@ -114,7 +114,7 @@ namespace testengine.user.environment
             {
                 cert = userCertificateProvider.RetrieveCertificateForUser(certName);
             }
-            else 
+            else
             {
                 logger.LogError("Certificate provider cannot be null. Please ensure certificate provider for user.");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
@@ -164,7 +164,7 @@ namespace testengine.user.environment
                 await workOrSchoolAccount.ClickAsync();
             }
             await Task.WhenAny(useCertificateAuth.WaitForAsync(), responseReceived.Task);
-            
+
 
             if (responseReceived.Task.IsCompletedSuccessfully)
             {
