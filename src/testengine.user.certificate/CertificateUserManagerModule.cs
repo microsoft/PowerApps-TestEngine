@@ -212,7 +212,7 @@ namespace testengine.user.environment
                     selectorOptions.Timeout = 2000;
 
                     // Check if we received a password error
-                    //await Page.WaitForSelectorAsync("[id=\"passwordError\"]", selectorOptions);
+                    await Page.WaitForSelectorAsync("[id=\"CertificateAuthErrorHeading\"]", selectorOptions);
                     hasCertficateError = true;
                 }
                 catch (Exception peException)
