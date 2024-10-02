@@ -20,6 +20,14 @@ Once the pac test run feature reach general availability pac test run is the Mic
 
 The open source repository provides [instructions](../README.md) on how to compile and run tests using the source code provided.
 
+## Branching Strategy
+
+The respository currently includes the following branching strategy
+
+- [main](https://github.com/microsoft/PowerApps-TestEngine/tree/main) - The current code that includes changes that will be includes in the Power Platform Commands Line features using ```pac test run```
+- [integration](https://github.com/microsoft/PowerApps-TestEngine/tree/integration) - Pre release features that is used to merge features prior pull request into the main branch.
+- Feature branches - Work in progress branches that include ongoing development and changes prior to being merged into the integration branch.
+
 ## Further Reading
 
 Other documentation that you can read to understand how the Power Apps Test Engine works and can be used in

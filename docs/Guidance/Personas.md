@@ -15,7 +15,7 @@ Scalability is achieved by providing appropriate tools and training for each per
 | Key Elements	| Role | Notes |
 |---------------|-------------------|--------------------|
 | Tooling | Code-First Testers| Local editors (e.g., Visual Studio, Visual Studio Code) |
-| Tooling | Make Community | Browser-based record and authoring tools |
+| Tooling | Maker Community | Browser-based record and authoring tools |
 | Execution	| Code-First Testers | Integrated into CI/CD tooling. For example Azure DevOps or GitHub	|
-| Execution	| Make Community |  Low Code deployment pipelines
-| Operational Tests	| Make Community | Heath Check tests. For example Cloud flow triggered test
+| Execution	| Maker Community |  Low Code deployment pipelines
+| Operational Tests	| Maker Community | Heath Check tests. For example Cloud flow triggered test
