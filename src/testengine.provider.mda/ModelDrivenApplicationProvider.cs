@@ -262,7 +262,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     // embed stream at given path to be more locatable
                     var content = await reader.ReadToEndAsync();
                     stream.Position = 0;
-                    string scriptHash = "";
+                    var scriptHash = "";
                     using (var memoryStream = new MemoryStream())
                     {
                         await stream.CopyToAsync(memoryStream);
