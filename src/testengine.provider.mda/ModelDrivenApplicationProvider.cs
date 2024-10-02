@@ -255,15 +255,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         internal async Task EmbedMDAJSScripts(string resourceName, string embeddedScriptName)
         {
             var assembly = GetExecutingAssembly();
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
-                using (StreamReader reader = new StreamReader(stream))
+                using (var reader = new StreamReader(stream))
                 {
                     // embed stream at given path to be more locatable
                     var content = await reader.ReadToEndAsync();
                     stream.Position = 0;
                     string scriptHash = "";
-                    using (MemoryStream memoryStream = new MemoryStream())
+                    using (var memoryStream = new MemoryStream())
                     {
                         await stream.CopyToAsync(memoryStream);
                         scriptHash = "sha256-" + Convert.ToBase64String(SHA256.HashData(memoryStream.ToArray()));
