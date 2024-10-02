@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
-    public class ModelDrivenApplicationProviderTests
+    public class ModelDrivenApplicationProviderTests : IDisposable
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ITestState> MockTestState;
@@ -26,6 +26,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         private Mock<ILogger> MockLogger;
         private Mock<IBrowserContext> MockBrowserContext;
         private JSObjectModel JsObjectModel;
+
+        //adding this to reset the behavior after each test case for the assembly static function
+        private readonly Func<Assembly> originalGetExecutingAssembly = ModelDrivenApplicationProvider.GetExecutingAssembly;
+
+        //adding this IDispose function for tear down that runs after each test and resets the AssemblyMock since it is static and can carry over between testcases
+        public void Dispose()
+        {
+            // Reset static Func to its original value after each test
+            ModelDrivenApplicationProvider.GetExecutingAssembly = originalGetExecutingAssembly;
+        }
 
         public ModelDrivenApplicationProviderTests()
         {
@@ -42,10 +52,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
         [Theory]
         [MemberData(nameof(TestJavaScript))]
-        public void ValidJavaScript(string javaScript, bool includeMocks, bool includeInterface)
+        public void ValidJavaScript(string javaScript, bool includeMocks, bool includeInterface, List<string> interfaceResourceNames = null)
         {
             var engine = new Engine();
-            engine.Evaluate(Common.MockJavaScript(javaScript, "custom", includeMocks, includeInterface));
+            if (interfaceResourceNames == null)
+            {
+                engine.Evaluate(Common.MockJavaScript(javaScript, "custom", includeMocks, includeInterface));
+            }
+            else
+            {
+                engine.Evaluate(Common.MockJavaScript(javaScript, "custom", includeMocks, includeInterface, interfaceResourceNames));
+            }
         }
 
         public static IEnumerable<object[]> TestJavaScript()
@@ -64,17 +81,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             yield return new object[] { "PowerAppsTestEngine.pageType()", true, true };
 
-            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic()", true, true };
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic()", true, true, new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" } };
 
-            yield return new object[] { "PowerAppsModelDrivenCanvas.parseControl('TextInput1', mockCanvasControl)", true, true };
+            yield return new object[] { "PowerAppsModelDrivenCanvas.parseControl('TextInput1', mockCanvasControl)", true, true, new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" } };
 
-            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic().Controls?.GlobalContextManager?.bindingContext", true, true };
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic().Controls?.GlobalContextManager?.bindingContext", true, true, new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" } };
 
-            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic().Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup('TextInput1')", true, true };
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getAppMagic().Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup('TextInput1')", true, true, new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" } };
 
-            yield return new object[] { "PowerAppsModelDrivenCanvas.getBindingContext({controlName: 'TextInput1', propertyName: 'Text'})", true, true };
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getBindingContext({controlName: 'TextInput1', propertyName: 'Text'})", true, true, new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" } };
 
-            yield return new object[] { "PowerAppsModelDrivenCanvas.getPropertyValueFromControl({controlName: 'TextInput1', propertyName: 'Text'})", true, true };
+            yield return new object[] { "PowerAppsModelDrivenCanvas.getPropertyValueFromControl({controlName: 'TextInput1', propertyName: 'Text'})", true, true, new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" } };
         }
 
         [Theory]
@@ -129,7 +146,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("class UCWorkBlockTracker {}", false)]
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return false; } }", false)]
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
-        public void IsIdle(string javaScript, bool expectedIdle)
+        public async Task IsIdle(string javaScript, bool expectedIdle)
         {
             var engine = new Engine();
             engine.Execute(javaScript);
@@ -141,7 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Act
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var result = provider.CheckIsIdleAsync().Result;
+            var result = await provider.CheckIsIdleAsync();
 
             // Assert
             Assert.Equal(expectedIdle, result);
@@ -152,7 +169,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("class UCWorkBlockTracker {}", false)]
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return false; } }", false)]
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
-        public void IsReady(string javaScript, bool expectedIdle)
+        public async Task IsReady(string javaScript, bool expectedIdle)
         {
             var engine = new Engine();
             engine.Execute(javaScript);
@@ -172,7 +189,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Act
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var result = provider.TestEngineReady().Result;
+            var result = await provider.TestEngineReady();
 
             // Assert
             Assert.Equal(expectedIdle, result);
@@ -220,7 +237,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Special case text should use the getValue()
             yield return new object[] {
-                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "prefix_Name",
                     "Text",
                     "Hello"
@@ -228,7 +245,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Disabled by default controlDescriptor property
             yield return new object[] {
-                    Common.MockJavaScript("", "entityrecord"),
+                    Common.MockJavaScript("", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "prefix_Name",
                     "Disabled",
                     false
@@ -236,7 +253,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // test Disabled in controlDescriptor property
             yield return new object[] {
-                    Common.MockJavaScript("mockControlDescriptor.Disabled = true", "entityrecord"),
+                    Common.MockJavaScript("mockControlDescriptor.Disabled = true", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "prefix_Name",
                     "Disabled",
                     true
@@ -299,35 +316,35 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Default Values
             yield return new object[] {
-                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "test",
                     "{ Disabled: false, Text: 'Hello', ShowLabel: true, Label: 'Text Input', Visible: true, IsRequired: false }"
             };
 
             // Change control name
             yield return new object[] {
-                    Common.MockJavaScript("mockControlName = 'test2';mockValue = 'New value'", "entityrecord"),
+                    Common.MockJavaScript("mockControlName = 'test2';mockValue = 'New value'", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "test2",
                     "{ Disabled: false, Text: 'New value', ShowLabel: true, Label: 'Text Input', Visible: true, IsRequired: false }"
             };
 
             // Change Label
             yield return new object[] {
-                    Common.MockJavaScript("mockControlDescriptor.Label = 'Item'", "entityrecord"),
+                    Common.MockJavaScript("mockControlDescriptor.Label = 'Item'", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "test",
                     "{ Label: 'Item' }"
             };
 
             // Change Visible
             yield return new object[] {
-                    Common.MockJavaScript("mockControlDescriptor.Visible = false", "entityrecord"),
+                    Common.MockJavaScript("mockControlDescriptor.Visible = false", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "test",
                     "{ Visible: false }"
             };
 
             // Change IsRequired
             yield return new object[] {
-                    Common.MockJavaScript("mockControlDescriptor.IsRequired = true", "entityrecord"),
+                    Common.MockJavaScript("mockControlDescriptor.IsRequired = true", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "test",
                     "{ IsRequired: true }"
             };
@@ -352,9 +369,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(It.IsAny<string>()))
             .Returns(
-                async (string query) => {
+                async (string query) =>
+                {
                     var result = engine.Evaluate(query);
-                    if ( result.IsBoolean() )
+                    if (result.IsBoolean())
                     {
                         return result.AsBoolean();
                     }
@@ -412,7 +430,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Default Values
             yield return new object[] {
-                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "test",
                     "Text",
                     "value",
@@ -421,7 +439,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Visible Values
             yield return new object[] {
-                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord"),
+                    Common.MockJavaScript("mockValue = 'Hello'", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "test",
                     "Visible",
                     "visible",
@@ -430,7 +448,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Disabled Values
             yield return new object[] {
-                    Common.MockJavaScript("", "entityrecord"),
+                    Common.MockJavaScript("", "entityrecord", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDAEntityRecord.js"}),
                     "test",
                     "Disabled",
                     "disabled",
@@ -473,7 +491,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             blankPage.Setup(p => p.Url).Returns("about:blank");
             var MockPage = new Mock<IPage>(MockBehavior.Strict);
             MockPage.Setup(p => p.Url).Returns("https://example.com");
-            MockBrowserContext.Setup(c => c.Pages).Returns(new[] { blankPage.Object, MockPage.Object});
+            MockBrowserContext.Setup(c => c.Pages).Returns(new[] { blankPage.Object, MockPage.Object });
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions1.Setup(m => m.GetContext()).Returns(MockBrowserContext.Object);
             MockTestInfraFunctions1.Setup(m => m.Page).Returns(MockPage.Object);
@@ -482,7 +500,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions1.Setup(f => f.Page.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
             var mockElementHandle = new Mock<IElementHandle>();
             MockTestInfraFunctions1.Setup(f => f.Page.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).ReturnsAsync(mockElementHandle.Object);
-
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions1.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             // Act
             await provider.CheckProviderAsync();
@@ -542,7 +559,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockLogger.Verify(l => l.Log(LogLevel.Debug, It.IsAny<EventId>(), It.Is<It.IsAnyType>((o, t) => o.ToString() == "Finish loading PowerAppsTestEngine."), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
         }
 
-       
+
         [Theory]
         [MemberData(nameof(DebugInfoProperties))]
         public async Task DebugInfo(string propertyName, object expectedValue, string javaScript)
@@ -571,7 +588,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Act
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var result = (IDictionary<string, object>) (await provider.GetDebugInfo());
+            var result = (IDictionary<string, object>)(await provider.GetDebugInfo());
 
             // Assert
             Assert.Equal(expectedValue, result[propertyName]);
@@ -594,6 +611,171 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     0,
                     Common.MockJavaScript("", "entityrecord"),
             };
+        }
+
+        [Fact]
+        public async Task EmbedMDAJSScripts_ResourceStreamIsNull_ThrowsException()
+        {
+            // Arrange
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            string resourceName = "invalidResource";
+            var _assemblyMock = new Mock<Assembly>();
+            _assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
+                .Returns((Stream)null); // Simulate invalid resource name
+
+            ModelDrivenApplicationProvider.GetExecutingAssembly = () => _assemblyMock.Object;
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Act & Assert
+
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await provider.EmbedMDAJSScripts(resourceName, "testScript.js");
+            });
+        }
+
+        [Fact]
+        public async Task EmbedMDAJSScripts_StreamUnreadable_ThrowsException()
+        {
+            // Arrange
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            var resourceName = "testResource";
+            var embeddedScriptName = "testScript.js";
+
+            // Mock a stream that is unreadable
+            var streamMock = new Mock<Stream>();
+            streamMock.Setup(s => s.CanRead).Returns(false); // Simulate an unreadable stream
+
+            var assemblyMock = new Mock<Assembly>();
+            assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
+                .Returns(streamMock.Object); // Return the unreadable stream
+
+            ModelDrivenApplicationProvider.GetExecutingAssembly = () => assemblyMock.Object;
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            {
+                await provider.EmbedMDAJSScripts(resourceName, embeddedScriptName);
+            });
+        }
+
+        [Fact]
+        public async Task EmbedMDAJSScripts_RouteAsyncFails_ThrowsException()
+        {
+            // Arrange
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            var resourceName = "testResource";
+            var embeddedScriptName = "testScript.js";
+            var streamMock = new Mock<Stream>();
+            streamMock.Setup(s => s.CanRead).Returns(true);
+
+            var assemblyMock = new Mock<Assembly>();
+            assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
+                .Returns(streamMock.Object);
+
+            ModelDrivenApplicationProvider.GetExecutingAssembly = () => assemblyMock.Object;
+
+            var pageMock = new Mock<IPage>();
+
+            // Simulate failure during RouteAsync
+            pageMock.Setup(p => p.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), null))
+                .ThrowsAsync(new InvalidOperationException("RouteAsync failed"));
+
+            MockTestInfraFunctions.Setup(f => f.Page).Returns(pageMock.Object);
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await provider.EmbedMDAJSScripts(resourceName, embeddedScriptName);
+            });
+        }
+
+        [Fact]
+        public async Task EmbedMDAJSScripts_AddScriptTagFails_ThrowsException()
+        {
+            // Arrange
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            var resourceName = "testResource";
+            var embeddedScriptName = "testScript.js";
+            var streamMock = new Mock<Stream>();
+            streamMock.Setup(s => s.CanRead).Returns(true);
+
+            var assemblyMock = new Mock<Assembly>();
+            assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
+                .Returns(streamMock.Object);
+
+            ModelDrivenApplicationProvider.GetExecutingAssembly = () => assemblyMock.Object;
+
+            var pageMock = new Mock<IPage>();
+
+            // Simulate failure during AddScriptTagAsync
+            pageMock.Setup(p => p.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>()))
+                .ThrowsAsync(new InvalidOperationException("AddScriptTagAsync failed"));
+
+            MockTestInfraFunctions.Setup(f => f.Page).Returns(pageMock.Object);
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await provider.EmbedMDAJSScripts(resourceName, embeddedScriptName);
+            });
+        }
+
+        [Fact]
+        public async Task EmbedMDAJSScripts_EmbedsScriptSuccessfully()
+        {
+            // Arrange
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+
+            var resourceName = "testResource";
+            var embeddedScriptName = "testScript.js";
+            string scriptContent = "console.log('test');"; // The content of the embedded JS file
+
+            // Create a mock memory stream to simulate reading the embedded resource
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(scriptContent));
+
+            // Mock the assembly to return the memory stream for the resource
+            var assemblyMock = new Mock<Assembly>();
+            assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
+                        .Returns(memoryStream);
+
+            // Replace the GetExecutingAssembly function with our mocked assembly
+            ModelDrivenApplicationProvider.GetExecutingAssembly = () => assemblyMock.Object;
+
+            // Calculate the expected script hash
+            string expectedScriptHash = "sha256-" + Convert.ToBase64String(SHA256.HashData(memoryStream.ToArray()));
+            string expectedScriptUrl = $"/{embeddedScriptName}?hash={expectedScriptHash}";
+
+            // Mocking the page and route fulfillment
+            var mockPage = new Mock<IPage>();
+            MockTestInfraFunctions.Setup(f => f.Page).Returns(mockPage.Object);
+            mockPage.Setup(p => p.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+            var mockElementHandle = new Mock<IElementHandle>();
+            mockPage.Setup(p => p.AddScriptTagAsync(It.IsAny<PageAddScriptTagOptions>())).ReturnsAsync(mockElementHandle.Object);
+
+            // Create the ModelDrivenApplicationProvider with mocked dependencies
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Act
+            await provider.EmbedMDAJSScripts(resourceName, embeddedScriptName);
+
+            // Assert
+            // Verify that the RouteAsync method was called with the correct script URL containing the hash
+            mockPage.Verify(p => p.RouteAsync(It.Is<string>(url => url.Contains(expectedScriptHash)), It.IsAny<Func<IRoute, Task>>(), null), Times.Once);
+
+            // Verify that AddScriptTagAsync was called with the correct PageAddScriptTagOptions
+            mockPage.Verify(p => p.AddScriptTagAsync(It.Is<PageAddScriptTagOptions>(opt => opt.Url.Contains(expectedScriptHash))), Times.Once);
         }
     }
 }

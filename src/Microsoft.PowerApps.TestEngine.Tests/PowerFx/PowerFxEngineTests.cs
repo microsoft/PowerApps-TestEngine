@@ -66,15 +66,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         }
 
         [Fact]
-        public void UpdatePowerFxModelAsyncThrowsOnNoSetupTest()
+        public async Task UpdatePowerFxModelAsyncThrowsOnNoSetupTest()
         {
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.UpdatePowerFxModelAsync());
+            await Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.UpdatePowerFxModelAsync());
             LoggingTestHelper.VerifyLogging(MockLogger, "Engine is null, make sure to call Setup first", LogLevel.Error, Times.Once());
         }
 
         [Fact]
-        public async void UpdatePowerFxModelAsyncThrowsOnCantGetAppStatusTest()
+        public async Task UpdatePowerFxModelAsyncThrowsOnCantGetAppStatusTest()
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var button1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Button1");
@@ -93,7 +93,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         }
 
         [Fact]
-        public async void RunRequirementsCheckAsyncTest()
+        public async Task RunRequirementsCheckAsyncTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
@@ -111,7 +111,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         }
 
         [Fact]
-        public async void RunRequirementsCheckAsyncThrowsOnCheckAndHandleIfLegacyPlayerTest()
+        public async Task RunRequirementsCheckAsyncThrowsOnCheckAndHandleIfLegacyPlayerTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
@@ -129,7 +129,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         }
 
         [Fact]
-        public async void RunRequirementsCheckAsyncThrowsOnTestEngineReadyTest()
+        public async Task RunRequirementsCheckAsyncThrowsOnTestEngineReadyTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
@@ -270,7 +270,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         }
 
         [Fact]
-        public void ExecuteFailsWhenPowerFXThrowsTest()
+        public async Task ExecuteFailsWhenPowerFXThrowsTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
@@ -279,11 +279,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
-            Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<AggregateException>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
-        public void ExecuteFailsWhenUsingNonExistentVariableTest()
+        public async Task ExecuteFailsWhenUsingNonExistentVariableTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
@@ -291,7 +291,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
-            Assert.ThrowsAsync<Exception>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<AggregateException>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
@@ -505,7 +505,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
-        public async Task TestStepByStep()
+        private async Task TestStepByStep()
         {
             // Arrange
             var powerFxEngine = GetPowerFxEngine();

@@ -1,21 +1,21 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.PowerFx;
 
-namespace testengine.user.environment
+namespace testengine.user.browser
 {
+    /// <summary>
+    /// Implement single sign on to a test resource from a login.microsoftonline.com resource assuming Persisant Session State
+    /// </summary>
+    /// <remarks>
+    /// Requires the user to select "Stay signed in" or Conditional access policies enabled to allow browser persitance that does not <c href="https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-persistent-browser-session">Require reauthentication and disable browser persistence</c>
+    /// </remarks>
     [Export(typeof(IUserManager))]
     public class BrowserUserManagerModule : IUserManager
     {
@@ -52,10 +52,49 @@ namespace testengine.user.environment
                 CreateDirectory(Location);
             }
 
-            if (GetFiles(Location).Count() == 0)
+            var started = DateTime.Now;
+            var timeout = testState.GetTimeout();
+            var logger = singleTestInstanceState.GetLogger();
+            var foundMatch = false;
+
+            logger.LogDebug($"Waiting for ${timeout} milliseconds for desired url");
+            while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch)
             {
-                ValidatePage();
-                await Page.PauseAsync();
+                foreach (var page in context.Pages)
+                {
+                    if (page.Url.IndexOf(desiredUrl) >= 0)
+                    {
+                        foundMatch = true;
+                        break;
+                    }
+                }
+
+                if (!foundMatch)
+                {
+                    logger.LogDebug($"Desired page not found, waiting {DateTime.Now.Subtract(started).TotalSeconds}");
+                    System.Threading.Thread.Sleep(1000);
+                }
+                else
+                {
+                    logger.LogInformation($"Test page found");
+                }
+            }
+
+            if (!foundMatch)
+            {
+                logger.LogError($"Desired url ${desiredUrl} not found");
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
+            }
+
+            var pages = context.Pages;
+            var blank = pages.Where(p => p.Url == "about:blank").ToList();
+            if (blank.Count() > 0)
+            {
+                // Close any blank pages
+                foreach (var blankPage in blank)
+                {
+                    await blankPage.CloseAsync();
+                }
             }
         }
 

@@ -10,8 +10,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
     internal class Common
     {
-        public static string MockJavaScript(string text, string pageType, bool includeMocks = true, bool includeInterface = true)
+        public static string MockJavaScript(string text, string pageType, bool includeMocks = true, bool includeInterface = true, List<string> interfaceResourceNames = null)
         {
+            // Initialize the list with the default value if it is null
+            interfaceResourceNames ??= new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js" };
+
             StringBuilder javaScript = new StringBuilder();
 
             Assembly assembly;
@@ -29,17 +32,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     javaScript.Append(mock + ";");
                 }
             }
-            
+
             if (includeInterface)
             {
                 assembly = typeof(ModelDrivenApplicationProvider).Assembly;
-                resourceName = "testengine.provider.mda.PowerAppsTestEngineMDA.js";
-                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-                using (StreamReader reader = new StreamReader(stream))
+                foreach (string name in interfaceResourceNames)
                 {
-                    javaScript.Append(reader.ReadToEnd());
+                    using (Stream stream = assembly.GetManifestResourceStream(name))
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        javaScript.Append(reader.ReadToEnd());
 
-                    javaScript.Append(text + ";");
+                        javaScript.Append(text + ";");
+                    }
                 }
             }
             javaScript.Append(text + ";");

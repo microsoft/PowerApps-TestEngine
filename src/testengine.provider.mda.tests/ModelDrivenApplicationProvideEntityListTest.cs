@@ -64,8 +64,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             // Act
             object outcome = null;
             var result = engine.Evaluate(javaScript);
-            
-            if ( result.IsBoolean() )
+
+            if (result.IsBoolean())
             {
                 outcome = result.AsBoolean();
             }
@@ -115,7 +115,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(It.IsAny<string>()))
              .Returns(
-                 async (string query) => {
+                 async (string query) =>
+                 {
                      var result = engine.Evaluate(query);
                      if (result.IsBoolean())
                      {
@@ -140,7 +141,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             dynamic dynamicValue = JsonConvert.DeserializeObject<ExpandoObject>(result);
 
             // Assert
-            
+
             Assert.Equal(expectedResult, dynamicValue.PropertyValue);
         }
 
@@ -190,9 +191,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             var controlFields = result[controlName].Fields;
 
-            var fieldData = JsonConvert.DeserializeObject<Dictionary<string,object>>(fields);
+            var fieldData = JsonConvert.DeserializeObject<Dictionary<string, object>>(fields);
 
-            foreach ( var key in fieldData.Keys )
+            foreach (var key in fieldData.Keys)
             {
                 var match = controlFields.Where(f => f.Name == key).FirstOrDefault();
                 Assert.True(match != null, $"Field {key} not found");

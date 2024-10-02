@@ -14,6 +14,10 @@
 
   <ItemGroup>
     <None Remove="PowerAppsTestEngineMDA.js" />
+    <None Remove="PowerAppsTestEngineMDACustom.js" />
+    <None Remove="PowerAppsTestEngineMDADashboard.js" />
+    <None Remove="PowerAppsTestEngineMDAEntityList.js" />
+    <None Remove="PowerAppsTestEngineMDAEntityRecord.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +30,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="PowerAppsTestEngineMDA.js" />
+    <EmbeddedResource Include="PowerAppsTestEngineMDACustom.js" />
+    <EmbeddedResource Include="PowerAppsTestEngineMDADashboard.js" />
+    <EmbeddedResource Include="PowerAppsTestEngineMDAEntityList.js" />
+    <EmbeddedResource Include="PowerAppsTestEngineMDAEntityRecord.js" />
   </ItemGroup>
 
   <Target Name="CopyFiles" AfterTargets="AfterBuild">

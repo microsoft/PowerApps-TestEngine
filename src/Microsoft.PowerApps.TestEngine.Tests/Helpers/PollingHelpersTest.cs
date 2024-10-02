@@ -58,10 +58,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         }
 
         [Fact]
-        public void PollingAsyncTimeoutTest()
+        public async Task PollingAsyncTimeoutTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
-            Assert.ThrowsAsync<TimeoutException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _notEnoughRuntime, MockLogger.Object));
+            await Assert.ThrowsAsync<TimeoutException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _notEnoughRuntime, MockLogger.Object));
         }
 
         [Fact]
@@ -72,10 +72,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         }
 
         [Fact]
-        public void PollingAsyncThrowsOnInvalidArgumentsTest()
+        public async Task PollingAsyncThrowsOnInvalidArgumentsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _invalidRuntime, MockLogger.Object));
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => PollingHelper.PollAsync(false, conditionToCheck, () => functionToCallAsync(), _invalidRuntime, MockLogger.Object));
         }
 
     }

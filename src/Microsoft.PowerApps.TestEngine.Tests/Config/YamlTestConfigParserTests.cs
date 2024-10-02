@@ -360,7 +360,7 @@ enablePowerFxOverlay: false";
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void YamlTestConfigParserThrowsOnNullArguments(string filePath)
+        public void YamlTestConfigParserThrowsOnNullArguments(string? filePath)
         {
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);

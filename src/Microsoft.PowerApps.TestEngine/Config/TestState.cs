@@ -114,7 +114,13 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 }
                 else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings?.FilePath))
                 {
-                    TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath, logger);
+                    var testSettingFile = TestPlanDefinition.TestSettings.FilePath;
+                    if (!Path.IsPathRooted(testSettingFile))
+                    {
+                        // Generate a absolte path relative to the test file
+                        testSettingFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(testConfigFile), testSettingFile));
+                    }
+                    TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(testSettingFile, logger);
                 }
 
                 if (TestPlanDefinition.TestSettings?.BrowserConfigurations == null
@@ -145,7 +151,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 }
                 else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
                 {
-                    TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath, logger);
+                    var testEnvironmentFile = TestPlanDefinition.EnvironmentVariables.FilePath;
+                    if (!Path.IsPathRooted(testEnvironmentFile))
+                    {
+                        testEnvironmentFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(testConfigFile), testEnvironmentFile));
+                    }
+                    TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(testEnvironmentFile, logger);
                 }
 
                 if (TestPlanDefinition.EnvironmentVariables?.Users == null

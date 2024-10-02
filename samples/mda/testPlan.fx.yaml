@@ -18,6 +18,8 @@ testSettings:
     enable: true
   browserConfigurations:
     - browser: Chromium
+      channel: msedge
+  timeout: 600000
 
 environmentVariables:
   users:

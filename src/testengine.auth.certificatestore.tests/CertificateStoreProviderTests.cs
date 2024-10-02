@@ -55,7 +55,7 @@ namespace testengine.auth.certificatestore.tests
                 Assert.Equal(mockCertificate, certificate);
 
             }
-            finally 
+            finally
             {
                 using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
                 {
@@ -79,7 +79,7 @@ namespace testengine.auth.certificatestore.tests
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void RetrieveCertificateForUser_NullOrEmptyUsername_ThrowsArgumentException(string userSubjectName)
+        public void RetrieveCertificateForUser_NullOrEmptyUsername_ThrowsArgumentException(string? userSubjectName)
         {
             // Act & Assert
             Assert.Null(provider.RetrieveCertificateForUser(userSubjectName));

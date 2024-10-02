@@ -52,7 +52,7 @@ namespace testengine.module
             MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(MockBrowserContext.Object);
             MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
             MockPage.Setup(x => x.Url).Returns("https://contoso.crm.dynamics.com/main.aspx");
-            MockPage.Setup( x => x.Frames ).Returns(new List<IFrame>() { MockFrame.Object });
+            MockPage.Setup(x => x.Frames).Returns(new List<IFrame>() { MockFrame.Object });
             MockFrame.Setup(x => x.Url).Returns("https://login.microsoft.com/consent");
 
             var MockLocator = new Mock<ILocator>(MockBehavior.Strict);
