@@ -2,7 +2,7 @@
 
 This document provides an architectural overview of the Power Apps Test Engine. The engine consists of multiple layers, each with specific responsibilities that contribute to delivering a comprehensive and automated testing framework for Power Apps. The layers include the Test Engine, Test Definition, Test Results, and Browser, with an extensibility model available for User Authentication, Providers, and Power Fx.
 
-![Test Engine Overview Diagram](./images/overview.png)
+![Test Engine Overview Diagram](./media/overview.png)
 
 The Power Apps Test Engine is a robust and modular framework that has been designed to facilitate comprehensive testing of various components within the Power Platform. At its core, the Test Engine features a Runner, which can be executed as part of the Power Platform Command Line Interface (PAC CLI) or through a build-from-source approach using open-source code. The PAC CLI option offers a supported and straightforward method to execute tests, while the build-from-source strategy, which requires the installation of the .Net SDK, lacks official support. 
 
@@ -53,10 +53,13 @@ This layer ensures seamless interaction and manipulation of web elements during 
 
 ## Extensibility Model
 
+This sesction provides an overview of the extensibility model for Test Engine. For a deeper discussion on extensions with Test Engine refer to the [Extensions Documentation](./Extensions/README.md) that provides more detailed information.
+
 ### User Authentication
+
 Provides the capability to authenticate the test session.
 
-![Authentication provider overview diagram](./images/authentication.png)
+![Authentication provider overview diagram](./media/authentication.png)
 
 User authentication contains Extensible Authentication Mechanisms. They allows for different methods of authentication to be plugged in, ensuring secure test sessions.
 
@@ -77,7 +80,7 @@ Projects like the [CoE Starter Kit](https://github.com/microsoft/coe-starter-kit
 
 ### Providers
 
-![Providers overview](./images/providers.png)
+![Providers overview](./media/providers.png)
 
 Enables the testing of various aspects of Power Apps.
 

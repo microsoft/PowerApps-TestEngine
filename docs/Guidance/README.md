@@ -17,3 +17,14 @@ The guidance outlines the security requirements for executing tests securely, in
 ## Conclusion
 
 By following the guidelines and strategies outlined, organizations can ensure that their Power Platform solutions are thoroughly tested, secure, and reliable. This comprehensive approach to testing will help maintain the quality and performance of the solutions throughout their lifecycle.
+
+## Further Reading
+
+The guidance documentation contains the following sections that provide further reading to explain and give guidance on Test Enging usage
+
+- [Overview](./Overview.md) - Provides an overview of low code testing of Power Platform resources and code first testing.
+- [Personas](./Personas.md) - Provides an overview of different personas that are commonly envoled in the testing
+- [Authoring](./Authoring.md) - Discusses how to author tests the expected ALM process and test types that could be created.
+- [Security Considerations](./SecurityConsiderations.md) - Discussion on security considerations required to run tests.
+- [Test Execution](./ExecutionAndDeploymentProcessIntegration.md) - Discusses options to automate the execution of tests as part of a Continious Integration and Deployment process.
+- [Operational Tests](./OperationalTests.md) - Discussion operational testing to verify the features and health of the deployed solution.

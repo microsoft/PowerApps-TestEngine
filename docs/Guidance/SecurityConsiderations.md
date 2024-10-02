@@ -1,6 +1,5 @@
 # Security Considerations
 
-Validation of Security Requirements
 Executing tests securely is paramount especially where interactive user accounts are used. The following table outlines some factors that should be considered and how this can map to Power Platform quality testing.
 
 ## Authentication
