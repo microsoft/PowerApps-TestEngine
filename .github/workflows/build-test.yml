@@ -64,7 +64,7 @@ jobs:
           reporter: dotnet-trx        # Format of test results
       
       - name: Upload test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-coverage-report
           path: src/TestResults/**/coverage.cobertura.xml
