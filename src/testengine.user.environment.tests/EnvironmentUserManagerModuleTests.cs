@@ -80,9 +80,11 @@ namespace testengine.user.environment.tests
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             var keyboard = new Mock<IKeyboard>(MockBehavior.Strict);
 
+            var mockEmailSelectorLocator = new Mock<ILocator>();
+
             // Email Address
-            MockPage.Setup(x => x.Locator(EnvironmentUserManagerModule.EmailSelector, null)).Returns(new Mock<ILocator>().Object);
-            MockPage.Setup(x => x.TypeAsync(EnvironmentUserManagerModule.EmailSelector, email, It.IsAny<PageTypeOptions>())).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.Locator(EnvironmentUserManagerModule.EmailSelector, null)).Returns(mockEmailSelectorLocator.Object);
+            mockEmailSelectorLocator.Setup(x => x.PressSequentiallyAsync(email, It.IsAny<LocatorPressSequentiallyOptions>())).Returns(Task.CompletedTask);
             keyboard.Setup(x => x.PressAsync("Tab", It.IsAny<KeyboardPressOptions>()))
                     .Returns(Task.CompletedTask);
             MockPage.SetupGet(x => x.Keyboard).Returns(keyboard.Object);
@@ -135,7 +137,7 @@ namespace testengine.user.environment.tests
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public async Task LoginUserAsyncThrowsOnInvalidPersonaTest(string persona)
+        public async Task LoginUserAsyncThrowsOnInvalidPersonaTest(string? persona)
         {
             var testSuiteDefinition = new TestSuiteDefinition()
             {
@@ -191,7 +193,7 @@ namespace testengine.user.environment.tests
         [InlineData("", "myPassword1234")]
         [InlineData("user1Email", null)]
         [InlineData("user1Email", "")]
-        public async Task LoginUserAsyncThrowsOnInvalidUserConfigTest(string emailKey, string passwordKey)
+        public async Task LoginUserAsyncThrowsOnInvalidUserConfigTest(string? emailKey, string? passwordKey)
         {
             UserConfiguration userConfiguration = new UserConfiguration()
             {
@@ -219,7 +221,7 @@ namespace testengine.user.environment.tests
         [InlineData("", "user1Password")]
         [InlineData("someone@example.com", null)]
         [InlineData("someone@example.com", "")]
-        public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string email, string password)
+        public async Task LoginUserAsyncThrowsOnInvalidEnviromentVariablesTest(string? email, string? password)
         {
             UserConfiguration userConfiguration = new UserConfiguration()
             {

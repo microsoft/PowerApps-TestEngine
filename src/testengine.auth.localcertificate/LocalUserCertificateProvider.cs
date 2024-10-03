@@ -11,7 +11,7 @@ namespace testengine.auth
     /// Functions for interacting with the Power App
     /// </summary>
     [Export(typeof(IUserCertificateProvider))]
-    public class LocalUserCertificateProvider: IUserCertificateProvider
+    public class LocalUserCertificateProvider : IUserCertificateProvider
     {
         public string Name { get { return "localcert"; } }
 

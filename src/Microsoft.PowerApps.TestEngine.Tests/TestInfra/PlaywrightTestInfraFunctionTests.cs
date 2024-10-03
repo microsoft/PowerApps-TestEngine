@@ -63,7 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [InlineData("Chromium", "Pixel 2", null, null)]
         [InlineData("Safari", "iPhone 8", 400, null)]
         [InlineData("Safari", "iPhone 8", 400, 800)]
-        public async Task SetupAsyncTest(string browser, string device, int? screenWidth, int? screenHeight)
+        public async Task SetupAsyncTest(string browser, string? device, int? screenWidth, int? screenHeight)
         {
             var browserConfig = new BrowserConfiguration()
             {
@@ -219,7 +219,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task SetupAsyncThrowsOnNullOrEmptyBrowserTest(string browser)
+        public async Task SetupAsyncThrowsOnNullOrEmptyBrowserTest(string? browser)
         {
             var browserConfig = new BrowserConfiguration()
             {
@@ -308,7 +308,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Fact]
         public async Task EndTestRunSuccessTest()
         {
-            MockBrowserContext.Setup(x => x.CloseAsync()).Returns(Task.CompletedTask);
+            MockBrowserContext.Setup(x => x.CloseAsync(null)).Returns(Task.CompletedTask);
             MockPage.Setup(x => x.WaitForRequestFinishedAsync(It.IsAny<PageWaitForRequestFinishedOptions>())).Returns(Task.FromResult(MockRequest.Object));
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
@@ -316,7 +316,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             await playwrightTestInfraFunctions.EndTestRunAsync();
 
-            MockBrowserContext.Verify(x => x.CloseAsync(), Times.Once);
+            MockBrowserContext.Verify(x => x.CloseAsync(null), Times.Once);
         }
 
         [Fact]
@@ -580,7 +580,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [InlineData("www.microsoft.com")]
         [InlineData("file://c:/test.txt")]
         [InlineData("hi")]
-        public async Task GoToUrlThrowsOnInvalidUrlTest(string url)
+        public async Task GoToUrlThrowsOnInvalidUrlTest(string? url)
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);

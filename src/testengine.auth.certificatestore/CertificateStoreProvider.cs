@@ -21,7 +21,7 @@ namespace testengine.auth
         public string Name { get { return "certstore"; } }
 
         public CertificateStoreProvider()
-        {   
+        {
         }
 
         public X509Certificate2? RetrieveCertificateForUser(string userIdentifier)

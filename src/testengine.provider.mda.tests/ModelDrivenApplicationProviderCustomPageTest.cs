@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Arrange
             var engine = new Engine();
-            engine.Execute(Common.MockJavaScript("mockPageType = 'custom'", "custom"));
+            engine.Execute(Common.MockJavaScript("mockPageType = 'custom'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" }));
             expected = expected == null ? "function" : expected;
 
             scenario += "";
@@ -83,8 +83,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             // Act
             object outcome = null;
             var result = engine.Evaluate(javaScript);
-            
-            if ( result.IsBoolean() )
+
+            if (result.IsBoolean())
             {
                 outcome = result.AsBoolean();
             }
@@ -109,7 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Arrange
             var engine = new Engine();
-            engine.Execute(Common.MockJavaScript("mockPageType = 'custom'", "custom"));
+            engine.Execute(Common.MockJavaScript("mockPageType = 'custom'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" }));
 
             // Act
             var result = engine.Evaluate(javaScript).AsString();
@@ -137,7 +137,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(It.IsAny<string>()))
              .Returns(
-                 async (string query) => {
+                 async (string query) =>
+                 {
                      var result = engine.Evaluate(query);
                      if (result.IsBoolean())
                      {
@@ -162,7 +163,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             dynamic dynamicValue = JsonConvert.DeserializeObject<ExpandoObject>(result);
 
             // Assert
-            
+
             Assert.Equal(expectedResult, dynamicValue.PropertyValue);
         }
 
@@ -170,7 +171,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Special case text should use the getValue()
             yield return new object[] {
-                    Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom"),
+                    Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js"}),
                     "TextInput1",
                     "Text",
                     "Hello"
@@ -209,9 +210,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             var controlFields = result[controlName].Fields;
 
-            var fieldData = JsonConvert.DeserializeObject<Dictionary<string,object>>(fields);
+            var fieldData = JsonConvert.DeserializeObject<Dictionary<string, object>>(fields);
 
-            foreach ( var key in fieldData.Keys )
+            foreach (var key in fieldData.Keys)
             {
                 var match = controlFields.Where(f => f.Name == key).FirstOrDefault();
                 Assert.True(match != null, $"Field {key} not found");
@@ -227,7 +228,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Default Values
             yield return new object[] {
-                    Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom"),
+                    Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js"}),
                     "TextInput1",
                     "{ Text: 'Hello' }"
             };
@@ -256,7 +257,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             );
 
             FormulaValue providerValue = null;
-            if ( value is string )
+            if (value is string)
             {
                 providerValue = StringValue.New((string)value);
             }
@@ -269,10 +270,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Act
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
-            var result = await provider.SetPropertyAsync(new ItemPath {  ControlName = controlName, PropertyName = propertyName}, providerValue);
+            var result = await provider.SetPropertyAsync(new ItemPath { ControlName = controlName, PropertyName = propertyName }, providerValue);
 
             // Assert
-           
+
         }
 
         /// <summary>

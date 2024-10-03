@@ -407,7 +407,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("")]
         [InlineData("{}")]
         [InlineData("{ controls: [] }")]
-        public async Task LoadObjectModelAsyncWithNoModelTest(string jsObjectModelString)
+        public async Task LoadObjectModelAsyncWithNoModelTest(string? jsObjectModelString)
         {
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions.Setup(x => x.AddScriptTagAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
@@ -878,7 +878,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("myEnvironment", "apps.powerapps.com", "myApp", "appId", "myTenant", "https://apps.powerapps.com/play/e/myEnvironment/an/myApp?tenantId=myTenant&source=testengine", "")]
         [InlineData("defaultEnvironment", "apps.test.powerapps.com", "defaultApp", "appId", "defaultTenant", "https://apps.test.powerapps.com/play/e/defaultEnvironment/an/defaultApp?tenantId=defaultTenant&source=testengine", "")]
         [InlineData("defaultEnvironment", "apps.powerapps.com", null, "appId", "defaultTenant", "https://apps.powerapps.com/play/e/defaultEnvironment/a/appId?tenantId=defaultTenant&source=testengine", "")]
-        public void GenerateAppUrlTest(string environmentId, string domain, string appLogicalName, string appId, string tenantId, string expectedAppUrl, string queryParams)
+        public void GenerateAppUrlTest(string environmentId, string domain, string? appLogicalName, string appId, string tenantId, string expectedAppUrl, string queryParams)
         {
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
             MockTestState.Setup(x => x.GetDomain()).Returns(domain);
@@ -898,7 +898,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("environmentId", null, null, "tenantId")]
         [InlineData("environmentId", "appLogicalName", "appId", "")]
         [InlineData("environmentId", "appLogicalName", "appId", null)]
-        public void GenerateLoginUrlThrowsOnInvalidSetupTest(string environmentId, string appLogicalName, string appId, string tenantId)
+        public void GenerateLoginUrlThrowsOnInvalidSetupTest(string? environmentId, string? appLogicalName, string? appId, string? tenantId)
         {
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(new TestSuiteDefinition() { AppLogicalName = appLogicalName, AppId = appId });

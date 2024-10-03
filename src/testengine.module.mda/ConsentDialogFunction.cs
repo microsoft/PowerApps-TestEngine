@@ -51,7 +51,8 @@ namespace testengine.module
             DateTime started = DateTime.Now;
 
             // Loop until either search item found, consent dialog found or timeout occurs
-            while (contentFrame == null) {
+            while (contentFrame == null)
+            {
                 // Search for the consent dialog IFrame
                 foreach (var frame in page.Frames)
                 {
@@ -61,7 +62,7 @@ namespace testengine.module
                         break;
                     }
                 }
-                
+
                 if (contentFrame == null)
                 {
                     if (await FindSearchItem(searchFor, page))
@@ -82,8 +83,10 @@ namespace testengine.module
             // TODO: Handle localization of label
             var allowButton = contentFrame.GetByRole(AriaRole.Button, new FrameGetByRoleOptions { Name = "Allow", Exact = true });
 
-            if (allowButton != null) {
-                if (await allowButton.IsEnabledAsync()) {
+            if (allowButton != null)
+            {
+                if (await allowButton.IsEnabledAsync())
+                {
                     _logger.LogInformation("Successfully finished executing ConsentDialog function.");
                     await allowButton.ClickAsync();
                 }

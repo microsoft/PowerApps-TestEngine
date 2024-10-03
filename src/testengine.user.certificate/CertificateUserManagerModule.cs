@@ -114,7 +114,7 @@ namespace testengine.user.environment
             {
                 cert = userCertificateProvider.RetrieveCertificateForUser(certName);
             }
-            else 
+            else
             {
                 logger.LogError("Certificate provider cannot be null. Please ensure certificate provider for user.");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
@@ -164,7 +164,7 @@ namespace testengine.user.environment
                 await workOrSchoolAccount.ClickAsync();
             }
             await Task.WhenAny(useCertificateAuth.WaitForAsync(), responseReceived.Task);
-            
+
 
             if (responseReceived.Task.IsCompletedSuccessfully)
             {
@@ -242,7 +242,7 @@ namespace testengine.user.environment
         {
             ValidatePage();
             await Page.Locator(selector).WaitForAsync();
-            await Page.TypeAsync(selector, value, new PageTypeOptions { Delay = 50 });
+            await Page.Locator(selector).PressSequentiallyAsync(value, new LocatorPressSequentiallyOptions { Delay = 50 });
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
         }
 
