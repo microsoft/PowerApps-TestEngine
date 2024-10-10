@@ -3,6 +3,7 @@
 
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -163,7 +164,15 @@ else
                 testState.LoadExtensionModules(logger);
                 userManagers = testState.GetTestEngineUserManager();
             }
-            return userManagers.Where(x => x.Name.Equals(userAuth)).First();
+
+            var match = userManagers.Where(x => x.Name.Equals(userAuth)).FirstOrDefault();
+
+            if (match == null)
+            {
+                throw new InvalidDataException($"Unable to find user auth {userAuth}");
+            }
+
+            return match;
         })
         .AddTransient<ITestWebProvider>(sp =>
         {
@@ -174,7 +183,16 @@ else
                 testState.LoadExtensionModules(logger);
                 testWebProviders = testState.GetTestEngineWebProviders();
             }
-            return testWebProviders.Where(x => x.Name.Equals(provider)).First();
+
+            var match = testWebProviders.Where(x => x.Name.Equals(provider)).FirstOrDefault();
+
+            if (match == null)
+            {
+                throw new InvalidDataException($"Unable to find provider {provider}");
+            }
+
+
+            return match;
         })
         .AddSingleton<IUserCertificateProvider>(sp =>
         {
@@ -185,7 +203,15 @@ else
                 testState.LoadExtensionModules(logger);
                 testAuthProviders = testState.GetTestEngineAuthProviders();
             }
-            return testAuthProviders.Where(x => x.Name.Equals(auth)).First();
+
+            var match = testAuthProviders.Where(x => x.Name.Equals(auth)).FirstOrDefault();
+
+            if (match == null)
+            {
+                throw new InvalidDataException($"Unable to find user certificate provider {auth}");
+            }
+
+            return match;
         })
         .AddSingleton<ITestState, TestState>()
         .AddSingleton<ITestReporter, TestReporter>()

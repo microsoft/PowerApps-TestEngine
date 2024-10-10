@@ -11,7 +11,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Determine if extension modules should be enabled
         /// </summary>
-        public bool Enable { get; set; } = false;
+        public bool Enable { get; set; } = true;
 
         public TestSettingExtensionSource Source { get; set; } = new TestSettingExtensionSource() { };
 
