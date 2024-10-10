@@ -1,4 +1,4 @@
-using Microsoft.PowerApps.TestEngine.TestInfra;
+﻿using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.Playwright;
 using Moq;
@@ -56,7 +56,7 @@ namespace testengine.module.browserlocale.tests
                     mockFillFrame.Setup(x => x.Locator("//foo", null)).Returns(MockLocator.Object);
 
                     MockLocator.Setup(x => x.IsVisibleAsync(null)).Returns(Task.FromResult(true));
-                    MockLocator.Setup(x => x.TypeAsync("xyz", It.IsAny<LocatorTypeOptions>())).Returns(Task.CompletedTask);
+                    MockLocator.Setup(x => x.PressSequentiallyAsync("xyz", It.IsAny<LocatorPressSequentiallyOptions>())).Returns(Task.CompletedTask);
                     break;
                 case "fill":
                     MockTestInfraFunctions.Setup(x => x.FillAsync("//foo", "xyz")).Returns(Task.CompletedTask);
@@ -79,7 +79,7 @@ namespace testengine.module.browserlocale.tests
                     MockLocator.Verify(x => x.ClickAsync(It.Is<LocatorClickOptions>(o => o.Delay >= 200)));
                     break;
                 case "fill-in-iframe":
-                    MockLocator.Verify(x => x.TypeAsync("xyz", It.Is<LocatorTypeOptions>(o => o.Delay >= 100)));
+                    MockLocator.Verify(x => x.PressSequentiallyAsync("xyz", It.Is<LocatorPressSequentiallyOptions>(o => o.Delay >= 100)));
                     break;
             }
         }
@@ -89,7 +89,7 @@ namespace testengine.module.browserlocale.tests
         [InlineData("//foo", "fill-in-iframe", "xyz", null, new string[] { }, true)]
         [InlineData("//foo", "fill", "xyz", null, new string[] { }, true)]
         [InlineData("//foo", "screenshot", @"test.jpg", null, new string[] { }, true)]
-        public void PlaywrightExecute(string locator, string action, string value, string scenario, string[] messages, bool standardEnd)
+        public void PlaywrightExecute(string locator, string action, string value, string? scenario, string[] messages, bool standardEnd)
         {
             // Arrange
 

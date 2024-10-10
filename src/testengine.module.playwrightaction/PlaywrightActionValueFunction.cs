@@ -62,7 +62,7 @@ namespace testengine.module
                     {
                         if (frame.Locator(locator.Value).IsVisibleAsync().Result)
                         { 
-                            frame.Locator(locator.Value).TypeAsync(value.Value, new LocatorTypeOptions { Delay = 100 }).Wait();
+                            frame.Locator(locator.Value).PressSequentiallyAsync(value.Value, new LocatorPressSequentiallyOptions { Delay = 100 }).Wait();
                         }
                     }
                     break;
