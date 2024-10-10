@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: testPlan Template
+  testSuiteDescription: Playwright action example
+  persona: User1
+  appLogicalName: new_buttonclicker_0a877
+  onTestSuiteComplete: Screenshot("playwrightaction_onTestSuiteComplete.png");
+
+  testCases:
+    - testCaseName: Run Script
+      testCaseDescription: Action examples
+      testSteps: |
+        = TestEngine.PlaywrightAction("//button", "wait");
+          
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password
