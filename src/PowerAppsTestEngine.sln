@@ -65,8 +65,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items (2)", "Solut
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{4E409805-A766-4F65-B058-C5264BA1F1CE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{65FAC4EC-553A-4293-8484-2427A76BB4A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.mda", "testengine.provider.mda\testengine.provider.mda.csproj", "{25CEB2CE-B6D5-4BE1-ACD7-3CF00441EF94}"
