@@ -11,9 +11,7 @@ Test Engine provides an extension model using [modules](./modules.md). Modules p
 
 ## Architecture
 
-The extension model of test engine can be visualized in the following way
-
-![Overview of Test Engine extension with Security checks for signed assemblies and Allow/Deny and MEF contracts for user authentication, providers and actions](./media/TestEngineOverview.svg)
+The extension model of test engine is via [Managed Extensibility Framework (MEF)](https://learn.microsoft.com/dotnet/framework/mef/). More information on how Power Fx modules fit into the overall architecture of Test Engine is available in the [Architecture](../Architecture.md)
 
 ### Security Checks
 
