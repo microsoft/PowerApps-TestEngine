@@ -208,7 +208,7 @@ else
         var testPlanFile = new FileInfo(inputOptions.TestPlanFile);
         var tenantId = Guid.Parse(inputOptions.TenantId);
         var environmentId = inputOptions.EnvironmentId;
-        var domain = "apps.powerapps.com";
+        var domain = string.Empty;
         var queryParams = "";
 
         DirectoryInfo outputDirectory;

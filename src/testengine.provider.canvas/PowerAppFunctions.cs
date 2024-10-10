@@ -458,6 +458,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public string GenerateTestUrl(string domain, string additionalQueryParams)
         {
             var environment = TestState.GetEnvironment();
+
+            if ( string.IsNullOrEmpty(domain) )
+            {
+                domain = "apps.powerapps.com";
+            }
+
             if (string.IsNullOrEmpty(environment))
             {
                 SingleTestInstanceState.GetLogger().LogError("Environment cannot be empty.");
