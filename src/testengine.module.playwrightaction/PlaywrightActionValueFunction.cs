@@ -7,6 +7,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
+using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
 
 namespace testengine.module
@@ -23,7 +24,7 @@ namespace testengine.module
         private readonly ILogger _logger;
 
         public PlaywrightActionValueFunction(ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestState testState, ILogger logger)
-            : base("PlaywrightActionValue", FormulaType.Blank, FormulaType.String, FormulaType.String, FormulaType.String)
+            : base(DPath.Root.Append(new DName("TestEngine")), "PlaywrightActionValue", FormulaType.Blank, FormulaType.String, FormulaType.String, FormulaType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _singleTestInstanceState = singleTestInstanceState;
