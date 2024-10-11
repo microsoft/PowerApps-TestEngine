@@ -15,7 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     /// Functions for interacting with the Power App Portal
     /// </summary>
     [Export(typeof(ITestWebProvider))]
-    public class PowerAppPortalFunctions : ITestWebProvider
+    public class PowerAppPortalProvider : ITestWebProvider
     {
         public string BaseEnviromentUrl { get; set; } = "";
 
@@ -29,12 +29,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ITestProviderState? ProviderState { get; set; }
 
-        public PowerAppPortalFunctions()
+        public PowerAppPortalProvider()
         {
 
         }
 
-        public PowerAppPortalFunctions(ITestInfraFunctions? testInfraFunctions, ISingleTestInstanceState? singleTestInstanceState, ITestState? testState)
+        public PowerAppPortalProvider(ITestInfraFunctions? testInfraFunctions, ISingleTestInstanceState? singleTestInstanceState, ITestState? testState)
         {
             this.TestInfraFunctions = testInfraFunctions;
             this.SingleTestInstanceState = singleTestInstanceState;

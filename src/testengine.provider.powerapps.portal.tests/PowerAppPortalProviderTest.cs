@@ -18,14 +18,14 @@ using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
-    public class PowerAppPortalFunctionsTest
+    public class PowerAppPortalProviderTest
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ITestState> MockTestState;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<ILogger> MockLogger;
 
-        public PowerAppPortalFunctionsTest()
+        public PowerAppPortalProviderTest()
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
@@ -38,7 +38,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public void ExpectedName()
         {
             // Arrange
-            var provider = new PowerAppPortalFunctions();
+            var provider = new PowerAppPortalProvider();
 
             // Act
             var name = provider.Name;
@@ -55,7 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public void GenerateExpectedTestUrlForDomainAndEnvironment(string domain, string environmentId, string expectedBaseUrl, string expectedParameters)
         {
             // Arrange
-            var provider = new PowerAppPortalFunctions(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var provider = new PowerAppPortalProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
 
             MockTestState.Setup(x => x.GetEnvironment()).Returns(environmentId);
             MockTestState.Setup(x => x.SetDomain(expectedBaseUrl));
