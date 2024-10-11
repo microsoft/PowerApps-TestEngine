@@ -1,14 +1,14 @@
-﻿using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx;
+﻿using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
-using Moq;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
+using Moq;
 using testengine.module.tests.common;
-using System.Text.RegularExpressions;
 
 namespace testengine.module.browserlocale.tests
 {
@@ -39,7 +39,8 @@ namespace testengine.module.browserlocale.tests
 
         private void RunTestScenario(string id)
         {
-            switch (id) {
+            switch (id)
+            {
                 case "click":
                     MockTestInfraFunctions.Setup(x => x.ClickAsync("//foo")).Returns(Task.CompletedTask);
                     break;
@@ -86,25 +87,25 @@ namespace testengine.module.browserlocale.tests
             RunTestScenario(scenario);
 
             // Act
-            function.Execute(StringValue.New(locator),StringValue.New(value));
+            function.Execute(StringValue.New(locator), StringValue.New(value));
 
             // Assert
             MockLogger.VerifyMessage(LogLevel.Information, "------------------------------\n\n" +
                 "Executing PlaywrightAction function.");
 
-            foreach ( var message in messages )
+            foreach (var message in messages)
             {
                 MockLogger.VerifyMessage(LogLevel.Information, message);
             }
-            
-            if ( standardEnd )
+
+            if (standardEnd)
             {
                 MockLogger.VerifyMessage(LogLevel.Information, "Successfully finished executing PlaywrightAction function.");
             }
         }
 
         [Theory]
-        [InlineData("about:blank",0, "//foo")]
+        [InlineData("about:blank", 0, "//foo")]
         [InlineData("about:blank,https://localhost", 1, "//foo")]
         [InlineData("about:blank,https://localhost,https://microsoft.com", 1, "//foo")]
         public void WaitPage(string pages, int waitOnPage, string locator)
@@ -134,7 +135,7 @@ namespace testengine.module.browserlocale.tests
                     mockPage.Setup(m => m.Url).Returns(page);
                 }
 
-                if ( index == waitOnPage )
+                if (index == waitOnPage)
                 {
                     mockPage.Setup(x => x.WaitForSelectorAsync(locator, null)).Returns(Task.FromResult<IElementHandle?>(null));
                 }

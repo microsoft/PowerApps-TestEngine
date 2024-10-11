@@ -1,17 +1,19 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerFx.Types;
-using Microsoft.PowerFx;
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.Extensions.Logging;
-using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.System;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using System.Reflection;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Utils;
+using Microsoft.PowerFx.Types;
 
 namespace testengine.module
 {
@@ -39,7 +41,7 @@ namespace testengine.module
             _logger.LogInformation("------------------------------\n\n" +
                 "Executing PlaywrightScript function.");
 
-            if ( !_filesystem.IsValidFilePath(file.Value) )
+            if (!_filesystem.IsValidFilePath(file.Value))
             {
                 _logger.LogError("Invalid file");
                 throw new ArgumentException("Invalid file");
@@ -50,33 +52,66 @@ namespace testengine.module
             var filename = GetFullFile(_testState, file.Value);
             var script = _filesystem.ReadAllText(filename);
 
-            byte[] assemblyBinaryContent;
+            var hash = ComputeSha256Hash(script);
 
-            _logger.LogDebug("Compiling file");
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 
-            ScriptOptions options = ScriptOptions.Default;
-            var roslynScript = CSharpScript.Create(script, options);
-            var compilation = roslynScript.GetCompilation();
-
-            compilation = compilation.WithOptions(compilation.Options
-            .WithOptimizationLevel(OptimizationLevel.Release)
-            .WithOutputKind(OutputKind.DynamicallyLinkedLibrary));
-
-            using (var assemblyStream = new MemoryStream())
+            var dllFile = Path.Combine(Path.GetDirectoryName(this.GetType().Assembly.Location), Path.GetFileNameWithoutExtension(filename) + $"-{hash}.dll");
+            if (!File.Exists(dllFile))
             {
-                var result = compilation.Emit(assemblyStream);
-                if (!result.Success)
+                _logger.LogDebug("Compiling file");
+
+                var a = Assembly.LoadFrom("Microsoft.CodeAnalysis.Scripting.dll");
+
+                // Get the current AppDomain
+                AppDomain currentDomain = AppDomain.CurrentDomain;
+
+                // Get all loaded assemblies in the current AppDomain
+                Assembly[] loadedAssemblies = currentDomain.GetAssemblies();
+
+                // Check for System.Collections.Immutable assembly
+                var immutableAssembly = loadedAssemblies
+                    .FirstOrDefault(asm => asm.GetName().Name == "System.Collections.Immutable");
+
+                if (immutableAssembly != null)
                 {
-                    var errors = string.Join(Environment.NewLine, result.Diagnostics.Select(x => x));
-                    throw new Exception("Compilation errors: " + Environment.NewLine + errors);
+                    // Get the version of the assembly
+                    Version version = immutableAssembly.GetName().Version;
+                    Console.WriteLine($"System.Collections.Immutable assembly is loaded. Version: {version}");
+                }
+                else
+                {
+                    Console.WriteLine("System.Collections.Immutable assembly is not loaded.");
                 }
 
-                assemblyBinaryContent = assemblyStream.ToArray();
+                ScriptOptions options = ScriptOptions.Default;
+                var roslynScript = CSharpScript.Create(script, options);
+                var compilation = roslynScript.GetCompilation();
+
+                compilation = compilation.WithOptions(compilation.Options
+                .WithOptimizationLevel(OptimizationLevel.Release)
+                .WithOutputKind(OutputKind.DynamicallyLinkedLibrary));
+
+                byte[] assemblyBinaryContent;
+                using (var assemblyStream = new MemoryStream())
+                {
+                    var result = compilation.Emit(assemblyStream);
+                    if (!result.Success)
+                    {
+                        var errors = string.Join(Environment.NewLine, result.Diagnostics.Select(x => x));
+                        throw new Exception("Compilation errors: " + Environment.NewLine + errors);
+                    }
+
+                    assemblyBinaryContent = assemblyStream.ToArray();
+                }
+                File.WriteAllBytes(dllFile, assemblyBinaryContent);
             }
+
 
             GC.Collect();
 
-            Assembly assembly = Assembly.Load(assemblyBinaryContent);
+
+            Assembly assembly = Assembly.LoadFile(dllFile);
 
             _logger.LogDebug("Run script");
             Run(assembly);
@@ -84,6 +119,34 @@ namespace testengine.module
             _logger.LogInformation("Successfully finished executing PlaywrightScript function.");
 
             return FormulaValue.NewBlank();
+        }
+
+        private static Assembly? CurrentDomain_AssemblyResolve(object? sender, ResolveEventArgs args)
+        {
+            string assemblyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, new AssemblyName(args.Name).Name + ".dll");
+            if (File.Exists(assemblyPath))
+            {
+                return Assembly.LoadFrom(assemblyPath);
+            }
+            return null;
+        }
+
+        static string ComputeSha256Hash(string rawData)
+        {
+            // Create a SHA256   
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                // ComputeHash - returns byte array  
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                // Convert byte array to a string   
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
         }
 
         private string GetFullFile(ITestState testState, string filename)
@@ -102,9 +165,9 @@ namespace testengine.module
             var types = assembly.GetTypes();
 
             bool found = false;
-            foreach ( var scriptType in types )
+            foreach (var scriptType in types)
             {
-                if ( scriptType.Name.Equals("PlaywrightScript") )
+                if (scriptType.Name.Equals("PlaywrightScript"))
                 {
                     found = true;
 
@@ -121,8 +184,9 @@ namespace testengine.module
                 }
             }
 
-            if ( !found ) {
-                 _logger.LogError("PlaywrightScript class not found");
+            if (!found)
+            {
+                _logger.LogError("PlaywrightScript class not found");
             }
         }
     }

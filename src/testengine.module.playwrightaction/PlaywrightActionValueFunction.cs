@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerFx.Types;
-using Microsoft.PowerFx;
-using Microsoft.Playwright;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
+using Microsoft.PowerFx.Types;
 
 namespace testengine.module
 {
@@ -53,7 +53,7 @@ namespace testengine.module
                     {
                         if (frame.Locator(locator.Value).IsVisibleAsync().Result)
                         {
-                            frame.Locator(locator.Value).ClickAsync(new LocatorClickOptions {  Delay = 200 }).Wait();
+                            frame.Locator(locator.Value).ClickAsync(new LocatorClickOptions { Delay = 200 }).Wait();
                         }
                     }
                     break;
@@ -61,7 +61,7 @@ namespace testengine.module
                     foreach (var frame in page.Frames)
                     {
                         if (frame.Locator(locator.Value).IsVisibleAsync().Result)
-                        { 
+                        {
                             frame.Locator(locator.Value).PressSequentiallyAsync(value.Value, new LocatorPressSequentiallyOptions { Delay = 100 }).Wait();
                         }
                     }

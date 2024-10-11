@@ -77,7 +77,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             {
                 BrowserConfigurations = new List<BrowserConfiguration>() { browserConfig },
                 RecordVideo = true,
-                Timeout = 15
+                Timeout = 15,
+                ExtensionModules = new TestSettingExtensions() { Enable = false }
             };
 
             var testResultsDirectory = "C:\\TestResults";

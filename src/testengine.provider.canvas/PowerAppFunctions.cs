@@ -459,7 +459,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             var environment = TestState.GetEnvironment();
 
-            if ( string.IsNullOrEmpty(domain) )
+            if (string.IsNullOrEmpty(domain))
             {
                 domain = "apps.powerapps.com";
             }

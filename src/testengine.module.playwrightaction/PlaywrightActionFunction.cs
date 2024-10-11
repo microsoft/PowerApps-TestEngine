@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.PowerFx.Types;
-using Microsoft.PowerFx;
-using Microsoft.Playwright;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Utils;
+using Microsoft.PowerFx.Types;
 
 namespace testengine.module
 {
@@ -41,10 +41,10 @@ namespace testengine.module
 
             IPage page = _testInfraFunctions.GetContext().Pages.First();
 
-            if ( page.Url.ToString() == "about:blank" && _testInfraFunctions.GetContext().Pages.Count() >= 2 )
+            if (page.Url.ToString() == "about:blank" && _testInfraFunctions.GetContext().Pages.Count() >= 2)
             {
                 _logger.LogInformation("Skipping blank first page");
-               page = _testInfraFunctions.GetContext().Pages.Skip(1).First();
+                page = _testInfraFunctions.GetContext().Pages.Skip(1).First();
             }
 
             switch (action.Value.ToLower())
@@ -56,7 +56,8 @@ namespace testengine.module
                 case "navigate":
                     _logger.LogInformation("Navigate to page");
                     string url = locator.Value;
-                    if ( url.IndexOf("{environment}") >=0 ) {
+                    if (url.IndexOf("{environment}") >= 0)
+                    {
                         var env = _testState.GetEnvironment();
                         url = url.Replace("{environment}", env);
                     }

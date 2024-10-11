@@ -1,12 +1,12 @@
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
-using Moq;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
+using Moq;
 
 namespace testengine.module.browserlocale.tests
 {

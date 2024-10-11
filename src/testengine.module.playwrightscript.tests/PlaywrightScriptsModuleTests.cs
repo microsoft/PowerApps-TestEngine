@@ -1,11 +1,11 @@
-using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
-using Moq;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
+using Moq;
 
 namespace testengine.module.browserlocale.tests
 {
@@ -67,9 +67,9 @@ namespace testengine.module.browserlocale.tests
 
             // Assert
             MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
-                It.IsAny<EventId>(), 
-                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Registered PlaywrightScript()"), 
-                It.IsAny<Exception>(), 
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Registered PlaywrightScript()"),
+                It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
         }
 
@@ -79,7 +79,7 @@ namespace testengine.module.browserlocale.tests
             // Arrange
             var module = new PlaywrightScriptModule();
 
-           
+
             // Act
             await module.RegisterNetworkRoute(MockTestState.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object, MockPage.Object, TestNetworkRequestMock);
 
