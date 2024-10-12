@@ -106,7 +106,7 @@ public class TestScript {
             Assert.Equal(expected, result);
         }
 
-        
+
         private string _functionTemplate = @"
 #r ""Microsoft.PowerFx.Interpreter.dll""
 using Microsoft.PowerFx;
@@ -124,11 +124,12 @@ using Microsoft.PowerFx.Core.Utils;
         [InlineData("", "*", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root.Append(new DName(\"Other\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", false)] // Deny all and not in allow list
         [InlineData("Other", "*", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root.Append(new DName(\"Other\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // Deny all and in allow list
         [InlineData("", "", "public class OtherFunction : ReflectionFunction { public OtherFunction(int someNumber) : base(DPath.Root.Append(new DName(\"TestEngine\")), \"Other\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // Allow TestEngine namespace with a parameter
-        public void ValidPowerFxFunction(string allow, string deny, string code, bool valid) {
+        public void ValidPowerFxFunction(string allow, string deny, string code, bool valid)
+        {
             // Arrange 
             var checker = new TestEngineExtensionChecker(MockLogger.Object);
 
-            var assembly = CompileScript(_functionTemplate.Replace("%CODE%",code));
+            var assembly = CompileScript(_functionTemplate.Replace("%CODE%", code));
 
             var settings = new TestSettingExtensions();
             settings.AllowPowerFxNamespaces.AddRange(allow.Split(','));

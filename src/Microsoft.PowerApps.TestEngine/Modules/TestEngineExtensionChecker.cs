@@ -1,25 +1,24 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.IO;
+using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using ICSharpCode.Decompiler;
+using ICSharpCode.Decompiler.CSharp;
+using ICSharpCode.Decompiler.Metadata;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
-using ICSharpCode.Decompiler.Metadata;
-using ICSharpCode.Decompiler.CSharp;
-
-using System.Reflection;
-using System.Reflection.PortableExecutable;
-using System.Reflection.Metadata;
+using MethodBody = Mono.Cecil.Cil.MethodBody;
 using ModuleDefinition = Mono.Cecil.ModuleDefinition;
 using TypeDefinition = Mono.Cecil.TypeDefinition;
 using TypeReference = Mono.Cecil.TypeReference;
-using MethodBody = Mono.Cecil.Cil.MethodBody;
-using System.IO;
 
 namespace Microsoft.PowerApps.TestEngine.Modules
 {
@@ -243,7 +242,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
             var valid = true;
 
-            if ( !VerifyContainsValidNamespacePowerFxFunctions(settings, contents) )
+            if (!VerifyContainsValidNamespacePowerFxFunctions(settings, contents))
             {
                 Logger.LogInformation("Invalid Power FX Namespace");
                 valid = false;
@@ -286,7 +285,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                 // Get the source code of the assembly as will be used to check Power FX Namespaces
                 var code = DecompileModuleToCSharp(assembly);
-                
+
                 foreach (TypeDefinition type in module.GetAllTypes())
                 {
                     if (type.BaseType != null && type.BaseType.Name == "ReflectionFunction")
@@ -301,14 +300,14 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                         var constructor = constructors.First();
 
-                        if ( !constructor.HasBody )
+                        if (!constructor.HasBody)
                         {
                             Logger.LogInformation($"No body defined for {type.Name}");
                             // Needs body for call to base constructor
                             return false;
                         }
 
-                        var baseCall = constructor.Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference && ((MethodReference)i.Operand).Name == ".ctor" );
+                        var baseCall = constructor.Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference && ((MethodReference)i.Operand).Name == ".ctor");
 
                         if (baseCall == null)
                         {
@@ -319,14 +318,14 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                         MethodReference baseConstructor = (MethodReference)baseCall.Operand;
 
-                        if ( baseConstructor.Parameters.Count() < 2 )
+                        if (baseConstructor.Parameters.Count() < 2)
                         {
                             // Not enough parameters
                             Logger.LogInformation($"No not enough parameters for {type.Name}");
                             return false;
                         }
 
-                        if (baseConstructor.Parameters[0].ParameterType.FullName != "Microsoft.PowerFx.Core.Utils.DPath" )
+                        if (baseConstructor.Parameters[0].ParameterType.FullName != "Microsoft.PowerFx.Core.Utils.DPath")
                         {
                             // First argument should be Namespace
                             Logger.LogInformation($"No Power FX Namespace for {type.Name}");
@@ -336,7 +335,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         // Use the decompiled code to get the values of the base constructor, specifically look for the namespace
                         var name = GetPowerFxNamespace(type.Name, code);
 
-                        if ( string.IsNullOrEmpty(name) )
+                        if (string.IsNullOrEmpty(name))
                         {
                             // No Power FX Namespace found
                             Logger.LogInformation($"No Power FX Namespace found for {type.Name}");
@@ -361,7 +360,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             return false;
                         }
 
-                        if ( !settings.AllowPowerFxNamespaces.Contains(name) && name != "TestEngine" )
+                        if (!settings.AllowPowerFxNamespaces.Contains(name) && name != "TestEngine")
                         {
                             Logger.LogInformation($"Not allow Power FX Namespace {name} for {type.Name}");
                             // Not in allow list or the Reserved TestEngine namespace
@@ -400,7 +399,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
             var match = lines.Where(l => l.Contains($"public {name}(")).FirstOrDefault();
 
-            if ( match == null )
+            if (match == null)
             {
                 return String.Empty;
             }
@@ -413,7 +412,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             // Search for the DName
             var declaration = lines[index + 1].IndexOf(baseDeclaration);
 
-            if ( declaration >= 0 )
+            if (declaration >= 0)
             {
                 // Found a match
                 var start = declaration + baseDeclaration.Length;
