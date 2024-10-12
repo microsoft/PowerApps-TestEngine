@@ -215,10 +215,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetDomain(string domain)
         {
-            if (string.IsNullOrEmpty(domain))
-            {
-                throw new ArgumentNullException(nameof(domain));
-            }
             Domain = domain;
         }
 

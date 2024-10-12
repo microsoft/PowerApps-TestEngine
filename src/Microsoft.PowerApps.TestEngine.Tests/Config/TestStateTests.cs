@@ -583,15 +583,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void SetDomainThrowsOnNullInput(string? domain)
-        {
-            var state = new TestState(MockTestConfigParser.Object);
-            Assert.Throws<ArgumentNullException>(() => state.SetDomain(domain));
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
         public void SetTenantThrowsOnNullInput(string? tenant)
         {
             var state = new TestState(MockTestConfigParser.Object);
