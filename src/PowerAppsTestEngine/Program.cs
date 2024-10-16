@@ -208,7 +208,7 @@ else
 
             if (match == null)
             {
-                throw new InvalidDataException($"Unable to find user certificate provider {auth}");
+                match = new DefaultUserCertificateProvider();
             }
 
             return match;
