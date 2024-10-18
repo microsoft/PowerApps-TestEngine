@@ -106,6 +106,40 @@ public class TestScript {
             Assert.Equal(expected, result);
         }
 
+
+        private string _functionTemplate = @"
+#r ""Microsoft.PowerFx.Interpreter.dll""
+using Microsoft.PowerFx;
+using Microsoft.PowerFx.Types;
+using Microsoft.PowerFx.Core.Utils;
+
+%CODE%";
+
+        [Theory]
+        [InlineData("Test", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(\"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", false)] // No namespace
+        [InlineData("Test", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root, \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", false)] // Root namespace
+        [InlineData("Test", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root.Append(new DName(\"Test\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // Non Root namespace
+        [InlineData("", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root.Append(new DName(\"TestEngine\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // Allow TestEngine namespace
+        [InlineData("", "", "public class FooFunction : ReflectionFunction { private FooFunction() : base(DPath.Root.Append(new DName(\"TestEngine\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", false)] // Private constructor - Not allow
+        [InlineData("", "*", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root.Append(new DName(\"Other\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", false)] // Deny all and not in allow list
+        [InlineData("Other", "*", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root.Append(new DName(\"Other\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // Deny all and in allow list
+        [InlineData("", "", "public class OtherFunction : ReflectionFunction { public OtherFunction(int someNumber) : base(DPath.Root.Append(new DName(\"TestEngine\")), \"Other\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // Allow TestEngine namespace with a parameter
+        public void ValidPowerFxFunction(string allow, string deny, string code, bool valid)
+        {
+            // Arrange 
+            var checker = new TestEngineExtensionChecker(MockLogger.Object);
+
+            var assembly = CompileScript(_functionTemplate.Replace("%CODE%", code));
+
+            var settings = new TestSettingExtensions();
+            settings.AllowPowerFxNamespaces.AddRange(allow.Split(','));
+            settings.DenyPowerFxNamespaces.AddRange(deny.Split(','));
+
+            var isValid = checker.VerifyContainsValidNamespacePowerFxFunctions(settings, assembly);
+
+            Assert.Equal(valid, isValid);
+        }
+
         [Theory]
         [InlineData(false, true, false, "CN=Test", "CN=Test", 0, 1, true)]
         [InlineData(false, false, false, "", "", 0, 1, true)]
@@ -198,7 +232,7 @@ public class TestScript {
             }
         }
 
-        private byte[] CompileScript(string script)
+        public static byte[] CompileScript(string script)
         {
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(script);
             ScriptOptions options = ScriptOptions.Default;
