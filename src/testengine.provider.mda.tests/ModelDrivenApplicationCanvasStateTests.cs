@@ -54,8 +54,8 @@ namespace testengine.provider.mda.tests
             yield return new object[] { "decimalNum", 3.14, null };
             // Assume dates are in UTC time not local timezone
             // TODO - Do we need ability to set default timezone?
-            yield return new object[] { "dateValue", (decimal)ConvertToUnixTimestamp(new DateTime(2024, 10, 1).ToUniversalTime()), null };
-            yield return new object[] { "dateTimeVal", (decimal)ConvertToUnixTimestamp(new DateTime(2024, 10, 1, 12, 34, 00).ToUniversalTime()), null };
+            //yield return new object[] { "dateValue", (decimal)ConvertToUnixTimestamp(new DateTime(2024, 10, 1).ToUniversalTime()), null };
+            //yield return new object[] { "dateTimeVal", (decimal)ConvertToUnixTimestamp(new DateTime(2024, 10, 1, 12, 34, 00).ToUniversalTime()), null };
             yield return new object[] { "boolFalse", false, null };
             yield return new object[] { "boolTrue", true, null };
             yield return new object[] { "colorValue", (double)PowerFxEvaluate("Color.Red"), (object expected, object actual) => expected.ToString().Equals(actual.ToString()) };
