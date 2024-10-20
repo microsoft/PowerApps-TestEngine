@@ -3,7 +3,6 @@
 
 using System.Dynamic;
 using System.Reflection;
-using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text;
 using Jint;
@@ -41,6 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
+            MockTestState.Setup(m => m.GetDomain()).Returns(String.Empty);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Loose);
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
@@ -54,7 +54,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(TestJavaScript))]
         public void ValidJavaScript(string javaScript, bool includeMocks, bool includeInterface, List<string> interfaceResourceNames = null)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             if (interfaceResourceNames == null)
             {
                 engine.Evaluate(Common.MockJavaScript(javaScript, "custom", includeMocks, includeInterface));
@@ -148,7 +148,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
         public async Task IsIdle(string javaScript, bool expectedIdle)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
@@ -171,7 +171,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
         public async Task IsReady(string javaScript, bool expectedIdle)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
@@ -199,7 +199,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(GetPropertyValueFromControlData))]
         public void GetPropertyValueFromControl(string javaScript, string controlName, string propertyName, object expectedResult)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
@@ -264,7 +264,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(GetControlData))]
         public async Task BuildEntityRecordControls(string javaScript, string controlName, string fields)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
@@ -354,7 +354,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(GetSetValueData))]
         public async Task SetValue(string javaScript, string controlName, string propertyName, string targetProperty, object value)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
@@ -564,7 +564,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(DebugInfoProperties))]
         public async Task DebugInfo(string propertyName, object expectedValue, string javaScript)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
