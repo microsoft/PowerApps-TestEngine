@@ -1,0 +1,30 @@
+testSuite:
+  testSuiteName: CoE Starter Kit Setup Wizard
+  testSuiteDescription: Verify custom page of CoE Starter Kit Setup Wizard and step through install
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Verify
+      testCaseDescription: Verify setup and upgrade Wizard of the CoE Starter Kit
+      testSteps: |
+        =
+        Set(configStep, 1); 
+        Assert(configStep=1);
+        TestEngine.Pause()
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 480000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

@@ -19,6 +19,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
     {
         private readonly ITestConfigParser _testConfigParser;
 
+        public event EventHandler<TestStepEventArgs> BeforeTestStepExecuted;
+        public event EventHandler<TestStepEventArgs> AfterTestStepExecuted;
+
         private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
         private string EnvironmentId { get; set; }
@@ -41,6 +44,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private List<IUserCertificateProvider> CertificateProviders { get; set; } = new List<IUserCertificateProvider>();
 
         private bool IsValid { get; set; } = false;
+
+        // Determine if Power FX expressions delimited by ; should be executed step by step
+        public bool ExecuteStepByStep { get; set; } = false;
 
         public TestState(ITestConfigParser testConfigParser)
         {
@@ -366,6 +372,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<IUserCertificateProvider> GetTestEngineAuthProviders()
         {
             return CertificateProviders;
+        }
+
+        public void OnBeforeTestStepExecuted(TestStepEventArgs e)
+        {
+            BeforeTestStepExecuted?.Invoke(this, e);
+        }
+
+        public void OnAfterTestStepExecuted(TestStepEventArgs e)
+        {
+            AfterTestStepExecuted?.Invoke(this, e);
         }
     }
 }

@@ -51,9 +51,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             symbols.EnableMutationFunctions();
             powerFxConfig.SymbolTable = symbols;
 
-            //TODO: Remove
+            // Enabled to allow ability to set variable and collection state that can be used with providers and as test variables
             powerFxConfig.EnableSetFunction();
-            //TODO: End
 
             powerFxConfig.AddFunction(new SelectOneParamFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
@@ -131,7 +130,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 testSteps = testSteps.Remove(0, 1);
             }
 
-            var goStepByStep = false;
+            var goStepByStep = TestState.ExecuteStepByStep;
 
             // Check if the syntax is correct
             var checkResult = Engine.Check(testSteps, null, GetPowerFxParserOptions(culture));
@@ -147,10 +146,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, checkResult, culture);
                 FormulaValue result = FormulaValue.NewBlank();
 
+                int stepNumber = 0;
+
                 foreach (var step in splitSteps)
                 {
+                    TestState.OnBeforeTestStepExecuted(new TestStepEventArgs { TestStep = step, StepNumber = stepNumber, Engine = Engine });
+
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
                     result = Engine.Eval(step, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
+
+                    TestState.OnAfterTestStepExecuted(new TestStepEventArgs { TestStep = step, Result = result, StepNumber = stepNumber, Engine = Engine });
+                    stepNumber++;
                 }
                 return result;
             }
@@ -158,7 +164,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 var values = new SymbolValues();
                 Logger.LogTrace($"Attempting:\n\n{{\n{testSteps}}}");
-                return Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
+                TestState.OnBeforeTestStepExecuted(new TestStepEventArgs { TestStep = testSteps, StepNumber = null, Engine = Engine });
+                var result = Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
+                TestState.OnAfterTestStepExecuted(new TestStepEventArgs { TestStep = testSteps, Result = result, StepNumber = 1 });
+                return result;
             }
         }
 
