@@ -292,13 +292,17 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     {
                         var constructors = type.GetConstructors();
 
-                        if (constructors.Count() != 1)
+                        if (constructors.Count() == 0)
                         {
-                            Logger.LogInformation($"No constructor defined for {type.Name}");
+                            Logger.LogInformation($"No constructor defined for {type.Name}. Found {constructors.Count()} expected 1 or more");
                             return false;
                         }
 
-                        var constructor = constructors.First();
+                        var constructor = constructors.Where(c => c.HasBody).FirstOrDefault();
+
+                        if (constructor == null) {
+                            Logger.LogInformation($"No constructor with a bosy");
+                        }
 
                         if (!constructor.HasBody)
                         {

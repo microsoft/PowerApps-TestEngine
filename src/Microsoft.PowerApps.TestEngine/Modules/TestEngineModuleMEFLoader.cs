@@ -78,6 +78,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                                 {
                                     if (!Checker.Validate(settings, file))
                                     {
+                                        _logger.LogInformation($"Skipping {file}");
                                         continue;
                                     }
                                 }
