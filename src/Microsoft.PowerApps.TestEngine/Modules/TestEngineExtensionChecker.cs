@@ -300,7 +300,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                         var constructor = constructors.Where(c => c.HasBody).FirstOrDefault();
 
-                        if (constructor == null) {
+                        if (constructor == null)
+                        {
                             Logger.LogInformation($"No constructor with a bosy");
                         }
 

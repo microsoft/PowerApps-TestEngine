@@ -43,12 +43,14 @@ namespace testengine.module
 
         private async Task ExecuteAsync(StringValue section)
         {
-            foreach (var page in _testInfraFunctions.GetContext().Pages) {
+            foreach (var page in _testInfraFunctions.GetContext().Pages)
+            {
                 var url = page.Url;
                 var sectionName = section.Value.ToString();
 
                 // TODO: Handle case section is not visible in the left navigation. If not consider adding steps to make visible from extra options in the portal
-                if (url.Contains("powerapps.com") && url.Contains("/environments") && url.Contains("/home")) {
+                if (url.Contains("powerapps.com") && url.Contains("/environments") && url.Contains("/home"))
+                {
                     var selector = $"[data-test-id='{sectionName}']";
                     await page.WaitForSelectorAsync($"{selector}:visible");
 

@@ -45,7 +45,7 @@ namespace testengine.module.powerappsportal.tests
             MockPage.Setup(x => x.ClickAsync("[data-test-id='solutions']", null)).Returns(Task.CompletedTask);
 
             var function = new SelectSectionFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
-  
+
             // Act
             function.Execute(FormulaValue.New("solutions"));
 
