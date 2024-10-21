@@ -1,0 +1,245 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - DatePickerCanvas Control
+  testSuiteDescription: Verify test cases for DatePickerCanvas Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:    
+
+    - testCaseName: Test AccessibleLabel Property
+      testCaseDescription: Verify that the AccessibleLabel property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.AccessibleLabel, "Select Date");
+        Assert(DatePickerCanvas1.AccessibleLabel = "Select Date", "Checking the AccessibleLabel property");
+
+    - testCaseName: Test X Position Property
+      testCaseDescription: Verify that the X position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.X, 100);
+        Assert(DatePickerCanvas1.X = 100, "Checking the X position");
+
+    - testCaseName: Test Y Position Property
+      testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Y, 150);
+        Assert(DatePickerCanvas1.Y = 150, "Checking the Y position");
+
+    - testCaseName: Test SelectedDate Property
+      testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.SelectedDate, Date(2024,10,01));
+        Assert(DatePickerCanvas1.SelectedDate = Date(2024,10,01), "Checking the SelectedDate property");
+
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the Visible property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Visible, true);
+        Assert(DatePickerCanvas1.Visible = true, "Checking the Visible property");
+
+    - testCaseName: Test Placeholder Property
+      testCaseDescription: Verify that the Placeholder property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Placeholder, "Choose a date...");
+        Assert(DatePickerCanvas1.Placeholder = "Choose a date...", "Checking the Placeholder property");
+
+    - testCaseName: Test BorderColor Property
+      testCaseDescription: Verify that the BorderColor property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.BorderColor, ColorValue("Red"));
+        Assert(DatePickerCanvas1.BorderColor = ColorValue("Red"), "Checking the BorderColor property");
+
+    - testCaseName: Test Width Property
+      testCaseDescription: Verify that the Width property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Width, 200);
+        Assert(DatePickerCanvas1.Width = 200, "Checking the Width property");
+
+    - testCaseName: Test Height Property
+      testCaseDescription: Verify that the Height property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Height, 50);
+        Assert(DatePickerCanvas1.Height = 50, "Checking the Height property");
+
+    - testCaseName: Test Appearance Property
+      testCaseDescription: Verify that the Appearance property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Appearance, "Primary");
+        Assert(DatePickerCanvas1.Appearance = "Primary", "Checking the Appearance property");
+
+    - testCaseName: Test BasePaletteColor Property
+      testCaseDescription: Verify that the BasePaletteColor property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.BasePaletteColor, ColorValue("Red"));
+        Assert(DatePickerCanvas1.BasePaletteColor = ColorValue("Red"), "Checking the BasePaletteColor property");
+
+    - testCaseName: Test BorderRadius Property
+      testCaseDescription: Verify that the BorderRadius property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.BorderRadius, 5);
+        Assert(DatePickerCanvas1.BorderRadius = 5, "Checking the BorderRadius property");
+
+    - testCaseName: Test BorderStyle Property
+      testCaseDescription: Verify that the BorderStyle property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.BorderStyle, "Solid");
+        Assert(DatePickerCanvas1.BorderStyle = "Solid", "Checking the BorderStyle property");
+
+    - testCaseName: Test BorderThickness Property
+      testCaseDescription: Verify that the BorderThickness property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.BorderThickness, 2);
+        Assert(DatePickerCanvas1.BorderThickness = 2, "Checking the BorderThickness property");
+
+    - testCaseName: Test ContentLanguage Property
+      testCaseDescription: Verify that the ContentLanguage property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.ContentLanguage, "en-US");
+        Assert(DatePickerCanvas1.ContentLanguage = "en-US", "Checking the ContentLanguage property");
+
+    - testCaseName: Test DisplayMode Property
+      testCaseDescription: Verify that the DisplayMode property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.DisplayMode, "Edit");
+        Assert(DatePickerCanvas1.DisplayMode = "Edit", "Checking the DisplayMode property");
+
+    - testCaseName: Test EndDate Property
+      testCaseDescription: Verify that the EndDate property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.EndDate, Date(2050,12,31));
+        Assert(DatePickerCanvas1.EndDate = Date(2050,12,31), "Checking the EndDate property");
+
+    - testCaseName: Test Fill Property
+      testCaseDescription: Verify that the Fill property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Fill, ColorValue("Blue"));
+        Assert(DatePickerCanvas1.Fill = ColorValue("Blue"), "Checking the Fill property");
+
+    - testCaseName: Test Font Property
+      testCaseDescription: Verify that the Font property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Font, "Arial");
+        Assert(DatePickerCanvas1.Font = "Arial", "Checking the Font property");
+
+    - testCaseName: Test FontColor Property
+      testCaseDescription: Verify that the FontColor property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.FontColor, ColorValue("Black"));
+        Assert(DatePickerCanvas1.FontColor = ColorValue("Black"), "Checking the FontColor property");
+
+    - testCaseName: Test FontItalic Property
+      testCaseDescription: Verify that the FontItalic property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.FontItalic, true);
+        Assert(DatePickerCanvas1.FontItalic = true, "Checking the FontItalic property");
+
+    - testCaseName: Test FontSize Property
+      testCaseDescription: Verify that the FontSize property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.FontSize, 14);
+        Assert(DatePickerCanvas1.FontSize = 14, "Checking the FontSize property");
+
+    - testCaseName: Test FontStrikethrough Property
+      testCaseDescription: Verify that the FontStrikethrough property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.FontStrikethrough, true);
+        Assert(DatePickerCanvas1.FontStrikethrough = true, "Checking the FontStrikethrough property");
+
+    - testCaseName: Test FontUnderline Property
+      testCaseDescription: Verify that the FontUnderline property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.FontUnderline, true);
+        Assert(DatePickerCanvas1.FontUnderline = true, "Checking the FontUnderline property");
+
+    - testCaseName: Test FontWeight Property
+      testCaseDescription: Verify that the FontWeight property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.FontWeight, "Bold");
+        Assert(DatePickerCanvas1.FontWeight = "Bold", "Checking the FontWeight property");
+
+    - testCaseName: Test Format Property
+      testCaseDescription: Verify that the Format property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Format, "MM/DD/YYYY");
+        Assert(DatePickerCanvas1.Format = "MM/DD/YYYY", "Checking the Format property");
+
+    - testCaseName: Test IsEditable Property
+      testCaseDescription: Verify that the IsEditable property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.IsEditable, true);
+        Assert(DatePickerCanvas1.IsEditable = true, "Checking the IsEditable property");
+
+    - testCaseName: Test PCFTeamsTheme Property
+      testCaseDescription: Verify that the PCFTeamsTheme property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.PCFTeamsTheme, "Default");
+        Assert(DatePickerCanvas1.PCFTeamsTheme = "Default", "Checking the PCFTeamsTheme property");
+
+    - testCaseName: Test Padding Properties
+      testCaseDescription: Verify that the Padding properties (Top, Bottom, Left, Right) can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.PaddingTop, 10);
+        Assert(DatePickerCanvas1.PaddingTop = 10, "Checking the PaddingTop property");
+        SetProperty(DatePickerCanvas1.PaddingBottom, 10);
+        Assert(DatePickerCanvas1.PaddingBottom = 10, "Checking the PaddingBottom property");
+        SetProperty(DatePickerCanvas1.PaddingLeft, 10);
+        Assert(DatePickerCanvas1.PaddingLeft = 10, "Checking the PaddingLeft property");
+        SetProperty(DatePickerCanvas1.PaddingRight, 10);
+        Assert(DatePickerCanvas1.PaddingRight = 10, "Checking the PaddingRight property");
+
+    - testCaseName: Test Required Property
+      testCaseDescription: Verify that the Required property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Required, true);
+        Assert(DatePickerCanvas1.Required = true, "Checking the Required property");
+
+    - testCaseName: Test StartDate Property
+      testCaseDescription: Verify that the StartDate property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.StartDate, Date(2000,12,31));
+        Assert(DatePickerCanvas1.StartDate = Date(2000,12,31), "Checking the StartDate property");
+
+    - testCaseName: Test StartOfWeek Property
+      testCaseDescription: Verify that the StartOfWeek property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.StartOfWeek, "Monday");
+        Assert(DatePickerCanvas1.StartOfWeek = "Monday", "Checking the StartOfWeek property");
+
+    - testCaseName: Test TabIndex Property
+      testCaseDescription: Verify that the TabIndex property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.TabIndex, 1);
+        Assert(DatePickerCanvas1.TabIndex = 1, "Checking the TabIndex property");
+
+    - testCaseName: Test Tooltip Property
+      testCaseDescription: Verify that the Tooltip property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.Tooltip, "Select a date");
+        Assert(DatePickerCanvas1.Tooltip = "Select a date", "Checking the Tooltip property");
+
+    - testCaseName: Test ValidationState Property
+      testCaseDescription: Verify that the ValidationState property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.ValidationState, "Valid");
+        Assert(DatePickerCanvas1.ValidationState = "Valid", "Checking the ValidationState property");
+
+    - testCaseName: Test ZIndex Property
+      testCaseDescription: Verify that the ZIndex property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePickerCanvas1.ZIndex, 10);
+        Assert(DatePickerCanvas1.ZIndex = 10, "Checking the ZIndex property");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

@@ -1,0 +1,77 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Rating1 Control
+  testSuiteDescription: Verify test cases for Rating1 Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    # Positive Test Cases
+
+    - testCaseName: Test Max Property
+      testCaseDescription: Verify that the Max property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Rating1.Max, 5);
+        Assert(Rating1.Max = 5, "Checking that Max property is set correctly");
+
+    - testCaseName: Test Value Property
+      testCaseDescription: Verify that the Value property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Rating1.Value, 3);
+        Assert(Rating1.Value = 3, "Checking that Value property is set correctly");
+        SetProperty(Rating1.Value, 5);
+        Assert(Rating1.Value = 5, "Checking that Value property is set correctly");
+        SetProperty(Rating1.Value, 1);
+        Assert(Rating1.Value = 1, "Checking that Value property is set correctly");
+
+    - testCaseName: Test OnChange Event
+      testCaseDescription: Verify that the OnChange event triggers as expected when the rating is changed.
+      testSteps: |
+        SetProperty(Rating1.OnChange, Notify( "Thanks for Changing Ratings!" ))
+        SetProperty(Rating1.Value, 4);        
+        # Assert(EventTriggered(Rating1.OnChange), "Checking OnChange event triggered on value change");
+
+    - testCaseName: Test OnSelect Event
+      testCaseDescription: Verify that the OnSelect event triggers as expected when a rating is selected.
+      testSteps: |
+        SetProperty(Rating1.OnSelect, Notify( "Thanks for Ratings!" ))
+        Select(Rating1);        
+        Assert(NotificationMessage = "Thanks for Ratings!", "Checking OnSelect event triggered");
+
+
+    # Negative Test Cases
+
+    - testCaseName: Test Invalid Max Property
+      testCaseDescription: Verify that setting a negative value for Max property throws an error or does not set.
+      testSteps: |
+        SetProperty(Rating1.Max, -1);
+        Assert(!Assert(Rating1.Max, -1), "Negative Max value should not be accepted");
+
+    # - testCaseName: Test Out-of-Range Value Property
+    #   testCaseDescription: Verify that setting a Value higher than Max does not apply.
+    #   testSteps: |
+    #     SetProperty(Rating1.Max, 5);
+    #     SetProperty(Rating1.Value, 7);
+    #     Assert(Rating1.Value <= Rating1.Max, "Value should not exceed Max property");
+
+    # - testCaseName: Test OnChange Event Without Value Change
+    #   testCaseDescription: Verify that the OnChange event does not trigger when no change in value occurs.
+    #   testSteps: |
+    #     SetProperty(Rating1.Value, 3);
+    #     FireEvent(Rating1.OnChange);
+    #     Assert(!EventTriggered(Rating1.OnChange), "OnChange should not trigger without value change");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

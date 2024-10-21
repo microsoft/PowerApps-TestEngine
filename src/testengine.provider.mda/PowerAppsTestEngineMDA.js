@@ -138,7 +138,7 @@ class PowerAppsModelDrivenCanvas {
             // Get parent replicated context
             replicatedContexts = OpenAjax.widget.byId(itemPath.parentControl.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext.bindingContextAt(itemPath.parentControl.index).replicatedContexts;
         }
-
+        /*var obj = appMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, appMagic.Controls.GlobalContextManager.bindingContext);*/
         var replicatedContext = OpenAjax.widget.byId(itemPath.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext;
 
         if (!replicatedContext) {
@@ -148,6 +148,18 @@ class PowerAppsModelDrivenCanvas {
 
         var managerId = replicatedContext.manager.managerId;
         return replicatedContexts[managerId].getBindingContextCount()
+    }
+
+    static getArrayItemCount(itemPath) {
+        var arrayValue = PowerAppsModelDrivenCanvas.getPropertyValueFromControl(itemPath);
+
+        if (arrayValue != null && arrayValue != undefined) {
+            return arrayValue.propertyValue.length;
+        }
+        else {
+            return null;
+        }
+         
     }
 
     static getBindingContext(itemPath) {
@@ -256,9 +268,11 @@ class PowerAppsModelDrivenCanvas {
             // Component
             var componentBindingContext = appMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(itemPath.parentControl.controlName);
             return (appMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, componentBindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, componentBindingContext));
-        }
-
-        return appMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, appMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, appMagic.Controls.GlobalContextManager.bindingContext);
+        }      
+       
+        var obj = appMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, appMagic.Controls.GlobalContextManager.bindingContext);
+        var response = obj.OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, appMagic.Controls.GlobalContextManager.bindingContext);        
+        return response;
     }
 
     static interactWithControl(itemPath, value) {
@@ -454,7 +468,7 @@ class PowerAppsTestEngine {
     static getItemCount(itemPath) {
         switch (PowerAppsTestEngine.pageType()) {
             case 'custom':
-                return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
+                return PowerAppsModelDrivenCanvas.getArrayItemCount(itemPath);
             case 'entitylist':
                 return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
             case 'entityrecord':

@@ -262,6 +262,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
                     case (TableType):
                         return await SetPropertyTableAsync(itemPath, (TableValue)value);
+                    case (ColorType):
+                        objectValue = ((ColorValue)value).Value;
+                        break;
                     default:
                         throw new ArgumentException("SetProperty must be a valid type.");
                 }

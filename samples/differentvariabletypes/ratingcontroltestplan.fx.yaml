@@ -1,0 +1,203 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Rating Control
+  testSuiteDescription: Verify test cases for Rating Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:    
+
+    # - testCaseName: Test AcceptsFocus Property
+    #   testCaseDescription: Verify that the AcceptsFocus property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.AcceptsFocus, true);
+    #     Assert( Rating1.AcceptsFocus = true, "Checking the AcceptsFocus property");
+
+    - testCaseName: Test Value Property
+      testCaseDescription: Verify that the Value property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty( Rating1.Default, 4);
+        Assert( Rating1.Default = 4, "Checking the Value property");
+
+    - testCaseName: Test CheckedFill Property
+      testCaseDescription: Verify that the CheckedFill property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Rating1.RatingFill, ColorValue("Green"));      
+        Assert(Rating1.RatingFill = ColorValue("Green") , "Checking the CheckedFill property"); 
+
+    # - testCaseName: Test AccessibleLabel Property
+    #   testCaseDescription: Verify that the AccessibleLabel property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.AccessibleLabel, "Rate this item");
+    #     Assert( Rating1.AccessibleLabel = "Rate this item", "Checking the AccessibleLabel property");
+          
+
+    # - testCaseName: Test ContentLanguage Property
+    #   testCaseDescription: Verify that the ContentLanguage property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.ContentLanguage, "en-US");
+    #     Assert( Rating1.ContentLanguage = "en-US", "Checking the ContentLanguage property");
+
+    # - testCaseName: Test DisabledFill Property
+    #   testCaseDescription: Verify that the DisabledFill property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.DisabledFill, ColorValue("Gray"));
+    #     Assert( true, "Checking the DisabledFill property");
+
+    # - testCaseName: Test DisplayMode Property
+    #   testCaseDescription: Verify that the DisplayMode property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.DisplayMode, "View");
+    #     Assert( Rating1.DisplayMode = "View", "Checking the DisplayMode property");
+
+    # - testCaseName: Test Height Property
+    #   testCaseDescription: Verify that the Height property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.Height, 50);
+    #     Assert( Rating1.Height = 50, "Checking the Height property");
+
+    # - testCaseName: Test HoverFill Property
+    #   testCaseDescription: Verify that the HoverFill property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.HoverFill, ColorValue("Yellow"));
+    #     Assert( true, "Checking the HoverFill property");
+
+    # - testCaseName: Test Max Property
+    #   testCaseDescription: Verify that the Max property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.Max, 5);
+    #     Assert( Rating1.Max = 5, "Checking the Max property");
+
+    # - testCaseName: Test PCFTeamsTheme Property
+    #   testCaseDescription: Verify that the PCFTeamsTheme property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.PCFTeamsTheme, "Default");
+    #     Assert( Rating1.PCFTeamsTheme = "Default", "Checking the PCFTeamsTheme property");
+
+    # - testCaseName: Test Padding Properties
+    #   testCaseDescription: Verify that the Padding properties (Bottom, End, Start, Top) can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.PaddingBottom, 10);
+    #     Assert( Rating1.PaddingBottom = 10, "Checking the PaddingBottom property");
+    #     SetProperty( Rating1.PaddingEnd, 10);
+    #     Assert( Rating1.PaddingEnd = 10, "Checking the PaddingEnd property");
+    #     SetProperty( Rating1.PaddingStart, 10);
+    #     Assert( Rating1.PaddingStart = 10, "Checking the PaddingStart property");
+    #     SetProperty( Rating1.PaddingTop, 10);
+    #     Assert( Rating1.PaddingTop = 10, "Checking the PaddingTop property");
+
+    # - testCaseName: Test Size Property
+    #   testCaseDescription: Verify that the Size property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.Size, 24);
+    #     Assert( Rating1.Size = 24, "Checking the Size property");
+
+    # - testCaseName: Test TabIndex Property
+    #   testCaseDescription: Verify that the TabIndex property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.TabIndex, 1);
+    #     Assert( Rating1.TabIndex = 1, "Checking the TabIndex property");
+
+    # - testCaseName: Test Tooltip Property
+    #   testCaseDescription: Verify that the Tooltip property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.Tooltip, "Rate this item");
+    #     Assert( Rating1.Tooltip = "Rate this item", "Checking the Tooltip property");
+
+    # - testCaseName: Test UncheckedFill Property
+    #   testCaseDescription: Verify that the UncheckedFill property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.UncheckedFill, ColorValue("Orange"));
+    #     Assert( true, "Checking the UncheckedFill property");
+
+    # - testCaseName: Test Visible Property
+    #   testCaseDescription: Verify that the Visible property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.Visible, true);
+    #     Assert( Rating1.Visible = true, "Checking the Visible property");
+
+    # - testCaseName: Test Width Property
+    #   testCaseDescription: Verify that the Width property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.Width, 200);
+    #     Assert( Rating1.Width = 200, "Checking the Width property");
+
+    # - testCaseName: Test X Position Property
+    #   testCaseDescription: Verify that the X position can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.X, 100);
+    #     Assert( Rating1.X = 100, "Checking the X position");
+
+    # - testCaseName: Test Y Position Property
+    #   testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.Y, 150);
+    #     Assert( Rating1.Y = 150, "Checking the Y position");
+
+    # - testCaseName: Test ZIndex Property
+    #   testCaseDescription: Verify that the ZIndex property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty( Rating1.ZIndex, 2);
+    #     Assert( Rating1.ZIndex = 2, "Checking the ZIndex property");
+
+    # Negative Test Cases
+
+    # - testCaseName: Test Invalid Max Property
+    #   testCaseDescription: Verify that setting an invalid value for the Max property throws an error or does not set.
+    #   testSteps: |
+    #     SetProperty( Rating1.Max, -1);
+    #     Assert( Rating1.Max != -1, "Checking that invalid Max value is not accepted");
+
+    # - testCaseName: Test Non-Boolean AcceptsFocus Property
+    #   testCaseDescription: Verify that setting a non-boolean value to the AcceptsFocus property throws an error.
+    #   testSteps: |
+    #     SetProperty( Rating1.AcceptsFocus, "NotBoolean");
+    #     Assert( Rating1.AcceptsFocus != "NotBoolean", "Checking that non-boolean value is not accepted for AcceptsFocus property");
+
+    # - testCaseName: Test Out-of-Range Value Property
+    #   testCaseDescription: Verify that setting a value outside the Max range does not set.
+    #   testSteps: |
+    #     SetProperty( Rating1.Max, 5);
+    #     SetProperty( Rating1.Value, 10);
+    #     Assert( Rating1.Value <= 5, "Checking that out-of-range Value is not accepted");
+
+    # - testCaseName: Test Invalid Data Type for Width Property
+    #   testCaseDescription: Verify that setting a non-numeric value to the Width property throws an error.
+    #   testSteps: |
+    #     SetProperty( Rating1.Width, "InvalidWidth");
+    #     Assert( Rating1.Width != "InvalidWidth", "Checking that non-numeric value is not accepted for Width property");
+
+    # - testCaseName: Test Negative Values for X and Y Position
+    #   testCaseDescription: Verify that setting negative values for X and Y position throws an error or shows a validation message.
+    #   testSteps: |
+    #     SetProperty( Rating1.X, -50);
+    #     Assert( Rating1.X >= 0, "Checking that negative X position is not accepted");
+    #     SetProperty( Rating1.Y, -50);
+    #     Assert( Rating1.Y >= 0, "Checking that negative Y position is not accepted");
+
+    # - testCaseName: Test Invalid ContentLanguage Property
+    #   testCaseDescription: Verify that setting an unsupported language to the ContentLanguage property throws an error.
+    #   testSteps: |
+    #     SetProperty( Rating1.ContentLanguage, "InvalidLanguage");
+    #     Assert( Rating1.ContentLanguage != "InvalidLanguage", "Checking that invalid ContentLanguage is not accepted");
+
+    # - testCaseName: Test Invalid ZIndex Property
+    #   testCaseDescription: Verify that setting a non-integer value to the ZIndex property throws an error.
+    #   testSteps: |
+    #     SetProperty( Rating1.ZIndex, "InvalidZIndex");
+    #     Assert( Rating1.ZIndex != "InvalidZIndex", "Checking that non-integer value is not accepted for ZIndex property");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

@@ -1,0 +1,37 @@
+testSuite:
+  testSuiteName: Suite
+  testSuiteDescription: CanvasApp Testing
+  persona: User1
+  appLogicalName: cr693_differentvariabletypes_09b4b
+  testCases:
+  - testCaseName: Case
+    testCaseDescription: ''
+    testSteps: |
+      = 
+      SetProperty('ComboBox1'.SelectedItems, Table({'Value1':"Item 8",'Value2':8,'Value3':80}));
+      SetProperty('ComboBox1'.SelectedItems, Table({'Value1':"Item 8",'Value2':8,'Value3':80},{'Value1':"Item 10",'Value2':10,'Value3':100}));
+      SetProperty('ListBox1'.SelectedItems, Table({'Value':"1"},{'Value':"3"}));
+      Select('ListBox1');
+      SetProperty('Toggle1'.Value, true);
+      Select('Toggle1');
+      SetProperty('Dropdown1'.Selected, {'Value':"3"});
+      SetProperty('TextInput1'.Text, "Welcome");
+      SetProperty('Rating1'.Value, 5);
+      SetProperty('DatePicker1'.SelectedDate, Date(2030,1,30));
+      Select('DatePicker1');
+      Select('Button1');
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge 
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

@@ -1,0 +1,247 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - DatePickerCanvas Control
+  testSuiteDescription: Verify test cases for DatePickerCanvas Control
+  persona: User1
+  appLogicalName: cr693_differentvariabletypes_09b4b
+
+  testCases:  
+
+    # - testCaseName: Test AccessibleLabel Property
+    #   testCaseDescription: Verify that the AccessibleLabel property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.AccessibleLabel, "Select Date");
+    #     Assert(DatePicker1.AccessibleLabel = "Select Date", "Checking the AccessibleLabel property");
+
+    # - testCaseName: Test X Position Property
+    #   testCaseDescription: Verify that the X position can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.X, 100);
+    #     Assert(DatePicker1.X = 100, "Checking the X position");
+
+    # - testCaseName: Test Y Position Property
+    #   testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Y, 150);
+    #     Assert(DatePicker1.Y = 150, "Checking the Y position");
+
+    - testCaseName: Test SelectedDate Property
+      testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly.
+      testSteps: |
+        Wait(DatePicker1, "SelectedDate", Date(2024, 09, 01));
+        SetProperty(DatePicker1.SelectedDate, Date(2024,09,02));
+        Assert(DatePicker1.SelectedDate = Date(2024,09,02), "Checking the SelectedDate property");
+
+    # - testCaseName: Test Visible Property
+    #   testCaseDescription: Verify that the Visible property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Visible, true);
+    #     Assert(DatePicker1.Visible = true, "Checking the Visible property");
+
+    # - testCaseName: Test Placeholder Property
+    #   testCaseDescription: Verify that the Placeholder property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Placeholder, "Choose a date...");
+    #     Assert(DatePicker1.Placeholder = "Choose a date...", "Checking the Placeholder property");
+
+    # - testCaseName: Test BorderColor Property
+    #   testCaseDescription: Verify that the BorderColor property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.BorderColor, ColorValue("Red"));
+    #     Assert(DatePicker1.BorderColor = ColorValue("Red"), "Checking the BorderColor property");
+
+    # - testCaseName: Test Width Property
+    #   testCaseDescription: Verify that the Width property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Width, 200);
+    #     Assert(DatePicker1.Width = 200, "Checking the Width property");
+
+    # - testCaseName: Test Height Property
+    #   testCaseDescription: Verify that the Height property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Height, 50);
+    #     Assert(DatePicker1.Height = 50, "Checking the Height property");
+
+    # - testCaseName: Test Appearance Property
+    #   testCaseDescription: Verify that the Appearance property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Appearance, "Primary");
+    #     Assert(DatePicker1.Appearance = "Primary", "Checking the Appearance property");
+
+    # - testCaseName: Test BasePaletteColor Property
+    #   testCaseDescription: Verify that the BasePaletteColor property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.BasePaletteColor, ColorValue("Red"));
+    #     Assert(DatePicker1.BasePaletteColor = ColorValue("Red"), "Checking the BasePaletteColor property");
+
+    # - testCaseName: Test BorderRadius Property
+    #   testCaseDescription: Verify that the BorderRadius property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.BorderRadius, 5);
+    #     Assert(DatePicker1.BorderRadius = 5, "Checking the BorderRadius property");
+
+    # - testCaseName: Test BorderStyle Property
+    #   testCaseDescription: Verify that the BorderStyle property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.BorderStyle, "Solid");
+    #     Assert(DatePicker1.BorderStyle = "Solid", "Checking the BorderStyle property");
+
+    # - testCaseName: Test BorderThickness Property
+    #   testCaseDescription: Verify that the BorderThickness property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.BorderThickness, 2);
+    #     Assert(DatePicker1.BorderThickness = 2, "Checking the BorderThickness property");
+
+    # - testCaseName: Test ContentLanguage Property
+    #   testCaseDescription: Verify that the ContentLanguage property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.ContentLanguage, "en-US");
+    #     Assert(DatePicker1.ContentLanguage = "en-US", "Checking the ContentLanguage property");
+
+    # - testCaseName: Test DisplayMode Property
+    #   testCaseDescription: Verify that the DisplayMode property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.DisplayMode, "Edit");
+    #     Assert(DatePicker1.DisplayMode = "Edit", "Checking the DisplayMode property");
+
+    # - testCaseName: Test EndDate Property
+    #   testCaseDescription: Verify that the EndDate property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.EndDate, Date(2050,12,31));
+    #     Assert(DatePicker1.EndDate = Date(2050,12,31), "Checking the EndDate property");
+
+    # - testCaseName: Test Fill Property
+    #   testCaseDescription: Verify that the Fill property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Fill, ColorValue("Blue"));
+    #     Assert(DatePicker1.Fill = ColorValue("Blue"), "Checking the Fill property");
+
+    # - testCaseName: Test Font Property
+    #   testCaseDescription: Verify that the Font property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Font, "Arial");
+    #     Assert(DatePicker1.Font = "Arial", "Checking the Font property");
+
+    # - testCaseName: Test FontColor Property
+    #   testCaseDescription: Verify that the FontColor property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.FontColor, ColorValue("Black"));
+    #     Assert(DatePicker1.FontColor = ColorValue("Black"), "Checking the FontColor property");
+
+    # - testCaseName: Test FontItalic Property
+    #   testCaseDescription: Verify that the FontItalic property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.FontItalic, true);
+    #     Assert(DatePicker1.FontItalic = true, "Checking the FontItalic property");
+
+    # - testCaseName: Test FontSize Property
+    #   testCaseDescription: Verify that the FontSize property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.FontSize, 14);
+    #     Assert(DatePicker1.FontSize = 14, "Checking the FontSize property");
+
+    # - testCaseName: Test FontStrikethrough Property
+    #   testCaseDescription: Verify that the FontStrikethrough property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.FontStrikethrough, true);
+    #     Assert(DatePicker1.FontStrikethrough = true, "Checking the FontStrikethrough property");
+
+    # - testCaseName: Test FontUnderline Property
+    #   testCaseDescription: Verify that the FontUnderline property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.FontUnderline, true);
+    #     Assert(DatePicker1.FontUnderline = true, "Checking the FontUnderline property");
+
+    # - testCaseName: Test FontWeight Property
+    #   testCaseDescription: Verify that the FontWeight property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.FontWeight, "Bold");
+    #     Assert(DatePicker1.FontWeight = "Bold", "Checking the FontWeight property");
+
+    # - testCaseName: Test Format Property
+    #   testCaseDescription: Verify that the Format property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Format, "MM/DD/YYYY");
+    #     Assert(DatePicker1.Format = "MM/DD/YYYY", "Checking the Format property");
+
+    # - testCaseName: Test IsEditable Property
+    #   testCaseDescription: Verify that the IsEditable property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.IsEditable, true);
+    #     Assert(DatePicker1.IsEditable = true, "Checking the IsEditable property");
+
+    # - testCaseName: Test PCFTeamsTheme Property
+    #   testCaseDescription: Verify that the PCFTeamsTheme property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.PCFTeamsTheme, "Default");
+    #     Assert(DatePicker1.PCFTeamsTheme = "Default", "Checking the PCFTeamsTheme property");
+
+    # - testCaseName: Test Padding Properties
+    #   testCaseDescription: Verify that the Padding properties (Top, Bottom, Left, Right) can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.PaddingTop, 10);
+    #     Assert(DatePicker1.PaddingTop = 10, "Checking the PaddingTop property");
+    #     SetProperty(DatePicker1.PaddingBottom, 10);
+    #     Assert(DatePicker1.PaddingBottom = 10, "Checking the PaddingBottom property");
+    #     SetProperty(DatePicker1.PaddingLeft, 10);
+    #     Assert(DatePicker1.PaddingLeft = 10, "Checking the PaddingLeft property");
+    #     SetProperty(DatePicker1.PaddingRight, 10);
+    #     Assert(DatePicker1.PaddingRight = 10, "Checking the PaddingRight property");
+
+    # - testCaseName: Test Required Property
+    #   testCaseDescription: Verify that the Required property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Required, true);
+    #     Assert(DatePicker1.Required = true, "Checking the Required property");
+
+    # - testCaseName: Test StartDate Property
+    #   testCaseDescription: Verify that the StartDate property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.StartDate, Date(2000,12,31));
+    #     Assert(DatePicker1.StartDate = Date(2000,12,31), "Checking the StartDate property");
+
+    # - testCaseName: Test StartOfWeek Property
+    #   testCaseDescription: Verify that the StartOfWeek property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.StartOfWeek, "Monday");
+    #     Assert(DatePicker1.StartOfWeek = "Monday", "Checking the StartOfWeek property");
+
+    # - testCaseName: Test TabIndex Property
+    #   testCaseDescription: Verify that the TabIndex property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.TabIndex, 1);
+    #     Assert(DatePicker1.TabIndex = 1, "Checking the TabIndex property");
+
+    # - testCaseName: Test Tooltip Property
+    #   testCaseDescription: Verify that the Tooltip property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Tooltip, "Select a date");
+    #     Assert(DatePicker1.Tooltip = "Select a date", "Checking the Tooltip property");
+
+    # - testCaseName: Test ValidationState Property
+    #   testCaseDescription: Verify that the ValidationState property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.ValidationState, "Valid");
+    #     Assert(DatePicker1.ValidationState = "Valid", "Checking the ValidationState property");
+
+    # - testCaseName: Test ZIndex Property
+    #   testCaseDescription: Verify that the ZIndex property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.ZIndex, 10);
+    #     Assert(DatePicker1.ZIndex = 10, "Checking the ZIndex property");
+
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

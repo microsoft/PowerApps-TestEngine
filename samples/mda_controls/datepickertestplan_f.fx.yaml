@@ -1,0 +1,73 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - DatePicker1 Control
+  testSuiteDescription: Verify test cases for DatePicker1 Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:        
+  
+    # - testCaseName: Test Format Property
+    #   testCaseDescription: Verify that the Format property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.Format, "MM/DD/YYYY"); 
+    #     Assert(DatePicker1.Format = 20, "Checking the Format property");
+      # Assert(DatePicker1.Value = Date(2025,12,31), "Checking the EndDate property");
+       # Assert(DatePickerCanvas1.SelectedDate = Date(2025,12,31), "Checking the Modern Datepicker property");
+
+    # - testCaseName: Test MaxDate Property
+    #   testCaseDescription: Verify that the MaxDate property can be set and retrieved correctly.
+    #   testSteps: |        
+    #     SetProperty(DatePicker1.Value, DateValue(Date(2030,12,31),Language()));  
+    #     Assert(DatePicker1.Value = DateValue(Date(2030,12,31),Language()), "Checking the DatePicker property");
+    #     Pause();
+
+    - testCaseName: Test Modern Datepicker Property
+      testCaseDescription: Verify that the Modern Datepicker can be set and retrieved correctly.
+      testSteps: |              
+        SetProperty(DatePickerCanvas1.SelectedDate,  Date(2040,12,31)); 
+        Assert(DateDiff(DatePickerCanvas1.SelectedDate, Date(2040,12,31)) Not = 1, "Checking the Modern Datepicker property");
+        Pause();
+       
+
+    # - testCaseName: Test Value Property
+    #   testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly.
+    #   testSteps: |              
+    #     SetProperty(DatePicker1.Value, "12312028 12:00:00"); 
+    #     Assert(DatePicker1.Value = "12312028 12:00:00", "Checking the SelectedDate property");
+    
+
+   
+    
+
+
+   
+
+    # - testCaseName: Test MinDate Property
+    #   testCaseDescription: Verify that the MinDate property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.MinDate, "12/31/2000");
+    #     Assert(DatePicker1.MinDate = "12/31/2000", "Checking the StartDate property");
+
+    # - testCaseName: Test FirstDayOfWeek Property
+    #   testCaseDescription: Verify that the FirstDayOfWeek property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.FirstDayOfWeek, 2);
+    #     Assert(DatePicker1.FirstDayOfWeek = 2, "Checking the FirstDayOfWeek property");
+
+    
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  timeout: 300000
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

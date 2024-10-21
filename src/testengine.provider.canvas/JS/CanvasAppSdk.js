@@ -81,6 +81,8 @@ function setPropertyValueForControl(itemPath, value) {
     } else if (typeof value == "string") {
         value = JSON.stringify(value);
     }
+    console.log('CanvasAppSdkTesting');
+    console.log(value);
     var script = `setPropertyValueForControl(${JSON.stringify(itemPath)}, ${value})`;
     return executePublishedAppScript(script);
 }

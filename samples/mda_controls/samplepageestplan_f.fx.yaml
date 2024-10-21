@@ -1,0 +1,126 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Sample Page Control
+  testSuiteDescription: Verify test cases for Sample Page Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases: 
+    - testCaseName: Test TextBox Value Property
+      testCaseDescription: Verify that the TextBox Value can be set and retrieved correctly.
+      testSteps: |           
+        SetProperty(TextInputCanvas1.Value, "Welcome");
+        Assert(TextInputCanvas1.Value = "Welcome", "Checking the TextBox Value property");
+    
+
+    - testCaseName: Test NumberInput Value Property
+      testCaseDescription: Verify that the NumberInput Value can be set and retrieved correctly.
+      testSteps: |           
+        SetProperty(NumberInput1.Value, 47);
+        Assert(NumberInput1.Value = 47, "Checking the NumberInput Value property");
+
+    - testCaseName: Test CheckBox Checked Property
+      testCaseDescription: Verify that the CheckBox Checked property can be set and retrieved correctly.
+      testSteps: |           
+        SetProperty(CheckboxCanvas1.Checked, true);
+        Assert(CheckboxCanvas1.Checked = "true", "Checking the CheckBox Checked property");
+
+    - testCaseName: Test RadioButton DefaultSelectedItems Property
+      testCaseDescription: Verify that the RadioButton DefaultSelectedItems property can be set and retrieved correctly.
+      testSteps: |           
+        SetProperty(RadioGroupCanvas1.DefaultSelectedItems, Table({Value:"Item 3"}));
+        Assert(RadioGroupCanvas1.Text = "Item 3", "Checking the RadioButton DefaultSelectedItems property");
+
+    - testCaseName: Test Toggle Checked Property
+      testCaseDescription: Verify that the Toggle Checked property can be set and retrieved correctly.
+      testSteps: |           
+        SetProperty(Toggle1.Checked, true);
+        Assert(Toggle1.Checked = true, "Checking the Toggle Checked property");   
+
+    - testCaseName: Test Value Property
+      testCaseDescription: Verify that the Value property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Value, 50);
+        Assert(Slider1.Value = 50, "Checking the Value property");
+        SetProperty(Slider1.Value, 25);
+        Assert(Slider1.Value = 25, "Checking the Value property");
+        SetProperty(Slider1.Value, 100);
+        Assert(Slider1.Value = 100, "Checking the Value property");
+        SetProperty(Slider1.Value, 75);
+        Assert(Slider1.Value = 75, "Checking the Value property");
+
+    - testCaseName: Test Rating Property
+      testCaseDescription: Verify that the Rating property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Rating1.Value, 3);
+        Assert(Rating1.Value = 3, "Checking that Rating property is set correctly");
+        SetProperty(Rating1.Value, 5);
+        Assert(Rating1.Value = 5, "Checking that Rating property is set correctly");
+        SetProperty(Rating1.Value, 1);
+        Assert(Rating1.Value = 1, "Checking that Rating property is set correctly");
+
+    - testCaseName: Test Progress Bar Property
+      testCaseDescription: Verify that the Progress Bar property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Progress1.Value, 25);
+        Assert(Progress1.Value = 25, "Checking the Progress Bar property");
+        SetProperty(Progress1.Value, 50);
+        Assert(Progress1.Value = 50, "Checking the Progress Bar property");
+        SetProperty(Progress1.Value, 75);
+        Assert(Progress1.Value = 75, "Checking the Progress Bar property");
+        SetProperty(Progress1.Value, 100);
+        Assert(Progress1.Value = 100, "Checking the Progress Bar property");
+
+    - testCaseName: Test Rich TextBox  Property
+      testCaseDescription: Verify that the Rich TextBox Value can be set and retrieved correctly.
+      testSteps: |           
+        SetProperty(RichTextEditor1.Default, "Welcome to <strong> Sample App Page!!! </strong>");
+        Assert(RichTextEditor1.Default = "Welcome to <strong> Sample App Page!!! </strong>", "Checking the Rich TextBox Value property");
+
+    - testCaseName: Test Button Click  Property
+      testCaseDescription: Verify that the Button Click Property can be set and retrieved correctly.
+      testSteps: |   
+        SetProperty(Spinner1.Visible, false);    
+        Select(ButtonCanvas2);  
+        SetProperty(Spinner1.Visible, true);
+        SetProperty(Spinner1.Visible, false);
+        Assert(true, "Checking the Button property");
+
+    # - testCaseName: Test MaxDate Property
+    #   testCaseDescription: Verify that the MaxDate property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.MaxDate, Date(2050,12,31));
+    #     Assert(DatePicker1.MaxDate = Date(2050,12,31), "Checking the EndDate property");
+    
+
+
+   
+
+    # - testCaseName: Test MinDate Property
+    #   testCaseDescription: Verify that the MinDate property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.MinDate, "12/31/2000");
+    #     Assert(DatePicker1.MinDate = "12/31/2000", "Checking the StartDate property");
+
+    # - testCaseName: Test FirstDayOfWeek Property
+    #   testCaseDescription: Verify that the FirstDayOfWeek property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(DatePicker1.FirstDayOfWeek, 2);
+    #     Assert(DatePicker1.FirstDayOfWeek = 2, "Checking the FirstDayOfWeek property");
+
+    
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

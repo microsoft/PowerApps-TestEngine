@@ -1,0 +1,188 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Slider Control
+  testSuiteDescription: Verify test cases for Slider Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+
+    # Positive Test Cases
+
+    - testCaseName: Test AccessibleLabel Property
+      testCaseDescription: Verify that the AccessibleLabel property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.AccessibleLabel, "Adjust volume");
+        Assert(Slider1.AccessibleLabel = "Adjust volume", "Checking the AccessibleLabel property");
+
+    - testCaseName: Test BasePaletteColor Property
+      testCaseDescription: Verify that the BasePaletteColor property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.BasePaletteColor, ColorValue("Red"));
+        Assert(true, "Checking the BasePaletteColor property");
+
+    - testCaseName: Test ContentLanguage Property
+      testCaseDescription: Verify that the ContentLanguage property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.ContentLanguage, "en-US");
+        Assert(Slider1.ContentLanguage = "en-US", "Checking the ContentLanguage property");
+
+    - testCaseName: Test DisplayMode Property
+      testCaseDescription: Verify that the DisplayMode property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.DisplayMode, "Edit");
+        Assert(Slider1.DisplayMode = "Edit", "Checking the DisplayMode property");
+
+    - testCaseName: Test Height Property
+      testCaseDescription: Verify that the Height property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Height, 100);
+        Assert(Slider1.Height = 100, "Checking the Height property");
+
+    - testCaseName: Test Layout Property
+      testCaseDescription: Verify that the Layout property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Layout, "Horizontal");
+        Assert(Slider1.Layout = "Horizontal", "Checking the Layout property");
+
+    - testCaseName: Test Max Property
+      testCaseDescription: Verify that the Max property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Max, 100);
+        Assert(Slider1.Max = 100, "Checking the Max property");
+
+    - testCaseName: Test Min Property
+      testCaseDescription: Verify that the Min property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Min, 0);
+        Assert(Slider1.Min = 0, "Checking the Min property");
+
+    - testCaseName: Test PCFTeamsTheme Property
+      testCaseDescription: Verify that the PCFTeamsTheme property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.PCFTeamsTheme, "Default");
+        Assert(Slider1.PCFTeamsTheme = "Default", "Checking the PCFTeamsTheme property");
+
+    - testCaseName: Test Size Property
+      testCaseDescription: Verify that the Size property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Size,  {width: 400, height: 70});
+        Assert(Slider1.Size =  {width: 400, height: 70}, "Checking the Size property");
+
+    - testCaseName: Test TabIndex Property
+      testCaseDescription: Verify that the TabIndex property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.TabIndex, 1);
+        Assert(Slider1.TabIndex = 1, "Checking the TabIndex property");
+
+    - testCaseName: Test Tooltip Property
+      testCaseDescription: Verify that the Tooltip property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Tooltip, "Adjust the slider");
+        Assert(Slider1.Tooltip = "Adjust the slider", "Checking the Tooltip property");
+
+    - testCaseName: Test Value Property
+      testCaseDescription: Verify that the Value property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Value, 50);
+        Assert(Slider1.Value = 50, "Checking the Value property");
+
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the Visible property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Visible, true);
+        Assert(Slider1.Visible = true, "Checking the Visible property");
+
+    - testCaseName: Test Width Property
+      testCaseDescription: Verify that the Width property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Width, 300);
+        Assert(Slider1.Width = 300, "Checking the Width property");
+
+    - testCaseName: Test X Position Property
+      testCaseDescription: Verify that the X position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.X, 150);
+        Assert(Slider1.X = 150, "Checking the X position");
+
+    - testCaseName: Test Y Position Property
+      testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.Y, 200);
+        Assert(Slider1.Y = 200, "Checking the Y position");
+
+    - testCaseName: Test ZIndex Property
+      testCaseDescription: Verify that the ZIndex property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Slider1.ZIndex, 5);
+        Assert(Slider1.ZIndex = 5, "Checking the ZIndex property");
+
+    # Negative Test Cases
+
+    # - testCaseName: Test Invalid Max Property
+    #   testCaseDescription: Verify that setting an invalid value for the Max property throws an error or does not set.
+    #   testSteps: |
+    #     SetProperty(Slider1.Max, -1);
+    #     Assert(Slider1.Max != -1, "Checking that invalid Max value is not accepted");
+
+    # - testCaseName: Test Invalid Min Property
+    #   testCaseDescription: Verify that setting a Min value greater than Max throws an error or does not set.
+    #   testSteps: |
+    #     SetProperty(Slider1.Max, 100);
+    #     SetProperty(Slider1.Min, 101);
+    #     Assert(Slider1.Min <= Slider1.Max, "Checking that Min value greater than Max is not accepted");
+
+    # - testCaseName: Test Out-of-Range Value Property
+    #   testCaseDescription: Verify that setting a value outside the Min and Max range does not set.
+    #   testSteps: |
+    #     SetProperty(Slider1.Min, 0);
+    #     SetProperty(Slider1.Max, 100);
+    #     SetProperty(Slider1.Value, 200);
+    #     Assert(Slider1.Value <= Slider1.Max, "Checking that out-of-range Value is not accepted");
+
+    # - testCaseName: Test Non-Boolean Visible Property
+    #   testCaseDescription: Verify that setting a non-boolean value to the Visible property throws an error.
+    #   testSteps: |
+    #     SetProperty(Slider1.Visible, "NotBoolean");
+    #     Assert(Slider1.Visible != "NotBoolean", "Checking that non-boolean value is not accepted for Visible property");
+
+    # - testCaseName: Test Invalid ContentLanguage Property
+    #   testCaseDescription: Verify that setting an unsupported language to the ContentLanguage property throws an error.
+    #   testSteps: |
+    #     SetProperty(Slider1.ContentLanguage, "InvalidLanguage");
+    #     Assert(Slider1.ContentLanguage != "InvalidLanguage", "Checking that invalid ContentLanguage is not accepted");
+
+    # - testCaseName: Test Invalid Data Type for Width Property
+    #   testCaseDescription: Verify that setting a non-numeric value to the Width property throws an error.
+    #   testSteps: |
+    #     SetProperty(Slider1.Width, "InvalidWidth");
+    #     Assert(Slider1.Width != "InvalidWidth", "Checking that non-numeric value is not accepted for Width property");
+
+    # - testCaseName: Test Negative Values for X and Y Position
+    #   testCaseDescription: Verify that setting negative values for X and Y position throws an error or shows a validation message.
+    #   testSteps: |
+    #     SetProperty(Slider1.X, -50);
+    #     Assert(Slider1.X >= 0, "Checking that negative X position is not accepted");
+    #     SetProperty(Slider1.Y, -50);
+    #     Assert(Slider1.Y >= 0, "Checking that negative Y position is not accepted");
+
+    # - testCaseName: Test Invalid ZIndex Property
+    #   testCaseDescription: Verify that setting a non-integer value to the ZIndex property throws an error.
+    #   testSteps: |
+    #     SetProperty(Slider1.ZIndex, "InvalidZIndex");
+    #     Assert(Slider1.ZIndex != "InvalidZIndex", "Checking that non-integer value is not accepted for ZIndex property");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using Microsoft.Playwright;
 using System.Net;
+using System.Drawing;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -323,6 +324,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
                     case (TableType):
                         return await SetPropertyTableAsync(itemPath, (TableValue)value);
+                    case (ColorType):
+                        objectValue = ((ColorValue)value).Value;
+                        break;
                     default:
                         throw new ArgumentException("SetProperty must be a valid type.");
                 }
@@ -353,7 +357,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 // TODO - Set the Xrm SDK Value and update state for any JS to run
 
                 // Date.parse() parses the date to unix timestamp
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},Date.parse(\"{recordValue}\"))";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -396,7 +400,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
                 var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-                RecordValueObject[] jsonArr = new RecordValueObject[tableValue.Rows.Count()];
+                RecordValueObject[] jsonArr = new RecordValueObject[tableValue.Rows.Count()];                
 
                 var index = 0;
 
@@ -412,10 +416,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         }
                     }
                 }
-                var checkVal = JsonConvert.SerializeObject(jsonArr);
+                var checkVal = ConvertTableValueToJson(tableValue);
 
                 // TODO - Set the Xrm SDK Value and update state for any JS to run
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{checkVal})";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -424,6 +428,23 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, SingleTestInstanceState.GetLogger());
                 throw;
             }
+        }
+
+        private string ConvertTableValueToJson(TableValue tableValue)
+        {
+            var list = new List<Dictionary<string, object>>();
+
+            foreach (var record in tableValue.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (var field in record.Value.Fields)
+                {
+                    dict[field.Name] = field.Value.ToObject();
+                }
+                list.Add(dict);
+            }
+
+            return JsonConvert.SerializeObject(list, Formatting.Indented);
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)

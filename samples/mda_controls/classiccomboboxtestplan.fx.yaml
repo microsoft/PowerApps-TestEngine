@@ -1,0 +1,249 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests
+  testSuiteDescription: Verify model driven application
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases: 
+
+    # - testCaseName: Test PlaceholderText Property
+    #   testCaseDescription: Verify that the InputTextPlaceholder property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.PlaceholderText, "Select Items");  Assert(ComboboxCanvas1.Selected = Table({Value: "Item 3"},{Value:"Item 5"}), "Checking the Selected text value"); 
+    #     Assert(ComboBox1.PlaceholderText = "Select Items", "Checking the Placeholder text value"); 
+    # - testCaseName: Test Modern ComboBox SelectedItems Property
+    #   testCaseDescription: Verify that the SelectedItems property can be set and retrieved correctly.
+    #   testSteps: |        Assert(CountRows('ComboBox1'.SelectedItems) = 1, "Validated Succesfully"); 
+    #     SetProperty(ComboboxCanvas1.SelectedItems, Table({Value: "Item 3"},{Value:"Item 5"}));          
+    #     Assert(ComboboxCanvas1.Selected = Table({Value: "Item 3"},{Value:"Item 5"}), "Checking the Selected text value"); 
+
+    - testCaseName: Test SelectedItems Property
+      testCaseDescription: Verify that the SelectedItems property can be set and retrieved correctly.
+      testSteps: |        
+        SetProperty('ComboBox1'.SelectedItems, Table({'Value1':"Item 7",'Value2':7,'Value3':70},{'Value1':"Item 10",'Value2':10,'Value3':100},{'Value1':"Item 12",'Value2':12,'Value3':120})); 
+        Assert(CountRows('ComboBox1'.SelectedItems) = 3, "Validated Succesfully");  
+
+    - testCaseName: Test Dropdown SelectedItems Property
+      testCaseDescription: Verify that the SelectedItems property can be set and retrieved correctly.
+      testSteps: |        
+        SetProperty('DropdownCanvas1'.SelectedItems, Table({'Value1':"Item 12",'Value2':12,'Value3':120})); 
+        Assert('DropdownCanvas1'.Selected.Value = 12, "Validated Succesfully");         
+        Pause();
+
+    # - testCaseName: Test AccessibleLabel Property
+    #   testCaseDescription: Verify that the accessible label can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.AccessibleLabel, "No value");
+    #     Assert(ComboBox1.AccessibleLabel = "No value", "Checking the Accessible label value");
+   
+
+
+    
+    # - testCaseName: Test DisplayMode Property
+    #   testCaseDescription: Verify that the display mode can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.DisplayMode, "edit");
+    #     Assert(ComboBox1.DisplayMode = "edit", "Checking the Display Mode");
+
+    # - testCaseName: Test Text Property
+    #   testCaseDescription: Verify that the Text property can be set and retrieved correctly.
+    #   testSteps:                 
+    #     SetProperty(ComboBox1.Text, "Selected Items");
+    #     Assert(ComboBox1.Text = "Selected Items", "Checking the Text value");
+
+    # - testCaseName: Test AllowMultiSelect Property
+    #   testCaseDescription: Verify that the AllowMultiSelect property can be set and retrieved correctly.
+    #   testSteps:                 
+    #     SetProperty(ComboBox1.AllowMultiSelect, True);
+    #     Assert(ComboBox1.AllowMultiSelect = True, "Checking the multi select flag value"); 
+
+    # - testCaseName: Test X Position Property
+    #   testCaseDescription: Verify that the X position can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.X, 550);
+    #     Assert(ComboBox1.X = 550, "Checking the X position");
+
+    # - testCaseName: Test Y Position Property
+    #   testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.Y, 65);
+    #     Assert(ComboBox1.Y = 65, "Checking the Y position");
+
+    # - testCaseName: Test Width Property
+    #   testCaseDescription: Verify that the width can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.Width, 300);
+    #     Assert(ComboBox1.Width = 300, "Checking the width");
+
+    # - testCaseName: Test ZIndex Property
+    #   testCaseDescription: Verify that the Z-Index can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.ZIndex, 2);
+    #     Assert(ComboBox1.ZIndex = 2, "Checking the Z-Index");
+
+    # # - testCaseName: Test Appearance Property
+    # #   testCaseDescription: Verify that the Appearance can be set and retrieved correctly.
+    # #   testSteps: |
+    # #     SetProperty(ComboBox1.Appearance, "Filled Lighter");
+    # #     Assert(ComboBox1.Appearance = "Filled Lighter", "Checking the Appearance");
+
+    # - testCaseName: Test Font Property
+    #   testCaseDescription: Verify that the font can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.Font, "Arial");
+    #     Assert(ComboBox1.Font = "Arial", "Checking the font");
+
+    # - testCaseName: Test Font Size Property
+    #   testCaseDescription: Verify that the font Size can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.FontSize, 22);
+    #     Assert(ComboBox1.FontSize = 22, "Checking the font Size");
+
+    # - testCaseName: Test CheckedHoverOptionBackgroundFill Property
+    #   testCaseDescription: Verify that the CheckedHoverOptionBackgroundFill can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.CheckedHoverOptionBackgroundFill, "#FFFFFF");
+    #     Assert(ComboBox1.CheckedHoverOptionBackgroundFill = "#FFFFFF", "Checking the CheckedHoverOptionBackgroundFill");
+
+    # - testCaseName: Test Color Property
+    #   testCaseDescription: Verify that the color can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.Color, "#FFFFFF");
+    #     Assert(ComboBox1.Color = "#FFFFFF", "Checking the color");
+
+    # - testCaseName: Test CheckedOptionBackgroundFill Property
+    #   testCaseDescription: Verify that the italic style can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.CheckedOptionBackgroundFill, "#FFFFFF");
+    #     Assert(ComboBox1.CheckedOptionBackgroundFill = "#FFFFFF", "Checking CheckedOptionBackgroundFill");
+
+    # - testCaseName: Test ChevronColor Property
+    #   testCaseDescription: Verify that the strikethrough style can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.ChevronColor, "#FFFFFF");
+    #     Assert(ComboBox1.ChevronColor = "#FFFFFF", "Checking ChevronColor");
+
+    # - testCaseName: Test ChevronSize Property
+    #   testCaseDescription: Verify that the ChevronSize style can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.ChevronSize, 14);
+    #     Assert(ComboBox1.ChevronSize = 14, "Checking ChevronSize property");
+
+    # - testCaseName: Test Label Property
+    #   testCaseDescription: Verify that the Label can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.Label, "red");
+    #     Assert(ComboBox1.Label = "red", "Checking Label");
+
+    # - testCaseName: Test LabelFontSize Property
+    #   testCaseDescription: Verify that the LabelFontSize style can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.LabelFontSize, 15);
+    #     Assert(ComboBox1.LabelFontSize = 15, "Checking LabelFontSize style");
+
+    # - testCaseName: Test UncheckedHoverOptionBackgroundFill Property
+    #   testCaseDescription: Verify that the UncheckedHoverOptionBackgroundFill style can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.UncheckedHoverOptionBackgroundFill, "#FFFFFF");
+    #     Assert(ComboBox1.UncheckedHoverOptionBackgroundFill = "#FFFFFF", "Checking UncheckedHoverOptionBackgroundFill");
+        
+    # - testCaseName: Test UncheckedOptionBackgroundFill Property
+    #   testCaseDescription: Verify that the UncheckedOptionBackgroundFill style can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.UncheckedOptionBackgroundFill, "#FFFFFF");
+    #     Assert(ComboBox1.UncheckedOptionBackgroundFill = "#FFFFFF", "Checking UncheckedOptionBackgroundFill ");
+
+    # - testCaseName: Test ContentLanguage Property
+    #   testCaseDescription: Verify that the ContentLanguage style can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.ContentLanguage, "en-US");
+    #     Assert(ComboBox1.ContentLanguage = "en-US", "Checking ContentLanguage ");
+
+    # - testCaseName: Test FillColor Property
+    #   testCaseDescription: Verify that the FillColor can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.FillColor, "#FFFFFF");
+    #     Assert(ComboBox1.FillColor = "#FFFFFF", "Checking FillColor Property ");
+
+    # - testCaseName: Test Height Property for ComboBox1
+    #   testCaseDescription: Verify that the height can be set and retrieved correctly for ComboBox1.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.Height, 40);
+    #     Assert(ComboBox1.Height = 40, "Checking the height for ComboBox1");
+
+    # - testCaseName: Test IsSearchable Property for ComboBox1
+    #   testCaseDescription: Verify that the IsSearchable can be set and retrieved correctly for ComboBox1.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.AllowSearching, "true");
+    #     Assert(ComboBox1.AllowSearching = "true", "Checking the IsSearchable for ComboBox1");
+
+    # - testCaseName: Test MultiSelectDelimiter Property for ComboBox1
+    #   testCaseDescription: Verify that the MultiSelectDelimiter can be set and retrieved correctly for ComboBox1.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.MultiSelectDelimiter, ",");
+    #     Assert(ComboBox1.MultiSelectDelimiter = ",", "Checking the MultiSelectDelimiter for ComboBox1");
+
+    # - testCaseName: Test PCFTeamsTheme Property for ComboBox1
+    #   testCaseDescription: Verify that the PCFTeamsTheme can be set and retrieved correctly for ComboBox1.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.PCFTeamsTheme, "Dark");
+    #     Assert(ComboBox1.PCFTeamsTheme = "Dark", "Checking the PCF Teams Theme for ComboBox1");
+
+    # - testCaseName: Test PaddingTop Property
+    #   testCaseDescription: Verify that the top padding can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.PaddingTop, 10);
+    #     Assert(ComboBox1.PaddingTop = 10, "Checking the top padding");
+
+    # - testCaseName: Test PaddingEnd Property
+    #   testCaseDescription: Verify that the PaddingEnd can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.PaddingEnd, 10);
+    #     Assert(ComboBox1.PaddingEnd = 10, "Checking the PaddingEnd");
+
+    # - testCaseName: Test PaddingBottom Property
+    #   testCaseDescription: Verify that the bottom padding can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.PaddingBottom, 10);
+    #     Assert(ComboBox1.PaddingBottom = 10, "Checking the bottom padding");
+
+    # - testCaseName: Test PaddingStart Property
+    #   testCaseDescription: Verify that the PaddingStart can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.PaddingStart, 10);
+    #     Assert(ComboBox1.PaddingStart = 10, "Checking the PaddingStart");
+
+    # - testCaseName: Test TabIndex Property
+    #   testCaseDescription: Verify that the tab index can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.TabIndex, 1);
+    #     Assert(ComboBox1.TabIndex = 1, "Checking the tab index");
+
+    # - testCaseName: Test ToolTip Property
+    #   testCaseDescription: Verify that the ToolTip can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.Tooltip, "Select Items");
+    #     Assert(ComboBox1.Tooltip = "Select Items", "Checking the ToolTip");
+
+    # - testCaseName: Test Visible Property
+    #   testCaseDescription: Verify that the visibility can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(ComboBox1.Visible, true);
+    #     Assert(ComboBox1.Visible = true, "Checking visibility");
+
+        
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge      
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

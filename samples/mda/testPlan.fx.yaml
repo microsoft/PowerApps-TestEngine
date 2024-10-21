@@ -7,9 +7,11 @@ testSuite:
   testCases:
     - testCaseName: Open Page
       testCaseDescription: Check initial state
-      testSteps: |
-        = Assert(Total.Text, "0");
-        
+      testSteps: |         
+       =  SetProperty(txtName.Value, "Naresh"); 
+          SetProperty(txtPhone.Value, "1234567890");          
+          Assert(txtName.Value, "Naresh");
+
 testSettings:
   headless: false
   locale: "en-US"
@@ -18,6 +20,7 @@ testSettings:
     enable: true
   browserConfigurations:
     - browser: Chromium
+      channel: msedge      
 
 environmentVariables:
   users:

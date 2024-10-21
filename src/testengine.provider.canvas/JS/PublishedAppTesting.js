@@ -162,6 +162,8 @@ function selectControl(itemPath) {
 }
 
 function setPropertyValueForControl(itemPath, value) {
+    console.log('PublishedAppTesting');
+    console.log(value);
     if (itemPath.parentControl && itemPath.parentControl.index !== null) {
         // Gallery & Nested gallery
         var galleryBindingContext = getBindingContext(itemPath.parentControl);     
@@ -172,8 +174,7 @@ function setPropertyValueForControl(itemPath, value) {
         // Component
         var componentBindingContext = AppMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(itemPath.parentControl.controlName);
         return (AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, componentBindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, componentBindingContext));
-    }
-    
+    }   
     return AppMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, AppMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, AppMagic.Controls.GlobalContextManager.bindingContext);
 }
 
