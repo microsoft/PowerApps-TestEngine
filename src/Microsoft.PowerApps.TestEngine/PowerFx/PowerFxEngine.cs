@@ -197,6 +197,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         {
             // Currently support for decimal is in progress for PowerApps
             // Power Fx by default treats number as decimal. Hence setting NumberIsFloat config to true in our case
+
+            // TODO: Evuate culture evaluate across languages
             return new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true };
         }
 
