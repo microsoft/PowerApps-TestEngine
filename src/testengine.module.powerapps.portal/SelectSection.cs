@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 using System.Linq;
@@ -45,13 +45,14 @@ namespace testengine.module
         {
             foreach (var page in _testInfraFunctions.GetContext().Pages) {
                 var url = page.Url;
-                var name = section.Value.ToString();
+                var sectionName = section.Value.ToString();
 
-                // TODO: Handle case section is not visible. If not visible then add steps to add item
+                // TODO: Handle case section is not visible in the left navigation. If not consider adding steps to make visible from extra options in the portal
                 if (url.Contains("powerapps.com") && url.Contains("/environments") && url.Contains("/home")) {
-                    await page.WaitForSelectorAsync($"[data-test-id='{name}']:visible");
+                    var selector = $"[data-test-id='{sectionName}']";
+                    await page.WaitForSelectorAsync($"{selector}:visible");
 
-                    await page.Locator(selector).ClickAsync();
+                    await page.ClickAsync(selector);
                 }
             }
         }
