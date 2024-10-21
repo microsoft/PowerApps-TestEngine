@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <Authors>Microsoft</Authors>
     <Company>crmsdk,Microsoft</Company>
-    <Description>Alpha Release: Pause browser PowerFx action MEF extension</Description>
+    <Description>Alpha Release: Model Driven App (MDA) browser PowerFx action MEF extension</Description>
     <PackageReleaseNotes>
       Notice:
       This package is an ALPHA release. - Use at your own risk.
@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Playwright" Version="1.47.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.48.0" />
     <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="1.2.0" />
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
   </ItemGroup>

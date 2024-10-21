@@ -4,15 +4,82 @@ The Power Platform Center of Excellence (CoE) starter kit is made up of a number
 
 This sample includes Power Apps Test Engine tests that can be used to automate and test ket elemenets of the expected behaviour of the Setup and Upgrade Wizard
 
+## What You Need
+
+Before you start, you'll need a few tools and permissions:
+- **Power Platform Command Line Interface (CLI)**: This is a tool that lets you interact with Power Platform from your command line.
+- **PowerShell**: A task automation tool from Microsoft.
+- **.Net 6.0 SDK**: A software development kit needed to build and run the tests.
+- **Power Platform Environment**: A space where your Power Apps live.
+- **Admin or Customizer Rights**: Permissions to make changes in your Power Platform environment.
+
+## Prerequisites
+
+1. Install of .Net SDK 6.0 from [Downloads](https://dotnet.microsoft.com/download/dotnet/6.0)
+2. An install of PowerShell followining the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershel) for your operating system
+3. The Power Platform Command Line interface installed using the [Learn install guidance](https://learn.microsoft.com/power-platform/developer/cli/introduction?tabs=windows#install-microsoft-power-platform-cli)
+4. A created Power Platform environment using the [Power Platform Admin Center](https://learn.microsoft.com/power-platform/admin/create-environment) or [Power Platform Command Line](https://learn.microsoft.com/power-platform/developer/cli/reference/admin#pac-admin-create)
+5. Granted System Administrator or System Customizer roles as documented in [Microsoft Learn](https://learn.microsoft.compower-apps/maker/model-driven-apps/privileges-required-customization#system-administrator-and-system-customizer-security-roles)
+6. Git Client has been installed. For example using [GitHub Desktop](https://desktop.github.com/download/) or the [Git application](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+7. The CoE Starter Kit core moodule has been installed into the environment
+
 ## Getting Started
 
-To get started ensure that you have followed the [Build locally](../../README.md) to have a working version of the Power Apps Test Engine available
+1. Clone the repository usin the git application and PowerShell command line
 
-## Usage
-
-You can execute this sample using the following commands
-
-```bash
-cd bin/Debug/PowerAppsTestEngine
-dotnet PowerAppsTestEngine.dll -i ../../../samples/coe-kit-setup-wizard/testPlan.fx.yaml -u browser -p mda -d https://contoso.crm.dynamics.com/main.aspx?appid=06f88e88-163e-ef11-840a-0022481fcc8d&pagetype=custom&name=admin_initialsetuppage_d45cf
+```pwsh
+git clone https://github.com/microsoft/PowerApps-TestEngine.git
 ```
+
+2. Change to cloned folder
+
+```pwsh
+cd PowerApps-TestEngine
+```
+
+3. Checkout the integration branch
+
+```pwsh
+git checkout grant-archibald-md/integration-merge
+```
+
+3. Ensure logged out out of pac cli. This ensures you're logged out of any previous sessions.
+
+```pwsh
+pac auth clear
+```
+
+4. Login to Power Platform CLI using [pac auth](https://learn.microsoft.com/power-platform/developer/cli/reference/auth#pac-auth-create)
+
+```pwsh
+pac auth create --environment <Your environment ID>
+```
+
+5. Add the config.json in the same folder as RunLibraryTests.ps1 replacinng the value with your tenant and  environment id
+
+```json
+{
+    "tenantId": "a222222-1111-2222-3333-444455556666",
+    "environmentId": "12345678-1111-2222-3333-444455556666",
+    "runInstall": true,
+    "installPlaywright": true
+}
+```
+
+6. Run the sample tests from PowerShell
+
+```pwsh
+.\RunTests.ps1
+```
+
+## What to Expect
+
+- **Login Prompt**: You'll be asked to log in to the Power Apps Portal.
+- **Test Execution**: The Test Engine will run the steps to test your Power Apps Portal.
+- **Cached Credentials**: If you choose "Stay Signed In," future tests will use your saved credentials.
+- **Interactive Testing**: Commands like `TestEngine.Pause()` will let you pause and inspect the test steps.
+- **Recorded Sessions**: Test Engine provides the ability to generate recorded video of the test session in the TestOutput folder.
+
+## Context
+
+This sample is an example of a "build from source" using the open source licensed version of Test Engine. Features in the the source code version can include feature not yet release as part of the ```pac test run`` command in the Power Platform Command line interface action.

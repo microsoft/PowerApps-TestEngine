@@ -8,7 +8,11 @@ testSuite:
     - testCaseName: Verify
       testCaseDescription: Verify setup and upgrade Wizard of the CoE Starter Kit
       testSteps: |
-        = TestEngine.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
+        = 
+        TestEngine.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
+        Set(configStep, 1); 
+        Assert(configStep=1);
+        TestEngine.Pause()
 
 testSettings:
   headless: false
@@ -18,6 +22,7 @@ testSettings:
     enable: true
   browserConfigurations:
     - browser: Chromium
+  timeout: 480000
 
 environmentVariables:
   users:
