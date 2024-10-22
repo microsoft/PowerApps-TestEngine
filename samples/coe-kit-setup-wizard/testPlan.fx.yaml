@@ -5,15 +5,23 @@ testSuite:
   appLogicalName: NotNeeded
 
   testCases:
-    - testCaseName: Verify
-      testCaseDescription: Verify setup and upgrade Wizard of the CoE Starter Kit
+    - testCaseName: Step 1 - Confirm Pre-requisites
+      testCaseDescription: Verify pre-requistes in place
       testSteps: |
         = 
         TestEngine.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
+        TestEngine.Pause();
         Set(configStep, 1); 
         Assert(configStep=1);
-        TestEngine.Pause()
-
+        Select(btnNext);
+    - testCaseName: Step 2 - Configure communication methods
+      testCaseDescription: Verify communication methods setup
+      testSteps: |
+        =
+        Assert(configStep=2);
+        Assert(CountRows(colCommunicate)=3);
+        Experimental.SelectControl(Button3,1);
+        TestEngine.Pause();    
 testSettings:
   headless: false
   locale: "en-US"

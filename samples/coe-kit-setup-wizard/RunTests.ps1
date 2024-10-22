@@ -48,8 +48,6 @@ if ([string]::IsNullOrEmpty($appId)) {
 
 $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=admin_initialsetuppage_d45cf"
 
-$mdaUrl
-
 # Build the latest debug version of Test Engine from source
 Set-Location ..\..\src
 dotnet build
@@ -62,7 +60,7 @@ if ($config.installPlaywright) {
 
 Set-Location ..\bin\Debug\PowerAppsTestEngine
 # Run the tests for each user in the configuration file.
-dotnet PowerAppsTestEngine.dll -u "browser" -p "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl"
+dotnet PowerAppsTestEngine.dll -u "browser" -p "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Trace
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

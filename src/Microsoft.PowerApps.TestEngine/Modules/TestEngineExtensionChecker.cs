@@ -354,6 +354,14 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             return false;
                         }
 
+#if DEBUG
+                        // Add Experimenal namespaes in Debug compile it it has not been added in allow list
+                        if (!settings.AllowPowerFxNamespaces.Contains("Experimental"))
+                        {
+                            settings.AllowPowerFxNamespaces.Add("Experimental");
+                        }
+#endif
+
                         if ((settings.DenyPowerFxNamespaces.Contains("*") && (
                                 !settings.AllowPowerFxNamespaces.Contains(name) ||
                                 (!settings.AllowPowerFxNamespaces.Contains(name) && name != "TestEngine")
