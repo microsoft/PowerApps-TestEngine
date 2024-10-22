@@ -90,11 +90,6 @@ namespace Microsoft.PowerApps.TestEngine
                     throw new ArgumentNullException(nameof(outputDirectory));
                 }
 
-                if (string.IsNullOrEmpty(domain))
-                {
-                    throw new ArgumentNullException(nameof(domain));
-                }
-
                 if (string.IsNullOrEmpty(queryParams))
                 {
                     Logger.LogDebug($"Using no additional query parameters.");

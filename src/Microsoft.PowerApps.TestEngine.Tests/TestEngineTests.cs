@@ -320,7 +320,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Theory]
         [InlineData(null, "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
         [InlineData("C:\\testPlan.fx.yaml", "", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
-        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "")]
         public async Task TestEngineThrowsOnNullArguments(string? testConfigFilePath, string environmentId, Guid tenantId, string domain)
         {
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
@@ -331,6 +330,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Setup(x => x.GetOutputDirectory()).Returns("MockOutputDirectory");
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
+
+            MockLogger.Setup(x => x.Log(
+               It.IsAny<LogLevel>(),
+               It.IsAny<EventId>(),
+               It.IsAny<It.IsAnyType>(),
+               It.IsAny<Exception>(),
+               (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
 
             FileInfo testConfigFile;
             if (string.IsNullOrEmpty(testConfigFilePath))

@@ -1,0 +1,9 @@
+// Sample data generated from following Power FX 
+//Set(intValue, 1);
+{
+  "scopeVariables": {
+    "1.intValue": { "1": 1 }
+  },
+  "alias": {},
+  "collections": [ ]
+}

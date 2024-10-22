@@ -13,8 +13,11 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using testengine.provider.mda;
 
 [assembly: InternalsVisibleTo("testengine.provider.mda.tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
 namespace Microsoft.PowerApps.TestEngine.Providers
@@ -31,11 +34,26 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ISingleTestInstanceState? SingleTestInstanceState { get; set; }
 
-        public ITestState? TestState { get; set; }
+        private ITestState? _testState = null;
+        public ITestState? TestState
+        {
+            get
+            {
+                return _testState;
+            }
+            set
+            {
+                _testState = value;
+                UpdateState(value);
+            }
+        }
+
 
         public ITestProviderState? ProviderState { get; set; }
 
         public ILogger? Logger { get; set; }
+
+        public ModelDrivenApplicationCanvasState? CanvasState { get; set; } = new ModelDrivenApplicationCanvasState();
 
         public static string QueryFormField = "JSON.stringify({{PropertyValue: PowerAppsTestEngine.getValue('{0}') }})";
 
@@ -57,6 +75,45 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             this.SingleTestInstanceState = singleTestInstanceState;
             this.TestState = testState;
             this.Logger = singleTestInstanceState.GetLogger();
+            CanvasState = new ModelDrivenApplicationCanvasState();
+            UpdateState(testState);
+        }
+
+        private void UpdateState(ITestState state)
+        {
+            if (state != null && state.GetDomain().Contains("=custom"))
+            {
+                state.ExecuteStepByStep = true;
+
+                state.BeforeTestStepExecuted += TestState_BeforeTestStepExecuted;
+                state.AfterTestStepExecuted += TestState_AfterTestStepExecuted;
+            }
+        }
+
+        private void TestState_BeforeTestStepExecuted(object? sender, TestStepEventArgs e)
+        {
+            BeforeTestStepExecuted(sender, e).Wait();
+        }
+
+        private async Task BeforeTestStepExecuted(object? sender, TestStepEventArgs e)
+        {
+            await CanvasState.UpdateRecalcEngine(this.TestInfraFunctions, e);
+        }
+
+        private async void TestState_AfterTestStepExecuted(object? sender, TestStepEventArgs e)
+        {
+            var engine = new RecalcEngine();
+            var updateEvent = new TestStepEventArgs
+            {
+                Engine = engine,
+                Result = e.Result,
+                StepNumber = e.StepNumber,
+                TestStep = e.TestStep
+            };
+            var newState = new ModelDrivenApplicationCanvasState();
+            await newState.UpdateRecalcEngine(TestInfraFunctions, updateEvent);
+
+            await newState.ApplyChanges(TestInfraFunctions, CanvasState, engine, e.Engine);
         }
 
         public string Name { get { return "mda"; } }

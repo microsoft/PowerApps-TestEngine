@@ -1,0 +1,55 @@
+// Sample data generated from following Power FX 
+//Set(intValue, 1);
+//Set(decimalNum, 3.14);
+//Set(dateValue, Date(2024,10,1));
+//Set(dateTimeVal, DateTime(2024, 10, 1, 12, 34, 00));
+//Set(boolFalse, false);
+//Set(boolTrue, true);
+//Set(colorValue, Color.Red);
+//Set(currencyvalue, 4.56);
+//Set(GuidValue, GUID());
+//Set(floatValue, 8.903e121);
+//Set(recordValue, { Company: "Northwind Traders",Staff: 35,NonProfit: false });
+//Set(tableValue, Table( { FirstName: "Sidney",LastName: "Higa" },{ FirstName: "Nancy",LastName: "Anderson" } ));
+//Set(textValue, "Hello world");
+//Set(timeValue, Time( 11, 23, 45 ));
+//Set(untypedValue, ParseJSON("{ ""Field"" : 1234 }"));
+//ClearCollect(data, { Name: "Test" })
+{
+  "scopeVariables": {
+    "1.intValue": { "1": 1 },
+    "1.decimalNum": { "1": 3.14 },
+    "1.dateValue": { "1": 1727766000000 },
+    "1.dateTimeVal": { "1": 1727811240000 },
+    "1.boolFalse": { "1": false },
+    "1.boolTrue": { "1":  true },
+    "1.colorValue": { "1": 4294901760 },
+    "1.currencyvalue": { "1": 4.56 },
+    "1.GuidValue": { "1": "6557502c-5744-4f62-b89d-c7cead13c358" },
+    "1.floatValue": { "1": 8.903e+121 },
+    "1.recordValue": {
+      "1": {
+        "Company": "Northwind Traders",
+        "Staff": 35,
+        "NonProfit": false
+      }
+    },
+    "1.tableValue": {
+      "1": [
+        {
+          "FirstName": "Sidney",
+          "LastName": "Higa"
+        },
+        {
+          "FirstName": "Nancy",
+          "LastName": "Anderson"
+        }
+      ]
+    },
+    "1.textValue": { "1": "Hello world" },
+    "1.timeValue": { "1": 69825000 },
+    "1.untypedValue": { "1": { "Field": 1234 } }
+  },
+  "alias": {},
+  "collections": [ { "data": [ { "Name": "Test" } ] } ]
+}

@@ -112,6 +112,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             var contextOptions = new BrowserNewContextOptions();
 
+            // Use local when start browser
+            contextOptions.Locale = testSettings.Locale;
+            staticContext.Locale = contextOptions.Locale;
+
+
             if (!string.IsNullOrEmpty(browserConfig.Device))
             {
                 contextOptions = PlaywrightObject.Devices[browserConfig.Device];
