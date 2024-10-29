@@ -30,7 +30,8 @@ var switchMappings = new Dictionary<string, string>()
     { "-m", "Modules" },
     { "-u", "UserAuth" },
     { "-p", "Provider" },
-    { "-a", "UserAuthType"}
+    { "-a", "UserAuthType"},
+    { "-w", "Wait" }
 };
 
 var inputOptions = new ConfigurationBuilder()
@@ -115,6 +116,14 @@ else
             return;
         }
     }
+
+
+    if (!string.IsNullOrEmpty(inputOptions.Wait) && inputOptions.Wait.ToLower() == "true")
+    {
+        Console.WriteLine("Waiting, press enter to continue");
+        Console.ReadLine();
+    }
+
 
     var logLevel = LogLevel.Information; // Default log level
     if (string.IsNullOrEmpty(inputOptions.LogLevel) || !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))

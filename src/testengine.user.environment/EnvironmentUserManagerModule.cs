@@ -106,7 +106,7 @@ namespace testengine.user.environment
 
             if (Page == null)
             {
-                Page = context.Pages.First();
+                Page = context.Pages.Where(p => !p.IsClosed).First();
             }
 
             await HandleUserEmailScreen(EmailSelector, user);
@@ -123,7 +123,7 @@ namespace testengine.user.environment
         {
             if (Page == null)
             {
-                Page = Context.Pages.First();
+                Page = Context.Pages.Where(p => !p.IsClosed).First();
             }
         }
 

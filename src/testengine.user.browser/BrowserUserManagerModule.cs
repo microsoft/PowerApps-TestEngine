@@ -102,7 +102,7 @@ namespace testengine.user.browser
         {
             if (Page == null)
             {
-                Page = Context.Pages.First();
+                Page = Context.Pages.Where(p => !p.IsClosed).First();
             }
         }
     }
