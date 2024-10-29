@@ -1,13 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Dynamic;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
+using Newtonsoft.Json.Linq;
 
 namespace testengine.module
 {
@@ -34,14 +37,90 @@ namespace testengine.module
             _logger = logger;
         }
 
-        public BlankValue Execute(RecordValue when)
+        public BlankValue Execute(RecordValue intercept)
+        {
+            ExecuteAsync(intercept).Wait();
+            return FormulaValue.NewBlank();
+        }
+
+        private async Task ExecuteAsync(RecordValue intercept)
         {
             _logger.LogInformation("------------------------------\n\n" +
-                "Executing SimulateDataverse function.");
+               "Executing SimulateDataverse function.");
 
-            //TODO Add Routing Async to page
+            List<NamedValue> fields = new List<NamedValue>();
 
-            return FormulaValue.NewBlank();
+            await foreach (var field in intercept.GetFieldsAsync(CancellationToken.None))
+            {
+                fields.Add(field);
+            }
+
+            StringValue entityName = FormulaValue.New("");
+
+            var entityField = fields.FirstOrDefault(f => f.Name.ToLower() == "entity");
+            if (entityField != null)
+            {
+                entityName = intercept.GetField(entityField.Name) as StringValue;
+            }
+
+            if (String.IsNullOrEmpty(entityName.Value))
+            {
+                throw new InvalidDataException("Missing field Entity");
+            }
+
+            TableValue thenResult = null;
+
+            var thenField = fields.FirstOrDefault(f => f.Name.ToLower() == "then");
+            if (thenField != null)
+            {
+                thenResult = intercept.GetField(thenField.Name) as TableValue;
+            }
+
+            if (thenResult == null)
+            {
+                throw new InvalidDataException("Missing field then");
+            }
+
+            await _testInfraFunctions.Page.RouteAsync($"**/api/data/v*/{entityName.Value.ToLower()}*", async (IRoute route) => {
+                var request = route.Request;
+                if (request.Method == "GET")
+                {
+                    var data = new List<object>();
+                    foreach ( var item in thenResult.Rows)
+                    {
+                        var row = new Dictionary<string, object?>(new ExpandoObject());
+
+                        await foreach ( var field in item.Value.GetFieldsAsync(CancellationToken.None) )
+                        {
+                            if (field.Value.TryGetPrimitiveValue(out object val))
+                            {
+                                row.Add(field.Name, val);
+                                continue;
+                            }
+
+                            // TODO: Handle complexity non primative types
+                        }
+                        
+                        data.Add(row);
+                    }
+                    // Convert the TableValue to JSON
+                    var responseBody = JObject.FromObject(new { value = data }).ToString();
+
+                    // Generate a new response with HTTP body for OData call
+                    await route.FulfillAsync(new RouteFulfillOptions
+                    {
+                        Status = 200,
+                        ContentType = "application/json",
+                        Body = responseBody
+                    });
+                }
+                else
+                {
+                    await route.ContinueAsync();
+                }
+            });
+
+            
         }
     }
 }

@@ -57,7 +57,7 @@ namespace testengine.user.browser
             var logger = singleTestInstanceState.GetLogger();
             var foundMatch = false;
 
-            logger.LogDebug($"Waiting for ${timeout} milliseconds for desired url");
+            logger.LogDebug($"Waiting for {timeout} milliseconds for desired url");
             while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch)
             {
                 foreach (var page in context.Pages)
@@ -82,7 +82,7 @@ namespace testengine.user.browser
 
             if (!foundMatch)
             {
-                logger.LogError($"Desired url ${desiredUrl} not found");
+                logger.LogError($"Desired url {desiredUrl} not found");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
             }
 
