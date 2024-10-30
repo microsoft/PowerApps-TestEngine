@@ -60,14 +60,22 @@ namespace testengine.user.browser
             logger.LogDebug($"Waiting for {timeout} milliseconds for desired url");
             while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch)
             {
-                foreach (var page in context.Pages)
+                try
                 {
-                    if (page.Url.IndexOf(desiredUrl) >= 0)
+                    foreach (var page in context.Pages)
                     {
-                        foundMatch = true;
-                        break;
+                        if (page.Url.IndexOf(desiredUrl) >= 0)
+                        {
+                            foundMatch = true;
+                            break;
+                        }
                     }
+                } 
+                catch
+                {
+
                 }
+                
 
                 if (!foundMatch)
                 {
