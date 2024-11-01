@@ -186,6 +186,20 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             {
                 result = await TestInfraFunctions.RunJavascriptAsync<string>(CheckTestEngineObject);
             }
+            catch (Playwright.PlaywrightException pex)
+            {
+                if (pex.Message.Contains("Execution context was destroyed"))
+                {
+                    // TODO: Revise and review this as execution failed with the current page, attempt to select page
+                    var target = new Uri(GenerateTestUrl(TestState.GetDomain(), ""));
+                    TestInfraFunctions.Page = TestInfraFunctions.GetContext().Pages.Where(p => !p.IsClosed && new Uri(p.Url).Host == target.Host).First();
+
+                    if (TestInfraFunctions.Page == null)
+                    {
+                        throw new ApplicationException("Unable to find test page.");
+                    }
+                }
+            }
             catch (NullReferenceException) { }
 
             return result;
