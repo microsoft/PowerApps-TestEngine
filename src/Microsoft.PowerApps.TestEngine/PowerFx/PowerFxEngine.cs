@@ -71,6 +71,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 }
                 foreach (var module in TestState.GetTestEngineModules())
                 {
+
                     module.RegisterPowerFxFunction(powerFxConfig, TestInfraFunctions, _testWebProvider, SingleTestInstanceState, TestState, _fileSystem);
                 }
             }
@@ -85,6 +86,17 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             WaitRegisterExtensions.RegisterAll(powerFxConfig, TestState.GetTimeout(), Logger);
 
             Engine = new RecalcEngine(powerFxConfig);
+
+            var symbolValues = new SymbolValues(powerFxConfig.SymbolTable);
+            foreach (var val in powerFxConfig.SymbolTable.SymbolNames.ToList())
+            {
+                // TODO
+                if (powerFxConfig.SymbolTable.TryLookupSlot(val.Name, out ISymbolSlot slot))
+                {
+                    Engine.UpdateVariable(val.Name, symbolValues.Get(slot));
+                    powerFxConfig.SymbolTable.RemoveVariable(val.Name);
+                }
+            }
         }
 
         public async Task ExecuteWithRetryAsync(string testSteps, CultureInfo culture)

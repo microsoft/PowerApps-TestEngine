@@ -30,10 +30,6 @@ namespace testengine.module
         private readonly ILogger _logger;
 
         private static readonly RecordType dataverseRequest = RecordType.Empty();
-        //        .Add(new NamedFormulaType("Action", StringType.String))
-        //        .Add(new NamedFormulaType("Entity", StringType.String))
-        //        .Add(new NamedFormulaType("Then", TableType.Blank))
-        //        .Add(new NamedFormulaType("When", TableType.Blank));
 
         public SimulateDataverseFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
             : base(DPath.Root.Append(new DName("Experimental")), "SimulateDataverse", FormulaType.Blank, dataverseRequest)
@@ -74,14 +70,13 @@ namespace testengine.module
                 throw new InvalidDataException("Missing field action");
             }
 
-            switch (actionName.Value.ToLower()) {
+            switch (actionName.Value.ToLower())
+            {
                 case "query":
                     break;
                 default:
                     throw new InvalidDataException($"Unsupported action {actionName.Value}");
             }
-
-
 
             StringValue entityName = FormulaValue.New("");
 
@@ -111,7 +106,8 @@ namespace testengine.module
                 throw new InvalidDataException("Missing field then");
             }
 
-            await _testInfraFunctions.Page.RouteAsync($"**/api/data/v*/$batch", async (IRoute route) => {
+            await _testInfraFunctions.Page.RouteAsync($"**/api/data/v*/$batch", async (IRoute route) =>
+            {
                 var request = route.Request;
                 if (request.Method == "POST")
                 {
@@ -129,7 +125,8 @@ namespace testengine.module
             // TODO:
             // 1. Handle request for entity vs list
             // 2. Make the route async conditional on query string for different When clause 
-            await _testInfraFunctions.Page.RouteAsync($"**/api/data/v*/{entityName.Value.ToLower()}*", async (IRoute route) => {
+            await _testInfraFunctions.Page.RouteAsync($"**/api/data/v*/{entityName.Value.ToLower()}*", async (IRoute route) =>
+            {
                 var request = route.Request;
 
                 // TODO: Handle POST and PATCH commands
@@ -157,7 +154,7 @@ namespace testengine.module
                 {
                     await route.ContinueAsync();
                 }
-            });  
+            });
         }
 
         private async Task<string> ConvertTableToOData(TableValue value)
@@ -175,7 +172,7 @@ namespace testengine.module
 
             return jsonString;
         }
-       
+
         private async Task HandleBatchRequest(IRoute route, string entity, TableValue value)
         {
             var request = route.Request.PostData;
@@ -199,7 +196,8 @@ namespace testengine.module
                 --batch_a3faec5d-befd-4ca0-973e-8dcbfc0981ca--
                 */
                 await HandleBatchCount(route, id, entity, value);
-            } else
+            }
+            else
             {
                 /* Example Request
                 --batch_31b8538b-fdf5-4d97-b78f-83517f4ef163
@@ -305,13 +303,13 @@ OData-Version: 4.0
                 {
                     if (line.StartsWith("--batch_"))
                     {
-                        var id = line.Replace("--batch_","");
+                        var id = line.Replace("--batch_", "");
                         return id;
                     }
                 }
             }
             return String.Empty;
-                    
+
         }
 
         public Dictionary<string, string> GetQueryParameters(Uri uri)
