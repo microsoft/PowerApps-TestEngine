@@ -26,8 +26,8 @@ To get started, you will need to clone the Test Engine code from GitHub, locally
 
 ### Prerequisites for building Test Engine
 
-1. Install [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
-1. Ensure that your `MSBuildSDKsPath` environment variable is pointing to [.NET Core 6.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+1. Install [.NET Core 8.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+1. Ensure that your `MSBuildSDKsPath` environment variable is pointing to [.NET Core 8.0.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 1. Make sure [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2) is installed.
 
 ### Build locally
