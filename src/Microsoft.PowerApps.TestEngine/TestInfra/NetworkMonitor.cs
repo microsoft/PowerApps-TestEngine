@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
+using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
@@ -10,10 +11,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
     /// <summary>
     /// Infrastructure monitoring class that can be applied to help diagnose login issues
     /// </summary>
-    public class EntraLoginMonitor
+    public class NetworkMonitor
     {
         private readonly ILogger _logger;
         private readonly IBrowserContext _browserContext;
+        private readonly ITestState _testState;
         private readonly UriRedactionFormatter _uriRedactionFormatter;
 
         private readonly string[] _loginServices = new[]
@@ -24,11 +26,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 "login.microsoftonline.de"
             };
 
-        public EntraLoginMonitor(ILogger logger, IBrowserContext browserContext)
+        public NetworkMonitor(ILogger logger, IBrowserContext browserContext, ITestState testState)
         {
             _logger = logger;
             _browserContext = browserContext;
             _uriRedactionFormatter = new UriRedactionFormatter(logger);
+            _testState = testState;
         }
 
         public async Task MonitorEntraLoginAsync(string desiredUrl)
@@ -42,19 +45,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
                 await route.ContinueAsync();
             });
-
-            var cookies = await _browserContext.CookiesAsync();
-            if (cookies != null)
-            {
-                foreach (var cookie in cookies)
-                {
-                    if (cookie.HttpOnly)
-                    {
-                        var expires = DateTimeOffset.FromUnixTimeSeconds((long)cookie.Expires);
-                        _logger.LogDebug($"Cookie: {cookie.Name}, Secure {cookie.Secure}, Expires {expires}");
-                    }
-                }
-            }
 
             foreach (var service in _loginServices)
             {
@@ -78,12 +68,57 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             _browserContext.RequestFinished += async (s, e) => await _browserContext_RequestFinished(s, e, desiredUrl);
         }
 
+        public async Task LogCookies(string desiredUrl)
+        {
+
+            var hostName = "";
+            if (!string.IsNullOrEmpty(desiredUrl))
+            {
+                hostName = new Uri(desiredUrl).Host;
+            } else
+            {
+                var domain = _testState.GetDomain();
+                if (!string.IsNullOrEmpty(domain) && Uri.TryCreate(domain, UriKind.Absolute, out Uri match))
+                {
+                    hostName = match.Host;
+                }
+            }
+
+            var cookies = await _browserContext.CookiesAsync();
+            if (cookies != null)
+            {
+                // Get any cookies for Entra related sites or the desired url
+                foreach (var cookie in cookies
+                    .Where(c => _loginServices.Any(service => c.Name.Contains(service)) || c.Name.Contains(hostName))
+                    .OrderBy(c => c.Domain)
+                    .ThenBy(c => c.Name))
+                {
+                    var expires = DateTimeOffset.FromUnixTimeSeconds((long)cookie.Expires);
+                    _logger.LogDebug($"Domain {cookie.Domain}, Cookie: {cookie.Name}, Secure {cookie.Secure}, Expires {expires}");
+                }
+            }
+        }
+
         private async Task _browserContext_RequestFinished(object sender, IRequest e, string requestUrl)
         {
             var requestHost = new Uri(e.Url).Host;
             // Only listen for login services
-            if (_loginServices.Contains(requestHost) || new Uri(requestUrl).Host == requestHost )
+            if (  _loginServices.Any(service => requestHost.Contains(service)) || new Uri(requestUrl).Host == requestHost )
             {
+                var response = await e.ResponseAsync();
+                _logger.LogDebug($"Login request : {_uriRedactionFormatter.ToString(new Uri(e.Url))}");
+                _logger.LogDebug($"Login response status: {response.Status} ({response.StatusText})");
+
+                switch (response.Status) {
+                    case 302: // Redirect
+                        foreach (var header in response.Headers)
+                        {
+                            _logger.LogTrace($"{header.Key}: {header.Value}");
+                        }
+                        break;
+                }
+
+
                 if ( e.RedirectedFrom != null)
                 {
                     _logger.LogDebug("Login redirect from: {Method} {Url}", e.RedirectedFrom.Method, _uriRedactionFormatter.ToString(new Uri(e.RedirectedFrom.Url)));
@@ -94,9 +129,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     _logger.LogDebug("Login redirect to: {Method} {Url}", e.RedirectedTo.Method, _uriRedactionFormatter.ToString(new Uri(e.RedirectedTo.Url)));
                 }
 
-                var response = await e.ResponseAsync();
-                _logger.LogDebug($"Login request : {_uriRedactionFormatter.ToString(new Uri(e.Url))}");
-                _logger.LogDebug($"Login response status: {response.Status}");
+                if (_logger.IsEnabled(LogLevel.Trace))
+                {
+                    await LogCookies(String.Empty);
+                }
             }
         }
     }

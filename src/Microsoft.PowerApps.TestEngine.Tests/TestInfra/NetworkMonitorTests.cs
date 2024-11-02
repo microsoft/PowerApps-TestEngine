@@ -9,30 +9,29 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx.Types;
-using Microsoft.PowerFx;
 using Moq;
 using Xunit;
 
 
 namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 {
-    public class EntraLoginMonitorTests
+    public class NetworkMonitorTests
     {
         Mock<ILogger> MockLogger;
         Mock<IBrowserContext> MockBrowserContext;
         Mock<IRoute> MockRoute;
         Mock<IRequest> MockRequest;
         Mock<IResponse> MockResponse;
+        Mock<ITestState> MockTestState;
 
-        public EntraLoginMonitorTests()
+        public NetworkMonitorTests()
         {
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
-            MockBrowserContext.Setup(m => m.CookiesAsync(It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult((IReadOnlyList<BrowserContextCookiesResult>)null));
             MockLogger = new Mock<ILogger>();
             MockRoute = new Mock<IRoute>(MockBehavior.Strict);
             MockRequest = new Mock<IRequest>(MockBehavior.Strict);
             MockResponse = new Mock<IResponse>(MockBehavior.Strict);
+            MockTestState = new Mock<ITestState>(MockBehavior.Strict);
         }
 
         static List<string> urls = new List<string> {
@@ -52,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task WillTrackRequest(string url)
         {
             // Arrange 
-            var monitor = new EntraLoginMonitor(MockLogger.Object, MockBrowserContext.Object);
+            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
             Func<IRoute, Task> callback = null;
             List<string> routeUrl = new List<string>();
 
@@ -88,7 +87,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task WillNotTrackRequest(string url)
         {
             // Arrange 
-            var monitor = new EntraLoginMonitor(MockLogger.Object, MockBrowserContext.Object);
+            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
             Func<IRoute, Task> callback = null;
             List<string> routeUrl = new List<string>();
 
@@ -121,7 +120,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task WillTrackResponse(string url)
         {
             // Arrange
-            var monitor = new EntraLoginMonitor(MockLogger.Object, MockBrowserContext.Object);
+            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
 
             MockBrowserContext.Setup(m => m.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), It.IsAny<BrowserContextRouteOptions>()))
                .Returns(Task.CompletedTask);
@@ -153,7 +152,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task WillNotTrackResponse(string url)
         {
             // Arrange
-            var monitor = new EntraLoginMonitor(MockLogger.Object, MockBrowserContext.Object);
+            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
 
             MockBrowserContext.Setup(m => m.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), It.IsAny<BrowserContextRouteOptions>()))
                .Returns(Task.CompletedTask);
@@ -172,6 +171,23 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
 
             // Assert
+        }
+
+        [Theory]
+        [InlineData("https://example.com")]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("/page")]
+        public async Task NoCookies(string? url)
+        {
+            // Arrange
+            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
+
+            MockTestState.Setup(m => m.GetDomain()).Returns(url);
+            MockBrowserContext.Setup(m => m.CookiesAsync(It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult((IReadOnlyList<BrowserContextCookiesResult>)null));
+
+            // Act & Assert
+            await monitor.LogCookies("");
         }
 
         internal class RequestEventArgs : EventArgs

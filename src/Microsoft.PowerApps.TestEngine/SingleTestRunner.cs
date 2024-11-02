@@ -128,20 +128,28 @@ namespace Microsoft.PowerApps.TestEngine
 
                 _eventHandler.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
+                NetworkMonitor monitor = null;
+                if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
+                {
+                    // Enable logging
+                    monitor = new NetworkMonitor(Logger, TestInfraFunctions.GetContext(), _state);
+                    await monitor.MonitorEntraLoginAsync(desiredUrl);
+                    await monitor.LogCookies(desiredUrl);
+                }
+
                 // Navigate to test url
                 await TestInfraFunctions.GoToUrlAsync(desiredUrl);
                 Logger.LogInformation("After navigate to target URL");
 
                 _testReporter.TestRunAppURL = desiredUrl;
 
+                await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
+
                 if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
                 {
-                    // Enable logging
-                    var monitor = new EntraLoginMonitor(Logger, TestInfraFunctions.GetContext());
-                    await monitor.MonitorEntraLoginAsync(desiredUrl);
+                    Logger.LogDebug("After desired login found");
+                    await monitor.LogCookies(desiredUrl);
                 }
-
-                await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();
