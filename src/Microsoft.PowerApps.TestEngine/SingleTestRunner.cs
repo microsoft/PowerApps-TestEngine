@@ -130,11 +130,17 @@ namespace Microsoft.PowerApps.TestEngine
 
                 // Navigate to test url
                 await TestInfraFunctions.GoToUrlAsync(desiredUrl);
-                Logger.LogInformation("Successfully navigated to target URL");
+                Logger.LogInformation("After navigate to target URL");
 
                 _testReporter.TestRunAppURL = desiredUrl;
 
-                // Log in user
+                if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
+                {
+                    // Enable logging
+                    var monitor = new EntraLoginMonitor(Logger, TestInfraFunctions.GetContext());
+                    await monitor.MonitorEntraLoginAsync(desiredUrl);
+                }
+
                 await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
 
                 // Set up Power Fx
