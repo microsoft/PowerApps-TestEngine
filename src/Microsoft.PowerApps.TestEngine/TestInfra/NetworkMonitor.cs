@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -41,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 var request = route.Request;
                 var routeUri = new Uri(request.Url);
-                _logger.LogDebug("Login request: {Method} {Url}", route.Request.Method, _uriRedactionFormatter.ToString(routeUri));
+                _logger.LogDebug("Start request: {Method} {Url}", route.Request.Method, _uriRedactionFormatter.ToString(routeUri));
 
                 await route.ContinueAsync();
             });
@@ -58,7 +60,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                         await route.ContinueAsync();
                     }
 
-                    _logger.LogDebug("Login request: {Method} {Url}", request.Method, _uriRedactionFormatter.ToString(routeUri) );
+                    _logger.LogDebug("Start request: {Method} {Url}", request.Method, _uriRedactionFormatter.ToString(routeUri) );
                     
                     await route.ContinueAsync();
                 });
@@ -102,37 +104,54 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private async Task _browserContext_RequestFinished(object sender, IRequest e, string requestUrl)
         {
             var requestHost = new Uri(e.Url).Host;
+            var requestHash = CreateMD5(e.Url);
             // Only listen for login services
             if (  _loginServices.Any(service => requestHost.Contains(service)) || new Uri(requestUrl).Host == requestHost )
             {
                 var response = await e.ResponseAsync();
-                _logger.LogDebug($"Login request : {_uriRedactionFormatter.ToString(new Uri(e.Url))}");
-                _logger.LogDebug($"Login response status: {response.Status} ({response.StatusText})");
+                _logger.LogDebug($"Login request [{requestHash}]: {e.Method} {_uriRedactionFormatter.ToString(new Uri(e.Url))}");
+                _logger.LogDebug($"Login response status [{requestHash}]: {response.Status} ({response.StatusText})");
 
                 switch (response.Status) {
                     case 302: // Redirect
                         foreach (var header in response.Headers)
                         {
-                            _logger.LogTrace($"{header.Key}: {header.Value}");
+                            _logger.LogTrace($"Cookie [{requestHash}] {header.Key} = {header.Value}");
                         }
                         break;
                 }
 
-
                 if ( e.RedirectedFrom != null)
                 {
-                    _logger.LogDebug("Login redirect from: {Method} {Url}", e.RedirectedFrom.Method, _uriRedactionFormatter.ToString(new Uri(e.RedirectedFrom.Url)));
+                    _logger.LogDebug($"Login redirect from [{requestHash}]: {e.RedirectedFrom.Method} {_uriRedactionFormatter.ToString(new Uri(e.RedirectedFrom.Url))}");
                 }
 
                 if (e.RedirectedTo != null)
                 {
-                    _logger.LogDebug("Login redirect to: {Method} {Url}", e.RedirectedTo.Method, _uriRedactionFormatter.ToString(new Uri(e.RedirectedTo.Url)));
+                    _logger.LogDebug($"Login redirect to [{requestHash}]: {e.RedirectedTo.Method} {_uriRedactionFormatter.ToString(new Uri(e.RedirectedTo.Url))}");
                 }
 
                 if (_logger.IsEnabled(LogLevel.Trace))
                 {
                     await LogCookies(String.Empty);
                 }
+            }
+        }
+
+        public static string CreateMD5(string input)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // Convert the byte array to a hexadecimal string
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
             }
         }
     }

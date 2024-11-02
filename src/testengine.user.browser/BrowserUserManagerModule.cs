@@ -53,7 +53,9 @@ namespace testengine.user.browser
             }
 
             var started = DateTime.Now;
-            var timeout = testState.GetTimeout();
+
+            // Wait a minimum of a minute
+            var timeout = Math.Min(60000,testState.GetTimeout());
             var logger = singleTestInstanceState.GetLogger();
             var foundMatch = false;
 
