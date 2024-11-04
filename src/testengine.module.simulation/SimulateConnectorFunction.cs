@@ -2,14 +2,20 @@
 // Licensed under the MIT license.
 
 using System.Dynamic;
+using System.Text;
+using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
+using Microsoft.Playwright.Core;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Utils;
+using Microsoft.PowerFx.Syntax;
 using Microsoft.PowerFx.Types;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace testengine.module
 {
@@ -58,7 +64,7 @@ namespace testengine.module
                 connectorName = intercept.GetField(connectorNameField.Name) as StringValue;
             }
 
-            if (String.IsNullOrEmpty(connectorName.Value))
+            if (string.IsNullOrEmpty(connectorName.Value))
             {
                 throw new InvalidDataException("Missing field name");
             }
@@ -71,19 +77,27 @@ namespace testengine.module
                 parametersRecord = intercept.GetField(parametersField.Name) as RecordValue;
             }
 
-            TableValue thenResult = null;
+            FormulaValue thenFieldValue = null;
 
             var thenField = fields.FirstOrDefault(f => f.Name.ToLower() == "then");
             if (thenField != null)
             {
-                thenResult = intercept.GetField(thenField.Name) as TableValue;
+                thenFieldValue = intercept.GetField(thenField.Name);
+
             }
 
             // TODO handle case Then field is a record rather than a Table
 
-            if (thenResult == null)
+            if (thenFieldValue == null)
             {
                 throw new InvalidDataException("Missing field then");
+            }
+
+            var whenField = fields.FirstOrDefault(f => f.Name.ToLower() == "when");
+            FormulaValue whenFieldValue = null;
+            if (whenField != null)
+            {
+                whenFieldValue = intercept.GetField(whenField.Name);
             }
 
             await _testInfraFunctions.Page.RouteAsync($"**/invoke", async (IRoute route) =>
@@ -91,7 +105,7 @@ namespace testengine.module
                 var request = route.Request;
                 if (request.Method == "POST")
                 {
-                    await HandleConnectorRequest(route, connectorName.Value, parametersRecord, thenResult);
+                    await HandleConnectorRequest(route, connectorName.Value, parametersRecord, whenFieldValue, thenFieldValue);
                 }
                 else
                 {
@@ -113,7 +127,7 @@ namespace testengine.module
             return jsonString;
         }
 
-        private async Task HandleConnectorRequest(IRoute route, string connector, RecordValue parameters, TableValue thenResult)
+        private async Task HandleConnectorRequest(IRoute route, string connector, RecordValue parameters, FormulaValue whenField, FormulaValue thenResult)
         {
             var request = route.Request.PostData;
 
@@ -138,14 +152,238 @@ namespace testengine.module
                 return;
             }
 
+            var isMatch = true;
+            if (whenField != null)
+            {
+                if (whenField is RecordValue)
+                {
+                    var recordValue = whenField as RecordValue;
+                    if (!await RecordValueMatch(connectorUrl, recordValue))
+                    {
+                        isMatch = false;
+                    }
+                }
+
+                if (whenField is TableValue)
+                {
+                    var tableValue = whenField as TableValue;
+                    foreach (var row in tableValue.Rows)
+                    {
+                        if (!await RecordValueMatch(connectorUrl, row.Value))
+                        {
+                            isMatch = false;
+                        }
+                    }
+                }
+
+                if (whenField.TryGetPrimitiveValue(out var value))
+                {
+                    if (!connectorUrl.Contains($"{value}"))
+                    {
+                        isMatch = false;
+                    }
+                }
+            }
+
+            if (!isMatch)
+            {
+                // This connector request is not one we are looking for ... continue on
+                await route.ContinueAsync();
+                return;
+            }
+
             // TODO: Handle parameter match
+            // Convert Power Fx expression to OData filter
 
             await route.FulfillAsync(new RouteFulfillOptions
             {
                 Status = 200,
                 ContentType = "application/json",
-                Body = await ConvertTableToJson(thenResult)
+                Body = await ConvertToJson(thenResult)
             });
+        }
+
+        private async Task<bool> RecordValueMatch(string connectorUrl, RecordValue recordValue)
+        {
+            await foreach (var field in recordValue.GetFieldsAsync(CancellationToken.None))
+            {
+                switch (field.Name.ToLower())
+                {
+                    case "action":
+                        if (field.Value is BlankValue)
+                        {
+                            continue;
+                        }
+                        if (field.Value.TryGetPrimitiveValue(out object actionField))
+                        {
+                            var actionValue = actionField.ToString();
+                            if (!connectorUrl.Contains($"{actionValue}"))
+                            {
+                                return false;
+                            }
+                        }
+                        break;
+                    case "filter":
+                        if (field.Value is BlankValue)
+                        {
+                            continue;
+                        }
+                        if (field.Value.TryGetPrimitiveValue(out object filterField))
+                        {
+                            var filterValue = filterField.ToString();
+                            var odataFilter = ConvertPowerFxToODataFilter(filterValue);
+                            if (!connectorUrl.Contains($"{odataFilter}"))
+                            {
+                                return false;
+                            }
+                        }
+                        break;
+                }
+            }
+            return true;
+        }
+
+        private string ConvertPowerFxToODataFilter(string powerFxExpression)
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append("$filter=");
+
+            var engine = new RecalcEngine();
+            var parsed = engine.Parse(powerFxExpression);
+
+            ConvertNodeToOData(parsed.Root, result);
+
+            var encoded = HttpUtility.UrlEncode(result.ToString());
+            return encoded.Replace("%3d", "=");
+        }
+
+        private void ConvertNodeToOData(TexlNode node, StringBuilder sb)
+        {
+            if (node == null) return;
+
+            switch (node.Kind)
+            {
+                case NodeKind.BinaryOp:
+                    var binaryNode = (BinaryOpNode)node;
+                    sb.Append("(");
+                    ConvertNodeToOData(binaryNode.Left, sb);
+                    sb.Append($" {GetODataOperator(binaryNode.Op)} ");
+                    ConvertNodeToOData(binaryNode.Right, sb);
+                    sb.Append(")");
+                    break;
+
+                case NodeKind.FirstName:
+                    var firstNode = (FirstNameNode)node;
+                    sb.Append(firstNode.Ident.Name);
+                    break;
+
+                case NodeKind.StrLit:
+                    var strLitNode = (StrLitNode)node;
+                    sb.Append($"'{strLitNode.Value}'");
+                    break;
+
+                case NodeKind.DecLit:
+                    var decLitNode = (DecLitNode)node;
+                    sb.Append(decLitNode.ActualDecValue);
+                    break;
+
+                case NodeKind.Call:
+                    var callNode = (CallNode)node;
+                    switch (callNode.Head.Name)
+                    {
+                        case "AND":
+                            ConvertNodeToOData(callNode.Args.ChildNodes[0], sb);
+                            sb.Append(" and ");
+                            ConvertNodeToOData(callNode.Args.ChildNodes[1], sb);
+                            break;
+                        case "OR":
+                            ConvertNodeToOData(callNode.Args.ChildNodes[0], sb);
+                            sb.Append(" or ");
+                            ConvertNodeToOData(callNode.Args.ChildNodes[1], sb);
+                            break;
+                        case "NOT":
+                            sb.Append("not ");
+                            ConvertNodeToOData(callNode.Args.ChildNodes[0], sb);
+                            break;
+                        default:
+                            throw new NotSupportedException($"Call {callNode.Head.Name} is not supported.");
+                    }
+
+                    break;
+
+                //case NodeKind.UnaryOp:
+                //    var unaryNode = (UnaryOpNode)node;
+                //    sb.Append(GetODataOperator(unaryNode.));
+                //    ConvertNodeToOData(unaryNode.Operand, sb);
+                //    break;
+
+                //case NodeKind.Constant:
+                //    var constantNode = (ConstantNode)node;
+                //    sb.Append(constantNode.Value);
+                //    break;
+
+                //case NodeKind.Field:
+                //    var fieldNode = (FieldNode)node;
+                //    sb.Append(fieldNode.Name);
+                //    break;
+
+                // Add more cases as needed for other node types
+
+                default:
+                    throw new NotSupportedException($"Node kind {node.Kind} is not supported.");
+            }
+        }
+
+        private string GetODataOperator(BinaryOp op)
+        {
+            return op switch
+            {
+                BinaryOp.And => "and",
+                BinaryOp.Or => "or",
+                BinaryOp.Equal => "eq",
+                BinaryOp.NotEqual => "ne",
+
+                BinaryOp.Greater => "gt",
+                BinaryOp.GreaterEqual => "ge",
+                BinaryOp.Less => "lt",
+                BinaryOp.LessEqual => "le",
+                _ => throw new NotSupportedException($"Binary operator {op} is not supported.")
+            };
+        }
+
+        private async Task<string> ConvertToJson(FormulaValue thenResult)
+        {
+            if (thenResult is RecordValue)
+            {
+                var item = (RecordValue)thenResult;
+                var row = new Dictionary<string, object?>(new ExpandoObject());
+
+                await foreach (var field in item.GetFieldsAsync(CancellationToken.None))
+                {
+                    if (field.Value.TryGetPrimitiveValue(out object val))
+                    {
+                        row.Add(field.Name, val);
+                        continue;
+                    }
+
+                    // TODO: Handle complex non primative types
+                }
+
+                var jObject = JObject.FromObject(row);
+                return jObject.ToString(Newtonsoft.Json.Formatting.None);
+            }
+
+            if (thenResult is TableValue)
+            {
+                return await ConvertTableToJson(thenResult as TableValue);
+            }
+
+            if (thenResult.TryGetPrimitiveValue(out object primativeVal))
+            {
+                return JsonConvert.SerializeObject(primativeVal);
+            }
+
+            return "{}";
         }
 
 

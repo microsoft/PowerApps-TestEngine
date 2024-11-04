@@ -212,7 +212,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 // See if using legacy player
                 //try
                 //{
-                    await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger());
+                await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger());
                 //}
                 //catch (TimeoutException)
                 //{
