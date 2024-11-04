@@ -4,10 +4,20 @@ There are several specifically defined functions for the test framework.
 
 - [Assert](./Assert.md)
 - [Screenshot](./Screenshot.md)
-- [Pause](./Pause.md)
 - [Select](./Select.md)
 - [SetProperty](./SetProperty.md)
 - [Wait](./Wait.md)
+
+- [TestEngine.Pause](./Pause.md)
+- [TestEngine.PlaywrightAction](./PlaywrightAction.md)
+- [TestEngine.PlaywrightScript](./PlaywrightAction.md)
+
+## Experimental Functions
+
+The following functions will be enabled in Debug build and when Experimental is enabled as a Namespace
+
+- [Experimental.SimulateConnector](./SimulateConnector.md)
+- [Experimental.SimulateDataverse](./SimulateDataverse.md)
 
 ## Naming
 
