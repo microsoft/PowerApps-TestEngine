@@ -1,8 +1,8 @@
 # Overview
 
-The Power Platform Center of Excellence (CoE) starter kit is made up of a number of Power Platform low code solution elements. Amoung these is a model driven application that can be used to setup and upgrade the CoE Starter Kit.
+The Power Platform Center of Excellence (CoE) starter kit is made up of a number of Power Platform low code solution elements. Among these is a model driven application that can be used to setup and upgrade the CoE Starter Kit.
 
-This sample includes Power Apps Test Engine tests that can be used to automate and test ket elemenets of the expected behaviour of the Setup and Upgrade Wizard
+This sample includes Power Apps Test Engine tests that can be used to automate and test ket elements of the expected behavior of the Setup and Upgrade Wizard
 
 ## What You Need
 
@@ -15,8 +15,8 @@ Before you start, you'll need a few tools and permissions:
 
 ## Prerequisites
 
-1. Install of .Net SDK 6.0 from [Downloads](https://dotnet.microsoft.com/download/dotnet/6.0)
-2. An install of PowerShell followining the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershel) for your operating system
+1. Install of .Net SDK 8.0 from [Downloads](https://dotnet.microsoft.com/download/dotnet/8.0)
+2. An install of PowerShell following the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershel) for your operating system
 3. The Power Platform Command Line interface installed using the [Learn install guidance](https://learn.microsoft.com/power-platform/developer/cli/introduction?tabs=windows#install-microsoft-power-platform-cli)
 4. A created Power Platform environment using the [Power Platform Admin Center](https://learn.microsoft.com/power-platform/admin/create-environment) or [Power Platform Command Line](https://learn.microsoft.com/power-platform/developer/cli/reference/admin#pac-admin-create)
 5. Granted System Administrator or System Customizer roles as documented in [Microsoft Learn](https://learn.microsoft.compower-apps/maker/model-driven-apps/privileges-required-customization#system-administrator-and-system-customizer-security-roles)

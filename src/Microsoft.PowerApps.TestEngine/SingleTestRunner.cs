@@ -104,6 +104,7 @@ namespace Microsoft.PowerApps.TestEngine
             _eventHandler.SetAndInitializeCounters(casesTotal);
 
             string suiteException = null;
+            TestRecorder record = null;
 
             try
             {
@@ -155,6 +156,15 @@ namespace Microsoft.PowerApps.TestEngine
                 _powerFxEngine.Setup();
                 await _powerFxEngine.RunRequirementsCheckAsync();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
+
+                if (TestState.GetTestSuiteDefinition().RecordMode)
+                {
+                    record = new TestRecorder(Logger, TestInfraFunctions.GetContext(), _state, TestInfraFunctions, new Microsoft.PowerFx.RecalcEngine(), _fileSystem);
+                    record.Setup();
+
+                    Logger.LogInformation("Record your test case and press play in the inspector to finish");
+                    await TestInfraFunctions.Page.PauseAsync();
+                }
 
                 // Set up network request mocking if any
                 await TestInfraFunctions.SetupNetworkRequestMockAsync();
@@ -215,6 +225,8 @@ namespace Microsoft.PowerApps.TestEngine
                         }
                         finally
                         {
+
+
                             if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
                             {
                                 var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
@@ -282,6 +294,18 @@ namespace Microsoft.PowerApps.TestEngine
                         var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                         _testReporter.FailTest(testRunId, testId);
                     }
+                }
+
+                try
+                {
+                    if (TestState.GetTestSuiteDefinition().RecordMode && record != null)
+                    {
+                        record.Generate(testResultDirectory);
+                    }
+                }
+                catch
+                {
+
                 }
 
                 string summaryString = $"\nTest suite summary\nTotal cases: {casesTotal}" +

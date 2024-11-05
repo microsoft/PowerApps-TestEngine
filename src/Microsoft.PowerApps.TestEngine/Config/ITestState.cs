@@ -175,5 +175,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         /// <param name="e">The event arguments containing details about the test step.</param>
         public void OnAfterTestStepExecuted(TestStepEventArgs e);
+
+        /// <summary>
+        /// Indicate that this test run should be a record mode not execution
+        /// </summary>
+        void SetRecordMode();
     }
 }

@@ -18,6 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestState : ITestState
     {
         private readonly ITestConfigParser _testConfigParser;
+        private bool _recordMode = false;
 
         public event EventHandler<TestStepEventArgs> BeforeTestStepExecuted;
         public event EventHandler<TestStepEventArgs> AfterTestStepExecuted;
@@ -55,6 +56,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public TestSuiteDefinition GetTestSuiteDefinition()
         {
+            if (_recordMode)
+            {
+                return new TestSuiteDefinition { RecordMode = true };
+            }
+
             return TestPlanDefinition?.TestSuite;
         }
 
@@ -382,6 +388,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public void OnAfterTestStepExecuted(TestStepEventArgs e)
         {
             AfterTestStepExecuted?.Invoke(this, e);
+        }
+
+        public void SetRecordMode()
+        {
+            _recordMode = true;
         }
     }
 }

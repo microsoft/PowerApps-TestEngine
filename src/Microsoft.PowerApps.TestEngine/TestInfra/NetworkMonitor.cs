@@ -60,8 +60,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                         await route.ContinueAsync();
                     }
 
-                    _logger.LogDebug("Start request: {Method} {Url}", request.Method, _uriRedactionFormatter.ToString(routeUri) );
-                    
+                    _logger.LogDebug("Start request: {Method} {Url}", request.Method, _uriRedactionFormatter.ToString(routeUri));
+
                     await route.ContinueAsync();
                 });
             }
@@ -77,7 +77,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (!string.IsNullOrEmpty(desiredUrl))
             {
                 hostName = new Uri(desiredUrl).Host;
-            } else
+            }
+            else
             {
                 var domain = _testState.GetDomain();
                 if (!string.IsNullOrEmpty(domain) && Uri.TryCreate(domain, UriKind.Absolute, out Uri match))
@@ -106,13 +107,14 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             var requestHost = new Uri(e.Url).Host;
             var requestHash = CreateMD5(e.Url);
             // Only listen for login services
-            if (  _loginServices.Any(service => requestHost.Contains(service)) || new Uri(requestUrl).Host == requestHost )
+            if (_loginServices.Any(service => requestHost.Contains(service)) || new Uri(requestUrl).Host == requestHost)
             {
                 var response = await e.ResponseAsync();
                 _logger.LogDebug($"Login request [{requestHash}]: {e.Method} {_uriRedactionFormatter.ToString(new Uri(e.Url))}");
                 _logger.LogDebug($"Login response status [{requestHash}]: {response.Status} ({response.StatusText})");
 
-                switch (response.Status) {
+                switch (response.Status)
+                {
                     case 302: // Redirect
                         foreach (var header in response.Headers)
                         {
@@ -121,7 +123,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                         break;
                 }
 
-                if ( e.RedirectedFrom != null)
+                if (e.RedirectedFrom != null)
                 {
                     _logger.LogDebug($"Login redirect from [{requestHash}]: {e.RedirectedFrom.Method} {_uriRedactionFormatter.ToString(new Uri(e.RedirectedFrom.Url))}");
                 }

@@ -69,5 +69,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets or sets the test cases to be executed.
         /// </summary>
         public List<TestCase> TestCases { get; set; } = new List<TestCase>();
+
+        /// <summary>
+        /// Indicate if record mode rather than execute test suite / test case
+        /// </summary>
+        public bool RecordMode { get; set; }
     }
 }

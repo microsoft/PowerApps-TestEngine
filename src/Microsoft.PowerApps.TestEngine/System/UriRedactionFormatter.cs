@@ -9,7 +9,8 @@ namespace Microsoft.PowerApps.TestEngine.System
     {
         ILogger _logger;
 
-        public UriRedactionFormatter(ILogger logger) {
+        public UriRedactionFormatter(ILogger logger)
+        {
             _logger = logger;
         }
         public string ToString(Uri uri)

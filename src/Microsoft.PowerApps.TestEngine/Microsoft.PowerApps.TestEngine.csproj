@@ -28,6 +28,7 @@
   
   <ItemGroup>
     <PackageReference Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
+    <PackageReference Include="Microsoft.Data.OData" Version="5.8.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Playwright" Version="1.47.0" />
