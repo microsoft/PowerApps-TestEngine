@@ -2,8 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Collections.Concurrent;
-using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Web;
@@ -15,17 +13,16 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json.Linq;
-using static System.Net.WebRequestMethods;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
     ///<summary>
     /// The TestRecorder class is designed to generate and record test steps for the current test session.
-    /// This includes network interaction for Dataverse and Connectors, as well as user interaction via Keyboard and Mouse.
+    /// This includes network interaction for Dataverse and Connectors, as well as user interaction via Mouse.
     ///</summary>
+    ///<remarks>Future support for Keyboard recording could be considered</remarks>
     public class TestRecorder
     {
         private readonly ILogger _logger;
@@ -59,18 +56,95 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         }
 
         ///<summary>
-        /// Sets up the TestRecorder by subscribing to browser and page events.
+        /// Sets up the TestRecorder by subscribing to browser HTTP Requests
         ///</summary>
-        public void Setup()
+        public void SetupHttpMonitoring()
         {
             _browserContext.Response += OnResponse;
-
-            //TODO: Subscribe to key down events from the page
-
-
-            //TODO: Subscribe to mouse click events from the page
         }
 
+        ///<summary>
+        /// Sets up the TestRecorder by subscribing to page mouse events.
+        ///</summary>
+        public void SetupMouseMonitoring()
+        {
+            var page = _infra.Page;
+
+            var feedbackUrl = new Uri(new Uri($"https://{new Uri(_testState.GetDomain()).Host}"), new Uri("testengine", UriKind.Relative));
+
+            // Intercept ALL calls for testengine feedback for recording
+            _browserContext.RouteAsync($"{feedbackUrl.ToString()}/**", async (IRoute route) => await HandleTestEngineData(route));
+
+            AddClickListener(_infra.Page, feedbackUrl).Wait();
+
+            //TODO: Subscribe to keyboard events from the page. This will need to consider focus changes and how get value for SetProperty() based on control type
+        }
+
+        /// <summary>
+        /// Handle callback from HTTP request sent from browser to test enging
+        /// </summary>
+        /// <param name="route">The request that has been intercepted</param>
+        /// <returns>New response to the browser</returns>
+        private async Task HandleTestEngineData(IRoute route)
+        {
+            if (route.Request.Url.Contains("/click"))
+            {
+                // TODO: handle click for known controls
+                // TODO: handle click for known like combobox
+                // TODO: handle click for known controls inside gallery or components
+                // TODO: handle click for controls inside PCF using css selector using Experimental.PlaywrightAction()?
+                var segments = new Uri(route.Request.Url).AbsolutePath.Split('/');
+                if (segments.Length >= 4
+                    && segments[1].Equals("testengine", StringComparison.OrdinalIgnoreCase)
+                    && segments[2].Equals("click", StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.LogDebug($"Click segments[3]");
+                    // Assume that the select item is compatible with Select() Power Fx function
+                    TestSteps.Add($"Select({segments[3]});");
+                }
+            }
+
+            // Always send back Status 200 and do not send information to target URL as the request is for recording only
+            await route.FulfillAsync(new RouteFulfillOptions { Status = 200 });
+        }
+
+        /// <summary>
+        /// Listen for clicks on the active page document
+        /// </summary>
+        /// <param name="page">The page to listen for click events</param>
+        /// <param name="feedbackUrl">The url to send click event data to for callback to testenging listening for recording</param>
+        /// <returns>Completed task</returns>
+        private async Task AddClickListener(IPage page, Uri feedbackUrl)
+        {
+            // TODO: Handle controls that do not have data-control-name
+            string listenerJavaScript = String.Format(@"(function() {{
+        document.addEventListener('click', function(event) {{
+            const element = event.target.closest('[data-control-name]');
+            if (element) {{
+                const controlName = element.getAttribute('data-control-name');
+                const clickData = {{
+                    controlName: controlName,
+                    x: event.clientX,
+                    y: event.clientY
+                }};
+                fetch('{0}/click/' + controlName, {{
+                    method: 'POST',
+                    headers: {{
+                        'Content-Type': 'application/json'
+                    }},
+                    body: JSON.stringify(clickData)
+                }});
+            }}
+        }});
+    }})();", feedbackUrl);
+            await page.EvaluateAsync(listenerJavaScript);
+        }
+
+        /// <summary>
+        /// Handle response to HTTP page that is sent starting work in a new thread not to block execution
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResponse(object sender, IResponse e)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -95,6 +169,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
+        /// <summary>
+        /// Check for responses that need to have handling for Recording test step generation
+        /// </summary>
+        /// <param name="response">The response to check for matching request/reponse to generate a TestStep</param>
+        /// <returns>Completed task</returns>
         private async Task HandleResponse(IResponse response)
         {
             // Check of the request related to a Dataverse connection
@@ -114,6 +193,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 }
             }
 
+            // Check for Power Platform connector invocation
             if (response.Request.Url.Contains("/invoke") && response.Request.Headers.ContainsKey("x-ms-request-url"))
             {
                 switch (response.Request.Method)
@@ -128,6 +208,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
+        /// <summary>
+        /// Convert data extracted from HTTP request into Expertimental.SimulateConnection() call
+        /// </summary>
+        /// <param name="name">The connector that the simulation relates to</param>
+        /// <param name="when">Paremeters determining when the simulation should apply</param>
+        /// <param name="then">The table or record to return when a match is found</param>
+        /// <returns>Generated Power Fx function</returns>
         private string GenerateConnector(string name, FormulaValue when, FormulaValue then)
         {
             StringBuilder connectorBuilder = new StringBuilder();
@@ -213,11 +300,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return connectorBuilder.ToString();
         }
 
-        private object GetConnectorThenResult(IResponse response)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Extract the Connector action from the url
+        /// </summary>
+        /// <param name="url">The relative connector url reference</param>
+        /// <returns>The action name</returns>
+        /// <exception cref="ArgumentException"></exception>
         private string GetActionName(string url)
         {
             var requestUrl = new Uri(new Uri("https://example.com"), new Uri(url, UriKind.Relative));
@@ -235,6 +323,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             throw new ArgumentException("Invalid request url");
         }
 
+
+        /// <summary>
+        /// Convert the requested action url into Power Fx When record
+        /// </summary>
+        /// <param name="url">Teh url to be converted</param>
+        /// <returns>The When record that represents the request</returns>
         private FormulaValue GetWhenConnectorValue(string url)
         {
             var requestUrl = new Uri(new Uri("https://example.com"), new Uri(url, UriKind.Relative));
@@ -284,6 +378,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return RecordValue.NewRecordFromFields(fields);
         }
 
+        /// <summary>
+        /// Convert a OData $filter to a Power Fx string expression
+        /// </summary>
+        /// <param name="odataFilter">The filter to be converted</param>
+        /// <returns>Power Fx expression that represents the $filter</returns>
         string ConvertODataToPowerFx(string odataFilter)
         {
             // Parse the OData filter without a known EDM model
@@ -293,6 +392,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return ConvertFilterClauseToPowerFx(filterClause.Expression);
         }
 
+        /// <summary>
+        /// Parse the odata filter clause and return the Abstract Syntax Tree (AST) representation of the expression
+        /// </summary>
+        /// <param name="odataFilter">The text $filter clause</param>
+        /// <returns>The AST representation of the filter clause</returns>
         private FilterClause ParseFilter(string odataFilter)
         {
             EdmModel edmModel = new EdmModel();
@@ -304,6 +408,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return ODataUriParser.ParseFilter(odataFilter, edmModel, entityType);
         }
 
+        /// <summary>
+        /// Convert the AST representation of a OData filter clause to the equivent Power Fx expression
+        /// </summary>
+        /// <param name="expression">An element of the OData AST tree convert</param>
+        /// <returns>Power Fx representation of the AST fragement</returns>
+        /// <exception cref="NotSupportedException"></exception>
         string ConvertFilterClauseToPowerFx(SingleValueNode expression)
         {
             if (expression is BinaryOperatorNode binaryOperatorNode)
@@ -366,6 +476,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             throw new NotSupportedException($"Expression type {expression.GetType().Name} is not supported");
         }
 
+        /// <summary>
+        /// Generate a Power Fx Experimental.SimulateDataverse() from extracted HTTP request data
+        /// </summary>
+        /// <param name="entity">The entity that the request relates to</param>
+        /// <param name="data">The optional data to convert</param>
+        /// <returns></returns>
         private string GenerateDataverseQuery(string entity, FormulaValue data)
         {
             StringBuilder queryBuilder = new StringBuilder();
@@ -423,11 +539,18 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return queryBuilder.ToString();
         }
 
+        /// <summary>
+        /// Convert Power Fx formula value to the string representation
+        /// </summary>
+        /// <param name="value">The vaue to convert</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         private string FormatValue(FormulaValue value)
         {
             //TODO: Handle special case of DateTime As unix time to DateTime
             return value switch
             {
+                BlankValue blankValue => "Blank()",
                 StringValue stringValue => $"\"{stringValue.Value}\"",
                 NumberValue numberValue => numberValue.Value.ToString(),
                 BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
@@ -440,18 +563,33 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             };
         }
 
+        /// <summary>
+        /// Convert a Power Fx object to String Representation of the Record
+        /// </summary>
+        /// <param name="recordValue">The record to be converted</param>
+        /// <returns>Power Fx representation</returns>
         private string FormatRecordValue(RecordValue recordValue)
         {
             var fields = recordValue.Fields.Select(field => $"{field.Name}: {FormatValue(field.Value)}");
             return $"{{{string.Join(", ", fields)}}}";
         }
 
+        /// <summary>
+        /// Convert the Power Fx table into string representation
+        /// </summary>
+        /// <param name="tableValue">The table to be converted</param>
+        /// <returns>The string representation of all rows of the table</returns>
         private string FormatTableValue(TableValue tableValue)
         {
             var rows = tableValue.Rows.Select(row => FormatValue(row.Value));
             return $"Table({string.Join(", ", rows)})";
         }
 
+        /// <summary>
+        /// Convert OData response to Power Fx Value
+        /// </summary>
+        /// <param name="response">The HTTP reponse to read Json response from</param>
+        /// <returns></returns>
         private async Task<FormulaValue> ConvertODataToFormulaValue(IResponse response)
         {
             // Read the JSON content from the response
@@ -466,6 +604,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return await ConvertJsonToFormulaValue(jsonObject);
         }
 
+        /// <summary>
+        /// Convert the Json body of the reponse to Power Fx formula
+        /// </summary>
+        /// <param name="response">The HTTP reponse to read Json response from</param>
+        /// <returns>The mapped formula value</returns>
         private async Task<FormulaValue> ConvertJsonResultToFormulaValue(IResponse response)
         {
             // Read the JSON content from the response
@@ -480,6 +623,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return element?.ValueKind == JsonValueKind.Array;
         }
 
+        /// <summary>
+        /// Convert Json object to Power Fx formula value
+        /// </summary>
+        /// <param name="jsonObject">JObject, JArray or JValue token to convert</param>
+        /// <returns>The mapped Power Fx formula</returns>
         private async Task<FormulaValue> ConvertJsonToFormulaValue(JToken jsonObject)
         {
             // Check if the value parameter is an array
@@ -522,10 +670,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     if (property.Value is JObject || property.Value is JArray)
                     {
                         value = await ConvertJsonToFormulaValue(property.Value);
-                        
+
                     }
                     else if (property.Value is JValue)
-                    { 
+                    {
                         var propertyValue = ((JValue)property.Value).Value;
                         if (propertyValue is string stringValue)
                         {
@@ -547,15 +695,26 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                         {
                             value = FormulaValue.New(dateTimeValue);
                         }
-                        else
+                        else if (propertyValue == null)
                         {
-                            // Handle other types or throw an exception if the type is unsupported
-                            throw new ArgumentException("Unsupported property value type");
+                            value = FormulaValue.NewBlank();
                         }
-                    } 
+                    }
                     else
                     {
-                        throw new ArgumentException("The property parameter is not not supported");
+                        _logger.LogDebug("The property parameter is not not supported");
+                    }
+
+                    if (value == null && property.Value != null)
+                    {
+                        // TODO: Improve unknown value mapping
+                        value = FormulaValue.New(property.Value.ToString());
+                    }
+
+                    if (value == null)
+                    {
+                        // Lets just map to blank
+                        value = BlankValue.NewBlank();
                     }
 
                     fields.Add(new NamedValue(name, value));
@@ -573,9 +732,17 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 return FormulaValue.New(jsonObject.ToString());
             }
 
-            throw new ArgumentException("The value parameter is not a valid JSON type");
+
+            _logger.LogDebug("The value parameter is not a valid JSON type");
+            return FormulaValue.NewBlank();
         }
 
+        /// <summary>
+        /// Extract the oadata entity from the url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         private string GetODataEntity(string url)
         {
             var requestUrl = new Uri(url);

@@ -3,9 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -14,13 +12,11 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx;
 using Moq;
 using Xunit;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using static Microsoft.PowerApps.TestEngine.Tests.TestInfra.NetworkMonitorTests;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 {
@@ -64,7 +60,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
 
             // Act
-            recorder.Setup();
+            recorder.SetupHttpMonitoring();
 
             // Assert
             _mockBrowserContext.VerifyAdd(m => m.Response += It.IsAny<EventHandler<IResponse>>(), Times.Once);
@@ -148,7 +144,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             }
 
             // Act
-            recorder.Setup();
+            recorder.SetupHttpMonitoring();
             _mockBrowserContext.Raise(m => m.Response += null, args);
             if (tasks.Count > 0)
             {
@@ -213,7 +209,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             _mockRequest.SetupGet(m => m.Headers).Returns(headers);
 
             // Act
-            recorder.Setup();
+            recorder.SetupHttpMonitoring();
             _mockBrowserContext.Raise(m => m.Response += null, args);
 
             if (tasks.Count > 0)
@@ -241,6 +237,48 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             }
             JsonDocument jsonDocument = JsonDocument.Parse(jsonString);
             return jsonDocument.RootElement;
+        }
+
+        [Fact]
+        public void MouseEvent_Registration()
+        {
+            // Arrange
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
+            _mockBrowserContext.Setup(m => m.RouteAsync("https://example.com/testengine/**", It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+            _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null)).Returns(Task.FromResult((JsonElement?)null));
+
+            // Act
+            recorder.SetupMouseMonitoring();
+
+            // Assert
+        }
+
+        [Fact]
+        public void MouseEvent_ValidJavaScript()
+        {
+            // Arrange
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
+            _mockBrowserContext.Setup(m => m.RouteAsync("https://example.com/testengine/**", It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+
+            var javaScript = String.Empty;
+            _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null))
+                .Callback((string js, object arg) => javaScript = js)
+                .Returns(Task.FromResult((JsonElement?)null));
+
+            var jint = new Jint.Engine();
+            jint.Evaluate(@"document = {
+    addEventListener: (eventName, callback) => { if (eventName != 'click') throw 'Invalid event' }
+}");
+
+            // Act
+            recorder.SetupMouseMonitoring();
+
+            // Assert
+
+            jint.Evaluate(javaScript);
+            Assert.Contains("https://example.com/testengine/click/", javaScript);
         }
     }
 }

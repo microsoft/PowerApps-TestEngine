@@ -162,7 +162,10 @@ namespace Microsoft.PowerApps.TestEngine
                 if (testSuite.RecordMode)
                 {
                     record = new TestRecorder(Logger, TestInfraFunctions.GetContext(), _state, TestInfraFunctions, _powerFxEngine, _fileSystem);
-                    record.Setup();
+
+                    // TODO: Consider settings to determine type of recording to include
+                    record.SetupHttpMonitoring();
+                    record.SetupMouseMonitoring();
 
                     Logger.LogInformation("Record your test case and press play in the inspector to finish");
                     await TestInfraFunctions.Page.PauseAsync();
