@@ -66,11 +66,33 @@ pac auth create --environment <Your environment ID>
 }
 ```
 
-6. Run the sample tests from PowerShell
+## Run Test
+
+To Run the sample tests from PowerShell assuming the Getting started steps have been completed
 
 ```pwsh
 .\RunTests.ps1
 ```
+
+## Record and Replay
+
+To record interaction with Dataverse and generate a sample Test Engine script perform the following steps assuming the Getting started steps have been completed
+
+1. Start record process
+
+```pwsh
+.\Record.ps1
+```
+
+2. If required login to the Power App
+
+3. Wait for the Playwright Inspector to be displayed
+
+4. Interact with the Setup and Upgrade Wizard
+
+5. When ready to complete the record session press play in the Playwright Inspector
+
+6. Open the generated **recorded.te.yaml** that includes data from recorded Dataverse and Connector calls.
 
 ## What to Expect
 

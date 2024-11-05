@@ -307,9 +307,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         }
 
         // defining this for improved testability, this needs the tear down (dispose method) for it to not carry over between tests
-        internal static Func<Assembly> GetExecutingAssembly = () => Assembly.GetExecutingAssembly();
+        public Func<Assembly> GetExecutingAssembly = () => Assembly.GetExecutingAssembly();
 
-        internal async Task EmbedMDAJSScripts(string resourceName, string embeddedScriptName)
+        public async Task EmbedMDAJSScripts(string resourceName, string embeddedScriptName)
         {
             var assembly = GetExecutingAssembly();
             using (var stream = assembly.GetManifestResourceStream(resourceName))
@@ -347,7 +347,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 }
             }
         }
-
         public async Task<Dictionary<string, ControlRecordValue>> LoadObjectModelAsync()
         {
             var controlDictionary = new Dictionary<string, ControlRecordValue>();

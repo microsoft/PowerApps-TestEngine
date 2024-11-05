@@ -98,7 +98,9 @@ namespace Microsoft.PowerApps.TestEngine
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             TestState.SetTestResultsDirectory(testResultDirectory);
 
-            casesTotal = TestState.GetTestSuiteDefinition().TestCases.Count();
+            var testSuite = TestState.GetTestSuiteDefinition();
+
+            casesTotal = testSuite.TestCases.Count();
 
             // Number of total cases are recorded and also initialize the passed cases to 0 for this test run
             _eventHandler.SetAndInitializeCounters(casesTotal);
@@ -157,9 +159,9 @@ namespace Microsoft.PowerApps.TestEngine
                 await _powerFxEngine.RunRequirementsCheckAsync();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
 
-                if (TestState.GetTestSuiteDefinition().RecordMode)
+                if (testSuite.RecordMode)
                 {
-                    record = new TestRecorder(Logger, TestInfraFunctions.GetContext(), _state, TestInfraFunctions, new Microsoft.PowerFx.RecalcEngine(), _fileSystem);
+                    record = new TestRecorder(Logger, TestInfraFunctions.GetContext(), _state, TestInfraFunctions, _powerFxEngine, _fileSystem);
                     record.Setup();
 
                     Logger.LogInformation("Record your test case and press play in the inspector to finish");
@@ -289,7 +291,7 @@ namespace Microsoft.PowerApps.TestEngine
                 if (allTestsSkipped)
                 {
                     // Run test case one by one, mark it as failed
-                    foreach (var testCase in TestState.GetTestSuiteDefinition().TestCases)
+                    foreach (var testCase in testSuite.TestCases)
                     {
                         var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                         _testReporter.FailTest(testRunId, testId);
@@ -298,7 +300,7 @@ namespace Microsoft.PowerApps.TestEngine
 
                 try
                 {
-                    if (TestState.GetTestSuiteDefinition().RecordMode && record != null)
+                    if (testSuite.RecordMode && record != null)
                     {
                         record.Generate(testResultDirectory);
                     }

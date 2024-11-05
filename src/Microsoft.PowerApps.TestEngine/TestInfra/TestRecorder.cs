@@ -3,7 +3,9 @@
 
 using System.Collections.Concurrent;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Web;
 using Microsoft.Data.Edm.Library;
 using Microsoft.Data.OData.Query;
@@ -11,6 +13,7 @@ using Microsoft.Data.OData.Query.SemanticAst;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
@@ -29,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly IBrowserContext _browserContext;
         private readonly ITestState _testState;
         private readonly ITestInfraFunctions _infra;
-        private readonly RecalcEngine _recalcEngine;
+        private readonly IPowerFxEngine _engine;
         private readonly IFileSystem _fileSystem;
         private readonly StringBuilder _textBuilder;
 
@@ -42,15 +45,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         ///<param name="browserContext">The browser context for Playwright interactions.</param>
         ///<param name="testState">The current test state.</param>
         ///<param name="infra">The infrastructure functions providing access to the current page.</param>
-        ///<param name="recalcEngine">The recalc engine representing the current test state of controls, properties, variables, and collections.</param>
+        ///<param name="powerFxEngine">The Power Fx engine representing the current test state of controls, properties, variables, and collections.</param>
         ///<param name="fileSystem">The file system interface for interacting with the file system.</param>
-        public TestRecorder(ILogger logger, IBrowserContext browserContext, ITestState testState, ITestInfraFunctions infra, RecalcEngine recalcEngine, IFileSystem fileSystem)
+        public TestRecorder(ILogger logger, IBrowserContext browserContext, ITestState testState, ITestInfraFunctions infra, IPowerFxEngine powerFxEngine, IFileSystem fileSystem)
         {
             _logger = logger;
             _browserContext = browserContext;
             _testState = testState;
             _infra = infra;
-            _recalcEngine = recalcEngine;
+            _engine = powerFxEngine;
             _fileSystem = fileSystem;
             _textBuilder = new StringBuilder();
         }
@@ -70,7 +73,26 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         private void OnResponse(object sender, IResponse e)
         {
-            Task.Factory.StartNew(async () => await HandleResponse(e));
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
+            Task.Factory.StartNew(async () =>
+            {
+                try
+                {
+                    await HandleResponse(e);
+                    tcs.SetResult(true);
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            });
+
+            if (sender is List<Task>)
+            {
+                var tasks = sender as List<Task>;
+                tasks.Add(tcs.Task);
+            }
         }
 
         private async Task HandleResponse(IResponse response)
@@ -178,7 +200,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     connectorBuilder.Append("{");
                     foreach (var field in thenRecord.Fields)
                     {
-                        connectorBuilder.Append($"{field.Name}: {FormatValue(field.Value)}, ");
+                        var formattedFieldValue = FormatValue(field.Value);
+                        connectorBuilder.Append($"{field.Name}: {formattedFieldValue}, ");
                     }
                     connectorBuilder.Length -= 2; // Remove the trailing comma and space
                     connectorBuilder.Append("}");
@@ -328,6 +351,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
             else if (expression is ConstantNode constantNode)
             {
+                if (constantNode.Value is string stringValue)
+                {
+                    // Need to add two quotes as it will be included in a string
+                    return $"\"\"{stringValue}\"\"";
+                }
                 return constantNode.Value.ToString();
             }
             if (expression is ConvertNode convertNode)
@@ -406,8 +434,22 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 // Assume all dates should be in UTC
                 DateValue dateValue => dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"), // ISO 8601 format
                 DateTimeValue dateTimeValue => dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"), // ISO 8601 format
+                RecordValue recordValue => FormatRecordValue(recordValue),
+                TableValue tableValue => FormatTableValue(tableValue),
                 _ => throw new ArgumentException("Unsupported FormulaValue type")
             };
+        }
+
+        private string FormatRecordValue(RecordValue recordValue)
+        {
+            var fields = recordValue.Fields.Select(field => $"{field.Name}: {FormatValue(field.Value)}");
+            return $"{{{string.Join(", ", fields)}}}";
+        }
+
+        private string FormatTableValue(TableValue tableValue)
+        {
+            var rows = tableValue.Rows.Select(row => FormatValue(row.Value));
+            return $"Table({string.Join(", ", rows)})";
         }
 
         private async Task<FormulaValue> ConvertODataToFormulaValue(IResponse response)
@@ -428,9 +470,14 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         {
             // Read the JSON content from the response
             var jsonString = await response.JsonAsync();
-            var jsonObject = JObject.Parse(jsonString.ToString());
+            JToken jsonObject = IsJsonElementArray(jsonString) ? JArray.Parse(jsonString.ToString()) : JObject.Parse(jsonString.ToString());
 
             return await ConvertJsonToFormulaValue(jsonObject.Root);
+        }
+
+        public bool IsJsonElementArray(JsonElement? element)
+        {
+            return element?.ValueKind == JsonValueKind.Array;
         }
 
         private async Task<FormulaValue> ConvertJsonToFormulaValue(JToken jsonObject)
@@ -450,8 +497,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
                     foreach (var property in item.Children<JProperty>())
                     {
-                        fields.Add(new NamedValue(property.Name, FormulaValue.New(property.Value.ToString())));
-                        recordType = recordType.Add(new NamedFormulaType(property.Name, FormulaType.String));
+                        var fieldValue = await ConvertJsonToFormulaValue(property.Value);
+                        fields.Add(new NamedValue(property.Name, fieldValue));
+                        recordType = recordType.Add(new NamedFormulaType(property.Name, fieldValue.Type));
                     }
 
                     records.Add(RecordValue.NewRecordFromFields(fields));
@@ -468,8 +516,51 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
                 foreach (var property in jsonObjectValue.Children<JProperty>())
                 {
-                    fields.Add(new NamedValue(property.Name, FormulaValue.New(property.Value.ToString())));
-                    recordType = recordType.Add(new NamedFormulaType(property.Name, FormulaType.String));
+                    var name = property.Name;
+                    FormulaValue value = null;
+
+                    if (property.Value is JObject || property.Value is JArray)
+                    {
+                        value = await ConvertJsonToFormulaValue(property.Value);
+                        
+                    }
+                    else if (property.Value is JValue)
+                    { 
+                        var propertyValue = ((JValue)property.Value).Value;
+                        if (propertyValue is string stringValue)
+                        {
+                            value = FormulaValue.New(stringValue);
+                        }
+                        else if (propertyValue is int intValue)
+                        {
+                            value = FormulaValue.New(intValue);
+                        }
+                        else if (propertyValue is double doubleValue)
+                        {
+                            value = FormulaValue.New(doubleValue);
+                        }
+                        else if (propertyValue is bool boolValue)
+                        {
+                            value = FormulaValue.New(boolValue);
+                        }
+                        else if (propertyValue is DateTime dateTimeValue)
+                        {
+                            value = FormulaValue.New(dateTimeValue);
+                        }
+                        else
+                        {
+                            // Handle other types or throw an exception if the type is unsupported
+                            throw new ArgumentException("Unsupported property value type");
+                        }
+                    } 
+                    else
+                    {
+                        throw new ArgumentException("The property parameter is not not supported");
+                    }
+
+                    fields.Add(new NamedValue(name, value));
+
+                    recordType = recordType.Add(new NamedFormulaType(property.Name, value.Type));
                 }
 
                 // Convert the object to a RecordValue with the generated recordType
@@ -506,25 +597,61 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Generates test steps and data, and saves them to the specified path.
         ///</summary>
         ///<param name="path">The path where the test steps and data will be saved.</param>
-        public void Generate(string path)
+        public async void Generate(string path)
         {
-            //TODO: Check if the directory exists, if not, create it
             if (!_fileSystem.Exists(path))
             {
                 _fileSystem.CreateDirectory(path);
             }
 
-            //TODO: Define the file path for saving test steps
-            string filePath = $"{path}/testSteps.txt";
+            string filePath = $"{path}/recorded.te.yaml";
 
-            //TODO: Map captured test steps to _testBuilder
+            var line = 0;
             foreach (var step in TestSteps)
             {
-                _textBuilder.Append($"{step}\r\n");
+                line++;
+                var spaces = String.Empty;
+                if (line > 1)
+                {
+                    spaces = new string(' ', 8);
+                }
+                _textBuilder.Append($"{spaces}{step}\r\n");
             }
 
+            var template = @"# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Recorded test suite
+  testSuiteDescription: Summary of what the test suite
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Recorded test cases
+      testCaseDescription: Set of test steps recorded from browser
+      testSteps: |
+        =
+        {0}
+
+testSettings:
+  headless: false
+  locale: ""en-US""
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded
+";
+
+            var results = string.Format(template, _textBuilder.ToString());
+
             //TODO: Write the recorded test steps to the file
-            _fileSystem.WriteTextToFile(filePath, _textBuilder.ToString());
+            _fileSystem.WriteTextToFile(filePath, results);
         }
     }
 }

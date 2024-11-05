@@ -1,12 +1,12 @@
 testSuite:
-  testSuiteName: CoE Starter Kit Setup Wizard
-  testSuiteDescription: Verify custom page of CoE Starter Kit Setup Wizard and step through install
+  testSuiteName: CoE Starter Kit Setup Wizard Record
+  testSuiteDescription: Provide the ability to record actions
   persona: User1
   appLogicalName: NotNeeded
 
   testCases:
-    - testCaseName: Step 1 - Confirm Pre-requisites
-      testCaseDescription: Verify pre-requistes in place
+    - testCaseName: Before Connector
+      testCaseDescription: Acions to add before the 
       testSteps: |
         = Assert(1=1)
 

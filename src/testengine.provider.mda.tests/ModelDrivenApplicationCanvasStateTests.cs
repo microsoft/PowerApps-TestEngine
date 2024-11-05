@@ -22,7 +22,7 @@ namespace testengine.provider.mda.tests
         private JSObjectModel JsObjectModel;
 
         //adding this to reset the behavior after each test case for the assembly static function
-        private readonly Func<Assembly> originalGetExecutingAssembly = ModelDrivenApplicationProvider.GetExecutingAssembly;
+        private readonly Func<Assembly> originalGetExecutingAssembly = () => typeof(ModelDrivenApplicationProvider).Assembly;
 
 
         public ModelDrivenApplicationCanvasStateTests()
