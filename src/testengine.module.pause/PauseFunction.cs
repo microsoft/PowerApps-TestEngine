@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
@@ -21,7 +20,7 @@ namespace testengine.module
         private readonly ILogger _logger;
 
         public PauseFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("TestEngine")), "Pause", FormulaType.Blank)
+            : base(DPath.Root.Append(new DName("Experimental")), "Pause", FormulaType.Blank)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

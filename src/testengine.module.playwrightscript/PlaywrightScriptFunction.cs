@@ -28,7 +28,7 @@ namespace testengine.module
         private readonly IFileSystem _filesystem;
 
         public PlaywrightScriptFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, IFileSystem filesystem, ILogger logger)
-            : base(DPath.Root.Append(new DName("TestEngine")), "PlaywrightScript", FormulaType.Blank, FormulaType.String)
+            : base(DPath.Root.Append(new DName("Experimental")), "PlaywrightScript", FormulaType.Blank, FormulaType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

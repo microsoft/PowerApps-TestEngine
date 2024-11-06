@@ -14,6 +14,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx.Types;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
@@ -72,8 +73,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             var feedbackUrl = new Uri(new Uri($"https://{new Uri(_testState.GetDomain()).Host}"), new Uri("testengine", UriKind.Relative));
 
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
             // Intercept ALL calls for testengine feedback for recording
-            _browserContext.RouteAsync($"{feedbackUrl.ToString()}/**", async (IRoute route) => await HandleTestEngineData(route));
+            _browserContext.RouteAsync($"{feedbackUrl.ToString()}/**", (IRoute route) => HandleTestEngineData(route));
 
             AddClickListener(_infra.Page, feedbackUrl).Wait();
 
@@ -90,7 +93,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             if (route.Request.Url.Contains("/click"))
             {
                 // TODO: handle click for known controls
-                // TODO: handle click for known like combobox
+                // TODO: handle click for known like combobox (Or use Keyboard shortcuts to handle differences?
                 // TODO: handle click for known controls inside gallery or components
                 // TODO: handle click for controls inside PCF using css selector using Experimental.PlaywrightAction()?
                 var segments = new Uri(route.Request.Url).AbsolutePath.Split('/');
@@ -98,9 +101,43 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     && segments[1].Equals("testengine", StringComparison.OrdinalIgnoreCase)
                     && segments[2].Equals("click", StringComparison.OrdinalIgnoreCase))
                 {
-                    _logger.LogDebug($"Click segments[3]");
-                    // Assume that the select item is compatible with Select() Power Fx function
-                    TestSteps.Add($"Select({segments[3]});");
+                    var controlName = segments[3];
+                    _logger.LogDebug($"Click {controlName}");
+
+                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(route.Request.PostData);
+
+                    var text = data.ContainsKey("text") && !String.IsNullOrEmpty(data["text"].ToString()) ? data["text"].ToString() : "";
+                    var alt = true;
+                    var control = true;
+
+                    if (data.ContainsKey("alt") && bool.TryParse(data["alt"].ToString(), out bool altValue))
+                    {
+                        alt = altValue;
+                    }
+
+                    if (data.ContainsKey("control") && bool.TryParse(data["control"].ToString(), out bool controlValue))
+                    {
+                        control = controlValue;
+                    }
+
+                    // TODO: Refactor read Power FX Template provided for recording session and evaluate templates from the Recording Test Suite
+                    // This will need to consider alt, control values
+
+                    // TODO: Consider control names and if need to apply Power Fx [] delimiter
+                    if (alt)
+                    {
+
+                        TestSteps.Add($"Experimental.PlaywrightAction(\"[data-test-id='{controlName}']:has-text(\"{text}\")\", \"wait\");");
+                    }
+                    else if (control)
+                    {
+                        TestSteps.Add($"Experimental.WaitUntil({controlName}.Text=\"{text}\");");
+                    }
+                    else
+                    {
+                        // Assume that the select item is compatible with Select() Power Fx function
+                        TestSteps.Add($"Select({controlName});");
+                    }
                 }
             }
 
@@ -112,7 +149,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Listen for clicks on the active page document
         /// </summary>
         /// <param name="page">The page to listen for click events</param>
-        /// <param name="feedbackUrl">The url to send click event data to for callback to testenging listening for recording</param>
+        /// <param name="feedbackUrl">The url to send click summarized event data so testenginge can generate test steps</param>
         /// <returns>Completed task</returns>
         private async Task AddClickListener(IPage page, Uri feedbackUrl)
         {
@@ -125,7 +162,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 const clickData = {{
                     controlName: controlName,
                     x: event.clientX,
-                    y: event.clientY
+                    y: event.clientY,
+                    text: element.textContent.trim(),
+                    alt: (event.altKey),
+                    control: (event.ctrlKey)
                 }};
                 fetch('{0}/click/' + controlName, {{
                     method: 'POST',
@@ -220,7 +260,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             StringBuilder connectorBuilder = new StringBuilder();
 
             connectorBuilder.Append($"Experimental.SimulateConnector({{Name: \"{name}\"");
-
 
             if (when is RecordValue whenRecord)
             {
@@ -497,7 +536,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 foreach (var record in tableValue.Rows)
                 {
                     var recordValue = record.Value as RecordValue;
-
 
                     if (recordValue != null)
                     {

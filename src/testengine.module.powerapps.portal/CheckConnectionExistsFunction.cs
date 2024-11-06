@@ -24,7 +24,7 @@ namespace testengine.module
 
         // NOTE: Order of calling base is name, return type then argument types
         public CheckConnectionExistsFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("TestEngine")), "CheckConnectionExists", FormulaType.Boolean)
+            : base(DPath.Root.Append(new DName("Experimental")), "CheckConnectionExists", FormulaType.Boolean)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

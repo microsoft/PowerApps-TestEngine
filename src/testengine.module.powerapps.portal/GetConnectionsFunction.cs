@@ -38,7 +38,7 @@ namespace testengine.module
                 .Add(new NamedFormulaType("Status", FormulaType.String, displayName: "Status"));
 
         public GetConnectionsFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("TestEngine")), "GetConnections", Results)
+            : base(DPath.Root.Append(new DName("Experimental")), "GetConnections", Results)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
