@@ -40,7 +40,7 @@ cd PowerApps-TestEngine
 3. Checkout the integration branch
 
 ```pwsh
-git checkout grant-archibald-md/integration-merge
+git checkout grant-archibald-ms/data-record-386
 ```
 
 3. Ensure logged out out of pac cli. This ensures you're logged out of any previous sessions.
