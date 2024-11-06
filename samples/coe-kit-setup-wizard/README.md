@@ -25,7 +25,7 @@ Before you start, you'll need a few tools and permissions:
 
 ## Getting Started
 
-1. Clone the repository usin the git application and PowerShell command line
+1. Clone the repository using the git application and PowerShell command line
 
 ```pwsh
 git clone https://github.com/microsoft/PowerApps-TestEngine.git
