@@ -9,7 +9,7 @@ This sample includes Power Apps Test Engine tests that can be used to automate a
 Before you start, you'll need a few tools and permissions:
 - **Power Platform Command Line Interface (CLI)**: This is a tool that lets you interact with Power Platform from your command line.
 - **PowerShell**: A task automation tool from Microsoft.
-- **.Net 6.0 SDK**: A software development kit needed to build and run the tests.
+- **.Net 8.0 SDK**: A software development kit needed to build and run the tests.
 - **Power Platform Environment**: A space where your Power Apps live.
 - **Admin or Customizer Rights**: Permissions to make changes in your Power Platform environment.
 
