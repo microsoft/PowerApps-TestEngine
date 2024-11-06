@@ -55,12 +55,13 @@ pac auth clear
 pac auth create --environment <Your environment ID>
 ```
 
-5. Add the config.json in the same folder as RunLibraryTests.ps1 replacinng the value with your tenant and  environment id
+5. Add the config.json in the same folder as RunTests.ps1 replacing the value with your tenant and  environment id
 
 ```json
 {
     "tenantId": "a222222-1111-2222-3333-444455556666",
     "environmentId": "12345678-1111-2222-3333-444455556666",
+    "customPage": "admin_initialsetuppage_d45cf",
     "runInstall": true,
     "installPlaywright": true
 }

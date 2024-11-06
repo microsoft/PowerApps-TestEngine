@@ -46,7 +46,8 @@ if ([string]::IsNullOrEmpty($appId)) {
     return
 }
 
-$mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=admin_initialsetuppage_d45cf"
+$customPage = $config.customPage
+$mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
 
 # Build the latest debug version of Test Engine from source
 Set-Location ..\..\src
