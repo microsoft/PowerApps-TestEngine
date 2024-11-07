@@ -289,8 +289,42 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             Assert.Equal(expectedPowerFx, recorder.TestSteps.First());
         }
 
-        [Fact]
-        public async Task FileUpload()
+        [Theory]
+        [InlineData("// Audio started - 2024-11-07T09:35:43Z - 123e4567-e89b-12d3-a456-426614174000")]
+        public async Task AudioStart(string message)
+        {
+            // Arrange
+            Func<IRoute, Task> callbackInstance = null;
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
+            _mockBrowserContext.Setup(m => m.RouteAsync("https://example.com/testengine/**", It.IsAny<Func<IRoute, Task>>(), null))
+                .Callback((string url, Func<IRoute, Task> callback, BrowserContextRouteOptions options) =>
+                {
+                    callbackInstance = callback;
+                })
+                .Returns(Task.CompletedTask);
+
+            _mockRoute.SetupGet(m => m.Request).Returns(_mockRequest.Object);
+            _mockRequest.SetupGet(m => m.Url).Returns("https://www.example.com/testengine/audio/start");
+            _mockRequest.SetupGet(m => m.Method).Returns("POST");
+            _mockRequest.SetupGet(m => m.PostData).Returns(@"{
+                ""startDateTime"": ""2024-11-07T09:35:43Z"",
+                ""audioSessionId"": ""123e4567-e89b-12d3-a456-426614174000""
+                }");
+
+            // Act
+            recorder.RegisterTestEngineApi();
+            await callbackInstance(_mockRoute.Object);
+
+            // Assert
+            Assert.Single(recorder.TestSteps);
+            Assert.Equal(message, recorder.TestSteps.First());
+        }
+
+
+        [Theory]
+        [InlineData("// Audio end - 2024-11-07T09:40:50Z - 123e4567-e89b-12d3-a456-426614174000")]
+        public async Task FileUpload(string message)
         {
             // Arrange
             Func<IRoute, Task> callbackInstance = null;
@@ -305,6 +339,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             _mockRoute.SetupGet(m => m.Request).Returns(_mockRequest.Object);
             _mockRequest.SetupGet(m => m.Url).Returns("https://www.example.com/testengine/audio/upload");
+            _mockRequest.SetupGet(m => m.Headers).Returns(new Dictionary<string, string> { { "enddatetime", "2024-11-07T09:40:50Z" }, { "audiosessionid", "123e4567-e89b-12d3-a456-426614174000" } });
             _mockRequest.SetupGet(m => m.Method).Returns("POST");
 
             var testData = new byte[] { };
@@ -317,7 +352,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await callbackInstance(_mockRoute.Object);
 
             // Assert
-            Assert.Empty(recorder.TestSteps);
+            Assert.Single(recorder.TestSteps);
+            Assert.Equal(message, recorder.TestSteps.First());
         }
 
         [Fact]

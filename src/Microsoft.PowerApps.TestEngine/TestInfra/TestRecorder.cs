@@ -119,6 +119,19 @@ if (event.ctrlKey && event.key === 'r') {{
                 audioChunks.push(event.data);
             }});
 
+            document.TestEngineAudioSessionId = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {{
+                    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+            }});
+
+            fetch('https://{0}/testengine/audio/start', {{
+                method: 'POST',
+                body: JSON.stringify({{ 'startDateTime': new Date().toISOString(), 'audioSessionId': document.TestEngineAudioSessionId  }}),
+                headers: {{
+                    'Content-Type': 'application/json'
+                }}
+            }});
+
             // When recording stops, create an audio file
             mediaRecorder.addEventListener('stop', () => {{
                 const audioBlob = new Blob(audioChunks, {{ type: 'audio/wav' }});
@@ -130,7 +143,9 @@ if (event.ctrlKey && event.key === 'r') {{
                     method: 'POST',
                     body: audioBlob,
                     headers: {{
-                        'Content-Type': 'audio/wav'
+                        'Content-Type': 'audio/wav',
+                        'endDateTime': new Date().toISOString(),
+                        'audioSessionId': document.TestEngineAudioSessionId
                     }}
                 }}).then(response => {{
                     if (response.ok) {{
@@ -195,10 +210,53 @@ if (event.ctrlKey && event.key === 'r') {{
         /// <returns>New response to the browser</returns>
         private async Task HandleTestEngineData(IRoute route)
         {
-            if (route.Request.Url.Contains("/audio/upload"))
+            if (route.Request.Url.Contains("/audio/start") && route.Request.Method == "POST")
             {
                 // Read the posted file
+                JsonSerializerSettings settings = new JsonSerializerSettings
+                {
+                    DateFormatString = "yyyy-MM-ddTHH:mm:ssZ",
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                };
+                var audioContext = JsonConvert.DeserializeObject<Dictionary<string, object>>(route.Request.PostData, settings);
+
+                var started = String.Empty;
+                var audioId = String.Empty;
+
+                if (audioContext.ContainsKey("startDateTime") && audioContext["startDateTime"] is DateTime startDateTime)
+                {
+                    started = startDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                }
+
+                if (audioContext.ContainsKey("audioSessionId"))
+                {
+                    audioId = audioContext["audioSessionId"].ToString();
+                }
+
+                TestSteps.Add($"// Audio started - {started} - {audioId}");
+            }
+
+            if (route.Request.Url.Contains("/audio/upload"))
+            {
+                var headers = route.Request.Headers;
+                var ended = String.Empty;
+                var audioId = String.Empty;
+                if (headers.ContainsKey("endDateTime".ToLower()))
+                {
+                    ended = headers["endDateTime".ToLower()];
+                }
+
+                if (headers.ContainsKey("audioSessionId".ToLower()))
+                {
+                    audioId = headers["audioSessionId".ToLower()];
+                }
+
+                TestSteps.Add($"// Audio end - {ended} - {audioId}");
+
+                // Read the posted file
+
                 var audioFile = route.Request.PostDataBuffer;
+
 
                 if (!_fileSystem.Exists(_audioPath))
                 {
@@ -930,7 +988,19 @@ if (event.ctrlKey && event.key === 'r') {{
             string filePath = $"{path}/recorded.te.yaml";
 
             var line = 0;
-            foreach (var step in TestSteps)
+
+            // Transfer elements to a ConcurrentQueue
+            ConcurrentQueue<string> queue = new ConcurrentQueue<string>();
+            while (!TestSteps.IsEmpty)
+            {
+                if (TestSteps.TryTake(out string item))
+                {
+                    queue.Enqueue(item);
+                }
+            }
+
+            // Enumberate in First In First Out (FIFO)
+            foreach (var step in queue)
             {
                 line++;
                 var spaces = String.Empty;
