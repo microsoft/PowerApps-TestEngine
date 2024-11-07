@@ -33,6 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly IPowerFxEngine _engine;
         private readonly IFileSystem _fileSystem;
         private readonly StringBuilder _textBuilder;
+        private string _audioPath = string.Empty;
 
         public ConcurrentBag<string> TestSteps = new ConcurrentBag<string>();
 
@@ -64,6 +65,104 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             _browserContext.Response += OnResponse;
         }
 
+        public async Task SetupAudioRecording(string audioPath)
+        {
+            var feedbackHost = new Uri(_testState.GetDomain()).Host;
+
+            _audioPath = audioPath;
+
+            var recordingJavaScript = @"
+document.addEventListener('keydown', (event) => {{
+if (event.ctrlKey && event.key === 'r') {{
+    event.preventDefault();
+        // Create a dialog box
+        const dialog = document.createElement('div');
+        dialog.innerHTML = `
+            <style>
+                #recordDialog {{ z-index: 100; position: relative }}
+                #recordDialog p {{ display: none }}
+            </style>
+            <div id='recordDialog'>
+                <button id='startRecording'>Start</button>
+                <button id='stopRecording' disabled >Stop</button>
+                <audio id='audioPlayback' controls ></audio>
+                <p id= 'feedback' ></p>
+                <button id='closeDialog'>Close</button>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+
+        // Get buttons, audio element, and feedback element
+        const startButton = document.getElementById('startRecording');
+        const stopButton = document.getElementById('stopRecording');
+        const audioPlayback = document.getElementById('audioPlayback');
+        const feedback = document.getElementById('feedback');
+        const closeButton = document.getElementById('closeDialog');
+
+        let mediaRecorder;
+        let audioChunks = [];
+
+        // Function to start recording
+        startButton.addEventListener('click', async () => {{
+            // Request access to the microphone
+            const stream = await navigator.mediaDevices.getUserMedia({{ audio: true }});
+            mediaRecorder = new MediaRecorder(stream);
+
+            // Start recording
+            mediaRecorder.start();
+            startButton.disabled = true;
+            stopButton.disabled = false;
+            feedback.textContent = 'Recording...';
+
+            // Collect audio data
+            mediaRecorder.addEventListener('dataavailable', event => {{
+                audioChunks.push(event.data);
+            }});
+
+            // When recording stops, create an audio file
+            mediaRecorder.addEventListener('stop', () => {{
+                const audioBlob = new Blob(audioChunks, {{ type: 'audio/wav' }});
+                const audioUrl = URL.createObjectURL(audioBlob);
+                audioPlayback.src = audioUrl;
+
+                // Post the recorded audio to an API
+                fetch('https://{0}/testengine/audio/upload', {{
+                    method: 'POST',
+                    body: audioBlob,
+                    headers: {{
+                        'Content-Type': 'audio/wav'
+                    }}
+                }}).then(response => {{
+                    if (response.ok) {{
+                        feedback.textContent = 'Audio uploaded successfully!';
+                    }} else {{
+                        feedback.textContent = 'Failed to upload audio.';
+                    }}
+                }}).catch(error => {{
+                    feedback.textContent = 'Error uploading audio: ' + error;
+                }});
+            }});
+        }});
+
+        // Function to stop recording
+        stopButton.addEventListener('click', () => {{
+            mediaRecorder.stop();
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            feedback.textContent = 'Recording stopped. Uploading audio...';
+        }});
+
+        // Function to close the dialog
+        closeButton.addEventListener('click', () => {{
+            document.body.removeChild(dialog);
+        }});
+    }}
+}});
+";
+
+            await _infra.Page.EvaluateAsync(string.Format(recordingJavaScript, feedbackHost));
+        }
+
         ///<summary>
         /// Sets up the TestRecorder by subscribing to page mouse events.
         ///</summary>
@@ -73,14 +172,20 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             var feedbackUrl = new Uri(new Uri($"https://{new Uri(_testState.GetDomain()).Host}"), new Uri("testengine", UriKind.Relative));
 
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-
-            // Intercept ALL calls for testengine feedback for recording
-            _browserContext.RouteAsync($"{feedbackUrl.ToString()}/**", (IRoute route) => HandleTestEngineData(route));
-
             AddClickListener(_infra.Page, feedbackUrl).Wait();
 
             //TODO: Subscribe to keyboard events from the page. This will need to consider focus changes and how get value for SetProperty() based on control type
+        }
+
+        ///<summary>
+        /// Sets up the TestRecorder API
+        ///</summary>
+        public void RegisterTestEngineApi()
+        {
+            var feedbackUrl = new Uri(new Uri($"https://{new Uri(_testState.GetDomain()).Host}"), new Uri("testengine", UriKind.Relative));
+
+            // Intercept ALL calls for testengine feedback for recording
+            _browserContext.RouteAsync($"{feedbackUrl.ToString()}/**", (IRoute route) => HandleTestEngineData(route));
         }
 
         /// <summary>
@@ -90,6 +195,19 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <returns>New response to the browser</returns>
         private async Task HandleTestEngineData(IRoute route)
         {
+            if (route.Request.Url.Contains("/audio/upload"))
+            {
+                // Read the posted file
+                var audioFile = route.Request.PostDataBuffer;
+
+                if (!_fileSystem.Exists(_audioPath))
+                {
+                    _fileSystem.CreateDirectory(_audioPath);
+                }
+
+                _fileSystem.WriteFile(Path.Combine(_audioPath, $"recording_{DateTime.Now.ToString("yyyyHHmmss")}.wav"), audioFile);
+            }
+
             if (route.Request.Url.Contains("/click"))
             {
                 // TODO: handle click for known controls
@@ -107,8 +225,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(route.Request.PostData);
 
                     var text = data.ContainsKey("text") && !String.IsNullOrEmpty(data["text"].ToString()) ? data["text"].ToString() : "";
-                    var alt = true;
-                    var control = true;
+                    var alt = false;
+                    var control = false;
 
                     if (data.ContainsKey("alt") && bool.TryParse(data["alt"].ToString(), out bool altValue))
                     {
@@ -120,14 +238,14 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                         control = controlValue;
                     }
 
-                    // TODO: Refactor read Power FX Template provided for recording session and evaluate templates from the Recording Test Suite
+                    // TODO: Refactor read Power Fx Template provided for recording session and evaluate templates from the Recording Test Suite
                     // This will need to consider alt, control values
 
                     // TODO: Consider control names and if need to apply Power Fx [] delimiter
                     if (alt)
                     {
-
-                        TestSteps.Add($"Experimental.PlaywrightAction(\"[data-test-id='{controlName}']:has-text(\"{text}\")\", \"wait\");");
+                        // TODO: Handle single quote in the text
+                        TestSteps.Add($"Experimental.PlaywrightAction(\"[data-test-id='{controlName}']:has-text('{text}')\", \"wait\");");
                     }
                     else if (control)
                     {

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         private Mock<IRequest> _mockRequest;
         private Mock<IResponse> _mockResponse;
         private Mock<IPowerFxEngine> _mockEngine;
+        private Mock<IRoute> _mockRoute;
 
         public TestRecorderTests()
         {
@@ -43,8 +45,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             _mockRequest = new Mock<IRequest>(MockBehavior.Strict);
             _mockResponse = new Mock<IResponse>(MockBehavior.Strict);
             _mockEngine = new Mock<IPowerFxEngine>(MockBehavior.Strict);
+            _mockEngine = new Mock<IPowerFxEngine>(MockBehavior.Strict);
+            _mockRoute = new Mock<IRoute>(MockBehavior.Strict);
 
-            _mockTestInfraFunctions.SetupGet(m => m.Page).Returns(_mockPage.Object);
+            _mockRoute.Setup(m => m.FulfillAsync(It.IsAny<RouteFulfillOptions>())).Returns(Task.CompletedTask);
         }
 
         [Fact]
@@ -240,13 +244,90 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         }
 
         [Fact]
-        public void MouseEvent_Registration()
+        public void ApiRegistration()
         {
             // Arrange
             var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
             _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
             _mockBrowserContext.Setup(m => m.RouteAsync("https://example.com/testengine/**", It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+
+            // Act
+            recorder.RegisterTestEngineApi();
+
+            // Assert
+        }
+
+        [Theory]
+        [InlineData("{}", "Select(test);")]
+        [InlineData("{alt: true}", "Experimental.PlaywrightAction(\"[data-test-id='test']:has-text('')\", \"wait\");")]
+        [InlineData("{alt: true, text: 'Foo'}", "Experimental.PlaywrightAction(\"[data-test-id='test']:has-text('Foo')\", \"wait\");")]
+        [InlineData("{control: true}", "Experimental.WaitUntil(test.Text=\"\");")]
+        [InlineData("{control: true, text: 'Foo'}", "Experimental.WaitUntil(test.Text=\"Foo\");")]
+        public async Task ClickCallback(string json, string expectedPowerFx)
+        {
+            // Arrange
+            Func<IRoute, Task> callbackInstance = null;
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
+            _mockBrowserContext.Setup(m => m.RouteAsync("https://example.com/testengine/**", It.IsAny<Func<IRoute, Task>>(), null))
+                .Callback((string url, Func<IRoute, Task> callback, BrowserContextRouteOptions options) =>
+                {
+                    callbackInstance = callback;
+                })
+                .Returns(Task.CompletedTask);
+
+            _mockRoute.SetupGet(m => m.Request).Returns(_mockRequest.Object);
+            _mockRequest.SetupGet(m => m.Url).Returns("https://www.example.com/testengine/click/test");
+            _mockRequest.SetupGet(m => m.PostData).Returns(json);
+
+            // Act
+            recorder.RegisterTestEngineApi();
+            await callbackInstance(_mockRoute.Object);
+
+            // Assert
+            Assert.Single(recorder.TestSteps);
+            Assert.Equal(expectedPowerFx, recorder.TestSteps.First());
+        }
+
+        [Fact]
+        public async Task FileUpload()
+        {
+            // Arrange
+            Func<IRoute, Task> callbackInstance = null;
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
+            _mockBrowserContext.Setup(m => m.RouteAsync("https://example.com/testengine/**", It.IsAny<Func<IRoute, Task>>(), null))
+                .Callback((string url, Func<IRoute, Task> callback, BrowserContextRouteOptions options) =>
+                {
+                    callbackInstance = callback;
+                })
+                .Returns(Task.CompletedTask);
+
+            _mockRoute.SetupGet(m => m.Request).Returns(_mockRequest.Object);
+            _mockRequest.SetupGet(m => m.Url).Returns("https://www.example.com/testengine/audio/upload");
+            _mockRequest.SetupGet(m => m.Method).Returns("POST");
+
+            var testData = new byte[] { };
+            _mockRequest.SetupGet(m => m.PostDataBuffer).Returns(testData);
+            _mockFileSystem.Setup(m => m.Exists("")).Returns(true);
+            _mockFileSystem.Setup(m => m.WriteFile(It.IsAny<string>(), testData));
+
+            // Act
+            recorder.RegisterTestEngineApi();
+            await callbackInstance(_mockRoute.Object);
+
+            // Assert
+            Assert.Empty(recorder.TestSteps);
+        }
+
+        [Fact]
+        public void MouseEvent_Registration()
+        {
+            // Arrange
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
             _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null)).Returns(Task.FromResult((JsonElement?)null));
+            _mockTestInfraFunctions.SetupGet(m => m.Page).Returns(_mockPage.Object);
 
             // Act
             recorder.SetupMouseMonitoring();
@@ -266,6 +347,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null))
                 .Callback((string js, object arg) => javaScript = js)
                 .Returns(Task.FromResult((JsonElement?)null));
+            _mockTestInfraFunctions.SetupGet(m => m.Page).Returns(_mockPage.Object);
 
             var jint = new Jint.Engine();
             jint.Evaluate(@"document = {
@@ -280,5 +362,140 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             jint.Evaluate(javaScript);
             Assert.Contains("https://example.com/testengine/click/", javaScript);
         }
+
+        [Fact]
+        public async Task SetupAudioWithValidScript()
+        {
+            // Arrange
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
+            var setupScript = String.Empty;
+            _mockTestInfraFunctions.SetupGet(m => m.Page).Returns(_mockPage.Object);
+
+            _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null))
+                .Callback((string script, object arg) => setupScript = script)
+                .Returns(Task.FromResult((JsonElement?)null));
+
+            var engine = new Jint.Engine();
+            engine.Evaluate(@"var document = {
+                addEventListener: (eventName, callback) => { if (eventName != 'keydown') throw 'Invalid event' }
+            }");
+
+            // Act
+            await recorder.SetupAudioRecording(Path.GetTempPath());
+
+            // Assert
+            engine.Evaluate(setupScript);
+        }
+
+        [Fact]
+        public async Task HtmlDialogRegistration()
+        {
+            // Arrange
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
+            var setupScript = String.Empty;
+
+            _mockTestInfraFunctions.SetupGet(m => m.Page).Returns(_mockPage.Object);
+
+            _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null))
+                .Callback((string script, object arg) => setupScript = script)
+                .Returns(Task.FromResult((JsonElement?)null));
+
+            var engine = new Jint.Engine();
+            engine.Evaluate(MOCK_DOCUMENT);
+
+            // Act
+            await recorder.SetupAudioRecording(Path.GetTempPath());
+            engine.Evaluate(setupScript);
+
+            // Assert
+            engine.Evaluate("document.callback({ctrlKey: true, key: 'r', preventDefault: () => {}})");
+        }
+
+        [Fact]
+        public async Task HtmlDialogClose()
+        {
+            // Arrange
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
+            var setupScript = String.Empty;
+
+            _mockTestInfraFunctions.SetupGet(m => m.Page).Returns(_mockPage.Object);
+
+            _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null))
+                .Callback((string script, object arg) => setupScript = script)
+                .Returns(Task.FromResult((JsonElement?)null));
+
+            var engine = new Jint.Engine();
+            engine.Evaluate(MOCK_DOCUMENT);
+
+            // Act
+            await recorder.SetupAudioRecording(Path.GetTempPath());
+            engine.Evaluate(setupScript);
+
+            // Assert
+            engine.Evaluate("document.callback({ctrlKey: true, key: 'r', preventDefault: () => {}})");
+            engine.Evaluate("document.closeDialog()"); // Should call removeChild
+        }
+
+        const string MOCK_DOCUMENT = @"var document = {
+    createElement: (type) => {
+        return {
+            innerHTML: '',
+            setAttribute: (name, value) => { this[name] = value; },
+            getAttribute: (name) => { return this[name]; },
+            addEventListener: (eventName, callback) => {
+                if (eventName !== 'keydown') throw 'Invalid event';
+                this[eventName] = callback;
+            },
+            removeEventListener: (eventName) => {
+                if (eventName !== 'keydown') throw 'Invalid event';
+                delete this[eventName];
+            }
+        };
+    },
+    addEventListener: (eventName, callback) => {
+        if (eventName !== 'keydown') throw 'Invalid event';
+        document.callback = callback;
+    },
+    removeEventListener: (eventName) => {
+        if (eventName !== 'keydown') throw 'Invalid event';
+        delete this[eventName];
+    },
+    body : {
+        appendChild: (node) => {},
+        removeChild: (node) => {}
+    },
+    getElementById: (name) => {
+        switch (name) {
+            case 'startRecording':
+                return {
+                    addEventListener :(eventName, callback) => {
+                        if (eventName !== 'click') throw 'Invalid event';
+                        document.startRecording = callback;
+                    }
+                }
+                break;
+            case 'stopRecording':
+                return {
+                    addEventListener :(eventName, callback) => {
+                        if (eventName !== 'click') throw 'Invalid event';
+                        document.stopRecording = callback;
+                    }
+                }
+                break;
+            case 'closeDialog':
+                return {
+                    addEventListener :(eventName, callback) => {
+                        if (eventName !== 'click') throw 'Invalid event';
+                        document.closeDialog = callback;
+                    }
+                }
+                break;
+        }
+    }
+
+}";
     }
 }
