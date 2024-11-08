@@ -18,7 +18,7 @@ if ($config.installPlaywright) {
 
 Set-Location ..\bin\Debug\PowerAppsTestEngine
 # Run the tests for each user in the configuration file.
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "canvas" -a "none" -r True -i "$currentDirectory\record2.fx.yaml" -t $tenantId -e $environmentId -l Debug -w True
+dotnet PowerAppsTestEngine.dll -u "storagestate" -p "canvas" -a "none" -r True -i "$currentDirectory\recordCanvas.fx.yaml" -t $tenantId -e $environmentId -l Trace -w True
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

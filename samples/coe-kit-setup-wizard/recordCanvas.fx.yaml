@@ -5,10 +5,10 @@ testSuite:
   appLogicalName: cr998_app_f2001
 
   testCases:
-    - testCaseName: Before Connector
-      testCaseDescription: Acions to add before the 
+    - testCaseName: Failure case
+      testCaseDescription: User not licenced
       testSteps: |
-        = Assert(1=1)
+        = Assert(ErrorDialogTitle="Start a Power Apps trial?")
 
 testSettings:
   headless: false

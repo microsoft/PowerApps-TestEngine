@@ -153,6 +153,7 @@ namespace testengine.user.storagestate
             // Wait a minimum of a five minutes
             var timeout = Math.Max(5 * 60000, testState.GetTimeout());
             var foundMatch = false;
+            var matchHost = string.Empty;
 
             logger.LogDebug($"Waiting for {timeout} milliseconds for desired url");
             while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch)
@@ -184,6 +185,7 @@ namespace testengine.user.storagestate
                             }
 
                             foundMatch = true;
+                            matchHost = new Uri(page.Url).Host;
                             break;
                         }
 
@@ -217,6 +219,11 @@ namespace testengine.user.storagestate
             {
                 logger.LogError($"Desired url {desiredUrl} not found");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
+            }
+
+            if (string.IsNullOrEmpty(testState.GetDomain()))
+            {
+                testState.SetDomain($"https://{matchHost}");
             }
 
             var pages = context.Pages;

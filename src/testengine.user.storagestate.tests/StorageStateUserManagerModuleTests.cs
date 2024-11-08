@@ -108,8 +108,9 @@ namespace testengine.user.storagestate.tests
         }
 
         [Theory]
-        [InlineData("user1Email", "user1@example.com")]
-        public async Task ValidLogin(string emailKey, string emailValue)
+        [InlineData("user1Email", "user1@example.com", "https://example.com", "https://example.com", "https://example.com")]
+        [InlineData("user1Email", "user1@example.com", "https://example.com", "https://example.com.mcas.ms", "https://example.com.mcas.ms")]
+        public async Task ValidLogin(string emailKey, string emailValue, string desiredUrl, string pageUrl, string foundUrl)
         {
             // Arrange
             var userManager = new StorageStateUserManagerModule();
@@ -128,14 +129,16 @@ namespace testengine.user.storagestate.tests
             MockEnvironmentVariable.Setup(x => x.GetVariable(emailKey)).Returns(emailValue);
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(true);
             MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
-            MockPage.SetupGet(x => x.Url).Returns("https://example.com");
+            MockPage.SetupGet(x => x.Url).Returns(pageUrl);
             MockPage.Setup(x => x.EvaluateAsync<string>(It.IsAny<string>(), null)).Returns(Task.FromResult("Idle"));
             LoggingTestHelper.SetupMock(MockLogger);
             MockTestState.Setup(x => x.GetTimeout()).Returns(0);
             MockBrowserContext.Setup(x => x.StorageStateAsync(It.IsAny<BrowserContextStorageStateOptions>())).Returns(Task.FromResult(""));
+            MockTestState.Setup(x => x.GetDomain()).Returns(String.Empty);
+            MockTestState.Setup(x => x.SetDomain(foundUrl));
 
             // Act
-            await userManager.LoginAsUserAsync("https://example.com",
+            await userManager.LoginAsUserAsync(desiredUrl,
                 MockBrowserContext.Object,
                 MockTestState.Object,
                 MockSingleTestInstanceState.Object,

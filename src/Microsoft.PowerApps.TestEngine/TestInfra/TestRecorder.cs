@@ -176,6 +176,12 @@ if (event.ctrlKey && event.key === 'r') {{
 ";
 
             await _infra.Page.EvaluateAsync(string.Format(recordingJavaScript, feedbackHost));
+
+            // Add recording if page is reloaded
+            _infra.Page.Load += async (object sender, IPage e) =>
+            {
+                await _infra.Page.EvaluateAsync(string.Format(recordingJavaScript, feedbackHost));
+            };
         }
 
         ///<summary>
@@ -188,6 +194,12 @@ if (event.ctrlKey && event.key === 'r') {{
             var feedbackUrl = new Uri(new Uri($"https://{new Uri(_testState.GetDomain()).Host}"), new Uri("testengine", UriKind.Relative));
 
             AddClickListener(_infra.Page, feedbackUrl).Wait();
+
+            // Add handler to listen if page reloaded to add the mouse monitoring
+            _infra.Page.Load += (object sender, IPage e) =>
+            {
+                AddClickListener(_infra.Page, feedbackUrl).Wait();
+            };
 
             //TODO: Subscribe to keyboard events from the page. This will need to consider focus changes and how get value for SetProperty() based on control type
         }

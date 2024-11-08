@@ -157,20 +157,46 @@ namespace Microsoft.PowerApps.TestEngine
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();
-                await _powerFxEngine.RunRequirementsCheckAsync();
-                await _powerFxEngine.UpdatePowerFxModelAsync();
 
-                //TODO: Handle case where error and provider not ready. How should test cases be evaluated?
+                var foundErrorState = false;
                 if (_userManager is IConfigurableUserManager configurableUserManager)
                 {
                     foreach (var error in configurableUserManager.Settings.Keys.Where(k => k.StartsWith("Error")))
                     {
+                        foundErrorState = true;
                         _powerFxEngine.Engine.UpdateVariable(error, FormulaValue.New(configurableUserManager.Settings[error].ToString()));
                     }
                 }
 
+                if (foundErrorState)
+                {
+                    try 
+                    {
+                        // Attempt the setup, it could fail as we detected some kind of error state from the login provider
+                        await _powerFxEngine.RunRequirementsCheckAsync();
+                        await _powerFxEngine.UpdatePowerFxModelAsync();
+                    } 
+                    catch (Exception ex)
+                    {
+                        // That failed warn that faild but allow to continue so that can perform negative tests
+                        // For example the test could fail because the user is Unlicensed or the app is not shared with test user persona
+
+                        // In the example of a canvas application Power Fx test steps like the following could be added for error dialog
+                        // Assert(ErrorDialogTitle="Start a Power Apps trial?")
+                        Logger.LogError(ex, "Found error setting up initial provider state");
+                        Logger.LogInformation("Error found during login, proceeding wuth test");
+                    }
+                } 
+                else
+                {
+                    // Run the setup assume that should be in working state, if not fail the test
+                    await _powerFxEngine.RunRequirementsCheckAsync();
+                    await _powerFxEngine.UpdatePowerFxModelAsync();
+                }
+
                 if (testSuite.RecordMode)
                 {
+                    // Start the recorder before the provider started
                     record = new TestRecorder(Logger, TestInfraFunctions.GetContext(), _state, TestInfraFunctions, _powerFxEngine, _fileSystem);
 
                     // TODO: Consider settings to determine type of recording to include
@@ -182,6 +208,7 @@ namespace Microsoft.PowerApps.TestEngine
                     Logger.LogInformation("Record your test case and press play in the inspector to finish");
                     await TestInfraFunctions.Page.PauseAsync();
                 }
+
 
                 // Set up network request mocking if any
                 await TestInfraFunctions.SetupNetworkRequestMockAsync();
