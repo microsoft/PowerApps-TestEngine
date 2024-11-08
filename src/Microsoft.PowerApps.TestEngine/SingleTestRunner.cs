@@ -11,6 +11,7 @@ using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine
@@ -158,6 +159,15 @@ namespace Microsoft.PowerApps.TestEngine
                 _powerFxEngine.Setup();
                 await _powerFxEngine.RunRequirementsCheckAsync();
                 await _powerFxEngine.UpdatePowerFxModelAsync();
+
+                //TODO: Handle case where error and provider not ready. How should test cases be evaluated?
+                if (_userManager is IConfigurableUserManager configurableUserManager)
+                {
+                    foreach (var error in configurableUserManager.Settings.Keys.Where(k => k.StartsWith("Error")))
+                    {
+                        _powerFxEngine.Engine.UpdateVariable(error, FormulaValue.New(configurableUserManager.Settings[error].ToString()));
+                    }
+                }
 
                 if (testSuite.RecordMode)
                 {

@@ -58,7 +58,13 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             if (_recordMode)
             {
-                return new TestSuiteDefinition { RecordMode = true };
+                return new TestSuiteDefinition
+                {
+                    RecordMode = true,
+                    AppId = TestPlanDefinition?.TestSuite.AppId,
+                    AppLogicalName = TestPlanDefinition?.TestSuite.AppLogicalName,
+                    Persona = TestPlanDefinition?.TestSuite.Persona,
+                };
             }
 
             return TestPlanDefinition?.TestSuite;

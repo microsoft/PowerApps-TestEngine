@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using System.ComponentModel.Composition;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -55,7 +56,7 @@ namespace testengine.user.browser
             var started = DateTime.Now;
 
             // Wait a minimum of a minute
-            var timeout = Math.Min(60000, testState.GetTimeout());
+            var timeout = Math.Max(60000, testState.GetTimeout());
             var logger = singleTestInstanceState.GetLogger();
             var foundMatch = false;
 
@@ -66,7 +67,13 @@ namespace testengine.user.browser
                 {
                     foreach (var page in context.Pages)
                     {
-                        if (page.Url.IndexOf(desiredUrl) >= 0)
+                        var url = page.Url;
+
+                        // Remove any redirect added by Microsoft Cloud for Web Apps so we get the desired url
+                        url = url?.Replace(".mcas.ms", "");
+
+                        // TODO: Need to check if page is idle as be get race condition before redirect to login
+                        if (url.IndexOf(desiredUrl) >= 0)
                         {
                             foundMatch = true;
                             break;
@@ -77,7 +84,6 @@ namespace testengine.user.browser
                 {
 
                 }
-
 
                 if (!foundMatch)
                 {
@@ -113,6 +119,19 @@ namespace testengine.user.browser
             if (Page == null)
             {
                 Page = Context.Pages.Where(p => !p.IsClosed).First();
+            }
+        }
+
+        public async Task<bool> CheckIsIdleAsync(IPage page)
+        {
+            try
+            {
+                var expression = "var element = document.getElementById('O365_MainLink_Settings'); if (typeof(element) != 'undefined' && element != null) { 'Idle' } else { 'Loading' }";
+                return (await page.EvaluateAsync<string>(expression)) == "Idle";
+            }
+            catch
+            {
+                return false;
             }
         }
     }

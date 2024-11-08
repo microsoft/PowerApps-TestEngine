@@ -22,23 +22,25 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly IFileSystem _fileSystem;
         private readonly ITestWebProvider _testWebProvider;
+        private readonly IEnvironmentVariable _environmentVariable;
 
         public static string BrowserNotSupportedErrorMessage = "Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers";
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         public IPage Page { get; set; }
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider, IEnvironmentVariable environmentVariable)
         {
             _testState = testState;
             _singleTestInstanceState = singleTestInstanceState;
             _fileSystem = fileSystem;
             _testWebProvider = testWebProvider;
+            _environmentVariable = environmentVariable;
         }
 
         // Constructor to aid with unit testing
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem,
-            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null, ITestWebProvider testWebProvider = null) : this(testState, singleTestInstanceState, fileSystem, testWebProvider)
+            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null, ITestWebProvider testWebProvider = null, IEnvironmentVariable environmentVariable = null) : this(testState, singleTestInstanceState, fileSystem, testWebProvider, environmentVariable)
         {
             PlaywrightObject = playwrightObject;
             Page = page;
@@ -147,6 +149,23 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 foreach (var module in _testState.GetTestEngineModules())
                 {
                     module.ExtendBrowserContextOptions(contextOptions, testSettings);
+                }
+            }
+
+            if (userManager is IConfigurableUserManager configurableUserManager)
+            {
+                // Add file state as user manager may need access to file system
+                configurableUserManager.Settings.Add("FileSystem", _fileSystem);
+
+                if (configurableUserManager.Settings.ContainsKey("LoadState")
+                    && configurableUserManager.Settings["LoadState"] is Func<IEnvironmentVariable, ISingleTestInstanceState, ITestState, IFileSystem, string> loadState)
+                {
+                    var storageState = loadState.DynamicInvoke(_environmentVariable, _singleTestInstanceState, _testState, _fileSystem) as string;
+                    if (!string.IsNullOrEmpty(storageState))
+                    {
+                        _singleTestInstanceState.GetLogger().LogInformation("Loading storage stage");
+                        contextOptions.StorageState = storageState;
+                    }
                 }
             }
 
