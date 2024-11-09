@@ -130,7 +130,8 @@ namespace testengine.user.storagestate.tests
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(true);
             MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
             MockPage.SetupGet(x => x.Url).Returns(pageUrl);
-            MockPage.Setup(x => x.EvaluateAsync<string>(It.IsAny<string>(), null)).Returns(Task.FromResult("Idle"));
+            MockPage.Setup(x => x.EvaluateAsync<string>(It.Is<string>(s => s.Contains(".ms-Dialog-title") || s.Contains("#ErrorTitle")), null)).Returns(Task.FromResult(""));
+            MockPage.Setup(x => x.EvaluateAsync<string>(It.Is<string>(s => !s.Contains(".ms-Dialog-title") && !s.Contains("#ErrorTitle")), null)).Returns(Task.FromResult("Idle"));
             LoggingTestHelper.SetupMock(MockLogger);
             MockTestState.Setup(x => x.GetTimeout()).Returns(0);
             MockBrowserContext.Setup(x => x.StorageStateAsync(It.IsAny<BrowserContextStorageStateOptions>())).Returns(Task.FromResult(""));
@@ -146,6 +147,49 @@ namespace testengine.user.storagestate.tests
                 MockUserManagerLogin.Object);
 
             // Assert
+        }
+
+        [Theory]
+        [InlineData("user1Email", "user1@example.com", "https://example.com", "https://example.com", "https://example.com", ".ms-Dialog-title", "Text", "Text")]
+        [InlineData("user1Email", "user1@example.com", "https://example.com", "https://example.com", "https://example.com", "#ErrorTitle", "Text", "Text")]
+        public async Task ErrorLogin(string emailKey, string emailValue, string desiredUrl, string pageUrl, string foundUrl, string match, string response, string expectedError)
+        {
+            // Arrange
+            var userManager = new StorageStateUserManagerModule();
+
+            UserConfiguration userConfiguration = new UserConfiguration()
+            {
+                PersonaName = "User1",
+                EmailKey = emailKey
+            };
+
+            userManager.Settings.Add("FileSystem", MockFileSystem.Object);
+
+            MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
+            MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockEnvironmentVariable.Setup(x => x.GetVariable(emailKey)).Returns(emailValue);
+            MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(true);
+            MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
+            MockPage.SetupGet(x => x.Url).Returns(pageUrl);
+            MockPage.Setup(x => x.EvaluateAsync<string>(It.Is<string>(s => !s.Contains(".ms-Dialog-title") && !s.Contains("#ErrorTitle")), null)).Returns(Task.FromResult("Idle"));
+            MockPage.Setup(x => x.EvaluateAsync<string>(It.Is<string>(s => s.Contains(match)), null)).Returns(Task.FromResult(response));
+            LoggingTestHelper.SetupMock(MockLogger);
+            MockTestState.Setup(x => x.GetTimeout()).Returns(0);
+            MockBrowserContext.Setup(x => x.StorageStateAsync(It.IsAny<BrowserContextStorageStateOptions>())).Returns(Task.FromResult(""));
+            MockTestState.Setup(x => x.GetDomain()).Returns(String.Empty);
+            MockTestState.Setup(x => x.SetDomain(foundUrl));
+
+            // Act
+            await userManager.LoginAsUserAsync(desiredUrl,
+                MockBrowserContext.Object,
+                MockTestState.Object,
+                MockSingleTestInstanceState.Object,
+                MockEnvironmentVariable.Object,
+                MockUserManagerLogin.Object);
+
+            // Assert
+            Assert.Equal(expectedError, userManager.Settings["ErrorDialogTitle"]);
         }
     }
 }

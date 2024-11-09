@@ -153,10 +153,12 @@ namespace testengine.user.storagestate
             // Wait a minimum of a five minutes
             var timeout = Math.Max(5 * 60000, testState.GetTimeout());
             var foundMatch = false;
+            var errorState = false;
+
             var matchHost = string.Empty;
 
             logger.LogDebug($"Waiting for {timeout} milliseconds for desired url");
-            while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch)
+            while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch && !errorState)
             {
                 try
                 {
@@ -164,32 +166,33 @@ namespace testengine.user.storagestate
                     {
                         var url = page.Url;
 
+                        // Error Checks - Power Apps Scenarios
+                        //TODO: Verify App not shared
+                        //TODO: Handle unlicenced
+                        //TODO: DLP Violation
+                        //TODO: No dataverse access rights (MDA)
+                        var title = await DialogTitle(page);
+                        if (!string.IsNullOrEmpty(title))
+                        {
+                            Settings.Add("ErrorDialogTitle", title);
+                            errorState = true;
+                        }
+
                         // Remove any redirect added by Microsoft Cloud for Web Apps so we get the desired url
                         url = url?.Replace(".mcas.ms", "");
 
                         // Need to check if page is idle as be get race condition before redirect to login
-                        if (url.IndexOf(desiredUrl) >= 0 && await CheckIsIdleAsync(page))
+                        if (url.IndexOf(desiredUrl) >= 0 && await CheckIsIdleAsync(page) && !errorState)
                         {
                             //TODO: Encrypt the storage
                             await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = Path.Combine(Location, "state.json") });
-
-                            // Power Apps Scenarios
-                            //TODO: Verify App not shared
-                            //TODO: Handle unlicenced
-                            //TODO: DLP Violation
-
-                            var title = await DialogTitle(page);
-                            if (!string.IsNullOrEmpty(title))
-                            {
-                                Settings.Add("ErrorDialogTitle", title);
-                            }
 
                             foundMatch = true;
                             matchHost = new Uri(page.Url).Host;
                             break;
                         }
 
-                        if (!(page.Url.IndexOf(desiredUrl) >= 0))
+                        if (!(page.Url.IndexOf(desiredUrl) >= 0) && !errorState)
                         {
                             // Default the user into the dialog if it is visible
                             await HandleUserEmailScreen(EmailSelector, user, page);
@@ -204,7 +207,7 @@ namespace testengine.user.storagestate
 
                 }
 
-                if (!foundMatch)
+                if (!foundMatch || !errorState)
                 {
                     logger.LogDebug($"Desired page not found, waiting {DateTime.Now.Subtract(started).TotalSeconds}");
                     System.Threading.Thread.Sleep(1000);
@@ -215,13 +218,13 @@ namespace testengine.user.storagestate
                 }
             }
 
-            if (!foundMatch)
+            if (!foundMatch && !errorState)
             {
                 logger.LogError($"Desired url {desiredUrl} not found");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
             }
 
-            if (string.IsNullOrEmpty(testState.GetDomain()))
+            if (string.IsNullOrEmpty(testState.GetDomain()) && !string.IsNullOrEmpty(matchHost))
             {
                 testState.SetDomain($"https://{matchHost}");
             }
@@ -286,9 +289,7 @@ namespace testengine.user.storagestate
             }
             catch
             {
-
             }
-
         }
 
         public async Task<bool> CheckIsIdleAsync(IPage page)
@@ -308,14 +309,13 @@ namespace testengine.user.storagestate
         {
             try
             {
-                var expression = "var element = document.querySelector('.ms-Dialog-title'); if (typeof(element) != 'undefined' && element != null) { element.textContent.trim() } else { '' }";
+                var expression = "var element = document.querySelector('.ms-Dialog-title, #ErrorTitle'); if (typeof(element) != 'undefined' && element != null) { element.textContent.trim() } else { '' }";
                 return await page.EvaluateAsync<string>(expression);
             }
             catch
             {
                 return "";
             }
-
         }
     }
 }

@@ -170,12 +170,12 @@ namespace Microsoft.PowerApps.TestEngine
 
                 if (foundErrorState)
                 {
-                    try 
+                    try
                     {
                         // Attempt the setup, it could fail as we detected some kind of error state from the login provider
                         await _powerFxEngine.RunRequirementsCheckAsync();
                         await _powerFxEngine.UpdatePowerFxModelAsync();
-                    } 
+                    }
                     catch (Exception ex)
                     {
                         // That failed warn that faild but allow to continue so that can perform negative tests
@@ -186,7 +186,7 @@ namespace Microsoft.PowerApps.TestEngine
                         Logger.LogError(ex, "Found error setting up initial provider state");
                         Logger.LogInformation("Error found during login, proceeding wuth test");
                     }
-                } 
+                }
                 else
                 {
                     // Run the setup assume that should be in working state, if not fail the test

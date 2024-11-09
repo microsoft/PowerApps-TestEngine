@@ -190,7 +190,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             try
             {
-                var expression = "UCWorkBlockTracker?.isAppIdle() ? 'Idle' : 'Loading'";
+                var expression = "typeof UCWorkBlockTracker !== 'undefined' && UCWorkBlockTracker?.isAppIdle() ? 'Idle' : 'Loading'";
                 return (await TestInfraFunctions.RunJavascriptAsync<string>(expression)) == "Idle";
             }
             catch (Exception ex)
