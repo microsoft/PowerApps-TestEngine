@@ -309,7 +309,7 @@ namespace testengine.user.storagestate
         {
             try
             {
-                var expression = "var element = document.querySelector('.ms-Dialog-title, #ErrorTitle'); if (typeof(element) != 'undefined' && element != null) { element.textContent.trim() } else { '' }";
+                var expression = "var element = document.querySelector('.ms-Dialog-title, #ErrorTitle, .NotificationTitle'); if (typeof(element) != 'undefined' && element != null) { element.textContent.trim() } else { '' }";
                 return await page.EvaluateAsync<string>(expression);
             }
             catch
