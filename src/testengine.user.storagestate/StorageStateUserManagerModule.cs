@@ -7,9 +7,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 
 namespace testengine.user.storagestate
@@ -64,14 +62,20 @@ namespace testengine.user.storagestate
 
                 if (!fileSystem.Exists(Location))
                 {
-                    return "";
+                    return String.Empty;
                 }
 
-                var content = fileSystem.ReadAllText(Path.Combine(Location, "state.json"));
+                var stateFile = Path.Combine(Location, "state.json");
+                if (fileSystem.FileExists(stateFile))
+                {
+                    var content = fileSystem.ReadAllText(stateFile);
 
-                // TODO Decrypt content
+                    // TODO Decrypt content
 
-                return content;
+                    return content;
+                }
+
+                return String.Empty;
             };
         }
 
@@ -175,11 +179,17 @@ namespace testengine.user.storagestate
                         if (!string.IsNullOrEmpty(title))
                         {
                             Settings.Add("ErrorDialogTitle", title);
+
+                            //TODO: Encrypt the storage
+                            await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = Path.Combine(Location, "state.json") });
+
                             errorState = true;
                         }
 
                         // Remove any redirect added by Microsoft Cloud for Web Apps so we get the desired url
                         url = url?.Replace(".mcas.ms", "");
+                        // Remove home location for Portal Providers
+                        url = url?.Replace("/home", "");
 
                         // Need to check if page is idle as be get race condition before redirect to login
                         if (url.IndexOf(desiredUrl) >= 0 && await CheckIsIdleAsync(page) && !errorState)

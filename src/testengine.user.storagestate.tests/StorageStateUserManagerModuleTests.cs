@@ -94,6 +94,7 @@ namespace testengine.user.storagestate.tests
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(exists);
             if (content != null)
             {
+                MockFileSystem.Setup(x => x.FileExists(Path.Combine(".storage-state-user1", "state.json"))).Returns(true);
                 MockFileSystem.Setup(x => x.ReadAllText(Path.Combine(".storage-state-user1", "state.json"))).Returns(content);
             }
 

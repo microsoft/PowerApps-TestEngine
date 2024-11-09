@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: Permissions
+  testSuiteDescription: Power Platform tests
+  persona: User1
+  appLogicalName: NoNeeded
+
+  testCases:
+    - testCaseName: Entity list no permissions
+      testCaseDescription: Error when no permissions assigned and try access entity list
+      testSteps: |
+        = Assert(IsMatch(ErrorDialogTitle , "An error has occured"))
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 10000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

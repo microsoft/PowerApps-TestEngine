@@ -3,13 +3,20 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Net;
 using System.Runtime;
+using System.Security;
+using ICSharpCode.Decompiler.CSharp.Syntax;
+using ICSharpCode.Decompiler.IL;
+using ICSharpCode.Decompiler.TypeSystem;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
+using NuGet.Common;
+using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -161,14 +168,47 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     && configurableUserManager.Settings["LoadState"] is Func<IEnvironmentVariable, ISingleTestInstanceState, ITestState, IFileSystem, string> loadState)
                 {
                     var storageState = loadState.DynamicInvoke(_environmentVariable, _singleTestInstanceState, _testState, _fileSystem) as string;
+
+                    // Optionally check if user manager wants to load a previous session state from storage
                     if (!string.IsNullOrEmpty(storageState))
                     {
                         _singleTestInstanceState.GetLogger().LogInformation("Loading storage stage");
                         contextOptions.StorageState = storageState;
                     }
+
+                    // *** Storage State and Security context ***
+                    //
+                    // ** Why It Is Important: **
+                    //
+                    // ** Session Management: **
+                    // Cookies are used to store session information, such as authentication tokens.
+                    // Without the ability to store and retrieve cookies, the browser context cannot maintain the user's session, leading to authentication failures.
+                    //
+                    // ** Authentication State: **
+                    // When a user logs in, the authentication tokens are often stored in cookies.
+                    // These tokens are required for subsequent requests to authenticate the user.
+                    // If cookies are not enabled, expired or related to sessions that are no longer valid, the browser context will not have access to these tokens or have tokens which are invalid.
+                    // This resulting can result in errors like AADSTS50058.
+                    //
+                    // ** Example: **
+                    // Lets look at an example of the impact of cookies and how it can generate Entra based login errors.
+                    // The user initially logins in successfully using [Temporary Access Pass](https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass) with a lifetime of one hour.
+                    //
+                    // In this example we will later see AADSTS50058 error occuring when a silent sign-in request is sent, but no user is signed in after the Temporary Access Pass (TAP) with a lifetime has expired or had been revoked.
+                    //
+                    // Explaination:
+                    // Test can receive error "AADSTS50058: A silent sign-in request was sent but no user is signed in."
+                    // 
+                    // The error occurs because the silent sign-in request is sent to the login.microsoftonline.com endpoint.
+                    // Entra validates the request and determines the usable authentication methods and determine that the original TAP has expired
+                    // This prompts the interactive sign in process again
+                    //
+                    // For deeper discussion
+                    // 1. Start with [Microsoft Entra authentication documentation](https://learn.microsoft.com/entra/identity/authentication/)
+                    // 1. Single Sign On and how it works review [Microsoft Entra seamless single sign-on: Technical deep dive](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-sso-how-it-works)
+                    // 2. [What authentication and verification methods are available in Microsoft Entra ID?](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-methods)
                 }
             }
-
             if (userManager.UseStaticContext)
             {
                 _fileSystem.CreateDirectory(userManager.Location);
@@ -193,10 +233,8 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             _singleTestInstanceState.GetLogger().LogInformation("Browser context created");
         }
-
         public async Task SetupNetworkRequestMockAsync()
         {
-
             var mocks = _singleTestInstanceState.GetTestSuiteDefinition().NetworkRequestMocks;
 
             if (mocks == null || mocks.Count == 0)

@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: Permissions
+  testSuiteDescription: Power Platform tests
+  persona: User2
+  appLogicalName: contoso_canvas_4033c
+
+  testCases:
+    - testCaseName: App not shared
+      testCaseDescription: Power App not shared with user
+      testSteps: |
+        = Assert(ErrorDialogTitle="Request access")
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 10000
+
+environmentVariables:
+  users:
+    - personaName: User2
+      emailKey: user2Email
+      passwordKey: NotNeeded

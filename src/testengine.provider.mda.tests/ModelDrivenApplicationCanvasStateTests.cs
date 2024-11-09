@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using ICSharpCode.Decompiler.DebugInfo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -23,6 +22,8 @@ namespace testengine.provider.mda.tests
 
         //adding this to reset the behavior after each test case for the assembly static function
         private readonly Func<Assembly> originalGetExecutingAssembly = () => typeof(ModelDrivenApplicationProvider).Assembly;
+
+        const string GET_VARIABLES = "PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()";
 
 
         public ModelDrivenApplicationCanvasStateTests()
@@ -106,7 +107,7 @@ namespace testengine.provider.mda.tests
             var powerAppFunctions = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             var engine = new RecalcEngine();
 
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(json));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(json));
 
             var args = new TestStepEventArgs { Engine = engine, Result = BlankValue.NewVoid(), StepNumber = 1, TestStep = "Set(name,'Test')" };
 
@@ -135,6 +136,7 @@ namespace testengine.provider.mda.tests
 
         }
 
+
         [Fact]
         public void CollectionDataExist()
         {
@@ -149,7 +151,7 @@ namespace testengine.provider.mda.tests
             var powerAppFunctions = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
             var engine = new RecalcEngine();
 
-            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(json));
+            MockTestInfraFunctions.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(json));
 
             var args = new TestStepEventArgs { Engine = engine, Result = BlankValue.NewVoid(), StepNumber = 1, TestStep = "Set(name,'Test')" };
 
@@ -178,8 +180,8 @@ namespace testengine.provider.mda.tests
             var newJson = GetData("variable-int");
 
 
-            existingInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(existingJson));
-            newInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(newJson));
+            existingInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(existingJson));
+            newInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(newJson));
 
             // Act
             await existingState.UpdateRecalcEngine(existingInfra.Object, new TestStepEventArgs { Engine = existingEngine });
@@ -206,8 +208,8 @@ namespace testengine.provider.mda.tests
             var newJson = GetData("empty");
 
 
-            existingInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(existingJson));
-            newInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(newJson));
+            existingInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(existingJson));
+            newInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(newJson));
 
             // Act
             await existingState.UpdateRecalcEngine(existingInfra.Object, new TestStepEventArgs { Engine = existingEngine });
@@ -234,8 +236,8 @@ namespace testengine.provider.mda.tests
             var newJson = GetData("variable-int2");
 
 
-            existingInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(existingJson));
-            newInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(newJson));
+            existingInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(existingJson));
+            newInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(newJson));
 
             // Act
             await existingState.UpdateRecalcEngine(existingInfra.Object, new TestStepEventArgs { Engine = existingEngine });
@@ -262,8 +264,8 @@ namespace testengine.provider.mda.tests
             var newJson = GetData("variable-int");
 
 
-            existingInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(existingJson));
-            newInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(newJson));
+            existingInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(existingJson));
+            newInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(newJson));
             newInfra.Setup(x => x.RunJavascriptAsync<string>($"PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().setScopeVariableValue('1','intValue', 2)")).Returns(Task.FromResult("{}"));
 
             // Act
@@ -290,8 +292,8 @@ namespace testengine.provider.mda.tests
             var existingJson = GetData("empty");
             var newJson = GetData("collection");
 
-            existingInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(existingJson));
-            newInfra.Setup(x => x.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()")).Returns(Task.FromResult(newJson));
+            existingInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(existingJson));
+            newInfra.Setup(x => x.RunJavascriptAsync<string>(GET_VARIABLES)).Returns(Task.FromResult(newJson));
 
             // Act
             await existingState.UpdateRecalcEngine(existingInfra.Object, new TestStepEventArgs { Engine = existingEngine });

@@ -22,7 +22,16 @@ namespace testengine.provider.mda
         /// <returns></returns>
         public async Task UpdateRecalcEngine(ITestInfraFunctions testInfraFunctions, TestStepEventArgs e)
         {
-            var variables = await testInfraFunctions.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()");
+            string variables = "{scopeVariables: [], collections: []}";
+
+            try
+            {
+                await testInfraFunctions.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()");
+            }
+            catch (Exception)
+            {
+                // Ignore error, could be cause by invalid provider state, will use default value
+            }
 
             var state = JObject.Parse(variables);
 
