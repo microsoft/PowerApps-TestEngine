@@ -25,7 +25,6 @@ namespace testengine.provider.mda.tests
 
         const string GET_VARIABLES = "PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()";
 
-
         public ModelDrivenApplicationCanvasStateTests()
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);

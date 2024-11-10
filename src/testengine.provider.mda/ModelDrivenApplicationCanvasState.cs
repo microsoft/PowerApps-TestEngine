@@ -26,7 +26,7 @@ namespace testengine.provider.mda
 
             try
             {
-                await testInfraFunctions.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()");
+                variables = await testInfraFunctions.RunJavascriptAsync<string>("PowerAppsModelDrivenCanvas.getAppMagic().getLanguageRuntime().getVariableValuesJson()");
             }
             catch (Exception)
             {

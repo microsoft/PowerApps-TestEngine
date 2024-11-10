@@ -196,7 +196,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     //
                     // In this example we will later see AADSTS50058 error occuring when a silent sign-in request is sent, but no user is signed in after the Temporary Access Pass (TAP) with a lifetime has expired or had been revoked.
                     //
-                    // Explaination:
+                    // Explanation:
                     // Test can receive error "AADSTS50058: A silent sign-in request was sent but no user is signed in."
                     // 
                     // The error occurs because the silent sign-in request is sent to the login.microsoftonline.com endpoint.
