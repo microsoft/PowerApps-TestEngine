@@ -8,6 +8,7 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
+using testengine.common.user;
 
 namespace testengine.user.browser
 {
@@ -18,7 +19,7 @@ namespace testengine.user.browser
     /// Requires the user to select "Stay signed in" or Conditional access policies enabled to allow browser persitance that does not <c href="https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-persistent-browser-session">Require reauthentication and disable browser persistence</c>
     /// </remarks>
     [Export(typeof(IUserManager))]
-    public class BrowserUserManagerModule : IUserManager
+    public class BrowserUserManagerModule : IConfigurableUserManager
     {
         public string Name { get { return "browser"; } }
 
@@ -37,6 +38,10 @@ namespace testengine.user.browser
         public Action<string> CreateDirectory { get; set; } = (location) => Directory.CreateDirectory(location);
 
         public Func<string, string[]> GetFiles { get; set; } = (path) => Directory.GetFiles(path);
+
+        public PowerPlatformLogin LoginHelper { get; set; } = new PowerPlatformLogin();
+
+        public Dictionary<string, object> Settings => new Dictionary<string, object>();
 
         public async Task LoginAsUserAsync(
             string desiredUrl,
@@ -58,26 +63,23 @@ namespace testengine.user.browser
             // Wait a minimum of a minute
             var timeout = Math.Max(60000, testState.GetTimeout());
             var logger = singleTestInstanceState.GetLogger();
-            var foundMatch = false;
+            
+            var state = new LoginState()
+            {
+                DesiredUrl = desiredUrl,
+                Module = this
+            };
 
             logger.LogDebug($"Waiting for {timeout} milliseconds for desired url");
-            while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch)
+            while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !state.FoundMatch && !state.IsError)
             {
                 try
                 {
                     foreach (var page in context.Pages)
                     {
-                        var url = page.Url;
+                        state.Page = page;
 
-                        // Remove any redirect added by Microsoft Cloud for Web Apps so we get the desired url
-                        url = url?.Replace(".mcas.ms", "");
-
-                        // TODO: Need to check if page is idle as be get race condition before redirect to login
-                        if (url.IndexOf(desiredUrl) >= 0)
-                        {
-                            foundMatch = true;
-                            break;
-                        }
+                        await LoginHelper.HandleCommonLoginState(state);
                     }
                 }
                 catch
@@ -85,7 +87,7 @@ namespace testengine.user.browser
 
                 }
 
-                if (!foundMatch)
+                if (!state.FoundMatch || !state.IsError)
                 {
                     logger.LogDebug($"Desired page not found, waiting {DateTime.Now.Subtract(started).TotalSeconds}");
                     System.Threading.Thread.Sleep(1000);
@@ -96,7 +98,7 @@ namespace testengine.user.browser
                 }
             }
 
-            if (!foundMatch)
+            if (!state.FoundMatch && !state.IsError)
             {
                 logger.LogError($"Desired url {desiredUrl} not found");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());

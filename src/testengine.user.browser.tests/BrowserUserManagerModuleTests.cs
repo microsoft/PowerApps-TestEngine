@@ -4,6 +4,7 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Moq;
+using testengine.common.user;
 
 namespace testengine.user.browser.tests
 {
@@ -66,7 +67,9 @@ namespace testengine.user.browser.tests
 
                 var mockPage = new Mock<IPage>(MockBehavior.Strict);
                 mockPage.SetupGet(x => x.Url).Returns(page);
-
+                mockPage.Setup(x => x.EvaluateAsync<string>(PowerPlatformLogin.DIAGLOG_CHECK_JAVASCRIPT, null)).ReturnsAsync("");
+                mockPage.Setup(x => x.EvaluateAsync<string>(PowerPlatformLogin.DEFAULT_OFFICE_365_CHECK, null)).ReturnsAsync("Loaded");
+                
                 if (page == "about:blank")
                 {
                     mockPage.Setup(x => x.CloseAsync(null)).Returns(Task.CompletedTask);
@@ -75,6 +78,8 @@ namespace testengine.user.browser.tests
                 mockPages.Add(mockPage.Object);
             }
             MockBrowserState.Setup(x => x.Pages).Returns(mockPages);
+
+            userManager.LoginHelper.LoginIsComplete = (IPage page) => Task.FromResult(true);
 
             // Act
             await userManager.LoginAsUserAsync("https://localhost",
@@ -111,10 +116,14 @@ namespace testengine.user.browser.tests
             var mockPages = new List<IPage>();
 
             var mockPage = new Mock<IPage>(MockBehavior.Strict);
+            mockPage.Setup(x => x.EvaluateAsync<string>(PowerPlatformLogin.DIAGLOG_CHECK_JAVASCRIPT, null)).ReturnsAsync("");
+            mockPage.Setup(x => x.EvaluateAsync<string>(PowerPlatformLogin.DEFAULT_OFFICE_365_CHECK, null)).ReturnsAsync("Loaded");
             mockPage.SetupGet(x => x.Url).Returns("about:blank");
             mockPages.Add(mockPage.Object);
 
             MockBrowserState.Setup(x => x.Pages).Returns(mockPages);
+
+            userManager.LoginHelper.LoginIsComplete = (IPage page) => Task.FromResult(true);
 
             // Act & Assert
             await Assert.ThrowsAsync<UserInputException>(() => userManager.LoginAsUserAsync(
