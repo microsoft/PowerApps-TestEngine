@@ -8,7 +8,7 @@ namespace testengine.common.user
 
         public static string ERROR_DIALOG_KEY = "ErrorDialogTitle";
 
-        public static string DEFAULT_OFFICE_365_CHECK = "var element = document.getElementById('O365_MainLink_Settings'); if (typeof(element) != 'undefined' && element != null) { 'Idle' } else { 'Loading' }";
+        public static string DEFAULT_OFFICE_365_CHECK = "var element = document.getElementById('O365_MainLink_NavMenu'); if (typeof(element) != 'undefined' && element != null) { 'Idle' } else { 'Loading' }";
         public static string DIAGLOG_CHECK_JAVASCRIPT = "var element = document.querySelector('.ms-Dialog-title, #ErrorTitle, .NotificationTitle'); if (typeof(element) != 'undefined' && element != null) { element.textContent.trim() } else { '' }";
 
         public Func<IPage, Task<bool>> LoginIsComplete { get; set; } 

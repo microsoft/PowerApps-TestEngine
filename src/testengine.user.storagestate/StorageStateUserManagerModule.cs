@@ -160,6 +160,7 @@ namespace testengine.user.storagestate
             var state = new LoginState()
             {
                 DesiredUrl = desiredUrl,
+                UserEmail = user,
                 CallbackErrorFound = async () =>
                 {
                     await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = Path.Combine(Location, "state.json") });
