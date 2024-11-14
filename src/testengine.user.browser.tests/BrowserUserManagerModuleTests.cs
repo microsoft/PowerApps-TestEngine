@@ -69,7 +69,7 @@ namespace testengine.user.browser.tests
                 mockPage.SetupGet(x => x.Url).Returns(page);
                 mockPage.Setup(x => x.EvaluateAsync<string>(PowerPlatformLogin.DIAGLOG_CHECK_JAVASCRIPT, null)).ReturnsAsync("");
                 mockPage.Setup(x => x.EvaluateAsync<string>(PowerPlatformLogin.DEFAULT_OFFICE_365_CHECK, null)).ReturnsAsync("Loaded");
-                
+
                 if (page == "about:blank")
                 {
                     mockPage.Setup(x => x.CloseAsync(null)).Returns(Task.CompletedTask);

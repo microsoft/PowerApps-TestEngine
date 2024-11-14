@@ -63,7 +63,7 @@ namespace testengine.user.browser
             // Wait a minimum of a minute
             var timeout = Math.Max(60000, testState.GetTimeout());
             var logger = singleTestInstanceState.GetLogger();
-            
+
             var state = new LoginState()
             {
                 DesiredUrl = desiredUrl,

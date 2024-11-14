@@ -30,7 +30,7 @@ namespace testengine.user.storagestate.tests
         [InlineData(null, null)]
         [InlineData("", null)]
         [InlineData("new", null)]
-        [InlineData("new",  "old")]
+        [InlineData("new", "old")]
         [InlineData(null, "old")]
         public async Task DialogErrors(string? title, string? existing)
         {
@@ -38,7 +38,8 @@ namespace testengine.user.storagestate.tests
             var find = !String.IsNullOrEmpty(title);
 
             var login = new PowerPlatformLogin();
-            var state = new LoginState() { 
+            var state = new LoginState()
+            {
                 Module = MockUserManager.Object,
                 DesiredUrl = "http://example.com",
                 Page = MockPage.Object
@@ -69,7 +70,7 @@ namespace testengine.user.storagestate.tests
                         var value = engine.Evaluate(expression).ToString();
                         return Task.FromResult(value);
                     });
-            } 
+            }
             else
             {
                 MockPage.Setup(m => m.EvaluateAsync<string>(PowerPlatformLogin.DIAGLOG_CHECK_JAVASCRIPT, null)).Returns(Task.FromResult(String.Empty));
@@ -81,7 +82,8 @@ namespace testengine.user.storagestate.tests
             // Assert
             Assert.Equal(find, state.IsError);
 
-            if (find) {
+            if (find)
+            {
                 Assert.Equal(title, MockSettings[PowerPlatformLogin.ERROR_DIALOG_KEY]);
             }
 
@@ -100,7 +102,8 @@ namespace testengine.user.storagestate.tests
         [InlineData("http://example.com", "http://example.com", "example.com")]
         [InlineData("http://example.com.mcas.ms", "http://example.com", "example.com.mcas.ms")]
         [InlineData("http://example.com/Home", "http://example.com", "example.com")]
-        public async Task FindMatch(string url, string desiredUrl, string host) {
+        public async Task FindMatch(string url, string desiredUrl, string host)
+        {
             // Arrange
             var login = new PowerPlatformLogin();
             var state = new LoginState()

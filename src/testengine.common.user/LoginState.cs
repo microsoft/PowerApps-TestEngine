@@ -10,7 +10,7 @@ namespace testengine.common.user
 {
     public class LoginState
     {
-        public IConfigurableUserManager? Module {  get; set; }
+        public IConfigurableUserManager? Module { get; set; }
 
         public IPage? Page { get; set; }
         public string? UserEmail { get; set; }

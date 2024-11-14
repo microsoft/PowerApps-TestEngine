@@ -11,7 +11,7 @@ namespace testengine.common.user
         public static string DEFAULT_OFFICE_365_CHECK = "var element = document.getElementById('O365_MainLink_NavMenu'); if (typeof(element) != 'undefined' && element != null) { 'Idle' } else { 'Loading' }";
         public static string DIAGLOG_CHECK_JAVASCRIPT = "var element = document.querySelector('.ms-Dialog-title, #ErrorTitle, .NotificationTitle'); if (typeof(element) != 'undefined' && element != null) { element.textContent.trim() } else { '' }";
 
-        public Func<IPage, Task<bool>> LoginIsComplete { get; set; } 
+        public Func<IPage, Task<bool>> LoginIsComplete { get; set; }
 
         public PowerPlatformLogin()
         {
@@ -19,8 +19,9 @@ namespace testengine.common.user
             LoginIsComplete = CheckIsIdleAsync;
         }
 
-        public virtual async Task HandleCommonLoginState(LoginState state) {
-            
+        public virtual async Task HandleCommonLoginState(LoginState state)
+        {
+
             // Error Checks - Power Apps Scenarios
             //TODO: Verify App not shared
             //TODO: Handle unlicenced
@@ -32,7 +33,8 @@ namespace testengine.common.user
                 if (!state.Module.Settings.ContainsKey(ERROR_DIALOG_KEY))
                 {
                     state.Module.Settings.TryAdd(ERROR_DIALOG_KEY, title);
-                } else
+                }
+                else
                 {
                     state.Module.Settings[ERROR_DIALOG_KEY] = title;
                 }
@@ -42,7 +44,7 @@ namespace testengine.common.user
                 if (state.CallbackErrorFound != null)
                 {
                     await state.CallbackErrorFound();
-                }                
+                }
             }
 
             var url = state.Page.Url;
@@ -60,7 +62,7 @@ namespace testengine.common.user
                 {
                     await state.CallbackDesiredUrlFound(state.DesiredUrl);
                 }
-                
+
                 state.FoundMatch = true;
                 state.MatchHost = new Uri(state.Page.Url).Host;
             }

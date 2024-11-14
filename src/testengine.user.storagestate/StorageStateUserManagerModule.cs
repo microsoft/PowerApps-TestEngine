@@ -181,7 +181,7 @@ namespace testengine.user.storagestate
                     {
                         var loginHelper = new PowerPlatformLogin();
                         state.Page = page;
-                        
+
                         await loginHelper.HandleCommonLoginState(state);
                     }
                 }
