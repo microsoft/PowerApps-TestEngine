@@ -1,6 +1,6 @@
 # Overview
 
-Interact with the Power Apps Portal
+This Power Apps Test Engine sample demonstrates how interact with containers of canvas application
 
 ## Usage
 

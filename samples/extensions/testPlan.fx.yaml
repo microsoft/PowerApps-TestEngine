@@ -8,7 +8,7 @@ testSuite:
     - testCaseName: Run Sample
       testCaseDescription: Run the Sample Command
       testSteps: |
-        = Sample();
+        = Experimental.Sample();
 
 testSettings:
   locale: "en-US"

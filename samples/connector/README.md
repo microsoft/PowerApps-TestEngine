@@ -1,6 +1,6 @@
 # Overview
 
-Interact with the Power Apps Portal
+This Power Apps Test Engine sample demonstrates how mock a custom connector of a canvas application
 
 ## Usage
 

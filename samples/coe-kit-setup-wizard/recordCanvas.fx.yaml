@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: CoE Starter Canvas App
   testSuiteDescription: Provide the ability to record actions

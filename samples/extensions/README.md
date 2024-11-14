@@ -1,6 +1,6 @@
 # Overview
 
-Interact with the Power Apps Portal
+This Power Apps Test Engine sample demonstrates Power Fx extensions
 
 ## Usage
 

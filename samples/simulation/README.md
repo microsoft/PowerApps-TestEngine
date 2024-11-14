@@ -1,6 +1,6 @@
 # Overview
 
-Interact with the Power Apps Portal
+Simulate Connector
 
 ## Usage
 

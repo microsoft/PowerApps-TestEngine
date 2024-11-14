@@ -1,6 +1,6 @@
 # Overview
 
-Interact with the Power Apps Portal
+This Power Apps Test Engine sample demonstrates how to basic gallery of a canvas application
 
 ## Usage
 

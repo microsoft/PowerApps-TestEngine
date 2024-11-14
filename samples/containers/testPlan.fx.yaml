@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Container
   testSuiteDescription: Verifies that you can interact with control in the container

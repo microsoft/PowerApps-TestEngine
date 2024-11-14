@@ -1,6 +1,6 @@
 # Overview
 
-Interact with the Power Apps Portal
+Verifies that you can interact with controls on other screens
 
 ## Usage
 

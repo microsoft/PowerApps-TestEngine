@@ -1,6 +1,6 @@
 # Overview
 
-Interact with the Power Apps Portal
+Pause the browser and open the Playwright Inspector inside the Power App
 
 ## Usage
 

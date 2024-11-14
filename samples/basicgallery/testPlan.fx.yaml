@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Basic Gallery
   testSuiteDescription: Verifies that you can interact with controls within a basic gallery
@@ -35,4 +36,4 @@ environmentVariables:
   users:
     - personaName: User1
       emailKey: user1Email
-      passwordKey: user1Password
+      passwordKey: NotNeeded
