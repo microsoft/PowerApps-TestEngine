@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Extension example
   testSuiteDescription: Demonstrate the use of PowerFx extension
