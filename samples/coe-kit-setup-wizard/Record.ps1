@@ -5,31 +5,35 @@ $jsonContent = Get-Content -Path .\config.json -Raw
 $config = $jsonContent | ConvertFrom-Json
 $tenantId = $config.tenantId
 $environmentId = $config.environmentId
+$user1Email = $config.user1Email
 
 if ([string]::IsNullOrEmpty($environmentId)) {
     Write-Error "Environment not configured. Please update config.json"
     return
 }
 
-$textResult = [string] (pac env list)
-
 $foundEnvironment = $false
-$textResult = [string] (pac env select --environment $environmentId)
+$textResult = (pac env select --environment $environmentId)
+$textResult = (pac env list)
 
-try{
-    $textResult -match "'(https://[^\s']+)'"
-    $environmentMatch = $matches
-    $foundEnvironment = $true
-} catch {
-    
+$environmentUrl = ""
+
+Write-Host "Searching for $environmentId"
+
+foreach ($line in $textResult) {
+    if ($line -match $environmentId) {
+        if ($line -match "(https://\S+/)") {
+            $environmentUrl = $matches[0].Substring(0,$matches[0].Length - 1)
+            $foundEnvironment = $true
+            break
+        }
+    }
 }
 
-# Extract the URL using a general regular expression
-if ($foundEnvironment -and $environmentMatch.Count -ge 1) {
-    $environmentUrl = $environmentMatch[1].TrimEnd("/")
+if ($foundEnvironment) {
+    Write-Output "Found matching Environment URL: $environmentUrl"
 } else {
-    Write-Output "URL not found. Please create authentication and re-run script"
-    pac auth create --environment $environmentId
+    Write-Output "Environment ID not found."
     return
 }
 
@@ -62,7 +66,8 @@ if ($config.installPlaywright) {
 
 Set-Location ..\bin\Debug\PowerAppsTestEngine
 # Run the tests for each user in the configuration file.
-dotnet PowerAppsTestEngine.dll -u "browser" -p "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -w True
+$env:user1Email = $user1Email
+dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -w True
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

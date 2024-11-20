@@ -82,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = outputDirectory.FullName;
-            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var testRunDirectory = Path.Combine(expectedOutputDirectory, "2024-11-20T00-00-00-0000000-" + testRunId.Substring(0, 6));
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
@@ -90,6 +90,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
+            testEngine.Timestamper = () => new DateTime(2024, 11, 20);
+
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
@@ -156,7 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = outputDirectory.FullName;
-            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var testRunDirectory = Path.Combine(expectedOutputDirectory, "2024-11-20T00-00-00-0000000-" + testRunId.Substring(0, 6));
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
@@ -164,6 +166,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
+            testEngine.Timestamper = () => new DateTime(2024, 11, 20);
+
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
@@ -197,7 +201,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var outputDirectory = new DirectoryInfo("TestOutput");
             var testRunId = Guid.NewGuid().ToString();
             var expectedOutputDirectory = outputDirectory.FullName;
-            var testRunDirectory = Path.Combine(expectedOutputDirectory, testRunId.Substring(0, 6));
+            var testRunDirectory = Path.Combine(expectedOutputDirectory, "2024-11-20T00-00-00-0000000-" + testRunId.Substring(0, 6));
             var domain = "apps.powerapps.com";
 
             var expectedTestReportPath = "C:\\test.trx";
@@ -205,6 +209,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             SetupMocks(expectedOutputDirectory, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
+            testEngine.Timestamper = () => new DateTime(2024, 11, 20);
+
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
@@ -246,7 +252,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             {
                 expectedOutputDirectory = new DirectoryInfo("TestOutput");
             }
-            var testRunDirectory = Path.Combine(expectedOutputDirectory.FullName, testRunId.Substring(0, 6));
+            var testRunDirectory = Path.Combine(expectedOutputDirectory.FullName, "2024-11-20T00-00-00-0000000-" + testRunId.Substring(0, 6));
 
             if (string.IsNullOrEmpty(domain))
             {
@@ -258,6 +264,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             SetupMocks(expectedOutputDirectory.FullName, testSettings, testSuiteDefinition, testRunId, expectedTestReportPath);
 
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
+            testEngine.Timestamper = () => new DateTime(2024, 11, 20);
+
             var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
 
             Assert.Equal(expectedTestReportPath, testReportPath);

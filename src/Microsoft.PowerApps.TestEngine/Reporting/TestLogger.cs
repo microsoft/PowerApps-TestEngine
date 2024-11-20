@@ -17,9 +17,12 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public List<TestLog> DebugLogs { get; set; } = new List<TestLog>();
         private TestLoggerScope currentScope = null;
 
+        public Func<DateTime> TimeStamper { get; set; }
+
         public TestLogger(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
+            TimeStamper = new TestLog().TimeStamper;
         }
 
         public IDisposable BeginScope<TState>(TState state)
@@ -95,15 +98,15 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 }
             }
 
-            logString += $"{formatter(state, exception)}{Environment.NewLine}";
+            logString += $"{TimeStamper().ToString("o")} - {formatter(state, exception)}{Environment.NewLine}";
 
             var scopeFilter = currentScope != null ? currentScope.GetScopeString() : "";
             if (messageLevel > LogLevel.Debug)
             {
-                Logs.Add(new TestLog() { LogMessage = logString, ScopeFilter = scopeFilter });
+                Logs.Add(new TestLog() { TimeStamper = TimeStamper, LogMessage = logString, ScopeFilter = scopeFilter });
             }
 
-            DebugLogs.Add(new TestLog() { LogMessage = logString, ScopeFilter = scopeFilter });
+            DebugLogs.Add(new TestLog() { TimeStamper = TimeStamper, LogMessage = logString, ScopeFilter = scopeFilter });
         }
     }
 }
