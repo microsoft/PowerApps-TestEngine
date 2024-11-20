@@ -8,9 +8,11 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
 {
     public class TestLog
     {
-        private Func<DateTime> _timeStamper =  () => DateTime.Now;
-        public Func<DateTime> TimeStamper { 
-            get { 
+        private Func<DateTime> _timeStamper = () => DateTime.Now;
+        public Func<DateTime> TimeStamper
+        {
+            get
+            {
                 return _timeStamper;
             }
 
@@ -21,7 +23,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }
         }
 
-        public TestLog() {
+        public TestLog()
+        {
             When = TimeStamper();
         }
 

@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var log = new TestLog() { TimeStamper = () => test };
 
             // Act & Assert
-            Assert.Equal(test ,log.When);
+            Assert.Equal(test, log.When);
 
             // Assert
         }
