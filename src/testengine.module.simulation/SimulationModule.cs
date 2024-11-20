@@ -26,13 +26,11 @@ namespace testengine.module
         {
             ILogger logger = singleTestInstanceState.GetLogger();
 
-#if DEBUG
             // TODO: Determine how Record can be used as value for action argument. Current value is evaluated as empty
             RecordValue actionValues = RecordValue.NewRecordFromFields(
                 new NamedValue("Query", FormulaValue.New("query")),
                 new NamedValue("Create", FormulaValue.New("create"))
             );
-#endif
 
             var variable = config.SymbolTable.AddVariable("DataverseAction", actionValues.Type, mutable: false);
 
