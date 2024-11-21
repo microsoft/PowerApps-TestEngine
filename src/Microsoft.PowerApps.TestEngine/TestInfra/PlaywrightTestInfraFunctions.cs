@@ -217,7 +217,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 {
                     location = Path.Combine(Directory.GetCurrentDirectory(), location);
                 }
-                _singleTestInstanceState.GetLogger().LogInformation($"Using static context in '{location}' using {userManager.Name}");
 
                 // Check if a channel has been specified
                 if (!string.IsNullOrEmpty(browserConfig.Channel))
