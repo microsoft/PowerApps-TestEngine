@@ -34,6 +34,14 @@ namespace Microsoft.PowerApps.TestEngine.System
         public string[] GetFiles(string directoryName);
 
         /// <summary>
+        /// Gets files in a directory matching search pattern
+        /// </summary>
+        /// <param name="directoryName">Directory name</param>
+        /// <param name="searchPattern">Directory name</param>
+        /// <returns>Array of files in directory</returns>
+        public string[] GetFiles(string directoryName, string searchPattern);
+
+        /// <summary>
         /// Writes text to file
         /// </summary>
         /// <param name="filePath">File to write to</param>
@@ -67,5 +75,25 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// <param name="fileName">File name</param>
         /// <returns>File name with all valid characters</returns>
         public string RemoveInvalidFileNameChars(string fileName);
+
+        /// <summary>
+        /// Returns temporary path for local machine
+        /// </summary>
+        /// <returns>Location of the temporary path</returns>
+        public string GetTempPath();
+
+        /// <summary>
+        /// Returns default root locaiton of all testengine artifacts
+        /// </summary>
+        /// <returns>Location of the root folder for test engine output and log files</returns>
+        public string GetDefaultRootTestEngine();
+
+        /// <summary>
+        /// Checks whether file path is permitted for write operations
+        /// </summary>
+        /// <param name="filePath">Path to check</param>
+        /// <returns>True if it is permitted</returns>
+        public bool IsWritePermittedFilePath(string filePath);
+        
     }
 }

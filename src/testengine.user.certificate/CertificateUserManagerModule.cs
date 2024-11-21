@@ -32,7 +32,7 @@ namespace testengine.user.environment
 
         public bool UseStaticContext { get { return false; } }
 
-        public string Location { get; set; } = string.Empty;
+        public string Location { get; set; } = "CertificateContext";
 
         public IPage? Page { get; set; }
 
@@ -263,7 +263,6 @@ namespace testengine.user.environment
         {
             var request = route.Request;
 
-            Console.WriteLine($"Intercepted request: {request.Method} {request.Url}");
             if (request.Method == "POST")
             {
                 try
@@ -279,7 +278,7 @@ namespace testengine.user.environment
 
                     await route.FulfillAsync(new RouteFulfillOptions
                     {
-                        ContentType = "text/html",
+                        ContentType = "text/html; charset=utf-8",
                         Status = (int)response.StatusCode,
                         Headers = headers,
                         Body = await response.Content.ReadAsStringAsync()

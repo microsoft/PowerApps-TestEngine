@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -213,13 +211,22 @@ else
 
         DirectoryInfo outputDirectory;
         const string DefaultOutputDirectory = "TestOutput";
+        var _fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
         if (!string.IsNullOrEmpty(inputOptions.OutputDirectory))
         {
-            outputDirectory = new DirectoryInfo(inputOptions.OutputDirectory);
+            if (Path.IsPathRooted(inputOptions.OutputDirectory.Trim()))
+            {
+                Console.WriteLine("[Critical Error]: Please provide a relative path for the output.");
+                return;
+            }
+            else
+            {
+                outputDirectory = new DirectoryInfo(Path.Combine(_fileSystem.GetDefaultRootTestEngine(), inputOptions.OutputDirectory.Trim()));
+            }
         }
         else
         {
-            outputDirectory = new DirectoryInfo(DefaultOutputDirectory);
+            outputDirectory = new DirectoryInfo(Path.Combine(_fileSystem.GetDefaultRootTestEngine(), DefaultOutputDirectory.Trim()));
         }
 
         if (!string.IsNullOrEmpty(inputOptions.QueryParams))

@@ -85,14 +85,24 @@ namespace Microsoft.PowerApps.TestEngine
                     throw new ArgumentNullException(nameof(tenantId));
                 }
 
+                if (string.IsNullOrEmpty(domain))
+                {
+                    throw new ArgumentNullException(nameof(domain));
+                }
+
                 if (outputDirectory == null)
                 {
                     throw new ArgumentNullException(nameof(outputDirectory));
                 }
-
-                if (string.IsNullOrEmpty(domain))
+                else 
                 {
-                    throw new ArgumentNullException(nameof(domain));
+                    if (!new Uri(_fileSystem.GetDefaultRootTestEngine()).IsBaseOf(new Uri(outputDirectory.FullName)))
+                    {
+                        var wrongLocationError = $"Please ensure {nameof(outputDirectory)} is set to a value resolving to a location inside folder {_fileSystem.GetDefaultRootTestEngine()}.";
+                        Logger.LogError(wrongLocationError);
+                        _eventHandler.EncounteredException(new UserInputException(string.Format("   [Critical Error]: {0}", wrongLocationError)));
+                        return "InvalidOutputDirectory";
+                    }
                 }
 
                 if (string.IsNullOrEmpty(queryParams))

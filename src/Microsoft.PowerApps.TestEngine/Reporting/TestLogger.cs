@@ -55,9 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             if (!_fileSystem.Exists(directoryPath))
             {
-                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-                var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
-                directoryPath = Path.Combine(assemblyDirectory, "logs");
+                directoryPath = Path.Combine(_fileSystem.GetDefaultRootTestEngine(), "logs");
                 _fileSystem.CreateDirectory(directoryPath);
             }
 
