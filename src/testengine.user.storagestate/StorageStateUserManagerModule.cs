@@ -185,9 +185,9 @@ namespace testengine.user.storagestate
                         await loginHelper.HandleCommonLoginState(state);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    logger.LogError(ex, "Error waiting for login");
                 }
 
                 if (!state.FoundMatch || !state.IsError)

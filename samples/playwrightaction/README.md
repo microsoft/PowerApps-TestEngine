@@ -1,6 +1,6 @@
 # Overview
 
-Tests ability to interact with page using Playwright IPage and "no cliffs" extensibility model of a C# script file
+Tests ability to interact with page using Playwright locators by waiting for button to be visible on page
 
 ## Usage
 
@@ -22,7 +22,3 @@ Tests ability to interact with page using Playwright IPage and "no cliffs" exten
 ```pwsh
 .\RunTests.ps1
 ```
-
-## Notes
-
-This sample assumes that you have the buttonclicker sample application in the target environment

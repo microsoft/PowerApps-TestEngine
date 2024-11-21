@@ -1,8 +1,8 @@
-# TestEngine.PlaywrightAction
+# Experimental.PlaywrightAction
 
-` TestEngine.PlaywrightAction(Locator, Action)`
+` Experimental.PlaywrightAction(Locator, Action)`
 
-` TestEngine.PlaywrightAction(Url, Action)`
+` Experimental.PlaywrightAction(Url, Action)`
 
 This use the locators or Url to apply an action to the current web page.
 
@@ -27,10 +27,10 @@ The following actions are supported
 
 ## Examples
 
-` TestEngine.PlaywrightAction("//button", "click")`
+` Experimental.PlaywrightAction("//button", "click")`
 
-` Assert(TestEngine.PlaywrightAction("//button", "exists") = true)`
+` Assert(Experimental.PlaywrightAction("//button", "exists") = true)`
 
-` TestEngine.PlaywrightAction("https://www.microsoft.com", "navigate")`
+` Experimental.PlaywrightAction("https://www.microsoft.com", "navigate")`
 
-` TestEngine.PlaywrightAction("//button", "wait")`
+` Experimental.PlaywrightAction("//button", "wait")`

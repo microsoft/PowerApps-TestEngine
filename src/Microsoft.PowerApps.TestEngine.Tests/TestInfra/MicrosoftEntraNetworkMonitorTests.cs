@@ -15,7 +15,7 @@ using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 {
-    public class NetworkMonitorTests
+    public class MicrosoftEntraNetworkMonitorTests
     {
         Mock<ILogger> MockLogger;
         Mock<IBrowserContext> MockBrowserContext;
@@ -24,7 +24,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         Mock<IResponse> MockResponse;
         Mock<ITestState> MockTestState;
 
-        public NetworkMonitorTests()
+        public MicrosoftEntraNetworkMonitorTests()
         {
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>();
@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task WillTrackRequest(string url)
         {
             // Arrange 
-            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
+            var monitor = new MicrosoftEntraNetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
             Func<IRoute, Task> callback = null;
             List<string> routeUrl = new List<string>();
 
@@ -87,7 +87,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task WillNotTrackRequest(string url)
         {
             // Arrange 
-            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
+            var monitor = new MicrosoftEntraNetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
             Func<IRoute, Task> callback = null;
             List<string> routeUrl = new List<string>();
 
@@ -120,7 +120,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task WillTrackResponse(string url)
         {
             // Arrange
-            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
+            var monitor = new MicrosoftEntraNetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
 
             MockBrowserContext.Setup(m => m.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), It.IsAny<BrowserContextRouteOptions>()))
                .Returns(Task.CompletedTask);
@@ -152,7 +152,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task WillNotTrackResponse(string url)
         {
             // Arrange
-            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
+            var monitor = new MicrosoftEntraNetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
 
             MockBrowserContext.Setup(m => m.RouteAsync(It.IsAny<string>(), It.IsAny<Func<IRoute, Task>>(), It.IsAny<BrowserContextRouteOptions>()))
                .Returns(Task.CompletedTask);
@@ -181,7 +181,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public async Task NoCookies(string? url)
         {
             // Arrange
-            var monitor = new NetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
+            var monitor = new MicrosoftEntraNetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
 
             MockTestState.Setup(m => m.GetDomain()).Returns(url);
             MockBrowserContext.Setup(m => m.CookiesAsync(It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult((IReadOnlyList<BrowserContextCookiesResult>)null));

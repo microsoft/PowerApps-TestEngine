@@ -302,7 +302,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                         if (constructor == null)
                         {
-                            Logger.LogInformation($"No constructor with a bosy");
+                            Logger.LogInformation($"No constructor with a body");
                         }
 
                         if (!constructor.HasBody)

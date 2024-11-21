@@ -8,9 +8,9 @@ There are several specifically defined functions for the test framework.
 - [SetProperty](./SetProperty.md)
 - [Wait](./Wait.md)
 
-- [TestEngine.Pause](./Pause.md)
-- [TestEngine.PlaywrightAction](./PlaywrightAction.md)
-- [TestEngine.PlaywrightScript](./PlaywrightAction.md)
+- [Experimental.Pause](./Pause.md)
+- [Experimental.PlaywrightAction](./PlaywrightAction.md)
+- [Experimental.PlaywrightScript](./PlaywrightAction.md)
 
 ## Experimental Functions
 

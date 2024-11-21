@@ -132,11 +132,11 @@ namespace Microsoft.PowerApps.TestEngine
 
                 _eventHandler.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
-                NetworkMonitor monitor = null;
+                MicrosoftEntraNetworkMonitor monitor = null;
                 if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
                 {
                     // Enable logging
-                    monitor = new NetworkMonitor(Logger, TestInfraFunctions.GetContext(), _state);
+                    monitor = new MicrosoftEntraNetworkMonitor(Logger, TestInfraFunctions.GetContext(), _state);
                     await monitor.MonitorEntraLoginAsync(desiredUrl);
                     await monitor.LogCookies(desiredUrl);
                 }
@@ -347,9 +347,9 @@ namespace Microsoft.PowerApps.TestEngine
                         record.Generate(testResultDirectory);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    Logger.LogError(ex.ToString(), "Unable to generate test results");
                 }
 
                 string summaryString = $"\nTest suite summary\nTotal cases: {casesTotal}" +

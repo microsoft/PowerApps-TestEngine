@@ -24,8 +24,8 @@ if ($config.installPlaywright) {
 Set-Location ..\bin\Debug\PowerAppsTestEngine
 $env:user1Email = $user1Email
 # Run the tests for each user in the configuration file.
-$env:user1Email = $user1Email 
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "powerapps.portal" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -w True
+dotnet PowerAppsTestEngine.dll -u "storagestate" -p "canvas" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId
+dotnet PowerAppsTestEngine.dll -u "storagestate" -p "canvas" -a "none" -i "$currentDirectory\testPlanWithCommaForDecimal.fx.yaml" -t $tenantId -e $environmentId
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

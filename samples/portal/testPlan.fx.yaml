@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Power Apps Portal Test
   testSuiteDescription: Interact with the Power Apps Portal

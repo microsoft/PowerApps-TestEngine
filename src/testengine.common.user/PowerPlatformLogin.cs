@@ -95,7 +95,7 @@ namespace testengine.common.user
             try
             {
                 var page = state.Page;
-                if (await page.Locator(selector).IsEditableAsync() && !state.EmailHandled)
+                if (!await LoginIsComplete(state.Page) && await page.Locator(selector).IsEditableAsync() && !state.EmailHandled)
                 {
                     state.EmailHandled = true;
                     await page.Locator(selector).PressSequentiallyAsync(state.UserEmail, new LocatorPressSequentiallyOptions { Delay = 50 });

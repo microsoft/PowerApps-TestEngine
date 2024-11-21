@@ -54,35 +54,10 @@ namespace testengine.module
 
             var hash = ComputeSha256Hash(script);
 
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-
             var dllFile = Path.Combine(Path.GetDirectoryName(this.GetType().Assembly.Location), Path.GetFileNameWithoutExtension(filename) + $"-{hash}.dll");
             if (!File.Exists(dllFile))
             {
                 _logger.LogDebug("Compiling file");
-
-                var a = Assembly.LoadFrom("Microsoft.CodeAnalysis.Scripting.dll");
-
-                // Get the current AppDomain
-                AppDomain currentDomain = AppDomain.CurrentDomain;
-
-                // Get all loaded assemblies in the current AppDomain
-                Assembly[] loadedAssemblies = currentDomain.GetAssemblies();
-
-                // Check for System.Collections.Immutable assembly
-                var immutableAssembly = loadedAssemblies
-                    .FirstOrDefault(asm => asm.GetName().Name == "System.Collections.Immutable");
-
-                if (immutableAssembly != null)
-                {
-                    // Get the version of the assembly
-                    Version version = immutableAssembly.GetName().Version;
-                    Console.WriteLine($"System.Collections.Immutable assembly is loaded. Version: {version}");
-                }
-                else
-                {
-                    Console.WriteLine("System.Collections.Immutable assembly is not loaded.");
-                }
 
                 ScriptOptions options = ScriptOptions.Default;
                 var roslynScript = CSharpScript.Create(script, options);
@@ -105,11 +80,10 @@ namespace testengine.module
                     assemblyBinaryContent = assemblyStream.ToArray();
                 }
                 File.WriteAllBytes(dllFile, assemblyBinaryContent);
+
+                // Required after compile
+                GC.Collect();
             }
-
-
-            GC.Collect();
-
 
             Assembly assembly = Assembly.LoadFile(dllFile);
 
@@ -119,16 +93,6 @@ namespace testengine.module
             _logger.LogInformation("Successfully finished executing PlaywrightScript function.");
 
             return FormulaValue.NewBlank();
-        }
-
-        private static Assembly? CurrentDomain_AssemblyResolve(object? sender, ResolveEventArgs args)
-        {
-            string assemblyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, new AssemblyName(args.Name).Name + ".dll");
-            if (File.Exists(assemblyPath))
-            {
-                return Assembly.LoadFrom(assemblyPath);
-            }
-            return null;
         }
 
         static string ComputeSha256Hash(string rawData)

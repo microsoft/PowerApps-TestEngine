@@ -1,6 +1,6 @@
 # Pause
 
-`TestEngine.Pause()`
+`Experimental.Pause()`
 
 This will open the interactive [Playwright Inspector](https://playwright.dev/dotnet/docs/debug#playwright-inspector) and wait for the user to resume execution. 
 
@@ -10,4 +10,4 @@ Using the playwright inspector you can access the [Browser Developer Tools](http
 
 ## Example
 
-`TestEngine.Pause()`
+`Experimental.Pause()`

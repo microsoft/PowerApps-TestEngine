@@ -11,9 +11,9 @@ using Microsoft.PowerApps.TestEngine.System;
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
     /// <summary>
-    /// Infrastructure monitoring class that can be applied to help diagnose login issues
+    /// Infrastructure monitoring class that can be applied to help diagnose login issues by monitoring request response from Microsoft Entra
     /// </summary>
-    public class NetworkMonitor
+    public class MicrosoftEntraNetworkMonitor
     {
         private readonly ILogger _logger;
         private readonly IBrowserContext _browserContext;
@@ -28,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 "login.microsoftonline.de"
             };
 
-        public NetworkMonitor(ILogger logger, IBrowserContext browserContext, ITestState testState)
+        public MicrosoftEntraNetworkMonitor(ILogger logger, IBrowserContext browserContext, ITestState testState)
         {
             _logger = logger;
             _browserContext = browserContext;

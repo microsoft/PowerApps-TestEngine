@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Power Apps Portal Test
   testSuiteDescription: Interact with the Power Apps Portal
@@ -8,7 +9,7 @@ testSuite:
     - testCaseName: Update Connection References
       testCaseDescription: Connect created connections with connection references
       testSteps: |
-        = TestEngine.UpdateConnectionReferences();
+        = Experimental.UpdateConnectionReferences();
 
 testSettings:
   headless: false

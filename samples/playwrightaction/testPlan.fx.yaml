@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: testPlan Template
   testSuiteDescription: Playwright action example
@@ -9,7 +10,7 @@ testSuite:
     - testCaseName: Run Script
       testCaseDescription: Action examples
       testSteps: |
-        = TestEngine.PlaywrightAction("//button", "wait");
+        = Experimental.PlaywrightAction("//button", "wait");
           
 testSettings:
   headless: false

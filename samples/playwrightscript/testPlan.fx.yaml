@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: testPlan Template
   testSuiteDescription: Playwright csx example
@@ -9,9 +10,9 @@ testSuite:
     - testCaseName: Run Script
       testCaseDescription: CSX example
       testSteps: |
-        = TestEngine.Pause();
-          TestEngine.PlaywrightScript("sample.csx");
-          TestEngine.Pause();
+        = Experimental.Pause();
+          Experimental.PlaywrightScript("sample.csx");
+          Experimental.Pause();
 
 testSettings:
   headless: false
