@@ -94,6 +94,5 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// <param name="filePath">Path to check</param>
         /// <returns>True if it is permitted</returns>
         public bool IsWritePermittedFilePath(string filePath);
-        
     }
 }

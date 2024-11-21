@@ -94,7 +94,7 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     throw new ArgumentNullException(nameof(outputDirectory));
                 }
-                else 
+                else
                 {
                     if (!new Uri(_fileSystem.GetDefaultRootTestEngine()).IsBaseOf(new Uri(outputDirectory.FullName)))
                     {

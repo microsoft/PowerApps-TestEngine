@@ -89,7 +89,6 @@ namespace Microsoft.PowerApps.TestEngine.System
 
                 //just get this to check if its a valid file path, if its not then it throws 
                 var g = new FileInfo(fullPath).IsReadOnly;
-                
                 string fileName = Path.GetFileName(filePath);
                 if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
                     return false;
