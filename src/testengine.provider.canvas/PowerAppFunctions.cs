@@ -186,6 +186,20 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             {
                 result = await TestInfraFunctions.RunJavascriptAsync<string>(CheckTestEngineObject);
             }
+            catch (Playwright.PlaywrightException pex)
+            {
+                if (pex.Message.Contains("Execution context was destroyed"))
+                {
+                    // TODO: Revise and review this as execution failed with the current page, attempt to select page
+                    var target = new Uri(GenerateTestUrl(TestState.GetDomain(), ""));
+                    TestInfraFunctions.Page = TestInfraFunctions.GetContext().Pages.Where(p => !p.IsClosed && new Uri(p.Url).Host == target.Host).First();
+
+                    if (TestInfraFunctions.Page == null)
+                    {
+                        throw new ApplicationException("Unable to find test page.");
+                    }
+                }
+            }
             catch (NullReferenceException) { }
 
             return result;
@@ -196,16 +210,16 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             try
             {
                 // See if using legacy player
-                try
-                {
-                    await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger());
-                }
-                catch (TimeoutException)
-                {
-                    SingleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
-                    await TestInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "CanvasAppSdk.js")), null);
-                    await TestInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "PublishedAppTesting.js")), PublishedAppIframeName);
-                }
+                //try
+                //{
+                await PollingHelper.PollAsync<string>("undefined", (x) => x.ToLower() == "undefined", () => GetPowerAppsTestEngineObject(), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger());
+                //}
+                //catch (TimeoutException)
+                //{
+                //    SingleTestInstanceState.GetLogger().LogInformation("Legacy WebPlayer in use, injecting embedded JS.");
+                //    await TestInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "CanvasAppSdk.js")), null);
+                //    await TestInfraFunctions.AddScriptTagAsync(GetFilePath(Path.Combine(EmbeddedJSFolderPath, "PublishedAppTesting.js")), PublishedAppIframeName);
+                //}
             }
             catch (Exception ex)
             {
@@ -458,6 +472,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public string GenerateTestUrl(string domain, string additionalQueryParams)
         {
             var environment = TestState.GetEnvironment();
+
+            if (string.IsNullOrEmpty(domain))
+            {
+                domain = "apps.powerapps.com";
+            }
+
             if (string.IsNullOrEmpty(environment))
             {
                 SingleTestInstanceState.GetLogger().LogError("Environment cannot be empty.");

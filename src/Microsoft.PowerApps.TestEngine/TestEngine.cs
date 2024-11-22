@@ -29,6 +29,8 @@ namespace Microsoft.PowerApps.TestEngine
 
         public ILogger Logger { get; set; }
 
+        public Func<DateTime> Timestamper { get; set; }
+
         public TestEngine(ITestState state,
                           IServiceProvider serviceProvider,
                           ITestReporter testReporter,
@@ -42,6 +44,7 @@ namespace Microsoft.PowerApps.TestEngine
             _fileSystem = fileSystem;
             _loggerFactory = loggerFactory;
             _eventHandler = eventHandler;
+            Timestamper = () => DateTime.UtcNow;
         }
 
         /// <summary>
@@ -90,11 +93,6 @@ namespace Microsoft.PowerApps.TestEngine
                     throw new ArgumentNullException(nameof(outputDirectory));
                 }
 
-                if (string.IsNullOrEmpty(domain))
-                {
-                    throw new ArgumentNullException(nameof(domain));
-                }
-
                 if (string.IsNullOrEmpty(queryParams))
                 {
                     Logger.LogDebug($"Using no additional query parameters.");
@@ -118,7 +116,11 @@ namespace Microsoft.PowerApps.TestEngine
 
                 _state.SetTestConfigFile(testConfigFile);
 
-                testRunDirectory = Path.Combine(_state.GetOutputDirectory(), testRunId.Substring(0, 6));
+                var now = Timestamper().ToString("o")
+                    .Replace(":", "-")
+                    .Replace(".", "-");
+
+                testRunDirectory = Path.Combine(_state.GetOutputDirectory(), now + "-" + testRunId.Substring(0, 6));
                 _fileSystem.CreateDirectory(testRunDirectory);
                 Logger.LogInformation($"Test results will be stored in: {testRunDirectory}");
 

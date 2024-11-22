@@ -11,6 +11,7 @@ using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
+using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine
@@ -98,12 +99,15 @@ namespace Microsoft.PowerApps.TestEngine
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             TestState.SetTestResultsDirectory(testResultDirectory);
 
-            casesTotal = TestState.GetTestSuiteDefinition().TestCases.Count();
+            var testSuite = TestState.GetTestSuiteDefinition();
+
+            casesTotal = testSuite.TestCases.Count();
 
             // Number of total cases are recorded and also initialize the passed cases to 0 for this test run
             _eventHandler.SetAndInitializeCounters(casesTotal);
 
             string suiteException = null;
+            TestRecorder record = null;
 
             try
             {
@@ -128,19 +132,83 @@ namespace Microsoft.PowerApps.TestEngine
 
                 _eventHandler.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
+                MicrosoftEntraNetworkMonitor monitor = null;
+                if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
+                {
+                    // Enable logging
+                    monitor = new MicrosoftEntraNetworkMonitor(Logger, TestInfraFunctions.GetContext(), _state);
+                    await monitor.MonitorEntraLoginAsync(desiredUrl);
+                    await monitor.LogCookies(desiredUrl);
+                }
+
                 // Navigate to test url
                 await TestInfraFunctions.GoToUrlAsync(desiredUrl);
-                Logger.LogInformation("Successfully navigated to target URL");
+                Logger.LogInformation("After navigate to target URL");
 
                 _testReporter.TestRunAppURL = desiredUrl;
 
-                // Log in user
                 await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
+
+                if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
+                {
+                    Logger.LogDebug("After desired login found");
+                    await monitor.LogCookies(desiredUrl);
+                }
 
                 // Set up Power Fx
                 _powerFxEngine.Setup();
-                await _powerFxEngine.RunRequirementsCheckAsync();
-                await _powerFxEngine.UpdatePowerFxModelAsync();
+
+                var foundErrorState = false;
+                if (_userManager is IConfigurableUserManager configurableUserManager)
+                {
+                    foreach (var error in configurableUserManager.Settings.Keys.Where(k => k.StartsWith("Error")))
+                    {
+                        foundErrorState = true;
+                        _powerFxEngine.Engine.UpdateVariable(error, FormulaValue.New(configurableUserManager.Settings[error].ToString()));
+                    }
+                }
+
+                if (foundErrorState)
+                {
+                    try
+                    {
+                        // Attempt the setup, it could fail as we detected some kind of error state from the login provider
+                        await _powerFxEngine.RunRequirementsCheckAsync();
+                        await _powerFxEngine.UpdatePowerFxModelAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        // That failed warn that faild but allow to continue so that can perform negative tests
+                        // For example the test could fail because the user is Unlicensed or the app is not shared with test user persona
+
+                        // In the example of a canvas application Power Fx test steps like the following could be added for error dialog
+                        // Assert(ErrorDialogTitle="Start a Power Apps trial?")
+                        Logger.LogError(ex, "Found error setting up initial provider state");
+                        Logger.LogInformation("Error found during login, proceeding wuth test");
+                    }
+                }
+                else
+                {
+                    // Run the setup assume that should be in working state, if not fail the test
+                    await _powerFxEngine.RunRequirementsCheckAsync();
+                    await _powerFxEngine.UpdatePowerFxModelAsync();
+                }
+
+                if (testSuite.RecordMode)
+                {
+                    // Start the recorder before the provider started
+                    record = new TestRecorder(Logger, TestInfraFunctions.GetContext(), _state, TestInfraFunctions, _powerFxEngine, _fileSystem);
+
+                    // TODO: Consider settings to determine type of recording to include
+                    record.RegisterTestEngineApi();
+                    record.SetupHttpMonitoring();
+                    record.SetupMouseMonitoring();
+                    await record.SetupAudioRecording(testResultDirectory);
+
+                    Logger.LogInformation("Record your test case and press play in the inspector to finish");
+                    await TestInfraFunctions.Page.PauseAsync();
+                }
+
 
                 // Set up network request mocking if any
                 await TestInfraFunctions.SetupNetworkRequestMockAsync();
@@ -201,6 +269,8 @@ namespace Microsoft.PowerApps.TestEngine
                         }
                         finally
                         {
+
+
                             if (TestLoggerProvider.TestLoggers.ContainsKey(testSuiteId))
                             {
                                 var testLogger = TestLoggerProvider.TestLoggers[testSuiteId];
@@ -263,11 +333,23 @@ namespace Microsoft.PowerApps.TestEngine
                 if (allTestsSkipped)
                 {
                     // Run test case one by one, mark it as failed
-                    foreach (var testCase in TestState.GetTestSuiteDefinition().TestCases)
+                    foreach (var testCase in testSuite.TestCases)
                     {
                         var testId = _testReporter.CreateTest(testRunId, testSuiteId, $"{testCase.TestCaseName}");
                         _testReporter.FailTest(testRunId, testId);
                     }
+                }
+
+                try
+                {
+                    if (testSuite.RecordMode && record != null)
+                    {
+                        record.Generate(testResultDirectory);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.ToString(), "Unable to generate test results");
                 }
 
                 string summaryString = $"\nTest suite summary\nTotal cases: {casesTotal}" +

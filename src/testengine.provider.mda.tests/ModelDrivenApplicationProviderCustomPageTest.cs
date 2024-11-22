@@ -126,6 +126,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            MockTestState.Setup(m => m.GetDomain()).Returns(String.Empty);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
@@ -186,6 +187,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            MockTestState.Setup(m => m.GetDomain()).Returns(String.Empty);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
@@ -242,6 +244,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            MockTestState.Setup(m => m.GetDomain()).Returns(String.Empty);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 

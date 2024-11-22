@@ -18,6 +18,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestState : ITestState
     {
         private readonly ITestConfigParser _testConfigParser;
+        private bool _recordMode = false;
+
+        public event EventHandler<TestStepEventArgs> BeforeTestStepExecuted;
+        public event EventHandler<TestStepEventArgs> AfterTestStepExecuted;
 
         private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
@@ -42,6 +46,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         private bool IsValid { get; set; } = false;
 
+        // Determine if Power FX expressions delimited by ; should be executed step by step
+        public bool ExecuteStepByStep { get; set; } = false;
+
         public TestState(ITestConfigParser testConfigParser)
         {
             _testConfigParser = testConfigParser;
@@ -49,6 +56,17 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public TestSuiteDefinition GetTestSuiteDefinition()
         {
+            if (_recordMode)
+            {
+                return new TestSuiteDefinition
+                {
+                    RecordMode = true,
+                    AppId = TestPlanDefinition?.TestSuite.AppId,
+                    AppLogicalName = TestPlanDefinition?.TestSuite.AppLogicalName,
+                    Persona = TestPlanDefinition?.TestSuite.Persona,
+                };
+            }
+
             return TestPlanDefinition?.TestSuite;
         }
 
@@ -215,10 +233,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetDomain(string domain)
         {
-            if (string.IsNullOrEmpty(domain))
-            {
-                throw new ArgumentNullException(nameof(domain));
-            }
             Domain = domain;
         }
 
@@ -370,6 +384,21 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<IUserCertificateProvider> GetTestEngineAuthProviders()
         {
             return CertificateProviders;
+        }
+
+        public void OnBeforeTestStepExecuted(TestStepEventArgs e)
+        {
+            BeforeTestStepExecuted?.Invoke(this, e);
+        }
+
+        public void OnAfterTestStepExecuted(TestStepEventArgs e)
+        {
+            AfterTestStepExecuted?.Invoke(this, e);
+        }
+
+        public void SetRecordMode()
+        {
+            _recordMode = true;
         }
     }
 }

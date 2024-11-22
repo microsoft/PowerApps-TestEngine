@@ -3,7 +3,6 @@
 
 using System.Dynamic;
 using System.Reflection;
-using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text;
 using Jint;
@@ -18,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
-    public class ModelDrivenApplicationProviderTests : IDisposable
+    public class ModelDrivenApplicationProviderTests
     {
         private Mock<ITestInfraFunctions> MockTestInfraFunctions;
         private Mock<ITestState> MockTestState;
@@ -28,19 +27,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         private JSObjectModel JsObjectModel;
 
         //adding this to reset the behavior after each test case for the assembly static function
-        private readonly Func<Assembly> originalGetExecutingAssembly = ModelDrivenApplicationProvider.GetExecutingAssembly;
-
-        //adding this IDispose function for tear down that runs after each test and resets the AssemblyMock since it is static and can carry over between testcases
-        public void Dispose()
-        {
-            // Reset static Func to its original value after each test
-            ModelDrivenApplicationProvider.GetExecutingAssembly = originalGetExecutingAssembly;
-        }
+        private readonly Func<Assembly> originalGetExecutingAssembly = () => typeof(ModelDrivenApplicationProvider).Assembly;
 
         public ModelDrivenApplicationProviderTests()
         {
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
+            MockTestState.Setup(m => m.GetDomain()).Returns(String.Empty);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Loose);
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
@@ -54,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(TestJavaScript))]
         public void ValidJavaScript(string javaScript, bool includeMocks, bool includeInterface, List<string> interfaceResourceNames = null)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             if (interfaceResourceNames == null)
             {
                 engine.Evaluate(Common.MockJavaScript(javaScript, "custom", includeMocks, includeInterface));
@@ -148,7 +141,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
         public async Task IsIdle(string javaScript, bool expectedIdle)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
@@ -171,7 +164,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
         public async Task IsReady(string javaScript, bool expectedIdle)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
@@ -199,7 +192,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(GetPropertyValueFromControlData))]
         public void GetPropertyValueFromControl(string javaScript, string controlName, string propertyName, object expectedResult)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
@@ -264,7 +257,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(GetControlData))]
         public async Task BuildEntityRecordControls(string javaScript, string controlName, string fields)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
@@ -354,7 +347,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(GetSetValueData))]
         public async Task SetValue(string javaScript, string controlName, string propertyName, string targetProperty, object value)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
@@ -564,7 +557,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         [MemberData(nameof(DebugInfoProperties))]
         public async Task DebugInfo(string propertyName, object expectedValue, string javaScript)
         {
-            var engine = new Engine();
+            var engine = new Jint.Engine();
             engine.Execute(javaScript);
 
             MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
@@ -624,8 +617,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             _assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
                 .Returns((Stream)null); // Simulate invalid resource name
 
-            ModelDrivenApplicationProvider.GetExecutingAssembly = () => _assemblyMock.Object;
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            provider.GetExecutingAssembly = () => _assemblyMock.Object;
 
             // Act & Assert
 
@@ -652,9 +645,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
                 .Returns(streamMock.Object); // Return the unreadable stream
 
-            ModelDrivenApplicationProvider.GetExecutingAssembly = () => assemblyMock.Object;
-
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            provider.GetExecutingAssembly = () => assemblyMock.Object;
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(async () =>
@@ -678,8 +670,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
                 .Returns(streamMock.Object);
 
-            ModelDrivenApplicationProvider.GetExecutingAssembly = () => assemblyMock.Object;
-
             var pageMock = new Mock<IPage>();
 
             // Simulate failure during RouteAsync
@@ -689,6 +679,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Setup(f => f.Page).Returns(pageMock.Object);
 
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            provider.GetExecutingAssembly = () => assemblyMock.Object;
 
             // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -712,8 +703,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
                 .Returns(streamMock.Object);
 
-            ModelDrivenApplicationProvider.GetExecutingAssembly = () => assemblyMock.Object;
-
             var pageMock = new Mock<IPage>();
 
             // Simulate failure during AddScriptTagAsync
@@ -723,6 +712,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions.Setup(f => f.Page).Returns(pageMock.Object);
 
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            provider.GetExecutingAssembly = () => assemblyMock.Object;
 
             // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -750,9 +740,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             assemblyMock.Setup(a => a.GetManifestResourceStream(resourceName))
                         .Returns(memoryStream);
 
-            // Replace the GetExecutingAssembly function with our mocked assembly
-            ModelDrivenApplicationProvider.GetExecutingAssembly = () => assemblyMock.Object;
-
             // Calculate the expected script hash
             string expectedScriptHash = "sha256-" + Convert.ToBase64String(SHA256.HashData(memoryStream.ToArray()));
             string expectedScriptUrl = $"/{embeddedScriptName}?hash={expectedScriptHash}";
@@ -766,6 +753,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Create the ModelDrivenApplicationProvider with mocked dependencies
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            provider.GetExecutingAssembly = () => assemblyMock.Object;
 
             // Act
             await provider.EmbedMDAJSScripts(resourceName, embeddedScriptName);

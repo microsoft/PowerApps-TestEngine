@@ -1,0 +1,31 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Power Apps Canvas Datavesre Simulation
+  testSuiteDescription: Validate SimulationDataverse()
+  persona: User1
+  appLogicalName: contoso_canvasdata_23901
+  onTestCaseStart: |
+    = Experimental.SimulateDataverse({Action:"query",Entity: "accounts", Then: Table({accountid: "a1234567-1111-2222-3333-44445555666", name: "Test"}) });
+  
+  testCases:
+    - testCaseName: Simulate account
+      testCaseDescription: Test 1
+      testSteps: |
+        =   Experimental.Pause()
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  timeout: 240000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

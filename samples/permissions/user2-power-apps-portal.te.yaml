@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: Permissions
+  testSuiteDescription: Power Platform tests
+  persona: User2
+  appLogicalName: NoNeeded
+
+  testCases:
+    - testCaseName: Power Apps Portal
+      testCaseDescription: Can start port apps portal with user who exists in the environment and with valid MFA credentials
+      testSteps: |
+        = Experimental.SelectSection("home")
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 10000
+
+environmentVariables:
+  users:
+    - personaName: User2
+      emailKey: user2Email
+      passwordKey: NotNeeded

@@ -11,7 +11,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Determine if extension modules should be enabled
         /// </summary>
-        public bool Enable { get; set; } = false;
+        public bool Enable { get; set; } = true;
 
         public TestSettingExtensionSource Source { get; set; } = new TestSettingExtensionSource() { };
 
@@ -39,6 +39,17 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// List of allowed .Net Namespaces that deney load unless explict allow is defined
         /// </summary>
         public List<string> DenyNamespaces { get; set; } = new List<string>();
+
+        /// <summary>
+        /// List of allowed PowerFx Namespaces that can be referenced in a Test Engine Module
+        /// </summary>
+        public List<string> AllowPowerFxNamespaces { get; set; } = new List<string>();
+
+        /// <summary>
+        /// List of allowed PowerFx Namespaces that deny load unless explict allow is defined
+        /// </summary>
+        public List<string> DenyPowerFxNamespaces { get; set; } = new List<string>();
+
 
         /// <summary>
         /// Additional optional parameters for extension modules

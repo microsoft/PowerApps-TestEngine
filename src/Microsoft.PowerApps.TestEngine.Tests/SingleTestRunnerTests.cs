@@ -221,7 +221,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testData = new TestDataOne();
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, additionalFiles, testData.testSuiteLocale);
-
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Debug)).Returns(false);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
             await singleTestRunner.RunTestAsync(testData.testRunId, testData.testRunDirectory, testData.testSuiteDefinition, testData.browserConfig, "", "", locale);
@@ -253,6 +254,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testData = new TestDataTwo();
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, additionalFiles, testData.testSuiteLocale);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Debug)).Returns(false);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
@@ -309,6 +312,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testData = new TestDataOne();
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, false, testData.additionalFiles, testData.testSuiteLocale);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Debug)).Returns(false);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
@@ -458,6 +463,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testData = new TestDataOne();
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Debug)).Returns(false);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
 
             var exceptionToThrow = new InvalidOperationException("Test exception");
 
@@ -491,6 +498,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             var testData = new TestDataOne();
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Debug)).Returns(false);
+            MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
+
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
             // Specific setup for this test

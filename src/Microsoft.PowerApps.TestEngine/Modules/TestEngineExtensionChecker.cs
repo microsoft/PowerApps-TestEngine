@@ -1,13 +1,24 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.IO;
+using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using ICSharpCode.Decompiler;
+using ICSharpCode.Decompiler.CSharp;
+using ICSharpCode.Decompiler.Metadata;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using MethodBody = Mono.Cecil.Cil.MethodBody;
+using ModuleDefinition = Mono.Cecil.ModuleDefinition;
+using TypeDefinition = Mono.Cecil.TypeDefinition;
+using TypeReference = Mono.Cecil.TypeReference;
 
 namespace Microsoft.PowerApps.TestEngine.Modules
 {
@@ -231,6 +242,12 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
             var valid = true;
 
+            if (!VerifyContainsValidNamespacePowerFxFunctions(settings, contents))
+            {
+                Logger.LogInformation("Invalid Power FX Namespace");
+                valid = false;
+            }
+
             foreach (var item in found)
             {
                 // Allow if what was found is shorter and starts with allow value or what was found is a subset of a more specific allow rule
@@ -248,14 +265,207 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 }
             }
 
+
             return valid;
         }
 
         /// <summary>
-        /// Load all the types from the assembly using Intermediate Langiage (IL) mode only
+        /// Validate that the function only contains PowerFx functions that belong to valid Power Fx namespaces
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public bool VerifyContainsValidNamespacePowerFxFunctions(TestSettingExtensions settings, byte[] assembly)
+        {
+            var isValid = true;
+            using (var stream = new MemoryStream(assembly))
+            {
+                stream.Position = 0;
+                ModuleDefinition module = ModuleDefinition.ReadModule(stream);
+
+                // Get the source code of the assembly as will be used to check Power FX Namespaces
+                var code = DecompileModuleToCSharp(assembly);
+
+                foreach (TypeDefinition type in module.GetAllTypes())
+                {
+                    if (type.BaseType != null && type.BaseType.Name == "ReflectionFunction")
+                    {
+                        var constructors = type.GetConstructors();
+
+                        if (constructors.Count() == 0)
+                        {
+                            Logger.LogInformation($"No constructor defined for {type.Name}. Found {constructors.Count()} expected 1 or more");
+                            return false;
+                        }
+
+                        var constructor = constructors.Where(c => c.HasBody).FirstOrDefault();
+
+                        if (constructor == null)
+                        {
+                            Logger.LogInformation($"No constructor with a body");
+                        }
+
+                        if (!constructor.HasBody)
+                        {
+                            Logger.LogInformation($"No body defined for {type.Name}");
+                            // Needs body for call to base constructor
+                            return false;
+                        }
+
+                        var baseCall = constructor.Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference && ((MethodReference)i.Operand).Name == ".ctor");
+
+                        if (baseCall == null)
+                        {
+                            Logger.LogInformation($"No base constructor defined for {type.Name}");
+                            // Unable to find base constructor call
+                            return false;
+                        }
+
+                        MethodReference baseConstructor = (MethodReference)baseCall.Operand;
+
+                        if (baseConstructor.Parameters.Count() < 2)
+                        {
+                            // Not enough parameters
+                            Logger.LogInformation($"No not enough parameters for {type.Name}");
+                            return false;
+                        }
+
+                        if (baseConstructor.Parameters[0].ParameterType.FullName != "Microsoft.PowerFx.Core.Utils.DPath")
+                        {
+                            // First argument should be Namespace
+                            Logger.LogInformation($"No Power FX Namespace for {type.Name}");
+                            return false;
+                        }
+
+                        // Use the decompiled code to get the values of the base constructor, specifically look for the namespace
+                        var name = GetPowerFxNamespace(type.Name, code);
+
+                        if (string.IsNullOrEmpty(name))
+                        {
+                            // No Power FX Namespace found
+                            Logger.LogInformation($"No Power FX Namespace found for {type.Name}");
+                            return false;
+                        }
+
+                        if (settings.DenyPowerFxNamespaces.Contains(name))
+                        {
+                            // Deny list match
+                            Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
+                            return false;
+                        }
+
+#if DEBUG
+                        // Add Experimenal namespaes in Debug compile it it has not been added in allow list
+                        if (!settings.AllowPowerFxNamespaces.Contains("Experimental"))
+                        {
+                            settings.AllowPowerFxNamespaces.Add("Experimental");
+                        }
+#endif
+
+                        if ((settings.DenyPowerFxNamespaces.Contains("*") && (
+                                !settings.AllowPowerFxNamespaces.Contains(name) ||
+                                (!settings.AllowPowerFxNamespaces.Contains(name) && name != "TestEngine")
+                                )
+                            ))
+                        {
+                            // Deny wildcard exists only. Could not find match in allow list and name was not reserved name TestEngine
+                            Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
+                            return false;
+                        }
+
+                        if (!settings.AllowPowerFxNamespaces.Contains(name) && name != "TestEngine")
+                        {
+                            Logger.LogInformation($"Not allow Power FX Namespace {name} for {type.Name}");
+                            // Not in allow list or the Reserved TestEngine namespace
+                            return false;
+                        }
+                    }
+                }
+            }
+            return isValid;
+        }
+
+        /// <summary>
+        /// Get the declared Power FX Namespace assigned to a Power FX Reflection function
+        /// </summary>
+        /// <param name="name">The name of the ReflectionFunction to find</param>
+        /// <param name="code">The decompiled source code to search</param>
+        /// <returns>The DPath Name that has been declared from the code</returns>
+        private string GetPowerFxNamespace(string name, string code)
+        {
+            /*
+            It is assumed that the code will be formatted like the following examples
+
+            public FooFunction()
+			: base(DPath.Root.Append(new DName("Foo")), "Foo", FormulaType.Blank) {
+		    }
+
+            or 
+
+            public OtherFunction(int start)
+			: base(DPath.Root.Append(new DName("Other")), "Foo", FormulaType.Blank) {
+		    }
+
+            */
+
+            var lines = code.Split('\n').ToList();
+
+            var match = lines.Where(l => l.Contains($"public {name}(")).FirstOrDefault();
+
+            if (match == null)
+            {
+                return String.Empty;
+            }
+
+            var index = lines.IndexOf(match);
+
+            // Search for a DName that is Appended to the Root path as functions should be in a Power FX Namespace not the Root
+            var baseDeclaration = "base(DPath.Root.Append(new DName(\"";
+
+            // Search for the DName
+            var declaration = lines[index + 1].IndexOf(baseDeclaration);
+
+            if (declaration >= 0)
+            {
+                // Found a match
+                var start = declaration + baseDeclaration.Length;
+                var end = lines[index + 1].IndexOf("\"", start);
+                // Extract the Power FX Namespace argument from the declaration
+                return lines[index + 1].Substring(declaration + baseDeclaration.Length, end - start);
+            }
+
+            return String.Empty;
+        }
+
+        private string DecompileModuleToCSharp(byte[] assembly)
+        {
+            var fileName = "module.dll";
+            using (var module = new MemoryStream(assembly))
+            using (var peFile = new PEFile(fileName, module))
+            using (var writer = new StringWriter())
+            {
+                var decompilerSettings = new DecompilerSettings()
+                {
+                    ThrowOnAssemblyResolveErrors = false,
+                    DecompileMemberBodies = true,
+                    UsingDeclarations = true
+                };
+                decompilerSettings.CSharpFormattingOptions.ConstructorBraceStyle = ICSharpCode.Decompiler.CSharp.OutputVisitor.BraceStyle.EndOfLine;
+
+                var resolver = new UniversalAssemblyResolver(this.GetType().Assembly.Location, decompilerSettings.ThrowOnAssemblyResolveErrors,
+                    peFile.DetectTargetFrameworkId(), peFile.DetectRuntimePack(),
+                    decompilerSettings.LoadInMemory ? PEStreamOptions.PrefetchMetadata : PEStreamOptions.Default,
+                    decompilerSettings.ApplyWindowsRuntimeProjections ? MetadataReaderOptions.ApplyWindowsRuntimeProjections : MetadataReaderOptions.None);
+                var decompiler = new CSharpDecompiler(peFile, resolver, decompilerSettings);
+                return decompiler.DecompileWholeModuleAsString();
+            }
+        }
+
+        /// <summary>
+        /// Load all the types from the assembly using Intermediate Language (IL) mode only
         /// </summary>
         /// <param name="assembly">The byte representation of the assembly</param>
-        /// <returns>The Dependancies, Types and Method calls found in the assembly</returns>
+        /// <returns>The Dependencies, Types and Method calls found in the assembly</returns>
         private List<string> LoadTypes(byte[] assembly)
         {
             List<string> found = new List<string>();

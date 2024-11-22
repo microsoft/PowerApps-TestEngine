@@ -3,6 +3,7 @@
 
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,7 +30,9 @@ var switchMappings = new Dictionary<string, string>()
     { "-m", "Modules" },
     { "-u", "UserAuth" },
     { "-p", "Provider" },
-    { "-a", "UserAuthType"}
+    { "-a", "UserAuthType"},
+    { "-w", "Wait" },
+    { "-r", "Record" }
 };
 
 var inputOptions = new ConfigurationBuilder()
@@ -115,6 +118,14 @@ else
         }
     }
 
+
+    if (!string.IsNullOrEmpty(inputOptions.Wait) && inputOptions.Wait.ToLower() == "true")
+    {
+        Console.WriteLine("Waiting, press enter to continue");
+        Console.ReadLine();
+    }
+
+
     var logLevel = LogLevel.Information; // Default log level
     if (string.IsNullOrEmpty(inputOptions.LogLevel) || !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))
     {
@@ -163,7 +174,15 @@ else
                 testState.LoadExtensionModules(logger);
                 userManagers = testState.GetTestEngineUserManager();
             }
-            return userManagers.Where(x => x.Name.Equals(userAuth)).First();
+
+            var match = userManagers.Where(x => x.Name.Equals(userAuth)).FirstOrDefault();
+
+            if (match == null)
+            {
+                throw new InvalidDataException($"Unable to find user auth {userAuth}");
+            }
+
+            return match;
         })
         .AddTransient<ITestWebProvider>(sp =>
         {
@@ -174,7 +193,16 @@ else
                 testState.LoadExtensionModules(logger);
                 testWebProviders = testState.GetTestEngineWebProviders();
             }
-            return testWebProviders.Where(x => x.Name.Equals(provider)).First();
+
+            var match = testWebProviders.Where(x => x.Name.Equals(provider)).FirstOrDefault();
+
+            if (match == null)
+            {
+                throw new InvalidDataException($"Unable to find provider {provider}");
+            }
+
+
+            return match;
         })
         .AddSingleton<IUserCertificateProvider>(sp =>
         {
@@ -185,7 +213,15 @@ else
                 testState.LoadExtensionModules(logger);
                 testAuthProviders = testState.GetTestEngineAuthProviders();
             }
-            return testAuthProviders.Where(x => x.Name.Equals(auth)).First();
+
+            var match = testAuthProviders.Where(x => x.Name.Equals(auth)).FirstOrDefault();
+
+            if (match == null)
+            {
+                match = new DefaultUserCertificateProvider();
+            }
+
+            return match;
         })
         .AddSingleton<ITestState, TestState>()
         .AddSingleton<ITestReporter, TestReporter>()
@@ -208,7 +244,7 @@ else
         var testPlanFile = new FileInfo(inputOptions.TestPlanFile);
         var tenantId = Guid.Parse(inputOptions.TenantId);
         var environmentId = inputOptions.EnvironmentId;
-        var domain = "apps.powerapps.com";
+        var domain = string.Empty;
         var queryParams = "";
 
         DirectoryInfo outputDirectory;
@@ -241,6 +277,11 @@ else
 
         ITestState state = serviceProvider.GetService<ITestState>();
         state.SetModulePath(modulePath);
+
+        if (!string.IsNullOrEmpty(inputOptions.Record))
+        {
+            state.SetRecordMode();
+        }
 
         //setting defaults for optional parameters outside RunTestAsync
         var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);

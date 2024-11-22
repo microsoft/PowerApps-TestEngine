@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: MDA Custom Page tests
   testSuiteDescription: Verify model driven application
@@ -24,5 +25,5 @@ testSettings:
 environmentVariables:
   users:
     - personaName: User1
-      emailKey: NotNeeded
+      emailKey: user1Email
       passwordKey: NotNeeded

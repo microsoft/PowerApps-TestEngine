@@ -67,5 +67,13 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// <param name="fileName">File name</param>
         /// <returns>File name with all valid characters</returns>
         public string RemoveInvalidFileNameChars(string fileName);
+
+        /// <summary>
+        /// Writes a binary file to the file system imlementation
+        /// </summary>
+        /// <param name="filePath">The name of the file to create</param>
+        /// <param name="data">The data to write</param>
+        /// <returns></returns>
+        public void WriteFile(string filePath, byte[] data);
     }
 }

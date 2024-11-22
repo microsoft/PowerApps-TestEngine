@@ -1,0 +1,30 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: testPlan Template
+  testSuiteDescription: Playwright csx example
+  persona: User1
+  appLogicalName: new_buttonclicker_0a877
+  onTestSuiteComplete: Screenshot("playwrightaction_onTestSuiteComplete.png");
+
+  testCases:
+    - testCaseName: Run Script
+      testCaseDescription: CSX example
+      testSteps: |
+        = Experimental.Pause();
+          Experimental.PlaywrightScript("sample.csx");
+          Experimental.Pause();
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

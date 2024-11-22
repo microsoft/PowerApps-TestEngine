@@ -48,9 +48,9 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 // Load MEF exports from this assembly 
                 match.Add(new AssemblyCatalog(typeof(TestEngine).Assembly));
 
-                foreach (var sourcelocation in settings.Source.InstallSource)
+                foreach (var sourceLocation in settings.Source.InstallSource)
                 {
-                    string location = sourcelocation;
+                    string location = sourceLocation;
                     if (settings.Source.EnableNuGet)
                     {
                         var nuGetSettings = Settings.LoadDefaultSettings(null);
@@ -78,6 +78,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                                 {
                                     if (!Checker.Validate(settings, file))
                                     {
+                                        _logger.LogInformation($"Skipping {file}");
                                         continue;
                                     }
                                 }

@@ -1,6 +1,7 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Pause tests
-  testSuiteDescription: Pause the browser and open the Playwright Inspector inside the Power App using browser authentication method
+  testSuiteDescription: Pause the browser and open the Playwright Inspector inside the Power App
   persona: User1
   appLogicalName: new_buttonclicker_0a877
   onTestSuiteComplete: Screenshot("pause_onTestSuiteComplete.png");
@@ -9,7 +10,7 @@ testSuite:
     - testCaseName: Pause
       testCaseDescription: Pause example
       testSteps: |
-        = Pause();
+        = Experimental.Pause();
 
 testSettings:
   headless: false
@@ -23,5 +24,5 @@ testSettings:
 environmentVariables:
   users:
     - personaName: User1
-      emailKey: NotNeeded
+      emailKey: user1Email
       passwordKey: NotNeeded

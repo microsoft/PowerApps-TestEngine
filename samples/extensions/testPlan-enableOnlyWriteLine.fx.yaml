@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Extension example
   testSuiteDescription: Demonstrate the use of PowerFx extension
@@ -8,7 +9,7 @@ testSuite:
     - testCaseName: Run Sample
       testCaseDescription: Test case will pass as WriteLine method has been allowed
       testSteps: |
-        = Sample();
+        = Experimental.Sample();
 
 testSettings:
   locale: "en-US"

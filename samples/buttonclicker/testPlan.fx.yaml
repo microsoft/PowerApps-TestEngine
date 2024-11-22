@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Button Clicker
   testSuiteDescription: Verifies that counter increments when the button is clicked

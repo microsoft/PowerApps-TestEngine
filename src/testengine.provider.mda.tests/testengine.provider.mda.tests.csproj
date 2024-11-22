@@ -1,22 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
     <PublicSign>true</PublicSign>
+    <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="data-collection.json" />
+    <None Remove="data-collection2.json" />
+    <None Remove="data-empty.json" />
+    <None Remove="data-sample.json" />
+    <None Remove="data-variable-int.json" />
+    <None Remove="data-variable-int2.json" />
     <None Remove="ModelDrivenApplicationMock.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="data-collection2.json" />
+    <EmbeddedResource Include="data-collection.json" />
+    <EmbeddedResource Include="data-variable-int2.json" />
+    <EmbeddedResource Include="data-variable-int.json" />
     <EmbeddedResource Include="ModelDrivenApplicationMock.js" />
+    <EmbeddedResource Include="data-empty.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +55,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
     <ProjectReference Include="..\testengine.provider.mda\testengine.provider.mda.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="data-sample.json" />
   </ItemGroup>
 
   <ItemGroup>

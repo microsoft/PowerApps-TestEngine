@@ -82,5 +82,10 @@ namespace Microsoft.PowerApps.TestEngine.System
         {
             return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
         }
+
+        public void WriteFile(string filePath, byte[] data)
+        {
+            File.WriteAllBytes(filePath, data);
+        }
     }
 }

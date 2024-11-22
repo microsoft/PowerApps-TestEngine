@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Button Clicker
   testSuiteDescription: Verifies that counter increments when the button is clicked
@@ -11,15 +12,22 @@ testSuite:
     - testCaseName: Case1
       testCaseDescription: Run sample action
       testSteps: |
-        = Sample();
+        = Experimental.Sample();
 
 testSettings:
-  locale: "en-US"
   headless: false
+  locale: "en-US"
   recordVideo: true
-  enableExtensionModules: true
+  extensionModules:
+    enable: true
   browserConfigurations:
-    - browser: Firefox
+    - browser: Chromium
+      channel: msedge
+  timeout: 600000
 
 environmentVariables:
-  filePath: ../../samples/environmentVariables.yaml
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
+

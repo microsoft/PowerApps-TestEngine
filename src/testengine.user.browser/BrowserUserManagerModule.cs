@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using System.ComponentModel.Composition;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
+using testengine.common.user;
 
 namespace testengine.user.browser
 {
@@ -17,7 +19,7 @@ namespace testengine.user.browser
     /// Requires the user to select "Stay signed in" or Conditional access policies enabled to allow browser persitance that does not <c href="https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-persistent-browser-session">Require reauthentication and disable browser persistence</c>
     /// </remarks>
     [Export(typeof(IUserManager))]
-    public class BrowserUserManagerModule : IUserManager
+    public class BrowserUserManagerModule : IConfigurableUserManager
     {
         public string Name { get { return "browser"; } }
 
@@ -37,6 +39,10 @@ namespace testengine.user.browser
 
         public Func<string, string[]> GetFiles { get; set; } = (path) => Directory.GetFiles(path);
 
+        public PowerPlatformLogin LoginHelper { get; set; } = new PowerPlatformLogin();
+
+        public Dictionary<string, object> Settings => new Dictionary<string, object>();
+
         public async Task LoginAsUserAsync(
             string desiredUrl,
             IBrowserContext context,
@@ -53,23 +59,35 @@ namespace testengine.user.browser
             }
 
             var started = DateTime.Now;
-            var timeout = testState.GetTimeout();
-            var logger = singleTestInstanceState.GetLogger();
-            var foundMatch = false;
 
-            logger.LogDebug($"Waiting for ${timeout} milliseconds for desired url");
-            while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !foundMatch)
+            // Wait a minimum of a minute
+            var timeout = Math.Max(60000, testState.GetTimeout());
+            var logger = singleTestInstanceState.GetLogger();
+
+            var state = new LoginState()
             {
-                foreach (var page in context.Pages)
+                DesiredUrl = desiredUrl,
+                Module = this
+            };
+
+            logger.LogDebug($"Waiting for {timeout} milliseconds for desired url");
+            while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !state.FoundMatch && !state.IsError)
+            {
+                try
                 {
-                    if (page.Url.IndexOf(desiredUrl) >= 0)
+                    foreach (var page in context.Pages)
                     {
-                        foundMatch = true;
-                        break;
+                        state.Page = page;
+
+                        await LoginHelper.HandleCommonLoginState(state);
                     }
                 }
+                catch
+                {
 
-                if (!foundMatch)
+                }
+
+                if (!state.FoundMatch || !state.IsError)
                 {
                     logger.LogDebug($"Desired page not found, waiting {DateTime.Now.Subtract(started).TotalSeconds}");
                     System.Threading.Thread.Sleep(1000);
@@ -80,9 +98,9 @@ namespace testengine.user.browser
                 }
             }
 
-            if (!foundMatch)
+            if (!state.FoundMatch && !state.IsError)
             {
-                logger.LogError($"Desired url ${desiredUrl} not found");
+                logger.LogError($"Desired url {desiredUrl} not found");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionLoginCredential.ToString());
             }
 
@@ -102,7 +120,20 @@ namespace testengine.user.browser
         {
             if (Page == null)
             {
-                Page = Context.Pages.First();
+                Page = Context.Pages.Where(p => !p.IsClosed).First();
+            }
+        }
+
+        public async Task<bool> CheckIsIdleAsync(IPage page)
+        {
+            try
+            {
+                var expression = "var element = document.getElementById('O365_MainLink_Settings'); if (typeof(element) != 'undefined' && element != null) { 'Idle' } else { 'Loading' }";
+                return (await page.EvaluateAsync<string>(expression)) == "Idle";
+            }
+            catch
+            {
+                return false;
             }
         }
     }

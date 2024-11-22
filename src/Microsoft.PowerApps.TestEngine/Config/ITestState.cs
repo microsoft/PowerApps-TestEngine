@@ -146,5 +146,39 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<ITestWebProvider> GetTestEngineWebProviders();
 
         public List<IUserCertificateProvider> GetTestEngineAuthProviders();
+
+        /// <summary>
+        /// Determine if the steps of the test steps should be executed step by step or as one action
+        /// </summary>
+        public bool ExecuteStepByStep { get; set; }
+
+        /// <summary>
+        /// Event triggered before a test step is executed
+        /// </summary>
+        event EventHandler<TestStepEventArgs> BeforeTestStepExecuted;
+
+        /// <summary>
+        /// Event triggered after a test step is executed
+        /// </summary>
+        event EventHandler<TestStepEventArgs> AfterTestStepExecuted;
+
+        /// <summary>
+        /// This method is called before a test step is executed.
+        /// It allows for any necessary setup or logging before the test step runs.
+        /// </summary>
+        /// <param name="e">The event arguments containing details about the test step.</param>
+        public void OnBeforeTestStepExecuted(TestStepEventArgs e);
+
+        /// <summary>
+        /// This method is called after a test step is executed.
+        /// It allows for any necessary cleanup or logging after the test step runs.
+        /// </summary>
+        /// <param name="e">The event arguments containing details about the test step.</param>
+        public void OnAfterTestStepExecuted(TestStepEventArgs e);
+
+        /// <summary>
+        /// Indicate that this test run should be a record mode not execution
+        /// </summary>
+        void SetRecordMode();
     }
 }
