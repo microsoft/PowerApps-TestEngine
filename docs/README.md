@@ -10,7 +10,7 @@ The Power Apps Test Engine is a robust and modular framework designed to facilit
 
 Currently the Power Platform Engineering team is working in branches of the open source GitHub repository to expand the set of features. To use this code it makes use of a “build from source” strategy where the .Net SDK needs to be installed to compile the modules that make up the console application to  run Test Engine tests.
 
-This open-source version is licensed under a MIT license and any issues are files are GitHub Issues with out any official Microsoft Support program.
+This open-source version is licensed under a MIT license and any issues are files are GitHub Issues with out any official Microsoft Support program
 
 To make a contribution to the Test Engine a Contributor license agreement must be made. Pull requests can be made to test engine which are reviewed and if accepted merged into the Test Engine code base. 
 
