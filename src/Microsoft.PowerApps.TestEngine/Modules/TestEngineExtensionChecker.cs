@@ -292,10 +292,18 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             var isValid = true;
 
 #if DEBUG
-            // Add Experimenal namespaes in Debug compile it it has not been added in allow list
+            // Add Experimenal namespaces in Debug compile if it has not been added in allow list
             if (!settings.AllowPowerFxNamespaces.Contains("Experimental"))
             {
                 settings.AllowPowerFxNamespaces.Add("Experimental");
+            }
+#endif
+
+#if RELEASE
+            // Add Deprecated namespaces in Release compile if it has not been added in deny list
+            if (!settings.DenyPowerFxNamespaces.Contains("Deprecated"))
+            {
+                settings.DenyPowerFxNamespaces.Add("Deprecated");
             }
 #endif
 
@@ -310,7 +318,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 foreach (TypeDefinition type in module.GetAllTypes())
                 {
                     // Provider checks are based on Namespaces string[] property
-                    if (type.Interfaces.Any(i => i.InterfaceType.FullName == "Microsoft.PowerApps.TestEngine.Providers.ITestWebProvider"))
+                    if (
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == "Microsoft.PowerApps.TestEngine.Providers.ITestWebProvider")
+                        ||
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == "Microsoft.PowerApps.TestEngine.Users.IUserManager")
+                        )
                     {
                         if (CheckPropertyArrayContainsValue(type, "Namespaces", out var values))
                         {

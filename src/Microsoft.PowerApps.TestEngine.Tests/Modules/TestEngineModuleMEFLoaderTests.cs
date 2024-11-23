@@ -83,12 +83,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
         }
 
         [Theory]
-        [InlineData(true, true)]
-        [InlineData(true, false)]
-        [InlineData(false, false)]
-        public void ProviderMatch(bool verify, bool valid)
+        [InlineData("provider", true, true)]
+        [InlineData("provider", true, false)]
+        [InlineData("provider", false, false)]
+        [InlineData("user", true, true)]
+        [InlineData("user", true, false)]
+        [InlineData("user", false, false)]
+        public void ProviderMatch(string providerType, bool verify, bool valid)
         {
             // Arrange
+            var assemblyName = $"testengine.{providerType}.test.dll";
+
             var setting = new TestSettingExtensions()
             {
                 Enable = true,
@@ -100,11 +105,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             loader.DirectoryGetFiles = (location, pattern) =>
             {
                 var searchPattern = Regex.Escape(pattern).Replace(@"\*", ".*?");
-                return pattern.Contains("provider") ? new List<string>() { "testengine.provider.test.dll" }.ToArray() : new string[] { };
+                return pattern.Contains(providerType) ? new List<string>() { assemblyName }.ToArray() : new string[] { };
             };
 
-            mockChecker.Setup(m => m.ValidateProvider(setting, "testengine.provider.test.dll")).Returns(verify);
-            mockChecker.Setup(m => m.Verify(setting, "testengine.provider.test.dll")).Returns(valid);
+            mockChecker.Setup(m => m.ValidateProvider(setting, assemblyName)).Returns(verify);
+            mockChecker.Setup(m => m.Verify(setting, assemblyName)).Returns(valid);
 
             if (valid)
             {

@@ -2,9 +2,6 @@
 // Licensed under the MIT license.
 
 using System.ComponentModel.Composition;
-using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.PowerApps.TestEngine.Config;
 

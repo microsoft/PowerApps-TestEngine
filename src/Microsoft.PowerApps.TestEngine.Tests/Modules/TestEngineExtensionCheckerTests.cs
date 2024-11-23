@@ -103,6 +103,36 @@ public class Test : ITestWebProvider
 }}
 ";
 
+        const string TEST_USER_MODULE = @"
+#r ""Microsoft.PowerApps.TestEngine.dll""
+#r ""Microsoft.Playwright.dll""
+
+using System;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Users;
+
+public class Test : IUserManager
+{{
+    public string[] Namespaces => new string[] {{ ""{0}"" }};
+
+    public string Name => throw new NotImplementedException();
+
+    public int Priority => throw new NotImplementedException();
+
+    public bool UseStaticContext => throw new NotImplementedException();
+
+    public string Location {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
+
+    public Task LoginAsUserAsync(string desiredUrl, IBrowserContext context, ITestState testState, ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable, IUserManagerLogin userManagerLogin)
+    {{
+        throw new NotImplementedException();
+    }}
+}}
+";
+
         public TestEngineExtensionCheckerTests()
         {
             MockLogger = new Mock<ILogger>();
@@ -216,6 +246,41 @@ public class TestScript {
 
             // Act
             var result = checker.ValidateProvider(settings, "testengine.provider.test.dll");
+
+            Assert.Equal(expected, result);
+        }
+
+
+        [Theory]
+        [InlineData("", "", "TestEngine", true)] // Empty Allow and Deny list
+        [InlineData("TestEngine", "", "TestEngine", true)] // No deny list
+        [InlineData("", "TestEngine", "TestEngine", false)] // Invalid in deby list
+        [InlineData("TestEngine", "Other", "TestEngine", true)] // Valid in the allow list
+        [InlineData("TestEngine", "Other", "Other", false)] // Exact match
+        [InlineData("", "*", "Other", false)] // Any regex match
+        [InlineData("", "O*", "Other", false)] // Regex match wildcard 
+        [InlineData("", "Test?", "Test1", false)] // Single character match
+        [InlineData("", "Test?More", "Test1More", false)] // Single character match in the middle
+        [InlineData("T*", "", "Test1More", true)] // Allow wildcard
+        [InlineData("T?2", "", "T12", true)] // Allow wildcard
+        [InlineData("T?2", "T?3", "T12", true)] // Allow wildcard and not match deny
+        public void IsValidUserModule(string allow, string deny, string providerNamespace, bool expected)
+        {
+            // Arrange
+            var assembly = CompileScript(String.Format(TEST_USER_MODULE, providerNamespace));
+
+            var checker = new TestEngineExtensionChecker(MockLogger.Object);
+            checker.GetExtentionContents = (file) => assembly;
+
+            var settings = new TestSettingExtensions()
+            {
+                Enable = true,
+                AllowPowerFxNamespaces = new List<string>() { allow },
+                DenyPowerFxNamespaces = new List<string>() { deny }
+            };
+
+            // Act
+            var result = checker.ValidateProvider(settings, "testengine.user.test.dll");
 
             Assert.Equal(expected, result);
         }
