@@ -43,7 +43,7 @@ cd PowerApps-TestEngine
 3. Checkout the branch that user authentication providers are enabled. For example from feature branch
 
 ```pwsh
-git checkout grant-archibald-ms/storage-state-389
+git checkout integration
 ```
 
 3. Import the solution Permissions*.zip into the environment you want to test with
