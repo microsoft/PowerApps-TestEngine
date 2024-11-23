@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.Composition.Hosting;
-using System.IO;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
@@ -77,6 +80,53 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
 
             Assert.NotNull(catalog);
             Assert.Equal(expected, string.Join(",", catalog.Catalogs.Select(c => c.GetType().Name)));
+        }
+
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, false)]
+        public void ProviderMatch(bool verify, bool valid)
+        {
+            // Arrange
+            var setting = new TestSettingExtensions()
+            {
+                Enable = true,
+                CheckAssemblies = true
+            };
+            Mock<TestEngineExtensionChecker> mockChecker = new Mock<TestEngineExtensionChecker>();
+
+            var loader = new TestEngineModuleMEFLoader(MockLogger.Object);
+            loader.DirectoryGetFiles = (location, pattern) =>
+            {
+                var searchPattern = Regex.Escape(pattern).Replace(@"\*", ".*?");
+                return pattern.Contains("provider") ? new List<string>() { "testengine.provider.test.dll" }.ToArray() : new string[] { };
+            };
+
+            mockChecker.Setup(m => m.ValidateProvider(setting, "testengine.provider.test.dll")).Returns(verify);
+            mockChecker.Setup(m => m.Verify(setting, "testengine.provider.test.dll")).Returns(valid);
+
+            if (valid)
+            {
+                // Use current test assembly as test
+                loader.LoadAssembly = (file) => new AssemblyCatalog(this.GetType().Assembly);
+            }
+
+            loader.Checker = mockChecker.Object;
+
+            // Act
+            var catalog = loader.LoadModules(setting);
+
+            // Assert
+            if (verify && valid)
+            {
+                Assert.NotNull(catalog);
+                Assert.Equal("AssemblyCatalog,AssemblyCatalog", string.Join(",", catalog.Catalogs.Select(c => c.GetType().Name)));
+            }
+            else
+            {
+                Assert.Equal("AssemblyCatalog", string.Join(",", catalog.Catalogs.Select(c => c.GetType().Name)));
+            }
         }
     }
 }
