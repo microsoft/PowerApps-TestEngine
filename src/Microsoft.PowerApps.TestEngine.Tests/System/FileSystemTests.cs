@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.IO;
 using System;
-using Microsoft.PowerApps.TestEngine.System;
-using Xunit;
-using System.Linq;
-using Moq;
-using System.Text;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Microsoft.PowerApps.TestEngine.System;
+using Moq;
+using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.System
 {
@@ -67,7 +67,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
             var validPath = Path.Combine(_fileSystem.GetDefaultRootTestEngine(), "");
             Assert.False(_fileSystem.IsWritePermittedFilePath(validPath));
         }
-        
+
         [Fact]
         public void IsWritePermittedFilePath_RelativePath_ReturnsFalse()
         {

@@ -51,7 +51,7 @@ namespace Microsoft.PowerApps.TestEngine.System
         public string[] GetFiles(string directoryName)
         {
             if (IsNonUNCDirectoryPath(directoryName))
-            { 
+            {
                 return Directory.GetFiles(directoryName);
             }
             else
@@ -121,7 +121,7 @@ namespace Microsoft.PowerApps.TestEngine.System
                 var fullPath = Path.GetFullPath(filePath);
 
                 //check if its a network path if so fail
-                var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\")? fullPath.Replace(@"\\?\", ""): fullPath);
+                var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath);
                 if (fullPathUri.IsUnc)
                 {
                     return false;

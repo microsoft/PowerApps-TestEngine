@@ -13,7 +13,7 @@ namespace testengine.auth.certificatestore.tests
     {
         private readonly CertificateStoreProvider provider;
         private Mock<IFileSystem> MockFileSystem;
-        
+
         public CertificateStoreProviderTests()
         {
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);

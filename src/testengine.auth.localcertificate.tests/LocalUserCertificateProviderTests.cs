@@ -51,7 +51,7 @@ namespace testengine.auth.tests
                     var certificate = request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
                     File.WriteAllBytes(pfxFilePath, certificate.Export(X509ContentType.Pfx));
                 }
-                MockFileSystem.Setup(x => x.GetFiles(certDir, "*.pfx")).Returns(new string[] {pfxFilePath});
+                MockFileSystem.Setup(x => x.GetFiles(certDir, "*.pfx")).Returns(new string[] { pfxFilePath });
 
                 // Act
                 var provider = new LocalUserCertificateProvider(MockFileSystem.Object);
