@@ -64,7 +64,7 @@ namespace testengine.module.browserlocale.tests
                     break;
                 case "screenshot":
                     MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(@"c:\");
-                    MockFileSystem.Setup(x => x.IsValidFilePath(@"c:\")).Returns(true);
+                    MockFileSystem.Setup(x => x.IsNonUNCDirectoryPath(@"c:\")).Returns(true);
                     MockTestInfraFunctions.Setup(x => x.FillAsync("//foo", "xyz")).Returns(Task.CompletedTask);
                     MockPage.Setup(x => x.Locator("//foo", null)).Returns(MockLocator.Object);
                     MockLocator.Setup(x => x.ScreenshotAsync(It.IsAny<LocatorScreenshotOptions>())).Returns(Task.FromResult(new byte[] { }));

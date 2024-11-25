@@ -344,7 +344,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
 
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns("C:\\testResults");
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
+            MockFileSystem.Setup(x => x.IsNonUNCDirectoryPath(It.IsAny<string>())).Returns(true);
             MockTestInfraFunctions.Setup(x => x.ScreenshotAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             var powerFxExpression = "Screenshot(\"1.jpg\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);

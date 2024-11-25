@@ -63,6 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
             MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
             MockFileSystem.Setup(x => x.CreateDirectory(It.IsAny<string>()));
+            MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("");
             MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string[]>())).Callback((string filePath, string[] logs) =>
             {
                 createdLogs.Add(filePath, logs);

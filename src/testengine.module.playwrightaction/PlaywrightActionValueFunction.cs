@@ -72,7 +72,7 @@ namespace testengine.module
                     break;
                 case "screenshot":
                     var testResultDirectory = _singleTestInstanceState.GetTestResultsDirectory();
-                    if (!_fileSystem.IsValidFilePath(testResultDirectory))
+                    if (!_fileSystem.IsNonUNCDirectoryPath(testResultDirectory))
                     {
                         _logger.LogError("Test result directory needs to be set.");
                         throw new InvalidOperationException();

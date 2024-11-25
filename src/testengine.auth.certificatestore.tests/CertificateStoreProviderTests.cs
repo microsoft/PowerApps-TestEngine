@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Microsoft.PowerApps.TestEngine.System;
 using Moq;
 using Xunit;
 
@@ -11,10 +12,12 @@ namespace testengine.auth.certificatestore.tests
     public class CertificateStoreProviderTests
     {
         private readonly CertificateStoreProvider provider;
-
+        private Mock<IFileSystem> MockFileSystem;
+        
         public CertificateStoreProviderTests()
         {
-            provider = new CertificateStoreProvider();
+            MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            provider = new CertificateStoreProvider(MockFileSystem.Object);
         }
 
         [Fact]
