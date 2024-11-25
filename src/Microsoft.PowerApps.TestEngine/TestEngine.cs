@@ -102,7 +102,7 @@ namespace Microsoft.PowerApps.TestEngine
                     var inputUri = new Uri(outputDirectory.FullName.StartsWith(@"\\?\") ? outputDirectory.FullName.Replace(@"\\?\", "") : outputDirectory.FullName);
                     if (!new Uri(_fileSystem.GetDefaultRootTestEngine()).IsBaseOf(inputUri))
                     {
-                        var wrongLocationError = $"Please ensure {nameof(outputDirectory)} is set to a value resolving to a location inside the permitted output location.";
+                        var wrongLocationError = $"Please ensure '{nameof(outputDirectory)}' is set to a value resolving to a location inside the permitted output location.";
                         Logger.LogError(wrongLocationError);
                         _eventHandler.EncounteredException(new UserInputException(string.Format("   [Critical Error]: {0}", wrongLocationError)));
                         return "InvalidOutputDirectory";

@@ -85,7 +85,7 @@ namespace Microsoft.PowerApps.TestEngine.System
         public void WriteFile(string filePath, byte[] data);
 
         /// <summary>
-        /// Returns default root locaiton of all testengine artifacts
+        /// Returns default root location of all testengine artifacts
         /// </summary>
         /// <returns>Location of the root folder for test engine output and log files</returns>
         public string GetDefaultRootTestEngine();

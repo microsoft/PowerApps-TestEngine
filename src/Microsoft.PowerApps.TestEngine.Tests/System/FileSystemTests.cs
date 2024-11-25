@@ -30,6 +30,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
         [InlineData("../folder/f:g", false)]
         [InlineData("\\\\RandomUNC", false)]
         [InlineData(@"\\?\C:\folder", true)]
+        [InlineData(@"C:\CON\a.txt", false)]
+        [InlineData(@"C:\a\a.txt.", false)]
+        [InlineData(@"C:\CON", false)]
+        [InlineData(@"C:\folder\AUX", false)]
+        [InlineData(@"C:\folder\PRN.txt", false)]
         public void IsValidFilePathTest(string? filePath, bool expectedResult)
         {
             var fileSystem = new FileSystem();
@@ -170,6 +175,33 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
                 new object[] { @"C:\フォルダー", true }, // Valid Unicode path
                 new object[] { @"/тест/путь", true }, // Valid Unicode path
             };
+        }
+
+        [Theory]
+        // Valid cases (no reserved names)
+        [InlineData(@"C:\folder\my.file", false)]
+        [InlineData(@"C:\folder\my.context", false)]
+        [InlineData(@"C:\folder\subfolder\file.txt", false)]
+        [InlineData(@"C:\myfolder\subfolder.ext", false)]
+        [InlineData(@"C:\myfolderCON\subfolder.ext", false)]
+        [InlineData(@"C:\myfolder CON\subfolder.ext", false)]
+        [InlineData(@"C:\folder\file.com", false)] // Extension should not match reserved names
+
+        // Invalid cases (reserved names in path)
+        [InlineData(@"C:\CON", true)]              // Reserved root folder
+        [InlineData(@"C:\folder\AUX", true)]       // Reserved folder
+        [InlineData(@"C:\folder\PRN.txt", true)]   // Reserved file name (extension ignored)
+        [InlineData(@"C:\folder\COM1", true)]      // Reserved COM name
+        [InlineData(@"C:\LPT2\file.txt", true)]    // Reserved folder in path
+        [InlineData(@"C:\CLOCK$\file.txt", true)]  // Reserved CLOCK$ folder
+        [InlineData(@"C:\folder\subfolder\NUL", true)] // Reserved name deep in path
+        [InlineData(@"C:\myfolder\COM9.file", true)]   // File with reserved name
+
+        [InlineData(@"/usr/local/bin", false)]        // Linux path alwways false
+        public void ReservedFolderNamesExistInFilePath_ReturnsValidity(string fileFullPath, bool reservedExists)
+        {
+            var fileSystem = new FileSystem();
+            Assert.Equal(fileSystem.ReservedFolderNamesExistInFilePath(fileFullPath), reservedExists);
         }
     }
 }
