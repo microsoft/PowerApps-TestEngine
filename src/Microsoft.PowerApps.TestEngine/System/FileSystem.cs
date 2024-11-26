@@ -4,6 +4,7 @@
 using System.ComponentModel.Composition;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Microsoft.PowerApps.TestEngine.Config;
 
 namespace Microsoft.PowerApps.TestEngine.System
 {
@@ -13,6 +14,8 @@ namespace Microsoft.PowerApps.TestEngine.System
     [Export(typeof(IFileSystem))]
     public class FileSystem : IFileSystem
     {
+        public readonly string[] windowsReservedNames = { "CON", "PRN", "AUX", "NUL", "CLOCK$", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9" };
+
         public void CreateDirectory(string directoryName)
         {
             if (IsNonUNCDirectoryPath(directoryName))
@@ -126,27 +129,61 @@ namespace Microsoft.PowerApps.TestEngine.System
                     if (filePath.EndsWith(" ") || filePath.EndsWith("."))
                         return false;
                 }
+                
                 var fullPath = Path.GetFullPath(filePath);
-
                 //check if its a network path, if so fail
-                var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath);
+                var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath, UriKind.Absolute);
                 if (fullPathUri.IsUnc)
                 {
                     return false;
                 }
+
+                var fileName = Path.GetFileName(fullPath);
+                if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                    return false;
+                if (string.IsNullOrWhiteSpace(fileName) || fileName.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                    return false;
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && new Uri(Environment.GetFolderPath(Environment.SpecialFolder.System)).IsBaseOf(fullPathUri))
+                {
+                    return false;
+                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    IEnumerable<Uri> LinuxRestrictedPaths = new List<Uri>
+                    {
+                         //new Uri("/bin/", UriKind.Absolute),
+                         new Uri("/boot/", UriKind.Absolute),
+                         new Uri("/dev/", UriKind.Absolute),
+                         new Uri("/etc/", UriKind.Absolute),
+                         //new Uri("/home/", UriKind.Absolute),
+                         new Uri("/lib/", UriKind.Absolute),
+                         new Uri("/lib64/", UriKind.Absolute),
+                         new Uri("/mnt/", UriKind.Absolute),
+                         new Uri("/opt/", UriKind.Absolute),
+                         new Uri("/proc/", UriKind.Absolute),
+                         new Uri("/root/", UriKind.Absolute),
+                         new Uri("/run/", UriKind.Absolute),
+                         new Uri("/sbin/", UriKind.Absolute),
+                         new Uri("/srv/", UriKind.Absolute),
+                         new Uri("/sys/", UriKind.Absolute),
+                         //new Uri("/tmp/", UriKind.Absolute),
+                         //new Uri("/usr/", UriKind.Absolute),
+                         new Uri("/var/", UriKind.Absolute),
+                    };
+                    if (LinuxRestrictedPaths.Any(baseUri => baseUri.IsBaseOf(fullPathUri)))
+                    {
+                        return false;
+                    }
+                }
                 // Check for reserved device names (Windows only)
-                if (ReservedFolderNamesExistInFilePath(fullPath))
+                if (WindowsReservedFolderNamesExistInFilePath(fullPath))
                 {
                     return false;
                 }
 
                 //just get this to check if its a valid file path, if its not then it throws 
                 var g = new FileInfo(fullPath).IsReadOnly;
-                var fileName = Path.GetFileName(filePath);
-                if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
-                    return false;
-                if (string.IsNullOrWhiteSpace(fileName) || fileName.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                    return false;
                 return true;
             }
             catch
@@ -155,12 +192,10 @@ namespace Microsoft.PowerApps.TestEngine.System
             }
         }
 
-        public bool ReservedFolderNamesExistInFilePath(string fileFullPath)
+        public bool WindowsReservedFolderNamesExistInFilePath(string fileFullPath)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                string[] reservedNames = { "CON", "PRN", "AUX", "NUL", "CLOCK$", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9" };
-
                 var root = Path.GetPathRoot(fileFullPath);
                 var restOfPath = fileFullPath.Substring(root.Length);
 
@@ -169,7 +204,7 @@ namespace Microsoft.PowerApps.TestEngine.System
                 // Iterate over folder names
                 for (int i = 0; i < pathSegments.Length - 1; i++)
                 {
-                    if (reservedNames.Contains(pathSegments[i], StringComparer.OrdinalIgnoreCase))
+                    if (windowsReservedNames.Contains(pathSegments[i], StringComparer.OrdinalIgnoreCase))
                     {
                         return true;
                     }
@@ -180,7 +215,7 @@ namespace Microsoft.PowerApps.TestEngine.System
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(lastSegment.Trim());
 
                 // Check if the file name (without extension) is a reserved name
-                if (reservedNames.Contains(fileNameWithoutExtension.Trim(), StringComparer.OrdinalIgnoreCase))
+                if (windowsReservedNames.Contains(fileNameWithoutExtension.Trim(), StringComparer.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -204,7 +239,7 @@ namespace Microsoft.PowerApps.TestEngine.System
                 var fullPath = Path.GetFullPath(directoryPath);
 
                 //check if its a network path if so fail
-                var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath);
+                var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath, UriKind.Absolute);
                 if (fullPathUri.IsUnc)
                 {
                     return false;
@@ -264,7 +299,7 @@ namespace Microsoft.PowerApps.TestEngine.System
             {
                 var fullPath = Path.GetFullPath(filePath);
                 var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath);
-                var baseUri = new Uri(GetDefaultRootTestEngine());
+                var baseUri = new Uri(GetDefaultRootTestEngine(), UriKind.Absolute);
                 if (baseUri.IsBaseOf(fullPathUri))
                 {
                     return true;
