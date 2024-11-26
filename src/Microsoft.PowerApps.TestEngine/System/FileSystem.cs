@@ -129,7 +129,7 @@ namespace Microsoft.PowerApps.TestEngine.System
                     if (filePath.EndsWith(" ") || filePath.EndsWith("."))
                         return false;
                 }
-                
+
                 var fullPath = Path.GetFullPath(filePath);
                 //check if its a network path, if so fail
                 var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath, UriKind.Absolute);
