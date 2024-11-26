@@ -1,6 +1,6 @@
 # Debugging Samples
 
-To debug any of the samples when using a local build from source strategy. You can to the following
+To debug any of the samples when using a local build from source strategy. You can to the following:
 
 1. Open PowerApps-TestEngine folder in Visual Studio Code
 
@@ -43,3 +43,7 @@ Hover over variables in your code to see their current values, or use the Variab
 13. Stop Debugging:
 
 When you're done, you can stop the debugging session by pressing Shift + F5 or selecting the stop button in the Debug toolbar.
+
+## Note
+
+You can also debug the solution using Visual Studio by open the solution and then attach to process in step 5 using [Attach to running processes with the Visual Studio debugger](https://learn.microsoft.com/visualstudio/debugger/attach-to-running-processes-with-the-visual-studio-debugger). Once atatched you can use Visual Studio Debuger to set breakpoints and inspect values.  
