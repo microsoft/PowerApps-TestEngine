@@ -219,7 +219,7 @@ public class TestScript {
         [Theory]
         [InlineData("", "", "TestEngine", true)] // Empty Allow and Deny list
         [InlineData("TestEngine", "", "TestEngine", true)] // No deny list
-        [InlineData("", "TestEngine", "TestEngine", false)] // Invalid in deby list
+        [InlineData("", "TestEngine", "TestEngine", false)] // Invalid in deny list
         [InlineData("TestEngine", "Other", "TestEngine", true)] // Valid in the allow list
         [InlineData("TestEngine", "Other", "Other", false)] // Exact match
         [InlineData("", "*", "Other", false)] // Any regex match
@@ -254,7 +254,7 @@ public class TestScript {
         [Theory]
         [InlineData("", "", "TestEngine", true)] // Empty Allow and Deny list
         [InlineData("TestEngine", "", "TestEngine", true)] // No deny list
-        [InlineData("", "TestEngine", "TestEngine", false)] // Invalid in deby list
+        [InlineData("", "TestEngine", "TestEngine", false)] // Invalid in deny list
         [InlineData("TestEngine", "Other", "TestEngine", true)] // Valid in the allow list
         [InlineData("TestEngine", "Other", "Other", false)] // Exact match
         [InlineData("", "*", "Other", false)] // Any regex match
