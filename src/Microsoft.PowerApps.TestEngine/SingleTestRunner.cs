@@ -202,8 +202,7 @@ namespace Microsoft.PowerApps.TestEngine
                     // TODO: Consider settings to determine type of recording to include
                     record.RegisterTestEngineApi();
                     record.SetupHttpMonitoring();
-                    record.SetupMouseMonitoring();
-                    await record.SetupAudioRecording(testResultDirectory);
+                    await record.SetupPageRecording(testResultDirectory);
 
                     Logger.LogInformation("Record your test case and press play in the inspector to finish");
                     await TestInfraFunctions.Page.PauseAsync();

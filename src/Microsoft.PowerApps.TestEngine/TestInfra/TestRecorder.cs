@@ -11,6 +11,7 @@ using Microsoft.Data.OData.Query.SemanticAst;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx.Types;
@@ -65,7 +66,56 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             _browserContext.Response += OnResponse;
         }
 
+        public async Task SetupPageRecording(string audioPath)
+        {
+            _browserContext.Page += async (object sender, IPage e) =>
+            {
+                await SetupPageRecording(audioPath, e);
+            };
+            await SetupPageRecording(audioPath, _infra.Page);
+        }
+
+
+        public static string DEFAULT_OFFICE_365_CHECK = "var element = document.getElementById('O365_MainLink_NavMenu'); if (typeof(element) != 'undefined' && element != null) { 'Idle' } else { 'Loading' }";
+
+
+        /// <summary>
+        /// Check if standard post login Document Object Model elements can be found
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        private async Task<bool> CheckIsIdleAsync(IPage page)
+        {
+            try
+            {
+                return (await page.EvaluateAsync<string>(DEFAULT_OFFICE_365_CHECK)) == "Idle";
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task SetupPageRecording(string audioPath, IPage page)
+        {
+            await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIsIdleAsync(page), _testState.GetTestSettings().Timeout, _logger, "Something went wrong when Test Engine tried to get page ready");
+
+            await SetupAudioRecording(audioPath, page);
+            SetupMouseMonitoring(page);
+            page.Load += async (object sender, IPage loadedPage) =>
+            {
+                await PollingHelper.PollAsync<bool>(false, (x) => !x, () => CheckIsIdleAsync(loadedPage), _testState.GetTestSettings().Timeout, _logger, "Something went wrong when Test Engine tried to get page ready");
+                await SetupAudioRecording(audioPath, loadedPage);
+                SetupMouseMonitoring(loadedPage);
+            };
+        }
+
         public async Task SetupAudioRecording(string audioPath)
+        {
+            await SetupAudioRecording(audioPath, _infra.Page);
+        }
+
+        public async Task SetupAudioRecording(string audioPath, IPage page)
         {
             var feedbackHost = new Uri(_testState.GetDomain()).Host;
 
@@ -73,7 +123,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             var recordingJavaScript = @"
 document.addEventListener('keydown', (event) => {{
-if (event.ctrlKey && event.key === 'r') {{
+if (event.altKey && event.ctrlKey && event.key === 'r') {{
     event.preventDefault();
         // Create a dialog box
         const dialog = document.createElement('div');
@@ -175,13 +225,7 @@ if (event.ctrlKey && event.key === 'r') {{
 }});
 ";
 
-            await _infra.Page.EvaluateAsync(string.Format(recordingJavaScript, feedbackHost));
-
-            // Add recording if page is reloaded
-            _infra.Page.Load += async (object sender, IPage e) =>
-            {
-                await _infra.Page.EvaluateAsync(string.Format(recordingJavaScript, feedbackHost));
-            };
+            await page.EvaluateAsync(string.Format(recordingJavaScript, feedbackHost));
         }
 
         ///<summary>
@@ -189,17 +233,17 @@ if (event.ctrlKey && event.key === 'r') {{
         ///</summary>
         public void SetupMouseMonitoring()
         {
-            var page = _infra.Page;
+            SetupMouseMonitoring(_infra.Page);
+        }
 
+        ///<summary>
+        /// Sets up the TestRecorder by subscribing to page mouse events.
+        ///</summary>
+        private void SetupMouseMonitoring(IPage page)
+        {
             var feedbackUrl = new Uri(new Uri($"https://{new Uri(_testState.GetDomain()).Host}"), new Uri("testengine", UriKind.Relative));
 
-            AddClickListener(_infra.Page, feedbackUrl).Wait();
-
-            // Add handler to listen if page reloaded to add the mouse monitoring
-            _infra.Page.Load += (object sender, IPage e) =>
-            {
-                AddClickListener(_infra.Page, feedbackUrl).Wait();
-            };
+            AddClickListener(page, feedbackUrl).Wait();
 
             //TODO: Subscribe to keyboard events from the page. This will need to consider focus changes and how get value for SetProperty() based on control type
         }
@@ -333,6 +377,35 @@ if (event.ctrlKey && event.key === 'r') {{
             await route.FulfillAsync(new RouteFulfillOptions { Status = 200 });
         }
 
+        public string CLICK_LISTENER_JAVASCRIPT = @"(function() {{
+        function addClickListener(doc) {{
+            doc.addEventListener('click', function(event) {{
+                const element = event.target.closest('[data-control-name]');
+                if (element) {{
+                    const controlName = element.getAttribute('data-control-name');
+                    const clickData = {{
+                        controlName: controlName,
+                        x: event.clientX,
+                        y: event.clientY,
+                        text: element.textContent.trim(),
+                        alt: event.altKey,
+                        control: event.ctrlKey
+                    }};
+                    fetch('{0}/click/' + controlName, {{
+                        method: 'POST',
+                        headers: {{
+                            'Content-Type': 'application/json'
+                        }},
+                        body: JSON.stringify(clickData)
+                    }});
+                }}
+            }});
+        }}
+
+        // Add click listener to the main document
+        addClickListener(document);
+    }})();";
+
         /// <summary>
         /// Listen for clicks on the active page document
         /// </summary>
@@ -341,31 +414,15 @@ if (event.ctrlKey && event.key === 'r') {{
         /// <returns>Completed task</returns>
         private async Task AddClickListener(IPage page, Uri feedbackUrl)
         {
-            // TODO: Handle controls that do not have data-control-name
-            string listenerJavaScript = String.Format(@"(function() {{
-        document.addEventListener('click', function(event) {{
-            const element = event.target.closest('[data-control-name]');
-            if (element) {{
-                const controlName = element.getAttribute('data-control-name');
-                const clickData = {{
-                    controlName: controlName,
-                    x: event.clientX,
-                    y: event.clientY,
-                    text: element.textContent.trim(),
-                    alt: (event.altKey),
-                    control: (event.ctrlKey)
-                }};
-                fetch('{0}/click/' + controlName, {{
-                    method: 'POST',
-                    headers: {{
-                        'Content-Type': 'application/json'
-                    }},
-                    body: JSON.stringify(clickData)
-                }});
-            }}
-        }});
-    }})();", feedbackUrl);
+            // JavaScript to add click listeners to the main document and iframes
+            string listenerJavaScript = String.Format(CLICK_LISTENER_JAVASCRIPT, feedbackUrl);
+
             await page.EvaluateAsync(listenerJavaScript);
+
+            foreach (var frame in page.Frames)
+            {
+                await frame.EvaluateAsync(listenerJavaScript);
+            }
         }
 
         /// <summary>

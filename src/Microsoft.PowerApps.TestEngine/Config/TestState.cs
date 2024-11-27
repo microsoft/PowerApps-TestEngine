@@ -400,5 +400,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             _recordMode = true;
         }
+
+        public bool IsRecordMode()
+        {
+            return _recordMode;
+        }
     }
 }

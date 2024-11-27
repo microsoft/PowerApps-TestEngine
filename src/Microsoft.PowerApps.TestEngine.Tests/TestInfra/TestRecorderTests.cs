@@ -29,6 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         private Mock<ITestInfraFunctions> _mockTestInfraFunctions;
         private Mock<IFileSystem> _mockFileSystem;
         private Mock<IPage> _mockPage;
+        private Mock<IFrame> _mockFrame;
         private Mock<IRequest> _mockRequest;
         private Mock<IResponse> _mockResponse;
         private Mock<IPowerFxEngine> _mockEngine;
@@ -42,6 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             _mockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             _mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             _mockPage = new Mock<IPage>(MockBehavior.Strict);
+            _mockFrame = new Mock<IFrame>(MockBehavior.Strict);
             _mockRequest = new Mock<IRequest>(MockBehavior.Strict);
             _mockResponse = new Mock<IResponse>(MockBehavior.Strict);
             _mockEngine = new Mock<IPowerFxEngine>(MockBehavior.Strict);
@@ -55,6 +57,58 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         public void CanCreate()
         {
             new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+        }
+
+        [Fact]
+        public async Task Setup_PageMontoring()
+        {
+            // Arrange
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+
+            _mockTestInfraFunctions.Setup(m => m.Page).Returns(_mockPage.Object);
+            _mockPage.Setup(m => m.EvaluateAsync<string>(It.IsAny<string>(), null)).Returns(Task.FromResult("Idle"));
+            _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null)).Returns(Task.FromResult<JsonElement?>(null));
+            _mockPage.Setup(m => m.Frames).Returns(new List<IFrame>());
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://microsoft.com");
+            _mockTestState.Setup(m => m.GetTestSettings()).Returns(new TestSettings() { Timeout = 1000 });
+
+            var mockLoadedPage = new Mock<IPage>();
+            mockLoadedPage.Setup(m => m.EvaluateAsync<string>(It.IsAny<string>(), null)).Returns(Task.FromResult("Idle"));
+            mockLoadedPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null)).Returns(Task.FromResult<JsonElement?>(null));
+
+            // Act
+            await recorder.SetupPageRecording("");
+            _mockPage.Raise(m => m.Load += null, args: new object[] { null, mockLoadedPage.Object });
+
+            // Assert
+            _mockBrowserContext.VerifyAdd(m => m.Page += It.IsAny<EventHandler<IPage>>(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Setup_TriggerNewPageMontoring()
+        {
+            // Arrange
+            var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
+
+            _mockTestInfraFunctions.Setup(m => m.Page).Returns(_mockPage.Object);
+            _mockPage.Setup(m => m.EvaluateAsync<string>(It.IsAny<string>(), null)).Returns(Task.FromResult("Idle"));
+            _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null)).Returns(Task.FromResult<JsonElement?>(null));
+            _mockPage.Setup(m => m.Frames).Returns(new List<IFrame>());
+
+            _mockTestState.Setup(m => m.GetDomain()).Returns("https://microsoft.com");
+            _mockTestState.Setup(m => m.GetTestSettings()).Returns(new TestSettings() { Timeout = 1000 });
+
+            var mockNewPage = new Mock<IPage>();
+            mockNewPage.Setup(m => m.EvaluateAsync<string>(It.IsAny<string>(), null)).Returns(Task.FromResult("Idle"));
+            mockNewPage.Setup(m => m.WaitForLoadStateAsync(LoadState.DOMContentLoaded, null)).Returns(Task.CompletedTask);
+            mockNewPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null)).Returns(Task.FromResult<JsonElement?>(null));
+
+            // Act
+            await recorder.SetupPageRecording("");
+            _mockBrowserContext.Raise(m => m.Page += null, args: new object[] { null, mockNewPage.Object });
+
+            // Assert
+            _mockBrowserContext.VerifyAdd(m => m.Page += It.IsAny<EventHandler<IPage>>(), Times.Once);
         }
 
         [Fact]
@@ -364,6 +418,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
             _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null)).Returns(Task.FromResult((JsonElement?)null));
             _mockTestInfraFunctions.SetupGet(m => m.Page).Returns(_mockPage.Object);
+            _mockPage.Setup(m => m.Frames).Returns(new List<IFrame>() { _mockFrame.Object });
+            _mockFrame.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null)).Returns(Task.FromResult((JsonElement?)null));
 
             // Act
             recorder.SetupMouseMonitoring();
@@ -378,6 +434,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
             _mockTestState.Setup(m => m.GetDomain()).Returns("https://example.com");
             _mockBrowserContext.Setup(m => m.RouteAsync("https://example.com/testengine/**", It.IsAny<Func<IRoute, Task>>(), null)).Returns(Task.CompletedTask);
+            _mockPage.Setup(m => m.Frames).Returns(new List<IFrame>());
 
             var javaScript = String.Empty;
             _mockPage.Setup(m => m.EvaluateAsync(It.IsAny<string>(), null))
@@ -387,7 +444,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             var jint = new Jint.Engine();
             jint.Evaluate(@"document = {
-    addEventListener: (eventName, callback) => { if (eventName != 'click') throw 'Invalid event' }
+    addEventListener: (eventName, callback) => { if (eventName != 'click') throw 'Invalid event' },
+    querySelectorAll: (selector) => []
 }");
 
             // Act
@@ -446,7 +504,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             engine.Evaluate(setupScript);
 
             // Assert
-            engine.Evaluate("document.callback({ctrlKey: true, key: 'r', preventDefault: () => {}})");
+            engine.Evaluate("document.callback({ctrlKey: true, altKey: true, key: 'r', preventDefault: () => {}})");
         }
 
         [Fact]
@@ -471,7 +529,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             engine.Evaluate(setupScript);
 
             // Assert
-            engine.Evaluate("document.callback({ctrlKey: true, key: 'r', preventDefault: () => {}})");
+            engine.Evaluate("document.callback({ctrlKey: true, altKey: true, key: 'r', preventDefault: () => {}})");
             engine.Evaluate("document.closeDialog()"); // Should call removeChild
         }
 

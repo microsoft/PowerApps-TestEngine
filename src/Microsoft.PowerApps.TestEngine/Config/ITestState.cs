@@ -180,5 +180,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Indicate that this test run should be a record mode not execution
         /// </summary>
         void SetRecordMode();
+
+        /// <summary>
+        /// Determine if test engine is in record mode
+        /// </summary>
+        /// <returns><c>True</c> if in record mode</returns>
+        bool IsRecordMode();
     }
 }

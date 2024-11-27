@@ -93,7 +93,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
             var launchOptions = new BrowserTypeLaunchOptions()
             {
-                Headless = testSettings.Headless,
+                Headless = _testState.IsRecordMode() ? false : testSettings.Headless,
                 Timeout = testSettings.Timeout
             };
 
