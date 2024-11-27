@@ -319,7 +319,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 {
                     // Provider checks are based on Namespaces string[] property
                     if (
-                        type.Interfaces.Any(i => i.InterfaceType.FullName == "Microsoft.PowerApps.TestEngine.Providers.ITestWebProvider")
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Providers.ITestWebProvider))
                         ||
                         type.Interfaces.Any(i => i.InterfaceType.FullName == "Microsoft.PowerApps.TestEngine.Users.IUserManager")
                         )
