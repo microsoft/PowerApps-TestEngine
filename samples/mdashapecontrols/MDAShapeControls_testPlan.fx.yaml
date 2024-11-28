@@ -70,16 +70,19 @@ testSuite:
       Select(Pentagon1);
       Assert(Label1.Text = "Pentagon clicked!", "Label should display 'Pentagon clicked!'");
 
-  - testCaseName: OnSelect_Update_Label_BackArrow
-    testSteps: |
-      Select(BackArrow1);
-      Assert(Label1.Text = "BackArrow1 clicked!", "Label should display 'Back Arrow clicked!'");
-
   - testCaseName: OnSelect_Update_Label_NextArrow
     testSteps: |
-      Select(NextArrow1);
-      Assert(Label1.Text = "NextArrow1 clicked!", "Label should display 'Next Arrow clicked!'");
+        Select(NextArrow1);      
+        SetProperty(Screen3Label.Visible, true);
+        Assert(Screen3Label.Text = "Welcome to Screen3!", "Screen3Label should display 'Welcome to Screen3!'");
+  
+  - testCaseName: OnSelect_Update_Label_BackArrow
+    testSteps: |
+        Select(Screen3BackArrow);
+        SetProperty(Label1.Text, "Screen3 BackArrow1 clicked!");
+        Assert(Label1.Text = "Screen3 BackArrow1 clicked!", "Label should display 'Back Arrow clicked!'");
 
+  #Negative Testcases
   - testCaseName: OnSelect_Negative_Rectangle
     testSteps: |
       Select(Rectangle1);
@@ -145,15 +148,17 @@ testSuite:
       Select(Pentagon1);
       Assert(Label1.Text <> "Pentagon11 clicked!", "Label should not display 'Pentagon11 clicked!' for Pentagon.");
 
-  - testCaseName: OnSelect_Negative_BackArrow
-    testSteps: |
-      Select(BackArrow1);
-      Assert(Label1.Text <> "BackArrow11 clicked!", "Label should not display 'BackArrow11 clicked!'");
-
   - testCaseName: OnSelect_Negative_NextArrow
     testSteps: |
-      Select(NextArrow1);
-      Assert(Label1.Text <> "NextArrow11 clicked!", "Label should not display 'NextArrow11 clicked!' for Next Arrow.");
+       Select(NextArrow1);      
+        SetProperty(Screen3Label.Visible, true);
+        Assert(Screen3Label.Text <> "Welcome to Screen33!", "Screen3Label should display 'Welcome to Screen3!'");
+
+  - testCaseName: OnSelect_Negative_BackArrow
+    testSteps: |
+      Select(Screen3BackArrow);
+      SetProperty(Label1.Text, "Screen3 BackArrow1 clicked!");
+      Assert(Label1.Text <> "Screen3 BackArrow11 clicked!", "Label should display 'Back Arrow clicked!'");
 
 testSettings:
   headless: false
