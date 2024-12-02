@@ -35,7 +35,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void ScreenshotFunctionThrowsOnInvalidResultDirectoryTest()
         {
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns("");
-            MockFileSystem.Setup(x => x.IsNonUNCDirectoryPath(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
             LoggingTestHelper.SetupMock(MockLogger);
             var screenshotFunction = new ScreenshotFunction(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object, MockLogger.Object);
             Assert.Throws<InvalidOperationException>(() => screenshotFunction.Execute(FormulaValue.New("screenshot.png")));
@@ -50,7 +50,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             var testResultDirectory = "C:\\testResults";
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(testResultDirectory);
-            MockFileSystem.Setup(x => x.IsNonUNCDirectoryPath(It.IsAny<string>())).Returns(true);
+            MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
             LoggingTestHelper.SetupMock(MockLogger);
             var screenshotFunction = new ScreenshotFunction(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object, MockLogger.Object);
             Assert.Throws<ArgumentException>(() => screenshotFunction.Execute(FormulaValue.New(screenshotName)));
@@ -62,7 +62,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             var testResultDirectory = "C:\\testResults";
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(testResultDirectory);
-            MockFileSystem.Setup(x => x.IsNonUNCDirectoryPath(It.IsAny<string>())).Returns(true);
+            MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
             LoggingTestHelper.SetupMock(MockLogger);
             var screenshotFunction = new ScreenshotFunction(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object, MockLogger.Object);
             Assert.Throws<ArgumentException>(() => screenshotFunction.Execute(FormulaValue.New(Path.Combine(Path.GetFullPath(Directory.GetCurrentDirectory()), "screeshot.jpg"))));
@@ -76,14 +76,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         {
             var testResultDirectory = "C:\\testResults";
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(testResultDirectory);
-            MockFileSystem.Setup(x => x.IsNonUNCDirectoryPath(It.IsAny<string>())).Returns(true);
+            MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
             MockTestInfraFunctions.Setup(x => x.ScreenshotAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             LoggingTestHelper.SetupMock(MockLogger);
             var screenshotFunction = new ScreenshotFunction(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockFileSystem.Object, MockLogger.Object);
             screenshotFunction.Execute(FormulaValue.New(screenshotName));
 
             MockSingleTestInstanceState.Verify(x => x.GetTestResultsDirectory(), Times.Once());
-            MockFileSystem.Verify(x => x.IsNonUNCDirectoryPath(testResultDirectory), Times.Once());
+            MockFileSystem.Verify(x => x.Exists(testResultDirectory), Times.Once());
             MockTestInfraFunctions.Verify(x => x.ScreenshotAsync(Path.Combine(testResultDirectory, screenshotName)), Times.Once());
         }
     }

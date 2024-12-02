@@ -56,11 +56,11 @@ namespace Microsoft.PowerApps.TestEngine.System
         public void WriteTextToFile(string filePath, string[] text);
 
         /// <summary>
-        /// Checks whether file path is valid and allows reads
+        /// Checks whether file path is accessible
         /// </summary>
         /// <param name="filePath">Path to check</param>
-        /// <returns>True if it is valid</returns>
-        public bool IsValidFilePath(string filePath);
+        /// <returns>True if it is accessible</returns>
+        public bool CanAccessFilePath(string filePath);
 
         /// <summary>
         /// Reads all text in a file
@@ -98,10 +98,10 @@ namespace Microsoft.PowerApps.TestEngine.System
         public bool IsWritePermittedFilePath(string filePath);
 
         /// <summary>
-        /// Checks whether directory path is local, non UNC path
+        /// Checks whether directory path is accessible
         /// </summary>
         /// <param name="filePath">Path to check</param>
         /// <returns>True if it is valid</returns>
-        public bool IsNonUNCDirectoryPath(string filePath);
+        public bool CanAccessDirectoryPath(string filePath);
     }
 }

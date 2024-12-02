@@ -36,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 "Executing Screenshot function.");
 
             var testResultDirectory = _singleTestInstanceState.GetTestResultsDirectory();
-            if (!_fileSystem.IsNonUNCDirectoryPath(testResultDirectory))
+            if (!_fileSystem.Exists(testResultDirectory))
             {
                 _logger.LogError("Test result directory needs to be set.");
                 throw new InvalidOperationException();
