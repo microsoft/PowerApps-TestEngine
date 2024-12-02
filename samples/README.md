@@ -6,7 +6,7 @@ To debug any of the samples when using a local build from source strategy. You c
 
 2. Install Required Extensions. Ensure you have the C# extension installed in VS Code. You can find it in the Extensions view (Ctrl+Shift+X) by searching for "C#".
 
-3. Add -w True to RunTests.ps1 in the sample you want to debug
+3. Add -w "True" to RunTests.ps1 in the sample you want to debug
 
 4. Start Your test using PowerShell and wait for "Waiting, press enter to continue"
 
@@ -18,7 +18,7 @@ To debug any of the samples when using a local build from source strategy. You c
 
 6. Press F5 to start debugging.
 
-7. VS Code will prompt you to select the process to attach to. Choose the process corresponding to your running .NET application. Select dotnet process related to PowerAppsTestEngine.
+7. VS Code will prompt you to select the process to attach to. Choose the process corresponding to your running .NET application. Select dotnet process related that has **PowerAppsTestEngine.dll** in the command line
 
 8. Set Breakpoints. Open the code file from the src folder where you want to set breakpoints. Click in the left margin next to the line of code where you want to set a breakpoint, or press F9 to toggle a breakpoint on the current line.
 
@@ -46,4 +46,4 @@ When you're done, you can stop the debugging session by pressing Shift + F5 or s
 
 ## Note
 
-You can also debug the solution using Visual Studio by open the solution and then attach to process in step 5 using [Attach to running processes with the Visual Studio debugger](https://learn.microsoft.com/visualstudio/debugger/attach-to-running-processes-with-the-visual-studio-debugger). Once atatched you can use Visual Studio Debuger to set breakpoints and inspect values.  
+You can also debug the solution using Visual Studio by open the solution and then attach to process in step 5 using [Attach to running processes with the Visual Studio debugger](https://learn.microsoft.com/visualstudio/debugger/attach-to-running-processes-with-the-visual-studio-debugger). Once attached you can use Visual Studio Debugger to set breakpoints and inspect values.  
