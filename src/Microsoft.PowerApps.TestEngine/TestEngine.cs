@@ -88,11 +88,6 @@ namespace Microsoft.PowerApps.TestEngine
                     throw new ArgumentNullException(nameof(tenantId));
                 }
 
-                if (string.IsNullOrEmpty(domain))
-                {
-                    throw new ArgumentNullException(nameof(domain));
-                }
-
                 if (outputDirectory == null)
                 {
                     throw new ArgumentNullException(nameof(outputDirectory));
