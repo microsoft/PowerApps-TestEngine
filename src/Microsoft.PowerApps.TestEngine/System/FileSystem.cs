@@ -201,11 +201,11 @@ namespace Microsoft.PowerApps.TestEngine.System
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    return !UnixReservedLocationExistsInPath(fullPath);
+                    return !LinuxReservedLocationExistsInPath(fullPath);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    return !UnixReservedLocationExistsInPath(fullPath);
+                    return !OsxReservedLocationExistsInPath(fullPath);
                 }
                 return false;
             }
@@ -281,7 +281,7 @@ namespace Microsoft.PowerApps.TestEngine.System
             return false;
         }
 
-        public bool UnixReservedLocationExistsInPath(string fullPath)
+        public bool LinuxReservedLocationExistsInPath(string fullPath)
         {
             fullPath = Path.GetFullPath(fullPath);
             //check if its a network path if so fail
@@ -291,7 +291,63 @@ namespace Microsoft.PowerApps.TestEngine.System
                 return true;
             }
 
-            IEnumerable<Uri> UnixRestrictedPaths = new List<Uri>
+            IEnumerable<Uri> LinuxRestrictedPaths = new List<Uri>
+            {
+                new Uri("/bin/", UriKind.Absolute),
+                new Uri("/sbin/", UriKind.Absolute),
+                new Uri("/boot/", UriKind.Absolute),
+                new Uri("/root/", UriKind.Absolute),
+                new Uri("/dev/", UriKind.Absolute),
+                new Uri("/etc/", UriKind.Absolute),
+                //new Uri("/home/", UriKind.Absolute),
+                new Uri("/lib/", UriKind.Absolute),
+                new Uri("/lib64/", UriKind.Absolute),
+                new Uri("/mnt/", UriKind.Absolute),
+                new Uri("/opt/", UriKind.Absolute),
+                new Uri("/proc/", UriKind.Absolute),
+                new Uri("/run/", UriKind.Absolute),
+                new Uri("/srv/", UriKind.Absolute),
+                new Uri("/sys/", UriKind.Absolute),
+                //new Uri("/tmp/", UriKind.Absolute),
+                new Uri("/usr/", UriKind.Absolute),
+                new Uri("/var/", UriKind.Absolute),
+                new Uri(@"/media/", UriKind.Absolute),
+                new Uri(@"/lost+found/", UriKind.Absolute),
+                new Uri(@"/snap/", UriKind.Absolute),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".ssh") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".config") + Path.DirectorySeparatorChar),
+                new Uri("/bin/", UriKind.Absolute),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".gnupg") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".local") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".cache") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".docker") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".kube") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".npm") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".gem") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".m2") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".terraform.d") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".aws") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".azure") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".google") + Path.DirectorySeparatorChar),
+            };
+            if (LinuxRestrictedPaths.Any(baseUri => baseUri.IsBaseOf(fullPathUri)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool OsxReservedLocationExistsInPath(string fullPath)
+        {
+            fullPath = Path.GetFullPath(fullPath);
+            //check if its a network path if so fail
+            var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath, UriKind.Absolute);
+            if (fullPathUri.IsUnc)
+            {
+                return true;
+            }
+
+            IEnumerable<Uri> OsxRestrictedPaths = new List<Uri>
             {
                 new Uri("/bin/", UriKind.Absolute),
                 new Uri("/sbin/", UriKind.Absolute),
@@ -320,8 +376,24 @@ namespace Microsoft.PowerApps.TestEngine.System
                 new Uri("/private/", UriKind.Absolute),
                 new Uri("/Library/", UriKind.Absolute),
                 new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"Library") + Path.DirectorySeparatorChar),
+
+                new Uri("/System/", UriKind.Absolute),
+                new Uri("/Applications/", UriKind.Absolute),
+                new Uri("/Volumes/", UriKind.Absolute),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".gnupg") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".local") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".cache") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".docker") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".kube") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".npm") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".gem") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".m2") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".terraform.d") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".aws") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".azure") + Path.DirectorySeparatorChar),
+                new Uri(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".google") + Path.DirectorySeparatorChar),
             };
-            if (UnixRestrictedPaths.Any(baseUri => baseUri.IsBaseOf(fullPathUri)))
+            if (OsxRestrictedPaths.Any(baseUri => baseUri.IsBaseOf(fullPathUri)))
             {
                 return true;
             }

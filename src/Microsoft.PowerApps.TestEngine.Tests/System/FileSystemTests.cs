@@ -240,11 +240,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
 
         [Theory]
         [InlineData(@"/usr/local/bin", true)]
-        public void UnixReservedLocationExistsInPath_OSLinux_ReturnsValidity(string fileFullPath, bool reservedExists)
+        public void LinuxReservedLocationExistsInPath_Linux_ReturnsValidity(string fileFullPath, bool reservedExists)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                Assert.Equal(fileSystem.UnixReservedLocationExistsInPath(fileFullPath), reservedExists);
+                Assert.Equal(fileSystem.LinuxReservedLocationExistsInPath(fileFullPath), reservedExists);
+            }
+        }
+
+        [Theory]
+        [InlineData(@"/usr/local/bin", true)]
+        public void OsxReservedLocationExistsInPath_OSX_ReturnsValidity(string fileFullPath, bool reservedExists)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Assert.Equal(fileSystem.OsxReservedLocationExistsInPath(fileFullPath), reservedExists);
             }
         }
 
