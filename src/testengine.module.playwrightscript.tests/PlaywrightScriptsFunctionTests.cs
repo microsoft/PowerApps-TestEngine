@@ -60,7 +60,7 @@ public class PlaywrightScript
                It.IsAny<Exception>(),
                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
 
-            MockFileSystem.Setup(x => x.IsValidFilePath(file)).Returns(true);
+            MockFileSystem.Setup(x => x.FileExists(file)).Returns(true);
             MockFileSystem.Setup(x => x.ReadAllText(file)).Returns(code);
 
             MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(new Mock<IBrowserContext>().Object);

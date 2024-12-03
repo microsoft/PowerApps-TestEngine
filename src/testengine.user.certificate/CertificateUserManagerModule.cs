@@ -5,7 +5,10 @@ using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -16,7 +19,11 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
 using Microsoft.PowerFx;
 
+#if DEBUG
+[assembly: InternalsVisibleTo("testengine.user.certificate.tests")]
+#else
 [assembly: InternalsVisibleTo("testengine.user.certificate.tests, PublicKey = 0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
+#endif
 namespace testengine.user.environment
 {
     [Export(typeof(IUserManager))]
@@ -263,7 +270,6 @@ namespace testengine.user.environment
         {
             var request = route.Request;
 
-            Console.WriteLine($"Intercepted request: {request.Method} {request.Url}");
             if (request.Method == "POST")
             {
                 try
@@ -279,7 +285,7 @@ namespace testengine.user.environment
 
                     await route.FulfillAsync(new RouteFulfillOptions
                     {
-                        ContentType = "text/html",
+                        ContentType = "text/html; charset=utf-8",
                         Status = (int)response.StatusCode,
                         Headers = headers,
                         Body = await response.Content.ReadAsStringAsync()
@@ -304,12 +310,13 @@ namespace testengine.user.environment
             {
                 handler.ClientCertificates.Add(cert);
                 handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
 
                 using (var httpClient = GetHttpClient(handler))
                 {
                     // Prepare the request
                     var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Url);
-                    var content = new StringContent(request.PostData);
+                    var content = new StringContent(request.PostData, Encoding.UTF8, "application/x-www-form-urlencoded");
                     foreach (var header in request.Headers)
                     {
                         httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);

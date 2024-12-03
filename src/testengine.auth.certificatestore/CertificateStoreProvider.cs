@@ -7,6 +7,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
 
 namespace testengine.auth
 {
@@ -20,7 +21,8 @@ namespace testengine.auth
 
         public string Name { get { return "certstore"; } }
 
-        public CertificateStoreProvider()
+        [ImportingConstructor]
+        public CertificateStoreProvider(IFileSystem fileSystem)
         {
         }
 
@@ -39,7 +41,7 @@ namespace testengine.auth
             {
                 foreach (X509Certificate2 certificate in store.Certificates)
                 {
-                    if (certificate.SubjectName.Name != null && certificate.SubjectName.Name.Contains(userIdentifier, StringComparison.OrdinalIgnoreCase))
+                    if (certificate.SubjectName.Name != null && certificate.SubjectName.Name.Equals(userIdentifier, StringComparison.OrdinalIgnoreCase))
                     {
                         return certificate;
                     }
