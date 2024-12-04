@@ -3,6 +3,7 @@
 
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -117,12 +118,22 @@ else
             return;
         }
     }
-
-
     if (!string.IsNullOrEmpty(inputOptions.Wait) && inputOptions.Wait.ToLower() == "true")
     {
-        Console.WriteLine("Waiting, press enter to continue");
+        Console.WriteLine("Waiting, press enter to continue. You can now optionally attach debugger to dotnet PowerAppsTestEngine.dll process now");
         Console.ReadLine();
+        if (Debugger.IsAttached)
+        {
+            // Welcome to the debugger experience for Power Apps Test Engine
+            //
+            // Key classes you may want to investigate and add breakpoint inside to understand key components or :
+            // - SingleTestRunner.RunTestAsync that will run a single test case
+            // - PlaywrightTestInfraFunctions.SetupAsync for setup of Playwright state
+            // - PowerFxEngine.ExecuteWithRetryAsync that execute Power Fx test steps
+            // - Implementations or ITestWebProvider for Test Engine providers that get the state of the resource to be tested
+            // - Implementations of ITestEngineModule for Power Fx extensions
+            Debugger.Break();
+        }
     }
 
 
@@ -249,13 +260,22 @@ else
 
         DirectoryInfo outputDirectory;
         const string DefaultOutputDirectory = "TestOutput";
+        var _fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
         if (!string.IsNullOrEmpty(inputOptions.OutputDirectory))
         {
-            outputDirectory = new DirectoryInfo(inputOptions.OutputDirectory);
+            if (Path.IsPathRooted(inputOptions.OutputDirectory.Trim()))
+            {
+                Console.WriteLine("[Critical Error]: Please provide a relative path for the output.");
+                return;
+            }
+            else
+            {
+                outputDirectory = new DirectoryInfo(Path.Combine(_fileSystem.GetDefaultRootTestEngine(), inputOptions.OutputDirectory.Trim()));
+            }
         }
         else
         {
-            outputDirectory = new DirectoryInfo(DefaultOutputDirectory);
+            outputDirectory = new DirectoryInfo(Path.Combine(_fileSystem.GetDefaultRootTestEngine(), DefaultOutputDirectory.Trim()));
         }
 
         if (!string.IsNullOrEmpty(inputOptions.QueryParams))

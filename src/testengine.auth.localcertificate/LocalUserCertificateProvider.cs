@@ -4,6 +4,7 @@
 using System.ComponentModel.Composition;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
 
 namespace testengine.auth
 {
@@ -20,16 +21,19 @@ namespace testengine.auth
 
         public string Name { get { return "localcert"; } }
 
+        private readonly IFileSystem _fileSystem;
+
         private Dictionary<string, X509Certificate2> emailCertificateDict = new Dictionary<string, X509Certificate2>();
 
-        public LocalUserCertificateProvider()
+        [ImportingConstructor]
+        public LocalUserCertificateProvider(IFileSystem fileSystem)
         {
-            var certDir = "LocalCertificates";
+            _fileSystem = fileSystem;
+            var certDir = Path.Combine(_fileSystem.GetDefaultRootTestEngine(), "LocalCertificates");
             var password = "";
-            if (Directory.Exists(certDir))
+            if (_fileSystem.Exists(certDir))
             {
-                string[] pfxFiles = Directory.GetFiles(certDir, "*.pfx");
-
+                string[] pfxFiles = _fileSystem.GetFiles(certDir, "*.pfx");
                 foreach (var pfxFile in pfxFiles)
                 {
                     // Load the certificate

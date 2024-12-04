@@ -261,7 +261,6 @@ namespace testengine.user.environment
         {
             var request = route.Request;
 
-            Console.WriteLine($"Intercepted request: {request.Method} {request.Url}");
             if (request.Method == "POST")
             {
                 try
@@ -277,7 +276,7 @@ namespace testengine.user.environment
 
                     await route.FulfillAsync(new RouteFulfillOptions
                     {
-                        ContentType = "text/html",
+                        ContentType = "text/html; charset=utf-8",
                         Status = (int)response.StatusCode,
                         Headers = headers,
                         Body = await response.Content.ReadAsStringAsync()
@@ -302,12 +301,13 @@ namespace testengine.user.environment
             {
                 handler.ClientCertificates.Add(cert);
                 handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
 
                 using (var httpClient = GetHttpClient(handler))
                 {
                     // Prepare the request
                     var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Url);
-                    var content = new StringContent(request.PostData);
+                    var content = new StringContent(request.PostData, Encoding.UTF8, "application/x-www-form-urlencoded");
                     foreach (var header in request.Headers)
                     {
                         httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);

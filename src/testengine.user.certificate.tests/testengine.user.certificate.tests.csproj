@@ -38,10 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\PowerApps-TestEngine\src\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
     <ProjectReference Include="..\testengine.auth.localcertificate\testengine.auth.localcertificate.csproj" />
     <ProjectReference Include="..\testengine.user.certificate\testengine.user.certificate.csproj" />
-    <ProjectReference Include="..\..\..\PowerApps-TestEngine\src\Microsoft.PowerApps.TestEngine.Tests\Microsoft.PowerApps.TestEngine.Tests.csproj" />
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine.Tests\Microsoft.PowerApps.TestEngine.Tests.csproj" />
   </ItemGroup>
 
 </Project>
