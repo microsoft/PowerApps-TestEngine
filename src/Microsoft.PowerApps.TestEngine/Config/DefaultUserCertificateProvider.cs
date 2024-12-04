@@ -7,6 +7,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
 {
     public class DefaultUserCertificateProvider : IUserCertificateProvider
     {
+        public string[] Namespaces { get; private set; } = new string[] { "TestEngine" };
+
         public string Name => "default";
 
         public X509Certificate2 RetrieveCertificateForUser(string userIdentifier)

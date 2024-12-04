@@ -84,18 +84,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.common.user", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.common.user.tests", "testengine.common.user.tests\testengine.common.user.tests.csproj", "{52D935F1-3567-48B7-904F-1183F824A9FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.certificatestore", "testengine.auth.certificatestore\testengine.auth.certificatestore.csproj", "{D4212891-BAB8-4ED3-98C7-F380FB6CB89C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.certificatestore.tests", "testengine.auth.certificatestore.tests\testengine.auth.certificatestore.tests.csproj", "{31F0DC7E-806D-4323-A5AC-6F60EAEB57E6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.localcertificate", "testengine.auth.localcertificate\testengine.auth.localcertificate.csproj", "{AB046259-9E94-4292-B6AF-204B57118D81}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.localcertificate.tests", "testengine.auth.localcertificate.tests\testengine.auth.localcertificate.tests.csproj", "{0BFADC3F-3E81-44B2-8EFC-B0C6C3A4CFDB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.certificate", "testengine.user.certificate\testengine.user.certificate.csproj", "{27C194D8-F555-4D0A-B34C-3D30480193AE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.certificate.tests", "testengine.user.certificate.tests\testengine.user.certificate.tests.csproj", "{665708A1-8B06-496C-BECD-4061DE295F0E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -226,30 +214,6 @@ Global
 		{52D935F1-3567-48B7-904F-1183F824A9FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52D935F1-3567-48B7-904F-1183F824A9FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52D935F1-3567-48B7-904F-1183F824A9FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D4212891-BAB8-4ED3-98C7-F380FB6CB89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4212891-BAB8-4ED3-98C7-F380FB6CB89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4212891-BAB8-4ED3-98C7-F380FB6CB89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4212891-BAB8-4ED3-98C7-F380FB6CB89C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31F0DC7E-806D-4323-A5AC-6F60EAEB57E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31F0DC7E-806D-4323-A5AC-6F60EAEB57E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31F0DC7E-806D-4323-A5AC-6F60EAEB57E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31F0DC7E-806D-4323-A5AC-6F60EAEB57E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB046259-9E94-4292-B6AF-204B57118D81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB046259-9E94-4292-B6AF-204B57118D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB046259-9E94-4292-B6AF-204B57118D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB046259-9E94-4292-B6AF-204B57118D81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0BFADC3F-3E81-44B2-8EFC-B0C6C3A4CFDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0BFADC3F-3E81-44B2-8EFC-B0C6C3A4CFDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0BFADC3F-3E81-44B2-8EFC-B0C6C3A4CFDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0BFADC3F-3E81-44B2-8EFC-B0C6C3A4CFDB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27C194D8-F555-4D0A-B34C-3D30480193AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27C194D8-F555-4D0A-B34C-3D30480193AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27C194D8-F555-4D0A-B34C-3D30480193AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27C194D8-F555-4D0A-B34C-3D30480193AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{665708A1-8B06-496C-BECD-4061DE295F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{665708A1-8B06-496C-BECD-4061DE295F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{665708A1-8B06-496C-BECD-4061DE295F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{665708A1-8B06-496C-BECD-4061DE295F0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,12 +251,6 @@ Global
 		{BC91A675-FE44-44D7-B951-FBE8220D3399} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
 		{6CA1D5BF-FF9F-4392-8CCA-03C9B97BB4CE} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
 		{52D935F1-3567-48B7-904F-1183F824A9FB} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
-		{D4212891-BAB8-4ED3-98C7-F380FB6CB89C} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
-		{31F0DC7E-806D-4323-A5AC-6F60EAEB57E6} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
-		{AB046259-9E94-4292-B6AF-204B57118D81} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
-		{0BFADC3F-3E81-44B2-8EFC-B0C6C3A4CFDB} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
-		{27C194D8-F555-4D0A-B34C-3D30480193AE} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
-		{665708A1-8B06-496C-BECD-4061DE295F0E} = {0B61ADD8-5EED-4A2C-99AA-B597EC3EE223}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E7B2C01-DDE2-4C5A-96C3-AF474B074331}

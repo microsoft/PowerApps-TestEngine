@@ -326,6 +326,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName)
                         ||
                         type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Users.IUserManager).FullName)
+                        ||
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName)
                         )
                     {
                         if (CheckPropertyArrayContainsValue(type, "Namespaces", out var values))

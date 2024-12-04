@@ -120,6 +120,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     var possibleAuthTypeProviderModule = DirectoryGetFiles(location, "testengine.auth.*.dll");
                     foreach (var possibleModule in possibleAuthTypeProviderModule)
                     {
+                        if (!Checker.ValidateProvider(settings, possibleModule))
+                        {
+                            _logger.LogInformation($"Skipping provider {possibleModule}");
+                            continue;
+                        }
                         if (Checker.Verify(settings, possibleModule))
                         {
                             match.Add(LoadAssembly(possibleModule));

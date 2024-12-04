@@ -13,6 +13,11 @@ namespace testengine.auth
     [Export(typeof(IUserCertificateProvider))]
     public class LocalUserCertificateProvider : IUserCertificateProvider
     {
+        /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; private set; } = new string[] { "Deprecated" };
+
         public string Name { get { return "localcert"; } }
 
         private Dictionary<string, X509Certificate2> emailCertificateDict = new Dictionary<string, X509Certificate2>();

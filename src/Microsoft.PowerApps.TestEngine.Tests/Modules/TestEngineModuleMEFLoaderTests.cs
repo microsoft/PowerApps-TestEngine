@@ -89,6 +89,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
         [InlineData("user", true, true)]
         [InlineData("user", true, false)]
         [InlineData("user", false, false)]
+        [InlineData("auth", true, true)]
+        [InlineData("auth", true, false)]
+        [InlineData("auth", false, false)]
         public void ProviderMatch(string providerType, bool verify, bool valid)
         {
             // Arrange

@@ -13,6 +13,11 @@ namespace testengine.auth
     [Export(typeof(IUserCertificateProvider))]
     public class CertificateStoreProvider : IUserCertificateProvider
     {
+        /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; private set; } = new string[] { "TestEngine" };
+
         internal static Func<X509Store> GetCertStore = () => new X509Store(StoreName.My, StoreLocation.CurrentUser);
 
         public string Name { get { return "certstore"; } }
