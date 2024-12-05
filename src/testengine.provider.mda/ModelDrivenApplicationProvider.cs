@@ -596,7 +596,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     }
                 }
 
-                return await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine === 'undefined'");
+                return await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine !== 'undefined'");
             }
             catch (Exception ex)
             {

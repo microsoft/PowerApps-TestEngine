@@ -44,6 +44,9 @@ namespace testengine.module
 
             config.AddFunction(new SimulateConnectorFunction(testInfraFunctions, testState, logger));
             logger.LogInformation("Registered Experimental.SimulateConnector()");
+
+            config.AddFunction(new ReloadPageFunction(testInfraFunctions, testState, logger));
+            logger.LogInformation("Registered Experimental.ReloadPageFunction()");
         }
 
         public async Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)

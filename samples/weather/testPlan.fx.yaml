@@ -33,12 +33,13 @@ testSuite:
             })
         });
   testCases:
-    - testCaseName: Step 1 - Confirm Pre-requisites
-      testCaseDescription: Verify pre-requistes in place
+    - testCaseName: Initial State
+      testCaseDescription: Validate that simulated data on the page
       testSteps: |
-        = Experimental.Pause();
-      
-
+        = Experimental.ReloadPage();
+          Experimental.PlaywrightAction("[data-control-name='LocationLabel']:has-text('Location')", "wait");
+          CountRows(WeatherCategory.Items);
+          Assert(CountRows(WeatherCategory.Items)=1);
      
 testSettings:
   headless: false

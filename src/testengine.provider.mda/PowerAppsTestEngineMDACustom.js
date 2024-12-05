@@ -131,23 +131,9 @@ class PowerAppsModelDrivenCanvas {
 
         var appMagic = PowerAppsModelDrivenCanvas.getAppMagic();
 
-        var replicatedContexts = appMagic.Controls.GlobalContextManager.bindingContext.replicatedContexts
+        var value = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName].modelProperties[itemPath.propertyName].getValue()
 
-        if (itemPath.parentControl && itemPath.parentControl.index !== null) {
-            // Nested gallery - Power Apps only supports one level of nesting so we don't have to go recursively to find it
-            // Get parent replicated context
-            replicatedContexts = OpenAjax.widget.byId(itemPath.parentControl.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext.bindingContextAt(itemPath.parentControl.index).replicatedContexts;
-        }
-
-        var replicatedContext = OpenAjax.widget.byId(itemPath.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext;
-
-        if (!replicatedContext) {
-            // This is not a gallery
-            throw "Not a gallery, no item count available. Most likely a control";
-        }
-
-        var managerId = replicatedContext.manager.managerId;
-        return replicatedContexts[managerId].getBindingContextCount()
+        return value.dataSource.data.Length;
     }
 
     static getBindingContext(itemPath) {

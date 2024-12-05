@@ -99,6 +99,8 @@ namespace Microsoft.PowerApps.TestEngine
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             TestState.SetTestResultsDirectory(testResultDirectory);
 
+            _state.TestProvider = _testWebProvider;
+
             var testSuite = TestState.GetTestSuiteDefinition();
 
             casesTotal = testSuite.TestCases.Count();

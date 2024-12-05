@@ -158,14 +158,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("", false)]
-        [InlineData("class UCWorkBlockTracker {}", false)]
-        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return false; } }", false)]
-        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
-        public async Task IsReady(string javaScript, bool expectedIdle)
+        [InlineData("", "", false)]
+        [InlineData("class UCWorkBlockTracker {}", "", false)]
+        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return false; } }", "", false)]
+        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", "", false)]
+        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", "class PowerAppsTestEngine { }", true)]
+        public async Task IsReady(string javaScript, string extraCode, bool expectedIdle)
         {
             var engine = new Jint.Engine();
             engine.Execute(javaScript);
+
+            if (!string.IsNullOrEmpty(extraCode))
+            {
+                engine.Execute(extraCode);
+            }
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
