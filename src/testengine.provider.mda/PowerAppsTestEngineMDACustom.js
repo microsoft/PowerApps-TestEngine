@@ -133,7 +133,7 @@ class PowerAppsModelDrivenCanvas {
 
         var value = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName].modelProperties[itemPath.propertyName].getValue()
 
-        return value.dataSource.data.Length;
+        return value.dataSource.data.length;
     }
 
     static getBindingContext(itemPath) {
