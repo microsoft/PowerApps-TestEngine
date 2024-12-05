@@ -18,12 +18,22 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Determine if extension modules should be checks for Namespace rules
         /// </summary>
+#if RELEASE
+        //restricting for current milestone 1
+        public bool CheckAssemblies { get; } = true;
+#else
         public bool CheckAssemblies { get; set; } = true;
+#endif
 
         /// <summary>
         /// List of allowed Test Engine Modules that can be referenced.
         /// </summary>
+#if RELEASE
+        //restricting for current milestone 1
+        public List<string> AllowModule { get; } = new List<string>();
+#else
         public List<string> AllowModule { get; set; } = new List<string>();
+#endif
 
         /// <summary>
         /// List of allowed Test Engine Modules cannot be loaded unless there is an explict allow
@@ -33,7 +43,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// List of allowed .Net Namespaces that can be referenced in a Test Engine Module
         /// </summary>
+#if RELEASE
+        //restricting for current milestone 1
+        public List<string> AllowNamespaces { get; } = new List<string>();
+#else
         public List<string> AllowNamespaces { get; set; } = new List<string>();
+#endif
 
         /// <summary>
         /// List of allowed .Net Namespaces that deney load unless explict allow is defined

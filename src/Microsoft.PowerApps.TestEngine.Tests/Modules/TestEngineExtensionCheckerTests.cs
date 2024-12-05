@@ -97,9 +97,19 @@ public class TestScript {
             var settings = new TestSettingExtensions()
             {
                 Enable = true,
+#if RELEASE
+#else
                 AllowNamespaces = new List<string>() { allow },
+#endif
                 DenyNamespaces = new List<string>() { deny }
             };
+#if RELEASE
+            if (!string.IsNullOrWhiteSpace(allow) && !settings.AllowNamespaces.Contains(allow)) 
+            {
+                //not a valid scenario since it cant be assigned if not already present or blank
+                return;
+            }
+#endif
 
             var result = checker.Validate(settings, "testengine.module.test.dll");
 
@@ -190,10 +200,18 @@ using Microsoft.PowerFx.Core.Utils;
             {
                 settings.Parameters.Add("TrustedSource", trustedSource);
             }
+#if RELEASE
+            if (allowUntrustedRoot)
+            {
+                //not a valid scenario since it cant be assigned
+                return;
+            }
+#else
             if (allowUntrustedRoot)
             {
                 settings.Parameters.Add("AllowUntrustedRoot", "True");
             }
+#endif
 
             var valid = false;
             try

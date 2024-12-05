@@ -41,10 +41,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
         [InlineData(true, true, "*", "", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
         public void ModuleMatch(bool checkAssemblies, bool checkResult, string allow, string deny, string files, string expected)
         {
+#if RELEASE
+            if (!checkAssemblies)
+            {
+                //not a valid scenario since it cant be assigned
+                return;
+            }
+#endif
             var setting = new TestSettingExtensions()
             {
                 Enable = true,
+#if RELEASE     
+#else
                 CheckAssemblies = checkAssemblies
+#endif
             };
             Mock<TestEngineExtensionChecker> mockChecker = new Mock<TestEngineExtensionChecker>();
 
