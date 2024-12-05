@@ -386,7 +386,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             return false;
                         }
 
-                        var baseCall = constructor.Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference && ((MethodReference)i.Operand).Name == ".ctor");
+                        var baseCall = constructor.Body.Instructions?.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference && ((MethodReference)i.Operand).Name == ".ctor");
 
                         if (baseCall == null)
                         {
@@ -397,7 +397,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                         MethodReference baseConstructor = (MethodReference)baseCall.Operand;
 
-                        if (baseConstructor.Parameters.Count() < 2)
+                        if (baseConstructor.Parameters?.Count() < 2)
                         {
                             // Not enough parameters
                             Logger.LogInformation($"No not enough parameters for {type.Name}");
@@ -462,7 +462,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             values = null;
 
             // Find the property by name
-            var property = typeDefinition.Properties.FirstOrDefault(p => p.Name == propertyName);
+            var property = typeDefinition.HasProperties ? typeDefinition.Properties.FirstOrDefault(p => p.Name == propertyName) : null;
             if (property == null)
             {
                 return false;
@@ -508,10 +508,10 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         {
             var values = new List<object>();
             var instructions = methodBody?.Instructions;
-            int index = instructions.IndexOf(newarrInstruction);
+            int index = instructions?.IndexOf(newarrInstruction) ?? 0;
 
             // Iterate through the instructions following the 'newarr' instruction
-            for (int i = index + 1; i < instructions.Count; i++)
+            for (int i = index + 1; i < instructions?.Count; i++)
             {
                 var instruction = instructions[i];
 
