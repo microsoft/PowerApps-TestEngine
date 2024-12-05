@@ -97,7 +97,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     {
                         if (Checker.Verify(settings, possibleModule))
                         {
-                                match.Add(LoadAssembly(possibleModule));
+                            match.Add(LoadAssembly(possibleModule));
                         }
                     }
 
