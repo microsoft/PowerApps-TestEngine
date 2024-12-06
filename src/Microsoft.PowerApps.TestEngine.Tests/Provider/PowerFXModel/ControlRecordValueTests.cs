@@ -94,7 +94,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 // Index(Gallery1.AllItems, i)
                 var row = rows[i];
                 var rowControlRecordValue = row.Value as ControlRecordValue;
-                Assert.Null(rowControlRecordValue.Name);
+                Assert.NotNull(rowControlRecordValue.Name);
                 Assert.Equal(galleryAllItemsTableType.ToRecord(), rowControlRecordValue.Type);
 
                 Assert.NotNull(rowControlRecordValue.GetItemPath().ParentControl);
@@ -112,9 +112,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 Assert.Null(labelRecordValue.GetItemPath().Index);
                 Assert.Null(labelRecordValue.GetItemPath().PropertyName);
                 Assert.NotNull(labelRecordValue.GetItemPath().ParentControl);
-                Assert.Equal(galleryName, labelRecordValue.GetItemPath().ParentControl.ControlName);
-                Assert.Equal(i, labelRecordValue.GetItemPath().ParentControl.Index);
-                Assert.Equal(allItemsName, labelRecordValue.GetItemPath().ParentControl.PropertyName);
+                Assert.Equal(galleryName, labelRecordValue.GetItemPath().ParentControl.ParentControl.ControlName);
+                Assert.Equal(i, labelRecordValue.GetItemPath().ParentControl.ParentControl.Index);
+                Assert.Equal(allItemsName, labelRecordValue.GetItemPath().ParentControl.ParentControl.PropertyName);
 
                 // Index(Gallery1.AllItems, i).Label1.Text
                 Assert.Equal(labelText, (labelRecordValue.GetField("Text") as StringValue).Value);

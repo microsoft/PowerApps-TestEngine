@@ -114,6 +114,67 @@ class PowerAppsModelDrivenCanvas {
         properties.forEach((propertyName) => {
             var propertyType = controlObject.controlWidget.controlProperties[propertyName].propertyType;
 
+            if (propertyType == "*[]" || propertyType == "![]") {
+                var control = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[controlName];
+
+                if (typeof control === "undefined") {
+                    propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+                    return;
+                }
+
+                var property = control.modelProperties[propertyName];
+
+                if (typeof property === "undefined") {
+                    propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+                    return;
+                }
+                var value = property.getValue();
+
+                if (typeof value == "undefined" || value == null) {
+                    propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+                    return;
+                }
+
+                var metadata = value.dataSource.tryGetTableMetadata();
+
+                var existingProperties = value.dataSource.data.length > 0 ? Object.keys(value.dataSource.data[0]) : metadata.column.map(item => item.name);
+
+                var newPropertyType = propertyType.substring(0, 2);
+
+                var mappedColumn = false;
+
+                metadata.columns.forEach(item => {
+                    var mappedType = item._schema.type
+                    switch (item._schema.type) {
+                        case 'E':
+                            mappedType = 'g'; // GUID
+                            break;
+                        case 'A':
+                        case 'OptionSet':
+                            mappedType = ''
+                            break;
+                               
+                    }
+
+                    if (!existingProperties.includes(item.name)) {
+                        mappedType = ''
+                    }
+
+                    if (mappedType.length > 0) {
+                        mappedColumn = true;
+                        newPropertyType += `${item.name}:${mappedType}, `;
+                    }
+                });
+
+                if (mappedColumn) {
+                    // Remove commas from the end
+                    newPropertyType = newPropertyType.slice(0, -2);
+                }
+                
+                newPropertyType += ']'
+                propertyType = newPropertyType
+            }
+
             propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
         })
 
@@ -123,6 +184,8 @@ class PowerAppsModelDrivenCanvas {
         return controls;
     }
 
+
+
     static fetchArrayItemCount(itemPath) {
         if (itemPath.parentControl && itemPath.parentControl.index === null) {
             // Components do not have an item count
@@ -130,8 +193,19 @@ class PowerAppsModelDrivenCanvas {
         }
 
         var appMagic = PowerAppsModelDrivenCanvas.getAppMagic();
+        var control = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName];
 
-        var value = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName].modelProperties[itemPath.propertyName].getValue()
+        if (typeof control === "undefined") {
+            return null;
+        }
+
+        var property = control.modelProperties[itemPath.propertyName];
+
+        if (typeof property === "undefined") {
+            return null;
+        }
+
+        var value = property.getValue();
 
         return value.dataSource.data.length;
     }
@@ -172,6 +246,12 @@ class PowerAppsModelDrivenCanvas {
         if (controlContext) {
             if (controlContext.modelProperties[itemPath.propertyName]) {
                 propertyValue = controlContext.modelProperties[itemPath.propertyName]?.getValue();
+
+                switch (itemPath.propertyName) {
+                    case 'Items':
+                        propertyValue = propertyValue.dataSource.data;
+                        break;
+                }
             }
         }
 

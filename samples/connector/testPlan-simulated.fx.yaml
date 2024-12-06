@@ -4,7 +4,7 @@ testSuite:
   testSuiteDescription: Verifies that you can mock network requests
   persona: User1
   appLogicalName: new_connectorapp_da583
-  onTestCaseStart: |
+  onTestSuiteStart: |
     = Experimental.SimulateConnector({name: "msnweather", then: {responses: { daily: { day: { summary: "You are seeing the mock response" }}}}})
   testCases:
     - testCaseName: Fill in a city name and do the search

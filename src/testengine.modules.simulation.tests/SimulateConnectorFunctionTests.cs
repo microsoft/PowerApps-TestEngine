@@ -275,8 +275,20 @@ namespace testengine.modules.simulation.tests
             var row = RecordValue.NewRecordFromFields(new NamedValue("Name", FormulaValue.New("Test")));
 
             yield return new object[] { row, "{\"Name\":\"Test\"}" };
-            yield return new object[] { FormulaValue.New(1), "1.0" };
-            yield return new object[] { FormulaValue.New("test"), "\"test\"" };
+
+            yield return new object[] { RecordValue.NewRecordFromFields(new NamedValue("Other", RecordValue.NewRecordFromFields(new NamedValue("Value", FormulaValue.New("Test"))))), "{\"Other\":{\"Value\":\"Test\"}}" };
+
+            yield return new object[] { RecordValue.NewRecordFromFields(
+                    new NamedValue("1", FormulaValue.New("A")),
+                    new NamedValue("2", FormulaValue.New("B"))
+                ),
+                "{\"1\":\"A\",\"2\":\"B\"}" };
+
+            yield return new object[] { RecordValue.NewRecordFromFields(
+                    new NamedValue("1", RecordValue.NewRecordFromFields(new NamedValue("Name",FormulaValue.New("A")))),
+                    new NamedValue("2", RecordValue.NewRecordFromFields(new NamedValue("Name",FormulaValue.New("B"))))
+                ),
+                "{\"2\":{\"Name\":\"B\"},\"1\":{\"Name\":\"A\"}}" };
         }
 
         // TODO: Test Cases

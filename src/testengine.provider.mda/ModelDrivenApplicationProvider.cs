@@ -28,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     [Export(typeof(ITestWebProvider))]
     public class ModelDrivenApplicationProvider : ITestWebProvider
     {
-        private TypeMapping TypeMapping = new TypeMapping();
+        private MDATypeMapping TypeMapping = new MDATypeMapping();
 
         public ITestInfraFunctions? TestInfraFunctions { get; set; }
 
@@ -250,8 +250,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                                 {
                                     SingleTestInstanceState.GetLogger().LogTrace(skipMessage);
                                 }
-
-                                TypeMapping.AddMapping(control.Name, controlType);
 
                                 var controlValue = new ControlRecordValue(controlType, this, control.Name);
 

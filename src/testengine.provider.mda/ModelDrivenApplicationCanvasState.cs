@@ -11,7 +11,7 @@ namespace testengine.provider.mda
 {
     public class ModelDrivenApplicationCanvasState
     {
-        public Dictionary<string, string> VariableState { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string?> VariableState { get; set; } = new Dictionary<string, string?>();
         public Dictionary<string, string> CollectionState { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
@@ -84,7 +84,14 @@ namespace testengine.provider.mda
                     {
                         // Add the new variable and cache a copy of the variable state
                         originalEngine.UpdateVariable(variable, newPowerFxVariableValue);
-                        originalState.VariableState.Add(variable, await originalState.ConvertToVariableState(newPowerFxVariableValue));
+                        if (originalState.VariableState.ContainsKey(variable))
+                        {
+                            originalState.VariableState[variable] = await originalState.ConvertToVariableState(newPowerFxVariableValue);
+                        } 
+                        else
+                        {
+                            originalState.VariableState.Add(variable, await originalState.ConvertToVariableState(newPowerFxVariableValue));
+                        }
                     }
                 }
             }

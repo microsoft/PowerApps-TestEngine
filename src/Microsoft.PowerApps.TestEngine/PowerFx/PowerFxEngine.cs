@@ -192,11 +192,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 throw new InvalidOperationException();
             }
 
-            if (!PowerAppIntegrationEnabled)
-            {
-                return;
-            }
-
             await PollingHelper.PollAsync<bool>(false, (x) => !x, () => _testWebProvider.CheckIsIdleAsync(), TestState.GetTestSettings().Timeout, SingleTestInstanceState.GetLogger(), "Something went wrong when Test Engine tried to get App status.");
 
             var controlRecordValues = await _testWebProvider.LoadObjectModelAsync();

@@ -4,7 +4,7 @@ testSuite:
   testSuiteDescription: Run Weather sample
   persona: User1
   appLogicalName: NotNeeded
-  onTestCaseStart: |
+  onTestSuiteStart: |
     = Experimental.SimulateDataverse({
         Action: "Query",
         Entity: "te_weathercategories",
@@ -32,14 +32,33 @@ testSuite:
               'te_date@OData.Community.Display.V1.FormattedValue': "12/3/2024"
             })
         });
+        Experimental.SimulateConnector(
+          {
+            name: "msnweather", 
+            then: {
+                responses: { 
+                  weather: { 
+                      current: {
+                        temp: 30,
+                        feels: 20,
+                        cap: "Sunny"
+                      }
+                  },
+                  source: { location: "Test Location" }
+                },
+                units: { temperature: "^F" }
+              }
+          })
   testCases:
-    - testCaseName: Initial State
-      testCaseDescription: Validate that simulated data on the page
+    - testCaseName: Search for location weather
+      testCaseDescription: Set location and verify data loaded as expected
       testSteps: |
-        = Experimental.ReloadPage();
-          Experimental.PlaywrightAction("[data-control-name='LocationLabel']:has-text('Location')", "wait");
-          CountRows(WeatherCategory.Items);
+        = 
+          SetProperty(LocationSearch.Value, "Test Location");
+          Select(SearchNow);
           Assert(CountRows(WeatherCategory.Items)=1);
+          Assert(CountRows(Gallery1.Items)=1);
+          Assert(Summary.Text="Match: Test Location, Temp: 30^F, Feels: 20^F, Sunny");
      
 testSettings:
   headless: false
