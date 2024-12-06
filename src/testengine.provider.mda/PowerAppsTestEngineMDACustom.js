@@ -247,10 +247,9 @@ class PowerAppsModelDrivenCanvas {
             if (controlContext.modelProperties[itemPath.propertyName]) {
                 propertyValue = controlContext.modelProperties[itemPath.propertyName]?.getValue();
 
-                switch (itemPath.propertyName) {
-                    case 'Items':
-                        propertyValue = propertyValue.dataSource.data;
-                        break;
+                if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) { 
+                    // TODO: Transform data to display data
+                    propertyValue = propertyValue.dataSource.data;
                 }
             }
         }

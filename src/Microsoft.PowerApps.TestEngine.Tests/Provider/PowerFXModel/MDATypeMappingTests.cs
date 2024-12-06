@@ -157,7 +157,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var labelType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
             var buttonType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
             var imageType = RecordType.Empty().Add("Text", FormulaType.String).Add("X", FormulaType.Number).Add(Guid.NewGuid().ToString(), FormulaType.Guid);
-            
+
             typeMapping.AddMapping("v1", labelType);
             typeMapping.AddMapping("v2", buttonType);
             typeMapping.AddMapping("v3", imageType);

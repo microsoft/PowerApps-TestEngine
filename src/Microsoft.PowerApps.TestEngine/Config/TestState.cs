@@ -48,7 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         // Determine if Power FX expressions delimited by ; should be executed step by step
         public bool ExecuteStepByStep { get; set; } = false;
-        
+
         public ITestWebProvider TestProvider { get; set; }
 
         public TestState(ITestConfigParser testConfigParser)

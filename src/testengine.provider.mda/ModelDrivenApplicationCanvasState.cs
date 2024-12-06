@@ -87,7 +87,7 @@ namespace testengine.provider.mda
                         if (originalState.VariableState.ContainsKey(variable))
                         {
                             originalState.VariableState[variable] = await originalState.ConvertToVariableState(newPowerFxVariableValue);
-                        } 
+                        }
                         else
                         {
                             originalState.VariableState.Add(variable, await originalState.ConvertToVariableState(newPowerFxVariableValue));

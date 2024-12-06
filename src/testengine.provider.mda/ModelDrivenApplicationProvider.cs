@@ -6,6 +6,7 @@ using System.Dynamic;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
