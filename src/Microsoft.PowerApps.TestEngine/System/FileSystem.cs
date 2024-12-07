@@ -87,14 +87,21 @@ namespace Microsoft.PowerApps.TestEngine.System
             }
         }
 
-        public void WriteTextToFile(string filePath, string text)
+        public void WriteTextToFile(string filePath, string text, bool overwrite = false)
         {
             filePath = Path.GetFullPath(filePath);
             if (IsWritePermittedFilePath(filePath))
             {
                 if (File.Exists(filePath))
                 {
-                    File.AppendAllText(filePath, text);
+                    if (!overwrite)
+                    {
+                        File.AppendAllText(filePath, text);
+                    } 
+                    else
+                    {
+                        File.WriteAllText(filePath, text);
+                    }
                 }
                 else
                 {

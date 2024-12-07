@@ -3,14 +3,15 @@
 
 using System.ComponentModel.Composition;
 using System.Net.Mail;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.PowerFx;
 using testengine.common.user;
+using System.Security.Cryptography;
 
 namespace testengine.user.storagestate
 {
@@ -24,6 +25,22 @@ namespace testengine.user.storagestate
     public class StorageStateUserManagerModule : IConfigurableUserManager
     {
         public Dictionary<string, object> Settings { get; private set; }
+
+        public Action<IFileSystem, string> Protect = (IFileSystem filesystem, string fileName) =>
+        {
+            var content = filesystem.ReadAllText(fileName);
+            byte[] dataBytes = Encoding.UTF8.GetBytes(content);
+            byte[] encryptedData = ProtectedData.Protect(dataBytes, null, DataProtectionScope.CurrentUser);
+            filesystem.WriteTextToFile(fileName, Convert.ToBase64String(encryptedData), true);
+        };
+
+        public Func<IFileSystem, string, string> Unprotect = (IFileSystem filesystem, string fileName) =>
+        {
+            var base64Text = filesystem.ReadAllText(fileName);
+            byte[] dataBytes = Convert.FromBase64String(base64Text);
+            byte[] decryptedData = ProtectedData.Unprotect(dataBytes, null, DataProtectionScope.CurrentUser);
+            return Encoding.UTF8.GetString(decryptedData);
+        };
 
         public StorageStateUserManagerModule()
         {
@@ -60,6 +77,11 @@ namespace testengine.user.storagestate
                     return String.Empty;
                 }
 
+                if (!Path.IsPathRooted(Location))
+                {
+                    Location = Path.Combine(fileSystem.GetDefaultRootTestEngine(), Location);
+                }
+
                 if (!fileSystem.Exists(Location))
                 {
                     return String.Empty;
@@ -68,11 +90,7 @@ namespace testengine.user.storagestate
                 var stateFile = Path.Combine(Location, "state.json");
                 if (fileSystem.FileExists(stateFile))
                 {
-                    var content = fileSystem.ReadAllText(stateFile);
-
-                    // TODO Decrypt content
-
-                    return content;
+                    return Unprotect(fileSystem, stateFile);
                 }
 
                 return String.Empty;
@@ -147,6 +165,11 @@ namespace testengine.user.storagestate
             var userName = GetUserNameFromEmail(user);
             Location = !Location.EndsWith($"-{userName}") ? Location += $"-{userName}" : Location;
 
+            if (!Path.IsPathRooted(Location))
+            {
+                Location = Path.Combine(fileSystem.GetDefaultRootTestEngine(), Location);
+            }
+
             if (!fileSystem.Exists(Location))
             {
                 fileSystem.CreateDirectory(Location);
@@ -163,11 +186,15 @@ namespace testengine.user.storagestate
                 UserEmail = user,
                 CallbackErrorFound = async () =>
                 {
-                    await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = Path.Combine(Location, "state.json") });
+                    var stateFile = Path.Combine(Location, "state.json");
+                    await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = stateFile });
+                    Protect(fileSystem, stateFile);
                 },
                 CallbackDesiredUrlFound = async (match) =>
                 {
-                    await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = Path.Combine(Location, "state.json") });
+                    var stateFile = Path.Combine(Location, "state.json");
+                    await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = stateFile });
+                    Protect(fileSystem, stateFile);
                 },
                 Module = this
             };

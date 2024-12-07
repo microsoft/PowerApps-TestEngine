@@ -81,8 +81,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var recorder = new TestRecorder(_mockLogger.Object, _mockBrowserContext.Object, _mockTestState.Object, _mockTestInfraFunctions.Object, _mockEngine.Object, _mockFileSystem.Object);
             _mockFileSystem.Setup(fs => fs.Exists(path)).Returns(false);
             _mockFileSystem.Setup(fs => fs.CreateDirectory(path));
-            _mockFileSystem.Setup(fs => fs.WriteTextToFile($"{path}/recorded.te.yaml", It.IsAny<string>()))
-                .Callback((string name, string contents) =>
+            _mockFileSystem.Setup(fs => fs.WriteTextToFile($"{path}/recorded.te.yaml", It.IsAny<string>(), false))
+                .Callback((string name, string contents, bool overwrite) =>
                 {
                     fileContents = contents;
                 });
