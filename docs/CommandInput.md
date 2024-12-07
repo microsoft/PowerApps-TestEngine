@@ -9,7 +9,7 @@ The executable can take in inputs defined in `config.dev.json`, or as command li
 | EnvironmentId | Environment that the Power Apps app you are testing is located in. For more information about environments, please view [this](https://docs.microsoft.com/en-us/power-platform/admin/environments-overview) |
 | TenantId | Tenant that the Power Apps app is located in. |
 | TestPlanFile | Path to the test plan that you wish to run |
-| OutputDirectory | Path to folder the test results will be placed. Optional. If this is not provided, it will be placed in the `TestOutput` folder. |
+| OutputDirectory | Relative path to folder the test results will be placed. Optional. If this is not provided, it will be placed in the `TestOutput` folder. All results and logs will be placed under file system's designated `Microsoft\TestEngine` location under user's temp directory. |
 | LogLevel | Level for logging (Folllows [this](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel?view=dotnet-plat-ext-6.0)). Optional. If this is not provided, Information level logs and higher will be logged |
 | QueryParams | Specify query parameters to be added to the Power Apps URL. |
 | Domain | Specify what URL domain your app uses. This is optional; if not set, it will default to 'apps.powerapps.com'. |

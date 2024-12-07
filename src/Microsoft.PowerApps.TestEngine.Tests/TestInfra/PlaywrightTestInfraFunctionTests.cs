@@ -350,7 +350,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockFileSystem.Setup(x => x.FileExists(It.IsAny<string>())).Returns(true);
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
+            MockFileSystem.Setup(x => x.CanAccessFilePath(It.IsAny<string>())).Returns(true);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             MockPage.Setup(x => x.RouteAsync(mock.RequestURL, It.IsAny<Func<IRoute, Task>>(), It.IsAny<PageRouteOptions>())).Returns(Task.FromResult<IResponse?>(MockResponse.Object));
 
@@ -361,7 +361,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockBrowserContext.Verify(x => x.NewPageAsync(), Times.Once);
             MockPage.Verify(x => x.RouteAsync(mock.RequestURL, It.IsAny<Func<IRoute, Task>>(), It.IsAny<PageRouteOptions>()), Times.Once);
             MockFileSystem.Verify(x => x.FileExists(mock.ResponseDataFile), Times.Once());
-            MockFileSystem.Verify(x => x.IsValidFilePath(mock.ResponseDataFile), Times.Once());
+            MockFileSystem.Verify(x => x.CanAccessFilePath(mock.ResponseDataFile), Times.Once());
         }
 
         [Fact]
@@ -461,7 +461,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             MockFileSystem.Setup(x => x.FileExists(It.IsAny<string>())).Returns(false);
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.CanAccessFilePath(It.IsAny<string>())).Returns(false);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
 
@@ -501,7 +501,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             MockFileSystem.Setup(x => x.FileExists(It.IsAny<string>())).Returns(false);
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.CanAccessFilePath(It.IsAny<string>())).Returns(false);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
 
@@ -543,7 +543,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(testSuiteDefinition);
             MockBrowserContext.Setup(x => x.NewPageAsync()).Returns(Task.FromResult(MockPage.Object));
             MockFileSystem.Setup(x => x.FileExists(It.IsAny<string>())).Returns(false);
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.CanAccessFilePath(It.IsAny<string>())).Returns(false);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
 
@@ -626,14 +626,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var screenshotFilePath = "1.jpg";
 
             MockPage.Setup(x => x.ScreenshotAsync(It.IsAny<PageScreenshotOptions>())).Returns(Task.FromResult(new byte[] { }));
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(true);
+            MockFileSystem.Setup(x => x.CanAccessFilePath(It.IsAny<string>())).Returns(true);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, page: MockPage.Object);
             await playwrightTestInfraFunctions.ScreenshotAsync(screenshotFilePath);
 
             MockPage.Verify(x => x.ScreenshotAsync(It.Is<PageScreenshotOptions>((options) => options.Path == screenshotFilePath)), Times.Once());
-            MockFileSystem.Verify(x => x.IsValidFilePath(screenshotFilePath), Times.Once());
+            MockFileSystem.Verify(x => x.CanAccessFilePath(screenshotFilePath), Times.Once());
         }
 
         [Fact]
@@ -641,12 +641,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         {
             var screenshotFilePath = "";
             MockPage.Setup(x => x.ScreenshotAsync(It.IsAny<PageScreenshotOptions>())).Returns(Task.FromResult(new byte[] { }));
-            MockFileSystem.Setup(x => x.IsValidFilePath(It.IsAny<string>())).Returns(false);
+            MockFileSystem.Setup(x => x.CanAccessFilePath(It.IsAny<string>())).Returns(false);
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, page: MockPage.Object);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.ScreenshotAsync(screenshotFilePath));
-            MockFileSystem.Verify(x => x.IsValidFilePath(screenshotFilePath), Times.Once());
+            MockFileSystem.Verify(x => x.CanAccessFilePath(screenshotFilePath), Times.Once());
             MockPage.Verify(x => x.ScreenshotAsync(It.Is<PageScreenshotOptions>((options) => options.Path == screenshotFilePath)), Times.Never());
         }
 
