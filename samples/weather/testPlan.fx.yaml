@@ -12,7 +12,7 @@ testSuite:
           {
               'te_categoryname': "Test Category",
               'createdon': "2024-12-02T17:52:45Z",
-              'te_weathercategoryid': "f58de6c-905d-457d-846b-3e0b2aa4c5fd"
+              'te_weathercategoryid': "8cd3faaa-97ac-4e78-8b71-16c82cabb856"
           }
         )
       });
@@ -59,6 +59,11 @@ testSuite:
           Assert(CountRows(WeatherCategory.Items)=1);
           Assert(CountRows(Gallery1.Items)=1);
           Assert(Summary.Text="Match: Test Location, Temp: 30^F, Feels: 20^F, Sunny");
+    - testCaseName: Select category
+      testCaseDescription: Select a category from the dropdown
+      testSteps: |
+        = SetProperty(WeatherCategory.SelectedItems,Table(First(WeatherCategory.Items)));
+          Experimental.Pause();
      
 testSettings:
   headless: false

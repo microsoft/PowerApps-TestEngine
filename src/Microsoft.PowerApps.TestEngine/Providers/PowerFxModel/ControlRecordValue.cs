@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -73,6 +74,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
         /// <returns>True if able to get the field value</returns>
         protected override bool TryGetField(FormulaType fieldType, string fieldName, out FormulaValue result)
         {
+
             if (fieldType is TableType)
             {
                 // This would be if we were referencing a property that could be indexed. Eg. Gallery1.AllItems (fieldName = AllItems)
@@ -106,6 +108,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                 var itemPath = GetItemPath(fieldName);
 
                 var propertyValueJson = _testWebProvider.GetPropertyValueFromControl<string>(itemPath);
+
+                if (string.IsNullOrEmpty(propertyValueJson))
+                {
+                    result = BlankValue.NewBlank(fieldType);
+                    return true;
+                }
+
                 var jsPropertyValueModel = JsonConvert.DeserializeObject<JSPropertyValueModel>(propertyValueJson);
 
                 if (jsPropertyValueModel != null)

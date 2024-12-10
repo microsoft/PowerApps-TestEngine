@@ -7,6 +7,11 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <!-- Nuget Properties -->
   <PropertyGroup>    
     <Authors>Microsoft</Authors>
@@ -54,4 +59,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <MySourceFiles Include="..\..\bin\$(configuration)\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.pdb" />
+  </ItemGroup>
+
+  <Target Name="CopyFiles" AfterTargets="AfterBuild">
+    <Copy SourceFiles="@(MySourceFiles)" DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine" />
+  </Target>
 </Project>

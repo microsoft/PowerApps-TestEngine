@@ -90,7 +90,7 @@ namespace testengine.provider.mda
                         }
                         else
                         {
-                            originalState.VariableState.Add(variable, await originalState.ConvertToVariableState(newPowerFxVariableValue));
+                            originalState.VariableState.TryAdd(variable, await originalState.ConvertToVariableState(newPowerFxVariableValue));
                         }
                     }
                 }
@@ -121,7 +121,7 @@ namespace testengine.provider.mda
                     {
                         // Add the new collction and cache a copy of the collection state
                         originalEngine.UpdateVariable(collection, newPowerFxCollectionValue);
-                        originalState.CollectionState.Add(collection, await originalState.ConvertToVariableState(newPowerFxCollectionValue));
+                        originalState.CollectionState.TryAdd(collection, await originalState.ConvertToVariableState(newPowerFxCollectionValue));
                     }
                 }
             }
