@@ -63,7 +63,7 @@ testSuite:
       testCaseDescription: Select a category from the dropdown
       testSteps: |
         = SetProperty(WeatherCategory.SelectedItems,Table(First(WeatherCategory.Items)));
-          Experimental.Pause();
+          Assert(CountRows(WeatherCategory.SelectedItems)=1);
      
 testSettings:
   headless: false

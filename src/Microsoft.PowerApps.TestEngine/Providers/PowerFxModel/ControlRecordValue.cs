@@ -1,15 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.PowerApps.TestEngine.Helpers;
+using System.Runtime.CompilerServices;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 
@@ -130,9 +122,19 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                         result = NumberValue.New(double.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
+                    else if (fieldType is DecimalType)
+                    {
+                        result = DecimalValue.New(decimal.Parse(jsPropertyValueModel.PropertyValue));
+                        return true;
+                    }
                     else if (fieldType is BooleanType)
                     {
                         result = BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue));
+                        return true;
+                    }
+                    else if (fieldType is GuidType)
+                    {
+                        result = GuidValue.New(new Guid(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
                     else if (fieldType is DateTimeType)
@@ -145,7 +147,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                         if (double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
                             var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
-                            result = DateTimeValue.New(trueDateTime.Date);
+                            result = DateTimeValue.New(trueDateTime);
                         }
                         // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
                         // This allows us to just parse it back into a datetime, without having to manually convert it back

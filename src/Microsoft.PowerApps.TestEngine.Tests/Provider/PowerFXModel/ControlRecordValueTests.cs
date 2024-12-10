@@ -2,7 +2,11 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using ICSharpCode.Decompiler.TypeSystem;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerFx.Types;
@@ -165,5 +169,177 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
 
             mockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == labelName)), Times.Once());
         }
+
+        [Theory]
+        [MemberData(nameof(GetFieldData))]
+        public async Task GetPrimativeField(FormulaType formulaType, string json, object expected)
+        {
+            var mockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
+            var componentRecordType = RecordType.Empty().Add(new NamedFormulaType("Test", formulaType));
+            var componentName = "Component1";
+            var controlRecordValue = new ControlRecordValue(componentRecordType, mockTestWebProvider.Object, componentName);
+
+            mockTestWebProvider.Setup(m => m.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>())).Returns(json);
+
+            // Act
+            var result = await controlRecordValue.GetFieldAsync("Test", CancellationToken.None);
+
+            // Assert
+            result.TryGetPrimitiveValue(out object primativeValue);
+            Assert.Equal(expected, primativeValue);
+        }
+
+        public static IEnumerable<object[]> GetFieldData()
+        {
+            var guidValue = Guid.NewGuid();
+            var dateTime = new DateTime(2023, 12, 10, 1, 2, 3, DateTimeKind.Utc);
+            var dateTimeValue = new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
+
+
+            var dateValue = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Utc);
+            var dateUnixValue = new DateTimeOffset(dateValue).ToUnixTimeMilliseconds();
+
+            yield return new object[] { BlankType.Blank, "{PropertyValue: null}", null }; // Happy path Blank
+            yield return new object[] { StringType.String, "{PropertyValue: 'Test'}", "Test" }; // Happy path, text
+            yield return new object[] { NumberType.Number, "{PropertyValue: 1}", (double)1 }; // Happy path, number
+            yield return new object[] { GuidType.Guid, $"{{PropertyValue: '{guidValue.ToString()}'}}", guidValue }; // Happy path, GUID
+            yield return new object[] { BooleanType.Boolean, $"{{PropertyValue: true}}", true }; // Happy path, Boolean
+            yield return new object[] { BooleanType.Boolean, $"{{PropertyValue: false}}", false }; // Happy path, Boolean
+            yield return new object[] { BooleanType.Boolean, $"{{PropertyValue: 'true'}}", true }; // Happy path, Boolean
+            yield return new object[] { BooleanType.Boolean, $"{{PropertyValue: 'false'}}", false }; // Happy path, Boolean
+            yield return new object[] { DateTimeType.DateTime, $"{{PropertyValue: {dateTimeValue}}}", dateTime }; // Happy path, DateTime
+            yield return new object[] { DateTimeType.Date, $"{{PropertyValue: {dateUnixValue}}}", dateValue }; // Happy path, Date
+        }
+
+        [Theory]
+        [MemberData(nameof(GetTableData))]
+        public async Task GetTable(FormulaType formulaType, string json, string expected)
+        {
+            var mockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
+            var componentRecordType = RecordType.Empty().Add(new NamedFormulaType("Test", formulaType));
+            var componentName = "Component1";
+            var controlRecordValue = new ControlRecordValue(componentRecordType, mockTestWebProvider.Object, componentName, new ItemPath { ControlName = "Gallery", PropertyName = "Items", Index = 0 });
+
+            mockTestWebProvider.Setup(m => m.GetItemCount(It.IsAny<ItemPath>())).Returns(1);
+            mockTestWebProvider.Setup(m => m.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>())).Returns(json);
+
+            // Act
+            var result = await controlRecordValue.GetFieldAsync("Test", CancellationToken.None) as TableValue;
+
+            // Assert
+            Assert.Single(result.Rows);
+            Assert.Equal(expected, FormatTableValue(result));
+        }
+
+        public static IEnumerable<object[]> GetTableData()
+        {
+            var guidValue = Guid.NewGuid();
+            var dateTime = new DateTime(2023, 12, 10, 1, 2, 3, DateTimeKind.Utc);
+            var dateTimeValue = new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
+
+
+            var dateValue = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Utc);
+            var dateUnixValue = new DateTimeOffset(dateValue).ToUnixTimeMilliseconds();
+
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", StringType.String)), "{PropertyValue: 'A'}", "[{'Test': \"A\"}]" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", NumberType.Number)), "{PropertyValue: 1}", "[{'Test': 1}]" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", NumberType.Decimal)), "{PropertyValue: 1.1}", "[{'Test': 1.1}]" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: true}", "[{'Test': true}]" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: 'true'}", "[{'Test': true}]" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: false}", "[{'Test': false}]" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: 'false'}", "[{'Test': false}]" };
+
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", DateTimeType.DateTime)), $"{{PropertyValue: {dateTimeValue}}}", $"[{{'Test': \"{dateTime.ToString("o")}\"}}]" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", DateTimeType.Date)), $"{{PropertyValue: {dateUnixValue}}}", $"[{{'Test': \"{dateValue.ToString("o")}\"}}]" };
+        }
+
+        [Theory]
+        [MemberData(nameof(GetRecordData))]
+        public async Task GetRecord(FormulaType formulaType, string json, string expected)
+        {
+            var mockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
+            var componentRecordType = RecordType.Empty().Add(new NamedFormulaType("Test", formulaType));
+            var componentName = "Component1";
+            var controlRecordValue = new ControlRecordValue(componentRecordType, mockTestWebProvider.Object, componentName);
+
+            mockTestWebProvider.Setup(m => m.GetItemCount(It.IsAny<ItemPath>())).Returns(1);
+            mockTestWebProvider.Setup(m => m.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>())).Returns(json);
+
+            // Act
+            var result = await controlRecordValue.GetFieldAsync("Test", CancellationToken.None) as RecordValue;
+
+            // Assert
+            Assert.Equal(expected, FormatRecordValue(result));
+        }
+
+        public static IEnumerable<object[]> GetRecordData()
+        {
+            var guidValue = Guid.NewGuid();
+            var dateTime = new DateTime(2023, 12, 10, 1, 2, 3, DateTimeKind.Utc);
+            var dateTimeValue = new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
+
+
+            var dateValue = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Utc);
+            var dateUnixValue = new DateTimeOffset(dateValue).ToUnixTimeMilliseconds();
+
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", StringType.String)), "{PropertyValue: 'A'}", "{'Test': \"A\"}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", NumberType.Number)), "{PropertyValue: 1}", "{'Test': 1}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", NumberType.Decimal)), "{PropertyValue: 1.1}", "{'Test': 1.1}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: true}", "{'Test': true}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: 'true'}", "{'Test': true}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: false}", "{'Test': false}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: 'false'}", "{'Test': false}" };
+
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", DateTimeType.DateTime)), $"{{PropertyValue: {dateTimeValue}}}", $"{{'Test': \"{dateTime.ToString("o")}\"}}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", DateTimeType.Date)), $"{{PropertyValue: {dateUnixValue}}}", $"{{'Test': \"{dateValue.ToString("o")}\"}}" };
+        }
+
+        /// <summary>
+        /// Convert the Power Fx table into string representation
+        /// </summary>
+        /// <param name="tableValue">The table to be converted</param>
+        /// <returns>The string representation of all rows of the table</returns>
+        private string FormatTableValue(TableValue tableValue)
+        {
+            var rows = tableValue.Rows.Select(row => FormatValue(row.Value));
+            return $"[{string.Join(", ", rows)}]";
+        }
+
+        /// <summary>
+        /// Convert a Power Fx object to String Representation of the Record
+        /// </summary>
+        /// <param name="recordValue">The record to be converted</param>
+        /// <returns>Power Fx representation</returns>
+        private string FormatRecordValue(RecordValue recordValue)
+        {
+            var fields = recordValue.Fields.Select(field => $"'{field.Name}': {FormatValue(field.Value)}");
+            return $"{{{string.Join(", ", fields)}}}";
+        }
+
+        /// <summary>
+        /// Convert Power Fx formula value to the string representation
+        /// </summary>
+        /// <param name="value">The vaue to convert</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        private string FormatValue(FormulaValue value)
+        {
+            //TODO: Handle special case of DateTime As unix time to DateTime
+            return value switch
+            {
+                BlankValue blankValue => "null",
+                StringValue stringValue => $"\"{stringValue.Value}\"",
+                DecimalValue decimalValue => decimalValue.Value.ToString(),
+                NumberValue numberValue => numberValue.Value.ToString(),
+                BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
+                // Assume all dates should be in UTC
+                DateValue dateValue => $"\"{dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
+                DateTimeValue dateTimeValue => $"\"{dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
+                RecordValue recordValue => FormatRecordValue(recordValue),
+                TableValue tableValue => FormatTableValue(tableValue),
+                _ => throw new ArgumentException("Unsupported FormulaValue type")
+            };
+        }
+
     }
 }

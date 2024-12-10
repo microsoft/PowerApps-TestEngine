@@ -439,6 +439,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     case (BooleanType):
                         objectValue = ((BooleanValue)value).Value;
                         break;
+                    case (GuidType):
+                        objectValue = ((GuidValue)value).Value;
+                        break;
                     case (DateType):
                         return await SetPropertyDateAsync(itemPath, (DateValue)value);
                     case (RecordType):
@@ -525,10 +528,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 BlankValue blankValue => "null",
                 StringValue stringValue => $"\"{stringValue.Value}\"",
                 NumberValue numberValue => numberValue.Value.ToString(),
+                DecimalValue decimalValue => decimalValue.Value.ToString(),
                 BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
                 // Assume all dates should be in UTC
-                DateValue dateValue => dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"), // ISO 8601 format
-                DateTimeValue dateTimeValue => dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"), // ISO 8601 format
+                DateValue dateValue => $"\"{dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
+                DateTimeValue dateTimeValue => $"\"{dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
                 RecordValue recordValue => FormatRecordValue(recordValue),
                 TableValue tableValue => FormatTableValue(tableValue),
                 _ => throw new ArgumentException("Unsupported FormulaValue type")

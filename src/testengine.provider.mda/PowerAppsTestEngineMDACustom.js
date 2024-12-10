@@ -207,6 +207,10 @@ class PowerAppsModelDrivenCanvas {
 
         var value = property.getValue();
 
+        if (Array.isArray(value)) {
+            return value.length;
+        }
+
         return value.dataSource.data.length;
     }
 
@@ -318,8 +322,11 @@ class PowerAppsModelDrivenCanvas {
         if (controlContext) {
             if (controlContext.modelProperties[itemPath.propertyName]) {
                 propertyValue = controlContext.modelProperties[itemPath.propertyName]?.setValue(value);
+                return true;
             }
         }
+
+        return false;
     }
 
     static interactWithControl(itemPath, value) {
