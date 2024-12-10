@@ -9,7 +9,7 @@
     <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
   </PropertyGroup>
 
-    <PropertyGroup>
+  <PropertyGroup>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
