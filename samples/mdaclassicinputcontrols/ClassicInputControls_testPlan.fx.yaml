@@ -1,0 +1,98 @@
+testSuite:
+  testSuiteName: InputControlRuntimeValidation
+  testSuiteDescription: Validate runtime behavior for classic input controls, ensuring positive and negative test cases are handled appropriately.
+  persona: User1
+  appLogicalName: input_control_runtime_testing
+
+  testCases: 
+  - testCaseName: Runtime_Label_Text_Case
+    testCaseDescription: Verify the Label control updates its Text property correctly at runtime.
+    testSteps: |
+      SetProperty(Label1.Text, "Runtime Update");
+      Assert(Label1.Text = "Runtime Update", "Validate Label1 displays the correct runtime text.");
+
+  - testCaseName: Select Button Once
+    testCaseDescription: Verify that the button performs the correct action when selected once.
+    testSteps: |        
+        Select(Button1);
+        Assert(Label1.Text = "Button Clicked!", "Verify button performs the correct action when selected once");
+
+  - testCaseName: Select Button Twice
+    testCaseDescription: Verify that the button performs the correct action when selected twice.
+    testSteps: |      
+        Select(Button1);
+        Select(Button1);
+        Assert(Label1.Text = "Button Clicked!", "Verify button performs the correct action when selected twice");
+
+  - testCaseName: Enter Text in TextBox
+    testCaseDescription: Verify that the text box accepts and displays input correctly.
+    testSteps: |
+        SetProperty(TextInput1.Value, "Sample Text");
+        Assert(TextInput1.Value = "Sample Text", "Verify text box displays the input text correctly");
+  
+  - testCaseName: Test Visible Property
+    testCaseDescription: Verify that the visibility can be toggled correctly.
+    testSteps: |
+      SetProperty(Checkbox1.Visible, true);
+      Assert(Checkbox1.Visible = true, "Expected Checkbox1.Visible to be true");
+
+  - testCaseName: Test Checked Property
+    testCaseDescription: Verify that the checked state can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(Checkbox1.Checked, true);
+      Assert(Checkbox1.Checked = true, "Expected Checkbox1.Checked to be true");
+    
+  - testCaseName: Test SelectedItems Property
+    testCaseDescription: Verify that the SelectedItems property can be set and retrieved correctly.
+    testSteps: |        
+        SetProperty('Combobox1'.SelectedItems, Table({'Value1':"Item 7",'Value2':7,'Value3':70},
+        {'Value1':"Item 10",'Value2':10,'Value3':100},{'Value1':"Item 12",'Value2':12,'Value3':120})); 
+        Assert(CountRows('Combobox1'.SelectedItems) = 3, "Validated Succesfully");  
+  
+  - testCaseName: Test SelectedDate Property
+    testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(DatePicker1.SelectedDate, Date(2024,10,01));
+      Assert(DatePicker1.SelectedDate = Date(2024,10,01), "Checking the SelectedDate property");
+
+  - testCaseName: Test RadioButton DefaultSelectedItems Property
+    testCaseDescription: Verify that the RadioButton DefaultSelectedItems property can be set and retrieved correctly.
+    testSteps: |    
+      SetProperty(RadioGroup1.DefaultSelectedItems, Table({'Value1':"Item 7"}));
+      Assert(CountRows('RadioGroup1'.SelectedItems) = 1, "Validated Succesfully");  
+  
+  - testCaseName: Test Value Property
+    testCaseDescription: Verify that the Value property can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(Slider1.Value, 50);
+      Assert(Slider1.Value = 50, "Checking the Value property");
+      SetProperty(Slider1.Value, 25);
+      Assert(Slider1.Value = 25, "Checking the Value property");
+      SetProperty(Slider1.Value, 100);
+      Assert(Slider1.Value = 100, "Checking the Value property");
+      SetProperty(Slider1.Value, 75);
+      Assert(Slider1.Value = 75, "Checking the Value property");
+
+  - testCaseName: Test_Toggle_User_Action
+    testCaseDescription: Verify that user interaction with the Toggle control is correctly reflected in its state.
+    testSteps: |
+      SetProperty(Toggle1.Checked, true);
+      Assert(Toggle1.Checked = true, "User action correctly toggled Toggle1 to on.");     
+      SetProperty(Toggle1.Checked, false);
+      Assert(Toggle1.Checked = false, "User action correctly toggled Toggle1 to off.");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

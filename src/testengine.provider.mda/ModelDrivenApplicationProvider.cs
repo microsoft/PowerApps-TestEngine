@@ -18,6 +18,7 @@ using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using testengine.provider.mda;
+using System.Drawing;
 
 [assembly: InternalsVisibleTo("testengine.provider.mda.tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
 namespace Microsoft.PowerApps.TestEngine.Providers
@@ -157,6 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     {
                         case "disabled":
                         case "visible":
+                        case "checked":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())
@@ -391,6 +393,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     case (BooleanType):
                         objectValue = ((BooleanValue)value).Value;
                         break;
+                    case (ColorType):
+                        objectValue = ((ColorValue)value).Value;
+                        break;
                     case (DateType):
                         return await SetPropertyDateAsync(itemPath, (DateValue)value);
                     case (RecordType):
@@ -427,7 +432,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 // TODO - Set the Xrm SDK Value and update state for any JS to run
 
                 // Date.parse() parses the date to unix timestamp
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},Date.parse(\"{recordValue}\"))";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -451,7 +456,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 RecordValueObject json = new RecordValueObject(val);
                 var checkVal = JsonConvert.SerializeObject(json);
 
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{checkVal})";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -486,11 +491,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         }
                     }
                 }
-                var checkVal = JsonConvert.SerializeObject(jsonArr);
+                var checkVal = ConvertTableValueToJson(tableValue);
 
                 // TODO - Set the Xrm SDK Value and update state for any JS to run
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
-
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{checkVal})";
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
             catch (Exception ex)
@@ -622,6 +626,21 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         private static string GetQueryParametersForTestUrl(string tenantId, string additionalQueryParams)
         {
             return $"?tenantId={tenantId}&source=testengine{additionalQueryParams}";
+        }
+
+        private string ConvertTableValueToJson(TableValue tableValue)
+        {
+            var list = new List<Dictionary<string, object>>();
+            foreach (var record in tableValue.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (var field in record.Value.Fields)
+                {
+                    dict[field.Name] = field.Value.ToObject();
+                }
+                list.Add(dict);
+            }
+            return JsonConvert.SerializeObject(list, Formatting.Indented);
         }
     }
 }
