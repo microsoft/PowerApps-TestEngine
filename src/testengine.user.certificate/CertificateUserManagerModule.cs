@@ -1,37 +1,28 @@
 ﻿// Copyright(c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.Modules;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Users;
-using Microsoft.PowerFx;
 
-#if DEBUG
-[assembly: InternalsVisibleTo("testengine.user.certificate.tests")]
-#else
-[assembly: InternalsVisibleTo("testengine.user.certificate.tests, PublicKey = 0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9")]
-#endif
 namespace testengine.user.environment
 {
     [Export(typeof(IUserManager))]
     public class CertificateUserManagerModule : IUserManager
     {
+        /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; private set; } = new string[] { "TestEngine" };
+
         // defining these 2 for improved testability
-        internal static Func<HttpClientHandler> GetHttpClientHandler = () => new HttpClientHandler();
-        internal static Func<HttpClientHandler, HttpClient> GetHttpClient = handler => new HttpClient(handler);
+        public static Func<HttpClientHandler> GetHttpClientHandler = () => new HttpClientHandler();
+        public static Func<HttpClientHandler, HttpClient> GetHttpClient = handler => new HttpClient(handler);
 
         public string Name { get { return "certificate"; } }
 
@@ -189,7 +180,7 @@ namespace testengine.user.environment
             await ClickStaySignedIn(desiredUrl, logger);
         }
 
-        internal async Task ClickStaySignedIn(string desiredUrl, ILogger logger)
+        public async Task ClickStaySignedIn(string desiredUrl, ILogger logger)
         {
             PageWaitForSelectorOptions selectorOptions = new PageWaitForSelectorOptions();
             selectorOptions.Timeout = 8000;
@@ -253,10 +244,11 @@ namespace testengine.user.environment
             await Page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
         }
 
-        internal async Task<string> GetCertAuthGlob(string endpoint)
+        public async Task<string> GetCertAuthGlob(string endpoint)
         {
             return $"https://*certauth.{endpoint}/**";
         }
+
         public async Task InterceptRestApiCallsAsync(IPage page, string endpoint, X509Certificate2 cert, ILogger logger)
         {
             // Define the route to intercept
@@ -266,7 +258,7 @@ namespace testengine.user.environment
             });
         }
 
-        internal async Task HandleRequest(IRoute route, X509Certificate2 cert, ILogger logger)
+        public async Task HandleRequest(IRoute route, X509Certificate2 cert, ILogger logger)
         {
             var request = route.Request;
 
