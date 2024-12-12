@@ -60,6 +60,7 @@ namespace testengine.user.storagestate
                 var user = environmentVariable.GetVariable(userConfig.EmailKey);
                 var userName = GetUserNameFromEmail(user);
                 Location = !Location.EndsWith($"-{userName}") ? Location += $"-{userName}" : Location;
+                Location = !Path.IsPathRooted(Location) ? Path.Combine(fileSystem.GetDefaultRootTestEngine(), Location) : Location;
                 if (!IsValidEmail(user))
                 {
                     return String.Empty;
@@ -151,6 +152,7 @@ namespace testengine.user.storagestate
 
             var userName = GetUserNameFromEmail(user);
             Location = !Location.EndsWith($"-{userName}") ? Location += $"-{userName}" : Location;
+            Location = !Path.IsPathRooted(Location) ? Path.Combine(fileSystem.GetDefaultRootTestEngine(), Location) : Location;
 
             if (!fileSystem.Exists(Location))
             {

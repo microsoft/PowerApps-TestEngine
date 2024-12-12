@@ -87,10 +87,14 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             var sources = GetTrustedSources(settings);
 
             var allowUntrustedRoot = false;
+#if RELEASE
+            //dont allow untrusted
+#else
             if (settings.Parameters.ContainsKey("AllowUntrustedRoot"))
             {
                 allowUntrustedRoot = bool.Parse(settings.Parameters["AllowUntrustedRoot"]);
             }
+#endif
 
             foreach (var elem in chain.ChainElements)
             {
@@ -241,19 +245,23 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         /// <returns><c>True</c> if the assembly meets the test setting requirements, <c>False</c> if not</returns>
         public virtual bool Validate(TestSettingExtensions settings, string file)
         {
-            var contents = GetExtentionContents(file);
+            var allowList = new List<string>(settings.AllowNamespaces)
+            {
+                // Add minimum namespaces for a MEF plugin used by TestEngine
+                "System.Threading.Tasks",
+                "Microsoft.PowerFx",
+                "System.ComponentModel.Composition",
+                "Microsoft.Extensions.Logging",
+                "Microsoft.PowerApps.TestEngine.",
+                "Microsoft.Playwright"
+            };
 
-            var allowList = new List<string>(settings.AllowNamespaces);
-            // Add minimum namespaces for a MEF plugin used by TestEngine
-            allowList.Add("System.Threading.Tasks");
-            allowList.Add("Microsoft.PowerFx");
-            allowList.Add("System.ComponentModel.Composition");
-            allowList.Add("Microsoft.Extensions.Logging");
-            allowList.Add("Microsoft.PowerApps.TestEngine.");
-            allowList.Add("Microsoft.Playwright");
+            var denyList = new List<string>(settings.DenyNamespaces)
+            {
+                "Microsoft.PowerApps.TestEngine.Modules.",
+            };
 
-            var denyList = new List<string>(settings.DenyNamespaces);
-
+            byte[] contents = GetExtentionContents(file);
             var found = LoadTypes(contents);
 
             var valid = true;

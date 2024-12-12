@@ -91,6 +91,7 @@ namespace testengine.user.storagestate.tests
             MockEnvironmentVariable.Setup(x => x.GetVariable(emailKey)).Returns(emailValue);
             LoggingTestHelper.SetupMock(MockLogger);
 
+            MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("");
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(exists);
             if (content != null)
             {
@@ -130,6 +131,7 @@ namespace testengine.user.storagestate.tests
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockEnvironmentVariable.Setup(x => x.GetVariable(emailKey)).Returns(emailValue);
+            MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("");
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(true);
             MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
             MockPage.SetupGet(x => x.Url).Returns(pageUrl);
@@ -173,6 +175,7 @@ namespace testengine.user.storagestate.tests
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockEnvironmentVariable.Setup(x => x.GetVariable(emailKey)).Returns(emailValue);
+            MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("");
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(true);
             MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
             MockPage.SetupGet(x => x.Url).Returns(pageUrl);

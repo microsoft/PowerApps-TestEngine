@@ -88,6 +88,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     }
 
                     var possibleUserManager = DirectoryGetFiles(location, "testengine.user.*.dll");
+#if RELEASE
+                    //temporarily limiting to a fixed set of providers, move to allow deny list later #410
+                    var allowedUserManager = new string[] { Path.Combine(location, "testengine.user.storagestate.dll") };
+                    possibleUserManager = possibleUserManager.Where(file => allowedUserManager.Contains(file)).ToArray();
+#endif
                     foreach (var possibleModule in possibleUserManager)
                     {
                         if (!Checker.ValidateProvider(settings, possibleModule))
@@ -103,6 +108,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     }
 
                     var possibleWebProviderModule = DirectoryGetFiles(location, "testengine.provider.*.dll");
+#if RELEASE
+                    //temporarily limiting to a fixed set of providers, move to allow deny list later #410
+                    var allowedProviderManager = new string[] { Path.Combine(location, "testengine.provider.canvas.dll"), Path.Combine(location, "testengine.provider.mda.dll"), Path.Combine(location, "testengine.provider.powerapps.portal.dll") };
+                    possibleWebProviderModule = possibleWebProviderModule.Where(file => allowedProviderManager.Contains(file)).ToArray();
+#endif
                     foreach (var possibleModule in possibleWebProviderModule)
                     {
                         if (!Checker.ValidateProvider(settings, possibleModule))
@@ -118,6 +128,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     }
 
                     var possibleAuthTypeProviderModule = DirectoryGetFiles(location, "testengine.auth.*.dll");
+#if RELEASE
+                    //temporarily limiting to a fixed set of providers for milestone 2, move to allow deny list later #410
+                    var allowedAuthTypeManager = new string[] { };
+                    possibleAuthTypeProviderModule = possibleAuthTypeProviderModule.Where(file => allowedAuthTypeManager.Contains(file)).ToArray();
+#endif
                     foreach (var possibleModule in possibleAuthTypeProviderModule)
                     {
                         if (!Checker.ValidateProvider(settings, possibleModule))
