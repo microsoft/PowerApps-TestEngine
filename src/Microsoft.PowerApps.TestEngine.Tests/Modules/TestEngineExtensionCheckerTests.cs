@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +25,113 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
     {
         Mock<ILogger> MockLogger;
         string _template;
+
+        const string TEST_WEB_PROVIDER = @"
+#r ""Microsoft.PowerApps.TestEngine.dll""
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Providers;
+using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx.Types;
+
+public class Test : ITestWebProvider
+{{
+    public ITestInfraFunctions? TestInfraFunctions {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
+    public ISingleTestInstanceState? SingleTestInstanceState {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
+    public ITestState? TestState {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
+    public ITestProviderState? ProviderState {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
+
+    public string Name => throw new NotImplementedException();
+
+    public string CheckTestEngineObject => throw new NotImplementedException();
+
+    public string[] Namespaces => new string[] {{ ""{0}"" }};
+
+    public Task<bool> CheckIsIdleAsync()
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public Task CheckProviderAsync()
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public string GenerateTestUrl(string domain, string queryParams)
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public Task<object> GetDebugInfo()
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public int GetItemCount(ItemPath itemPath)
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public T GetPropertyValueFromControl<T>(ItemPath itemPath)
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public Task<Dictionary<string, ControlRecordValue>> LoadObjectModelAsync()
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public Task<bool> SelectControlAsync(ItemPath itemPath)
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public Task<bool> SetPropertyAsync(ItemPath itemPath, FormulaValue value)
+    {{
+        throw new NotImplementedException();
+    }}
+
+    public Task<bool> TestEngineReady()
+    {{
+        throw new NotImplementedException();
+    }}
+}}
+";
+
+        const string TEST_USER_MODULE = @"
+#r ""Microsoft.PowerApps.TestEngine.dll""
+#r ""Microsoft.Playwright.dll""
+
+using System;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Users;
+
+public class Test : IUserManager
+{{
+    public string[] Namespaces => new string[] {{ ""{0}"" }};
+
+    public string Name => throw new NotImplementedException();
+
+    public int Priority => throw new NotImplementedException();
+
+    public bool UseStaticContext => throw new NotImplementedException();
+
+    public string Location {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
+
+    public Task LoginAsUserAsync(string desiredUrl, IBrowserContext context, ITestState testState, ISingleTestInstanceState singleTestInstanceState, IEnvironmentVariable environmentVariable, IUserManagerLogin userManagerLogin)
+    {{
+        throw new NotImplementedException();
+    }}
+}}
+";
 
         public TestEngineExtensionCheckerTests()
         {
@@ -112,6 +222,75 @@ public class TestScript {
 #endif
 
             var result = checker.Validate(settings, "testengine.module.test.dll");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData("", "", "TestEngine", true)] // Empty Allow and Deny list
+        [InlineData("TestEngine", "", "TestEngine", true)] // No deny list
+        [InlineData("", "TestEngine", "TestEngine", false)] // Invalid in deny list
+        [InlineData("TestEngine", "Other", "TestEngine", true)] // Valid in the allow list
+        [InlineData("TestEngine", "Other", "Other", false)] // Exact match
+        [InlineData("", "*", "Other", false)] // Any regex match
+        [InlineData("", "O*", "Other", false)] // Regex match wildcard 
+        [InlineData("", "Test?", "Test1", false)] // Single character match
+        [InlineData("", "Test?More", "Test1More", false)] // Single character match in the middle
+        [InlineData("T*", "", "Test1More", true)] // Allow wildcard
+        [InlineData("T?2", "", "T12", true)] // Allow wildcard
+        [InlineData("T?2", "T?3", "T12", true)] // Allow wildcard and not match deny
+        public void IsValidProvider(string allow, string deny, string providerNamespace, bool expected)
+        {
+            // Arrange
+            var assembly = CompileScript(String.Format(TEST_WEB_PROVIDER, providerNamespace));
+
+            var checker = new TestEngineExtensionChecker(MockLogger.Object);
+            checker.GetExtentionContents = (file) => assembly;
+
+            var settings = new TestSettingExtensions()
+            {
+                Enable = true,
+                AllowPowerFxNamespaces = new List<string>() { allow },
+                DenyPowerFxNamespaces = new List<string>() { deny }
+            };
+
+            // Act
+            var result = checker.ValidateProvider(settings, "testengine.provider.test.dll");
+
+            Assert.Equal(expected, result);
+        }
+
+
+        [Theory]
+        [InlineData("", "", "TestEngine", true)] // Empty Allow and Deny list
+        [InlineData("TestEngine", "", "TestEngine", true)] // No deny list
+        [InlineData("", "TestEngine", "TestEngine", false)] // Invalid in deny list
+        [InlineData("TestEngine", "Other", "TestEngine", true)] // Valid in the allow list
+        [InlineData("TestEngine", "Other", "Other", false)] // Exact match
+        [InlineData("", "*", "Other", false)] // Any regex match
+        [InlineData("", "O*", "Other", false)] // Regex match wildcard 
+        [InlineData("", "Test?", "Test1", false)] // Single character match
+        [InlineData("", "Test?More", "Test1More", false)] // Single character match in the middle
+        [InlineData("T*", "", "Test1More", true)] // Allow wildcard
+        [InlineData("T?2", "", "T12", true)] // Allow wildcard
+        [InlineData("T?2", "T?3", "T12", true)] // Allow wildcard and not match deny
+        public void IsValidUserModule(string allow, string deny, string providerNamespace, bool expected)
+        {
+            // Arrange
+            var assembly = CompileScript(String.Format(TEST_USER_MODULE, providerNamespace));
+
+            var checker = new TestEngineExtensionChecker(MockLogger.Object);
+            checker.GetExtentionContents = (file) => assembly;
+
+            var settings = new TestSettingExtensions()
+            {
+                Enable = true,
+                AllowPowerFxNamespaces = new List<string>() { allow },
+                DenyPowerFxNamespaces = new List<string>() { deny }
+            };
+
+            // Act
+            var result = checker.ValidateProvider(settings, "testengine.user.test.dll");
 
             Assert.Equal(expected, result);
         }

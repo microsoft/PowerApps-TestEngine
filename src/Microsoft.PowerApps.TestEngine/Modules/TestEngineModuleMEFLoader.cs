@@ -95,6 +95,12 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 #endif
                     foreach (var possibleModule in possibleUserManager)
                     {
+                        if (!Checker.ValidateProvider(settings, possibleModule))
+                        {
+                            _logger.LogInformation($"Skipping provider {possibleModule}");
+                            continue;
+                        }
+
                         if (Checker.Verify(settings, possibleModule))
                         {
                             match.Add(LoadAssembly(possibleModule));
@@ -109,6 +115,12 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 #endif
                     foreach (var possibleModule in possibleWebProviderModule)
                     {
+                        if (!Checker.ValidateProvider(settings, possibleModule))
+                        {
+                            _logger.LogInformation($"Skipping provider {possibleModule}");
+                            continue;
+                        }
+
                         if (Checker.Verify(settings, possibleModule))
                         {
                             match.Add(LoadAssembly(possibleModule));
@@ -123,6 +135,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 #endif
                     foreach (var possibleModule in possibleAuthTypeProviderModule)
                     {
+                        if (!Checker.ValidateProvider(settings, possibleModule))
+                        {
+                            _logger.LogInformation($"Skipping provider {possibleModule}");
+                            continue;
+                        }
                         if (Checker.Verify(settings, possibleModule))
                         {
                             match.Add(LoadAssembly(possibleModule));

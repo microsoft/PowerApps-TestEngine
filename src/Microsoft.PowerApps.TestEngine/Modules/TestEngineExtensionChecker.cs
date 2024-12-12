@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.Metadata;
@@ -31,6 +32,10 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         ILogger _logger;
 
         public Func<string, byte[]> GetExtentionContents = (file) => File.ReadAllBytes(file);
+
+        public const string NAMESPACE_EXPERIMENTAL = "Experimental";
+        public const string NAMESPACE_TEST_ENGINE = "TestEngine";
+        public const string NAMESPACE_DEPRECATED = "Deprecated";
 
         public TestEngineExtensionChecker()
         {
@@ -220,6 +225,17 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             return sources;
         }
 
+        /// <summary>
+        /// Validate that the provided provider file is allowed or should be denied based on the test settings
+        /// </summary>
+        /// <param name="settings">The test settings that should be evaluated</param>
+        /// <param name="file">The .Net Assembly file to validate</param>
+        /// <returns><c>True</c> if the assembly meets the test setting requirements, <c>False</c> if not</returns>
+        public virtual bool ValidateProvider(TestSettingExtensions settings, string file)
+        {
+            byte[] contents = GetExtentionContents(file);
+            return VerifyContainsValidNamespacePowerFxFunctions(settings, contents);
+        }
 
         /// <summary>
         /// Validate that the provided file is allowed or should be denied based on the test settings
@@ -287,6 +303,23 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         public bool VerifyContainsValidNamespacePowerFxFunctions(TestSettingExtensions settings, byte[] assembly)
         {
             var isValid = true;
+
+#if DEBUG
+            // Add Experimenal namespaces in Debug compile if it has not been added in allow list
+            if (!settings.AllowPowerFxNamespaces.Contains(NAMESPACE_EXPERIMENTAL))
+            {
+                settings.AllowPowerFxNamespaces.Add(NAMESPACE_EXPERIMENTAL);
+            }
+#endif
+
+#if RELEASE
+            // Add Deprecated namespaces in Release compile if it has not been added in deny list
+            if (!settings.DenyPowerFxNamespaces.Contains(NAMESPACE_DEPRECATED))
+            {
+                settings.DenyPowerFxNamespaces.Add(NAMESPACE_DEPRECATED);
+            }
+#endif
+
             using (var stream = new MemoryStream(assembly))
             {
                 stream.Position = 0;
@@ -297,6 +330,47 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                 foreach (TypeDefinition type in module.GetAllTypes())
                 {
+                    // Provider checks are based on Namespaces string[] property
+                    if (
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName)
+                        ||
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Users.IUserManager).FullName)
+                        ||
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName)
+                        )
+                    {
+                        if (CheckPropertyArrayContainsValue(type, "Namespaces", out var values))
+                        {
+                            foreach (var name in values)
+                            {
+                                // Check against deny list using regular expressions
+                                if (settings.DenyPowerFxNamespaces.Any(pattern => Regex.IsMatch(name, WildcardToRegex(pattern))))
+                                {
+                                    Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
+                                    return false;
+                                }
+
+                                // Check against deny wildcard and allow list using regular expressions
+                                if (settings.DenyPowerFxNamespaces.Any(pattern => pattern == "*") &&
+                                    (!settings.AllowPowerFxNamespaces.Any(pattern => Regex.IsMatch(name, WildcardToRegex(pattern))) &&
+                                     name != NAMESPACE_TEST_ENGINE))
+                                {
+                                    Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
+                                    return false;
+                                }
+
+                                // Check against allow list using regular expressions
+                                if (!settings.AllowPowerFxNamespaces.Any(pattern => Regex.IsMatch(name, WildcardToRegex(pattern))) &&
+                                    name != NAMESPACE_TEST_ENGINE)
+                                {
+                                    Logger.LogInformation($"Not allow Power FX Namespace {name} for {type.Name}");
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+
+                    // Extension Module Check are based on constructor
                     if (type.BaseType != null && type.BaseType.Name == "ReflectionFunction")
                     {
                         var constructors = type.GetConstructors();
@@ -321,7 +395,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             return false;
                         }
 
-                        var baseCall = constructor.Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference && ((MethodReference)i.Operand).Name == ".ctor");
+                        var baseCall = constructor.Body.Instructions?.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference && ((MethodReference)i.Operand).Name == ".ctor");
 
                         if (baseCall == null)
                         {
@@ -332,7 +406,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                         MethodReference baseConstructor = (MethodReference)baseCall.Operand;
 
-                        if (baseConstructor.Parameters.Count() < 2)
+                        if (baseConstructor.Parameters?.Count() < 2)
                         {
                             // Not enough parameters
                             Logger.LogInformation($"No not enough parameters for {type.Name}");
@@ -363,17 +437,9 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             return false;
                         }
 
-#if DEBUG
-                        // Add Experimenal namespaes in Debug compile it it has not been added in allow list
-                        if (!settings.AllowPowerFxNamespaces.Contains("Experimental"))
-                        {
-                            settings.AllowPowerFxNamespaces.Add("Experimental");
-                        }
-#endif
-
                         if ((settings.DenyPowerFxNamespaces.Contains("*") && (
                                 !settings.AllowPowerFxNamespaces.Contains(name) ||
-                                (!settings.AllowPowerFxNamespaces.Contains(name) && name != "TestEngine")
+                                (!settings.AllowPowerFxNamespaces.Contains(name) && name != NAMESPACE_TEST_ENGINE)
                                 )
                             ))
                         {
@@ -382,7 +448,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             return false;
                         }
 
-                        if (!settings.AllowPowerFxNamespaces.Contains(name) && name != "TestEngine")
+                        if (!settings.AllowPowerFxNamespaces.Contains(name) && name != NAMESPACE_TEST_ENGINE)
                         {
                             Logger.LogInformation($"Not allow Power FX Namespace {name} for {type.Name}");
                             // Not in allow list or the Reserved TestEngine namespace
@@ -392,6 +458,108 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 }
             }
             return isValid;
+        }
+
+        // Helper method to convert wildcard patterns to regular expressions
+        private string WildcardToRegex(string pattern)
+        {
+            return "^" + Regex.Escape(pattern).Replace("\\*", ".*").Replace("\\?", ".") + "$";
+        }
+
+        private bool CheckPropertyArrayContainsValue(TypeDefinition typeDefinition, string propertyName, out string[] values)
+        {
+            values = null;
+
+            // Find the property by name
+            var property = typeDefinition.HasProperties ? typeDefinition.Properties.FirstOrDefault(p => p.Name == propertyName) : null;
+            if (property == null)
+            {
+                return false;
+            }
+
+            // Get the property type and check if it's an array
+            var propertyType = property.PropertyType as ArrayType;
+            if (propertyType == null)
+            {
+                return false;
+            }
+
+            // Assuming the property has a getter method
+            var getMethod = property.GetMethod;
+            if (getMethod == null)
+            {
+                return false;
+            }
+
+            // Load the assembly and get the method body
+            var methodBody = getMethod.Body;
+            if (methodBody == null)
+            {
+                return false;
+            }
+
+            // Iterate through the instructions to find the array initialization
+            foreach (var instruction in methodBody?.Instructions)
+            {
+                if (instruction.OpCode == OpCodes.Newarr)
+                {
+                    // Call the method to get array values
+                    var arrayValues = GetArrayValuesFromInstruction(methodBody, instruction);
+                    values = arrayValues.OfType<string>().ToArray(); // Ensure values are strings
+                    return values.Length > 0;
+                }
+            }
+
+            return false;
+        }
+
+        private object[] GetArrayValuesFromInstruction(MethodBody methodBody, Instruction newarrInstruction)
+        {
+            var values = new List<object>();
+            var instructions = methodBody?.Instructions;
+            int index = instructions?.IndexOf(newarrInstruction) ?? 0;
+
+            // Iterate through the instructions following the 'newarr' instruction
+            for (int i = index + 1; i < instructions?.Count; i++)
+            {
+                var instruction = instructions[i];
+
+                // Look for instructions that store values in the array
+                if (instruction.OpCode == OpCodes.Stelem_Ref ||
+                    instruction.OpCode == OpCodes.Stelem_I4 ||
+                    instruction.OpCode == OpCodes.Stelem_R4 ||
+                    instruction.OpCode == OpCodes.Stelem_R8)
+                {
+                    // The value to be stored is usually pushed onto the stack before the Stelem instruction
+                    var valueInstruction = instructions[i - 1];
+
+                    // Extract the value based on the opcode
+                    switch (valueInstruction.OpCode.Code)
+                    {
+                        case Code.Ldc_I4:
+                            values.Add((int)valueInstruction.Operand);
+                            break;
+                        case Code.Ldc_R4:
+                            values.Add((float)valueInstruction.Operand);
+                            break;
+                        case Code.Ldc_R8:
+                            values.Add((double)valueInstruction.Operand);
+                            break;
+                        case Code.Ldstr:
+                            values.Add((string)valueInstruction.Operand);
+                            break;
+                            // Add more cases as needed for other types
+                    }
+                }
+
+                // Stop if we reach another array initialization or method end
+                if (instruction.OpCode == OpCodes.Newarr || instruction.OpCode == OpCodes.Ret)
+                {
+                    break;
+                }
+            }
+
+            return values.ToArray();
         }
 
         /// <summary>

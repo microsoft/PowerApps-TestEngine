@@ -15,6 +15,11 @@ namespace Microsoft.PowerApps.TestEngine.Users
     public interface IUserManager
     {
         /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; }
+
+        /// <summary>
         /// The name of the user manager as multiple Manager instances may exist
         /// </summary>
         public string Name { get; }

@@ -54,6 +54,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ModelDrivenApplicationCanvasState? CanvasState { get; set; } = new ModelDrivenApplicationCanvasState();
 
+        public string[] Namespaces => new string[] { "Experimental" };
+
         public static string QueryFormField = "JSON.stringify({{PropertyValue: PowerAppsTestEngine.getValue('{0}') }})";
 
         public static string ControlPropertiesQuery = "PowerAppsTestEngine.getControlProperties('{0}')";

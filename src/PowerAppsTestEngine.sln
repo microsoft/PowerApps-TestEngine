@@ -94,9 +94,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.storagestat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.user.storagestate.tests", "testengine.user.storagestate.tests\testengine.user.storagestate.tests.csproj", "{BC91A675-FE44-44D7-B951-FBE8220D3399}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.common.user", "testengine.common.user\testengine.common.user.csproj", "{6CA1D5BF-FF9F-4392-8CCA-03C9B97BB4CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.common.user", "testengine.common.user\testengine.common.user.csproj", "{6CA1D5BF-FF9F-4392-8CCA-03C9B97BB4CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.common.user.tests", "testengine.common.user.tests\testengine.common.user.tests.csproj", "{52D935F1-3567-48B7-904F-1183F824A9FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.common.user.tests", "testengine.common.user.tests\testengine.common.user.tests.csproj", "{52D935F1-3567-48B7-904F-1183F824A9FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -23,6 +23,11 @@ namespace testengine.user.storagestate
     [Export(typeof(IUserManager))]
     public class StorageStateUserManagerModule : IConfigurableUserManager
     {
+        /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; private set; } = new string[] { "TestEngine" };
+
         public Dictionary<string, object> Settings { get; private set; }
 
         public StorageStateUserManagerModule()
