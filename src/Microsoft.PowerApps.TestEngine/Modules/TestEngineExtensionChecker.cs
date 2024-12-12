@@ -245,8 +245,6 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         /// <returns><c>True</c> if the assembly meets the test setting requirements, <c>False</c> if not</returns>
         public virtual bool Validate(TestSettingExtensions settings, string file)
         {
-            var contents = GetExtentionContents(file);
-
             var allowList = new List<string>(settings.AllowNamespaces)
             {
                 // Add minimum namespaces for a MEF plugin used by TestEngine
@@ -263,11 +261,12 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 "Microsoft.PowerApps.TestEngine.Modules.",
             };
 
-            var found = LoadTypes(contents);
+            var fileContents = GetExtentionContents(file);
+            var found = LoadTypes(fileContents);
 
             var valid = true;
 
-            if (!VerifyContainsValidNamespacePowerFxFunctions(settings, contents))
+            if (!VerifyContainsValidNamespacePowerFxFunctions(settings, fileContents))
             {
                 Logger.LogInformation("Invalid Power FX Namespace");
                 valid = false;

@@ -19,7 +19,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Determine if extension modules should be checks for Namespace rules
         /// </summary>
 #if RELEASE
-        //restricting for current milestone 1
         public bool CheckAssemblies { get; } = true;
 #else
         public bool CheckAssemblies { get; set; } = true;

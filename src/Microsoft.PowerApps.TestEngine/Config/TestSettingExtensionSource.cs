@@ -13,7 +13,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         }
 
 #if RELEASE
-        //restricting for current milestone
         public bool EnableNuGet { get; } = false;
         public bool EnableFileSystem { get; } = false;
         public List<string> InstallSource { get; } = new List<string>();
