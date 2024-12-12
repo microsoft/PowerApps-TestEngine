@@ -20,6 +20,7 @@ Before you start, you'll need a few tools and permissions:
 5. Granted System Administrator or System Customizer roles as documented in [Microsoft Learn](https://learn.microsoft.compower-apps/maker/model-driven-apps/privileges-required-customization#system-administrator-and-system-customizer-security-roles)
 6. Git Client has been installed. For example using [GitHub Desktop](https://desktop.github.com/download/) or the [Git application](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 7. The CoE Starter Kit core module has been installed into the environment
+8. If you want to test multiple languages you have you will need to follow instructions for setting up in [Regional and language options for your environment](https://learn.microsoft.com/power-platform/admin/enable-languages) for French. 
 
 ## Getting Started
 
@@ -63,6 +64,21 @@ Before you start, you'll need a few tools and permissions:
         "appDescription": "Weather Sample",
         "user1Email": "test@contoso.onmicrosoft.com",
         "runInstall": true,
+        "installPlaywright": true
+    }
+    ```
+
+6. If you are testing multiple languages and you have those languages enabled in the environment you can use the following template to map languages to the the correct Language()
+
+
+    ```json
+    {
+        "tenantId": "a222222-1111-2222-3333-444455556666",
+        "environmentId": "12345678-1111-2222-3333-444455556666",
+        "customPage": "te_snapshots_24d69",
+        "appDescription": "Weather Sample",
+        "user1Email": "test@contoso.onmicrosoft.com",
+        "runInstall": true,
         "installPlaywright": true,
         "languages": [
             {"id":1031, "name": "fr-fr", "file":"testPlan.eu.fx.yaml"},
@@ -72,7 +88,7 @@ Before you start, you'll need a few tools and permissions:
     }
     ```
 
-6. Ensure the sample WeatherSample_*.zip solution has been imporred
+7. Ensure the sample WeatherSample_*.zip solution has been imported
 
 ## Run Test
 
