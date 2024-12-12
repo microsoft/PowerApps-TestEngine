@@ -261,12 +261,12 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 "Microsoft.PowerApps.TestEngine.Modules.",
             };
 
-            var fileContents = GetExtentionContents(file);
-            var found = LoadTypes(fileContents);
+            byte[] contents = GetExtentionContents(file);
+            var found = LoadTypes(contents);
 
             var valid = true;
 
-            if (!VerifyContainsValidNamespacePowerFxFunctions(settings, fileContents))
+            if (!VerifyContainsValidNamespacePowerFxFunctions(settings, contents))
             {
                 Logger.LogInformation("Invalid Power FX Namespace");
                 valid = false;
