@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <MySourceFiles Include="..\..\bin\$(configuration)\testengine.provider.mda\testengine.provider.mda.dll;..\..\bin\$(configuration)\testengine.provider.mda\testengine.provider.mda.pdb" />
+    <MySourceFiles Include="..\..\bin\$(configuration)\testengine.provider.mda\testengine.provider.mda.dll" />
   </ItemGroup>
 
   <ItemGroup>
