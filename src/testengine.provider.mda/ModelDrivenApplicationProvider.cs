@@ -164,6 +164,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                             switch (value.GetType().ToString())
                             {
                                 case "System.String":
+                                    var stringValue = value.ToString();
+                                    if (string.IsNullOrEmpty(stringValue))
+                                    {
+                                        return (T)(object)("{\"PropertyValue\": \"\"}");
+                                    }
                                     return (T)(object)("{PropertyValue: '" + value.ToString() + "'}");
                                 default:
                                     return (T)(object)("{PropertyValue: " + value.ToString() + "}");

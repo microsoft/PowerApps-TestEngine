@@ -1,86 +1,156 @@
 testSuite:
-  testSuiteName: InputControlRuntimeValidation
-  testSuiteDescription: Validate runtime behavior for classic input controls, ensuring positive and negative test cases are handled appropriately.
+  testSuiteName: Classic Input Controls
+  testSuiteDescription: Verifies that the classic input controls work correctly.
   persona: User1
-  appLogicalName: input_control_runtime_testing
+  appLogicalName: classic_input_controls_app
 
-  testCases: 
-  - testCaseName: Runtime_Label_Text_Case
-    testCaseDescription: Verify the Label control updates its Text property correctly at runtime.
-    testSteps: |
-      SetProperty(Label1.Text, "Runtime Update");
-      Assert(Label1.Text = "Runtime Update", "Validate Label1 displays the correct runtime text.");
+  testCases:
+    - testCaseName: Test Label Property
+      testCaseDescription: Verify that the label's Text property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Label1.Text, "Check it");
+        Assert(Label1.Text = "Check it", "Expected Label1.Text to be 'Check it'");
 
-  - testCaseName: Select Button Once
-    testCaseDescription: Verify that the button performs the correct action when selected once.
-    testSteps: |        
+    - testCaseName: Test Label Empty Text
+      testCaseDescription: Verify that the label's Text property can be set to an empty string.
+      testSteps: |  
+        SetProperty(Label1.Text, "");    
+        Assert(Label1.Text = "", "Expected Label1.Text to be empty");
+
+    - testCaseName: Test Label Long Text
+      testCaseDescription: Verify that the label's Text property can handle long text.
+      testSteps: |
+        SetProperty(Label1.Text, "This is a very long text to check if the label can handle it without any issues.");
+        Assert(Label1.Text = "This is a very long text to check if the label can handle it without any issues.", "Expected Label1.Text to be the long text");
+
+    - testCaseName: Test Label Numeric Text
+      testCaseDescription: Verify that the label's Text property can handle numeric text.
+      testSteps: |
+        SetProperty(Label1.Text, "1234567890");
+        Assert(Label1.Text = "1234567890", "Expected Label1.Text to be numeric text");
+
+    - testCaseName: Test Label Special Characters
+      testCaseDescription: Verify the Label control updates its Text property correctly with special characters at runtime.
+      testSteps: |
+        SetProperty(Label1.Text, "Hello@#$%^&*!"); 
+        Assert(Label1.Text = "Hello@#$%^&*!", "Ensuring the Label displays special characters correctly.");
+
+    - testCaseName: Test TextInput Sample Text
+      testCaseDescription: Verify that the text box accepts and displays input correctly.
+      testSteps: |
+        SetProperty(TextInput1.Value, "Sample Text");
+        Assert(TextInput1.Value = "Sample Text", "Verify text box displays the input text correctly");
+
+    - testCaseName: Test TextInput Empty
+      testCaseDescription: Verify that the TextInput control can be set to an empty string at runtime.
+      testSteps: |
+        SetProperty(TextInput1.Value, "");
+        Assert(TextInput1.Value = "", "Expected TextInput1.Value to be empty.");
+
+    - testCaseName: Test TextInput Long Text
+      testCaseDescription: Verify that the TextInput control can handle long text at runtime.
+      testSteps: |
+        SetProperty(TextInput1.Value, "This is a very long text to check if the TextInput can handle it without any issues.");
+        Assert(TextInput1.Value = "This is a very long text to check if the TextInput can handle it without any issues.", "Expected TextInput1.Value to be the long text.");
+
+    - testCaseName: Test TextInput Special Characters
+      testCaseDescription: Verify that the TextInput control updates its Value property correctly with special characters at runtime.
+      testSteps: |
+        SetProperty(TextInput1.Value, "Special@#$%^&*()!");
+        Assert(TextInput1.Value = "Special@#$%^&*()!", "Ensuring the TextInput displays special characters correctly.");
+
+    - testCaseName: Test TextInput Numeric Text
+      testCaseDescription: Verify that the TextInput control can handle numeric text at runtime.
+      testSteps: |
+        SetProperty(TextInput1.Value, "1234567890");
+        Assert(TextInput1.Value = "1234567890", "Expected TextInput1.Value to be numeric text.");
+
+    - testCaseName: Select Button Once
+      testCaseDescription: Verify that the button performs the correct action when selected once.
+      testSteps: |        
         Select(Button1);
         Assert(Label1.Text = "Button Clicked!", "Verify button performs the correct action when selected once");
 
-  - testCaseName: Select Button Twice
-    testCaseDescription: Verify that the button performs the correct action when selected twice.
-    testSteps: |      
+    - testCaseName: Select Button Twice
+      testCaseDescription: Verify that the button performs the correct action when selected twice.
+      testSteps: |      
         Select(Button1);
         Select(Button1);
         Assert(Label1.Text = "Button Clicked!", "Verify button performs the correct action when selected twice");
 
-  - testCaseName: Enter Text in TextBox
-    testCaseDescription: Verify that the text box accepts and displays input correctly.
-    testSteps: |
-        SetProperty(TextInput1.Value, "Sample Text");
-        Assert(TextInput1.Value = "Sample Text", "Verify text box displays the input text correctly");
-  
-  - testCaseName: Test Visible Property
-    testCaseDescription: Verify that the visibility can be toggled correctly.
-    testSteps: |
-      SetProperty(Checkbox1.Visible, true);
-      Assert(Checkbox1.Visible = true, "Expected Checkbox1.Visible to be true");
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the visibility can be toggled correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Visible, true);
+        Assert(Checkbox1.Visible = true, "Expected Checkbox1.Visible to be true");
 
-  - testCaseName: Test Checked Property
-    testCaseDescription: Verify that the checked state can be set and retrieved correctly.
-    testSteps: |
-      SetProperty(Checkbox1.Checked, true);
-      Assert(Checkbox1.Checked = true, "Expected Checkbox1.Checked to be true");
+    - testCaseName: Test Checked Property
+      testCaseDescription: Verify that the checked state can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Checked, true);
+        Assert(Checkbox1.Checked = true, "Expected Checkbox1.Checked to be true");
     
-  - testCaseName: Test SelectedItems Property
-    testCaseDescription: Verify that the SelectedItems property can be set and retrieved correctly.
-    testSteps: |        
+    - testCaseName: Test SelectedItems Property
+      testCaseDescription: Verify that the SelectedItems property can be set and retrieved correctly.
+      testSteps: |        
         SetProperty('Combobox1'.SelectedItems, Table({'Value1':"Item 7",'Value2':7,'Value3':70},
         {'Value1':"Item 10",'Value2':10,'Value3':100},{'Value1':"Item 12",'Value2':12,'Value3':120})); 
-        Assert(CountRows('Combobox1'.SelectedItems) = 3, "Validated Succesfully");  
-  
-  - testCaseName: Test SelectedDate Property
-    testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly.
-    testSteps: |
-      SetProperty(DatePicker1.SelectedDate, Date(2024,10,01));
-      Assert(DatePicker1.SelectedDate = Date(2024,10,01), "Checking the SelectedDate property");
+        Assert(CountRows('Combobox1'.SelectedItems) = 3, "Validated Successfully");  
+   
+    - testCaseName: Test SelectedDate Property
+      testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(DatePicker1.SelectedDate, Date(2024,10,01));
+        Assert(DatePicker1.SelectedDate = Date(2024,10,01), "Checking the SelectedDate property");
 
-  - testCaseName: Test RadioButton DefaultSelectedItems Property
-    testCaseDescription: Verify that the RadioButton DefaultSelectedItems property can be set and retrieved correctly.
-    testSteps: |    
-      SetProperty(RadioGroup1.DefaultSelectedItems, Table({'Value1':"Item 7"}));
-      Assert(CountRows('RadioGroup1'.SelectedItems) = 1, "Validated Succesfully");  
-  
-  - testCaseName: Test Value Property
-    testCaseDescription: Verify that the Value property can be set and retrieved correctly.
-    testSteps: |
-      SetProperty(Slider1.Value, 50);
-      Assert(Slider1.Value = 50, "Checking the Value property");
-      SetProperty(Slider1.Value, 25);
-      Assert(Slider1.Value = 25, "Checking the Value property");
-      SetProperty(Slider1.Value, 100);
-      Assert(Slider1.Value = 100, "Checking the Value property");
-      SetProperty(Slider1.Value, 75);
-      Assert(Slider1.Value = 75, "Checking the Value property");
+    - testCaseName: Test RadioGroup DefaultSelectedItems Property
+      testCaseDescription: Verify that the RadioGroup control's DefaultSelectedItems property can be set and retrieved correctly.
+      testSteps: |    
+        SetProperty(RadioGroup1.DefaultSelectedItems, Table({Value1:"Item 7"}));
+        Assert(CountRows(RadioGroup1.SelectedItems) = 1, "Validated Successfully");
 
-  - testCaseName: Test_Toggle_User_Action
-    testCaseDescription: Verify that user interaction with the Toggle control is correctly reflected in its state.
-    testSteps: |
-      SetProperty(Toggle1.Checked, true);
-      Assert(Toggle1.Checked = true, "User action correctly toggled Toggle1 to on.");     
-      SetProperty(Toggle1.Checked, false);
-      Assert(Toggle1.Checked = false, "User action correctly toggled Toggle1 to off.");
+    - testCaseName: Test RadioGroup Visible Property
+      testCaseDescription: Verify that the RadioGroup control's Visible property can be toggled correctly.
+      testSteps: |
+        SetProperty(RadioGroup1.Visible, true);
+        Assert(RadioGroup1.Visible = true, "RadioGroup1 is visible.");
+        SetProperty(RadioGroup1.Visible, false);
+        Assert(RadioGroup1.Visible = false, "RadioGroup1 is not visible.");
 
+    - testCaseName: Test RadioGroup Items Property
+      testCaseDescription: Verify that the RadioGroup control's Items property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(RadioGroup1.Items, Table({Value1:"Item 1"}, {Value1:"Item 2"}, {Value1:"Item 3"}));
+        Assert(CountRows(RadioGroup1.Items) = 3, "RadioGroup1 items count is 3.");
+   
+    - testCaseName: Test Slider User Interactions
+      testCaseDescription: Verify that the Slider control's Value property can be set and retrieved correctly, and validate its Min and Max properties.
+      testSteps: |
+        SetProperty(Slider1.Value, 50);
+        Assert(Slider1.Value = 50, "Checking the Value property");
+        SetProperty(Slider1.Value, 25);
+        Assert(Slider1.Value = 25, "Checking the Value property");
+        SetProperty(Slider1.Value, 100);
+        Assert(Slider1.Value = 100, "Checking the Value property");
+        SetProperty(Slider1.Value, 75);
+        Assert(Slider1.Value = 75, "Checking the Value property");
+        SetProperty(Slider1.Min, 0);
+        Assert(Slider1.Min = 0, "Slider1 minimum value is set to 0.");
+        SetProperty(Slider1.Max, 100);
+        Assert(Slider1.Max = 100, "Slider1 maximum value is set to 100.");
+   
+    - testCaseName: Test Toggle User Interactions
+      testCaseDescription: Verify that user interaction with the Toggle control is correctly reflected in its Checked and Visible properties.
+      testSteps: |
+        SetProperty(Toggle1.Checked, true);
+        Assert(Toggle1.Checked = true, "User action correctly toggled Toggle1 to on.");
+        SetProperty(Toggle1.Checked, false);
+        Assert(Toggle1.Checked = false, "User action correctly toggled Toggle1 to off.");
+        SetProperty(Toggle1.Visible, true);
+        Assert(Toggle1.Visible = true, "Toggle1 is visible.");
+        SetProperty(Toggle1.Visible, false);
+        Assert(Toggle1.Visible = false, "Toggle1 is not visible.");
+    
 testSettings:
   headless: false
   locale: "en-US"
