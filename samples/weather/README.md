@@ -63,7 +63,12 @@ Before you start, you'll need a few tools and permissions:
         "appDescription": "Weather Sample",
         "user1Email": "test@contoso.onmicrosoft.com",
         "runInstall": true,
-        "installPlaywright": true
+        "installPlaywright": true,
+        "languages": [
+            {"id":1031, "name": "fr-fr", "file":"testPlan.eu.fx.yaml"},
+            {"id":1033, "name": "en-us", "file":"testPlan.fx.yaml"},
+            {"id":1036, "name": "de-de", "file":"testPlan.eu.fx.yaml"}
+        ]
     }
     ```
 

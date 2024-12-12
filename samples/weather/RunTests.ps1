@@ -7,6 +7,7 @@ $tenantId = $config.tenantId
 $environmentId = $config.environmentId
 $user1Email = $config.user1Email
 $appDescription = $config.appDescription
+$languages = $config.languages
 
 if ([string]::IsNullOrEmpty($environmentId)) {
     Write-Error "Environment not configured. Please update config.json"
@@ -80,8 +81,31 @@ if ($config.installPlaywright) {
 
 Set-Location ..\bin\Debug\PowerAppsTestEngine
 $env:user1Email = $user1Email
-# Run the tests for each user in the configuration file.
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w True
+
+if ($null -eq $languages) {
+    # Run the tests for each user in the configuration file.
+    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+} else {
+    foreach ($language in $languages) {
+        $uri = "$environmentUrl/api/data/v9.1/usersettingscollection($userId)"
+        $body = @{
+            uilanguageid = $language.id
+        } | ConvertTo-Json
+        Invoke-RestMethod -Uri $uri -Method Patch -Headers @{Authorization = "Bearer $($token.accessToken)"; "Content-Type" = "application/json"} -Body $body
+
+        $languageId = $language.id
+        $languageName = $language.name
+        $languageFile = $language.file
+
+        $languageTest = "$currentDirectory\testPlan-${languageId}.fx.yaml"
+        Copy-Item "$currentDirectory\$languageFile" $languageTest
+        $text = Get-Content  $languageTest 
+        $text = $text.Replace("locale: ""en-US""", "locale: ""${languageName}""")
+        Set-Content -Path  $languageTest -Value $text 
+
+        dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    }
+}
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

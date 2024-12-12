@@ -93,6 +93,5 @@ Invoke-RestMethod -Uri $uri -Method Patch -Headers @{Authorization = "Bearer $($
 
 dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" 
 
-
 # Reset the location back to the original directory.
 Set-Location $currentDirectory
