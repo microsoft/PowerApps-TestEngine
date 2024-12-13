@@ -6,6 +6,7 @@ using System.Dynamic;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -14,10 +15,12 @@ using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
+using Microsoft.PowerFx.Core.Functions;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using testengine.provider.mda;
+using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -27,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     [Export(typeof(ITestWebProvider))]
     public class ModelDrivenApplicationProvider : ITestWebProvider
     {
-        private TypeMapping TypeMapping = new TypeMapping();
+        private MDATypeMapping TypeMapping = new MDATypeMapping();
 
         public ITestInfraFunctions? TestInfraFunctions { get; set; }
 
@@ -128,12 +131,59 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             }
         }
 
-        private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
+        private async Task<T?> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
             try
             {
                 ValidateItemPath(itemPath, true);
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
+
+                // Check if special case that the requested property is inside an object. For example a collection
+                if (itemPath.ParentControl != null)
+                {
+                    // Request the parent control
+                    var parentControlExpression = string.Format(ControlPropertiesQuery, JsonConvert.SerializeObject(itemPath.ParentControl));
+                    var parentPropertiesString = (await TestInfraFunctions.RunJavascriptAsync<object>(parentControlExpression)).ToString();
+
+                    if (itemPath.ParentControl.Index.HasValue)
+                    {
+                        // Special case we have an index
+                        var parentNameValue = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(parentPropertiesString).FirstOrDefault(k => k.Key == itemPath.ParentControl.PropertyName);
+
+                        // Check if it belongs to an array which probably relates to a table
+                        if (parentNameValue.Value is JArray parentArray)
+                        {
+                            // Find the requested property from the parent array
+                            object? value = (parentArray[itemPath.ParentControl.Index] as JObject).GetValue(itemPath.PropertyName);
+
+                            if (value == null)
+                            {
+                                // Null value trivial case
+                                return (T)(object)("{PropertyValue: null}");
+                            }
+
+                            if (value is JValue scalerValuer)
+                            {
+                                // Could be a JValue get the CLR object
+                                value = scalerValuer.Value;
+                            }
+
+                            if (value is JObject objectValue)
+                            {
+                                value = JsonConvert.SerializeObject(objectValue);
+                            }
+
+                            if (value is string)
+                            {
+                                // Enclose in quotes
+                                return (T)(object)("{PropertyValue: '" + value.ToString().Replace("'", "\'") + "'}");
+                            }
+
+                            // Return the value
+                            return (T)(object)("{PropertyValue: " + value.ToString() + "}");
+                        }
+                    }
+                }
 
                 if (itemPath.PropertyName.ToLower() == "text" && (await TestInfraFunctions.RunJavascriptAsync<object>("PowerAppsTestEngine.pageType()"))?.ToString() == "entityrecord")
                 {
@@ -169,7 +219,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                             }
                     }
                 }
-                throw new Exception($"Unexpected property {itemPathString}");
+                return (T)(object)("{PropertyValue: null}");
             }
             catch (Exception ex)
             {
@@ -178,7 +228,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             }
         }
 
-        public T GetPropertyValueFromControl<T>(ItemPath itemPath)
+        public T? GetPropertyValueFromControl<T>(ItemPath itemPath)
         {
             var getProperty = GetPropertyValueFromControlAsync<T>(itemPath).GetAwaiter();
 
@@ -251,8 +301,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                                 {
                                     SingleTestInstanceState.GetLogger().LogTrace(skipMessage);
                                 }
-
-                                TypeMapping.AddMapping(control.Name, controlType);
 
                                 var controlValue = new ControlRecordValue(controlType, this, control.Name);
 
@@ -392,6 +440,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     case (BooleanType):
                         objectValue = ((BooleanValue)value).Value;
                         break;
+                    case (GuidType):
+                        objectValue = ((GuidValue)value).Value;
+                        break;
                     case (DateType):
                         return await SetPropertyDateAsync(itemPath, (DateValue)value);
                     case (RecordType):
@@ -447,10 +498,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
                 var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-                var recordValue = value.GetField("Value");
-                var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
-                RecordValueObject json = new RecordValueObject(val);
-                var checkVal = JsonConvert.SerializeObject(json);
+                string checkVal = "null";
+                if (value != null)
+                {
+                    checkVal = FormatValue(value);
+                }
 
                 var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
 
@@ -463,6 +515,53 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             }
         }
 
+        /// <summary>
+        /// Convert Power Fx formula value to the string representation
+        /// </summary>
+        /// <param name="value">The vaue to convert</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        private string FormatValue(FormulaValue value)
+        {
+            //TODO: Handle special case of DateTime As unix time to DateTime
+            return value switch
+            {
+                BlankValue blankValue => "null",
+                StringValue stringValue => $"\"{stringValue.Value}\"",
+                NumberValue numberValue => numberValue.Value.ToString(),
+                DecimalValue decimalValue => decimalValue.Value.ToString(),
+                BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
+                // Assume all dates should be in UTC
+                DateValue dateValue => $"\"{dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
+                DateTimeValue dateTimeValue => $"\"{dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
+                RecordValue recordValue => FormatRecordValue(recordValue),
+                TableValue tableValue => FormatTableValue(tableValue),
+                _ => throw new ArgumentException("Unsupported FormulaValue type")
+            };
+        }
+
+        /// <summary>
+        /// Convert a Power Fx object to String Representation of the Record
+        /// </summary>
+        /// <param name="recordValue">The record to be converted</param>
+        /// <returns>Power Fx representation</returns>
+        private string FormatRecordValue(RecordValue recordValue)
+        {
+            var fields = recordValue.Fields.Select(field => $"'{field.Name}': {FormatValue(field.Value)}");
+            return $"{{{string.Join(", ", fields)}}}";
+        }
+
+        /// <summary>
+        /// Convert the Power Fx table into string representation
+        /// </summary>
+        /// <param name="tableValue">The table to be converted</param>
+        /// <returns>The string representation of all rows of the table</returns>
+        private string FormatTableValue(TableValue tableValue)
+        {
+            var rows = tableValue.Rows.Select(row => FormatValue(row.Value));
+            return $"[{string.Join(", ", rows)}]";
+        }
+
         public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, TableValue tableValue)
         {
             try
@@ -470,27 +569,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 ValidateItemPath(itemPath, false);
 
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
-                var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-                RecordValueObject[] jsonArr = new RecordValueObject[tableValue.Rows.Count()];
 
-                var index = 0;
+                var tabelValue = ConvertTableValueToJson(tableValue);
 
-                foreach (var row in tableValue.Rows)
-                {
-                    if (row.IsValue)
-                    {
-                        var recordValue = row.Value.Fields.First().Value;
-                        var val = recordValue.GetType().GetProperty("Value").GetValue(recordValue).ToString();
-                        if (!String.IsNullOrEmpty(val))
-                        {
-                            jsonArr[index++] = new RecordValueObject(val);
-                        }
-                    }
-                }
-                var checkVal = JsonConvert.SerializeObject(jsonArr);
-
-                // TODO - Set the Xrm SDK Value and update state for any JS to run
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{tabelValue})";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -499,6 +581,23 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, SingleTestInstanceState.GetLogger());
                 throw;
             }
+        }
+
+        private string ConvertTableValueToJson(TableValue tableValue)
+        {
+            var list = new List<Dictionary<string, object>>();
+
+            foreach (var record in tableValue.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (var field in record.Value.Fields)
+                {
+                    dict[field.Name] = field.Value.ToObject();
+                }
+                list.Add(dict);
+            }
+
+            return JsonConvert.SerializeObject(list, Formatting.Indented);
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)
@@ -597,7 +696,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     }
                 }
 
-                return await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine === 'undefined'");
+                return await TestInfraFunctions.RunJavascriptAsync<bool>("typeof PowerAppsTestEngine !== 'undefined'");
             }
             catch (Exception ex)
             {

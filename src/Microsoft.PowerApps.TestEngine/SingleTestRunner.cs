@@ -99,6 +99,8 @@ namespace Microsoft.PowerApps.TestEngine
             var testResultDirectory = Path.Combine(testRunDirectory, $"{_fileSystem.RemoveInvalidFileNameChars(testSuiteName)}_{browserConfigName}_{testSuiteId.Substring(0, 6)}");
             TestState.SetTestResultsDirectory(testResultDirectory);
 
+            _state.TestProvider = _testWebProvider;
+
             var testSuite = TestState.GetTestSuiteDefinition();
 
             casesTotal = testSuite.TestCases.Count();
@@ -147,6 +149,14 @@ namespace Microsoft.PowerApps.TestEngine
 
                 _testReporter.TestRunAppURL = desiredUrl;
 
+                // Set up Power Fx
+                _powerFxEngine.Setup();
+
+                if (!String.IsNullOrWhiteSpace(testSuiteDefinition.OnTestSuiteStart))
+                {
+                    await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestSuiteStart, locale);
+                }
+
                 await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
 
                 if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
@@ -154,9 +164,6 @@ namespace Microsoft.PowerApps.TestEngine
                     Logger.LogDebug("After desired login found");
                     await monitor.LogCookies(desiredUrl);
                 }
-
-                // Set up Power Fx
-                _powerFxEngine.Setup();
 
                 var foundErrorState = false;
                 if (_userManager is IConfigurableUserManager configurableUserManager)
