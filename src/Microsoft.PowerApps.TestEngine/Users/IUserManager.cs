@@ -15,6 +15,11 @@ namespace Microsoft.PowerApps.TestEngine.Users
     public interface IUserManager
     {
         /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; }
+
+        /// <summary>
         /// The name of the user manager as multiple Manager instances may exist
         /// </summary>
         public string Name { get; }
@@ -34,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Users
         /// The location to use for this user session
         /// </summary>
         /// <value>Path or resource where the user session should be located</value>
-        public string Location { get; set; }
+        public string Location { get; }
 
         /// <summary>
         /// Log in as user for currently running test

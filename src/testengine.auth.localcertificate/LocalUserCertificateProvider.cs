@@ -14,6 +14,11 @@ namespace testengine.auth
     [Export(typeof(IUserCertificateProvider))]
     public class LocalUserCertificateProvider : IUserCertificateProvider
     {
+        /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; private set; } = new string[] { "Deprecated" };
+
         public string Name { get { return "localcert"; } }
 
         private readonly IFileSystem _fileSystem;

@@ -93,5 +93,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// else it throws exception
         /// </summary>
         public Task<bool> TestEngineReady();
+
+        /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; }
     }
 }

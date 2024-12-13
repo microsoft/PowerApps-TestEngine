@@ -1,26 +1,26 @@
 # yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Weather Sample
-  testSuiteDescription: Run Weather sample
+  testSuiteDescription: Run Weather sample with defaults Power Fx syntax for en-us
   persona: User1
   appLogicalName: NotNeeded
   onTestSuiteStart: |
     = Experimental.SimulateDataverse({
-        Action: "Query",
-        Entity: "te_weathercategories",
-        Then: Table(
-          {
-              'te_categoryname': "Test Category",
-              'createdon': "2024-12-02T17:52:45Z",
-              'te_weathercategoryid': "f58de6c-905d-457d-846b-3e0b2aa4c5fd"
-          }
-        )
+          Action: "Query",
+          Entity: "te_weathercategories",
+          Then: Table(
+            {
+                'te_categoryname': "Test Category",
+                'createdon': "2024-12-02T17:52:45Z",
+                'te_weathercategoryid': "8cd3faaa-97ac-4e78-8b71-16c82cabb856"
+            }
+          )
       });
       Experimental.SimulateDataverse({
-        Action: "Query",
-        Entity: "te_weathersnapshots",
-        Then: Table(
-            { 
+      Action: "Query",
+      Entity: "te_weathersnapshots",
+      Then: Table(
+          { 
               'te_city': "Test, WA",
               'te_date': "2024-12-03T10:41:24Z",
               'te_description': "Match: Test, WA, Temp: 6°C, Feels: 9°C, Partly sunny",
@@ -30,25 +30,30 @@ testSuite:
               '_te_weathercategory_value@Microsoft.Dynamics.CRM.lookuplogicalname': "te_weathercategory", 
               '_te_weathercategory_value@OData.Community.Display.V1.FormattedValue': "Test Category",
               'te_date@OData.Community.Display.V1.FormattedValue': "12/3/2024"
-            })
-        });
-        Experimental.SimulateConnector(
+          })
+      });
+      Experimental.SimulateConnector(
           {
-            name: "msnweather", 
-            then: {
-                responses: { 
-                  weather: { 
-                      current: {
-                        temp: 30,
-                        feels: 20,
-                        cap: "Sunny"
+          name: "msnweather", 
+          then: {
+                  responses: { 
+                      weather: { 
+                          current: {
+                              temp: 30,
+                              feels: 20,
+                              cap: "Sunny"
+                          }
+                      },
+                      source: { 
+                          location: "Test Location"
                       }
                   },
-                  source: { location: "Test Location" }
-                },
-                units: { temperature: "^F" }
+                  units: { 
+                      temperature: "^F"
+                  }
               }
-          })
+          }
+      )
   testCases:
     - testCaseName: Search for location weather
       testCaseDescription: Set location and verify data loaded as expected
@@ -58,7 +63,19 @@ testSuite:
           Select(SearchNow);
           Assert(CountRows(WeatherCategory.Items)=1);
           Assert(CountRows(Gallery1.Items)=1);
-          Assert(Summary.Text="Match: Test Location, Temp: 30^F, Feels: 20^F, Sunny");
+          Assert(Summary.Text=
+            Switch(
+              Lower(Language()), 
+              "en-us", "Match: Test Location, Temp: 30^F, Feels: 20^F, Sunny",
+              "fr-fr", "Correspondance: Test Location, Température: 30^F, Ressenti: 20^F, Sunny",
+              "de-de", "Übereinstimmung: Test Location, Temperatur: 30^F, Gefühlt: 20^F, Sunny"
+            )
+          );
+    - testCaseName: Select category
+      testCaseDescription: Select a category from the dropdown
+      testSteps: |
+        = SetProperty(WeatherCategory.SelectedItems,Table(First(WeatherCategory.Items)));
+          Assert(CountRows(WeatherCategory.SelectedItems)=1);
      
 testSettings:
   headless: false

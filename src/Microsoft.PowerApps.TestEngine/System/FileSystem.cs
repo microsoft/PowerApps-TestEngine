@@ -1,20 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Drawing;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using ICSharpCode.Decompiler.CSharp;
-using ICSharpCode.Decompiler.IL;
-using ICSharpCode.Decompiler.Metadata;
-using Microsoft.Playwright;
-using Microsoft.PowerApps.TestEngine.Config;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Microsoft.PowerApps.TestEngine.System
 {
@@ -291,6 +279,11 @@ namespace Microsoft.PowerApps.TestEngine.System
         public bool LinuxReservedLocationExistsInPath(string fullPath)
         {
             fullPath = Path.GetFullPath(fullPath);
+
+            if (fullPath.Equals("/"))
+            {
+                return true;
+            }
             //check if its a network path if so fail
             var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath, UriKind.Absolute);
             if (fullPathUri.IsUnc)
