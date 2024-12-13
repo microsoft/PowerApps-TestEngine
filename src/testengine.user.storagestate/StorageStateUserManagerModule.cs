@@ -23,6 +23,11 @@ namespace testengine.user.storagestate
     [Export(typeof(IUserManager))]
     public class StorageStateUserManagerModule : IConfigurableUserManager
     {
+        /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; private set; } = new string[] { "TestEngine" };
+
         public Dictionary<string, object> Settings { get; private set; }
 
         public StorageStateUserManagerModule()
@@ -55,6 +60,7 @@ namespace testengine.user.storagestate
                 var user = environmentVariable.GetVariable(userConfig.EmailKey);
                 var userName = GetUserNameFromEmail(user);
                 Location = !Location.EndsWith($"-{userName}") ? Location += $"-{userName}" : Location;
+                Location = !Path.IsPathRooted(Location) ? Path.Combine(fileSystem.GetDefaultRootTestEngine(), Location) : Location;
                 if (!IsValidEmail(user))
                 {
                     return String.Empty;
@@ -146,6 +152,7 @@ namespace testengine.user.storagestate
 
             var userName = GetUserNameFromEmail(user);
             Location = !Location.EndsWith($"-{userName}") ? Location += $"-{userName}" : Location;
+            Location = !Path.IsPathRooted(Location) ? Path.Combine(fileSystem.GetDefaultRootTestEngine(), Location) : Location;
 
             if (!fileSystem.Exists(Location))
             {

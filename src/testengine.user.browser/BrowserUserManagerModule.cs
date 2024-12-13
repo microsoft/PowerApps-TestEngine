@@ -21,6 +21,11 @@ namespace testengine.user.browser
     [Export(typeof(IUserManager))]
     public class BrowserUserManagerModule : IConfigurableUserManager
     {
+        /// <summary>
+        /// The namespace of namespaces that this provider relates to
+        /// </summary>
+        public string[] Namespaces { get; private set; } = new string[] { "Deprecated" };
+
         public string Name { get { return "browser"; } }
 
         public int Priority { get { return 100; } }
