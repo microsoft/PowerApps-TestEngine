@@ -141,6 +141,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestLogger.Setup(x => x.WriteToLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             MockTestLogger.Setup(x => x.WriteExceptionToDebugLogsFile(It.IsAny<string>(), It.IsAny<string>()));
             TestLoggerProvider.TestLoggers.Add(testSuiteId, MockTestLogger.Object);
+
+            MockTestState.SetupSet(m => m.TestProvider = MockTestWebProvider.Object);
         }
 
         // When OnTestSuiteComplete exists, the test result directory will be set an extra time. 

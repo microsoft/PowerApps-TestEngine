@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System.Collections;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;

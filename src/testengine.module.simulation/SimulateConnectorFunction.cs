@@ -353,39 +353,79 @@ namespace testengine.module
 
         private async Task<string> ConvertToJson(FormulaValue thenResult)
         {
-            if (thenResult is RecordValue)
+            if (thenResult is TableValue thenValue)
             {
-                var item = (RecordValue)thenResult;
-                var row = new Dictionary<string, object?>(new ExpandoObject());
+                return await ConvertTableToJson(thenValue);
+            }
 
-                await foreach (var field in item.GetFieldsAsync(CancellationToken.None))
+            var stack = new Stack<(string, FormulaValue, Dictionary<string, object?>)>();
+            var root = new Dictionary<string, object?>(new ExpandoObject());
+            stack.Push(("root", thenResult, root));
+
+            while (stack.Count > 0)
+            {
+                var (key, value, parent) = stack.Pop();
+
+                if (value is RecordValue record)
                 {
-                    if (field.Value.TryGetPrimitiveValue(out object val))
+                    var row = new Dictionary<string, object?>(new ExpandoObject());
+                    await foreach (var field in record.GetFieldsAsync(CancellationToken.None))
                     {
-                        row.Add(field.Name, val);
-                        continue;
+                        if (field.Value.TryGetPrimitiveValue(out object val))
+                        {
+                            row.Add(field.Name, val);
+                        }
+                        else
+                        {
+                            stack.Push((field.Name, field.Value, row));
+                        }
                     }
-
-                    // TODO: Handle complex non primative types
+                    parent[key] = row;
                 }
+                else if (value is TableValue table)
+                {
+                    var tableList = new List<Dictionary<string, object?>>();
+                    var rows = table.Rows;
+                    foreach (DValue<RecordValue> row in rows)
+                    {
+                        var rowDict = new Dictionary<string, object?>(new ExpandoObject());
 
-                var jObject = JObject.FromObject(row);
-                return jObject.ToString(Newtonsoft.Json.Formatting.None);
+                        if (row.IsValue)
+                        {
+                            await foreach (var field in row.Value.GetFieldsAsync(CancellationToken.None))
+                            {
+                                if (field.Value.TryGetPrimitiveValue(out object val))
+                                {
+                                    rowDict.Add(field.Name, val);
+                                }
+                                else
+                                {
+                                    stack.Push((field.Name, field.Value, rowDict));
+                                }
+                            }
+                            tableList.Add(rowDict);
+                        }
+                    }
+                    parent[key] = tableList;
+                }
+                else if (value.TryGetPrimitiveValue(out object primitiveVal))
+                {
+                    parent[key] = primitiveVal;
+                }
             }
 
-            if (thenResult is TableValue)
+            if (root.Keys.Count == 1)
             {
-                return await ConvertTableToJson(thenResult as TableValue);
+                return JsonConvert.SerializeObject(root["root"], Formatting.None);
             }
 
-            if (thenResult.TryGetPrimitiveValue(out object primativeVal))
+            if (root.ContainsKey("root"))
             {
-                return JsonConvert.SerializeObject(primativeVal);
+                root.Remove("root");
             }
 
-            return "{}";
+            return JsonConvert.SerializeObject(root, Formatting.None);
         }
-
 
         public Dictionary<string, string> GetQueryParameters(Uri uri)
         {

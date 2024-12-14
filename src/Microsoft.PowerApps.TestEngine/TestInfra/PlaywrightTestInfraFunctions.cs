@@ -269,7 +269,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                         throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionTestConfig.ToString());
                     }
 
-                    if (!_fileSystem.IsValidFilePath(mock.ResponseDataFile) || !_fileSystem.FileExists(mock.ResponseDataFile))
+                    if (!_fileSystem.CanAccessFilePath(mock.ResponseDataFile) || !_fileSystem.FileExists(mock.ResponseDataFile))
                     {
                         _singleTestInstanceState.GetLogger().LogError("ResponseDataFile is invalid or missing");
                         throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
@@ -390,7 +390,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public async Task ScreenshotAsync(string screenshotFilePath)
         {
             ValidatePage();
-            if (!_fileSystem.IsValidFilePath(screenshotFilePath))
+            if (!_fileSystem.CanAccessFilePath(screenshotFilePath))
             {
                 throw new InvalidOperationException("screenshotFilePath must be provided");
             }

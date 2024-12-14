@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <SignAssembly>true</SignAssembly>
     <PublicSign>true</PublicSign>
@@ -23,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\PowerApps-TestEngine\src\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
     <ProjectReference Include="..\testengine.common.user\testengine.common.user.csproj" />
   </ItemGroup>
 

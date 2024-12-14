@@ -11,6 +11,7 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.TestInfra;
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
@@ -158,14 +159,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("", false)]
-        [InlineData("class UCWorkBlockTracker {}", false)]
-        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return false; } }", false)]
-        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", true)]
-        public async Task IsReady(string javaScript, bool expectedIdle)
+        [InlineData("", "", false)]
+        [InlineData("class UCWorkBlockTracker {}", "", false)]
+        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return false; } }", "", false)]
+        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", "", false)]
+        [InlineData("class UCWorkBlockTracker { static isAppIdle() { return true; } }", "class PowerAppsTestEngine { }", true)]
+        public async Task IsReady(string javaScript, string extraCode, bool expectedIdle)
         {
             var engine = new Jint.Engine();
             engine.Execute(javaScript);
+
+            if (!string.IsNullOrEmpty(extraCode))
+            {
+                engine.Execute(extraCode);
+            }
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
 
@@ -764,6 +771,41 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 
             // Verify that AddScriptTagAsync was called with the correct PageAddScriptTagOptions
             mockPage.Verify(p => p.AddScriptTagAsync(It.Is<PageAddScriptTagOptions>(opt => opt.Url.Contains(expectedScriptHash))), Times.Once);
+        }
+
+        [Theory]
+        [MemberData(nameof(RecordTestValues))]
+        public async Task SetRecordValue(FormulaValue data)
+        {
+            // Arrange
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions = new Mock<ITestInfraFunctions>();
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>(It.IsAny<string>()));
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+
+            // Act
+            var row = RecordValue.NewRecordFromFields(new NamedValue("Selected", data)); // BlankValue.NewBlank(RecordValue.NewRecordFromFields(new NamedValue("Name", StringValue.New("")));
+            var value = RecordValue.NewRecordFromFields(new NamedValue("PropertyValue", row));
+            await provider.SetPropertyAsync(new ItemPath() { ControlName = "Dropdown1", PropertyName = "Selected" }, value);
+
+            // Assert
+        }
+
+        /// <summary>
+        /// Test data for <see cref="SetRecordValue"/>
+        /// </summary>
+        /// <returns>MemberData items</returns>
+        public static IEnumerable<object[]> RecordTestValues()
+        {
+            yield return new object[] {
+                    BlankValue.NewBlank()
+            };
+
+            yield return new object[] {
+                    RecordValue.NewRecordFromFields(new NamedValue("Name", StringValue.New("Test")))
+            };
         }
     }
 }

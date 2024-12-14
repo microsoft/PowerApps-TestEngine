@@ -114,6 +114,67 @@ class PowerAppsModelDrivenCanvas {
         properties.forEach((propertyName) => {
             var propertyType = controlObject.controlWidget.controlProperties[propertyName].propertyType;
 
+            if (propertyType == "*[]" || propertyType == "![]") {
+                var control = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[controlName];
+
+                if (typeof control === "undefined") {
+                    propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+                    return;
+                }
+
+                var property = control.modelProperties[propertyName];
+
+                if (typeof property === "undefined") {
+                    propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+                    return;
+                }
+                var value = property.getValue();
+
+                if (typeof value == "undefined" || value == null) {
+                    propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+                    return;
+                }
+
+                var metadata = value.dataSource.tryGetTableMetadata();
+
+                var existingProperties = value.dataSource.data.length > 0 ? Object.keys(value.dataSource.data[0]) : metadata.column.map(item => item.name);
+
+                var newPropertyType = propertyType.substring(0, 2);
+
+                var mappedColumn = false;
+
+                metadata.columns.forEach(item => {
+                    var mappedType = item._schema.type
+                    switch (item._schema.type) {
+                        case 'E':
+                            mappedType = 'g'; // GUID
+                            break;
+                        case 'A':
+                        case 'OptionSet':
+                            mappedType = ''
+                            break;
+                               
+                    }
+
+                    if (!existingProperties.includes(item.name)) {
+                        mappedType = ''
+                    }
+
+                    if (mappedType.length > 0) {
+                        mappedColumn = true;
+                        newPropertyType += `${item.name}:${mappedType}, `;
+                    }
+                });
+
+                if (mappedColumn) {
+                    // Remove commas from the end
+                    newPropertyType = newPropertyType.slice(0, -2);
+                }
+                
+                newPropertyType += ']'
+                propertyType = newPropertyType
+            }
+
             propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
         })
 
@@ -123,6 +184,8 @@ class PowerAppsModelDrivenCanvas {
         return controls;
     }
 
+
+
     static fetchArrayItemCount(itemPath) {
         if (itemPath.parentControl && itemPath.parentControl.index === null) {
             // Components do not have an item count
@@ -130,24 +193,25 @@ class PowerAppsModelDrivenCanvas {
         }
 
         var appMagic = PowerAppsModelDrivenCanvas.getAppMagic();
+        var control = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName];
 
-        var replicatedContexts = appMagic.Controls.GlobalContextManager.bindingContext.replicatedContexts
-
-        if (itemPath.parentControl && itemPath.parentControl.index !== null) {
-            // Nested gallery - Power Apps only supports one level of nesting so we don't have to go recursively to find it
-            // Get parent replicated context
-            replicatedContexts = OpenAjax.widget.byId(itemPath.parentControl.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext.bindingContextAt(itemPath.parentControl.index).replicatedContexts;
+        if (typeof control === "undefined") {
+            return null;
         }
 
-        var replicatedContext = OpenAjax.widget.byId(itemPath.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext;
+        var property = control.modelProperties[itemPath.propertyName];
 
-        if (!replicatedContext) {
-            // This is not a gallery
-            throw "Not a gallery, no item count available. Most likely a control";
+        if (typeof property === "undefined") {
+            return null;
         }
 
-        var managerId = replicatedContext.manager.managerId;
-        return replicatedContexts[managerId].getBindingContextCount()
+        var value = property.getValue();
+
+        if (Array.isArray(value)) {
+            return value.length;
+        }
+
+        return value.dataSource.data.length;
     }
 
     static getBindingContext(itemPath) {
@@ -186,6 +250,11 @@ class PowerAppsModelDrivenCanvas {
         if (controlContext) {
             if (controlContext.modelProperties[itemPath.propertyName]) {
                 propertyValue = controlContext.modelProperties[itemPath.propertyName]?.getValue();
+
+                if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) { 
+                    // TODO: Transform data to display data
+                    propertyValue = propertyValue.dataSource.data;
+                }
             }
         }
 
@@ -244,21 +313,20 @@ class PowerAppsModelDrivenCanvas {
     }
 
     static setPropertyValueForControl(itemPath, value) {
-        var appMagic = PowerAppsModelDrivenCanvas.getAppMagic()
+        var bindingContext = PowerAppsModelDrivenCanvas.getBindingContext(itemPath);
 
-        if (itemPath.parentControl && itemPath.parentControl.index !== null) {
-            // Gallery & Nested gallery
-            var galleryBindingContext = PowerAppsModelDrivenCanvas.getBindingContext(itemPath.parentControl);
-            return appMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, galleryBindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, galleryBindingContext)
+        var propertyValue = undefined
+
+        var controlContext = bindingContext.controlContexts[itemPath.controlName];
+
+        if (controlContext) {
+            if (controlContext.modelProperties[itemPath.propertyName]) {
+                propertyValue = controlContext.modelProperties[itemPath.propertyName]?.setValue(value);
+                return true;
+            }
         }
 
-        if (itemPath.parentControl) {
-            // Component
-            var componentBindingContext = appMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(itemPath.parentControl.controlName);
-            return (appMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, componentBindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, componentBindingContext));
-        }
-
-        return appMagic.AuthoringTool.Runtime.getNamedControl(itemPath.controlName, appMagic.Controls.GlobalContextManager.bindingContext).OpenAjax.setPropertyValueInternal(itemPath.propertyName, value, appMagic.Controls.GlobalContextManager.bindingContext);
+        return false;
     }
 
     static interactWithControl(itemPath, value) {
@@ -302,11 +370,26 @@ class PowerAppsModelDrivenCanvas {
         var match = controls.filter(c => c.name == itemPath.controlName);
         if (match.length >= 0 && typeof match[0] == 'object') {
             match[0].properties.forEach((item) => {
-                data.push(
-                    {
-                        Key: item.propertyName,
-                        Value: PowerAppsModelDrivenCanvas.getPropertyValueFromControl({ controlName: itemPath.controlName, propertyName: item.propertyName })?.propertyValue
-                    })
+                if (typeof item.parentControl !== "undefined" && item.parentControl != null) {
+                    var parent = PowerAppsModelDrivenCanvas.getPropertyValueFromControl({ controlName: itemPath.parentControl.controlName, index: itemPath.parentControl.index, propertyName: item.parentControl.propertyName })?.propertyValue
+                    if (parent.index !== null) {
+                        data.push(
+                            {
+                                Key: item.propertyName,
+                                Value: parent[parentControl.index][item.propertyName]
+                            })
+                    }
+                }
+                else
+                {
+                    data.push(
+                        {
+                            Key: item.propertyName,
+                            Value: PowerAppsModelDrivenCanvas.getPropertyValueFromControl({ controlName: itemPath.controlName, propertyName: item.propertyName })?.propertyValue
+                        })
+                }
+
+                
             })
         }
         return JSON.stringify(data);

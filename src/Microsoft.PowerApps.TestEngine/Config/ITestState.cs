@@ -14,6 +14,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public interface ITestState
     {
         /// <summary>
+        /// The current test provider
+        /// </summary>
+        public ITestWebProvider TestProvider { get; set; }
+
+        /// <summary>
         /// Parses and sets up the test state.
         /// </summary>
         /// <param name="testConfigFile">Config file for test</param>
