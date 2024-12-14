@@ -3,6 +3,7 @@
 
 using System.ComponentModel.Composition;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,6 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
 using testengine.common.user;
-using System.Security.Cryptography;
 
 namespace testengine.user.storagestate
 {

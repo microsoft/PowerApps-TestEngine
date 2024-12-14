@@ -85,7 +85,7 @@ namespace Microsoft.PowerApps.TestEngine.System
                     if (!overwrite)
                     {
                         File.AppendAllText(filePath, text);
-                    } 
+                    }
                     else
                     {
                         File.WriteAllText(filePath, text);
