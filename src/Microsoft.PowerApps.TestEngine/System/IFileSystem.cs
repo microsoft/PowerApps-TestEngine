@@ -46,7 +46,8 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// </summary>
         /// <param name="filePath">File to write to</param>
         /// <param name="text">Text to put in file</param>
-        public void WriteTextToFile(string filePath, string text);
+        /// <param name="overwrite">Determine if the contents of the file should be replaced with the text. Default value if <c>False</c></param>
+        public void WriteTextToFile(string filePath, string text, bool overwrite = false);
 
         /// <summary>
         /// Writes text to file

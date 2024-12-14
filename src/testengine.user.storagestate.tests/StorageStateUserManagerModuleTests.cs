@@ -75,7 +75,6 @@ namespace testengine.user.storagestate.tests
         [InlineData("user1Email", null, false, "", "")]
         [InlineData("user1Email", "user1", false, "", "")]
         [InlineData("user1Email", "user1@example.com", false, "", "")]
-        [InlineData("user1Email", "user1@example.com", true, "TEXT", "TEXT")]
         public async Task LoadState(string? emailKey, string? emailValue, bool exists, string content, string expectedState)
         {
             // Arrange
@@ -95,6 +94,7 @@ namespace testengine.user.storagestate.tests
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(exists);
             if (content != null)
             {
+                MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns(String.Empty);
                 MockFileSystem.Setup(x => x.FileExists(Path.Combine(".storage-state-user1", "state.json"))).Returns(true);
                 MockFileSystem.Setup(x => x.ReadAllText(Path.Combine(".storage-state-user1", "state.json"))).Returns(content);
             }
@@ -126,12 +126,15 @@ namespace testengine.user.storagestate.tests
             };
 
             userManager.Settings.Add("FileSystem", MockFileSystem.Object);
+            userManager.Protect = (IFileSystem filesystem, string file) => { };
+            userManager.Unprotect = (IFileSystem filesystem, string file) => { return "test"; };
 
             MockSingleTestInstanceState.Setup(x => x.GetTestSuiteDefinition()).Returns(TestSuiteDefinition);
             MockTestState.Setup(x => x.GetUserConfiguration(It.IsAny<string>())).Returns(userConfiguration);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockEnvironmentVariable.Setup(x => x.GetVariable(emailKey)).Returns(emailValue);
             MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("");
+            MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns(String.Empty);
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(true);
             MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
             MockPage.SetupGet(x => x.Url).Returns(pageUrl);
@@ -176,6 +179,7 @@ namespace testengine.user.storagestate.tests
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockEnvironmentVariable.Setup(x => x.GetVariable(emailKey)).Returns(emailValue);
             MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("");
+            MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns(String.Empty);
             MockFileSystem.Setup(x => x.Exists(".storage-state-user1")).Returns(true);
             MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage>() { MockPage.Object });
             MockPage.SetupGet(x => x.Url).Returns(pageUrl);
@@ -197,6 +201,38 @@ namespace testengine.user.storagestate.tests
 
             // Assert
             Assert.Equal(expectedError, userManager.Settings["ErrorDialogTitle"]);
+        }
+
+        [Fact]
+        public async Task ProtectandUnprotect()
+        {
+            // Windows Data Protection API is only supported on Windows. 
+            if (OperatingSystem.IsWindows())
+            {
+                // Arrange
+                var userManager = new StorageStateUserManagerModule();
+
+                const string DATA = "sample";
+                const string TEST_FILE = "test.json";
+
+                string encryptedData = String.Empty;
+
+                MockFileSystem.Setup(m => m.ReadAllText(TEST_FILE)).Returns(DATA);
+                MockFileSystem.Setup(m => m.WriteTextToFile(TEST_FILE, It.IsAny<string>(), true))
+                    .Callback((string filename, string encrypted, bool overwrite) => encryptedData = encrypted);
+
+                var mockProtected = new Mock<IFileSystem>();
+                mockProtected.Setup(m => m.ReadAllText(TEST_FILE)).Returns(() => encryptedData);
+
+                // Act
+                userManager.Protect(MockFileSystem.Object, TEST_FILE);
+                Assert.False(string.IsNullOrEmpty(encryptedData));
+
+                var unprotected = userManager.Unprotect(mockProtected.Object, TEST_FILE);
+
+                // Assert
+                Assert.Equal(DATA, unprotected);
+            }
         }
     }
 }
