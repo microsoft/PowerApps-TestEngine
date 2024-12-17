@@ -293,5 +293,76 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                     "Hello"
             };
         }
+
+        [Theory]
+        [MemberData(nameof(GetDataFromParentData))]
+        public async Task GetValueFromParent(ItemPath path, string parentJson, object? expected)
+        {
+            // Arrange
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<object>(It.IsAny<string>())).Returns(Task.FromResult((object)parentJson));
+            MockTestState.Setup(m => m.GetDomain()).Returns("https://www.microsoft.com");
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+
+            // Act
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var json = provider.GetPropertyValueFromControl<string>(path);
+
+            // Assert
+            dynamic result = JsonConvert.DeserializeObject<ExpandoObject>(json);
+
+            Assert.Equal(expected, result.PropertyValue);
+        }
+
+        /// <summary>
+        /// Test data for <see cref="GetDataFromParentData"/>
+        /// </summary>
+        /// <returns>MemberData items</returns>
+        public static IEnumerable<object[]> GetDataFromParentData()
+        {
+            var sampleDateUnix = new DateTimeOffset(new DateTime(2024, 12, 1)).ToUnixTimeSeconds();
+
+            // Date Time in unix test
+            yield return new object[] {
+                new ItemPath{ ControlName = "TableRow", PropertyName = "when", ParentControl = new ItemPath { ControlName = "Gallery", PropertyName = "Items", Index = 0 } },
+                $"[{{ \"Key\": \"Items\", \"Value\": [ {{ \"when\":{sampleDateUnix} }} ] }}]",
+                sampleDateUnix
+            };
+
+            // Numeric test
+            yield return new object[] {
+                new ItemPath{ ControlName = "TableRow", PropertyName = "num", ParentControl = new ItemPath { ControlName = "Gallery", PropertyName = "Items", Index = 0 } },
+                $"[{{ \"Key\": \"Items\", \"Value\":[ {{ \"num\": 1}} ] }}]",
+                (long)1
+            };
+
+            // Numeric test
+            yield return new object[] {
+                new ItemPath{ ControlName = "TableRow", PropertyName = "num", ParentControl = new ItemPath { ControlName = "Gallery", PropertyName = "Items", Index = 0 } },
+                $"[{{ \"Key\": \"Items\", \"Value\":[ {{ \"num\": 1.1}} ] }}]",
+                1.1
+            };
+
+            // String test
+            yield return new object[] {
+                new ItemPath{ ControlName = "TableRow", PropertyName = "text", ParentControl = new ItemPath { ControlName = "Gallery", PropertyName = "Items", Index = 0 } },
+                $"[{{ \"Key\": \"Items\", \"Value\": [ {{ \"text\": \"A\"}} ] }}]",
+                "A"
+            };
+
+            // String test
+            yield return new object[] {
+                new ItemPath{ ControlName = "TableRow", PropertyName = "text", ParentControl = new ItemPath { ControlName = "Gallery", PropertyName = "Items", Index = 1 } },
+                $"[{{ \"Key\": \"Items\", \"Value\": [ {{ \"text\": \"A\"}}, {{ \"text\": \"B\"}} ] }}]",
+                "B"
+            };
+
+            // Object test
+            yield return new object[] {
+                new ItemPath{ ControlName = "TableRow", PropertyName = "object", ParentControl = new ItemPath { ControlName = "Gallery", PropertyName = "Items", Index = 0 } },
+                $"[{{ \"Key\": \"Items\", \"Value\": [ {{ \"object\": {{ \"id\": 1 }} }} ] }}]",
+                "{\"id\":1}"
+            };
+        }
     }
 }

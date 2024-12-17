@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -74,6 +73,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
         /// <returns>True if able to get the field value</returns>
         protected override bool TryGetField(FormulaType fieldType, string fieldName, out FormulaValue result)
         {
+
             if (fieldType is TableType)
             {
                 // This would be if we were referencing a property that could be indexed. Eg. Gallery1.AllItems (fieldName = AllItems)
@@ -107,6 +107,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                 var itemPath = GetItemPath(fieldName);
 
                 var propertyValueJson = _testWebProvider.GetPropertyValueFromControl<string>(itemPath);
+
+                if (string.IsNullOrEmpty(propertyValueJson))
+                {
+                    result = BlankValue.NewBlank(fieldType);
+                    return true;
+                }
+
                 var jsPropertyValueModel = JsonConvert.DeserializeObject<JSPropertyValueModel>(propertyValueJson);
 
                 if (jsPropertyValueModel != null)
@@ -122,14 +129,19 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                         result = NumberValue.New(double.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
+                    else if (fieldType is DecimalType)
+                    {
+                        result = DecimalValue.New(decimal.Parse(jsPropertyValueModel.PropertyValue));
+                        return true;
+                    }
                     else if (fieldType is BooleanType)
                     {
                         result = BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
-                    else if (fieldType is ColorType)
+                    else if (fieldType is GuidType)
                     {
-                        result = ColorValue.New(Color.FromArgb(jsPropertyValueModel.PropertyValue[0], jsPropertyValueModel.PropertyValue[1], jsPropertyValueModel.PropertyValue[2]));
+                        result = GuidValue.New(new Guid(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
                     else if (fieldType is DateTimeType)
@@ -141,10 +153,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                         // Because of this, we have to manually convert it into a DateTime
                         if (long.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
-                            var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(milliseconds);
-                            DateTime trueDateTime = dateTimeOffset.LocalDateTime;
-                            //var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
-                            result = DateTimeValue.New(trueDateTime.Date);
+                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
+                            result = DateTimeValue.New(trueDateTime);
                         }
                         // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
                         // This allows us to just parse it back into a datetime, without having to manually convert it back

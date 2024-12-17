@@ -29,6 +29,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ITestProviderState? ProviderState { get; set; }
 
+        public string[] Namespaces => new string[] { "Experimental" };
+
         public PowerAppPortalProvider()
         {
 

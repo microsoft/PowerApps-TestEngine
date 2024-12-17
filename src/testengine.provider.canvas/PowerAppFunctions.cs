@@ -52,6 +52,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public string Name { get { return "canvas"; } }
 
+        public string[] Namespaces => new string[] { "TestEngine" };
+
         private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
             try

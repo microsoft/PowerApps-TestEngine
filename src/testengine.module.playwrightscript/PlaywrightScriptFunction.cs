@@ -41,7 +41,7 @@ namespace testengine.module
             _logger.LogInformation("------------------------------\n\n" +
                 "Executing PlaywrightScript function.");
 
-            if (!_filesystem.IsValidFilePath(file.Value))
+            if (!_filesystem.FileExists(file.Value))
             {
                 _logger.LogError("Invalid file");
                 throw new ArgumentException("Invalid file");

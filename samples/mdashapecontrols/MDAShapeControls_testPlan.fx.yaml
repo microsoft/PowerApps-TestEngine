@@ -1,0 +1,177 @@
+testSuite:
+  testSuiteName: ShapeControlsOnSelectValidation
+  testSuiteDescription: Validate the functionality of OnSelect events for various shape controls, ensuring positive and negative scenarios work as expected.
+  persona: User1
+  appLogicalName: shape_controls_onselect_testing
+
+  testCases:
+  - testCaseName: OnSelect_Update_Label_Rectangle
+    testSteps: |
+      Select(Rectangle1);
+      Assert(Label1.Text = "Rectangle clicked!", "Label should display 'Rectangle clicked!'");
+  
+  - testCaseName: OnSelect_Update_Label_Circle
+    testSteps: |
+      Select(Circle1);
+      Assert(Label1.Text = "Circle clicked!", "Label should display 'Circle clicked!'");
+  
+  - testCaseName: OnSelect_Update_Label_Triangle
+    testSteps: |
+        Select(Triangle1);
+        Assert(Label1.Text = "Triangle clicked!", "Label should display 'Triangle clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_QuarterCircle
+    testSteps: |
+      Select(QuarterCircle);
+      Assert(Label1.Text = "QuarterCircle clicked!", "Label should display 'Quarter Circle clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_HalfCircle
+    testSteps: |
+      Select(HalfCircle);
+      Assert(Label1.Text = "HalfCircle clicked!", "Label should display 'Half Circle clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_ThreeQuarterCircle
+    testSteps: |
+      Select(ThreeQuarterCircle);
+      Assert(Label1.Text = "ThreeQuarterCircle clicked!", "Label should display 'Three-quarter Circle clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_5PointStar
+    testSteps: |
+      Select(FivePointStar);
+      Assert(Label1.Text = "FivePointStar clicked!", "Label should display 'FivePointStar clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_6PointStar
+    testSteps: |
+      Select(SixPointStar);
+      Assert(Label1.Text = "SixPointStar clicked!", "Label should display 'SixPointStar clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_8PointStar
+    testSteps: |
+      Select(EightPointStar);
+      Assert(Label1.Text = "EightPointStar clicked!", "Label should display 'EightPointStar clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_12PointStar
+    testSteps: |
+      Select(TwelvePointStar);
+      Assert(Label1.Text = "TwelvePointStar clicked!", "Label should display 'TwelvePointStar clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_RightTriangle
+    testSteps: |
+      Select(RightTriangle);
+      Assert(Label1.Text = "RightTriangle clicked!", "Label should display 'RightTriangle clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_Octagon
+    testSteps: |
+      Select(Octagon1);
+      Assert(Label1.Text = "Octagon clicked!", "Label should display 'Octagon clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_Pentagon
+    testSteps: |
+      Select(Pentagon1);
+      Assert(Label1.Text = "Pentagon clicked!", "Label should display 'Pentagon clicked!'");
+
+  - testCaseName: OnSelect_Update_Label_NextArrow
+    testSteps: |
+        Select(NextArrow1);      
+        SetProperty(Screen3Label.Visible, true);
+        Assert(Screen3Label.Text = "Welcome to Screen3!", "Screen3Label should display 'Welcome to Screen3!'");
+  
+  - testCaseName: OnSelect_Update_Label_BackArrow
+    testSteps: |
+        Select(Screen3BackArrow);
+        SetProperty(Label1.Text, "Screen3 BackArrow1 clicked!");
+        Assert(Label1.Text = "Screen3 BackArrow1 clicked!", "Label should display 'Back Arrow clicked!'");
+
+  #Negative Testcases
+  - testCaseName: OnSelect_Negative_Rectangle
+    testSteps: |
+      Select(Rectangle1);
+      Assert(Label1.Text <> "Rectangle2 clicked!", "Label should not display 'Rectangle2 clicked!' for Rectangle.");
+
+  - testCaseName: OnSelect_Negative_Circle
+    testSteps: |
+      Select(Circle1);
+      Assert(Label1.Text <> "Circle2 clicked!", "Label should not display 'Circle2 clicked!' for Circle.");
+
+  - testCaseName: OnSelect_Negative_Triangle
+    testSteps: |
+      Select(Triangle1);
+      Assert(Label1.Text <> "Triangle2 clicked!", "Label should not display 'Triangle2 clicked!' for Triangle.");
+
+  - testCaseName: OnSelect_Negative_QuarterCircle
+    testSteps: |
+      Select(QuarterCircle);
+      Assert(Label1.Text <> "QuarterCircle1 clicked!", "Label should not display 'QuarterCircle1 clicked!' for Quarter Circle.");
+
+  - testCaseName: OnSelect_Negative_HalfCircle
+    testSteps: |
+      Select(HalfCircle);
+      Assert(Label1.Text <> "HalfCircle1 clicked!", "Label should not display 'HalfCircle1 clicked!' for Half Circle.");
+
+  - testCaseName: OnSelect_Negative_ThreeQuarterCircle
+    testSteps: |
+      Select(ThreeQuarterCircle);
+      Assert(Label1.Text <> "ThreeQuarterCircle1 clicked!", "Label should not display 'ThreeQuarterCircle1 clicked!' for Three-quarter Circle.");
+
+  - testCaseName: OnSelect_Negative_5PointStar
+    testSteps: |
+      Select(FivePointStar);
+      Assert(Label1.Text <> "FivePointStar1 clicked!", "Label should not display 'FivePointStar1 clicked!'");
+
+  - testCaseName: OnSelect_Negative_6PointStar
+    testSteps: |
+      Select(SixPointStar);
+      Assert(Label1.Text <> "SixPointStar1 clicked!", "Label should not display 'SixPointStar1 clicked!'");
+
+  - testCaseName: OnSelect_Negative_8PointStar
+    testSteps: |
+      Select(EightPointStar);
+      Assert(Label1.Text <> "EightPointStar1 clicked!", "Label should not display 'EightPointStar1 clicked!'");
+
+  - testCaseName: OnSelect_Negative_12PointStar
+    testSteps: |
+      Select(TwelvePointStar);
+      Assert(Label1.Text <> "TwelvePointStar1 clicked!", "Label should not display 'TwelvePointStar1 clicked!'");
+
+  - testCaseName: OnSelect_Negative_RightTriangle
+    testSteps: |
+      Select(RightTriangle);
+      Assert(Label1.Text <> "RightTriangle1 clicked!", "Label should not display 'RightTriangle1 clicked!' for Right Triangle.");
+
+  - testCaseName: OnSelect_Negative_Octagon
+    testSteps: |
+      Select(Octagon1);
+      Assert(Label1.Text <> "Octagon11 clicked!", "Label should not display 'Octagon11 clicked!' for Octagon.");
+
+  - testCaseName: OnSelect_Negative_Pentagon
+    testSteps: |
+      Select(Pentagon1);
+      Assert(Label1.Text <> "Pentagon11 clicked!", "Label should not display 'Pentagon11 clicked!' for Pentagon.");
+
+  - testCaseName: OnSelect_Negative_NextArrow
+    testSteps: |
+       Select(NextArrow1);      
+        SetProperty(Screen3Label.Visible, true);
+        Assert(Screen3Label.Text <> "Welcome to Screen33!", "Screen3Label should display 'Welcome to Screen3!'");
+
+  - testCaseName: OnSelect_Negative_BackArrow
+    testSteps: |
+      Select(Screen3BackArrow);
+      SetProperty(Label1.Text, "Screen3 BackArrow1 clicked!");
+      Assert(Label1.Text <> "Screen3 BackArrow11 clicked!", "Label should display 'Back Arrow clicked!'");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
