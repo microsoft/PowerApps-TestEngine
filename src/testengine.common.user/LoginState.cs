@@ -19,6 +19,7 @@ namespace testengine.common.user
 
         public bool IsError { get; set; }
         public bool FoundMatch { get; set; }
+        public bool CallbackDesired { get; set; }
         public bool EmailHandled { get; set; }
         public string? MatchHost { get; set; }
 

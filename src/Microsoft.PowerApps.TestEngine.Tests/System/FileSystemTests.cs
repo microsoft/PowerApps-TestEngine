@@ -13,12 +13,22 @@ using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.System
 {
-    public class FileSystemTests
+    public class FileSystemTests : IDisposable
     {
         private FileSystem fileSystem;
+        private string testFileName;
         public FileSystemTests()
         {
             fileSystem = new FileSystem();
+            testFileName = String.Empty;
+        }
+
+        public void Dispose()
+        {
+            if (!String.IsNullOrEmpty(testFileName) && File.Exists(testFileName))
+            {
+                File.Delete(testFileName);
+            }
         }
 
         [Theory]
@@ -285,6 +295,36 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
                 var result = fileSystem.IsValidWindowsFileName(fileName);
                 Assert.Equal(expectedValidity, result);
             }
+        }
+
+        [Fact]
+        public void CanDeleteJsonFile()
+        {
+            // Arrange
+            testFileName = Path.Combine(fileSystem.GetDefaultRootTestEngine(), "test.json");
+            File.WriteAllText(testFileName, "data");
+
+            // Act
+            fileSystem.Delete(testFileName);
+
+            // Assert
+            Assert.False(File.Exists(testFileName));
+        }
+
+
+        [Theory]
+        [InlineData("test.yaml")]
+        [InlineData("test.csx")]
+        public void CannotDeleteOtherFiles(string fileName)
+        {
+            // Arrange
+            testFileName = Path.Combine(fileSystem.GetDefaultRootTestEngine(), fileName);
+            File.WriteAllText(testFileName, "data");
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => fileSystem.Delete(testFileName));
+            Assert.True(File.Exists(testFileName));
+            File.Delete(testFileName);
         }
     }
 }
