@@ -120,7 +120,7 @@ namespace testengine.user.storagestate
                 .ProtectKeysWithCertificate(cert)
                 .AddKeyManagementOptions(options =>
                 {
-                    options.XmlRepository = (xmlRepository == null) ? new DataverseKeyStore(_services?.GetRequiredService<ILogger>(), _organizationService, dataProtectionKey) : xmlRepository;
+                    options.XmlRepository = (xmlRepository == null) ? new DataverseKeyStore(_services?.GetRequiredService<ILogger>(), _organizationService, keyName) : xmlRepository;
                 });
             _services = serviceCollection.BuildServiceProvider();
 
@@ -196,14 +196,36 @@ namespace testengine.user.storagestate
 
         public static void StoreValue(IOrganizationService service, string keyName, string valueName, string data)
         {
-            var keyEntity = new Entity("te_keydata")
+            FilterExpression filter = new FilterExpression(LogicalOperator.And);
+            filter.Conditions.Add(new ConditionExpression("te_keyname", ConditionOperator.Equal, keyName));
+            filter.Conditions.Add(new ConditionExpression("te_valuename", ConditionOperator.Equal, $"{keyName}-{valueName}"));
+
+            var query = new QueryExpression("te_keydata")
             {
-                ["te_keyname"] = keyName,
-                ["te_valuename"] = $"{keyName}-{valueName}",
-                ["te_data"] = data,
+                ColumnSet = new ColumnSet("te_keyname", "te_valuename", "te_data"),
+                Criteria = filter
             };
 
-            service.Create(keyEntity);
+            var match = service.RetrieveMultiple(query).Entities;
+
+            if (match.Count > 0)
+            {
+                // Update match
+                var first = match.First();
+                first["te_data"] = data;
+                service.Update(first);
+            } 
+            else
+            {
+                var keyEntity = new Entity("te_keydata")
+                {
+                    ["te_keyname"] = keyName,
+                    ["te_valuename"] = $"{keyName}-{valueName}",
+                    ["te_data"] = data,
+                };
+
+                service.Create(keyEntity);
+            }
         }
 
         public string GetTestPersonaUserName()
