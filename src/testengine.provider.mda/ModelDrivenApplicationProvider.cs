@@ -729,20 +729,5 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             return $"?tenantId={tenantId}&source=testengine{additionalQueryParams}";
         }
-
-        private string ConvertTableValueToJson(TableValue tableValue)
-        {
-            var list = new List<Dictionary<string, object>>();
-            foreach (var record in tableValue.Rows)
-            {
-                var dict = new Dictionary<string, object>();
-                foreach (var field in record.Value.Fields)
-                {
-                    dict[field.Name] = field.Value.ToObject();
-                }
-                list.Add(dict);
-            }
-            return JsonConvert.SerializeObject(list, Formatting.Indented);
-        }
-    }
+    }      
 }
