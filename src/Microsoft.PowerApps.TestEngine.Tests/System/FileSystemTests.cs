@@ -302,6 +302,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
         {
             // Arrange
             testFileName = Path.Combine(fileSystem.GetDefaultRootTestEngine(), "test.json");
+            if (!Directory.Exists(Path.GetDirectoryName(testFileName)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(testFileName));
+            }
             File.WriteAllText(testFileName, "data");
 
             // Act
@@ -319,6 +323,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
         {
             // Arrange
             testFileName = Path.Combine(fileSystem.GetDefaultRootTestEngine(), fileName);
+            if (!Directory.Exists(Path.GetDirectoryName(testFileName)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(testFileName));
+            }
+
             File.WriteAllText(testFileName, "data");
 
             // Act & Assert
