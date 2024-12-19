@@ -10,6 +10,11 @@ $appDescription = $config.appDescription
 $languages = $config.languages
 $env:DataProtectionUrl = $config.DataProtectionUrl
 $env:DataProtectionCertificateName = $config.DataProtectionCertificateName
+$configuration = $config.configuration
+
+if ([string]::IsNullOrEmpty($configuration)) {
+    $configuration = "Debug"
+}
 
 if ([string]::IsNullOrEmpty($environmentId)) {
     Write-Error "Environment not configured. Please update config.json"
@@ -71,17 +76,17 @@ if ([string]::IsNullOrEmpty($appId)) {
 $customPage = $config.customPage
 $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
 
-# Build the latest debug version of Test Engine from source
+# Build the latest configuration version of Test Engine from source
 Set-Location ..\..\src
-dotnet build
+dotnet build --configuration $configuration
 
 if ($config.installPlaywright) {
-    Start-Process -FilePath "pwsh" -ArgumentList "-Command `"..\bin\Debug\PowerAppsTestEngine\playwright.ps1 install`"" -Wait
+    Start-Process -FilePath "pwsh" -ArgumentList "-Command `"..\bin\$configuration\PowerAppsTestEngine\playwright.ps1 install`"" -Wait
 } else {
     Write-Host "Skipped playwright install"
 }
 
-Set-Location ..\bin\Debug\PowerAppsTestEngine
+Set-Location "..\bin\$configuration\PowerAppsTestEngine"
 $env:user1Email = $user1Email
 
 if ($null -eq $languages) {

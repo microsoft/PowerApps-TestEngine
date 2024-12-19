@@ -507,6 +507,11 @@ namespace Microsoft.PowerApps.TestEngine.System
                 return;
             }
 
+            if (!IsWritePermittedFilePath(fileName))
+            {
+                return;
+            }
+
             if (Path.GetExtension(fileName) != ".json")
             {
                 throw new InvalidOperationException();
