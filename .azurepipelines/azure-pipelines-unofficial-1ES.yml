@@ -1,0 +1,31 @@
+trigger: none
+pr: none
+variables:
+  Codeql.Enabled: true
+resources:
+  repositories:
+  - repository: 1ESPipelineTemplates
+    type: git
+    name: 1ESPipelineTemplates/1ESPipelineTemplates
+    ref: refs/tags/release
+extends:
+  template: v1/1ES.Unofficial.PipelineTemplate.yml@1ESPipelineTemplates
+  parameters:
+    pool:
+      name: Azure-Pipelines-1ESPT-ExDShared
+      image: windows-2022
+      os: windows
+    stages:
+    - stage: stage
+      jobs:
+      - job: Build_PowerAppsTestEngine
+        displayName: 'Build PowerAppsTestEngine Solution'
+        strategy:
+          matrix:
+            Debug:
+              BuildConfiguration: 'Debug'
+            Release:
+              BuildConfiguration: 'Release'
+        steps:
+        - script: |
+            Write-Host "Hello"
