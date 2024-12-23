@@ -26,6 +26,37 @@ extends:
               BuildConfiguration: 'Debug'
             Release:
               BuildConfiguration: 'Release'
+        templateContext:
+          outputs:
+          - output: pipelineArtifact
+            condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+            artifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
+            publishLocation: 'Container'      
         steps:
         - script: |
-            Write-Host "Hello"
+            echo "Hello"
+        - task: UseDotNet@2
+          displayName: 'Use dotnet sdk 8.0'
+          inputs:
+            version: 8.0.x
+            installationPath: '$(Agent.ToolsDirectory)/dotnet'
+        - task: DotNetCoreCLI@2
+          displayName: 'Build and test'
+          inputs:
+            command: 'run'
+            projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+            arguments: '-- ci -c $(BuildConfiguration)'
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFormat: 'VSTest'
+            testResultsFiles: '**/*-*.trx'
+            searchFolder: '$(Build.SourcesDirectory)/obj/'
+            mergeTestResults: true
+            failTaskOnFailedTests: true
+        - task: DotNetCoreCLI@2
+          displayName: 'Pack'
+          inputs:
+            command: 'run'
+            projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+            arguments: '-- pack -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
