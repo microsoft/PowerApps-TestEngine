@@ -31,7 +31,7 @@ extends:
           - output: pipelineArtifact
             condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
             artifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
-            publishLocation: 'Container'      
+            targetPath: '$(Build.ArtifactStagingDirectory)'   
         steps:
         - script: |
             echo "Hello"
