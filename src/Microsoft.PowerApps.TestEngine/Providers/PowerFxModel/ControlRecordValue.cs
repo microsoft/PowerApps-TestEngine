@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 using System.Runtime.CompilerServices;
@@ -110,8 +110,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                 var jsPropertyValueModel = JsonConvert.DeserializeObject<JSPropertyValueModel>(propertyValueJson);
 
                 if (jsPropertyValueModel != null)
-                {
-                    
+                {                    
                     if (fieldType is NumberType)
                     {
                         result = NumberValue.New(double.Parse(jsPropertyValueModel.PropertyValue));
