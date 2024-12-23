@@ -144,7 +144,7 @@ else
         logLevel = LogLevel.Information;
     }
 
-    var userAuth = "browser"; // Default to brower authentication
+    var userAuth = "storagestate"; // Default to storage state
     if (!string.IsNullOrEmpty(inputOptions.UserAuth))
     {
         userAuth = inputOptions.UserAuth;
@@ -156,7 +156,7 @@ else
         provider = inputOptions.Provider;
     }
 
-    var auth = "localcert";
+    var auth = "default";
     if (!string.IsNullOrEmpty(inputOptions.UserAuthType))
     {
         auth = inputOptions.UserAuthType;

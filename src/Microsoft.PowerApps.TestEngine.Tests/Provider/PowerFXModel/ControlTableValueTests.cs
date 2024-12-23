@@ -58,8 +58,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 Assert.Equal(i, rowItemPath.ParentControl.Index);
                 Assert.Equal(itemPath.ControlName, rowItemPath.ParentControl.ControlName);
                 Assert.Equal(itemPath.PropertyName, rowItemPath.ParentControl.PropertyName);
-                Assert.Null(rowRecordValue.Name);
-                Assert.Null(rowItemPath.ControlName);
+                Assert.NotNull(rowRecordValue.Name);
+                Assert.Equal(ControlTableValue.RowControlName, rowRecordValue.Name);
+                Assert.NotNull(rowItemPath.ControlName);
+                Assert.Equal(ControlTableValue.RowControlName, rowItemPath.ControlName);
 
                 var control1Value = rowRecordValue.GetField(control1Name);
                 Assert.NotNull(control1Value);

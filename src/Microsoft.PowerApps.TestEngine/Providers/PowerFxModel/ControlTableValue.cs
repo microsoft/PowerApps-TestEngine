@@ -16,6 +16,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
     /// </summary>
     public class ControlTableValue : CollectionTableValue<ControlTableRowSchema>
     {
+        public const string RowControlName = "TableRow";
+
         private readonly ITestWebProvider _testWebProvider;
         public ControlTableValue(RecordType recordType, IEnumerable<ControlTableRowSchema> source, ITestWebProvider testWebProvider) : base(recordType, source)
         {
@@ -24,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
         protected override DValue<RecordValue> Marshal(ControlTableRowSchema item)
         {
-            var recordValue = new ControlRecordValue(item.RecordType, _testWebProvider, parentItemPath: item.ItemPath);
+            var recordValue = new ControlRecordValue(item.RecordType, _testWebProvider, RowControlName, parentItemPath: item.ItemPath);
             return DValue<RecordValue>.Of(recordValue);
         }
     }
