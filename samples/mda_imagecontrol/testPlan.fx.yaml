@@ -1,0 +1,62 @@
+testSuite:
+  testSuiteName: MDA Custom Page Tests - Image Control
+  testSuiteDescription: Verify test cases for Image Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases: 
+    - testCaseName: Test Image Control - OnSelect Event
+      testCaseDescription: Verify that the ImageRotation property rotates the image correctly.
+      testSteps: |
+        Select(Image1);
+        Assert(Label1.Text = "Image Control Clicked", "Check if the ImageRotation property is set to 90 degrees.");
+        
+    - testCaseName: Test Image Control - ImageRotation Property
+      testCaseDescription: Verify that the ImageRotation property rotates the image correctly.
+      testSteps: |
+        Select(ButtonCanvas1);
+        Assert(Image1.ImageRotation = "rotate90", "Check if the ImageRotation property is set to 90 degrees.");
+
+    - testCaseName: Test Image Control - Visibility Property
+      testCaseDescription: Verify that the Visible property toggles the visibility of the Image control.
+      testSteps: |
+        SetProperty(Image1.Visible, false);
+        Assert(Image1.Visible = false, "Check if the Image control is hidden.");
+        SetProperty(Image1.Visible, true);
+        Assert(Image1.Visible = true, "Check if the Image control is visible.");
+
+    - testCaseName: Test Image Control - Set and Retrieve Image Property
+      testCaseDescription: Verify that the Image property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Image1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");    
+        Wait(Image1, "Image", "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
+        Assert(Image1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg" , "Check if Image property is correctly set.");
+
+    - testCaseName: Test Image Control - Invalid Image URL
+      testCaseDescription: Verify the behavior when an invalid URL is set for the Image property.
+      testSteps: |
+        SetProperty(Image1.Image, "");
+        Assert(Image1.Image = "" , "Check if an error is returned for the invalid image URL.");
+
+    - testCaseName: Test Image Control - Tooltip Property
+      testCaseDescription: Verify that the Tooltip property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Image1.Tooltip, "This is an image tooltip");
+        Assert(Image1.Tooltip = "This is an image tooltip", "Check if the Tooltip property is correctly set.");
+   
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge      
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded
