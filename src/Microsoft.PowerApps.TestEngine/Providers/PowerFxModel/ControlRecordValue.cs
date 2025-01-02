@@ -94,6 +94,26 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                     return true;
                 }
             }
+            else if (fieldType is UntypedObjectType)
+            {
+                var untypedObjectType = fieldType as UntypedObjectType;
+                var recordType = RecordType.Empty();
+
+                recordType.Add(fieldName, FormulaType.String);               
+
+                if (string.IsNullOrEmpty(_name))
+                {
+                    // We reach here if we are referencing a child item in a Gallery. Eg. Index(Gallery1.AllItems).Label1 (fieldName = Label1)
+                    result = new ControlRecordValue(recordType, _testWebProvider, fieldName, _parentItemPath);
+                    return true;
+                }
+                else
+                {
+                    // We reach here if we are referencing a child item in a component. Eg. Component1.Label1 (fieldName = Label1)
+                    result = new ControlRecordValue(recordType, _testWebProvider, fieldName, GetItemPath());
+                    return true;
+                }
+            }
             else
             {
                 // We reach here if we are referencing a terminating property of a control, Eg. Label1.Text (fieldName = Text)
@@ -135,6 +155,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                     else if (fieldType is GuidType)
                     {
                         result = GuidValue.New(new Guid(jsPropertyValueModel.PropertyValue));
+                        return true;
+                    }
+                    else if (fieldType is HyperlinkType)
+                    {
+                        result = StringValue.New(jsPropertyValueModel.PropertyValue); 
                         return true;
                     }
                     else if (fieldType is DateTimeType)
