@@ -92,46 +92,46 @@ testSuite:
   #         });      
   testCases:
     # SetProperty(Gallery1.Items, FirstN(Gallery1.Items, 5));Assert(Title6.Text = "Action Figure", "Checking the selecte row Title Gallery control");
-    # - testCaseName: Populate gallery with data
-    #   testCaseDescription: Populate gallery with data and validate with count
-    #   testSteps: |
-    #     = 
-    #       Assert(CountRows(Gallery1.AllItems) = 10, "Checking the Items count of the Gallery control");
-    # - testCaseName: Validate the Navigation icon
-    #   testCaseDescription: Select the Gallery control and validate the data in navigation screen
-    #   testSteps: |
-    #     = 
-    #       Select(Gallery1,3, Icon1);
-    #       Assert(TextInputCanvas1_1.Value = "SmartPhone", "Validate navigate screen is working");
-
-    # - testCaseName: Validate the Navigation to main screen
-    #   testCaseDescription: Select the Back button control and validate the data in main screen
-    #   testSteps: |
-    #     = 
-    #       Select(ButtonCanvas1);
-    #       Assert(Label1.Text = "Vertical Gallery", "Validate navigation to main screen is working");
-
-    - testCaseName: Validate the Selected Item
-      testCaseDescription: Select the Gallery control and validate the data in Selected data
+    - testCaseName: Populate gallery with data
+      testCaseDescription: Populate gallery with data and validate with count
       testSteps: |
-        =           
-        Assert(Index(Gallery1.AllItems, 2).Title6.Text = "Blender" , "Checking the selecte row Title Gallery control");       
+        = 
+          Assert(CountRows(Gallery1.AllItems) = 10, "Checking the Items count of the Gallery control");
+    - testCaseName: Validate the Navigation icon
+      testCaseDescription: Select the Gallery control and validate the data in navigation screen
+      testSteps: |
+        = 
+          Select(Gallery1,3, Icon1);
+          Assert(TextInputCanvas1_1.Value = "SmartPhone", "Validate navigate screen is working");
 
-    # - testCaseName: Validate the Selected Item in the label
-    #   testCaseDescription: Select the Gallery control and validate the data in Selected item
-    #   testSteps: |
-    #     =
-    #     Select(Gallery1, 2);
-    #     Assert(Label2.Text = "Blender", "Checking the selecte row Title Gallery control");
-    #     Select(Gallery1, 3);
-    #     Assert(Label2.Text = "Action Figure", "Checking the selecte row Title Gallery control");Select(Gallery1, 2);
+    - testCaseName: Validate the Navigation to main screen
+      testCaseDescription: Select the Back button control and validate the data in main screen
+      testSteps: |
+        = 
+          Select(ButtonCanvas1);
+          Assert(Label1.Text = "Vertical Gallery", "Validate navigation to main screen is working");
 
-    # - testCaseName: Validate the Selected Item in the label
-    #   testCaseDescription: Select the Gallery control and validate the data in Selected item
+    # - testCaseName: Validate the Selected Item
+    #   testCaseDescription: Select the Gallery control and validate the data in Selected data
     #   testSteps: |
-    #     =    
-    #     Select(Gallery1, 2);
-    #     Assert(Index(Gallery1.Items, 2).cr7d6_title = "Blender", "Checking the selecte row Title Gallery control");      
+    #     =           
+    #     Assert(Index(Gallery1.AllItems, 2).Title6.Text = "Blender" , "Checking the selecte row Title Gallery control");       
+
+    - testCaseName: Validate the Selected Item in the label
+      testCaseDescription: Select the Gallery control and validate the data in Selected item
+      testSteps: |
+        =
+        Select(Gallery1, 2);
+        Assert(Label2.Text = "Blender", "Checking the selecte row Title Gallery control");
+        Select(Gallery1, 3);
+        Assert(Label2.Text = "Action Figure", "Checking the selecte row Title Gallery control");Select(Gallery1, 2);
+
+    - testCaseName: Validate the Selected Item in the label
+      testCaseDescription: Select the Gallery control and validate the data in Selected item
+      testSteps: |
+        =    
+        Select(Gallery1, 2);
+        Assert(Index(Gallery1.Items, 2).cr7d6_title = "Blender", "Checking the selecte row Title Gallery control");      
 
     # - testCaseName: Validate the Selected Item
     #   testCaseDescription: Select an item in the Gallery control and validate the Selected property
@@ -146,10 +146,8 @@ testSuite:
     #   testCaseDescription: Validate the AllItems property of the Gallery control
     #   testSteps: |
     #       =
-    #       SetProperty(Gallery1.AllItems, FirstN(Gallery1.Items, 10));
-    #       Assert(CountRows(Gallery1.AllItems) = 10, "Checking the total number of items in the Gallery control");
-          # Assert(Index(Gallery1.AllItems, 1).cr7d6_title = "Smartphone", "Checking the first item title in the Gallery control");
-          # Assert(Index(Gallery1.AllItems, 10).cr7d6_title = "Cookbook", "Checking the last item title in the Gallery control");
+    #       SetProperty(Gallery1.AllItems, Table(Gallery1.Items));
+    #       Assert(CountRows(Gallery1.AllItems) = 10, "Checking the total number of items in the Gallery control");          
 
   # - testCaseName: Validate Default property
   #   testCaseDescription: Set and validate the Default property of the Gallery control
