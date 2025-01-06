@@ -10,18 +10,17 @@ This Power Apps Test Engine sample demonstrates how to assert and interact with 
 2. **Get the URL of the Model-Driven Application Form**  
    Acquire the URL of the specific Model-Driven Application form that you want to test.
 
-3. **Modify the IconControl_testPlan.fx.yaml**  
+3. **Modify the ClassicIconsControls_testPlan.fx.yaml**  
    Update the YAML file to assert expected values of the icon controls.
 
   > [!NOTE] The controls are referenced using the [logical name](https://learn.microsoft.com/power-apps/developer/data-platform/entity-metadata#table-names).
 
 4. **Update the Domain URL for Your Model-Driven Application**
 
-   | URL Part | Description |
+  | URL Part | Description |
    |----------|-------------|
-   | `appid=a1234567-cccc-44444-9999-a123456789123` | The unique identifier of your model-driven application. |
+   | `appid=f8d68e39-0fbe-ef11-a72f-000d3a12b0cb` | The unique identifier of your model-driven application. |
    | `etn=icon` | The name of the entity being validated. |
-   | `id=26bafa27-ca7d-ee11-8179-0022482a91f4` | The unique identifier of the record being edited. |
    | `pagetype=custom` | The type of page to open. |
 
 5. **Execute the Test for Custom Page**  
@@ -29,5 +28,6 @@ This Power Apps Test Engine sample demonstrates how to assert and interact with 
 
 ```pwsh
 cd bin\Debug\PowerAppsEngine
-dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mdaiconcontrols\IconControls_testPlan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u browser -p mda -d "https://contoso.crm4.dynamics.com/main.aspx?appid=9e9c25f3-1851-ef11-bfe2-6045bd8f802c&pagetype=custom&name=icon_custom_cf8e6"
-```
+dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda-icons-controls\ClassicIconsControls_testPlan.fx.yaml -e e5e36a60-11a5-e554-9d70-5f3daccad60b
+ -t 72f988bf-86f1-41af-91ab-2d7cd011db47 -u browser -p mda -d "https://orgdc37ebb8.crm.dynamics.com/main.aspx?appid=f8d68e39-0fbe-ef11-a72f-000d3a12b0cb&pagetype=custom&name=cr693_mdaiconspage_a1ce1"
+ ```
