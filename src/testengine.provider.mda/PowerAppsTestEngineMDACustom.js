@@ -135,7 +135,12 @@ class PowerAppsModelDrivenCanvas {
                     return;
                 }
 
-                var metadata = value.dataSource.tryGetTableMetadata();
+                var metadata = value.dataSource?.tryGetTableMetadata();
+
+                if (typeof metadata === "undefined" || metadata === null) {
+                    propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+                    return;
+                }
 
                 var existingProperties = value.dataSource.data.length > 0 ? Object.keys(value.dataSource.data[0]) : metadata.column.map(item => item.name);
 
@@ -153,7 +158,6 @@ class PowerAppsModelDrivenCanvas {
                         case 'OptionSet':
                             mappedType = ''
                             break;
-                               
                     }
 
                     if (!existingProperties.includes(item.name)) {
