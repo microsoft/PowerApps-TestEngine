@@ -102,6 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
         [InlineData("user", "test", true, false)]
         [InlineData("user", "test", false, false)]
         [InlineData("auth", "certstore", true, true, Skip = "No auth providers whitelisted for releases")]
+        [InlineData("auth", "environment.certificate", true, true)]
         [InlineData("auth", "test", true, false)]
         [InlineData("auth", "test", false, false)]
         public void ProviderMatch(string providerType, string specificName, bool verify, bool valid)
