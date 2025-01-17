@@ -90,7 +90,7 @@ namespace testengine.provider.mda
                         }
                         else
                         {
-                            originalState.VariableState.TryAdd(variable, await originalState.ConvertToVariableState(newPowerFxVariableValue));
+                            originalState.VariableState.Add(variable, await originalState.ConvertToVariableState(newPowerFxVariableValue));
                         }
                     }
                 }
@@ -121,7 +121,14 @@ namespace testengine.provider.mda
                     {
                         // Add the new collction and cache a copy of the collection state
                         originalEngine.UpdateVariable(collection, newPowerFxCollectionValue);
-                        originalState.CollectionState.TryAdd(collection, await originalState.ConvertToVariableState(newPowerFxCollectionValue));
+                        if (originalState.CollectionState.ContainsKey(collection))
+                        {
+                            originalState.CollectionState[collection] = await originalState.ConvertToVariableState(newPowerFxCollectionValue);
+                        }
+                        else
+                        {
+                            originalState.CollectionState.Add(collection, await originalState.ConvertToVariableState(newPowerFxCollectionValue));
+                        }
                     }
                 }
             }
@@ -261,7 +268,10 @@ namespace testengine.provider.mda
                 if (value is ObjectRecordValue)
                 {
                     var objectValue = (ObjectRecordValue)value;
-                    return JsonConvert.SerializeObject(objectValue.ToObject());
+                    if (objectValue.ToObject() is ExpandoObject expando)
+                    {
+                        return JsonConvert.SerializeObject(expando);
+                    }
                 }
             }
             return null;
@@ -618,7 +628,7 @@ namespace testengine.provider.mda
             }
 
             // Override ToObject method
-            public override ExpandoObject ToObject()
+            public override Object ToObject()
             {
                 // Convert the Dictionary to an ExpandoObject
                 ExpandoObject expandoObject = new ExpandoObject();

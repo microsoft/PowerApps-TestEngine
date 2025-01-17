@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -34,9 +34,5 @@
   <ItemGroup>
     <MySourceFiles Include="..\..\bin\$(configuration)\testengine.user.storagestate\testengine.user.storagestate.dll" />
   </ItemGroup>
-
-  <Target Name="CopyFiles" AfterTargets="AfterBuild">
-    <Copy SourceFiles="@(MySourceFiles)" DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine" />
-  </Target>
 
 </Project>

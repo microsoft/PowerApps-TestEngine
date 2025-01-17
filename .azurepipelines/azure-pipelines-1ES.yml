@@ -1,0 +1,160 @@
+trigger: none
+pr: none
+resources:
+  repositories:
+  - repository: 1ESPipelineTemplates
+    type: git
+    name: 1ESPipelineTemplates/1ESPipelineTemplates
+    ref: refs/tags/release
+extends:
+  template: v1/1ES.Unofficial.PipelineTemplate.yml@1ESPipelineTemplates
+  parameters:
+    sdl:
+      codeql:
+        ${{ if eq(variables['Build.SourceBranch'], $(AllowedBranch)) }}:
+          enabledOnNonDefaultBranches: true
+    pool:
+      name: Azure-Pipelines-1ESPT-ExDShared
+      image: windows-2022
+      os: windows
+    stages:
+    - stage: stage
+      jobs:
+      - job: Build_PowerAppsTestEngine
+        displayName: 'Build PowerAppsTestEngine Solution'
+        strategy:
+          matrix:
+            Debug:
+              BuildConfiguration: 'Debug'
+            Release:
+              BuildConfiguration: 'Release'
+        templateContext:
+          outputs:
+          - output: pipelineArtifact
+            condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+            artifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
+            targetPath: '$(Build.ArtifactStagingDirectory)'
+          - output: nuget
+            condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq($(UpdateVer), 'true'))
+            useDotNetTask: false # The default is false to use the NuGetCommand task. Set to true to use the DotNetCoreCLI task to publish packages.
+            packagesToPush: '$(Build.ArtifactStagingDirectory)/Microsoft.PowerApps.TestEngine.*.nupkg'
+            packageParentPath: '$(Build.ArtifactStagingDirectory)'
+            publishVstsFeed: $(InternalFeed)
+            nuGetFeedType: internal
+            allowPackageConflicts: true # Optional. NuGetCommand task only.
+        steps:
+        - script: |
+            echo "Hello"
+        - task: UseDotNet@2
+          displayName: 'Use dotnet sdk 8.0'
+          inputs:
+            version: 8.0.x
+            installationPath: '$(Agent.ToolsDirectory)/dotnet'
+        - task: DotNetCoreCLI@2
+          displayName: 'Build and test'
+          inputs:
+            command: 'run'
+            projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+            arguments: '-- ci -c $(BuildConfiguration)'
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFormat: 'VSTest'
+            testResultsFiles: '**/*-*.trx'
+            searchFolder: '$(Build.SourcesDirectory)/obj/'
+            mergeTestResults: true
+            failTaskOnFailedTests: true
+        - task: EsrpCodeSigning@2
+          displayName: 'ESRP sign'
+          inputs:
+            ConnectedServiceName: 'ESRPCodeSigningConnection'
+            FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngine/'
+            Pattern: '*.dll'
+            signConfigType: inlineSignParams
+            inlineOperation: |
+              [
+                  {
+                    "keyCode": "CP-233863-SN",
+                    "operationSetCode": "StrongNameSign",
+                    "parameters": [ ],
+                    "toolName": "sign",
+                    "toolVersion": "1.0"
+                  },
+                  {
+                    "KeyCode": "CP-233863-SN",
+                    "OperationCode": "StrongNameVerify",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0",
+                    "Parameters": {}
+                  },
+                  {
+                    "keyCode": "CP-230012",
+                    "operationSetCode": "SigntoolSign",
+                    "parameters": [
+                    {
+                        "parameterName": "OpusName",
+                        "parameterValue": "Microsoft"
+                    },
+                    {
+                        "parameterName": "OpusInfo",
+                        "parameterValue": "http://www.microsoft.com"
+                    },
+                    {
+                        "parameterName": "Append",
+                        "parameterValue": "/as"
+                    },
+                    {
+                        "parameterName": "FileDigest",
+                        "parameterValue": "/fd \"SHA256\""
+                    },
+                    {
+                        "parameterName": "PageHash",
+                        "parameterValue": "/NPH"
+                    },
+                    {
+                        "parameterName": "TimeStamp",
+                        "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+                    }
+                    ],
+                    "toolName": "sign",
+                    "toolVersion": "1.0"
+                  },
+                  {
+                    "KeyCode": "CP-230012",
+                    "OperationCode": "SigntoolVerify",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0",
+                    "Parameters": {}
+                  }
+              ]
+        - task: DotNetCoreCLI@2
+          displayName: 'Pack'
+          inputs:
+            command: 'run'
+            projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
+            arguments: '-- pack-AlphaV2 -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+        - task: EsrpCodeSigning@2
+          displayName: 'ESRP sign nuget packages'
+          inputs:
+            ConnectedServiceName: 'ESRPCodeSigningConnection'
+            FolderPath: '$(Build.ArtifactStagingDirectory)'
+            Pattern: '*.nupkg'
+            signConfigType: inlineSignParams
+            inlineOperation: |
+              [
+                {
+                  "keyCode": "CP-401405",
+                  "operationSetCode": "NuGetSign",
+                  "parameters": [],
+                  "toolName": "sign",
+                  "toolVersion": "1.0"
+                },
+                {
+                  "keyCode": "CP-401405",
+                  "operationSetCode": "NuGetVerify",
+                  "parameters": [],
+                  "toolName": "sign",
+                  "toolVersion": "1.0"
+                }
+              ]
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
