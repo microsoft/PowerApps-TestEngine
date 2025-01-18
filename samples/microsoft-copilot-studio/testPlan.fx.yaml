@@ -1,0 +1,22 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Copilot
+  testSuiteDescription: 
+  persona: User1
+  appId: 12e0ac1f-82d4-ef11-a730-000d3a35c98d
+
+  testCases:
+    - testCaseName: Case1
+      testCaseDescription: Wait for greeting and send sample input
+      testSteps: |
+        = Experimental.WaitUntilMessage("Safe Travels Agent");
+          Assert(CountRows(Copilot.Messages) > 1);
+          Experimental.SendText("Where can I fly today?");
+          // Wait for response
+          Experimental.WaitUntilMessage("Is there anything else I can help you with");
+          
+testSettings:
+  filePath: ../../samples/testSettings.yaml
+
+environmentVariables:
+  filePath: ../../samples/environmentVariables.yaml

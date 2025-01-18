@@ -84,6 +84,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 }
             }
 
+            // Perform any provider specific configuration
+            if (_testWebProvider is IExtendedTestWebProvider extendedTestWebProvider)
+            {
+                extendedTestWebProvider.ConfigurePowerFx(powerFxConfig);
+            }
+
             WaitRegisterExtensions.RegisterAll(powerFxConfig, TestState.GetTimeout(), Logger);
 
             Engine = new RecalcEngine(powerFxConfig);
@@ -97,6 +103,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     Engine.UpdateVariable(val.Name, symbolValues.Get(slot));
                     powerFxConfig.SymbolTable.RemoveVariable(val.Name);
                 }
+            }
+
+            // Add any provider specific functions or state
+            if (_testWebProvider is IExtendedTestWebProvider extendedTestWebProviderAfter)
+            {
+               extendedTestWebProviderAfter.ConfigurePowerFxEngine(Engine);
             }
         }
 

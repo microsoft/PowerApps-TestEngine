@@ -143,6 +143,12 @@ namespace Microsoft.PowerApps.TestEngine
                     await monitor.LogCookies(desiredUrl);
                 }
 
+                if (_testWebProvider is IExtendedTestWebProvider extendedProvider)
+                {
+                    // Allow the provider to perform any pre-test required setup
+                    await extendedProvider.SetupContext();
+                }
+
                 // Navigate to test url
                 await TestInfraFunctions.GoToUrlAsync(desiredUrl);
                 Logger.LogInformation("After navigate to target URL");
