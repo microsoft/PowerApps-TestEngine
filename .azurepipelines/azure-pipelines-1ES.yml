@@ -11,7 +11,7 @@ extends:
   parameters:
     sdl:
       codeql:
-        ${{ if eq(variables['Build.SourceBranch'], $(AllowedBranch)) }}:
+        ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch'])) }}:
           enabledOnNonDefaultBranches: true
     pool:
       name: Azure-Pipelines-1ESPT-ExDShared
