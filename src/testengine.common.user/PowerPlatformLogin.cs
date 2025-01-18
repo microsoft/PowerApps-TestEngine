@@ -55,6 +55,9 @@ namespace testengine.common.user
             // Remove home location, required for Portal Providers
             url = url?.Replace("/home", "");
 
+            // Replace preview redirect
+            url = url?.Replace(".preview.", "."); 
+
             // Need to check if page is idle to avoid case where we can get race condition before redirect to login
             if (url.IndexOf(state.DesiredUrl) >= 0 && await LoginIsComplete(state.Page) && !state.IsError)
             {
