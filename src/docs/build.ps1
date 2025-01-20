@@ -12,5 +12,6 @@ if ((Test-Path -Path '..\..\docs'))
     
 }
 New-Item -ItemType Directory -Path '..\..\docs'
+New-Item -Name ".nojekyll" -ItemType "file"
 
 Copy-Item -Path 'site\*' -Destination '..\..\docs' -Recurse -Force
