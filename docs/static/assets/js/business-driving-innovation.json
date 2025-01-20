@@ -1,0 +1,149 @@
+{
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "Introduction",
+        "elements": [
+          {
+            "type": "html",
+            "name": "introText",
+            "html": "<h2>Driving Innovation with Low-Code Automated Testing</h2><p>In this section, we will explore the benefits of low-code development and the importance of automated testing in driving innovation. We will discuss how low-code platforms enable rapid development, abstract complexity, and empower business users, and how automated testing ensures that solutions meet expected functionality and quality standards.</p>"
+          }
+        ]
+      },
+      {
+        "name": "BenefitsOfLowCodeDevelopment",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "benefitsLowCode",
+            "title": "Which of the following benefits have you experienced with low-code development?",
+            "choices": [
+              "Rapid Development",
+              "Abstracting Complexity",
+              "Empowering Business Users",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "benefitsLowCodeMoreInfo",
+            "title": "Are you familiar with these benefits?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "rapidDevelopmentInfo",
+            "visibleIf": "{benefitsLowCodeMoreInfo} = 'Not sure, tell me more' and {benefitsLowCode} contains 'Rapid Development'",
+            "html": "<p><b>Rapid Development:</b> Low-code platforms allow for faster development cycles by providing drag-and-drop interfaces, reusable components, and pre-built connectors. This enables teams to quickly build and deploy solutions that meet business needs.</p>"
+          },
+          {
+            "type": "html",
+            "name": "abstractingComplexityInfo",
+            "visibleIf": "{benefitsLowCodeMoreInfo} = 'Not sure, tell me more' and {benefitsLowCode} contains 'Abstracting Complexity'",
+            "html": "<p><b>Abstracting Complexity:</b> By leveraging existing functionality and connectors, low-code platforms abstract the underlying complexity of application development. This allows developers to focus on solving business problems rather than dealing with technical intricacies.</p>"
+          },
+          {
+            "type": "html",
+            "name": "empoweringBusinessUsersInfo",
+            "visibleIf": "{benefitsLowCodeMoreInfo} = 'Not sure, tell me more' and {benefitsLowCode} contains 'Empowering Business Users'",
+            "html": "<p><b>Empowering Business Users:</b> Low-code platforms empower business users, or 'citizen developers,' to create their own solutions without relying heavily on IT departments. This democratizes innovation and enables organizations to respond more quickly to changing business requirements.</p>"
+          }
+        ]
+      },
+      {
+        "name": "NeedForSpeedInAutomatedTesting",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "needForSpeed",
+            "title": "Which of the following considerations are important for automated testing in low-code development?",
+            "choices": [
+              "Rapid Test Creation",
+              "Continuous Testing",
+              "AI-Driven Testing",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "needForSpeedMoreInfo",
+            "title": "Are you familiar with these considerations?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "rapidTestCreationInfo",
+            "visibleIf": "{needForSpeedMoreInfo} = 'Not sure, tell me more' and {needForSpeed} contains 'Rapid Test Creation'",
+            "html": "<p><b>Rapid Test Creation:</b> Just as low-code platforms enable rapid development, automated testing tools should allow for quick and easy test creation. Record and replay strategies can be particularly effective, as they capture user interactions and generate test scripts without extensive coding knowledge.</p>"
+          },
+          {
+            "type": "html",
+            "name": "continuousTestingInfo",
+            "visibleIf": "{needForSpeedMoreInfo} = 'Not sure, tell me more' and {needForSpeed} contains 'Continuous Testing'",
+            "html": "<p><b>Continuous Testing:</b> Integrating automated testing into the development process ensures that tests are run continuously, providing immediate feedback on the quality and functionality of the solution. This helps identify and address issues early in the development cycle, reducing the risk of defects in the final product.</p>"
+          },
+          {
+            "type": "html",
+            "name": "aiDrivenTestingInfo",
+            "visibleIf": "{needForSpeedMoreInfo} = 'Not sure, tell me more' and {needForSpeed} contains 'AI-Driven Testing'",
+            "html": "<p><b>AI-Driven Testing:</b> Leveraging AI-driven agents can further enhance the efficiency of automated testing. These agents can observe how the solution is being used, identify common usage patterns, and automatically generate test cases that reflect real-world scenarios. This ensures comprehensive test coverage and helps detect anomalies that might otherwise go unnoticed.</p>"
+          }
+        ]
+      },
+      {
+        "name": "VerifyingSolutionFunctionality",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "verifyingFunctionality",
+            "title": "How does automated testing help in verifying the functionality of low-code solutions?",
+            "choices": [
+              "Ensure Quality",
+              "Validate Business Requirements",
+              "Facilitate Continuous Improvement",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "verifyingFunctionalityMoreInfo",
+            "title": "Are you familiar with these benefits?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "ensureQualityInfo",
+            "visibleIf": "{verifyingFunctionalityMoreInfo} = 'Not sure, tell me more' and {verifyingFunctionality} contains 'Ensure Quality'",
+            "html": "<p><b>Ensure Quality:</b> Automated tests help ensure that the solution meets quality standards by verifying that all components function as intended. This reduces the likelihood of defects and improves the overall reliability of the solution.</p>"
+          },
+          {
+            "type": "html",
+            "name": "validateBusinessRequirementsInfo",
+            "visibleIf": "{verifyingFunctionalityMoreInfo} = 'Not sure, tell me more' and {verifyingFunctionality} contains 'Validate Business Requirements'",
+            "html": "<p><b>Validate Business Requirements:</b> Automated tests can be designed to validate that the solution meets specific business requirements. This ensures that the solution delivers the desired outcomes and aligns with business goals.</p>"
+          },
+          {
+            "type": "html",
+            "name": "facilitateContinuousImprovementInfo",
+            "visibleIf": "{verifyingFunctionalityMoreInfo} = 'Not sure, tell me more' and {verifyingFunctionality} contains 'Facilitate Continuous Improvement'",
+            "html": "<p><b>Facilitate Continuous Improvement:</b> Automated testing provides valuable insights into the performance and functionality of the solution. By continuously monitoring and analyzing test results, organizations can identify areas for improvement and make data-driven decisions to enhance the solution over time.</p>"
+          }
+        ]
+      }
+    ]
+  }

@@ -1,0 +1,74 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# Sample workflow for building and deploying a Hugo site to GitHub Pages
+name: Deploy Hugo site to Pages
+
+on:
+  # Runs on pushes targeting the specified branch
+  push:
+    branches: ["grant-archibald-ms/copilot-provider-518"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+      - name: Publish .NET project
+        run: |
+          cd src/blazor/powerfx
+          dotnet workload install wasm-tools
+          dotnet publish -c Release
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+      - name: Build with Hugo
+        run: |
+          cd site
+          hugo --minify
+      - name: Upload artifact
+        # Automatically uploads an artifact from the './public' directory by default
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/public
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Check for broken links
+        uses: ruzickap/action-my-broken-link-checker@v2.7.0
+        with:
+          url: 'https:/microsoft.github.io/PowerApps-TestEngine'
+          cmd_params: '--exclude=(github.com|linkedin.com|admin.y.com) --max-connections=10 --color=always --timeout=20'

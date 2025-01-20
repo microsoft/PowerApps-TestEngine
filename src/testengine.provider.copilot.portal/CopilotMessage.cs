@@ -70,6 +70,7 @@ namespace testengine.provider.copilot.portal
     public class Attachment
     {
         public string? ContentType { get; set; }
+        public string? Content { get; set; }
         public string? ContentUrl { get; set; }
         public string? Name { get; set; }
         public string? ThumbnailUrl { get; set; }

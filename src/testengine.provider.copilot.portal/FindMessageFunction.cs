@@ -5,6 +5,7 @@ using System.Collections;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
@@ -37,37 +38,78 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public TableValue Execute(RecordValue criteria)
         {
             var fields = criteria == null ? new List<NamedValue>() : criteria.Fields;
+            var waitField = fields.Any(f => f.Name == "Wait") ? criteria.GetField("Wait") : BlankValue.NewBlank();
+            object waitValue = false;
+            List<string> messages = new List<string>();
+
+            if (!(waitField is BlankValue))
+            {
+                waitField.TryGetPrimitiveValue(out waitValue);
+            }
+
+            if (waitValue is bool shoudWait && shoudWait)
+            {
+                var startTime = DateTime.Now;
+                var timeout = _testState.GetTimeout();
+                while (DateTime.Now.Subtract(startTime).TotalSeconds < timeout)
+                {
+                    messages = FindMessages(fields, criteria);
+                    Thread.Sleep(500);
+                }
+            } 
+            else
+            {
+                messages = FindMessages(fields, criteria);
+            }
+            
+            _logger.LogDebug($"Search Result: {messages.Count()} record(s)");
+
+            var tableRows = messages.Select(json => ConvertToFormulaValue(ConvertJsonToCopilotMessage(json)) as RecordValue).ToArray<RecordValue>();
+            return TableValue.NewTable(_messageType, tableRows);
+        }
+
+        private List<string> FindMessages(IEnumerable<NamedValue> fields, RecordValue criteria)
+        {
             var type = fields.Any(f => f.Name == "Type") ? criteria.GetField("Type") : BlankValue.NewBlank();
-            var text = fields.Any(f => f.Name == "Text") ? criteria.GetField("Text"): BlankValue.NewBlank();
+            var text = fields.Any(f => f.Name == "Text") ? criteria.GetField("Text") : BlankValue.NewBlank();
+            var adaptive = fields.Any(f => f.Name == "AdaptiveCard") ? criteria.GetField("AdaptiveCard") : BlankValue.NewBlank();
             var jsonPathQuery = "";
             object typeValue = String.Empty;
             object textValue = String.Empty;
+            object adaptiveValue = false;
 
-            if ( !(type is BlankValue) && !(text is BlankValue) )
-            {
-                type.TryGetPrimitiveValue(out typeValue);
-                text.TryGetPrimitiveValue(out textValue);
-                jsonPathQuery = $"$..[?(@.type == '{Sanitize(typeValue.ToString())}' && @.text =~ /.*{Sanitize(textValue.ToString())}.*/i)]";
-            }
             if (!(type is BlankValue))
             {
                 type.TryGetPrimitiveValue(out typeValue);
-                jsonPathQuery = $"$..[?(@.type == '{Sanitize(typeValue.ToString())}')]";
+                if (!string.IsNullOrEmpty(jsonPathQuery))
+                {
+                    jsonPathQuery += " && ";
+                }
+                jsonPathQuery += $"$..[?(@.type == '{Sanitize(typeValue.ToString())}')]";
             }
             if (!(text is BlankValue))
             {
+                type.TryGetPrimitiveValue(out typeValue);
+                if (!string.IsNullOrEmpty(jsonPathQuery))
+                {
+                    jsonPathQuery += " && ";
+                }
                 text.TryGetPrimitiveValue(out textValue);
-                jsonPathQuery = $"$..[@.text =~ /.*{Sanitize(textValue.ToString())}.*/i)]";
+                jsonPathQuery += $"$..[@.text =~ /.*{Sanitize(textValue.ToString())}.*/i)]";
+            }
+            if (!(adaptive is BlankValue))
+            {
+                adaptive.TryGetPrimitiveValue(out adaptiveValue);
+                if (!string.IsNullOrEmpty(jsonPathQuery))
+                {
+                    jsonPathQuery += " && ";
+                }
+                jsonPathQuery = $"$.attachments[?(@.contentType == 'application/vnd.microsoft.card.adaptive')]";
             }
 
-            var matchedMessages = string.IsNullOrEmpty(jsonPathQuery) ? _provider.Messages : _provider.Messages
+            return string.IsNullOrEmpty(jsonPathQuery) ? _provider.Messages : _provider.Messages
                 .Where(json => JToken.Parse(json).SelectTokens(jsonPathQuery).Any())
                 .ToList();
-
-            _logger.LogDebug($"Search Result: {matchedMessages.Count()} record(s)");
-
-            var tableRows = matchedMessages.Select(json => ConvertToFormulaValue(ConvertJsonToCopilotMessage(json)) as RecordValue).ToArray<RecordValue>();
-            return TableValue.NewTable(_messageType, tableRows);
         }
 
         public static CopilotMessage? ConvertJsonToCopilotMessage(string json)
@@ -178,6 +220,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 .Add("InputHint", FormulaType.String)
                 .Add("Attachments", TableType.Empty()
                     .Add("ContentType", FormulaType.String)
+                    .Add("Content", FormulaType.String)
                     .Add("ContentUrl", FormulaType.String)
                     .Add("Name", FormulaType.String)
                     .Add("ThumbnailUrl", FormulaType.String))
