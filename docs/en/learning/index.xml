@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Learning on PowerApps Test Engine</title>
+    <link>http://localhost:1313/PowerApps-TestEngine/en/learning/</link>
+    <description>Recent content in Learning on PowerApps Test Engine</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <atom:link href="http://localhost:1313/PowerApps-TestEngine/en/learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Learning Playground</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/learning/playground/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/learning/playground/</guid>
+      <description>&lt;p&gt;Welcome to the learning playground a space to try interactive concepts related to Power Fx and testing. You can use the steps of each playground task to explore different key concepts.&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;Once have completed each set of learning playground concepts have a look at related learning playground tasks to build your knowledge.&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;p&gt;{% powerfx_playground %}&#xA;1=1&#xA;{% endpowerfx_playground %}&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

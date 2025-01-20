@@ -1,0 +1,4516 @@
+<!DOCTYPE html>
+<html lang="en" class="js csstransforms3d">
+  <head><script src="/PowerApps-TestEngine/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=PowerApps-TestEngine/livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.137.1">
+    <meta name="description" content="">
+
+
+    <link rel="icon" href="/PowerApps-TestEngine/images/favicon.png" type="image/png">
+
+    <title>08 - Simulated Connector :: PowerApps Test Engine</title>
+
+    
+    <link href="/PowerApps-TestEngine/css/nucleus.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/fontawesome-all.min.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/hybrid.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/featherlight.min.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/perfect-scrollbar.min.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/auto-complete.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/atom-one-dark-reasonable.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/theme.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/tabs.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/hugo-theme.css?1737352077" rel="stylesheet">
+    
+    <link href="/PowerApps-TestEngine/css/theme-blue.css?1737352077" rel="stylesheet">
+    
+    
+
+    <script src="/PowerApps-TestEngine/js/jquery-3.3.1.min.js?1737352077"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/PowerApps-TestEngine/en/learning/technical/08-simulating-connector/">
+    <nav id="sidebar" class="">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="/PowerApps-TestEngine/js/lunr.min.js?1737352077"></script>
+<script type="text/javascript" src="/PowerApps-TestEngine/js/auto-complete.js?1737352077"></script>
+<script type="text/javascript">
+    
+        var baseurl = "http:\/\/localhost:1313\/PowerApps-TestEngine\/";
+    
+</script>
+<script type="text/javascript" src="/PowerApps-TestEngine/js/search.js?1737352077"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='/PowerApps-TestEngine'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/guidance/" title="" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/guidance/">
+          
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/authoring/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/authoring/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/executionanddeploymentprocessintegration/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/executionanddeploymentprocessintegration/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/operationaltests/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/operationaltests/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/overview/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/overview/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/personas/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/personas/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/securityconsiderations/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/securityconsiderations/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/" title="" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/">
+          
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/audit/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/audit/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/bottom-up/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/bottom-up/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/business-stakeholders/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/business-stakeholders/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/business-unit-leads/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/business-unit-leads/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/devops-engineers-architects/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/devops-engineers-architects/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/enterprise-architects/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/enterprise-architects/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/makers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/makers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/managers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/managers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/microsoft-engineering/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/microsoft-engineering/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/microsoft-support/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/microsoft-support/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/powercat/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/powercat/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/security-architects/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/security-architects/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/software-engineers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/software-engineers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/solution-architects/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/solution-architects/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/support-engineers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/support-engineers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/top-down/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/top-down/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/trainers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/trainers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/discussion/" title="Discussion" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/discussion/">
+          Discussion
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/authentication/" title="Authentication in Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/authentication/">
+        Authentication in Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/building-a-sustainability-model/" title="Building a Sustainability Model" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/building-a-sustainability-model/">
+        Building a Sustainability Model
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/data-simulation/" title="Data Simulation" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/data-simulation/">
+        Data Simulation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/does-every-solution-need-automated-testing/" title="Does Every Solution Need Automated Testing?" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/does-every-solution-need-automated-testing/">
+        Does Every Solution Need Automated Testing?
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/enterprise-architecture-discussion/" title="Embracing Testing Strategies for Low-Code Solutions" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/enterprise-architecture-discussion/">
+        Embracing Testing Strategies for Low-Code Solutions
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/generative-ai/" title="Exploring Generative AI with Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/generative-ai/">
+        Exploring Generative AI with Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/implementing-effective-automated-testing-strategies-in-power-platform-solutions/" title="Implementing Effective Automated Testing Strategies in Power Platform Solutions" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/implementing-effective-automated-testing-strategies-in-power-platform-solutions/">
+        Implementing Effective Automated Testing Strategies in Power Platform Solutions
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/introduction-to-testing-approaches/" title="Introduction to Testing Approaches" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/introduction-to-testing-approaches/">
+        Introduction to Testing Approaches
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/low-code-testing-for-code-first-developer/" title="Low Code Power Platform Testing for the Code First Developer" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/low-code-testing-for-code-first-developer/">
+        Low Code Power Platform Testing for the Code First Developer
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/maintainability-of-low-code-solutions/" title="Maintainability of Low Code Solutions Using Automation" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/maintainability-of-low-code-solutions/">
+        Maintainability of Low Code Solutions Using Automation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/playwright-vs-test-engine/" title="Playwright vs Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/playwright-vs-test-engine/">
+        Playwright vs Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/test-engine-powerfx/" title="Test Engine and Power Fx" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/test-engine-powerfx/">
+        Test Engine and Power Fx
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/test-authoring/" title="Test Engine Test Authoring" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/test-authoring/">
+        Test Engine Test Authoring
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/examples/" title="Examples" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/examples/">
+          Examples
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-build-from-source-run-tests/" title="CoE Kit - Build from Source Example" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-build-from-source-run-tests/">
+        CoE Kit - Build from Source Example
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-learning-path-example/" title="CoE Kit Learning Path Example" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-learning-path-example/">
+        CoE Kit Learning Path Example
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-setup-and-install-wizard/" title="CoE Kit Setup and Install Wizard" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-setup-and-install-wizard/">
+        CoE Kit Setup and Install Wizard
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-infrastructure-as-code/" title="CoE Starter Kit -  Infrastructure As Code" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-infrastructure-as-code/">
+        CoE Starter Kit -  Infrastructure As Code
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-powerautomate-testing/" title="CoE Starter Kit Power Automate Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-powerautomate-testing/">
+        CoE Starter Kit Power Automate Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-test-automation-alm/" title="CoE Starter Kit Test Automation ALM" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-test-automation-alm/">
+        CoE Starter Kit Test Automation ALM
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-automate-test-sample/" title="Executing CoE Starter Kit Test Automation" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-automate-test-sample/">
+        Executing CoE Starter Kit Test Automation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/extending-testengine-powerfx-with-with-csharp-test-scripts/" title="Extending TestEngine Power FX with C# Test Scripts" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/extending-testengine-powerfx-with-with-csharp-test-scripts/">
+        Extending TestEngine Power FX with C# Test Scripts
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-extending-test-engine/" title="Extending the Test Engine to Support Testing of the CoE Starter Kit Setup and Upgrade Wizard" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-extending-test-engine/">
+        Extending the Test Engine to Support Testing of the CoE Starter Kit Setup and Upgrade Wizard
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/testing-security/" title="Testing Security" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/testing-security/">
+        Testing Security
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/custom-page-variables-and-collections/" title="Testing Variables and Collections in Power Apps with the Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/custom-page-variables-and-collections/">
+        Testing Variables and Collections in Power Apps with the Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/understanding-no-cliffs-extensibility-model/" title="Understanding the &#34;No Cliffs&#34; Extensibility Model of Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/understanding-no-cliffs-extensibility-model/">
+        Understanding the &#34;No Cliffs&#34; Extensibility Model of Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/using-powerfx-namespaces-in-testing/" title="Using Power Fx Namespaces in Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/using-powerfx-namespaces-in-testing/">
+        Using Power Fx Namespaces in Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/learning/" title="Learning" class="dd-item
+        parent
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/learning/">
+          Learning
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/learning/architecture/" title="Architecture Learn Module Overview" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/learning/architecture/">
+          Architecture Learn Module Overview
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/architecture/01-reliability/" title="01 - Reliability" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/architecture/01-reliability/">
+        01 - Reliability
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/" title="Business Learn Module" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/learning/business-path/">
+          Business Learn Module
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/01-introduction-to-the-business-value-of-automated-testing/" title="01 - Introduction" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/01-introduction-to-the-business-value-of-automated-testing/">
+        01 - Introduction
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/02-setting-up-people-and-processes-for-success/" title="02 - Setting Up People and Processes for Success" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/02-setting-up-people-and-processes-for-success/">
+        02 - Setting Up People and Processes for Success
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/03-driving-innovation-with-low-code-automated-testing/" title="03 - Driving Innovation with Low-Code Automated Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/03-driving-innovation-with-low-code-automated-testing/">
+        03 - Driving Innovation with Low-Code Automated Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/04-optimizing-it-processes/" title="04 - Optimizing IT Processes with Low-Code Automated Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/04-optimizing-it-processes/">
+        04 - Optimizing IT Processes with Low-Code Automated Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/05-understanding-the-high-level-approvals-process/" title="05 - Understanding the High-Level Approvals Process" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/05-understanding-the-high-level-approvals-process/">
+        05 - Understanding the High-Level Approvals Process
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/06-establishing-a-sustainability-model/" title="06 - Building a Sustainability Model" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/06-establishing-a-sustainability-model/">
+        06 - Building a Sustainability Model
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/07-growing-to-enterprise-grade/" title="07 - Growing Solutions to Enterprise Grade" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/07-growing-to-enterprise-grade/">
+        07 - Growing Solutions to Enterprise Grade
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/playground/" title="Learning Playground" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/playground/">
+        Learning Playground
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/" title="Technical Learn Module" class="dd-item
+        parent
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/learning/technical/">
+          Technical Learn Module
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/01-introduction/" title="01 - Introduction" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/01-introduction/">
+        01 - Introduction
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/02-getting-setup/" title="02 - Getting setup" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/02-getting-setup/">
+        02 - Getting setup
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/03-running-your-first-test/" title="03 - Running Your First Test" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/03-running-your-first-test/">
+        03 - Running Your First Test
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/04-looking-at-results/" title="04 - Looking at Results" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/04-looking-at-results/">
+        04 - Looking at Results
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/05-recording-your-first-test/" title="05 - Recording Your First Test" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/05-recording-your-first-test/">
+        05 - Recording Your First Test
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/06-asserting-results/" title="06 - Asserting Results" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/06-asserting-results/">
+        06 - Asserting Results
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/07-updating-control-value-using-setproperty/" title="07 - Updating Control Value using SetProperty" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/07-updating-control-value-using-setproperty/">
+        07 - Updating Control Value using SetProperty
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/08-simulating-connector/" title="08 - Simulated Connector" class="dd-item active">
+        <a href="/PowerApps-TestEngine/en/learning/technical/08-simulating-connector/">
+        08 - Simulated Connector
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/09-simulating-dataverse/" title="09 - Simulating Dataverse" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/09-simulating-dataverse/">
+        09 - Simulating Dataverse
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/10-using-simulations/" title="10 - Simulations Example" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/10-using-simulations/">
+        10 - Simulations Example
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/11-localization/" title="11 - Localization" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/11-localization/">
+        11 - Localization
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/context/" title="Test Engine Context" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/context/">
+          Test Engine Context
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/journey-map-assessment/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/journey-map-assessment/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/journey-map/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/journey-map/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/common-topics/" title="Common Topics" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/common-topics/">
+        Common Topics
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/debugging-test-engine-test/" title="Debugging Test Engine Tests" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/debugging-test-engine-test/">
+        Debugging Test Engine Tests
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started-assessment/" title="Get Started Assessment" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started-assessment/">
+        Get Started Assessment
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/get-started-now/" title="Get Started Now" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/get-started-now/">
+        Get Started Now
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started/" title="Getting Started" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started/">
+        Getting Started
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started-architects/" title="Getting Started Architects" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started-architects/">
+        Getting Started Architects
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started-business/" title="Getting Started Business Roles" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started-business/">
+        Getting Started Business Roles
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started-technical/" title="Getting Started Technical Users" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started-technical/">
+        Getting Started Technical Users
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/growing-to-enterprise-grade/" title="Growing to Enterprise Grade" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/growing-to-enterprise-grade/">
+        Growing to Enterprise Grade
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/impacts-on-people-process-and-tooling/" title="Impacts on People, Process, and Tooling" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/impacts-on-people-process-and-tooling/">
+        Impacts on People, Process, and Tooling
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/interactive-learning/" title="Interactive Learning" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/interactive-learning/">
+        Interactive Learning
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/keeping-up-to-date/" title="Keeping up to date" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/keeping-up-to-date/">
+        Keeping up to date
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/deep-dive-testengine-layers/" title="Layers of the Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/deep-dive-testengine-layers/">
+        Layers of the Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/low-code-test-design-principles/" title="Low-Code Testing Principles for Power Platform" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/low-code-test-design-principles/">
+        Low-Code Testing Principles for Power Platform
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/ring-deployment-model/" title="Ring Deployment Model" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/ring-deployment-model/">
+        Ring Deployment Model
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/roadmap-alignment/" title="Roadmap Alignment" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/roadmap-alignment/">
+        Roadmap Alignment
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/security-first-initiative/" title="Secure First Initiative" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/security-first-initiative/">
+        Secure First Initiative
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/security-testengine-storage-state-deep-dive/" title="Storage State Deep Dive" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/security-testengine-storage-state-deep-dive/">
+        Storage State Deep Dive
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/test-engine-extensibility/" title="Test Engine Extensibility" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/test-engine-extensibility/">
+        Test Engine Extensibility
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/test-engine-providers/" title="Test Engine Providers" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/test-engine-providers/">
+        Test Engine Providers
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/security-testengine-authentication-changes/" title="Test Engine Security - Authentication Changes" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/security-testengine-authentication-changes/">
+        Test Engine Security - Authentication Changes
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/testing-localized-power-app/" title="Testing Localized Power Apps" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/testing-localized-power-app/">
+        Testing Localized Power Apps
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/strategic-importance-of-automated-testing-from-a-cxo-perspective/" title="The Strategic Importance of Automated Testing from a CXO Perspective" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/strategic-importance-of-automated-testing-from-a-cxo-perspective/">
+        The Strategic Importance of Automated Testing from a CXO Perspective
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/transformative-power-of-ai/" title="Transformative Power of AI" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/transformative-power-of-ai/">
+        Transformative Power of AI
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/understanding-feature-branches/" title="Understanding Feature Branches" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/understanding-feature-branches/">
+        Understanding Feature Branches
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/why-automated-testing/" title="Why Automated Testing?" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/why-automated-testing/">
+        Why Automated Testing?
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/why-not-just-manual-testing/" title="Why Not Just Manual Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/why-not-just-manual-testing/">
+        Why Not Just Manual Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/why-not-just-use-code-first-testing-tools/" title="Why Not Just Use Code First Testing Tools" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/why-not-just-use-code-first-testing-tools/">
+        Why Not Just Use Code First Testing Tools
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="footer">
+      
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/PowerApps-TestEngine/en/'>Power Apps Test Engine</a> > <a href='/PowerApps-TestEngine/en/learning/'>Learning</a> > <a href='/PowerApps-TestEngine/en/learning/technical/'>Technical Learn Module</a> > 08 - Simulated Connector
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#what-is-mocking">What is Mocking?</a>
+      <ul>
+        <li><a href="#benefits-of-mocking">Benefits of Mocking</a></li>
+      </ul>
+    </li>
+    <li><a href="#example-simulating-connection">Example: Simulating Connection</a></li>
+    <li><a href="#running-the-test">Running the Test</a></li>
+    <li><a href="#understanding-the-test-plan">Understanding the Test Plan</a>
+      <ul>
+        <li><a href="#test-plan-configuration">Test Plan Configuration</a></li>
+        <li><a href="#explanation">Explanation</a></li>
+      </ul>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              08 - Simulated Connector
+            </h1>
+          
+
+        
+
+
+<h2 id="introduction">Introduction</h2>
+<p>In this module, we will explore how to use simulated connectors in your Power Apps tests. Simulated connectors allow you to mock network requests, providing predefined responses for testing purposes. This is particularly useful for testing scenarios where you want to control the data returned by external services.</p>
+<h2 id="what-is-mocking">What is Mocking?</h2>
+<p>Mocking is a technique used in software testing to simulate the behavior of real objects. By using mocks, you can create controlled environments where you can test specific parts of your application in isolation. This helps ensure that your tests are reliable and repeatable, as they are not dependent on external factors.</p>
+<h3 id="benefits-of-mocking">Benefits of Mocking</h3>
+<ul>
+<li><strong>Test Isolation</strong>: Mocking allows you to isolate the component you are testing from the rest of the system. This means you can focus on testing the functionality of that component without worrying about the behavior of other parts of the system.</li>
+<li><strong>Control Over Test Scenarios</strong>: By using mocks, you can create specific scenarios, including both expected and edge cases. This helps you verify that your application behaves correctly under various conditions.</li>
+<li><strong>Consistency</strong>: Mocking ensures that your tests produce consistent results, as the mocked responses are predefined and do not change.</li>
+</ul>
+<h2 id="example-simulating-connection">Example: Simulating Connection</h2>
+<p>Lets look at an example of simulating a connection. The first set fo checks validate the expected Weather from the WeatherService. After using the SimulateConnector function The alternative Location and Condition values are used.</p>
+<blockquote>
+<p>NOTES:</p>
+<ol>
+<li>If the value does not match the test will return &ldquo;One or more errors occurred. (Exception has been thrown by the target of an invocation.)&rdquo;</li>
+<li>Reload the page to reset the sample to the default state</li>
+</ol>
+</blockquote>
+<p>{% powerfx %}
+Assert(WeatherService.GetCurrentWeather(&ldquo;Seattle, WA&rdquo;).Location=&ldquo;Seattle, WA&rdquo;);
+Assert(WeatherService.GetCurrentWeather(&ldquo;Seattle, WA&rdquo;).Condition=&ldquo;Sunny&rdquo;);</p>
+<p>Experimental.SimulateConnector({Name:&ldquo;WeatherService&rdquo;, Then: {Location: &ldquo;Other&rdquo;, Condition: &ldquo;Cold&rdquo;}});</p>
+<p>Assert(WeatherService.GetCurrentWeather(&ldquo;Seattle, WA&rdquo;).Location=&ldquo;Other&rdquo;);
+Assert(WeatherService.GetCurrentWeather(&ldquo;Seattle, WA&rdquo;).Condition=&ldquo;Cold&rdquo;);
+{% endpowerfx %}</p>
+<p>Want to explore more concepts examples checkout the <a href="/powerfuldev-testing/learning/playground?title=assert-simulated-connector" class="btn btn--primary">Learning Playground</a> to explore related testing concepts.</p>
+<h2 id="running-the-test">Running the Test</h2>
+<p>To run the test, follow these steps:</p>
+<ol>
+<li>
+<p><strong>Navigate to the Connector Sample Directory</strong>:</p>
+<ul>
+<li>Open a terminal and navigate to the <code>\samples\connector\</code> directory in the Power Apps Test Engine repository.</li>
+</ul>
+</li>
+<li>
+<p><strong>Run the Test Script</strong>:</p>
+<ul>
+<li>Execute the <code>RunTests.ps1</code> script to start the test:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-pwsh" data-lang="pwsh"><span style="display:flex;"><span>pwsh <span style="color:#f92672">-File</span> RunTests.ps1
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="understanding-the-test-plan">Understanding the Test Plan</h2>
+<p>The test plan for the connector sample includes a section that simulates the MSN Weather connector. This is defined in the <code>onTestSuiteStart</code> block of the <code>testPlan.fx.yaml</code> file. By using this value we can ensure that the expected simulation is applied before the test cases is loaded.</p>
+<h3 id="test-plan-configuration">Test Plan Configuration</h3>
+<p>Here&rsquo;s the relevant part of the <code>testPlan.fx.yaml</code> file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># yaml-embedded-languages: powerfx</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">testSuite</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">testSuiteName</span>: <span style="color:#ae81ff">Connector App</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">testSuiteDescription</span>: <span style="color:#ae81ff">Verifies that you can mock network requests</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">persona</span>: <span style="color:#ae81ff">User1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">appLogicalName</span>: <span style="color:#ae81ff">new_connectorapp_da583</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">onTestSuiteStart</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    = Experimental.SimulateConnector({name: &#34;msnweather&#34;, then: {responses: { daily: { day: { summary: &#34;You are seeing the mock response&#34; }}}}})</span>    
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">testCases</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">testCaseName</span>: <span style="color:#ae81ff">Fill in a city name and do the search</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">testSteps</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        = Screenshot(&#34;connectorapp_loaded.png&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          SetProperty(TextInput1.Text, &#34;Atlanta&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          Select(Button1);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          Assert(Label4.Text = &#34;You are seeing the mock response&#34;, &#34;Validate the output is from the mock&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          Screenshot(&#34;connectorapp_end.png&#34;);</span>        
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">testSettings</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">locale</span>: <span style="color:#e6db74">&#34;en-US&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">recordVideo</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">browserConfigurations</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">browser</span>: <span style="color:#ae81ff">Chromium</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">environmentVariables</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">users</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">personaName</span>: <span style="color:#ae81ff">User1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">emailKey</span>: <span style="color:#ae81ff">user1Email</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">passwordKey</span>: <span style="color:#ae81ff">user1Password</span>
+</span></span></code></pre></div><h3 id="explanation">Explanation</h3>
+<ul>
+<li>onTestSuiteStart: This block uses the Experimental.SimulateConnector function to mock the MSN Weather connector. It specifies that any request to the msnweather connector should return a predefined response with the summary &ldquo;You are seeing the mock response&rdquo;.</li>
+<li>testCases: This section defines the test steps. It includes filling in a city name, performing a search, and asserting that the label displays the mock response.
+Steps in Detail
+Simulate Connector:</li>
+</ul>
+<p>The onTestSuiteStart block sets up the simulated connector response.</p>
+<pre tabindex="0"><code class="language-powerfx" data-lang="powerfx">= Experimental.SimulateConnector({name: &#34;msnweather&#34;, then: {responses: { daily: { day: { summary: &#34;You are seeing the mock response&#34; }}}}})
+</code></pre><p>Test Steps:</p>
+<p>The test steps include taking a screenshot, setting the text input to &ldquo;Atlanta&rdquo;, clicking the search button, and asserting the label text.</p>
+<pre tabindex="0"><code class="language-powerfx" data-lang="powerfx">= Screenshot(&#34;connectorapp_loaded.png&#34;);
+  SetProperty(TextInput1.Text, &#34;Atlanta&#34;);
+  Select(Button1);
+  Assert(Label4.Text = &#34;You are seeing the mock response&#34;, &#34;Validate the output is from the mock&#34;);
+  Screenshot(&#34;connectorapp_end.png&#34;);
+</code></pre><h2 id="summary">Summary</h2>
+<p>Using simulated connectors in your Power Apps tests allows you to control the responses from external services, making it easier to test various scenarios. By following the steps outlined in this section, you can set up and run tests that use simulated connectors, ensuring your application behaves as expected under different conditions.</p>
+<p><a href="/powerfuldev-testing/learning/09-simulating-dataverse" class="btn btn--primary">Simulating Dataverse</a></p>
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="/PowerApps-TestEngine/en/learning/technical/07-updating-control-value-using-setproperty/" title="07 - Updating Control Value using SetProperty"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="/PowerApps-TestEngine/en/learning/technical/09-simulating-dataverse/" title="09 - Simulating Dataverse" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="/PowerApps-TestEngine/js/clipboard.min.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/perfect-scrollbar.min.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/perfect-scrollbar.jquery.min.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/jquery.sticky.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/featherlight.min.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/highlight.pack.js?1737352077"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/PowerApps-TestEngine/js/modernizr.custom-3.6.0.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/learn.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/hugo-learn.js?1737352077"></script>
+    
+        
+            <script src="/PowerApps-TestEngine/mermaid/mermaid.js?1737352077"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+

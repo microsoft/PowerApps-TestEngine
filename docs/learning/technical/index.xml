@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Technical Learn Module on PowerApps Test Engine</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/</link><description>Recent content in Technical Learn Module on PowerApps Test Engine</description><generator>Hugo</generator><language>en</language><atom:link href="https://microsoft.github.io/PowerApps-TestEngine/learning/technical/index.xml" rel="self" type="application/rss+xml"/><item><title>01 - Introduction</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/01-introduction/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/01-introduction/</guid><description>&lt;p>As a business leader or low-code maker who supports the business, you need to ensure the reliability, performance, and security of your Power Platform solutions. This means you can&amp;rsquo;t rely solely on manual testing processes, which can be time-consuming and prone to errors. You want to build a solution that quickly meets your business needs while ensuring high quality. The Power Apps Test Engine can help you achieve this without writing extensive code.&lt;/p></description></item><item><title>02 - Getting setup</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/02-getting-setup/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/02-getting-setup/</guid><description>&lt;h2 id="pre-requisites-check">Pre-requisites Check&lt;/h2>
+&lt;p>Validate that you have completed the pre-requisites check of the &lt;a href="01-introduction.md">Introduction&lt;/a> have been completed.&lt;/p>
+&lt;h2 id="solution-setup">Solution Setup&lt;/h2>
+&lt;p>If you don&amp;rsquo;t have an environment with the Button Clicker solution, follow these steps to import the solution.&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Note&lt;/strong>&lt;br>
+Follow these steps to check whether the Button Clicker solution is loaded or not:&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>Open the Power Apps portal.&lt;/li>
+&lt;li>Select the environment that’s assigned to you for completing this workshop. If you don’t have an environment, continue with the following steps.&lt;/li>
+&lt;li>Select &lt;strong>Apps&lt;/strong> from the left navigation pane.&lt;/li>
+&lt;li>Verify that &lt;strong>Button Clicker&lt;/strong> is in &lt;strong>My apps&lt;/strong> or &lt;strong>Shared with me&lt;/strong>.&lt;/li>
+&lt;li>If &lt;strong>Button Clicker&lt;/strong> is available, then you can skip this unit and continue to the next unit.&lt;/li>
+&lt;/ol>
+&lt;h2 id="create-a-new-environment">Create a New Environment&lt;/h2>
+&lt;p>To create a new environment, follow these steps:&lt;/p></description></item><item><title>03 - Running Your First Test</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/03-running-your-first-test/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/03-running-your-first-test/</guid><description>&lt;p>Welcome, early adopters! If you&amp;rsquo;re eager to try the current version of Power Platform Automated Testing, you&amp;rsquo;re in the right place. This module will help you get started with the necessary components to explore automated testing.&lt;/p>
+&lt;h3 id="prerequisites">Prerequisites&lt;/h3>
+&lt;p>To get started, you&amp;rsquo;ll need the following components:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Ability to Clone Repository&lt;/strong>: Use Git command line or GitHub Desktop to clone the repository.&lt;/li>
+&lt;li>&lt;strong>PowerShell&lt;/strong>: Ensure you have PowerShell installed on your machine.&lt;/li>
+&lt;li>&lt;strong>Power Platform Command Line Tools&lt;/strong>: Install the Power Platform Command Line tools to interact with your Power Platform environment.&lt;/li>
+&lt;li>&lt;strong>.NET 8.0 SDK&lt;/strong>: Download and install the .NET 8.0 SDK to build the code.&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>NOTEL These instructions apply to the &lt;a href="https://microsoft.github.io/PowerApps-TestEngine/PowerApps-TestEngine/learning/context/ring-deployment-model/">inner ring&lt;/a> using a build from source strategy. As these changes are included in the &lt;a href="https://learn.microsoft.com/power-platform/developer/cli/reference/test">pac test run&lt;/a> many of these steps are not required.&lt;/p></description></item><item><title>04 - Looking at Results</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/04-looking-at-results/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/04-looking-at-results/</guid><description>&lt;p>After running your tests, it&amp;rsquo;s important to understand how to interpret the results. The Power Apps Test Engine generates a detailed output that helps you analyze the performance and correctness of your tests.&lt;/p>
+&lt;h2 id="test-output">Test Output&lt;/h2>
+&lt;p>When you run your tests, the Power Apps Test Engine creates a &lt;code>TestOutput&lt;/code> folder. This inside this folder is named with a unique date and time stamp to help you easily identify when the tests were executed. Inside this folder, you&amp;rsquo;ll find several important files and subfolders:&lt;/p></description></item><item><title>05 - Recording Your First Test</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/05-recording-your-first-test/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/05-recording-your-first-test/</guid><description>&lt;p>While the sample include &lt;code>testPlan.fx.yaml&lt;/code> as an example, you can also create this file by simply interacting with the application. The Power Apps Test Engine provides a record mode that allows you to generate test plans based on your interactions with the app.&lt;/p>
+&lt;blockquote>
+&lt;p>NOTE: The recording feature is currently under development and improvement. This feature will continue to change and improve in future updates.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="steps-to-record-your-first-test">Steps to Record Your First Test&lt;/h2>
+&lt;p>Follow these steps to record your first test:&lt;/p></description></item><item><title>06 - Asserting Results</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/06-asserting-results/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/06-asserting-results/</guid><description>&lt;h2 id="introduction-to-asserts">Introduction to Asserts&lt;/h2>
+&lt;p>In automated testing, an &lt;strong>assert&lt;/strong> is a statement that checks if a condition is true. If the condition evaluates to true, the test passes; if it evaluates to false, the test fails. Asserts are crucial for verifying that your application behaves as expected.&lt;/p>
+&lt;h2 id="the-assert-power-fx-function">The Assert Power Fx Function&lt;/h2>
+&lt;p>The &lt;code>Assert&lt;/code> function in Power Fx takes two arguments:&lt;/p>
+&lt;ol>
+&lt;li>A boolean expression that evaluates to true or false.&lt;/li>
+&lt;li>A message that describes the assertion.&lt;/li>
+&lt;/ol>
+&lt;p>If the boolean expression evaluates to true, the test step passes. If it evaluates to false, the test step fails, and the provided message helps identify the issue.&lt;/p></description></item><item><title>07 - Updating Control Value using SetProperty</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/07-updating-control-value-using-setproperty/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/07-updating-control-value-using-setproperty/</guid><description>&lt;h2 id="introduction-to-setproperty">Introduction to SetProperty&lt;/h2>
+&lt;p>The &lt;code>SetProperty&lt;/code> function in Power Fx is used to update the value of a control in your Power Apps application. This function allows you to change the properties of controls, such as text, color, visibility, and more.&lt;/p>
+&lt;h3 id="syntax">Syntax&lt;/h3>
+&lt;pre tabindex="0">&lt;code class="language-powerfx" data-lang="powerfx">SetProperty(control.property, value)
+&lt;/code>&lt;/pre>&lt;ul>
+&lt;li>control.property: The property of the control you want to update.&lt;/li>
+&lt;li>value: The new value you want to assign to the property.&lt;/li>
+&lt;/ul>
+&lt;h2 id="example-updating-label-text">Example: Updating Label Text&lt;/h2>
+&lt;p>Let&amp;rsquo;s consider a basic example that combines &lt;a href="https://microsoft.github.io/PowerApps-TestEngine/PowerApps-TestEngine/learning/technical/06-asserting-results/">Asserting Results&lt;/a> where we want to update the text of a label control (Label1) to &amp;ldquo;End of the test&amp;rdquo; and make sure changes are applied:&lt;/p></description></item><item><title>08 - Simulated Connector</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/08-simulating-connector/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/08-simulating-connector/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>In this module, we will explore how to use simulated connectors in your Power Apps tests. Simulated connectors allow you to mock network requests, providing predefined responses for testing purposes. This is particularly useful for testing scenarios where you want to control the data returned by external services.&lt;/p>
+&lt;h2 id="what-is-mocking">What is Mocking?&lt;/h2>
+&lt;p>Mocking is a technique used in software testing to simulate the behavior of real objects. By using mocks, you can create controlled environments where you can test specific parts of your application in isolation. This helps ensure that your tests are reliable and repeatable, as they are not dependent on external factors.&lt;/p></description></item><item><title>09 - Simulating Dataverse</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/09-simulating-dataverse/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/09-simulating-dataverse/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>The &lt;code>Experimental.SimulateDataverse&lt;/code> function allows you to simulate responses from the Dataverse without actually querying the live data. This is particularly useful for testing and development purposes, as it enables you to create predictable and controlled responses for various scenarios.&lt;/p>
+&lt;h2 id="what-is-mocking">What is Mocking?&lt;/h2>
+&lt;p>Mocking is a technique used in software testing to simulate the behavior of real objects. By using mocks, you can create controlled environments where you can test specific parts of your application in isolation. This helps ensure that your tests are reliable and repeatable, as they are not dependent on external factors.&lt;/p></description></item><item><title>10 - Simulations Example</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/10-using-simulations/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/10-using-simulations/</guid><description>&lt;h2 id="learning-objectives">Learning Objectives&lt;/h2>
+&lt;p>In this section, you will learn how to load a sample Weather application. This application is designed to call the MSN Weather and then have the user save the current weather at the location and categorize how this weather relates to them. This example highlights a number of items:&lt;/p>
+&lt;ul>
+&lt;li>Calling the MSN Weather connector and testing how the results of this connector are used by the application.&lt;/li>
+&lt;li>Interacting with Dataverse to look at how data queried from Dataverse is used as a collection of data for controls.&lt;/li>
+&lt;li>Using Assert statements with a known state setup by the Simulation functions to verify that the application works as expected.&lt;/li>
+&lt;/ul>
+&lt;p>This section builds on concepts introduced in &lt;a href="https://microsoft.github.io/PowerApps-TestEngine/PowerApps-TestEngine/learning/technical/08-simulating-connector/">Simulating Connector&lt;/a> and &lt;a href="https://microsoft.github.io/PowerApps-TestEngine/PowerApps-TestEngine/learning/technical/09-simulating-dataverse/">Simulating Dataverse&lt;/a>.&lt;/p></description></item><item><title>11 - Localization</title><link>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/11-localization/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://microsoft.github.io/PowerApps-TestEngine/learning/technical/11-localization/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>In this section, we will investigate the testing of a localized Weather sample. Localization is the process of adapting an application to meet the language, cultural, and other requirements of a specific target market. The ability to support multiple languages in your application can make it more accessible and user-friendly for a global audience.&lt;/p>
+&lt;h2 id="example-localization">Example: Localization&lt;/h2>
+&lt;p>Lets look at an example of localization of a Power App&lt;/p>
+&lt;blockquote>
+&lt;p>NOTES:&lt;/p>
+&lt;ol>
+&lt;li>If the value does not match the test will return &amp;ldquo;One or more errors occurred. (Exception has been thrown by the target of an invocation.)&amp;rdquo;&lt;/li>
+&lt;li>Reload the page to reset the sample to the default state&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;p>{% powerfx %}
+// Settings:
+locale: en-us
+// Code:
+Language()
+{% endpowerfx %}&lt;/p></description></item></channel></rss>

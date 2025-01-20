@@ -1,0 +1,251 @@
+{
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "Introduction",
+        "elements": [
+          {
+            "type": "html",
+            "name": "introText",
+            "html": "<h2>Optimizing IT Processes with Low-Code Automated Testing</h2><p>In this section, we will explore how the business and IT teams can extend and integrate their DevOps investments with low-code solutions, focusing on Source Control integration, existing connector models for Azure DevOps and GitHub, and the importance of risk and compliance management.</p>"
+          }
+        ]
+      },
+      {
+        "name": "ExtendingDevOpsInvestments",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "devOpsInvestments",
+            "title": "Which of the following benefits have you experienced by extending your DevOps investments with low-code solutions?",
+            "choices": [
+              "Version Control",
+              "Seamless Collaboration",
+              "Automated Workflows",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "devOpsInvestmentsMoreInfo",
+            "title": "Are you familiar with these benefits?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "versionControlInfo",
+            "visibleIf": "{devOpsInvestmentsMoreInfo} = 'Not sure, tell me more' and {devOpsInvestments} contains 'Version Control'",
+            "html": "<p><b>Version Control:</b> Source Control integration enables version control for low-code solutions, allowing teams to track changes, collaborate effectively, and maintain a history of modifications.</p>"
+          },
+          {
+            "type": "html",
+            "name": "seamlessCollaborationInfo",
+            "visibleIf": "{devOpsInvestmentsMoreInfo} = 'Not sure, tell me more' and {devOpsInvestments} contains 'Seamless Collaboration'",
+            "html": "<p><b>Seamless Collaboration:</b> By integrating with Azure DevOps and GitHub, low-code solutions can be managed alongside traditional code-first projects, facilitating seamless collaboration between developers and business users.</p>"
+          },
+          {
+            "type": "html",
+            "name": "automatedWorkflowsInfo",
+            "visibleIf": "{devOpsInvestmentsMoreInfo} = 'Not sure, tell me more' and {devOpsInvestments} contains 'Automated Workflows'",
+            "html": "<p><b>Automated Workflows:</b> Source Control integration supports automated workflows, enabling continuous integration and continuous deployment (CI/CD) pipelines for low-code solutions. This ensures that changes are automatically tested, validated, and deployed, reducing manual effort and minimizing errors.</p>"
+          }
+        ]
+      },
+      {
+        "name": "RiskAndComplianceManagement",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "riskCompliance",
+            "title": "Which of the following features of Power Apps and Dataverse help manage risk and ensure compliance?",
+            "choices": [
+              "Role-Based Access Control (RBAC)",
+              "Data Loss Prevention (DLP)",
+              "Auditing and Monitoring",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "riskComplianceMoreInfo",
+            "title": "Are you familiar with these features?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "rbacInfo",
+            "visibleIf": "{riskComplianceMoreInfo} = 'Not sure, tell me more' and {riskCompliance} contains 'Role-Based Access Control (RBAC)'",
+            "html": "<p><b>Role-Based Access Control (RBAC):</b> RBAC allows organizations to define and enforce access controls based on user roles, ensuring that only authorized users can access sensitive data.</p>"
+          },
+          {
+            "type": "html",
+            "name": "dlpInfo",
+            "visibleIf": "{riskComplianceMoreInfo} = 'Not sure, tell me more' and {riskCompliance} contains 'Data Loss Prevention (DLP)'",
+            "html": "<p><b>Data Loss Prevention (DLP):</b> DLP policies help prevent the accidental or intentional sharing of sensitive information by restricting data flows between different connectors and services.</p>"
+          },
+          {
+            "type": "html",
+            "name": "auditingMonitoringInfo",
+            "visibleIf": "{riskComplianceMoreInfo} = 'Not sure, tell me more' and {riskCompliance} contains 'Auditing and Monitoring'",
+            "html": "<p><b>Auditing and Monitoring:</b> Power Apps and Dataverse provide auditing and monitoring capabilities to track user activities, detect anomalies, and ensure compliance with regulatory requirements.</p>"
+          }
+        ]
+      },
+      {
+        "name": "PlanBuildTestDeployMonitorLifecycle",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "lifecycle",
+            "title": "Which of the following stages are most imported to you in improving optimization?",
+            "choices": [
+              "Plan",
+              "Build",
+              "Test",
+              "Deploy",
+              "Monitor",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "lifecycleMoreInfo",
+            "title": "Are you familiar with these stages?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "planInfo",
+            "visibleIf": "{lifecycleMoreInfo} = 'Not sure, tell me more' and {lifecycle} contains 'Plan'",
+            "html": "<p><b>Plan:</b> Define the scope, objectives, and approach for automated testing, including identifying test cases, selecting tools, and setting up the test environment.</p>"
+          },
+          {
+            "type": "html",
+            "name": "buildInfo",
+            "visibleIf": "{lifecycleMoreInfo} = 'Not sure, tell me more' and {lifecycle} contains 'Build'",
+            "html": "<p><b>Build:</b> Develop and maintain automated test scripts, ensuring that they are reliable, efficient, and easy to maintain.</p>"
+          },
+          {
+            "type": "html",
+            "name": "testInfo",
+            "visibleIf": "{lifecycleMoreInfo} = 'Not sure, tell me more' and {lifecycle} contains 'Test'",
+            "html": "<p><b>Test:</b> Execute automated tests, monitor their performance, and report any issues or failures.</p>"
+          },
+          {
+            "type": "html",
+            "name": "deployInfo",
+            "visibleIf": "{lifecycleMoreInfo} = 'Not sure, tell me more' and {lifecycle} contains 'Deploy'",
+            "html": "<p><b>Deploy:</b> Automate the deployment process to ensure that changes are thoroughly validated before being released to production.</p>"
+          },
+          {
+            "type": "html",
+            "name": "monitorInfo",
+            "visibleIf": "{lifecycleMoreInfo} = 'Not sure, tell me more' and {lifecycle} contains 'Monitor'",
+            "html": "<p><b>Monitor:</b> Continuously monitor the performance and functionality of the solution to identify areas for improvement and ensure continued operation as changes are made and new platform features become available.</p>"
+          }
+        ]
+      },
+      {
+        "name": "ContinuousDeployment",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "continuousDeployment",
+            "title": "Which of the following benefits have you experienced with continuous deployment?",
+            "choices": [
+              "Automate Testing",
+              "Reduce Downtime",
+              "Enhance Agility",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "continuousDeploymentMoreInfo",
+            "title": "Are you familiar with these benefits?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "automateTestingInfo",
+            "visibleIf": "{continuousDeploymentMoreInfo} = 'Not sure, tell me more' and {continuousDeployment} contains 'Automate Testing'",
+            "html": "<p><b>Automate Testing:</b> Automated tests can be executed as part of the deployment pipeline, ensuring that changes are thoroughly validated before being released to production.</p>"
+          },
+          {
+            "type": "html",
+            "name": "reduceDowntimeInfo",
+            "visibleIf": "{continuousDeploymentMoreInfo} = 'Not sure, tell me more' and {continuousDeployment} contains 'Reduce Downtime'",
+            "html": "<p><b>Reduce Downtime:</b> Continuous deployment minimizes downtime by automating the deployment process and reducing the risk of errors.</p>"
+          },
+          {
+            "type": "html",
+            "name": "enhanceAgilityInfo",
+            "visibleIf": "{continuousDeploymentMoreInfo} = 'Not sure, tell me more' and {continuousDeployment} contains 'Enhance Agility'",
+            "html": "<p><b>Enhance Agility:</b> By continuously deploying updates, organizations can quickly respond to changing business requirements and deliver new features and improvements to users.</p>"
+          }
+        ]
+      },
+      {
+        "name": "TeamDevelopmentModel",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "teamDevelopment",
+            "title": "How do your teams work together across business, IT, and risk to build solutions?",
+            "choices": [
+              "Collaborative Development",
+              "Skill Optimization",
+              "Cross-Functional Teams",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "teamDevelopmentMoreInfo",
+            "title": "Are you familiar with these approaches?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "collaborativeDevelopmentInfo",
+            "visibleIf": "{teamDevelopmentMoreInfo} = 'Not sure, tell me more' and {teamDevelopment} contains 'Collaborative Development'",
+            "html": "<p><b>Collaborative Development:</b> Collaborative development involves teams from business, IT, and risk working together to build solutions. This approach leverages the expertise of each team to ensure that solutions meet business needs, are technically sound, and comply with risk and compliance requirements.</p>"
+          },
+          {
+            "type": "html",
+            "name": "skillOptimizationInfo",
+            "visibleIf": "{teamDevelopmentMoreInfo} = 'Not sure, tell me more' and {teamDevelopment} contains 'Skill Optimization'",
+            "html": "<p><b>Skill Optimization:</b> Skill optimization involves leveraging the unique skills and expertise of different team members to build effective solutions. This approach ensures that each team member's strengths are utilized, leading to more efficient and high-quality outcomes.</p>"
+          },
+          {
+            "type": "html",
+            "name": "crossFunctionalTeamsInfo",
+            "visibleIf": "{teamDevelopmentMoreInfo} = 'Not sure, tell me more' and {teamDevelopment} contains 'Cross-Functional Teams'",
+            "html": "<p><b>Cross-Functional Teams:</b> Cross-functional teams consist of members from different departments, such as business, IT, and risk, working together to achieve common goals. This approach fosters collaboration, improves communication, and ensures that solutions are well-rounded and meet the needs of all stakeholders.</p>"
+          }
+        ]
+      }
+    ]
+  }

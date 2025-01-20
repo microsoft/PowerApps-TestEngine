@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Examples on PowerApps Test Engine</title>
+    <link>http://localhost:1313/PowerApps-TestEngine/en/examples/</link>
+    <description>Recent content in Examples on PowerApps Test Engine</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <atom:link href="http://localhost:1313/PowerApps-TestEngine/en/examples/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CoE Kit - Build from Source Example</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-build-from-source-run-tests/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-build-from-source-run-tests/</guid>
+      <description>&lt;p&gt;The Power Platform Center of Excellence (CoE) starter kit is composed of various low-code solution elements within the Power Platform. Among these elements is a model-driven application designed to facilitate the setup and upgrade of the CoE Starter Kit. This sample includes Power Apps Test Engine tests, which can be utilized to automate and verify key aspects of the expected behavior of the Setup and Upgrade Wizard.&lt;/p&gt;&#xA;&lt;h2 id=&#34;context&#34;&gt;Context&lt;/h2&gt;&#xA;&lt;p&gt;The sample &lt;a href=&#34;https://github.com/microsoft/PowerApps-TestEngine/blob/grant-archibald-md/integration-merge/samples/coe-kit-setup-wizard/RunTests.ps1&#34;&gt;RunTests.ps1&lt;/a&gt; serves as an example of a &amp;ldquo;build from source&amp;rdquo; using the open-source licensed version of the Test Engine. The source code version may include features not yet released as part of the pac test run command in the Power Platform Command Line Interface action.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CoE Kit Learning Path Example</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-learning-path-example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-learning-path-example/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;&#xA;&lt;p&gt;The Center of Excellence (CoE) Kit has become a vital tool for a large number of users globally. As the user base continues to grow, the CoE Kit faces significant architectural changes. Ensuring the quality of releases amidst these changes is crucial. The existing application has been developed over four years, incorporating Power Apps, Power Automate, Dataverse, and Power BI as seen in our &lt;a href=&#34;http://localhost:1313/PowerApps-TestEngine/PowerApps-TestEngine/examples/coe-kit-automate-test-sample/&#34;&gt;Executing CoE Starter Kit Test Automation&lt;/a&gt; example&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CoE Kit Setup and Install Wizard</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-setup-and-install-wizard/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-setup-and-install-wizard/</guid>
+      <description>&lt;h2 id=&#34;use-case-example&#34;&gt;Use Case Example&lt;/h2&gt;&#xA;&lt;p&gt;Once example we have been working on recently is Automated testing of the &lt;a href=&#34;https://learn.microsoft.com/power-platform/guidance/coe/setup-core-components&#34;&gt;Setup and Wizard&lt;/a&gt; as we considered Automated Test for this application we had to look the following.&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;How do we collaborate with the Test Engine team to improve the Test Engine?&lt;/li&gt;&#xA;&lt;li&gt;How do we setup and install the solution?&lt;/li&gt;&#xA;&lt;li&gt;Could we automate the creation of the environment, install of dependencies, setup of connections?&lt;/li&gt;&#xA;&lt;li&gt;How we extend testing a Model Driven Application with custom pages?&lt;/li&gt;&#xA;&lt;li&gt;How do we handle the user consent dialog?&lt;/li&gt;&#xA;&lt;li&gt;How build tests to interact with a complicated multi stage setup process?&lt;/li&gt;&#xA;&lt;li&gt;How can we create integration tests calling Power Automate Cloud Flows?&lt;/li&gt;&#xA;&lt;li&gt;How can we validating the successful setup and state with Dataverse?&lt;/li&gt;&#xA;&lt;li&gt;How can we scale what we are learning to improve guidance?&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;early-adopter-and-build-from-source&#34;&gt;Early Adopter and Build from Source&lt;/h2&gt;&#xA;&lt;p&gt;We collaborated closely with the Test Engine team by contributing code to the repository to use a &lt;a href=&#34;http://localhost:1313/PowerApps-TestEngine/PowerApps-TestEngine/examples/coe-kit-build-from-source-run-tests.md&#34;&gt;build from source&lt;/a&gt; strategy. This included adding new code for authentication, providers for the Model Driven app, and expanding Power Fx functions to make testing easier. By building the open source from code, we applied a build process to integrate tests as part of our deployment process. This ensured that our tests were consistently run and validated during each deployment.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CoE Starter Kit -  Infrastructure As Code</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-infrastructure-as-code/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-infrastructure-as-code/</guid>
+      <description>&lt;p&gt;The combination of Terraform and the CoE Starter Kit provides a powerful and flexible solution for managing and governing your Power Platform environments. By leveraging the power of infrastructure as code and the comprehensive tools provided by the CoE Starter Kit, you can ensure that your environments are always in a consistent and reliable state, enabling you to focus on delivering value to your users.&lt;/p&gt;&#xA;&lt;p&gt;&lt;img alt=&#34;Diagram that shows terraform and steps that will be automated as part of deployment&#34; src=&#34;./media/coe-kit-infrastructure-as-code.png&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CoE Starter Kit Power Automate Testing</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-powerautomate-testing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-powerautomate-testing/</guid>
+      <description>&lt;h2 id=&#34;important-note&#34;&gt;Important Note&lt;/h2&gt;&#xA;&lt;p&gt;The Test Engine Power Automate features are currently in the planning and early collaboration and code contributions to Test Engine for the approach outlined below.&lt;/p&gt;&#xA;&lt;p&gt;This article aims to serve as a starting point for discussion on how this feature could meet the needs of users who are building and deploying Power Automate Cloud flows. It is important to note that this feature is still in the early stages of planning and experimentation. We invite the community to be part of the discussion and to stay aware as the scope and features develop.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CoE Starter Kit Test Automation ALM</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-test-automation-alm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-test-automation-alm/</guid>
+      <description>&lt;p&gt;The goal of implementing the following stages is to maintain the quality and reduce the manual effort for new releases of the CoE Starter Kit. This article will discuss the key topics in a narrative conversation style.&lt;/p&gt;&#xA;&lt;h2 id=&#34;coe-kit---power-platform-low-code-alm-release-and-continuous-deployment-process&#34;&gt;CoE Kit - Power Platform Low Code ALM Release and Continuous Deployment Process&lt;/h2&gt;&#xA;&lt;p&gt;When it comes to automating the release and continuous deployment process for the CoE Starter Kit, there are several options to consider.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Executing CoE Starter Kit Test Automation</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-automate-test-sample/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-automate-test-sample/</guid>
+      <description>&lt;h2 id=&#34;wider-context&#34;&gt;Wider Context&lt;/h2&gt;&#xA;&lt;p&gt;We are starting our testing with the Setup and Upgrade Wizard however the CoE Starter Kit has a much wider set of components that need to be tested. We are continually reviewing our automated test approach to consider the wider scope of the CoE Starter Kit.&lt;/p&gt;&#xA;&lt;p&gt;{% include figure popup=true image_path=&amp;quot;/examples/media/coe-kit-testing-layers.png&amp;quot; alt=&amp;ldquo;Diagram showing the different layers of CoE Starter Kit Test across - Authentication, Power Apps, Power Automate, AI Builder, Dataverse, Power Platform and Microsoft Fabric&amp;rdquo; caption=&amp;ldquo;Components to test in CoE Starter Kit&amp;rdquo; %}&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Extending TestEngine Power FX with C# Test Scripts</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/extending-testengine-powerfx-with-with-csharp-test-scripts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/extending-testengine-powerfx-with-with-csharp-test-scripts/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;&#xA;&lt;p&gt;In this example, we explore the extensibility of TestEngine Power FX using C# test scripts. We will delve into the extensibility model of TestEngine, focusing on the integration of web-based Playwright commands through code-first extensibility.&lt;/p&gt;&#xA;&lt;p&gt;We will discuss extending the code-first extensibility of web-based Playwright commands. This approach enables developers to write custom test scripts that leverage the powerful capabilities of Playwright for browser automation.&lt;/p&gt;&#xA;&lt;p&gt;Providers in TestEngine understand the underlying model of the component being tested. They create Power FX abstractions that hide complexity, allowing testers to focus on the high-level logic of their tests. To allow code first extension the &lt;code&gt;Experimental.PlaywrightScript()&lt;/code&gt; Power FX function allows scripts to be recorded or authored in C# to extend the test.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Extending the Test Engine to Support Testing of the CoE Starter Kit Setup and Upgrade Wizard</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-extending-test-engine/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/coe-kit-extending-test-engine/</guid>
+      <description>&lt;p&gt;In this article, we will discuss how the CoE Starter Kit has made use of extensions to the test engine to support testing of Setup and Upgrade Wizard. This journey involves breaking down tests into smaller, more manageable steps, demonstrating the use of variables and collections, utilizing the Experimental namespace to overcome current limitations.&lt;/p&gt;&#xA;&lt;p&gt;By following these guidelines and examples, you can effectively make use of the test engine to learn how to to apply similar approaches. This ensures thorough and reliable testing, ultimately leading to a more robust and user-friendly application.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Testing Security</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/testing-security/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/testing-security/</guid>
+      <description>&lt;p&gt;This article provides an example of how we can test browser-based authentication using multiple personas using Multi-Factor Authentication (MFA) with persistent cookie state and Power Apps security for Power Apps.&lt;/p&gt;&#xA;&lt;p&gt;The authentication process allows for cookies that are used for authentication to be stored between test runs using &lt;code&gt;storageState&lt;/code&gt; which allows the browser state to be stored between tests.&lt;/p&gt;&#xA;&lt;p&gt;We use a Power Apps Test Engine &lt;a href=&#34;https://github.com/microsoft/PowerApps-TestEngine/tree/grant-archibald-ms/storage-state-389/samples/permissions&#34;&gt;permissions sample&lt;/a&gt; that demonstrates using two user personas, including a set of tests to log in to the Power Apps Portal, a canvas application, and a Model-Driven Application.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Testing Variables and Collections in Power Apps with the Test Engine</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/custom-page-variables-and-collections/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/custom-page-variables-and-collections/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;&#xA;&lt;p&gt;In Power Apps, the Test Engine provides a robust capability to test variables and collections on custom pages. This article explores the essentials of Power FX variables and collections, their common uses, and the role of testing in simplifying application state management.&lt;/p&gt;&#xA;&lt;p&gt;&lt;img alt=&#34;Power Apps Low Code testing - Variables and Collections example&#34; src=&#34;./media/custom-page-variables-collections.png&#34;&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;what-are-power-fx-variables-and-collections&#34;&gt;What are Power FX Variables and Collections?&lt;/h2&gt;&#xA;&lt;p&gt;Power FX variables and collections are fundamental components in Power Apps that help manage the state and data within an application.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Understanding the &#34;No Cliffs&#34; Extensibility Model of Power Apps Test Engine</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/understanding-no-cliffs-extensibility-model/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/understanding-no-cliffs-extensibility-model/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;&#xA;&lt;p&gt;The &amp;ldquo;no cliffs&amp;rdquo; extensibility model of Power Apps Test Engine is designed to provide a seamless experience for both makers and developers. This model ensures that users can extend the capabilities of the Power Apps Test Engine without hitting any barriers or &amp;ldquo;cliffs.&amp;rdquo; In this example, we will explore this model using the consent dialog of a Model Driven Application custom page as an example.&lt;/p&gt;&#xA;&lt;h2 id=&#34;what-is-a-consent-dialog&#34;&gt;What is a Consent Dialog?&lt;/h2&gt;&#xA;&lt;p&gt;A &lt;a href=&#34;https://learn.microsoft.com/power-apps/maker/canvas-apps/connections-list#connection-consent-dialog&#34;&gt;consent dialog&lt;/a&gt; is a prompt that appears to users, asking for their permission to access certain resources or perform specific actions. This dialog is crucial for maintaining security and ensuring that users are aware of and agree to the actions being taken on their behalf.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Using Power Fx Namespaces in Testing</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/examples/using-powerfx-namespaces-in-testing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/examples/using-powerfx-namespaces-in-testing/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt; Namespaces are a preview feature only available in early release integration branches of the Power Apps test engine.&lt;/p&gt;&#xA;&lt;h2 id=&#34;introduction-to-power-fx-namespaces&#34;&gt;Introduction to Power Fx Namespaces&lt;/h2&gt;&#xA;&lt;p&gt;Power Fx namespaces are a powerful feature that allows developers to organize and separate different sets of functions within the Power Fx language. By using namespaces, you can distinguish between the default functions provided by Power Fx, such as &lt;code&gt;CountRows()&lt;/code&gt;, and extensions added for specific purposes, like the Test Engine with functions such as &lt;code&gt;Experimental.Pause()&lt;/code&gt;. This separation helps in maintaining clarity and avoiding conflicts between different sets of features.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

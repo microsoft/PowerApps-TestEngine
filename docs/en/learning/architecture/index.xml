@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Architecture Learn Module Overview on PowerApps Test Engine</title>
+    <link>http://localhost:1313/PowerApps-TestEngine/en/learning/architecture/</link>
+    <description>Recent content in Architecture Learn Module Overview on PowerApps Test Engine</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <atom:link href="http://localhost:1313/PowerApps-TestEngine/en/learning/architecture/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>01 - Reliability</title>
+      <link>http://localhost:1313/PowerApps-TestEngine/en/learning/architecture/01-reliability/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/PowerApps-TestEngine/en/learning/architecture/01-reliability/</guid>
+      <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;&#xA;&lt;p&gt;This section provides recommendations for designing a reliability testing strategy to validate and optimize the reliability of your Power Platform workloads. Reliability testing focuses on the resiliency and availability of your workloads, specifically the critical flows identified during the design phase. This guide includes general testing guidance and specific advice on fault injection and chaos engineering.&lt;/p&gt;&#xA;&lt;h1 id=&#34;definitions&#34;&gt;Definitions&lt;/h1&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;Term&lt;/th&gt;&#xA;          &lt;th&gt;Definition&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Availability&lt;/td&gt;&#xA;          &lt;td&gt;The amount of time that an application workload runs in a healthy state without significant downtime.&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Chaos engineering&lt;/td&gt;&#xA;          &lt;td&gt;The practice of subjecting applications and services to real-world stresses and failures to build and validate resilience.&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Fault injection&lt;/td&gt;&#xA;          &lt;td&gt;Introducing an error to a system to test its resiliency.&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Resiliency&lt;/td&gt;&#xA;          &lt;td&gt;An application workload&amp;rsquo;s ability to withstand and recover from failure modes.&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;h2 id=&#34;key-design-strategies&#34;&gt;Key Design Strategies&lt;/h2&gt;&#xA;&lt;p&gt;Testing is essential to ensure that your workload meets its reliability targets and can handle failures gracefully. Fault injection is a type of testing that deliberately introduces faults or stress into your system to simulate real-world scenarios. By using fault injection and chaos engineering techniques, you can proactively discover and fix issues before they affect your production environment.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

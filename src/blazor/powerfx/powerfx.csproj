@@ -24,10 +24,10 @@
   </ItemGroup>
 
   <Target Name="CreateOutputDirectory" BeforeTargets="Build">
-    <MakeDir Directories="..\..\..\docs\site\_framework\" />
+    <MakeDir Directories="..\..\docs\site\_framework\" />
   </Target>
 
   <Target Name="PostBuildCopy" AfterTargets="Build">
-    <Exec Command="pwsh -Command &quot;if (!(Test-Path -Path '..\..\..\docs\site\_framework')) { New-Item -ItemType Directory -Path '..\..\..\docs\site\_framework' } ; Copy-Item -Path '$(OutputPath)\wwwroot\_framework\*' -Destination '..\..\..\docs\site\_framework' -Recurse -Force&quot;" />
+    <Exec Command="pwsh -Command &quot;if (!(Test-Path -Path '..\..\docs\site\_framework')) { New-Item -ItemType Directory -Path '..\..\docs\site\_framework' } ; Copy-Item -Path '$(OutputPath)\wwwroot\_framework\*' -Destination '..\..\docs\site\_framework' -Recurse -Force&quot;" />
   </Target>
 </Project>

@@ -1,0 +1,179 @@
+{
+  "showProgressBar": "belowHeader",
+  "progressBarType": "pages",
+  "progressBarShowPageNumbers": true,  
+  "pages": [
+      {
+        "name": "Introduction",
+        "elements": [
+          {
+            "type": "html",
+            "name": "introText",
+            "html": "<h2>Understanding the High-Level Approvals Process</h2><p>In this section, we will explore the high-level approvals process that supports a team development model with tests. This process ensures that when changes are ready for deployment, they are thoroughly reviewed and approved, leveraging a decentralized model that integrates with business processes and DevOps investments.</p>"
+          }
+        ]
+      },
+      {
+        "name": "TeamDevelopmentModel",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "teamDevelopment",
+            "title": "How do your teams work together across business, IT, and risk to build solutions?",
+            "choices": [
+              "Collaborative Development",
+              "Skill Optimization",
+              "Cross-Functional Teams",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "teamDevelopmentMoreInfo",
+            "title": "Are you familiar with these approaches?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "collaborativeDevelopmentInfo",
+            "visibleIf": "{teamDevelopmentMoreInfo} = 'Not sure, tell me more' and {teamDevelopment} contains 'Collaborative Development'",
+            "html": "<p><b>Collaborative Development:</b> Collaborative development involves teams from business, IT, and risk working together to build solutions. This approach leverages the expertise of each team to ensure that solutions meet business needs, are technically sound, and comply with risk and compliance requirements.</p>"
+          },
+          {
+            "type": "html",
+            "name": "skillOptimizationInfo",
+            "visibleIf": "{teamDevelopmentMoreInfo} = 'Not sure, tell me more' and {teamDevelopment} contains 'Skill Optimization'",
+            "html": "<p><b>Skill Optimization:</b> Skill optimization involves leveraging the unique skills and expertise of different team members to build effective solutions. This approach ensures that each team member's strengths are utilized, leading to more efficient and high-quality outcomes.</p>"
+          },
+          {
+            "type": "html",
+            "name": "crossFunctionalTeamsInfo",
+            "visibleIf": "{teamDevelopmentMoreInfo} = 'Not sure, tell me more' and {teamDevelopment} contains 'Cross-Functional Teams'",
+            "html": "<p><b>Cross-Functional Teams:</b> Cross-functional teams consist of members from different departments, such as business, IT, and risk, working together to achieve common goals. This approach fosters collaboration, improves communication, and ensures that solutions are well-rounded and meet the needs of all stakeholders.</p>"
+          }
+        ]
+      },
+      {
+        "name": "DeploymentProcess",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "deploymentProcess",
+            "title": "Which of the following steps are included in the deployment process?",
+            "choices": [
+              "Highlighting Changes",
+              "Summarizing Tests",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "deploymentProcessMoreInfo",
+            "title": "Are you familiar with these steps?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "highlightingChangesInfo",
+            "visibleIf": "{deploymentProcessMoreInfo} = 'Not sure, tell me more' and {deploymentProcess} contains 'Highlighting Changes'",
+            "html": "<p><b>Highlighting Changes:</b> The deployment process includes the ability to highlight changes made to the solution. This ensures that reviewers can easily identify what has been modified and assess the impact of those changes.</p>"
+          },
+          {
+            "type": "html",
+            "name": "summarizingTestsInfo",
+            "visibleIf": "{deploymentProcessMoreInfo} = 'Not sure, tell me more' and {deploymentProcess} contains 'Summarizing Tests'",
+            "html": "<p><b>Summarizing Tests:</b> A summary of the tests that have been run is provided as part of the deployment process. This summary includes details on the test cases executed, the results, and any issues identified. This helps reviewers understand the testing coverage and the quality of the solution.</p>"
+          }
+        ]
+      },
+      {
+        "name": "DecentralizedApprovalModel",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "decentralizedApproval",
+            "title": "Which of the following benefits have you experienced with a decentralized approval model?",
+            "choices": [
+              "Integration with Business Processes",
+              "Power Automate Cloud Flows",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "decentralizedApprovalMoreInfo",
+            "title": "Are you familiar with these benefits?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "integrationBusinessProcessesInfo",
+            "visibleIf": "{decentralizedApprovalMoreInfo} = 'Not sure, tell me more' and {decentralizedApproval} contains 'Integration with Business Processes'",
+            "html": "<p><b>Integration with Business Processes:</b> Approvals can be integrated into existing business processes, ensuring that they align with organizational workflows and requirements.</p>"
+          },
+          {
+            "type": "html",
+            "name": "powerAutomateCloudFlowsInfo",
+            "visibleIf": "{decentralizedApprovalMoreInfo} = 'Not sure, tell me more' and {decentralizedApproval} contains 'Power Automate Cloud Flows'",
+            "html": "<p><b>Power Automate Cloud Flows:</b> Power Automate Cloud flows can be used to automate the approval process, streamlining workflows and reducing manual effort. This integration allows for seamless coordination with DevOps investments, ensuring that approvals are efficiently managed.</p>"
+          }
+        ]
+      },
+      {
+        "name": "CoordinationWithDevOpsInvestments",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "devOpsCoordination",
+            "title": "Which of the following aspects are included in the coordination with DevOps investments?",
+            "choices": [
+              "Source Control Integration",
+              "Automated Workflows",
+              "Risk and Compliance Management",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "devOpsCoordinationMoreInfo",
+            "title": "Are you familiar with these aspects?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "sourceControlIntegrationInfo",
+            "visibleIf": "{devOpsCoordinationMoreInfo} = 'Not sure, tell me more' and {devOpsCoordination} contains 'Source Control Integration'",
+            "html": "<p><b>Source Control Integration:</b> Changes are managed using Source Control integration, allowing teams to track modifications, collaborate effectively, and maintain a history of changes.</p>"
+          },
+          {
+            "type": "html",
+            "name": "automatedWorkflowsInfo",
+            "visibleIf": "{devOpsCoordinationMoreInfo} = 'Not sure, tell me more' and {devOpsCoordination} contains 'Automated Workflows'",
+            "html": "<p><b>Automated Workflows:</b> Continuous integration and continuous deployment (CI/CD) pipelines are used to automate the testing and deployment process, ensuring that changes are validated and deployed efficiently.</p>"
+          },
+          {
+            "type": "html",
+            "name": "riskComplianceManagementInfo",
+            "visibleIf": "{devOpsCoordinationMoreInfo} = 'Not sure, tell me more' and {devOpsCoordination} contains 'Risk and Compliance Management'",
+            "html": "<p><b>Risk and Compliance Management:</b> The approvals process includes checks for risk and compliance, leveraging the data policies and security models of Power Apps and Dataverse to ensure that solutions meet regulatory requirements.</p>"
+          }
+        ]
+      }
+    ]
+  }

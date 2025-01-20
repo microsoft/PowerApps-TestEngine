@@ -1,0 +1,4724 @@
+<!DOCTYPE html>
+<html lang="en" class="js csstransforms3d">
+  <head><script src="/PowerApps-TestEngine/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=PowerApps-TestEngine/livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.137.1">
+    <meta name="description" content="">
+
+
+    <link rel="icon" href="/PowerApps-TestEngine/images/favicon.png" type="image/png">
+
+    <title>11 - Localization :: PowerApps Test Engine</title>
+
+    
+    <link href="/PowerApps-TestEngine/css/nucleus.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/fontawesome-all.min.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/hybrid.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/featherlight.min.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/perfect-scrollbar.min.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/auto-complete.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/atom-one-dark-reasonable.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/theme.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/tabs.css?1737352077" rel="stylesheet">
+    <link href="/PowerApps-TestEngine/css/hugo-theme.css?1737352077" rel="stylesheet">
+    
+    <link href="/PowerApps-TestEngine/css/theme-blue.css?1737352077" rel="stylesheet">
+    
+    
+
+    <script src="/PowerApps-TestEngine/js/jquery-3.3.1.min.js?1737352077"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/PowerApps-TestEngine/en/learning/technical/11-localization/">
+    <nav id="sidebar" class="">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="/PowerApps-TestEngine/js/lunr.min.js?1737352077"></script>
+<script type="text/javascript" src="/PowerApps-TestEngine/js/auto-complete.js?1737352077"></script>
+<script type="text/javascript">
+    
+        var baseurl = "http:\/\/localhost:1313\/PowerApps-TestEngine\/";
+    
+</script>
+<script type="text/javascript" src="/PowerApps-TestEngine/js/search.js?1737352077"></script>
+
+    
+  </div>
+  
+    <section id="homelinks">
+      <ul>
+        <li>
+            <a class="padding" href='/PowerApps-TestEngine'><i class='fas fa-home'></i> Home</a>
+        </li>
+      </ul>
+    </section>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/guidance/" title="" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/guidance/">
+          
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/authoring/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/authoring/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/executionanddeploymentprocessintegration/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/executionanddeploymentprocessintegration/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/operationaltests/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/operationaltests/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/overview/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/overview/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/personas/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/personas/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/guidance/securityconsiderations/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/guidance/securityconsiderations/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/" title="" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/">
+          
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/audit/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/audit/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/bottom-up/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/bottom-up/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/business-stakeholders/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/business-stakeholders/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/business-unit-leads/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/business-unit-leads/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/devops-engineers-architects/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/devops-engineers-architects/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/enterprise-architects/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/enterprise-architects/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/makers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/makers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/managers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/managers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/microsoft-engineering/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/microsoft-engineering/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/microsoft-support/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/microsoft-support/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/powercat/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/powercat/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/security-architects/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/security-architects/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/software-engineers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/software-engineers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/solution-architects/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/solution-architects/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/support-engineers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/support-engineers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/top-down/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/top-down/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/roles-and-responsibilities/trainers/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/roles-and-responsibilities/trainers/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/discussion/" title="Discussion" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/discussion/">
+          Discussion
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/authentication/" title="Authentication in Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/authentication/">
+        Authentication in Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/building-a-sustainability-model/" title="Building a Sustainability Model" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/building-a-sustainability-model/">
+        Building a Sustainability Model
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/data-simulation/" title="Data Simulation" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/data-simulation/">
+        Data Simulation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/does-every-solution-need-automated-testing/" title="Does Every Solution Need Automated Testing?" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/does-every-solution-need-automated-testing/">
+        Does Every Solution Need Automated Testing?
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/enterprise-architecture-discussion/" title="Embracing Testing Strategies for Low-Code Solutions" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/enterprise-architecture-discussion/">
+        Embracing Testing Strategies for Low-Code Solutions
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/generative-ai/" title="Exploring Generative AI with Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/generative-ai/">
+        Exploring Generative AI with Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/implementing-effective-automated-testing-strategies-in-power-platform-solutions/" title="Implementing Effective Automated Testing Strategies in Power Platform Solutions" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/implementing-effective-automated-testing-strategies-in-power-platform-solutions/">
+        Implementing Effective Automated Testing Strategies in Power Platform Solutions
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/introduction-to-testing-approaches/" title="Introduction to Testing Approaches" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/introduction-to-testing-approaches/">
+        Introduction to Testing Approaches
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/low-code-testing-for-code-first-developer/" title="Low Code Power Platform Testing for the Code First Developer" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/low-code-testing-for-code-first-developer/">
+        Low Code Power Platform Testing for the Code First Developer
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/maintainability-of-low-code-solutions/" title="Maintainability of Low Code Solutions Using Automation" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/maintainability-of-low-code-solutions/">
+        Maintainability of Low Code Solutions Using Automation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/playwright-vs-test-engine/" title="Playwright vs Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/playwright-vs-test-engine/">
+        Playwright vs Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/test-engine-powerfx/" title="Test Engine and Power Fx" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/test-engine-powerfx/">
+        Test Engine and Power Fx
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/discussion/test-authoring/" title="Test Engine Test Authoring" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/discussion/test-authoring/">
+        Test Engine Test Authoring
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/examples/" title="Examples" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/examples/">
+          Examples
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-build-from-source-run-tests/" title="CoE Kit - Build from Source Example" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-build-from-source-run-tests/">
+        CoE Kit - Build from Source Example
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-learning-path-example/" title="CoE Kit Learning Path Example" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-learning-path-example/">
+        CoE Kit Learning Path Example
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-setup-and-install-wizard/" title="CoE Kit Setup and Install Wizard" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-setup-and-install-wizard/">
+        CoE Kit Setup and Install Wizard
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-infrastructure-as-code/" title="CoE Starter Kit -  Infrastructure As Code" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-infrastructure-as-code/">
+        CoE Starter Kit -  Infrastructure As Code
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-powerautomate-testing/" title="CoE Starter Kit Power Automate Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-powerautomate-testing/">
+        CoE Starter Kit Power Automate Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-test-automation-alm/" title="CoE Starter Kit Test Automation ALM" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-test-automation-alm/">
+        CoE Starter Kit Test Automation ALM
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-automate-test-sample/" title="Executing CoE Starter Kit Test Automation" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-automate-test-sample/">
+        Executing CoE Starter Kit Test Automation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/extending-testengine-powerfx-with-with-csharp-test-scripts/" title="Extending TestEngine Power FX with C# Test Scripts" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/extending-testengine-powerfx-with-with-csharp-test-scripts/">
+        Extending TestEngine Power FX with C# Test Scripts
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/coe-kit-extending-test-engine/" title="Extending the Test Engine to Support Testing of the CoE Starter Kit Setup and Upgrade Wizard" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/coe-kit-extending-test-engine/">
+        Extending the Test Engine to Support Testing of the CoE Starter Kit Setup and Upgrade Wizard
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/testing-security/" title="Testing Security" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/testing-security/">
+        Testing Security
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/custom-page-variables-and-collections/" title="Testing Variables and Collections in Power Apps with the Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/custom-page-variables-and-collections/">
+        Testing Variables and Collections in Power Apps with the Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/understanding-no-cliffs-extensibility-model/" title="Understanding the &#34;No Cliffs&#34; Extensibility Model of Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/understanding-no-cliffs-extensibility-model/">
+        Understanding the &#34;No Cliffs&#34; Extensibility Model of Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/examples/using-powerfx-namespaces-in-testing/" title="Using Power Fx Namespaces in Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/examples/using-powerfx-namespaces-in-testing/">
+        Using Power Fx Namespaces in Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/learning/" title="Learning" class="dd-item
+        parent
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/learning/">
+          Learning
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/learning/architecture/" title="Architecture Learn Module Overview" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/learning/architecture/">
+          Architecture Learn Module Overview
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/architecture/01-reliability/" title="01 - Reliability" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/architecture/01-reliability/">
+        01 - Reliability
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/" title="Business Learn Module" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/learning/business-path/">
+          Business Learn Module
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/01-introduction-to-the-business-value-of-automated-testing/" title="01 - Introduction" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/01-introduction-to-the-business-value-of-automated-testing/">
+        01 - Introduction
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/02-setting-up-people-and-processes-for-success/" title="02 - Setting Up People and Processes for Success" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/02-setting-up-people-and-processes-for-success/">
+        02 - Setting Up People and Processes for Success
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/03-driving-innovation-with-low-code-automated-testing/" title="03 - Driving Innovation with Low-Code Automated Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/03-driving-innovation-with-low-code-automated-testing/">
+        03 - Driving Innovation with Low-Code Automated Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/04-optimizing-it-processes/" title="04 - Optimizing IT Processes with Low-Code Automated Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/04-optimizing-it-processes/">
+        04 - Optimizing IT Processes with Low-Code Automated Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/05-understanding-the-high-level-approvals-process/" title="05 - Understanding the High-Level Approvals Process" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/05-understanding-the-high-level-approvals-process/">
+        05 - Understanding the High-Level Approvals Process
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/06-establishing-a-sustainability-model/" title="06 - Building a Sustainability Model" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/06-establishing-a-sustainability-model/">
+        06 - Building a Sustainability Model
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/business-path/07-growing-to-enterprise-grade/" title="07 - Growing Solutions to Enterprise Grade" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/business-path/07-growing-to-enterprise-grade/">
+        07 - Growing Solutions to Enterprise Grade
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/playground/" title="Learning Playground" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/playground/">
+        Learning Playground
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/" title="Technical Learn Module" class="dd-item
+        parent
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/learning/technical/">
+          Technical Learn Module
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/01-introduction/" title="01 - Introduction" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/01-introduction/">
+        01 - Introduction
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/02-getting-setup/" title="02 - Getting setup" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/02-getting-setup/">
+        02 - Getting setup
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/03-running-your-first-test/" title="03 - Running Your First Test" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/03-running-your-first-test/">
+        03 - Running Your First Test
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/04-looking-at-results/" title="04 - Looking at Results" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/04-looking-at-results/">
+        04 - Looking at Results
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/05-recording-your-first-test/" title="05 - Recording Your First Test" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/05-recording-your-first-test/">
+        05 - Recording Your First Test
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/06-asserting-results/" title="06 - Asserting Results" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/06-asserting-results/">
+        06 - Asserting Results
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/07-updating-control-value-using-setproperty/" title="07 - Updating Control Value using SetProperty" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/07-updating-control-value-using-setproperty/">
+        07 - Updating Control Value using SetProperty
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/08-simulating-connector/" title="08 - Simulated Connector" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/08-simulating-connector/">
+        08 - Simulated Connector
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/09-simulating-dataverse/" title="09 - Simulating Dataverse" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/09-simulating-dataverse/">
+        09 - Simulating Dataverse
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/10-using-simulations/" title="10 - Simulations Example" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/learning/technical/10-using-simulations/">
+        10 - Simulations Example
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/learning/technical/11-localization/" title="11 - Localization" class="dd-item active">
+        <a href="/PowerApps-TestEngine/en/learning/technical/11-localization/">
+        11 - Localization
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/PowerApps-TestEngine/en/context/" title="Test Engine Context" class="dd-item
+        
+        
+          
+        
+        
+        ">
+      <a href="/PowerApps-TestEngine/en/context/">
+          Test Engine Context
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/journey-map-assessment/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/journey-map-assessment/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/journey-map/" title="" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/journey-map/">
+        
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/common-topics/" title="Common Topics" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/common-topics/">
+        Common Topics
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/debugging-test-engine-test/" title="Debugging Test Engine Tests" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/debugging-test-engine-test/">
+        Debugging Test Engine Tests
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started-assessment/" title="Get Started Assessment" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started-assessment/">
+        Get Started Assessment
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/get-started-now/" title="Get Started Now" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/get-started-now/">
+        Get Started Now
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started/" title="Getting Started" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started/">
+        Getting Started
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started-architects/" title="Getting Started Architects" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started-architects/">
+        Getting Started Architects
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started-business/" title="Getting Started Business Roles" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started-business/">
+        Getting Started Business Roles
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/getting-started-technical/" title="Getting Started Technical Users" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/getting-started-technical/">
+        Getting Started Technical Users
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/growing-to-enterprise-grade/" title="Growing to Enterprise Grade" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/growing-to-enterprise-grade/">
+        Growing to Enterprise Grade
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/impacts-on-people-process-and-tooling/" title="Impacts on People, Process, and Tooling" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/impacts-on-people-process-and-tooling/">
+        Impacts on People, Process, and Tooling
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/interactive-learning/" title="Interactive Learning" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/interactive-learning/">
+        Interactive Learning
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/keeping-up-to-date/" title="Keeping up to date" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/keeping-up-to-date/">
+        Keeping up to date
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/deep-dive-testengine-layers/" title="Layers of the Power Apps Test Engine" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/deep-dive-testengine-layers/">
+        Layers of the Power Apps Test Engine
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/low-code-test-design-principles/" title="Low-Code Testing Principles for Power Platform" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/low-code-test-design-principles/">
+        Low-Code Testing Principles for Power Platform
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/ring-deployment-model/" title="Ring Deployment Model" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/ring-deployment-model/">
+        Ring Deployment Model
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/roadmap-alignment/" title="Roadmap Alignment" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/roadmap-alignment/">
+        Roadmap Alignment
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/security-first-initiative/" title="Secure First Initiative" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/security-first-initiative/">
+        Secure First Initiative
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/security-testengine-storage-state-deep-dive/" title="Storage State Deep Dive" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/security-testengine-storage-state-deep-dive/">
+        Storage State Deep Dive
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/test-engine-extensibility/" title="Test Engine Extensibility" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/test-engine-extensibility/">
+        Test Engine Extensibility
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/test-engine-providers/" title="Test Engine Providers" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/test-engine-providers/">
+        Test Engine Providers
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/security-testengine-authentication-changes/" title="Test Engine Security - Authentication Changes" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/security-testengine-authentication-changes/">
+        Test Engine Security - Authentication Changes
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/testing-localized-power-app/" title="Testing Localized Power Apps" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/testing-localized-power-app/">
+        Testing Localized Power Apps
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/strategic-importance-of-automated-testing-from-a-cxo-perspective/" title="The Strategic Importance of Automated Testing from a CXO Perspective" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/strategic-importance-of-automated-testing-from-a-cxo-perspective/">
+        The Strategic Importance of Automated Testing from a CXO Perspective
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/transformative-power-of-ai/" title="Transformative Power of AI" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/transformative-power-of-ai/">
+        Transformative Power of AI
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/understanding-feature-branches/" title="Understanding Feature Branches" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/understanding-feature-branches/">
+        Understanding Feature Branches
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/why-automated-testing/" title="Why Automated Testing?" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/why-automated-testing/">
+        Why Automated Testing?
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/why-not-just-manual-testing/" title="Why Not Just Manual Testing" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/why-not-just-manual-testing/">
+        Why Not Just Manual Testing
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/PowerApps-TestEngine/en/context/why-not-just-use-code-first-testing-tools/" title="Why Not Just Use Code First Testing Tools" class="dd-item ">
+        <a href="/PowerApps-TestEngine/en/context/why-not-just-use-code-first-testing-tools/">
+        Why Not Just Use Code First Testing Tools
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="footer">
+      
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/PowerApps-TestEngine/en/'>Power Apps Test Engine</a> > <a href='/PowerApps-TestEngine/en/learning/'>Learning</a> > <a href='/PowerApps-TestEngine/en/learning/technical/'>Technical Learn Module</a> > 11 - Localization
+          
+        
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#example-localization">Example: Localization</a></li>
+    <li><a href="#pre-requisites">Pre-requisites</a></li>
+    <li><a href="#the-need-for-localization">The Need for Localization</a></li>
+    <li><a href="#testing-localized-applications">Testing Localized Applications</a></li>
+    <li><a href="#power-platform-localization">Power Platform Localization</a></li>
+    <li><a href="#example-localizing-the-weather-sample">Example: Localizing the Weather Sample</a>
+      <ul>
+        <li><a href="#step-1-start-the-application">Step 1: Start the Application</a></li>
+        <li><a href="#step-2-manually-change-personal-settings">Step 2: Manually change Personal Settings</a></li>
+        <li><a href="#step-3-verify-language-change">Step 3: Verify Language Change</a></li>
+        <li><a href="#step-4-automate-language-change-with-repostps1">Step 4: Automate Language Change with Repost.ps1</a></li>
+        <li><a href="#step-5-expand-to-another-language">Step 5: Expand to Another Language</a></li>
+      </ul>
+    </li>
+    <li><a href="#testing-you-changes">Testing you Changes</a></li>
+    <li><a href="#investigating-key-concepts">Investigating Key Concepts</a>
+      <ul>
+        <li><a href="#power-fx-to-set-user-settings">Power Fx to Set User Settings</a></li>
+        <li><a href="#argument-delimiters-in-non-english-european-languages">Argument Delimiters in Non-English European Languages</a></li>
+        <li><a href="#language-function">Language() Function</a></li>
+        <li><a href="#example-conditional-language-testing">Example: Conditional Language Testing</a></li>
+      </ul>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              11 - Localization
+            </h1>
+          
+
+        
+
+
+<h2 id="introduction">Introduction</h2>
+<p><a href="/powerfuldev-testing/learning/" class="btn">Back to Learning Module</a></p>
+<p>In this section, we will investigate the testing of a localized Weather sample. Localization is the process of adapting an application to meet the language, cultural, and other requirements of a specific target market. The ability to support multiple languages in your application can make it more accessible and user-friendly for a global audience.</p>
+<h2 id="example-localization">Example: Localization</h2>
+<p>Lets look at an example of localization of a Power App</p>
+<blockquote>
+<p>NOTES:</p>
+<ol>
+<li>If the value does not match the test will return &ldquo;One or more errors occurred. (Exception has been thrown by the target of an invocation.)&rdquo;</li>
+<li>Reload the page to reset the sample to the default state</li>
+</ol>
+</blockquote>
+<p>{% powerfx %}
+// Settings:
+locale: en-us
+// Code:
+Language()
+{% endpowerfx %}</p>
+<p>Want to explore more concepts examples checkout the <a href="/powerfuldev-testing/learning/playground?title=localization" class="btn btn--primary">Learning Playground</a> to explore related testing concepts</p>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<p>To complete this module you will need to follow instructions for setting up in <a href="https://learn.microsoft.com/power-platform/admin/enable-languages">Regional and language options for your environment</a>.</p>
+<p>This section assumes that French (LCID 1039) and German language (LCID 1031) have  been enabled.
+{: .notice&ndash;success}</p>
+<h2 id="the-need-for-localization">The Need for Localization</h2>
+<p>Localization is essential for several reasons:</p>
+<ul>
+<li><strong>User Experience</strong>: Providing content in the user&rsquo;s native language enhances their experience and makes the application more intuitive.</li>
+<li><strong>Market Reach</strong>: Localizing your application allows you to reach a broader audience and tap into new markets.</li>
+<li><strong>Compliance</strong>: In some regions, providing content in the local language is a legal requirement.</li>
+</ul>
+<h2 id="testing-localized-applications">Testing Localized Applications</h2>
+<p>When testing localized applications, it is important to ensure that all elements of the application are correctly translated and formatted. This includes text, dates, numbers, and other locale-specific content. Additionally, you should verify that the application behaves as expected in different languages and regions.</p>
+<h2 id="power-platform-localization">Power Platform Localization</h2>
+<p>The Power Platform provides robust support for localization in both Canvas and Model-Driven Applications. You can find detailed information on how to localize your Power Apps applications in the following resources:</p>
+<ol>
+<li><a href="https://learn.microsoft.com/power-apps/maker/model-driven-apps/translate-localizable-text">Translate text for model-driven apps</a></li>
+<li><a href="https://learn.microsoft.com/power-apps/maker/canvas-apps/multi-language-apps">Build a multi-language app</a></li>
+<li><a href="https://learn.microsoft.com/power-apps/maker/model-driven-apps/app-navigation#create-a-group">Add Localized Titles for Navigation Groups</a></li>
+<li><a href="https://learn.microsoft.com/power-platform/admin/language-collations">Microsoft Dataverse language collations</a></li>
+</ol>
+<h2 id="example-localizing-the-weather-sample">Example: Localizing the Weather Sample</h2>
+<p>To explore different languages using the Weather sample, follow these steps to expand from English Version</p>
+<p>{% include figure popup=true image_path=&quot;/learning/media/weather-snaphots.png&quot; alt=&ldquo;Example English version of the weather snap shots application&rdquo; %}</p>
+<p>And French version</p>
+<p>{% include figure popup=true image_path=&quot;/learning/media/cliches-meteorologiques.png&quot; alt=&ldquo;Example French version of the weather snap shots application&rdquo; %}</p>
+<p>To include German version of the same application</p>
+<p>{% include figure popup=true image_path=&quot;/learning/media/wetterschnappschusse.png&quot; alt=&ldquo;Example French version of the weather snap shots application&rdquo; %}</p>
+<h3 id="step-1-start-the-application">Step 1: Start the Application</h3>
+<p>Start the Weather Application imported in <a href="/PowerApps-TestEngine/learning/technical/10-using-simulations.md">Using Simulations</a> using the Power Apps Portal.</p>
+<h3 id="step-2-manually-change-personal-settings">Step 2: Manually change Personal Settings</h3>
+<p>To change the user interface language, follow these steps:</p>
+<ol>
+<li>Open the Power Apps portal.</li>
+<li>Navigate to <strong>Settings</strong> (gear icon) &gt; <strong>Languages</strong>.</li>
+<li>Under <strong>User Interface Language</strong>, select <strong>French</strong>.</li>
+<li>Save the changes and refresh the application.</li>
+</ol>
+<h3 id="step-3-verify-language-change">Step 3: Verify Language Change</h3>
+<p>The controls of the custom page should change using the <code>Language()</code> Power Fx function. For example, the labels and buttons should now display in French.</p>
+<h3 id="step-4-automate-language-change-with-repostps1">Step 4: Automate Language Change with Repost.ps1</h3>
+<p>The <code>Record.ps1</code> file makes use of the Dataverse API to update the <a href="https://learn.microsoft.com/power-apps/developer/data-platform/reference/entities/usersettings">usersettingscollection</a> and automate the process of changing the <a href="https://learn.microsoft.com/power-apps/developer/data-platform/reference/entities/usersettings#BKMK_UILanguageId">UI language</a>. This script can be used to switch between languages programmatically.</p>
+<p>To record tests in English and French</p>
+<ol>
+<li>
+<p>Open PowerShell session</p>
+</li>
+<li>
+<p>Change to weather sample</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-pwsh" data-lang="pwsh"><span style="display:flex;"><span>cd examples\weather
+</span></span></code></pre></div><ol start="3">
+<li>Execute record sample</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-pwsh" data-lang="pwsh"><span style="display:flex;"><span>.\Record.ps1
+</span></span></code></pre></div><h3 id="step-5-expand-to-another-language">Step 5: Expand to Another Language</h3>
+<p>Expanding the Model Driven application that contains a custom page and navigation to add a new language includes the applying these sets of changes for the WeatherSample application:</p>
+<ul>
+<li>Updating the translations to the Model Driven application. This will update the Display names of the Dataverse tables.</li>
+<li>Updating the locale settings for thr navigation mention to include new translation</li>
+<li>Updating the Power Fx of the Power Fx Language Component to include the new language</li>
+</ul>
+<p>Lets step through each of these changes.</p>
+<h4 id="model-driven-application-changes">Model Driven Application Changes</h4>
+<p>The general process to expand the example to another language, such as German (LCID 1031), follow these steps:</p>
+<ol>
+<li>Export the translations and add a new column for German (1031). The <a href="https://learn.microsoft.com/power-apps/maker/data-platform/export-customized-entity-field-text-translation">Translate customized table, form, and column text into other languages</a></li>
+<li>Update the translation file with the German translations. For this sample we have included the necessary German translations in the sample folder</li>
+<li>In your file explorer zip the two files named <strong>[Content_Types].xml</strong> and <strong>CrmTranslations.xml</strong> into a zip file. For example <strong>CrmTranslations.zip</strong></li>
+<li>Open your WeatherSample solution in the maker portal.</li>
+<li>Select the &hellip; icon</li>
+<li>Select <strong>Switch to Classic</strong></li>
+<li>From the menu select <strong>Translations</strong></li>
+<li>Select <strong>Import Translations</strong></li>
+<li>Select <strong>Choose File</strong></li>
+<li>Select the zip file you created above</li>
+<li>Select <strong>Import</strong></li>
+</ol>
+<h4 id="model-driven-application-navigation-changes">Model Driven Application Navigation Changes</h4>
+<p>Next we will update the localized version of the custom page using the following steps:</p>
+<ol>
+<li>Open your WeatherSample solution in the maker portal.</li>
+<li>Select <strong>Apps</strong></li>
+<li>Edit the <code>Weather Snapshots</code> Model-Driven Application</li>
+<li>Select the <strong>Snapshots</strong> custom page navigation item</li>
+<li>Expand the <strong>Advanced Settings</strong></li>
+<li>Expand the <strong>Locale</strong> section</li>
+<li>Select <strong>Add localized title</strong></li>
+<li>Select the Locale (LCID) German _Germany (1031)</li>
+<li>Add the Localized title <strong>Schnappschüsse</strong></li>
+<li>Select <strong>Apply</strong></li>
+<li>Select the <strong>Publish</strong> from the top menu to save the changes to the Model Driven Application to apply group name changes.</li>
+</ol>
+<h4 id="component-library-changes">Component Library Changes</h4>
+<p>Finally we will update the Component library to include translations used by the custom page.</p>
+<ol>
+<li>
+<p>Open your WeatherSample solution in the maker portal.</p>
+</li>
+<li>
+<p>Select <strong>Component libraries</strong></p>
+</li>
+<li>
+<p>Select <strong>Localization</strong>`** from solution Component libraries</p>
+</li>
+<li>
+<p>Edit the <strong>Localization</strong> item</p>
+</li>
+<li>
+<p>Edit the  <strong>Translation Component</strong> to update the components</p>
+</li>
+<li>
+<p>Select the <strong>Labels</strong> property and update the Power Fx to add &ldquo;de-de&rdquo; translation. For example the original Labels could look like</p>
+<pre tabindex="0"><code class="language-powerfx" data-lang="powerfx">LookUp(Table(
+        {
+            Language: &#34;en-us&#34;,
+            Labels: {
+                LocationLabel: &#34;Location&#34;,
+                Category: &#34;Category&#34;,
+                MetricLabel: &#34;Metric&#34;,
+                ImperialLabel: &#34;Imperial&#34;,
+                SearchLabel: &#34;Search&#34;,
+                AddLabel: &#34;Add&#34;,
+                MatchLabel: &#34;Match: &#34;,
+                TempLabel: &#34;Temp: &#34;,
+                FeelsLabel: &#34;Feels: &#34;
+            }
+        },
+        {
+            Language: &#34;fr-fr&#34;,
+            Labels: {
+                LocationLabel: &#34;Emplacement&#34;,
+                Category: &#34;Catégorie&#34;,
+                MetricLabel: &#34;Métrique&#34;,
+                ImperialLabel: &#34;Impérial&#34;,
+                SearchLabel: &#34;Recherche&#34;,
+                AddLabel: &#34;Ajouter&#34;,
+                MatchLabel: &#34;Correspondance: &#34;,
+                TempLabel: &#34;Température: &#34;,
+                FeelsLabel: &#34;Ressenti: &#34;
+            }
+        }
+    ),Language = Lower(
+Language()
+)).Labels
+</code></pre></li>
+<li>
+<p>After applying changes new translations could look like</p>
+<pre tabindex="0"><code class="language-powerfx" data-lang="powerfx">LookUp(
+    Table(
+        {
+            Language: &#34;en-us&#34;,
+            Labels: {
+                LocationLabel: &#34;Location&#34;,
+                Category: &#34;Category&#34;,
+                MetricLabel: &#34;Metric&#34;,
+                ImperialLabel: &#34;Imperial&#34;,
+                SearchLabel: &#34;Search&#34;,
+                AddLabel: &#34;Add&#34;,
+                MatchLabel: &#34;Match: &#34;,
+                TempLabel: &#34;Temp: &#34;,
+                FeelsLabel: &#34;Feels: &#34;
+            }
+        },
+        {
+            Language: &#34;fr-fr&#34;,
+            Labels: {
+                LocationLabel: &#34;Emplacement&#34;,
+                Category: &#34;Catégorie&#34;,
+                MetricLabel: &#34;Métrique&#34;,
+                ImperialLabel: &#34;Impérial&#34;,
+                SearchLabel: &#34;Recherche&#34;,
+                AddLabel: &#34;Ajouter&#34;,
+                MatchLabel: &#34;Correspondance: &#34;,
+                TempLabel: &#34;Température: &#34;,
+                FeelsLabel: &#34;Ressenti: &#34;
+            }
+        },
+        {
+            Language: &#34;de-de&#34;,
+            Labels: {
+                LocationLabel: &#34;Ort&#34;,
+                Category: &#34;Kategorie&#34;,
+                MetricLabel: &#34;Metrisch&#34;,
+                ImperialLabel: &#34;Imperial&#34;,
+                SearchLabel: &#34;Suche&#34;,
+                AddLabel: &#34;Hinzufügen&#34;,
+                MatchLabel: &#34;Übereinstimmung: &#34;,
+                TempLabel: &#34;Temperatur: &#34;,
+                FeelsLabel: &#34;Gefühlt: &#34;
+            }
+        }
+    ),
+    Language = Lower(Language())
+).Labels
+</code></pre></li>
+<li>
+<p>Publish the update components.</p>
+</li>
+<li>
+<p>Select the <code>Snapshots</code>custom page from pages of the solution</p>
+</li>
+<li>
+<p>Select Edit for the Snapshots custom page</p>
+</li>
+<li>
+<p>After the page of the model driven application opens, review the change and confirm update and refresh the page with the new published component.</p>
+</li>
+<li>
+<p>Save the changes to the custom page</p>
+</li>
+<li>
+<p>Publish the new version of the custom page</p>
+</li>
+</ol>
+<p>Once you have completed these changes you should be able to use English, French and German translations of the Weather Application.</p>
+<h2 id="testing-you-changes">Testing you Changes</h2>
+<ol>
+<li>
+<p>Verify that the config file in the samples\weather has been configured for your environment, tennant and user1Email</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;tenantId&#34;</span>: <span style="color:#e6db74">&#34;a222222-1111-2222-3333-444455556666&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;environmentId&#34;</span>: <span style="color:#e6db74">&#34;12345678-1111-2222-3333-444455556666&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;customPage&#34;</span>: <span style="color:#e6db74">&#34;te_snapshots_24d69&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;appDescription&#34;</span>: <span style="color:#e6db74">&#34;Weather Sample&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;user1Email&#34;</span>: <span style="color:#e6db74">&#34;test@contoso.onmicrosoft.com&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;runInstall&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;installPlaywright&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;languages&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {<span style="color:#f92672">&#34;id&#34;</span>:<span style="color:#ae81ff">1031</span>, <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;de-de&#34;</span>, <span style="color:#f92672">&#34;file&#34;</span>:<span style="color:#e6db74">&#34;testPlan.eu.fx.yaml&#34;</span>},
+</span></span><span style="display:flex;"><span>        {<span style="color:#f92672">&#34;id&#34;</span>:<span style="color:#ae81ff">1033</span>, <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;en-us&#34;</span>, <span style="color:#f92672">&#34;file&#34;</span>:<span style="color:#e6db74">&#34;testPlan.fx.yaml&#34;</span>},
+</span></span><span style="display:flex;"><span>        {<span style="color:#f92672">&#34;id&#34;</span>:<span style="color:#ae81ff">1036</span>, <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;fr-fr&#34;</span>, <span style="color:#f92672">&#34;file&#34;</span>:<span style="color:#e6db74">&#34;testPlan.eu.fx.yaml&#34;</span>}
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p>You have authenticated with the Power Platform CLI</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-pwsh" data-lang="pwsh"><span style="display:flex;"><span>pac auth create -name Dev --environment <span style="color:#ae81ff">12345678</span>-<span style="color:#ae81ff">1111</span>-<span style="color:#ae81ff">2222</span>-<span style="color:#ae81ff">3333</span>-<span style="color:#ae81ff">444455556666</span>
+</span></span></code></pre></div></li>
+<li>
+<p>You have logged into the Azure CLI with account that has access to the environment that you have deployed</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-pwsh" data-lang="pwsh"><span style="display:flex;"><span>az login --allow-no-subscriptions
+</span></span></code></pre></div></li>
+<li>
+<p>Run the test</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-pwsh" data-lang="pwsh"><span style="display:flex;"><span>cd samples\weather
+</span></span><span style="display:flex;"><span>pwsh <span style="color:#f92672">-File</span> RunTests.ps1
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="investigating-key-concepts">Investigating Key Concepts</h2>
+<p>Lets investigate some key concepts that are important in this localizaed test.</p>
+<h3 id="power-fx-to-set-user-settings">Power Fx to Set User Settings</h3>
+<p>Power Fx is a powerful formula language used in Power Apps to manipulate data and control app behavior. When setting user settings, especially for localization, Power Fx can be used to dynamically adjust the user interface based on the user&rsquo;s language preferences.</p>
+<h3 id="argument-delimiters-in-non-english-european-languages">Argument Delimiters in Non-English European Languages</h3>
+<p>In non-English European languages, the semicolon (<code>;</code>) is used instead of the comma (<code>,</code>) to delimit arguments in Power Fx functions. This means that when chaining multiple Power Fx functions, you should use <code>;;</code> as the separator.</p>
+<h3 id="language-function">Language() Function</h3>
+<p>The <code>Language()</code> function in Power Fx returns the language tag of the current user&rsquo;s language. This function is essential for creating conditional logic based on the user&rsquo;s language. For example, you can use the <code>Language()</code> function to display different text based on the user&rsquo;s language setting.</p>
+<h3 id="example-conditional-language-testing">Example: Conditional Language Testing</h3>
+<p>To make the expected test conditional on the language being tested, you can use the <code>Assert</code> function along with <code>Switch</code> and <code>Language()</code> functions. Here is an example:</p>
+<pre tabindex="0"><code class="language-powerfx" data-lang="powerfx">Assert(Summary.Text=
+    Switch(
+        Lower(Language()); 
+        &#34;en-us&#34;; &#34;Match: Test Location, Temp: 30^F, Feels: 20^F, Sunny&#34;;
+        &#34;fr-fr&#34;; &#34;Correspondance: Test Location, Température: 30^F, Ressenti: 20^F, Sunny&#34;;
+        &#34;de-de&#34;; &#34;Übereinstimmung: Test Location, Temperatur: 30^F, Gefühlt: 20^F, Sunny&#34;
+    )
+)
+</code></pre><p>In this example, the Switch function checks the user&rsquo;s language and validated the appropriate text for English (US), French (France), and German (Germany). The Assert function ensures that the Summary.Text matches the expected value based on the user&rsquo;s language.</p>
+<h2 id="summary">Summary</h2>
+<p>In this section, you learned about the importance of localization and how to test a localized Weather sample. Localization can be crucial for enhancing user experience, expanding market reach, and complying with regional requirements. The Power Platform provides robust support for localization in both Canvas and Model-Driven Applications.</p>
+<p>You explored how to start the Weather application, change personal settings to switch the user interface language, and verify the language change using the Language() Power Fx function. Additionally, you learned how to automate the language change process using the Repost.ps1 script and the Dataverse API.</p>
+<p>To expand the example to another language, such as German, you followed steps to export translations, update the translation file, and import the translations. You also learned how to update the navigation group settings and component library to include the new language.</p>
+<p>By following these steps, you can ensure and validate that your Power Apps application supports multiple languages, making it more accessible and user-friendly for a global audience.</p>
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="/PowerApps-TestEngine/en/learning/technical/10-using-simulations/" title="10 - Simulations Example"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="/PowerApps-TestEngine/en/context/" title="Test Engine Context" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="/PowerApps-TestEngine/js/clipboard.min.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/perfect-scrollbar.min.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/perfect-scrollbar.jquery.min.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/jquery.sticky.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/featherlight.min.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/highlight.pack.js?1737352077"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/PowerApps-TestEngine/js/modernizr.custom-3.6.0.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/learn.js?1737352077"></script>
+    <script src="/PowerApps-TestEngine/js/hugo-learn.js?1737352077"></script>
+    
+        
+            <script src="/PowerApps-TestEngine/mermaid/mermaid.js?1737352077"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    
+
+  </body>
+</html>
+
