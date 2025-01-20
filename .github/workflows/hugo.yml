@@ -48,13 +48,13 @@ jobs:
           hugo-version: 'latest'
       - name: Build with Hugo
         run: |
-          cd site
+          cd src/docs
           hugo --minify
       - name: Upload artifact
         # Automatically uploads an artifact from the './public' directory by default
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site/public
+          path: src/docs/site
 
   # Deployment job
   deploy:
