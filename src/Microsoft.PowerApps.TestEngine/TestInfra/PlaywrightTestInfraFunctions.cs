@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Net;
@@ -440,6 +441,17 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             ValidatePage();
 
             await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = content });
+        }
+
+        public async Task TriggerControlClickEvent(string controlName)
+        {
+            ValidatePage();
+            // //await Page.GetByLabel("Tap or click to add a picture").ClickAsync(); 
+            // await Page.GetByLabel("Tap or click to add a picture").SetInputFilesAsync(new[] { "C:\\Users\\v-nabalasubr\\OneDrive - Microsoft\\Pictures\\Screenshots\\sample.png" });
+            //// await Page.GetByLabel("Tap or click to add a picture").ClickAsync();
+            var match = Page.Locator($"[data-control-name='{controlName}']");
+            await match.ClickAsync();
+            //await match.SetInputFilesAsync("C:\\Users\\v-nabalasubr\\OneDrive - Microsoft\\Pictures\\Screenshots\\sample.png");
         }
     }
 }

@@ -99,5 +99,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="jsExpression">Javascript expression to run</param>
         /// <returns>Return value of javascript</returns>
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
+
+        /// <summary>
+        /// Triggers a click event on a control
+        /// </summary>
+        /// <param name="controlName"> Control name to trigger event </param>
+        /// <returns></returns>
+        public Task TriggerControlClickEvent(string controlName);
     }
 }

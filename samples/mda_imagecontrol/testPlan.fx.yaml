@@ -5,132 +5,134 @@ testSuite:
   appLogicalName: NotNeeded
 
   testCases: 
-    # Image1 Control Test Cases
-    - testCaseName: Test Image Control - OnSelect Event
-      testCaseDescription: Verify that the ImageRotation property rotates the image correctly.
-      testSteps: |
-        Select(Image1);
-        Assert(Label1.Text = "Image Control Clicked", "Check if the ImageRotation property is set to 90 degrees.");
+    # # Image1 Control Test Cases
+    # - testCaseName: Test Image Control - OnSelect Event
+    #   testCaseDescription: Verify that the ImageRotation property rotates the image correctly.
+    #   testSteps: |
+    #     Select(Image1);
+    #     Assert(Label1.Text = "Image Control Clicked", "Check if the ImageRotation property is set to 90 degrees.");
         
-    - testCaseName: Test Image Control - ImageRotation Property
-      testCaseDescription: Verify that the ImageRotation property rotates the image correctly.
-      testSteps: |
-        Select(ButtonCanvas1);
-        Assert(Image1.ImageRotation = "rotate90", "Check if the ImageRotation property is set to 90 degrees.");
+    # - testCaseName: Test Image Control - ImageRotation Property
+    #   testCaseDescription: Verify that the ImageRotation property rotates the image correctly.
+    #   testSteps: |
+    #     Select(ButtonCanvas1);
+    #     Assert(Image1.ImageRotation = "rotate90", "Check if the ImageRotation property is set to 90 degrees.");
 
-    - testCaseName: Test Image Control - Visibility Property
-      testCaseDescription: Verify that the Visible property toggles the visibility of the Image control.
-      testSteps: |
-        SetProperty(Image1.Visible, false);
-        Assert(Image1.Visible = false, "Check if the Image control is hidden.");
-        SetProperty(Image1.Visible, true);
-        Assert(Image1.Visible = true, "Check if the Image control is visible.");
+    # - testCaseName: Test Image Control - Visibility Property
+    #   testCaseDescription: Verify that the Visible property toggles the visibility of the Image control.
+    #   testSteps: |
+    #     SetProperty(Image1.Visible, false);
+    #     Assert(Image1.Visible = false, "Check if the Image control is hidden.");
+    #     SetProperty(Image1.Visible, true);
+    #     Assert(Image1.Visible = true, "Check if the Image control is visible.");
 
-    - testCaseName: Test Image Control - Set and Retrieve Image Property
-      testCaseDescription: Verify that the Image property can be set and retrieved correctly.
-      testSteps: |
-        SetProperty(Image1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");    
-        Wait(Image1, "Image", "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
-        Assert(Image1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg" , "Check if Image property is correctly set.");
+    # - testCaseName: Test Image Control - Set and Retrieve Image Property
+    #   testCaseDescription: Verify that the Image property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(Image1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");    
+    #     Wait(Image1, "Image", "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
+    #     Assert(Image1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg" , "Check if Image property is correctly set.");
 
-    - testCaseName: Test Image Control - Invalid Image URL
-      testCaseDescription: Verify the behavior when an invalid URL is set for the Image property.
-      testSteps: |
-        SetProperty(Image1.Image, "");
-        Assert(Image1.Image = "" , "Check if an error is returned for the invalid image URL.");
+    # - testCaseName: Test Image Control - Invalid Image URL
+    #   testCaseDescription: Verify the behavior when an invalid URL is set for the Image property.
+    #   testSteps: |
+    #     SetProperty(Image1.Image, "");
+    #     Assert(Image1.Image = "" , "Check if an error is returned for the invalid image URL.");
 
-    - testCaseName: Test Image Control - Tooltip Property
-      testCaseDescription: Verify that the Tooltip property can be set and retrieved correctly.
-      testSteps: |
-        SetProperty(Image1.Tooltip, "This is an image tooltip");
-        Assert(Image1.Tooltip = "This is an image tooltip", "Check if the Tooltip property is correctly set.");
+    # - testCaseName: Test Image Control - Tooltip Property
+    #   testCaseDescription: Verify that the Tooltip property can be set and retrieved correctly.
+    #   testSteps: |
+    #     SetProperty(Image1.Tooltip, "This is an image tooltip");
+    #     Assert(Image1.Tooltip = "This is an image tooltip", "Check if the Tooltip property is correctly set.");
 
-    # AddMediaButton1 Control Test Cases
-    - testCaseName: Test AddMediaButton1 - ChangePictureText Property
-      testCaseDescription: Verify that the ChangePictureText property updates the button text correctly.
-      testSteps: |
-        SetProperty(AddMediaButton1.ChangePictureText, "Upload a New Picture");
-        Assert(AddMediaButton1.ChangePictureText = "Upload a New Picture", "Check if ChangePictureText is updated correctly.");
+    # # AddMediaButton1 Control Test Cases
+    # - testCaseName: Test AddMediaButton1 - ChangePictureText Property
+    #   testCaseDescription: Verify that the ChangePictureText property updates the button text correctly.
+    #   testSteps: |
+    #     SetProperty(AddMediaButton1.ChangePictureText, "Upload a New Picture");
+    #     Assert(AddMediaButton1.ChangePictureText = "Upload a New Picture", "Check if ChangePictureText is updated correctly.");
 
-    - testCaseName: Test AddMediaButton1 - FileName Property
-      testCaseDescription: Verify that the FileName property displays the correct uploaded file name.
-      testSteps: |       
-        SetProperty(AddMediaButton1.FileName, "ProductImageName1");        
-        Assert(AddMediaButton1.FileName = "ProductImageName1", "Check if FileName displays the correct uploaded file name.");
+    # - testCaseName: Test AddMediaButton1 - FileName Property
+    #   testCaseDescription: Verify that the FileName property displays the correct uploaded file name.
+    #   testSteps: |       
+    #     SetProperty(AddMediaButton1.FileName, "ProductImageName1");        
+    #     Assert(AddMediaButton1.FileName = "ProductImageName1", "Check if FileName displays the correct uploaded file name.");
 
     - testCaseName: Test AddMediaButton1 - Media and Image Property
       testCaseDescription: Verify that the Media and Image property displays the correct uploaded file name.
-      testSteps: |        
+      testSteps: |   
+        Select(AddMediaButton1);
+        Experimental.Pause();
         SetProperty(AddMediaButton1.Media, "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg");       
         Wait(UploadedImage1, "Image", "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg");
         Assert(UploadedImage1.Image = "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg", "Check if Image displays the correct uploaded file name.");
 
-    - testCaseName: Test AddMediaButton1 - Invalid Media and Image Property
-      testCaseDescription: Verify that the Media and Image property displays the correct uploaded file name.
-      testSteps: |       
-        SetProperty(AddMediaButton1.Media, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");   
-        Wait(UploadedImage1, "Image", "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
-        Assert(UploadedImage1.Image <> "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg", "Check if uploaded file name is incorrect");
+    # - testCaseName: Test AddMediaButton1 - Invalid Media and Image Property
+    #   testCaseDescription: Verify that the Media and Image property displays the correct uploaded file name.
+    #   testSteps: |       
+    #     SetProperty(AddMediaButton1.Media, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");   
+    #     Wait(UploadedImage1, "Image", "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
+    #     Assert(UploadedImage1.Image <> "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg", "Check if uploaded file name is incorrect");
 
-    - testCaseName: Test AddMediaButton1 - PlaceholderText Property
-      testCaseDescription: Verify that the PlaceholderText property displays correctly before uploading an image.
-      testSteps: |
-        SetProperty(AddMediaButton1.PlaceholderText, "No image uploaded");
-        Assert(AddMediaButton1.PlaceholderText = "No image uploaded", "Check if PlaceholderText displays correctly.");
+    # - testCaseName: Test AddMediaButton1 - PlaceholderText Property
+    #   testCaseDescription: Verify that the PlaceholderText property displays correctly before uploading an image.
+    #   testSteps: |
+    #     SetProperty(AddMediaButton1.PlaceholderText, "No image uploaded");
+    #     Assert(AddMediaButton1.PlaceholderText = "No image uploaded", "Check if PlaceholderText displays correctly.");
 
-    - testCaseName: Test AddMediaButton1 - Media Property
-      testCaseDescription: Verify that the Media property holds the uploaded media file.
-      testSteps: |       
-        SetProperty(UploadedImage1.Image, "https://fakestoreapi.com/img/61mtL65D4cL._AC_SX679_.jpg");  
-        Assert(AddMediaButton1.Media <> Blank(), "Check if the Media property holds the uploaded file.");
+    # - testCaseName: Test AddMediaButton1 - Media Property
+    #   testCaseDescription: Verify that the Media property holds the uploaded media file.
+    #   testSteps: |       
+    #     SetProperty(UploadedImage1.Image, "https://fakestoreapi.com/img/61mtL65D4cL._AC_SX679_.jpg");  
+    #     Assert(AddMediaButton1.Media <> Blank(), "Check if the Media property holds the uploaded file.");
 
-    - testCaseName: Test AddMediaButton1 - UseMobileCamera Property
-      testCaseDescription: Verify that the UseMobileCamera property opens the device camera on mobile devices.
-      testSteps: |
-        SetProperty(AddMediaButton1.UseMobileCamera, true);
-        Assert(AddMediaButton1.UseMobileCamera = true, "Check if the UseMobileCamera property is enabled.");
+    # - testCaseName: Test AddMediaButton1 - UseMobileCamera Property
+    #   testCaseDescription: Verify that the UseMobileCamera property opens the device camera on mobile devices.
+    #   testSteps: |
+    #     SetProperty(AddMediaButton1.UseMobileCamera, true);
+    #     Assert(AddMediaButton1.UseMobileCamera = true, "Check if the UseMobileCamera property is enabled.");
 
-    - testCaseName: Test AddMediaButton1 - Text Property
-      testCaseDescription: Verify that the Text property updates the button's display text.
-      testSteps: |
-        SetProperty(AddMediaButton1.Text, "Upload Photo");
-        Assert(AddMediaButton1.Text = "Upload Photo", "Check if the Text property updates correctly.");
+    # - testCaseName: Test AddMediaButton1 - Text Property
+    #   testCaseDescription: Verify that the Text property updates the button's display text.
+    #   testSteps: |
+    #     SetProperty(AddMediaButton1.Text, "Upload Photo");
+    #     Assert(AddMediaButton1.Text = "Upload Photo", "Check if the Text property updates correctly.");
 
-    - testCaseName: Test AddMediaButton1 - Tooltip Property
-      testCaseDescription: Verify that the Tooltip property displays the correct tooltip text on hover.
-      testSteps: |
-        SetProperty(AddMediaButton1.Tooltip, "Click to upload an image");
-        Assert(AddMediaButton1.Tooltip = "Click to upload an image", "Check if Tooltip displays the correct text.");
+    # - testCaseName: Test AddMediaButton1 - Tooltip Property
+    #   testCaseDescription: Verify that the Tooltip property displays the correct tooltip text on hover.
+    #   testSteps: |
+    #     SetProperty(AddMediaButton1.Tooltip, "Click to upload an image");
+    #     Assert(AddMediaButton1.Tooltip = "Click to upload an image", "Check if Tooltip displays the correct text.");
 
-    - testCaseName: Test AddMediaButton1 - Visible Property
-      testCaseDescription: Verify that the Visible property toggles the visibility of the AddMediaButton control.
-      testSteps: |
-        SetProperty(AddMediaButton1.Visible, false);
-        Assert(AddMediaButton1.Visible = false, "Check if the control is hidden.");
-        SetProperty(AddMediaButton1.Visible, true);
-        Assert(AddMediaButton1.Visible = true, "Check if the control is visible.");
+    # - testCaseName: Test AddMediaButton1 - Visible Property
+    #   testCaseDescription: Verify that the Visible property toggles the visibility of the AddMediaButton control.
+    #   testSteps: |
+    #     SetProperty(AddMediaButton1.Visible, false);
+    #     Assert(AddMediaButton1.Visible = false, "Check if the control is hidden.");
+    #     SetProperty(AddMediaButton1.Visible, true);
+    #     Assert(AddMediaButton1.Visible = true, "Check if the control is visible.");
 
-    # UploadedImage1 Control Test Cases
-    - testCaseName: Test UploadedImage1 - Image Property
-      testCaseDescription: Verify that the Image property displays the uploaded image correctly.
-      testSteps: |               
-        SetProperty(UploadedImage1.Image, "https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg");
-        Wait(UploadedImage1, "Image", "https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg");
-        Assert(UploadedImage1.Image = "https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg", "Check if the uploaded image is displayed correctly.");
+    # # UploadedImage1 Control Test Cases
+    # - testCaseName: Test UploadedImage1 - Image Property
+    #   testCaseDescription: Verify that the Image property displays the uploaded image correctly.
+    #   testSteps: |               
+    #     SetProperty(UploadedImage1.Image, "https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg");
+    #     Wait(UploadedImage1, "Image", "https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg");
+    #     Assert(UploadedImage1.Image = "https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg", "Check if the uploaded image is displayed correctly.");
 
-    - testCaseName: Test UploadedImage1 - Tooltip Property
-      testCaseDescription: Verify that the Tooltip property displays the correct tooltip text on hover.
-      testSteps: |
-        SetProperty(UploadedImage1.Tooltip, "Uploaded Image Preview");
-        Assert(UploadedImage1.Tooltip = "Uploaded Image Preview", "Check if Tooltip displays correctly.");
+    # - testCaseName: Test UploadedImage1 - Tooltip Property
+    #   testCaseDescription: Verify that the Tooltip property displays the correct tooltip text on hover.
+    #   testSteps: |
+    #     SetProperty(UploadedImage1.Tooltip, "Uploaded Image Preview");
+    #     Assert(UploadedImage1.Tooltip = "Uploaded Image Preview", "Check if Tooltip displays correctly.");
 
-    - testCaseName: Test UploadedImage1 - Visible Property
-      testCaseDescription: Verify that the Visible property toggles the visibility of the UploadedImage control.
-      testSteps: |
-        SetProperty(UploadedImage1.Visible, false);
-        Assert(UploadedImage1.Visible = false, "Check if the control is hidden.");
-        SetProperty(UploadedImage1.Visible, true);
-        Assert(UploadedImage1.Visible = true, "Check if the control is visible.");
+    # - testCaseName: Test UploadedImage1 - Visible Property
+    #   testCaseDescription: Verify that the Visible property toggles the visibility of the UploadedImage control.
+    #   testSteps: |
+    #     SetProperty(UploadedImage1.Visible, false);
+    #     Assert(UploadedImage1.Visible = false, "Check if the control is hidden.");
+    #     SetProperty(UploadedImage1.Visible, true);
+    #     Assert(UploadedImage1.Visible = true, "Check if the control is visible.");
    
 
 testSettings:

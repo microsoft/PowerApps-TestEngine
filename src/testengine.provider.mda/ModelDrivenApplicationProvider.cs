@@ -412,6 +412,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             try
             {
                 ValidateItemPath(itemPath, false);
+                await TestInfraFunctions.TriggerControlClickEvent(itemPath.ControlName);
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
                 // TODO Select a choice item
                 var expression = $"PowerAppsTestEngine.select({itemPathString})";
