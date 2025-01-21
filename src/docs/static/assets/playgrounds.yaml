@@ -121,7 +121,7 @@ playgrounds:
     steps: |
       - Press "Try It!" to verify that the test run and returns a value of **true** that the final value of Labal1.Text is **Updated**
       - Change either the start or end value text to get an error **One or more errors occurred**
-      - Try [Learn Module: Updating Control Value using SetProperty](/PowerApps-TestEngine/learning/06-updating-control-value-using-setproperty)
+      - Try [Learn Module: Updating Control Value using SetProperty](/PowerApps-TestEngine/learning/technical/06-updating-control-value-using-setproperty)
     relatedTasks:
       - "boolean-expressions"
       - "collections"
@@ -150,7 +150,7 @@ playgrounds:
         Experimental.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
         WeatherService.GetCurrentWeather("Seattle, WA")
 
-      - Try [Learn Module: Simulated Connector](/PowerApps-TestEngine/learning/08-simulating-connector)
+      - Try [Learn Module: Simulated Connector](/PowerApps-TestEngine/learning/technical/08-simulating-connector)
     relatedTasks:
       - "boolean-expressions"
       - "collections"
@@ -173,7 +173,7 @@ playgrounds:
       - Select Reset then add only **accounts** to see the orginal value of account
       - Select Reset then change the last link to **Assert(CountRows(accounts)=1);** to see the test return error
       - Select Reset then change the text to be onlt **Assert(First(accounts).Name="Test")** to see that the first value in the collection is Test
-      - Try [Learn Module: Simulated Dataverse](/PowerApps-TestEngine/learning/09-simulating-dataverse)
+      - Try [Learn Module: Simulated Dataverse](/PowerApps-TestEngine/learning/technical/09-simulating-dataverse)
     relatedTasks:
       - "boolean-expressions"
       - "collections"
@@ -195,7 +195,7 @@ playgrounds:
       - Change the culture to **fr-fr** and verify that locale of **fr-FR** is returned
       - Change change the locale to **fr-fr** and change Code to the following **If(Lower(Language())="fr-fr"; If(Hour(Now())<12; "Bonjour"; "Bonsoir"); "Hello")**   
       - Notice that that Power Fx changes with the locale in en-us the function uses , in French the ";" should be used between arguments. 
-      - Try [Learn Module: Localization](/PowerApps-TestEngine/learning/11-localization)
+      - Try [Learn Module: Localization](/PowerApps-TestEngine/learning/technical/11-localization)
     relatedTasks:
       - "boolean-expressions"
       - "collections"

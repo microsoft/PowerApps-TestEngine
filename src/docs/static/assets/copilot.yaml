@@ -1,5 +1,25 @@
 default: "sick-days"
 playgrounds:
+  - shortId: "travel-safety-knowledge"
+    title: "Travel Safety - Knowledge Sources"
+    description: "Look at how to test knowledge sources of Safety"
+    code: |
+      // Setup:
+      Experimental.SimulateResponse({
+        Type: "message", 
+        Then: {
+            SentText: "The available information does not specify flight destinations for today.  However, if you are planning to travel internationally, please be aware of..",
+            Knowledge: Table({Url: "https://travel.state.gov/content/travel/en/international-travel"})
+        }
+      });
+      // Steps:
+      Experimental.SendText("Where can I fly today?");
+      Set(messages, Experimental.WaitUntilMessage({Type: "message"}));
+    relatedTasks:
+      - "sick-days"
+      - "leave-statement"
+      - "meaning-match"
+      - "travel-safety-knowledge"
   - shortId: "sick-days"
     title: "HR Agent - Self Service Enquiry"
     description: "Explore a self service request for sick leave balance"
@@ -18,7 +38,7 @@ playgrounds:
           {SendText: "Can I do anything else for you?"}
         )
       });
-      // Code:
+      // Steps:
       Experimental.SendText("I have a question about my leave balance");
       Experimental.WaitUntilMessage({Text: "What leave enquiry do you have?"});
       Experimental.SendText("How many sick days have I taken");
@@ -32,6 +52,7 @@ playgrounds:
       - "sick-days"
       - "leave-statement"
       - "meaning-match"
+      - "travel-safety-knowledge"
   - shortId: "leave-statement"
     title: "HR Agent - Self Service Enquiry Adaptive Card"
     description: "Validate leave statement adaptive card data"
@@ -49,7 +70,7 @@ playgrounds:
           Experimental.LoadAdaptiveCard("sample.json")
         )
       });
-      // Code:
+      // Steps:
       SendText("I have a question about my leave balance");
       Experimental.WaitUntilMessage({Text: "What leave enquiry do you have?"});
       Experimental.SendText("What is my balance?");
@@ -65,6 +86,7 @@ playgrounds:
       - "sick-days"
       - "leave-statement"
       - "meaning-match"
+      - "travel-safety-knowledge"
   - shortId: "meaning-match"
     title: "Meaning Match"
     description: "Validate that responses match using AI Prompt"
@@ -85,3 +107,4 @@ playgrounds:
       - "sick-days"
       - "leave-statement"
       - "meaning-match"
+      - "travel-safety-knowledge"
