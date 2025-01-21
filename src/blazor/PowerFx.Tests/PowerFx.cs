@@ -20,8 +20,6 @@ public class PowerFxTests
         var engine = PowerFxEngine.Init(out ParserOptions options, "en-us");
         var clone = PowerFxEngine.CloneWithBlankValues(defaultWeather);
 
-
-
         // Act & Assert
         engine.UpdateVariable("weather", clone);
         Assert.True(engine.TryGetValue("weather", out FormulaValue blankWeather));
