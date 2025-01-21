@@ -76,5 +76,3 @@ By using assert statements in your test plans, you can ensure that your applicat
 ## Summary
 
 In this section, you learned how to use assert statements in automated testing to verify that your application behaves as expected. By including assert statements in your test plans, you can quickly identify any issues and ensure that your application meets the desired criteria. This process involves adding assert statements to your test plan, running the test script, and reviewing the results to confirm that the assertions pass or fail.
-
-<a href="/powerfuldev-testing/learning/07-updating-control-value-using-setproperty" class="btn btn--primary">Updating Control Value using SetProperty</a>

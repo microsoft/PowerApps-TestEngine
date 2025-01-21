@@ -86,5 +86,3 @@ By using this function, you can ensure that your Power Apps behave as expected i
 ## Summary
 
 In this section, you learned how to use the `Experimental.SimulateDataverse` function to simulate responses from the Dataverse. This function allows you to create controlled and predictable responses for various scenarios, making it easier to test and debug your applications. By using mocking techniques, you can isolate components, create specific test scenarios, and ensure consistent results. This leads to more efficient development and more reliable applications.
-
-<a href="/powerfuldev-testing/learning/10-using-simulations" class="btn btn--primary">Using simulations</a>

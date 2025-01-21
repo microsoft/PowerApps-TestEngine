@@ -29,13 +29,13 @@
             "type": "html",
             "name": "business_user_info",
             "visibleIf": "{role} = 'Business User'",
-            "html": "<p>We also have <a href='/powerfuldev-testing/learning/business-path'>business learning module</a></p>"
+            "html": "<p>We also have <a href='/PowerApps-TestEngine/learning/business-path'>business learning module</a></p>"
           },
           {
             "type": "html",
             "name": "architecture_info",
             "visibleIf": "{role} = 'Architect'",
-            "html": "<p>We also have <a href='/powerfuldev-testing/learning/architecture'>architecture learning module</a></p>"
+            "html": "<p>We also have <a href='/PowerApps-TestEngine/learning/architecture'>architecture learning module</a></p>"
           }
         ]
       },

@@ -8,7 +8,7 @@ This section provides an overview of various roles involved in low-code testing 
 
 ## Role Collaboration
 
-To be successful in adopting an automated testing approach it can take a team to work together to collaborate and align different goals especially as solutions move [grow to enterprise grade](/powerfuldev-testing/context/growing-to-enterprise-grade.md).
+To be successful in adopting an automated testing approach it can take a team to work together to collaborate and align different goals especially as solutions move [grow to enterprise grade](/PowerApps-TestEngine/context/growing-to-enterprise-grade.md).
 
 ![Diagram of role collaboration when looking at automated testing](/PowerApps-TestEngine/roles-and-responsibilities/media/role-collaboration.png)
 
@@ -18,7 +18,7 @@ To be successful in adopting an automated testing approach it can take a team to
 |------|-------------|
 | [Business Stakeholders](./business-stakeholders.md) | Represents business stakeholders who have invested in the Power Platform and want to ensure automated testing is applied at the correct level. They are concerned with business continuity, solution performance, and mitigating security risks. |
 | [Business Unit Leads](./business-unit-leads.md) | Responsible for achieving goals set by business stakeholders and demonstrating the impact and quality of the solutions created. | 
-| [Managers](/powerfuldev-testing/roles-and-responsibilities/managers) | Ensure that makers or software developers in their teams have the required knowledge and training to effectively build and test solutions. They also focus on succession planning and sharing successful solutions among the team. | 
+| [Managers](/PowerApps-TestEngine/roles-and-responsibilities/managers) | Ensure that makers or software developers in their teams have the required knowledge and training to effectively build and test solutions. They also focus on succession planning and sharing successful solutions among the team. | 
 | [Makers](./makers.md) | Low-code maker community who build solutions using low-code tools to rapidly achieve business goals. They may be unfamiliar with formal testing skills and need low-code testing processes to create sustainable solutions. |
 | [Trainers](./trainers.md) | Responsible for enterprise training and skilling by role to make the most of low code Power Platform |
 

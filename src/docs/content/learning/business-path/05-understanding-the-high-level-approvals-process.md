@@ -41,5 +41,3 @@ The approvals process is designed to coordinate with existing DevOps investments
 ## Conclusion
 
 Understanding the high-level approvals process is essential for ensuring that changes are thoroughly reviewed and approved before deployment. By leveraging a decentralized model that provides guardrails and allows integration with both business processes and DevOps investments, organizations can streamline the approval process, reduce manual effort, and ensure that solutions meet business needs, technical requirements, and compliance standards. This approach enables teams to collaborate effectively, drive innovation, and deliver high-quality solutions that support organizational goals.
-
-<a href="/powerfuldev-testing/learning/business-path/06-establishing-a-sustainability-model" class="btn btn--primary">Building a Sustainability Model</a>

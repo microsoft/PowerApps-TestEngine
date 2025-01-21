@@ -104,6 +104,3 @@ Automated testing aligns with the concepts of continuous integration and deploym
 ## Conclusion
 
 Building a sustainability model involves continuous improvement, engaging stakeholders, successful handover to support teams, and sustaining the solution over time. Automated testing, considering people, process, and tooling impacts, and aligning with CI/CD practices are critical components of this journey. By following these principles, you can ensure that your great idea not only survives but thrives in the long run.
-
-<a href="/powerfuldev-testing/learning/business-path/07-growing-to-enterprise-grade" class="btn btn--primary">Growing Solutions to Enterprise Grade</a>
-d

@@ -48,5 +48,3 @@ By following these steps, you can easily create a test plan by interacting with 
 ## Summary
 
 In this section, you learned how to record your first test using the Power Apps Test Engine. By enabling recording mode in the `RunTests.ps1` script and interacting with your Power App, you can generate a test plan based on your actions. This makes it easier to automate your testing process and ensure your application works as expected.
-
-<a href="/powerfuldev-testing/learning/06-asserting-results" class="btn btn--primary">Asserting results</a>

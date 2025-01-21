@@ -153,5 +153,3 @@ git checkout integration
 ## Summary
 
 In this section, you learned how to set up the necessary components to run your first automated test using configuration for the sample settings and running a simple test by clicking a button in a Canvas App. By following these steps, you are now equipped to explore automated testing in Power Platform.
-
-<a href="/powerfuldev-testing/learning/04-looking-at-results" class="btn btn--primary">Looking at results</a>

@@ -117,5 +117,3 @@ The test steps include taking a screenshot, setting the text input to "Atlanta",
 ## Summary
 
 Using simulated connectors in your Power Apps tests allows you to control the responses from external services, making it easier to test various scenarios. By following the steps outlined in this section, you can set up and run tests that use simulated connectors, ensuring your application behaves as expected under different conditions.
-
-<a href="/powerfuldev-testing/learning/09-simulating-dataverse" class="btn btn--primary">Simulating Dataverse</a>

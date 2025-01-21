@@ -14,10 +14,10 @@ Automated testing in the Power Platform allows you to:
 
 ### Call to Action
 
-![Technical Getting Started](/powerfuldev-testing/assets/images/technical-get-started.png)
+![Technical Getting Started](/PowerApps-TestEngine/assets/images/technical-get-started.png)
 
 Start planning for the impact of low-code automated testing today. Here are some steps you can take:
-1. **Learning Playground**: Try interactive <a href="/powerfuldev-testing/learning/playground?title=boolean-expressions" class="btn btn--primary">Learning Playground</a> to try look at key Power Fx test scenarios.
+1. **Learning Playground**: Try interactive <a href="/PowerApps-TestEngine/learning/playground?title=boolean-expressions" class="btn btn--primary">Learning Playground</a> to try look at key Power Fx test scenarios.
 1. **Explore New Features**: Follow a build-from-source strategy to try the latest features now or wait until new features are available in the Power Platform Command Line.
 2. **Establish Testing Frameworks**: Define and implement automated testing frameworks that align with your development processes.
 3. **Collaborate with Teams**: Work closely with other technical users, architects, and business stakeholders to ensure holistic integration.

@@ -70,5 +70,5 @@ Let's look at some possible examples of these wider impact solutions that could 
 
 A great example of where automated testing is required is the [Center of Excellence (CoE) Starter Kit](https://learn.microsoft.com/power-platform/guidance/coe/starter-kit). This solution is used by thousands of customers globally and needs to be updated frequently to incorporate new product features and be supported over a long period of time. Additionally, it needs to be tested across many geographies around the world to ensure consistent performance and reliability. The CoE Starter Kit is made up of Power Apps, which are applications built using the Power Platform. Given its wide usage and the need for frequent updates, automated testing is essential to maintain the quality and functionality of the solution. 
 
-For more information on this example look at [Power CAT - CoE Kit](/powerfuldev-testing/roles-and-responsibilities/powercat#coe-kit-and-test-automation)
+For more information on this example look at [Power CAT - CoE Kit](/PowerApps-TestEngine/roles-and-responsibilities/powercat#coe-kit-and-test-automation)
 

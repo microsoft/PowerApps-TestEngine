@@ -78,5 +78,3 @@ To demonstrate a failing test, modify the assert statement to check for an incor
 ## Summary
 
 In this section, you learned how to use the `SetProperty` function in Power Fx to update control values in your Power Apps application. By including SetProperty statements in your test plans, you can modify control properties and verify the behavior of your application. This process involves adding SetProperty and assert statements to your test plan, running the test script, and reviewing the results to confirm that the control values are updated as expected.
-
-<a href="/powerfuldev-testing/learning/08-simulating-connector" class="btn btn--primary">Simulating connector</a>

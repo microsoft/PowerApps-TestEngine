@@ -26,5 +26,3 @@ For each test case, the Power Apps Test Engine creates a separate folder within 
 3. **Examine Individual Test Case Folders**: For more detailed analysis, open the folders for individual test cases. Watch the video recordings to see exactly what happened during the test, and review the log files for a detailed breakdown of the test steps.
 
 By thoroughly examining the contents of the `TestOutput` folder, you can gain valuable insights into the performance and reliability of your Power Platform solutions. This detailed analysis helps you identify and fix issues, ensuring your applications are robust and reliable.
-
-<a href="/powerfuldev-testing/learning/05-recording-your-first-test" class="btn btn--primary">Recording your first test</a>

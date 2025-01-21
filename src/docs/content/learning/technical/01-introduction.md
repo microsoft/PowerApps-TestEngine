@@ -53,4 +53,4 @@ Currently the features of Test Engine are not available for outer ring.
 
 ### Power Platform 
 
-<a href="/powerfuldev-testing/learning/02-getting-setup" class="btn btn--primary">Get setup</a>
+<a href="/PowerApps-TestEngine/learning/02-getting-setup" class="btn btn--primary">Get setup</a>

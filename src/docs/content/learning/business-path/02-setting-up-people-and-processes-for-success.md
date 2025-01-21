@@ -78,4 +78,4 @@ In dynamic environments, team members may change roles, and requirements may evo
 
 Setting up people and processes for success in automated testing requires careful planning and collaboration. By identifying the right team members, defining clear roles and responsibilities, and establishing effective processes, you can ensure that your automated testing efforts are successful and deliver significant business value. Additionally, by leveraging low code testing approaches and adopting strategies to adapt to changing roles and requirements, you can ensure that your team remains agile and responsive to evolving business needs.
 
-<a href="/powerfuldev-testing/learning/business-path/03-driving-innovation-with-low-code-automated-testing" class="btn btn--primary">Driving Innovation with Low-Code Automated Testing</a>
+[Driving Innovation with Low-Code Automated Testing](./03-driving-innovation-with-low-code-automated-testing.md)

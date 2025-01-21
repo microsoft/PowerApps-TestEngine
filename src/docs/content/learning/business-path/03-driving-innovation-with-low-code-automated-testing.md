@@ -36,4 +36,4 @@ Automated testing plays a critical role in verifying that low-code solutions mee
 
 Driving innovation with low-code automated testing requires a holistic approach that combines the rapid development capabilities of low-code platforms with the agility and efficiency of automated testing. By leveraging record and replay strategies, AI-driven agents, and continuous testing, organizations can ensure that their low-code solutions meet the expected functionality and quality standards. This enables them to innovate quickly, respond to changing business requirements, and deliver high-quality solutions that drive business success.
 
-<a href="/powerfuldev-testing/learning/business-path/04-optimizing-it-processes" class="btn btn--primary">Optimizing IT Processes with Low-Code Automated Testing</a>
+[Optimizing IT Processes with Low-Code Automated Testing](./04-optimizing-it-processes.md)

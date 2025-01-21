@@ -885,32 +885,32 @@
           {
             "type": "html",
             "name": "callToAction",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/context/getting-started-business'\">Getting Started Business</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/context/getting-started-business'\">Getting Started Business</button>"
           },
           {
             "type": "html",
             "visibleIf": "{businessPersona} = 'Business Stakeholders'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/business-stakeholders'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/business-stakeholders'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{businessPersona} = 'Business Unit Leads'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/business-unit-leads'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/business-unit-leads'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{businessPersona} = 'Managers'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/managers'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/managers'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{businessPersona} = 'Makers'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/makers'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/makers'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{businessPersona} = 'Trainers'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/trainers'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/trainers'\">Explore Role</button>"
           }
         ]
       },
@@ -939,27 +939,27 @@
           {
             "type": "html",
             "name": "callToAction",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/context/getting-started-architects'\">Getting Started Architecture</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/context/getting-started-architects'\">Getting Started Architecture</button>"
           },
           {
             "type": "html",
             "visibleIf": "{architectPersona} = 'Enterprise Architects'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/enterprise-architects'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/enterprise-architects'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{architectPersona} = 'Solution Architects'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/solution-architects'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/solution-architects'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{architectPersona} = 'DevOps Architects'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/devops-engineers-architects'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/devops-engineers-architects'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{architectPersona} = 'Security Architects'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/security-architects'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/security-architects'\">Explore Role</button>"
           }
         ]
       },
@@ -988,22 +988,22 @@
           {
             "type": "html",
             "name": "callToAction",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/context/getting-started-technical'\">Getting Started Technical</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/context/getting-started-technical'\">Getting Started Technical</button>"
           },
           {
             "type": "html",
             "visibleIf": "{technicalPersona} = 'Software Engineers'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/software-engineers'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/software-engineers'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{technicalPersona} = 'DevOps Engineers'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/devops-engineers-architects'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/devops-engineers-architects'\">Explore Role</button>"
           },
           {
             "type": "html",
             "visibleIf": "{technicalPersona} = 'Support Engineers'",
-            "html": "<button onclick=\"window.location.href='/powerfuldev-testing/roles-and-responsibilities/support-engineers'\">Explore Role</button>"
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/support-engineers'\">Explore Role</button>"
           }
         ]
       }

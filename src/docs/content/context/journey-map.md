@@ -51,4 +51,4 @@ The journey from manual testing to automated testing can be visualized through d
 
 Understanding these factors and their impact will help you complete the self-assessment survey. By identifying your adoption stage, common blockers, and potential mitigators, you can gain insights into your journey and make informed decisions to improve your testing processes. Use the survey to reflect on your experiences and identify areas for improvement.
 
-<a href="/powerfuldev-testing/context/journey-map-assessment" target="_blank" class="btn btn--primary">Journey Map Assessment</a>
+[Journey Map Assessment](/PowerApps-TestEngine/context/journey-map-assessment)

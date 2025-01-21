@@ -124,5 +124,3 @@ Lets have a closer look at the weather [testPlan.fx.yaml](https://github.com/mic
 ## Summary
 
 In this section, you learned how to load and test a sample Weather application. You explored how to call the MSN Weather connector, interact with Dataverse, and use assert statements to verify the application's functionality. By following the key steps and exploring the sample, you gained insights into simulating connectors and Dataverse interactions to ensure your application works as expected.
-
-<a href="/powerfuldev-testing/learning/11-localization" class="btn btn--primary">Localization</a>
