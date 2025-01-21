@@ -41,6 +41,6 @@ Conditional questions allow the assessment to branch based on the user's answers
 
 To enable interactive evaluations, Power Fx expressions can be used. Power Fx is a powerful formula language for canvas apps that allows for dynamic and interactive content. Here are some examples of how Power Fx can be used in interactive documentation:
 
-{% powerfx %}
+{{% powerfx-interactive %}}
 Assert(1 = 1, "Unexpected value");
-{% endpowerfx %}
+{{% /powerfx-interactive %}}

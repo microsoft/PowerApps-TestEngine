@@ -19,16 +19,17 @@ SetProperty(control.property, value)
 
 Let's consider a basic example that combines [Asserting Results](./06-asserting-results.md) where we want to update the text of a label control (Label1) to "End of the test" and make sure changes are applied:
 
-{% powerfx %}
+{{% powerfx-interactive %}}
 // Setup simulated Label Control with Text Value to check below
 SetProperty(Label1.Text, "Start of test");
 Assert(Label1.Text = "Start of test", "Unexpected start value");
 
 SetProperty(Label1.Text, "End of the test");
 Assert(Label1.Text = "End of the test", "Unexpected end value");
-{% endpowerfx %}
+{{% /powerfx-interactive %}}
 
-Want to explore more concepts examples checkout the <a href="/powerfuldev-testing/learning/playground?title=assert-multiple-values" class="btn btn--primary">Learning Playground</a> to explore related testing concepts
+
+Want to explore more concepts examples checkout the [Learning Playground](/PowerApps-TestEngine/learning/playground?title=assert-multiple-values) to explore related testing concepts
 
 ## Using SetProperty in a Test Plan
 

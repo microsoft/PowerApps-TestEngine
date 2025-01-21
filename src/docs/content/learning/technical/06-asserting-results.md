@@ -31,7 +31,9 @@ SetProperty(Label1.Text, "Heading");
 Assert(Label1.Text = "Heading", "Unexpected header value")
 {{% /powerfx-interactive %}}
 
-Want to explore more concepts examples checkout the <a href="/powerfuldev-testing/learning/playground?title=intro-assert" class="btn btn--primary">Learning Playground</a> to explore related testing concepts
+You can also try the 
+
+Want to explore more concepts examples checkout the [Learning Playground](/PowerApps-TestEngine/learning/playground?title=intro-assert) to explore related testing concepts
 
 #### Tell Me More
 

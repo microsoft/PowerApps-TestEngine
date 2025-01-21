@@ -23,11 +23,11 @@ Where new concepts are introduced a interactive Power Fx window will be availabl
 > 1. If the value does not match the test will return "One or more errors occurred. (Exception has been thrown by the target of an invocation.)"
 > 2. Reload the page to reset the sample to the default state
 
-{% powerfx %}
+{{% powerfx-interactive %}}
 Assert(1 = 1, "Unexpected value");
-{% endpowerfx %}
+{{% /powerfx-interactive %}}
 
-You can also try the <a href="/powerfuldev-testing/learning/playground?title=boolean-expressions" class="btn btn--primary">Learning Playground</a> to explore related testing concepts
+You can also try the [Learning Playground](/PowerApps-TestEngine/learning/playground?title=boolean-expressions)
 
 ## Pre-requisites
 

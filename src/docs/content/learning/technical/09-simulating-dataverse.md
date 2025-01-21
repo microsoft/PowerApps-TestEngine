@@ -24,16 +24,15 @@ Lets look at an example of simulating a dataverse. The first set fo checks valid
 > 1. If the value does not match the test will return "One or more errors occurred. (Exception has been thrown by the target of an invocation.)"
 > 2. Reload the page to reset the sample to the default state
 
-{% powerfx %}
+{{% powerfx-interactive %}}
 Assert(CountRows(accounts)=1);
 
 Experimental.SimulateDataverse({Entity:"accounts", Then: Table()});
 
 Assert(CountRows(accounts)=0);
-{% endpowerfx %}
+{{% /powerfx-interactive %}}
 
-Want to explore more concepts examples checkout the <a href="/powerfuldev-testing/learning/playground?title=assert-simulated-dataverse" class="btn btn--primary">Learning Playground</a> to explore related testing concepts.
-
+Want to explore more concepts examples checkout the [Learning Playground](/PowerApps-TestEngine/learning/playground?title=assert-simulated-dataverse) to explore related testing concepts.
 
 ## Using Experimental.SimulateDataverse
 

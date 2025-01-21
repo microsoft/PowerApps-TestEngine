@@ -24,7 +24,7 @@ Lets look at an example of simulating a connection. The first set fo checks vali
 > 1. If the value does not match the test will return "One or more errors occurred. (Exception has been thrown by the target of an invocation.)"
 > 2. Reload the page to reset the sample to the default state
 
-{% powerfx %}
+{{% powerfx-interactive %}}
 Assert(WeatherService.GetCurrentWeather("Seattle, WA").Location="Seattle, WA");
 Assert(WeatherService.GetCurrentWeather("Seattle, WA").Condition="Sunny");
 
@@ -32,9 +32,9 @@ Experimental.SimulateConnector({Name:"WeatherService", Then: {Location: "Other",
 
 Assert(WeatherService.GetCurrentWeather("Seattle, WA").Location="Other");
 Assert(WeatherService.GetCurrentWeather("Seattle, WA").Condition="Cold");
-{% endpowerfx %}
+{{% /powerfx-interactive %}}
 
-Want to explore more concepts examples checkout the <a href="/powerfuldev-testing/learning/playground?title=assert-simulated-connector" class="btn btn--primary">Learning Playground</a> to explore related testing concepts.
+Want to explore more concepts examples checkout the [Learning Playground](/PowerApps-TestEngine/learning/playground?title=assert-simulated-connector) to explore related testing concepts.
 
 ## Running the Test
 

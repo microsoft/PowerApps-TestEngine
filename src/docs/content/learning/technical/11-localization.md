@@ -14,14 +14,14 @@ Lets look at an example of localization of a Power App
 > 1. If the value does not match the test will return "One or more errors occurred. (Exception has been thrown by the target of an invocation.)"
 > 2. Reload the page to reset the sample to the default state
 
-{% powerfx %}
+{{% powerfx-interactive %}}
 // Settings:
 locale: en-us
 // Code:
 Language()
-{% endpowerfx %}
+{{% /powerfx-interactive %}}
 
-Want to explore more concepts examples checkout the <a href="/powerfuldev-testing/learning/playground?title=localization" class="btn btn--primary">Learning Playground</a> to explore related testing concepts
+Want to explore more concepts examples checkout the [Learning Playground](/PowerApps-TestEngine/learning/playground?title=localization) to explore related testing concepts
 
 ## Pre-requisites
 
@@ -53,15 +53,15 @@ The Power Platform provides robust support for localization in both Canvas and M
 
 To explore different languages using the Weather sample, follow these steps to expand from English Version
 
-![Example English version of the weather snap shots application](/PowerApps-TestEngine/learning/media/weather-snaphots.png")
+![Example English version of the weather snap shots application](/PowerApps-TestEngine/learning/technical/media/weather-snaphots.png")
 
 And French version
 
-![Example French version of the weather snap shots application](/PowerApps-TestEngine/learning/media/cliches-meteorologiques.png)
+![Example French version of the weather snap shots application](/PowerApps-TestEngine/learning/technical/media/cliches-meteorologiques.png)
 
 To include German version of the same application
 
-![Example German version of the weather snap shots application](/PowerApps-TestEngine/learning/media/wetterschnappschusse.png)
+![Example German version of the weather snap shots application](/PowerApps-TestEngine/learning/technical/media/wetterschnappschusse.png)
 
 ### Step 1: Start the Application
 

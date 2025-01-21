@@ -36,7 +36,7 @@ playgrounds:
       - Change the test to **CountRows(Table())** to see a value of 0 for an empty table
       - Change the test to **CountRows(Table({Name:"Test"}, {Name: "Test 2"}))** to see value of 2
       - Change the test to **Last(Table({Name:"Test"}, {Name: "Test 2"})).Name** to see value of **Test 2**
-      - Change the test to the folling to get **Test 2**
+      - Change the test to the following to get **Test 2**
 
           Set(item,Last(Table({Name:"Test"}, {Name: "Test 2"})));
           item.Name

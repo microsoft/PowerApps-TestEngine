@@ -1,6 +1,6 @@
 {{- $id := printf "powerfx-%d" (mod (now.UnixNano | int) 9000 | add 1000) -}}
 {{- $buttonText := .Get 0 | default "Try It!" -}}
-{{- $code := .Inner | base64Encode -}}
+{{- $code := .Inner | strings.TrimSpace | base64Encode -}}
 
 {{ $html := (print `
 <style>
