@@ -2,6 +2,8 @@
 title: Power Apps Test Engine
 ---
 
+# Welcome
+
 Welcome to the Power Apps Test Engine! Our goal is to provide you with the tools and knowledge to effectively apply low code testing in your projects.
 
 Not sure where to start have a look at our [Getting Started Guide](/PowerApps-TestEngine/context/getting-started/).
