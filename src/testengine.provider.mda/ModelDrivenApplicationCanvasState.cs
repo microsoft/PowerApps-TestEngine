@@ -121,11 +121,7 @@ namespace testengine.provider.mda
                     {
                         // Add the new collction and cache a copy of the collection state
                         originalEngine.UpdateVariable(collection, newPowerFxCollectionValue);
-                        if (originalState.CollectionState.ContainsKey(collection))
-                        {
-                            originalState.CollectionState[collection] = await originalState.ConvertToVariableState(newPowerFxCollectionValue);
-                        }
-                        else
+                        if (!originalState.CollectionState.ContainsKey(collection))
                         {
                             originalState.CollectionState.Add(collection, await originalState.ConvertToVariableState(newPowerFxCollectionValue));
                         }
