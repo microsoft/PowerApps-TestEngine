@@ -35,7 +35,7 @@ extends:
             artifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
             targetPath: '$(Build.ArtifactStagingDirectory)'
           - output: nuget
-            condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq($(UpdateVer), 'true'))
+            condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq(variables['UpdateVer'], 'true'))
             useDotNetTask: false # The default is false to use the NuGetCommand task. Set to true to use the DotNetCoreCLI task to publish packages.
             packagesToPush: '$(Build.ArtifactStagingDirectory)/Microsoft.PowerApps.TestEngine.*.nupkg'
             packageParentPath: '$(Build.ArtifactStagingDirectory)'
