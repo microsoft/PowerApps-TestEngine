@@ -65,6 +65,7 @@ extends:
             failTaskOnFailedTests: true
         - task: EsrpCodeSigning@5
           displayName: 'ESRP sign'
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
           inputs:
             ConnectedServiceName: $(EsrpConServName)
             AppRegistrationClientId: $(EsrpAppRegCliId)
