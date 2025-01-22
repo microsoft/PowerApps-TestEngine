@@ -44,7 +44,7 @@ extends:
             allowPackageConflicts: true # Optional. NuGetCommand task only.
         steps:
         - script: |
-            echo "Hello"
+            echo "Hello $(myVariable)"
         - task: UseDotNet@2
           displayName: 'Use dotnet sdk 8.0'
           inputs:
@@ -63,10 +63,15 @@ extends:
             searchFolder: '$(Build.SourcesDirectory)/obj/'
             mergeTestResults: true
             failTaskOnFailedTests: true
-        - task: EsrpCodeSigning@2
+        - task: EsrpCodeSigning@5
           displayName: 'ESRP sign'
           inputs:
-            ConnectedServiceName: 'ESRPCodeSigningConnection'
+            ConnectedServiceName: $(EsrpConServName)
+            AppRegistrationClientId: $(EsrpAppRegCliId)
+            AppRegistrationTenantId: $(EsrpAppRegTenId)
+            AuthAKVName: $(EsrpKVName)
+            AuthCertName: $(EsrpAuthCertName)
+            AuthSignCertName: $(EsrpAuthSignCertName)
             FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngine/'
             Pattern: '*.dll'
             signConfigType: inlineSignParams
@@ -133,10 +138,15 @@ extends:
             projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
             arguments: '-- pack-AlphaV2 -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
           condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
-        - task: EsrpCodeSigning@2
+        - task: EsrpCodeSigning@5
           displayName: 'ESRP sign nuget packages'
           inputs:
-            ConnectedServiceName: 'ESRPCodeSigningConnection'
+            ConnectedServiceName: $(EsrpConServName)
+            AppRegistrationClientId: $(EsrpAppRegCliId)
+            AppRegistrationTenantId: $(EsrpAppRegTenId)
+            AuthAKVName: $(EsrpKVName)
+            AuthCertName: $(EsrpAuthCertName)
+            AuthSignCertName: $(EsrpAuthSignCertName)
             FolderPath: '$(Build.ArtifactStagingDirectory)'
             Pattern: '*.nupkg'
             signConfigType: inlineSignParams
