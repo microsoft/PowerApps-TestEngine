@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using System.Threading.Tasks;
 using ICSharpCode.Decompiler.DebugInfo;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
@@ -12,7 +13,7 @@ namespace testengine.provider.mda
     public class ModelDrivenApplicationCanvasState
     {
         public Dictionary<string, string?> VariableState { get; set; } = new Dictionary<string, string?>();
-        public Dictionary<string, string> CollectionState { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string?> CollectionState { get; set; } = new Dictionary<string, string?>();
 
         /// <summary>
         /// Query the state of the browser and update the Power Fx state
@@ -121,7 +122,11 @@ namespace testengine.provider.mda
                     {
                         // Add the new collction and cache a copy of the collection state
                         originalEngine.UpdateVariable(collection, newPowerFxCollectionValue);
-                        if (!originalState.CollectionState.ContainsKey(collection))
+                        if (originalState.CollectionState.ContainsKey(collection))
+                        {
+                            originalState.CollectionState[collection] = await originalState.ConvertToVariableState(newPowerFxCollectionValue);
+                        }
+                        else
                         {
                             originalState.CollectionState.Add(collection, await originalState.ConvertToVariableState(newPowerFxCollectionValue));
                         }
