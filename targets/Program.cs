@@ -54,7 +54,7 @@ namespace targets
             var solution = Path.Combine(SrcDir, "PowerAppsTestEngine.sln");
             
             var project = Path.Combine(PATestEngineDir, "Microsoft.PowerApps.TestEngine.csproj");
-            var projectTestEngine2 = Path.Combine(SrcDir, "PowerAppsTestEngine", "PowerAppsTestEngine.csproj");
+            var projectTestEngine2 = Path.Combine(SrcDir, "PowerAppsTestEngineWrapper", "PowerAppsTestEngineWrapper.csproj");
             var customPackageId = "Microsoft.PowerApps.TestEngine";
 
             Target("squeaky-clean",
