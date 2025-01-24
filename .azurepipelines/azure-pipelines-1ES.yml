@@ -73,7 +73,7 @@ extends:
             AuthAKVName: $(EsrpKVName)
             AuthCertName: $(EsrpAuthCertName)
             AuthSignCertName: $(EsrpAuthSignCertName)
-            FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngine/'
+            FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngineWrapper/'
             Pattern: '*.dll'
             signConfigType: inlineSignParams
             inlineOperation: |
