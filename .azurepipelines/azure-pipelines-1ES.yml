@@ -182,7 +182,7 @@ extends:
           condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
         - task: PublishSymbols@2
           displayName: 'Publish symbols'
-          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq(variables['UpdateVer'], 'true'))
           continueOnError: true
           enabled: True
           inputs:
