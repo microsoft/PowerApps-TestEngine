@@ -10,6 +10,8 @@ extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     sdl:
+      codeSignValidation:
+        enabled: true
       codeql:
         ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch']) }}:
           enabledOnNonDefaultBranches: true
@@ -114,6 +116,21 @@ extends:
                   "Parameters": {}
                 }
               ]
+        - task: CopyFiles@2
+          displayName: 'Copy Built Files to Artifact Staging Directory'
+          inputs:
+            SourceFolder: '$(Build.SourcesDirectory)/bin'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/bin'
+        - task: CopyFiles@2
+          displayName: 'Copy Built Files to Artifact Staging Directory'
+          inputs:
+            SourceFolder: '$(Build.SourcesDirectory)/obj'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/obj'
+        - task: CopyFiles@2
+          displayName: 'Copy Built Files to Artifact Staging Directory'
+          inputs:
+            SourceFolder: '$(Build.SourcesDirectory)/pkg'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/pkg'
         - task: DotNetCoreCLI@2
           displayName: 'Pack'
           inputs:
