@@ -82,6 +82,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.common.user", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.common.user.tests", "testengine.common.user.tests\testengine.common.user.tests.csproj", "{52D935F1-3567-48B7-904F-1183F824A9FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerAppsTestEngineWrapper", "PowerAppsTestEngineWrapper\PowerAppsTestEngineWrapper.csproj", "{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.environment.certificate", "testengine.auth.environment.certificate\testengine.auth.environment.certificate.csproj", "{BCCA93BD-993A-4266-A113-1A1C8B38F566}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.environment.certificate.tests", "testengine.auth.environment.certificatestore.tests\testengine.auth.environment.certificate.tests.csproj", "{08B84380-E157-4AA2-816D-764B2CBB8DDC}"
@@ -208,6 +210,10 @@ Global
 		{52D935F1-3567-48B7-904F-1183F824A9FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52D935F1-3567-48B7-904F-1183F824A9FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52D935F1-3567-48B7-904F-1183F824A9FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCCA93BD-993A-4266-A113-1A1C8B38F566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCCA93BD-993A-4266-A113-1A1C8B38F566}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCCA93BD-993A-4266-A113-1A1C8B38F566}.Release|Any CPU.ActiveCfg = Release|Any CPU

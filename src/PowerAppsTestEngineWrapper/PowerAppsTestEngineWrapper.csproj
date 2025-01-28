@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
@@ -24,6 +23,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
+    <PackageReference Include="Microsoft.Data.OData" Version="5.8.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.48.0" />
+    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="1.2.0" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NuGet.Configuration" Version="6.11.1" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="YamlDotNet" Version="16.1.3" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.auth.certificatestore\testengine.auth.certificatestore.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.common.user\testengine.common.user.csproj" PrivateAssets="all" />
@@ -38,8 +57,24 @@
     <ProjectReference Include="..\testengine.provider.mda\testengine.provider.mda.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.user.storagestate\testengine.user.storagestate.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\PowerAppsTestEngineWrapper\PowerAppsTestEngineWrapper.csproj" PrivateAssets="all" />
   </ItemGroup>
+
+  <!-- Nuget Properties -->
+  <PropertyGroup>
+    <Authors>Microsoft</Authors>
+    <Company>crmsdk,Microsoft</Company>
+    <Title>Microsoft.PowerApps.TestEngine</Title>
+    <Description>Alpha Release: Providing makers with a single automated testing platform for all Power Apps apps</Description>
+    <PackageReleaseNotes>
+      Notice:
+      This package is an ALPHA release. - Use at your own risk.
+
+      Intial Alpha release of Microsoft.PowerAppsTestEngine
+    </PackageReleaseNotes>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+  </PropertyGroup>
 
   <PropertyGroup>
     <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -47,6 +82,22 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(GitExists)' == true">
+    <PackageReference Include="MinVer" Version="2.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ExcludedAssemblies Include="..\..\bin\$(configuration)\PowerAppsTestEngineWrapper\PowerAppsTestEngineWrapper.dll" />
+    <FilesToPack Include="..\..\bin\$(configuration)\PowerAppsTestEngineWrapper\*.dll" Exclude="@(ExcludedAssemblies)" />
+    <None Include="@(FilesToPack)">
+      <Pack>true</Pack>
+      <PackagePath>lib\$(TargetFramework)\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="config.dev.json">
