@@ -13,6 +13,9 @@ on:
   schedule:
     - cron: '0 6 * * 1,3,5'
 
+permissions:
+  checks: write
+
 jobs:
   build:
     runs-on: windows-latest
