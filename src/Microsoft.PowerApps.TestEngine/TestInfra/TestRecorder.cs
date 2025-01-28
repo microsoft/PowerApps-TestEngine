@@ -780,7 +780,7 @@ if (event.ctrlKey && event.key === 'r') {{
                 NumberValue numberValue => numberValue.Value.ToString(),
                 BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
                 // Assume all dates should be in UTC
-                DateValue dateValue => "\"" + dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o") + "\"" , // ISO 8601 format
+                DateValue dateValue => "\"" + dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o") + "\"", // ISO 8601 format
                 DateTimeValue dateTimeValue => "\"" + dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o") + "\"", // ISO 8601 format
                 RecordValue recordValue => FormatRecordValue(recordValue),
                 TableValue tableValue => FormatTableValue(tableValue),
@@ -1035,7 +1035,7 @@ if (event.ctrlKey && event.key === 'r') {{
             StringBuilder steps = new StringBuilder();
 
             line = 0;
-        
+
             // Enumberate in First In First Out (FIFO)
             foreach (var step in queue)
             {

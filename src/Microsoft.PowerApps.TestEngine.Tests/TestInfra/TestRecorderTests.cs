@@ -294,7 +294,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 Assert.Equal(expectedTestStepsPowerFxFx, recorder.TestSteps.First());
                 Assert.Empty(recorder.SetupSteps);
             }
-            
+
         }
 
         [Theory]
