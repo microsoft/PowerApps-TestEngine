@@ -23,7 +23,7 @@ namespace testengine.common.user
         public string? MatchHost { get; set; }
 
 
-        public Func<string, Task>? CallbackDesiredUrlFound { get; set; }
-        public Func<Task>? CallbackErrorFound { get; set; }
+        public Func<string, Task> CallbackDesiredUrlFound { get; set; } = null;
+        public Func<Task> CallbackErrorFound { get; set; } = null;
     }
 }

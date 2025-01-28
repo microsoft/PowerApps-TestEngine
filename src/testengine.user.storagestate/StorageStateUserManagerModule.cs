@@ -262,6 +262,10 @@ namespace testengine.user.storagestate
         {
             try
             {
+                if (string.IsNullOrEmpty(emailAddress))
+                {
+                    return false;
+                }
                 var email = new MailAddress(emailAddress);
                 return email.Address == emailAddress.Trim();
             }
@@ -271,7 +275,7 @@ namespace testengine.user.storagestate
             }
         }
 
-        public string GetUserNameFromEmail(string? emailAddress)
+        public string GetUserNameFromEmail(string emailAddress)
         {
             if (string.IsNullOrEmpty(emailAddress))
             {

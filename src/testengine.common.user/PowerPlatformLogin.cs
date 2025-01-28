@@ -32,7 +32,7 @@ namespace testengine.common.user
             {
                 if (!state.Module.Settings.ContainsKey(ERROR_DIALOG_KEY))
                 {
-                    state.Module.Settings.TryAdd(ERROR_DIALOG_KEY, title);
+                    state.Module.Settings.Add(ERROR_DIALOG_KEY, title);
                 }
                 else
                 {

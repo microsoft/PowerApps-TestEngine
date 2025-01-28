@@ -92,6 +92,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "powerfx", "blazor\powerfx\p
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerFx.Tests", "blazor\PowerFx.Tests\PowerFx.Tests.csproj", "{1A2CF549-ECD2-475B-BE20-205154CF90E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerAppsTestEngineWrapper", "PowerAppsTestEngineWrapper\PowerAppsTestEngineWrapper.csproj", "{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -230,6 +232,10 @@ Global
 		{1A2CF549-ECD2-475B-BE20-205154CF90E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A2CF549-ECD2-475B-BE20-205154CF90E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A2CF549-ECD2-475B-BE20-205154CF90E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
