@@ -210,7 +210,7 @@ namespace testengine.user.storagestate.tests
         public async Task ProtectandUnprotect()
         {
             // Windows Data Protection API is only supported on Windows. 
-            if (OperatingSystem.IsWindows())
+            if (PlatformHelper.IsWindows())
             {
                 // Arrange
                 var userManager = new StorageStateUserManagerModule();

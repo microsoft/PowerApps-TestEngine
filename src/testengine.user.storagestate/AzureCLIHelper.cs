@@ -7,8 +7,8 @@ namespace testengine.user.storagestate
 {
     public class AzureCliHelper
     {
-        public Func<string> ExecutableSuffix = () => (OperatingSystem.IsWindows() ? ".cmd" : string.Empty);
-        public Func<ProcessStartInfo, IProcessWrapper?> ProcessStart = (info) => new ProcessWrapper(Process.Start(info));
+        public Func<string> ExecutableSuffix = () => (PlatformHelper.IsWindows() ? ".cmd" : string.Empty);
+        public Func<ProcessStartInfo, IProcessWrapper> ProcessStart = (info) => new ProcessWrapper(Process.Start(info));
 
         public string GetAccessToken(Uri location)
         {
@@ -45,7 +45,7 @@ namespace testengine.user.storagestate
         {
             var processStartInfo = new ProcessStartInfo
             {
-                FileName = (OperatingSystem.IsWindows() ? "where" : "which"),
+                FileName = (PlatformHelper.IsWindows() ? "where" : "which"),
                 Arguments = "az",
                 RedirectStandardOutput = true,
                 UseShellExecute = false,

@@ -25,12 +25,12 @@ namespace testengine.user.storagestate
     [Export(typeof(IUserManager))]
     public class DataverseStorageStateUserManagerModule : StorageStateUserManagerModule
     {
-        IEnvironmentVariable? _environmentVariable;
-        ITestState? _testState;
-        IUserCertificateProvider? _userCertificateProvider;
-        IDataProtector? _userProtector;
-        IOrganizationService? _organizationService;
-        ISingleTestInstanceState? _singleTestInstanceState;
+        IEnvironmentVariable _environmentVariable;
+        ITestState _testState;
+        IUserCertificateProvider _userCertificateProvider;
+        IDataProtector _userProtector;
+        IOrganizationService _organizationService;
+        ISingleTestInstanceState _singleTestInstanceState;
         ServiceProvider _services = null;
         bool _setup = false;
 
@@ -51,7 +51,7 @@ namespace testengine.user.storagestate
             Settings.Add(LOAD_SETTINGS, LoadStateIfExists());
         }
 
-        public void SetupState(IXmlRepository? xmlRepository = null)
+        public void SetupState(IXmlRepository xmlRepository = null)
         {
             if (_setup)
             {
@@ -101,7 +101,7 @@ namespace testengine.user.storagestate
 
             var cert = _userCertificateProvider.RetrieveCertificateForUser(dataProtectionCertificate);
 
-            string? dataProtectionKey = _environmentVariable.GetVariable(DATAVERSE_KEY);
+            string dataProtectionKey = _environmentVariable.GetVariable(DATAVERSE_KEY);
 
             var keyName = !String.IsNullOrEmpty(dataProtectionKey) ? dataProtectionKey : Environment.MachineName;
 
@@ -110,7 +110,7 @@ namespace testengine.user.storagestate
                 throw new InvalidDataException($"Certificate {dataProtectionCertificate} not found");
             }
 
-            if (!OperatingSystem.IsWindows())
+            if (!PlatformHelper.IsWindows())
             {
                 throw new ApplicationException();
             }
@@ -167,7 +167,7 @@ namespace testengine.user.storagestate
             };
         }
 
-        public static IReadOnlyCollection<ProtectedKeyValue> FindMatch(IOrganizationService service, string keyName, string? valueName)
+        public static IReadOnlyCollection<ProtectedKeyValue> FindMatch(IOrganizationService service, string keyName, string valueName)
         {
             // Retrieve keys from Dataverse
             FilterExpression filter = new FilterExpression(LogicalOperator.And);

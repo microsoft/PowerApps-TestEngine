@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
-using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using Moq;
 using Xunit;
 
@@ -67,7 +66,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             loader.DirectoryGetFiles = (location, pattern) =>
             {
                 var searchPattern = Regex.Escape(pattern).Replace(@"\*", ".*?");
-                return files.Split(",").Where(f => Regex.IsMatch(f, searchPattern)).ToArray();
+                return files.Split(',').Where(f => Regex.IsMatch(f, searchPattern)).ToArray();
             };
             // Use current test assembly as test
             loader.LoadAssembly = (file) => new AssemblyCatalog(this.GetType().Assembly);

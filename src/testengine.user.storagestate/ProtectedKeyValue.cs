@@ -11,9 +11,9 @@ namespace testengine.user.storagestate
 {
     public class ProtectedKeyValue
     {
-        public string? KeyId { get; set; }
-        public string? KeyName { get; set; }
-        public string? ValueName { get; set; }
-        public string? Data { get; set; }
+        public string KeyId { get; set; }
+        public string KeyName { get; set; }
+        public string ValueName { get; set; }
+        public string Data { get; set; }
     }
 }
