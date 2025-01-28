@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <NoWarn>NU1701</NoWarn>
-  </PropertyGroup>
-  
-  <PropertyGroup>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
@@ -22,10 +18,6 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,7 +41,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.2">
-      <NoWarn>true</NoWarn>
+      <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
