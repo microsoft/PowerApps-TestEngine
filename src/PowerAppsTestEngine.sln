@@ -30,7 +30,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{ACAB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D34E437A-6149-46EC-B7DA-FF449E55CEEA}"
 	ProjectSection(SolutionItems) = preProject
-		..\Extensions.md = ..\Extensions.md
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
