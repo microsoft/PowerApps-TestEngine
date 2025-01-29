@@ -155,6 +155,7 @@ namespace Microsoft.PowerApps.TestEngine
                 throw;
             }
             finally
+
             {
                 if (TestLoggerProvider.TestLoggers.ContainsKey(testRunId))
                 {
