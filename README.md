@@ -20,9 +20,9 @@ Test Engine uses [Playwright](https://playwright.dev) to orchestrate the tests.
 
 ## Getting Started
 
-> ### Please refer this [Test Engine Github page](https://microsoft.github.io/PowerApps-TestEngine/) for the latest documentation updates.
+> ### Please refer [Test Engine Github page](https://microsoft.github.io/PowerApps-TestEngine/) for the latest documentation updates.
 
-> This project has undergone a major update as of Jan 2025, please refer [1.1.3-preview](https://github.com/microsoft/PowerApps-TestEngine/releases/tag/1.1.3-preview) for the prebious version.
+> This project has undergone a major update as of Jan 2025, please refer [1.1.3-preview](https://github.com/microsoft/PowerApps-TestEngine/releases/tag/1.1.3-preview) for the previous version.
 
 To get started, you will need to clone the Test Engine code from GitHub, locally build the project, and install the browser(s) you wish to use to execute the tests. Once you have the Test Engine executable built, the repo contains a library of sample test plans and apps you can use to exercise the tool.
 
@@ -107,7 +107,7 @@ For more information about the config and the inputs to the command, please view
 
 This refers to the account that Test Engine will use to execute the test. The default UserAuth provider is StorageState.
 
-Test Engine using StorageState authentication can support multi-factor authentication. Using this approach an interactive login is first required to successfully authenticate with the Power Platform which are then used by subsequent logins.
+Test Engine using StorageState authentication can support multi-factor authentication. Using this approach an interactive login is first required to successfully authenticate with the Power Platform which is then used by subsequent logins.
 
 Please refer https://microsoft.github.io/PowerApps-TestEngine/context/security-testengine-authentication-changes/.
 
