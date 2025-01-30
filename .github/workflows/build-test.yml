@@ -15,6 +15,7 @@ on:
 
 permissions:
   checks: write
+  security-events: write
 
 jobs:
   build:
