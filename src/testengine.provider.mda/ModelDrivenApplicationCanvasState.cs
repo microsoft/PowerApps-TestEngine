@@ -1,4 +1,7 @@
-﻿using System.Dynamic;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System.Dynamic;
 using System.Threading.Tasks;
 using ICSharpCode.Decompiler.DebugInfo;
 using Microsoft.PowerApps.TestEngine.Config;
