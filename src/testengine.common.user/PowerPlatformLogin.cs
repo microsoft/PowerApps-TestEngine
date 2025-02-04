@@ -1,4 +1,7 @@
-﻿using Microsoft.Playwright;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.Playwright;
 
 namespace testengine.common.user
 {

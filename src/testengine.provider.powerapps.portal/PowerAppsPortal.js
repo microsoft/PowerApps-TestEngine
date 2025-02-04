@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 class PowerAppsPortal {
     static idleStatus() {
         var element = document.getElementById('O365_MainLink_Settings');
