@@ -33,7 +33,7 @@ extends:
         templateContext:
           outputs:
           - output: pipelineArtifact
-            condition: and(succeeded())
+            condition: succeeded()
             artifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
             targetPath: '$(Build.ArtifactStagingDirectory)'
           - output: nuget
