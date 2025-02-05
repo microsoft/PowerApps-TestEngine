@@ -67,7 +67,7 @@ extends:
             failTaskOnFailedTests: true
         - task: EsrpCodeSigning@5
           displayName: 'ESRP sign'
-          condition: succeeded()
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
           inputs:
             ConnectedServiceName: $(EsrpConServName)
             AppRegistrationClientId: $(EsrpAppRegCliId)
@@ -179,7 +179,7 @@ extends:
                   "ToolVersion": "1.0"
                 }
               ]
-          condition: succeeded()
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
         - task: PublishSymbols@2
           displayName: 'Publish symbols'
           condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq(variables['UpdateVer'], 'true'))
