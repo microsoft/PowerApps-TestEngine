@@ -355,3 +355,5 @@ MigrationBackup/
 /src/PowerAppsTestEngine/TestOutput
 /src/PowerAppsTestEngine/config.dev.json
 **/TestOutput
+/src/testengine.plugin.copilot/.vscode
+/targets/Properties/launchSettings.json
