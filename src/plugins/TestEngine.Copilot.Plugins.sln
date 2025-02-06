@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testengine.plugin.copilot", "..\testengine.plugin.copilot\testengine.plugin.copilot.csproj", "{D8DA7F9E-2BE9-427D-9626-776BCC58A369}"
 EndProject
