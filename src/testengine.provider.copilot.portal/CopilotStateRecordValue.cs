@@ -7,7 +7,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 {
     public class CopilotStateRecordValue : RecordValue
     {
-        CopilotPortalProvider _provider;
+        IMessageProvider _provider;
 
         static RecordType _messageType = RecordType.Empty()
             .Add("Message", StringType.String);
@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         static RecordType _copilotType = RecordType.Empty()
             .Add("Messages", _messageTable);
 
-        public CopilotStateRecordValue(CopilotPortalProvider provider) : base(_copilotType)
+        public CopilotStateRecordValue(IMessageProvider provider) : base(_copilotType)
         {
             _provider = provider;
         }

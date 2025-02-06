@@ -38,6 +38,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task MonitorEntraLoginAsync(string desiredUrl)
         {
+            if (desiredUrl == "about:blank")
+            {
+                return;
+            }
             var hostName = new Uri(desiredUrl).Host;
             await _browserContext.RouteAsync($"https://{hostName}/**", async route =>
             {
@@ -72,6 +76,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
 
         public async Task LogCookies(string desiredUrl)
         {
+            if (desiredUrl == "about:blank")
+            {
+                return;
+            }
 
             var hostName = "";
             if (!string.IsNullOrEmpty(desiredUrl))
@@ -87,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 }
             }
 
-            var cookies = await _browserContext.CookiesAsync();
+            var cookies = await _browserContext?.CookiesAsync();
             if (cookies != null)
             {
                 // Get any cookies for Entra related sites or the desired url

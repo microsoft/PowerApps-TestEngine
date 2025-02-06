@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
@@ -24,20 +24,15 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
-  <ItemGroup>
-    <MySourceFiles Include="..\..\bin\$(configuration)\testengine.provider.copilot.portal\testengine.provider.copilot.portal.dll" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AdaptiveCards" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Agents.CopilotStudio.Client" Version="0.1.26" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
   </ItemGroup>
-
-  <Target Name="CopyFiles" AfterTargets="AfterBuild">
-    <Copy SourceFiles="@(MySourceFiles)" DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine" />
-  </Target>
 
 </Project>

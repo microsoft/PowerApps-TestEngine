@@ -9,6 +9,8 @@ using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
+using Microsoft.PowerApps.TestEngine.Providers.Functions;
+using System.Collections.Concurrent;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -16,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     /// Test Engine Provider for interacting with the Test window of Microsoft Copilot Portal conversational agent
     /// </summary>
     [Export(typeof(ITestWebProvider))]
-    public class CopilotPortalProvider : IExtendedTestWebProvider
+    public class CopilotPortalProvider : IExtendedTestWebProvider, IMessageProvider
     {
         public string BaseEnviromentUrl { get; set; } = "";
 
@@ -335,9 +337,9 @@ document.head.appendChild(style);");
                     var logger = SingleTestInstanceState.GetLogger();
                     foreach (var message in json)
                     {
+                        Messages.Enqueue(message);
                         logger.LogInformation(message);
                     }
-                    Messages.AddRange(json);
                 }
                 await route.ContinueAsync();
             });
@@ -362,9 +364,15 @@ document.head.appendChild(style);");
             engine.UpdateVariable("Copilot", new CopilotStateRecordValue(this));
         }
 
+        public Task GetNewMessages()
+        {
+            // No implmentation needed as obtained from RouteAsync
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Json messages observed as part of the test session
         /// </summary>
-        public List<string> Messages { get; private set; } = new List<string>();
+        public ConcurrentQueue<string> Messages { get; private set; } = new ConcurrentQueue<string>();
     }
 }

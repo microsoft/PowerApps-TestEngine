@@ -121,16 +121,19 @@ namespace Microsoft.PowerApps.TestEngine
                     $"\n---------------------------------------------------------------------------\n\n");
                 Logger.LogInformation($"Browser configuration: {JsonConvert.SerializeObject(browserConfig)}");
 
-                // Set up test infra
-                await TestInfraFunctions.SetupAsync(_userManager);
-                Logger.LogInformation("Test infrastructure setup finished");
+                desiredUrl = _testWebProvider.GenerateTestUrl(domain, queryParams);
+                Logger.LogInformation($"Desired URL: {desiredUrl}");
 
+                if (desiredUrl != "about:blank")
+                {
+                    // Set up test infra
+                    await TestInfraFunctions.SetupAsync(_userManager);
+                    Logger.LogInformation("Test infrastructure setup finished");
+                }
+                
                 _testWebProvider.TestState = _state;
                 _testWebProvider.SingleTestInstanceState = TestState;
                 _testWebProvider.TestInfraFunctions = TestInfraFunctions;
-
-                desiredUrl = _testWebProvider.GenerateTestUrl(domain, queryParams);
-                Logger.LogInformation($"Desired URL: {desiredUrl}");
 
                 _eventHandler.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
@@ -149,9 +152,12 @@ namespace Microsoft.PowerApps.TestEngine
                     await extendedProvider.SetupContext();
                 }
 
-                // Navigate to test url
-                await TestInfraFunctions.GoToUrlAsync(desiredUrl);
-                Logger.LogInformation("After navigate to target URL");
+                if (desiredUrl != "about:blank")
+                {
+                    // Navigate to test url
+                    await TestInfraFunctions.GoToUrlAsync(desiredUrl);
+                    Logger.LogInformation("After navigate to target URL");
+                }
 
                 _testReporter.TestRunAppURL = desiredUrl;
 
@@ -163,8 +169,11 @@ namespace Microsoft.PowerApps.TestEngine
                     await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestSuiteStart, locale);
                 }
 
-                await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
-
+                if (desiredUrl != "about:blank")
+                {
+                    await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
+                }
+               
                 if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
                 {
                     Logger.LogDebug("After desired login found");
@@ -222,9 +231,11 @@ namespace Microsoft.PowerApps.TestEngine
                     await TestInfraFunctions.Page.PauseAsync();
                 }
 
-
-                // Set up network request mocking if any
-                await TestInfraFunctions.SetupNetworkRequestMockAsync();
+                if (desiredUrl != "about:blank")
+                {
+                    // Set up network request mocking if any
+                    await TestInfraFunctions.SetupNetworkRequestMockAsync();
+                }
 
                 allTestsSkipped = false;
 

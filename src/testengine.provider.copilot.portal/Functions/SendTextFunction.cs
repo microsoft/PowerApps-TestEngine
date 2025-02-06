@@ -9,7 +9,7 @@ using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.PowerApps.TestEngine.Providers
+namespace Microsoft.PowerApps.TestEngine.Providers.Functions
 {
     internal class SendTextFunction : ReflectionFunction
     {
@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         private readonly ILogger _logger;
 
         public SendTextFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "SendText", FormulaType.Blank, StringType.String)
+            : base(DPath.Root.Append(new DName("Experimental")), "SendText", FormulaType.Blank, FormulaType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             ExecuteAsync(text).Wait();
 
-            return BlankValue.NewBlank();
+            return FormulaValue.NewBlank();
         }
 
         public async Task ExecuteAsync(StringValue text)

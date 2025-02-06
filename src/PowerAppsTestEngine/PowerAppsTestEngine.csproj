@@ -49,7 +49,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
-    <ProjectReference Include="..\testengine.provider.copilot.portal\testengine.provider.copilot.portal.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,23 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Copilot Direct Line
+  testSuiteDescription: 
+  persona: User1
+  appId: N/A
+
+  testCases:
+    - testCaseName: Case1
+      testCaseDescription: Wait for greeting and send sample input
+      testSteps: |
+        = Experimental.Connect();
+          Experimental.SendText("Hi");
+          Experimental.WaitUntilMessage("Hello, how can I help you today?");
+          Experimental.SendText("Where can I fly today?");
+          // Wait for response
+          Experimental.WaitUntilMessage("Is there anything else I can help you with");
+          
+testSettings:
+  filePath: ../../samples/testSettings.yaml
+
+environmentVariables:
+  filePath: ../../samples/environmentVariables.yaml

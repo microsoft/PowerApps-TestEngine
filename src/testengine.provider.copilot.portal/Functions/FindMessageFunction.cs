@@ -5,7 +5,6 @@ using System.Collections;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
@@ -16,17 +15,17 @@ using Newtonsoft.Json.Linq;
 using testengine.provider.copilot.portal;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace Microsoft.PowerApps.TestEngine.Providers
+namespace Microsoft.PowerApps.TestEngine.Providers.Functions
 {
     public class FindMessageFunction : ReflectionFunction
     {
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ITestState _testState;
         private readonly ILogger _logger;
-        private readonly CopilotPortalProvider _provider;
+        private readonly IMessageProvider _provider;
         private static readonly RecordType _messageType = GenerateCopilotRecordType();
 
-        public FindMessageFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger, CopilotPortalProvider provider)
+        public FindMessageFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger, IMessageProvider provider)
             : base(DPath.Root.Append(new DName("Experimental")), "FindMessage", _messageType, RecordType.Empty().Add("Type", FormulaType.String).Add("Text", FormulaType.String))
         {
             _testInfraFunctions = testInfraFunctions;
@@ -37,10 +36,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public TableValue Execute(RecordValue criteria)
         {
+            return ExecuteAsync(criteria).Result;
+        }
+
+        public async Task<TableValue> ExecuteAsync(RecordValue criteria)
+        {
             var fields = criteria == null ? new List<NamedValue>() : criteria.Fields;
-            var waitField = fields.Any(f => f.Name == "Wait") ? criteria.GetField("Wait") : BlankValue.NewBlank();
+            var waitField = fields.Any(f => f.Name == "Wait") ? criteria.GetField("Wait") : FormulaValue.NewBlank();
             object waitValue = false;
-            List<string> messages = new List<string>();
+            var messages = new List<string>();
 
             if (!(waitField is BlankValue))
             {
@@ -53,29 +57,30 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 var timeout = _testState.GetTimeout();
                 while (DateTime.Now.Subtract(startTime).TotalSeconds < timeout)
                 {
-                    messages = FindMessages(fields, criteria);
+                    messages = await FindMessages(fields, criteria);
                     Thread.Sleep(500);
                 }
-            } 
+            }
             else
             {
-                messages = FindMessages(fields, criteria);
+                messages = await FindMessages(fields, criteria);
             }
-            
+
             _logger.LogDebug($"Search Result: {messages.Count()} record(s)");
 
             var tableRows = messages.Select(json => ConvertToFormulaValue(ConvertJsonToCopilotMessage(json)) as RecordValue).ToArray<RecordValue>();
-            return TableValue.NewTable(_messageType, tableRows);
+            return FormulaValue.NewTable(_messageType, tableRows);
         }
 
-        private List<string> FindMessages(IEnumerable<NamedValue> fields, RecordValue criteria)
+        private async Task<List<string>> FindMessages(IEnumerable<NamedValue> fields, RecordValue criteria)
         {
-            var type = fields.Any(f => f.Name == "Type") ? criteria.GetField("Type") : BlankValue.NewBlank();
-            var text = fields.Any(f => f.Name == "Text") ? criteria.GetField("Text") : BlankValue.NewBlank();
-            var adaptive = fields.Any(f => f.Name == "AdaptiveCard") ? criteria.GetField("AdaptiveCard") : BlankValue.NewBlank();
+            await _provider.GetNewMessages();
+            var type = fields.Any(f => f.Name == "Type") ? criteria.GetField("Type") : FormulaValue.NewBlank();
+            var text = fields.Any(f => f.Name == "Text") ? criteria.GetField("Text") : FormulaValue.NewBlank();
+            var adaptive = fields.Any(f => f.Name == "AdaptiveCard") ? criteria.GetField("AdaptiveCard") : FormulaValue.NewBlank();
             var jsonPathQuery = "";
-            object typeValue = String.Empty;
-            object textValue = String.Empty;
+            object typeValue = string.Empty;
+            object textValue = string.Empty;
             object adaptiveValue = false;
 
             if (!(type is BlankValue))
@@ -107,9 +112,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 jsonPathQuery = $"$.attachments[?(@.contentType == 'application/vnd.microsoft.card.adaptive')]";
             }
 
-            return string.IsNullOrEmpty(jsonPathQuery) ? _provider.Messages : _provider.Messages
-                .Where(json => JToken.Parse(json).SelectTokens(jsonPathQuery).Any())
-                .ToList();
+            return string.IsNullOrEmpty(jsonPathQuery) ? _provider.Messages.ToList() 
+                : _provider
+                    .Messages
+                    .Where(json => JToken.Parse(json).SelectTokens(jsonPathQuery).Any())
+                    .ToList();
         }
 
         public static CopilotMessage? ConvertJsonToCopilotMessage(string json)
@@ -152,11 +159,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             if (obj is IEnumerable objList)
             {
                 var items = new List<RecordValue>();
-                foreach ( var item in objList )
+                foreach (var item in objList)
                 {
                     items.Add(ConvertToFormulaValue(item) as RecordValue);
                 }
-                return TableValue.NewTable(items.First().Type, items);
+                return FormulaValue.NewTable(items.First().Type, items);
             }
 
             // Handle records (complex types)
@@ -167,7 +174,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 fields.Add(new NamedValue(property.Name, ConvertToFormulaValue(value)));
             }
 
-            return RecordValue.NewRecordFromFields(fields.ToArray());
+            return FormulaValue.NewRecordFromFields(fields.ToArray());
         }
 
         public static string Sanitize(string value)

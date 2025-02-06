@@ -56,7 +56,6 @@
     <ProjectReference Include="..\testengine.provider.canvas\testengine.provider.canvas.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.mda\testengine.provider.mda.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\testengine.provider.copilot.portal\testengine.provider.copilot.portal.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.user.storagestate\testengine.user.storagestate.csproj" PrivateAssets="all" />
   </ItemGroup>
 

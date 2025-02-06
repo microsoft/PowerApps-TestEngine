@@ -31,13 +31,16 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         {
             try
             {
-                ExpandoObject debugInfo = (ExpandoObject)await _testWebProvider.GetDebugInfo();
-                if (debugInfo != null && debugInfo.ToString() != "undefined")
+                var infoObject = await _testWebProvider.GetDebugInfo();
+                if (infoObject is ExpandoObject debugInfo)
                 {
-                    Logger.LogInformation($"------------------------------\n Debug Info \n------------------------------");
-                    foreach (var info in debugInfo)
+                    if (debugInfo != null && debugInfo.ToString() != "undefined")
                     {
-                        Logger.LogInformation($"{info.Key}:\t{info.Value}");
+                        Logger.LogInformation($"------------------------------\n Debug Info \n------------------------------");
+                        foreach (var info in debugInfo)
+                        {
+                            Logger.LogInformation($"{info.Key}:\t{info.Value}");
+                        }
                     }
                 }
             }

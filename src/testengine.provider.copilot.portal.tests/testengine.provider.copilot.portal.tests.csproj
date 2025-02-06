@@ -34,7 +34,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine.Tests\Microsoft.PowerApps.TestEngine.Tests.csproj" />
-    <ProjectReference Include="..\testengine.provider.copilot.portal\testengine.provider.copilot.portal.csproj" />
   </ItemGroup>
 
 </Project>

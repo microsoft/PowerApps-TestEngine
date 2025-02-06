@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copilot Test Engine Playground</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+    <style>
+        .monaco-editor {
+            border: 1px solid #eee;
+            height: auto;
+        }
+        .results-section {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid #000;
+            background-color: #f9f9f9;
+        }
+    </style>
+    <script src="https://alcdn.msauth.net/browser/2.14.2/js/msal-browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            Blazor.start({
+                loadBootResource: function (type, name, defaultUri, integrity) {
+                    console.log(defaultUri)
+                }
+            }).then(async () => {
+                var r = Blazor.runtime;
+                const exports = await r.getAssemblyExports(r.config.mainAssemblyName);
+                document.getElementById('code-runButton').addEventListener('click', async function() {
+                    const expression = window.editor.getValue();
+                    const result = await exports.copilot.test.TestEngine.ExecuteAsync(expression);
+                    document.getElementById("code-output").innerHTML = result;
+                });
+                document.getElementById('code-runButton').disabled = false;
+            });
+
+            require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' }});
+            require(['vs/editor/editor.main'], function() {
+                window.editor = monaco.editor.create(document.getElementById('code-editor'), {
+                    value: "",
+                    language: 'javascript',
+                    automaticLayout: true,
+                    minimap: { enabled: false } // Disable the minimap
+                });
+            });
+
+            document.getElementById("loginButton").addEventListener("click", function() {
+                const clientId = document.getElementById("clientId").value;
+                const tenantId = document.getElementById("tenantId").value;
+
+                const msalConfig = {
+                    auth: {
+                        clientId: clientId,
+                        authority: `https://login.microsoftonline.com/${tenantId}`,
+                        redirectUri: "http://localhost:8080/"
+                    }
+                };
+
+                const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+                const loginRequest = {
+                    scopes: ["https://api.powerplatform.com/.default"]
+                };
+
+                msalInstance.loginPopup(loginRequest)
+                    .then(response => {
+                        console.log("Login successful:", response);
+                    })
+                    .catch(error => {
+                        console.error("Login failed:", error);
+                    });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>MSAL.js Minimal Example</h1>
+    <div>
+        <label for="clientId">Client ID:</label>
+        <input type="text" id="clientId" placeholder="Enter Client ID">
+    </div>
+    <div>
+        <label for="tenantId">Tenant ID:</label>
+        <input type="text" id="tenantId" placeholder="Enter Tenant ID">
+    </div>
+    <button id="loginButton">Login</button>
+    <div id="app">Loading...</div>
+    <div id="code-editor" style="width: 100%; height: 200px;"></div>
+    <button id="code-runButton" disabled>` $buttonText `</button>
+    <h3>Results</h3>
+    <div class="results-section">
+        <div id="code-output"></div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/editor/editor.main.css">
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+</body>
+</html>

@@ -8,6 +8,7 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
+using Microsoft.PowerApps.TestEngine.Providers.Functions;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.CopilotPortal.Tests
 {
@@ -25,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.CopilotPortal.Tests
         {
             // Arrange
             var provider = new CopilotPortalProvider();
-            provider.Messages.Add(message);
+            provider.Messages.Enqueue(message);
 
             var testInfraFunctions = new Mock<ITestInfraFunctions>().Object;
             var testState = new Mock<ITestState>().Object;

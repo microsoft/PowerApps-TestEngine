@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <PowerAppsTargetsPath>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\PowerApps</PowerAppsTargetsPath>
+    <SignAssembly>false</SignAssembly>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <PackageVersion>1.0.0.0</PackageVersion>
+    <Version>$([System.DateTime]::Now.ToString("yyyy.M.d.HHmm"))</Version>
+    <FileVersion>$([System.DateTime]::Now.ToString("yyyy.M.d.HHmm"))</FileVersion>
+    <ProjectTypeGuids>{4C25E9B5-9FA6-436c-8E19-B395D2A65FAF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>testengine.plugin.copilot</PackageId>
+    <Version>$(FileVersion)</Version>
+    <Authors>Grant Archibald</Authors>
+    <Company>Microsoft</Company>
+    <Description></Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\testengine.provider.copilot.portal\testengine.provider.copilot.portal.csproj" />
+  </ItemGroup>
+</Project>
