@@ -72,12 +72,13 @@ Before you start, you'll need a few tools and permissions:
     {
         "tenantId": "a222222-1111-2222-3333-444455556666",
         "environmentId": "12345678-1111-2222-3333-444455556666",
+        "environmentUrl": "https://contoso.crm.dynamics.com/",
         "customPage": "te_snapshots_24d69",
         "appDescription": "Weather Sample",
         "user1Email": "test@contoso.onmicrosoft.com",
         "runInstall": true,
         "installPlaywright": true,
-        "DataProtectionUrl": "https://contoso.crm.dynamics.com/",
+        "DataProtectionUrl": "https://contoso-key.crm.dynamics.com/",
         "DataProtectionCertificateName": "CN=localhost"
     }
     ```

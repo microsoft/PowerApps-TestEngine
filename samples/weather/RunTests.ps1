@@ -8,6 +8,7 @@ $jsonContent = Get-Content -Path .\config.json -Raw
 $config = $jsonContent | ConvertFrom-Json
 $tenantId = $config.tenantId
 $environmentId = $config.environmentId
+$environmentUrl = $config.environmentUrl
 $user1Email = $config.user1Email
 $appDescription = $config.appDescription
 $languages = $config.languages
@@ -48,21 +49,6 @@ if (("certenv" -eq $auth) -and ([string]::IsNullOrEmpty($env:DataProtectionCerti
     Write-Error "Environment variable DataProtectionCertificateName does not exist"
     return
 }
-
-if ([string]::IsNullOrEmpty($environmentId)) {
-    Write-Error "Environment not configured. Please update config.json"
-    return
-}
-
-Write-Host "Searching for $environmentId"
-$foundEnvironment = $false
-
-$accessToken = $(az account get-access-token --resource https://api.powerplatform.microsoft.com --query accessToken --output tsv)
-$response = Invoke-RestMethod -Uri "https://api.powerplatform.microsoft.com/environments/$envId" -Method Get -Headers @{
-    Authorization = "Bearer $accessToken"
-}
-# Extract the environment URL from the response
-$environmentUrl = $response.properties.environmentUrl
 
 if (-not [string]::IsNullOrEmpty($environmentUrl)) {
     $foundEnvironment = $true
