@@ -33,7 +33,7 @@ extends:
         templateContext:
           outputs:
           - output: pipelineArtifact
-            condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+            condition: succeeded()
             artifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
             targetPath: '$(Build.ArtifactStagingDirectory)'
           - output: nuget
@@ -149,7 +149,7 @@ extends:
             command: 'run'
             projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
             arguments: '-- pack-AlphaV2 -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
-          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+          condition: succeeded()
         - task: EsrpCodeSigning@5
           displayName: 'ESRP sign nuget packages'
           inputs:

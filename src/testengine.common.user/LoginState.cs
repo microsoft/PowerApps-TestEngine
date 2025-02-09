@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +22,7 @@ namespace testengine.common.user
 
         public bool IsError { get; set; }
         public bool FoundMatch { get; set; }
+        public bool CallbackDesired { get; set; }
         public bool EmailHandled { get; set; }
         public string? MatchHost { get; set; }
 

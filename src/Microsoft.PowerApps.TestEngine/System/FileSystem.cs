@@ -499,5 +499,25 @@ namespace Microsoft.PowerApps.TestEngine.System
                 return false;
             }
         }
+
+        public void Delete(string fileName)
+        {
+            if (!FileExists(fileName))
+            {
+                return;
+            }
+
+            if (!IsWritePermittedFilePath(fileName))
+            {
+                return;
+            }
+
+            if (Path.GetExtension(fileName) != ".json")
+            {
+                throw new InvalidOperationException();
+            }
+
+            File.Delete(fileName);
+        }
     }
 }

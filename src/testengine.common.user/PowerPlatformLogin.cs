@@ -1,4 +1,7 @@
-﻿using Microsoft.Playwright;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.Playwright;
 
 namespace testengine.common.user
 {
@@ -61,9 +64,10 @@ namespace testengine.common.user
             // Need to check if page is idle to avoid case where we can get race condition before redirect to login
             if (url.IndexOf(state.DesiredUrl) >= 0 && await LoginIsComplete(state.Page) && !state.IsError)
             {
-                if (state.CallbackDesiredUrlFound != null)
+                if (state.CallbackDesiredUrlFound != null && !state.CallbackDesired)
                 {
                     await state.CallbackDesiredUrlFound(state.DesiredUrl);
+                    state.CallbackDesired = true;
                 }
 
                 state.FoundMatch = true;
