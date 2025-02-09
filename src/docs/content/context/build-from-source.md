@@ -110,7 +110,7 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 dotnet tool install --global Microsoft.PowerApps.CLI.Tool
 ```
 
-8. Setup Environment Variables
+8. Setup Environment Variables in your **~./.bashrc** file
 
 ```bash
 export PATH="$PATH:~/.dotnet/tools"
