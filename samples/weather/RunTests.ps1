@@ -27,12 +27,17 @@ if ([string]::IsNullOrEmpty($authstate)) {
 
 if (-not [string]::IsNullOrEmpty($authstate)) {
     switch ( $authstate ) {
-        case "dataverse":
-        case "storagestate"
+        "dataverse" {
             break;
+        }
+        "storagestate" {
+            break;
+        }
+        default {
+            Write-Error "Invalid auth state $authstate"
+            return
+        }
     }
-    Write-Error "Invalid auth state $authstate"
-    return
 }
 
 if ([string]::IsNullOrEmpty($auth)) {
@@ -125,7 +130,7 @@ if ($null -eq $languages) {
         # Run the tests for each user in the configuration file.
         dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a $auth -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
     } else {
-        
+
     }
 } else {
     foreach ($language in $languages) {

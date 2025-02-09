@@ -117,7 +117,17 @@ export PATH="$PATH:~/.dotnet/tools"
 export DOTNET_ROOT=/snap/dotnet-sdk/current
 ```
 
-9. Ensure that you have enough disk space allocated to build the solution.
+9. Setup defaults for Powershell. Create the following file **~/.config/powershell/profile.ps1** using Visual Studio Code
+
+```pwsh
+# Add .dotnet/tools to the PATH environment variable
+$env:PATH += ":$HOME/.dotnet/tools"
+
+# Set the DOTNET_ROOT environment variable
+$env:DOTNET_ROOT = "/snap/dotnet-sdk/current"
+```
+
+10. Ensure that you have enough disk space allocated to build the solution.
 
 ## Verifying Your Environment
 
