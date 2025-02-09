@@ -54,22 +54,18 @@ if ([string]::IsNullOrEmpty($environmentId)) {
     return
 }
 
-$foundEnvironment = $false
-$textResult = (pac env select --environment $environmentId)
-$textResult = (pac env list)
-
-$environmentUrl = ""
-
 Write-Host "Searching for $environmentId"
+$foundEnvironment = $false
 
-foreach ($line in $textResult) {
-    if ($line -match $environmentId) {
-        if ($line -match "(https://\S+/)") {
-            $environmentUrl = $matches[0].Substring(0,$matches[0].Length - 1)
-            $foundEnvironment = $true
-            break
-        }
-    }
+$accessToken = $(az account get-access-token --resource https://api.powerplatform.microsoft.com --query accessToken --output tsv)
+$response = Invoke-RestMethod -Uri "https://api.powerplatform.microsoft.com/environments/$envId" -Method Get -Headers @{
+    Authorization = "Bearer $accessToken"
+}
+# Extract the environment URL from the response
+$environmentUrl = $response.properties.environmentUrl
+
+if (-not [string]::IsNullOrEmpty($environmentUrl)) {
+    $foundEnvironment = $true
 }
 
 if ($foundEnvironment) {
