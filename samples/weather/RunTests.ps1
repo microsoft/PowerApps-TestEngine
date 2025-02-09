@@ -14,9 +14,34 @@ $languages = $config.languages
 $env:DataProtectionUrl = $config.DataProtectionUrl
 $env:DataProtectionCertificateName = $config.DataProtectionCertificateName
 $configuration = $config.configuration
+$auth = $config.auth
+$authstate = $config.authstate
 
 if ([string]::IsNullOrEmpty($configuration)) {
     $configuration = "Debug"
+}
+
+if ([string]::IsNullOrEmpty($authstate)) {
+    $authstate = "dataverse"
+}
+
+if (-not [string]::IsNullOrEmpty($authstate)) {
+    switch ( $authstate ) {
+        case "dataverse":
+        case "storagestate"
+            break;
+    }
+    Write-Error "Invalid auth state $authstate"
+    return
+}
+
+if ([string]::IsNullOrEmpty($auth)) {
+    $auth = "certstore"
+}
+
+if (("certenv" -eq $auth) -and ([string]::IsNullOrEmpty($env:DataProtectionCertificateName))) {
+    Write-Error "Environment variable DataProtectionCertificateName does not exist"
+    return
 }
 
 if ([string]::IsNullOrEmpty($environmentId)) {
@@ -79,22 +104,29 @@ if ([string]::IsNullOrEmpty($appId)) {
 $customPage = $config.customPage
 $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
 
-# Build the latest configuration version of Test Engine from source
-Set-Location ..\..\src
-dotnet build --configuration $configuration
+if ([string]::IsNullOrEmpty($pac)) {
+    # Build the latest configuration version of Test Engine from source
+    Set-Location ..\..\src
+    dotnet build --configuration $configuration
 
-if ($config.installPlaywright) {
-    Start-Process -FilePath "pwsh" -ArgumentList "-Command `"..\bin\$configuration\PowerAppsTestEngine\playwright.ps1 install`"" -Wait
-} else {
-    Write-Host "Skipped playwright install"
+    if ($config.installPlaywright) {
+        Start-Process -FilePath "pwsh" -ArgumentList "-Command `"..\bin\$configuration\PowerAppsTestEngine\playwright.ps1 install`"" -Wait
+    } else {
+        Write-Host "Skipped playwright install"
+    }
+
+    Set-Location "..\bin\$configuration\PowerAppsTestEngine"
 }
 
-Set-Location "..\bin\$configuration\PowerAppsTestEngine"
 $env:user1Email = $user1Email
 
 if ($null -eq $languages) {
-    # Run the tests for each user in the configuration file.
-    dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    if ([string]::IsNullOrEmpty($pac)) {
+        # Run the tests for each user in the configuration file.
+        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a $auth -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    } else {
+        
+    }
 } else {
     foreach ($language in $languages) {
         $uri = "$environmentUrl/api/data/v9.1/usersettingscollection($userId)"
@@ -113,7 +145,7 @@ if ($null -eq $languages) {
         $text = $text.Replace("locale: ""en-US""", "locale: ""${languageName}""")
         Set-Content -Path  $languageTest -Value $text 
 
-        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a "certstore" -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w True
+        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a $auth -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w True
     }
 }
 

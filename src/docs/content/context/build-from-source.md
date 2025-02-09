@@ -60,7 +60,7 @@ winget install --id Microsoft.PowerShell --source winget
 winget install Microsoft.DotNet.SDK.8
 ```
 
-## Ubunto 22.04 Build
+## Ubuntu 22.04 Build
 
 Using Ubuntu 22.0.4 LTS as an example you can use the following steps to build from source
 
@@ -117,6 +117,8 @@ export PATH="$PATH:~/.dotnet/tools"
 export DOTNET_ROOT=/snap/dotnet-sdk/current
 ```
 
+9. Ensure that you have enough disk space allocated to build the solution.
+
 ## Verifying Your Environment
 
 To verify your selected environment has all the prerequisite tools required
@@ -133,7 +135,7 @@ pac auth help
 git --version
 ```
 
-3. Verify Visual Studio Code or altertive text editor is installed
+3. Verify Visual Studio Code or alternative text editor is installed
 
 ```pwsh
 code
@@ -185,13 +187,13 @@ git checkout integration
 pwsh
 ```
 
-6. Allow local execution policy
+6. Allow local execution policy on Windows
 
 ```pwsh
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-7. Create a certificate to sign secets. Using an Admin Version of PowerShell run the following
+7. Create a certificate to sign secrets. Using an Admin Version of PowerShell run the following on Windows
 
 ```pwsh
 $Params = @{
@@ -204,6 +206,11 @@ KeyLength = 2048
 New-SelfSignedCertificate @Params
 ```
 
+> NOTE: 
+> For Unbuntu the following could be used to create local certificate
+>
+> openssl req -x509 -nodes -days 180 -newkey rsa:2048 -keyout mycert.key -out mycert.crt -subj "/CN=localhost"
+
 8. Sign into your Power Platform Environment(s) that contain login details and environment(s) to be tested
 
 ```pwsh
@@ -215,9 +222,9 @@ pac auth create --name Hosting --environment https://contoso-host.crm.dynamics.c
 
 az login --allow-no-subscriptions
 
-10. Import the WeatherSample_*.zip from samples\weather into the environment you wnat to test
+10. Import the WeatherSample_*.zip from samples\weather into the environment you want to test
 
-11. Import the TestEngine_*.zip (Will be used to store)
+11. Import the TestEngine_*.zip (Will be used to store authentication state)
 
 12. Add the config to the "samples/weather" folder using Visual Studio Code
 
@@ -230,14 +237,20 @@ az login --allow-no-subscriptions
     "user1Email": "user1@contoso.onmicrosoft.com",
     "runInstall": true,
     "installPlaywright": true,
-    "DataProtectionUrl": "https://orgdb951e4b.crm.dynamics.com/",
+    "DataProtectionUrl": "https://contoso-host.crm.dynamics.com/",
     "DataProtectionCertificateName": "CN=localhost",
-    "pac": "optional/pac.exe"
+    "pac": "optional/pac.exe",
+    "auth": "certstore",
+    "authstate": "dataverse"
 }
 ```
 
 > NOTE: 
 > 1. The pac parameter is optional and only needed if needing to use a specific version of pac cli 
+> 2. Can use auth value of certenv for based64 version of X.509 certificate to encrypt/decrypt
+> 3. If using auth value of certenv the DataProtectionCertificateName is not required
+> 4. You can use an authstate of **storagestate** on windows for local Data Protection API encrypted login details
+> 5. The export.ps1 can be sued to export the local certificate for use on another machine
 
 ## Run the Sample
 
