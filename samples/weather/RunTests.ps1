@@ -77,7 +77,7 @@ Invoke-RestMethod -Uri $uri -Method Patch -Headers @{Authorization = "Bearer $($
 
 $appId = ""
 try{
-    $runResult = pac pfx run --file .\GetAppId.powerfx --echo
+    $runResult = pac pfx run --environment $environmentUrl --file GetAppId.powerfx --echo
     $appId = $runResult[8].Split('"')[1] -replace '[^a-zA-Z0-9-]', ''
 } catch {
 
