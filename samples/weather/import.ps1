@@ -3,8 +3,11 @@
 
 # Check if running on Linux
 if ($IsLinux) {
-    # Prompt for base64 encoded certificate
-    $base64Cert = Read-Host "Please paste the base64 encoded certificate"
+    # Prompt for the file path containing the base64 encoded certificate
+    $filePath = Read-Host "Please enter the file path for the base64 encoded certificate"
+
+    # Read the base64 encoded certificate from the file
+    $base64Cert = Get-Content -Path $filePath -Raw
 
     # Convert base64 string to byte array
     $certBytes = [Convert]::FromBase64String($base64Cert)
@@ -23,8 +26,11 @@ if ($IsLinux) {
     # Clean up temporary file
     Remove-Item $tempCertPath
 } else {
-    # Prompt for base64 encoded certificate
-    $base64Cert = Read-Host "Please paste the base64 encoded certificate"
+    # Prompt for the file path containing the base64 encoded certificate
+    $filePath = Read-Host "Please enter the file path for the base64 encoded certificate"
+
+    # Read the base64 encoded certificate from the file
+    $base64Cert = Get-Content -Path $filePath -Raw
 
     # Convert base64 string to byte array
     $certBytes = [Convert]::FromBase64String($base64Cert)
@@ -32,9 +38,6 @@ if ($IsLinux) {
     # Create a new X509Certificate2 object
     $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
     $cert.Import($certBytes)
-
-    # Extract the subject name from the certificate
-    $subjectName = $cert.Subject
 
     # Open the LocalMachine\My store
     $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "LocalMachine")
