@@ -4,7 +4,7 @@
 # Get current directory so we can reset back to it after running the tests
 $currentDirectory = Get-Location
 
-$jsonContent = Get-Content -Path .\config.json -Raw
+$jsonContent = Get-Content -Path ./config.json -Raw
 $config = $jsonContent | ConvertFrom-Json
 $tenantId = $config.tenantId
 $environmentId = $config.environmentId
@@ -61,6 +61,9 @@ if ($foundEnvironment) {
     return
 }
 
+# Select the environment
+pac env select --environment $environmentUrl
+
 $token = (az account get-access-token --resource $environmentUrl | ConvertFrom-Json)
 
 $uri = "$environmentUrl/api/data/v9.1/systemusers?`$filter=internalemailaddress eq '$user1Email'"
@@ -77,7 +80,8 @@ Invoke-RestMethod -Uri $uri -Method Patch -Headers @{Authorization = "Bearer $($
 
 $appId = ""
 try{
-    $runResult = pac pfx run --environment $environmentUrl --file GetAppId.powerfx --echo
+    $file = (Join-Path -Path $currentDirectory -ChildPath "GetAppId.powerfx")
+    $runResult = pac pfx run --environment $environmentUrl --file $file --echo
     $appId = $runResult[8].Split('"')[1] -replace '[^a-zA-Z0-9-]', ''
 } catch {
 
@@ -93,16 +97,16 @@ $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPa
 
 if ([string]::IsNullOrEmpty($pac)) {
     # Build the latest configuration version of Test Engine from source
-    Set-Location ..\..\src
+    Set-Location ../../src
     dotnet build --configuration $configuration
 
     if ($config.installPlaywright) {
-        Start-Process -FilePath "pwsh" -ArgumentList "-Command `"..\bin\$configuration\PowerAppsTestEngine\playwright.ps1 install`"" -Wait
+        Start-Process -FilePath "pwsh" -ArgumentList "-Command `"../bin/$configuration/PowerAppsTestEngine/playwright.ps1 install`"" -Wait
     } else {
         Write-Host "Skipped playwright install"
     }
 
-    Set-Location "..\bin\$configuration\PowerAppsTestEngine"
+    Set-Location "../bin/$configuration/PowerAppsTestEngine"
 }
 
 $env:user1Email = $user1Email
@@ -110,7 +114,7 @@ $env:user1Email = $user1Email
 if ($null -eq $languages) {
     if ([string]::IsNullOrEmpty($pac)) {
         # Run the tests for each user in the configuration file.
-        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a $auth -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a $auth -i "$currentDirectory/testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
     } else {
 
     }
@@ -126,8 +130,8 @@ if ($null -eq $languages) {
         $languageName = $language.name
         $languageFile = $language.file
 
-        $languageTest = "$currentDirectory\testPlan-${languageId}.fx.yaml"
-        Copy-Item "$currentDirectory\$languageFile" $languageTest
+        $languageTest = "$currentDirectory/testPlan-${languageId}.fx.yaml"
+        Copy-Item "$currentDirectory/$languageFile" $languageTest
         $text = Get-Content  $languageTest 
         $text = $text.Replace("locale: ""en-US""", "locale: ""${languageName}""")
         Set-Content -Path  $languageTest -Value $text 
