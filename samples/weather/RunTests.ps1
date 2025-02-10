@@ -106,10 +106,17 @@ $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPa
 if ([string]::IsNullOrEmpty($pac)) {
     # Build the latest configuration version of Test Engine from source
     Set-Location ../../src
+    if ($Linux) {
+        dotnet restore -p:TargetFramework=net8.0
+    }
     dotnet build --configuration $configuration
-
+    
     if ($config.installPlaywright) {
-        Start-Process -FilePath "pwsh" -ArgumentList "-Command `"../bin/$configuration/PowerAppsTestEngine/playwright.ps1 install`"" -Wait
+        if ($Linux) {
+            Start-Process -FilePath "pwsh" -ArgumentList "-Command `"../bin/$configuration/PowerAppsTestEngine/playwright.ps1 install --with-deps`"" -Wait    
+        } else {
+            Start-Process -FilePath "pwsh" -ArgumentList "-Command `"../bin/$configuration/PowerAppsTestEngine/playwright.ps1 install`"" -Wait
+        }
     } else {
         Write-Host "Skipped playwright install"
     }
