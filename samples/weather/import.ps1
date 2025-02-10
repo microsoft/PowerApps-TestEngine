@@ -17,7 +17,7 @@ if ($IsLinux) {
     [System.IO.File]::WriteAllBytes($tempCertPath, $certBytes)
 
     # Extract the subject name from the certificate
-    $subjectName = openssl x509 -in $tempCertPath -noout -subject | sed -n 's/^.*CN=//p'
+    $subjectName = openssl x509 -in $tempCertPath -noout -subject | sed -n 's/^.*CN = //p'
 
     # Import the certificate into the personal keyring
     $importCommand = "certutil -d sql:$HOME/.pki/nssdb -A -t 'P,,' -n '$subjectName' -i $tempCertPath"
@@ -26,6 +26,9 @@ if ($IsLinux) {
     # Clean up temporary file
     Remove-Item $tempCertPath
 } else {
+    # Load the necessary assembly
+    Add-Type -AssemblyName "System.Security.Cryptography.X509Certificates"
+
     # Prompt for the file path containing the base64 encoded certificate
     $filePath = Read-Host "Please enter the file path for the base64 encoded certificate"
 
