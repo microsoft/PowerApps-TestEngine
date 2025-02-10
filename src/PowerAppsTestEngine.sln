@@ -83,10 +83,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.common.user.test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simulation", "Simulation", "{5BA8909D-FC63-4472-9082-0E942AA0C361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "powerfx", "blazor\powerfx\powerfx.csproj", "{E4372590-3BA6-4D88-A39B-257C57E84FC2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerFx.Tests", "blazor\PowerFx.Tests\PowerFx.Tests.csproj", "{1A2CF549-ECD2-475B-BE20-205154CF90E8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerAppsTestEngineWrapper", "PowerAppsTestEngineWrapper\PowerAppsTestEngineWrapper.csproj", "{CD9738C3-8FEB-4E4D-A392-5ABE74B0E748}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.auth.environment.certificate", "testengine.auth.environment.certificate\testengine.auth.environment.certificate.csproj", "{BCCA93BD-993A-4266-A113-1A1C8B38F566}"
