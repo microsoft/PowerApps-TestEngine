@@ -79,12 +79,20 @@ $body = @{
 Invoke-RestMethod -Uri $uri -Method Patch -Headers @{Authorization = "Bearer $($token.accessToken)"; "Content-Type" = "application/json"} -Body $body
 
 $appId = ""
-try{
+try {
     $file = (Join-Path -Path $currentDirectory -ChildPath "GetAppId.powerfx")
     $runResult = pac pfx run --environment $environmentUrl --file $file --echo
-    $appId = $runResult[8].Split('"')[1] -replace '[^a-zA-Z0-9-]', ''
-} catch {
 
+    # Search every line and return the line with a non-blank value after applying the replace operation
+    $matchingLine = $runResult | Where-Object { ($_ -replace '[^a-zA-Z0-9-]', '').Trim() -ne '' } | Select-Object -First 1
+
+    if ($matchingLine) {
+        $appId = $matchingLine -replace '[^a-zA-Z0-9-]', ''
+    } else {
+        throw "No matching lines found in the output."
+    }
+} catch {
+    Write-Error $_.Exception.Message
 }
 
 if ([string]::IsNullOrEmpty($appId)) {
