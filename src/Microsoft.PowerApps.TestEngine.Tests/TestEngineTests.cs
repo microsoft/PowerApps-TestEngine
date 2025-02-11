@@ -331,11 +331,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         }
 
         [Theory]
-        [InlineData(null, "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "https://apps.powerapps.com")]
-        [InlineData("C:\\testPlan.fx.yaml", "", "a01af035-a529-4aaf-aded-011ad676f976", "https://apps.powerapps.com")]
-        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "http://apps.powerapps.com")]
-        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com")]
-        public async Task TestEngineThrowsOnNullArguments(string? testConfigFilePath, string environmentId, Guid tenantId, string domain)
+        [InlineData(null, "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "https://apps.powerapps.com", typeof(ArgumentNullException))]
+        [InlineData("C:\\testPlan.fx.yaml", "", "a01af035-a529-4aaf-aded-011ad676f976", "https://apps.powerapps.com", typeof(ArgumentNullException))]
+        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "http://apps.powerapps.com", typeof(ArgumentException))]
+        [InlineData("C:\\testPlan.fx.yaml", "Default-EnvironmentId", "a01af035-a529-4aaf-aded-011ad676f976", "apps.powerapps.com", typeof(ArgumentException))]
+        public async Task TestEngineThrowsOnNullArguments(string? testConfigFilePath, string environmentId, Guid tenantId, string domain, Type exceptionType)
         {
             MockTestReporter.Setup(x => x.CreateTestRun(It.IsAny<string>(), It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
             MockTestReporter.Setup(x => x.StartTestRun(It.IsAny<string>()));
@@ -371,7 +371,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestEngineEventHandler.Verify(x => x.EncounteredException(It.IsAny<Exception>()), Times.Once());
             Assert.Equal("InvalidOutputDirectory", testResultsDirectory);
 #else
-            await Assert.ThrowsAsync<ArgumentException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
+            if (exceptionType == typeof(ArgumentNullException))
+            {
+                await Assert.ThrowsAsync <ArgumentNullException> (async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
+            }
+            else if (exceptionType == typeof(ArgumentException))
+            {
+                await Assert.ThrowsAsync<ArgumentException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
+            }
 #endif
         }
 

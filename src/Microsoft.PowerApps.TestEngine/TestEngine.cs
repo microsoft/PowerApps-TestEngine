@@ -92,7 +92,7 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     if (!IsValidHttpsUrl(domain))
                     {
-                        throw new UserInputException(string.Format("   [Critical Error]: Invalid uri: {0}", nameof(domain)));
+                        throw new ArgumentException(string.Format("   [Critical Error]: Invalid uri: {0}", nameof(domain)));
                     }
                 }
 
