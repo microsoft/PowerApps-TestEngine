@@ -370,6 +370,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
             MockTestEngineEventHandler.Verify(x => x.EncounteredException(It.IsAny<Exception>()), Times.Once());
             Assert.Equal("InvalidOutputDirectory", testResultsDirectory);
+            //adding just to have usage in release configuration
+            Assert.NotNull(exceptionType);
 #else
             if (exceptionType == typeof(ArgumentNullException))
             {
