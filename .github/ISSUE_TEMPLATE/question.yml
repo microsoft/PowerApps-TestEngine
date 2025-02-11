@@ -1,0 +1,37 @@
+name: ❓Question
+description: Ask a question about the Power Apps Test Engine
+title: "[QUESTION] Your question title"
+labels: ["question"]
+body:
+- type: checkboxes
+  attributes:
+    label: Does this question already exist in our backlog?
+    description: Have you validated that your question is not already in the [backlog](https://github.com/microsoft/PowerApps-TestEngine/issues) or has already been answered in our [wiki](https://github.com/microsoft/coe-starter-kit/wiki/Issue-triage-(CoE-Starter-Kit))?
+    options:
+      - label: I have checked and confirm this is a new question.
+        required: true
+- type: textarea
+  attributes:
+    label: What is your question?
+    description: A concise description of what you need to know. Please provide as much related information as possible including screenshots, documents, links etc.
+  validations:
+    required: true
+- type: dropdown
+  id: component
+  attributes:
+    label: What component are you experiencing the issue with?
+    options:
+      - Authentication
+      - Providers
+      - Playwright
+      - PowerFX
+      - Other
+  validations:
+    required: false
+- type: input
+  id: version
+  attributes:
+    label: What pac version are you using?
+    placeholder: "pac version number"
+  validations:
+    required: false

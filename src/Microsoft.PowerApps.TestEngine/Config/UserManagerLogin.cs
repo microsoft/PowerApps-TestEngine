@@ -1,4 +1,7 @@
-﻿namespace Microsoft.PowerApps.TestEngine.Config
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+namespace Microsoft.PowerApps.TestEngine.Config
 {
     public class UserManagerLogin : IUserManagerLogin
     {

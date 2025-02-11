@@ -1,4 +1,7 @@
-﻿using Microsoft.PowerFx;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
 

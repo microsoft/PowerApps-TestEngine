@@ -344,11 +344,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
 
-            var debugObj = new ExpandoObject();
-            debugObj.TryAdd("appId", "someAppId");
-            debugObj.TryAdd("appVersion", "someAppVersionId");
-            debugObj.TryAdd("environmentId", "someEnvironmentId");
-            debugObj.TryAdd("sessionId", "someSessionId");
+            IDictionary<string, object> debugObj = new ExpandoObject() as IDictionary<string, object>;
+            debugObj["appId"] = "someAppId";
+            debugObj["appVersion"] = "someAppVersionId";
+            debugObj["environmentId"] = "someEnvironmentId";
+            debugObj["sessionId"] = "someSessionId";
 
             MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)debugObj));
 
