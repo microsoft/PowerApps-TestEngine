@@ -54,7 +54,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// </summary>
         /// <param name="itemPath">Path to the item</param>
         /// <returns>True if onSelect function was successfully executed.</returns>
-        public Task<bool> SelectControlAsync(ItemPath itemPath);
+        public Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null);
 
         /// <summary>
         /// Runs the setPropertyValue function of a control

@@ -105,6 +105,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// </summary>
         /// <param name="controlName"> Control name to trigger event </param>
         /// <returns></returns>
-        public Task TriggerControlClickEvent(string controlName);
+        public Task TriggerControlClickEvent(string controlName, string filePath);
     }
 }

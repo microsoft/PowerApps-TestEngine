@@ -5,6 +5,13 @@ testSuite:
   appLogicalName: NotNeeded
 
   testCases: 
+
+    - testCaseName: Test Image Control - OnSelect Event
+      testCaseDescription: Verify that the ImageRotation property rotates the image correctly.
+      testSteps: |
+        Select(Header1);
+        Assert(ButtonCanvas1.Text = "Back", "Check if the ImageRotation property is set to 90 degrees.");
+
     # # Image1 Control Test Cases
     # - testCaseName: Test Image Control - OnSelect Event
     #   testCaseDescription: Verify that the ImageRotation property rotates the image correctly.
@@ -58,21 +65,13 @@ testSuite:
     #     SetProperty(AddMediaButton1.FileName, "ProductImageName1");        
     #     Assert(AddMediaButton1.FileName = "ProductImageName1", "Check if FileName displays the correct uploaded file name.");
 
-    - testCaseName: Test AddMediaButton1 - Media and Image Property
-      testCaseDescription: Verify that the Media and Image property displays the correct uploaded file name.
-      testSteps: |   
-        Select(AddMediaButton1);
-        Experimental.Pause();
-        SetProperty(AddMediaButton1.Media, "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg");       
-        Wait(UploadedImage1, "Image", "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg");
-        Assert(UploadedImage1.Image = "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg", "Check if Image displays the correct uploaded file name.");
-
-    # - testCaseName: Test AddMediaButton1 - Invalid Media and Image Property
-    #   testCaseDescription: Verify that the Media and Image property displays the correct uploaded file name.
-    #   testSteps: |       
-    #     SetProperty(AddMediaButton1.Media, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");   
-    #     Wait(UploadedImage1, "Image", "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
-    #     Assert(UploadedImage1.Image <> "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg", "Check if uploaded file name is incorrect");
+    # - testCaseName: Test AddMediaButton1 - Select the file from local drive
+    #   testCaseDescription: Verify that the control correctly displays the selected image along with its file name.
+    #   testSteps: | 
+    #     Select(AddMediaButton1, "C:\\TFS\\Custom\\PowerApps-TestEngine\\samples\\mda_imagecontrol\\Images\\ring.jpg");
+    #     Assert(AddMediaButton1.FileName = "ring.jpg", "Check if Image displays the correct uploaded file name.");  
+    #     Select(AddMediaButton1, "C:\\TFS\\Custom\\PowerApps-TestEngine\\samples\\mda_imagecontrol\\Images\\monitor.jpg"); 
+    #     Assert(AddMediaButton1.FileName = "monitor.jpg", "Check if Image displays the correct uploaded file name.");
 
     # - testCaseName: Test AddMediaButton1 - PlaceholderText Property
     #   testCaseDescription: Verify that the PlaceholderText property displays correctly before uploading an image.

@@ -443,15 +443,27 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = content });
         }
 
-        public async Task TriggerControlClickEvent(string controlName)
+        public async Task TriggerControlClickEvent(string controlName, string filePath)
         {
             ValidatePage();
-            // //await Page.GetByLabel("Tap or click to add a picture").ClickAsync(); 
-            // await Page.GetByLabel("Tap or click to add a picture").SetInputFilesAsync(new[] { "C:\\Users\\v-nabalasubr\\OneDrive - Microsoft\\Pictures\\Screenshots\\sample.png" });
-            //// await Page.GetByLabel("Tap or click to add a picture").ClickAsync();
-            var match = Page.Locator($"[data-control-name='{controlName}']");
-            await match.ClickAsync();
-            //await match.SetInputFilesAsync("C:\\Users\\v-nabalasubr\\OneDrive - Microsoft\\Pictures\\Screenshots\\sample.png");
+
+            if (string.IsNullOrEmpty(filePath))
+            {
+                // general control click event
+                var match = Page.Locator($"[data-control-name='{controlName}']");
+                await match.ClickAsync();
+            }
+            else
+            {
+                //Add Picture Control
+                var fileChooser = await Page.RunAndWaitForFileChooserAsync(async () =>
+                {
+                    var match = Page.Locator($"[data-control-name='{controlName}']");
+                    await match.ClickAsync();
+                });
+                await fileChooser.SetFilesAsync(filePath);
+            }
+            
         }
     }
 }

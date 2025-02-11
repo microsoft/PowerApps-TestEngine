@@ -57,6 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new SelectOneParamFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectThreeParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
+            powerFxConfig.AddFunction(new SelectFileTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new ScreenshotFunction(TestInfraFunctions, SingleTestInstanceState, _fileSystem, Logger));
             powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
             powerFxConfig.AddFunction(new AssertFunction(Logger));

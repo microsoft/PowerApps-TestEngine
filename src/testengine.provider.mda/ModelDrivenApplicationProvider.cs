@@ -203,7 +203,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 var nameValues = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(propertiesString);
                 if (nameValues.Any(k => k.Key == itemPath.PropertyName))
                 {
-                    var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;
+                    var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;                   
                     switch (itemPath.PropertyName.ToLower())
                     {
                         case "disabled":
@@ -407,12 +407,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             return controlDictionary;
         }
 
-        public async Task<bool> SelectControlAsync(ItemPath itemPath)
+        public async Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null)
         {
             try
             {
                 ValidateItemPath(itemPath, false);
-                await TestInfraFunctions.TriggerControlClickEvent(itemPath.ControlName);
+                await TestInfraFunctions.TriggerControlClickEvent(itemPath.ControlName, filePath);
                 var itemPathString = JsonConvert.SerializeObject(itemPath);
                 // TODO Select a choice item
                 var expression = $"PowerAppsTestEngine.select({itemPathString})";
