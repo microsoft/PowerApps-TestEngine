@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Globalization;
 using Microsoft.PowerFx;
+using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -27,5 +29,18 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// </summary>
         /// <returns></returns>
         public Task SetupContext();
+
+        /// <summary>
+        /// Determine if specical case where provider will execute the power fx 
+        /// </summary>
+        public bool ProviderExecute { get; }
+
+        /// <summary>
+        /// Execute Power Fx
+        /// </summary>
+        /// <param name="steps">The test steps to exec</param>
+        /// <param name="culture">The culture</param>
+        /// <returns></returns>
+        public FormulaValue ExecutePowerFx(string steps, CultureInfo culture);
     }
 }

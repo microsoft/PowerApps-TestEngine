@@ -1,27 +1,26 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Collections.Concurrent;
 using System.ComponentModel.Composition;
-using System.Globalization;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.Providers.Functions;
 using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
-using Microsoft.PowerApps.TestEngine.Providers.Services;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
-using testengine.provider.copilot.portal.services;
+using Microsoft.PowerPlatform.Dataverse.Client;
+using Microsoft.PowerFx.Dataverse;
+using testengine.provider.dataverse;
+using System.Globalization;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
     /// <summary>
-    /// Test Engine Provider for interacting with the Microsoft Copilot using DirectLine API
+    /// Test Engine Provider for interacting with the Microsoft Dataverse via REST API
     /// </summary>
     [Export(typeof(ITestWebProvider))]
-    public class CopilotAPIProvider : IExtendedTestWebProvider, IMessageProvider
+    public class DataverseProvider : IExtendedTestWebProvider
     {
         // Not required for this provider
         public string CheckTestEngineObject => String.Empty;
@@ -40,16 +39,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public string[] Namespaces => new string[] { "Experimental" };
 
-        private ICopilotApiService _apiService = null;
+        private ServiceClient _organizationService = null;
+        private RecalcEngine _engine = null;
 
-        public Func<IHttpClientWrapper> GetHttpWrapper = () => { return new HttpClientWrapper(new HttpClient()); };
-
-        public CopilotAPIProvider()
+        public DataverseProvider()
         {
 
         }
 
-        public CopilotAPIProvider(ITestInfraFunctions? testInfraFunctions, ISingleTestInstanceState? singleTestInstanceState, ITestState? testState, IEnvironmentVariable environment)
+        public DataverseProvider(ITestInfraFunctions? testInfraFunctions, ISingleTestInstanceState? singleTestInstanceState, ITestState? testState, IEnvironmentVariable environment)
         {
             this.TestInfraFunctions = testInfraFunctions;
             this.SingleTestInstanceState = singleTestInstanceState;
@@ -57,7 +55,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             this.Environment = environment;
         }
 
-        public string Name { get { return "copilot.api"; } }
+        public string Name { get { return "dataverse"; } }
+
+        public bool ProviderExecute { 
+            get { 
+                return true;
+            } 
+        }
 
         private async Task<T> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
@@ -66,10 +70,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public T GetPropertyValueFromControl<T>(ItemPath itemPath)
         {
-            if (itemPath.PropertyName == "ConversationId" && _apiService.ConversationId is T)
-            {
-                return (T)Convert.ChangeType(value: _apiService.ConversationId, typeof(T));
-            }
             throw new InvalidOperationException($"Property '{itemPath.PropertyName}' not found.");
         }
 
@@ -102,7 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         }
 
         /// <summary>
-        /// Not required for Microsoft Copilot Studio portal interaction
+        /// Not required for Dataverse interaction
         /// </summary>
         /// <returns></returns>
 
@@ -120,7 +120,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         }
 
         /// <summary>
-        /// Not currently required for Microsoft Copilot Studio as Power Fx state and managed by interacting with DirectLine API
+        /// Not currently required for Dataverse as Power Fx state and managed by interacting with REST API
         /// </summary>
         /// <returns></returns>
         public async Task CheckProviderAsync()
@@ -163,7 +163,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         }
 
         /// <summary>
-        /// Not currently used as no properties apart from Copilot record are added into Power Fx state
+        /// Not currently used as no properties that are added into Power Fx state
         /// </summary>
         /// <param name="itemPath"></param>
         /// <returns></returns>
@@ -213,90 +213,51 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// <exception cref="InvalidDataException"></exception>
         public async Task SetupContext()
         {
-            Console.WriteLine("NOTE: Microsoft Copilot Studio Provider is Experimental to should not be used for Production usage");
-
-            var context = TestInfraFunctions.GetContext();
-
-            var apiType = TestState.GetTestSettings().ExtensionModules.Parameters.ContainsKey("ApiType") ? TestState.GetTestSettings()?.ExtensionModules?.Parameters["ApiType"] : string.Empty;
-
-            switch (apiType) {
-                case "directline":
-                    var directLineService = new DirectLineApiService(GetHttpWrapper(), SingleTestInstanceState.GetLogger());
-
-                    var variableName = TestState.GetTestSettings().ExtensionModules.Parameters.ContainsKey("AgentKey") ? TestState.GetTestSettings()?.ExtensionModules?.Parameters["AgentKey"] : "AgentKey";
-                    var botFrameworkUrl = TestState.GetTestSettings().ExtensionModules.Parameters.ContainsKey("BotFrameworkUrl") ? TestState.GetTestSettings()?.ExtensionModules?.Parameters["BotFrameworkUrl"] : string.Empty;
-
-                    if (string.IsNullOrEmpty(variableName))
-                    {
-                        throw new InvalidDataException("Missing Agent Key from testSettings and extensionModules");
-                    }
-
-                    directLineService.Secret = Environment.GetVariable(variableName);
-
-                    if (string.IsNullOrEmpty(botFrameworkUrl))
-                    {
-                        botFrameworkUrl = "https://directline.botframework.com";
-                    }
-
-                    directLineService.BotFrameworkUrl = new Uri(botFrameworkUrl);
-
-                    _apiService = directLineService;
-                    break;
-                default:
-                    var directToEngineService = new DirectToEngineService(this);
-
-                    directToEngineService.BotIdentifier = TestState.GetTestSuiteDefinition().AppId;
-                    directToEngineService.EnvironmentId = TestState.GetEnvironment();
-                    directToEngineService.Token = Environment.GetVariable("AgentToken");
-
-
-                    _apiService = directToEngineService;
-                    break;
-
-            }
-
-
+            Console.WriteLine("NOTE: Dataverse Provider is Experimental to should not be used for Production usage");
+            var api = new Uri(TestState.GetDomain());
+            _organizationService = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
+            _organizationService.Connect();
+            var names = _organizationService.GetTableDisplayNames();
         }
 
         /// <summary>
-        /// Add Copilot specific functbions
+        /// Add Dataverse specific functbions
         /// </summary>
         /// <param name="powerFxConfig"></param>
         public void ConfigurePowerFx(PowerFxConfig powerFxConfig)
         {
-            // Add 
-            powerFxConfig.AddFunction(new ApiConnectFunction(_apiService, SingleTestInstanceState.GetLogger()));
-            powerFxConfig.AddFunction(new ApiSendTextFunction(_apiService, SingleTestInstanceState.GetLogger()));
-            powerFxConfig.AddFunction(new WaitUntilMessageFunction(TestInfraFunctions, TestState, SingleTestInstanceState.GetLogger(), this));
         }
 
         /// <summary>
-        /// Add Copilot state and messages
+        /// Add Dataverse state and messages
         /// </summary>
         /// <param name="engine"></param>
         public void ConfigurePowerFxEngine(RecalcEngine engine)
         {
-            // Add DirectLine derived state
-            engine.UpdateVariable("Copilot", new CopilotStateRecordValue(this));
-        }
-
-        public async Task GetNewMessages()
-        {
-            await _apiService.GetResponseAsync(this);
-        }
-
-        public FormulaValue ExecutePowerFx(string steps, CultureInfo culture)
-        {
-            throw new NotImplementedException();
+            _engine = engine;
+            engine.EnableDelegation();
         }
 
         /// <summary>
-        /// Json messages observed as part of the test session
+        /// Execute the Power Fx with the Dataverse connection
         /// </summary>
-        public ConcurrentQueue<string> Messages { get; private set; } = new ConcurrentQueue<string>();
+        /// <param name="steps"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public FormulaValue ExecutePowerFx(string steps, CultureInfo culture)
+        {
+            var connection = SingleOrgPolicy.New(_organizationService);
+            
+            var config = new RuntimeConfig(connection.SymbolValues);
+            config.AddDataverseExecute(_organizationService);
+            var waiter = _engine.EvalAsync(steps, CancellationToken.None,runtimeConfig: config).GetAwaiter();
 
-        public bool ProviderExecute { 
-            get { return false; } 
+            while (!waiter.IsCompleted)
+            {
+                Thread.Sleep(1000);
+            }
+
+            return waiter.GetResult();
         }
     }
 }

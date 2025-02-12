@@ -42,8 +42,8 @@ if ($IsLinux) {
     $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
     $cert.Import($certBytes)
 
-    # Open the LocalMachine\My store
-    $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "LocalMachine")
+    # Open the CurrentUser\My store
+    $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "CurrentUser")
     $store.Open("ReadWrite")
 
     # Add the certificate to the store with the subject name as the certificate name

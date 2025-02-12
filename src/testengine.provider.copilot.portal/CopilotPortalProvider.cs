@@ -11,6 +11,7 @@ using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Microsoft.PowerApps.TestEngine.Providers.Functions;
 using System.Collections.Concurrent;
+using System.Globalization;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -370,9 +371,18 @@ document.head.appendChild(style);");
             return Task.CompletedTask;
         }
 
+        public FormulaValue ExecutePowerFx(string steps, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Json messages observed as part of the test session
         /// </summary>
         public ConcurrentQueue<string> Messages { get; private set; } = new ConcurrentQueue<string>();
+
+        public bool ProviderExecute { 
+            get { return false; } 
+        }
     }
 }

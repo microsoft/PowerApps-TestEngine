@@ -208,7 +208,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```pwsh
 $Params = @{
 DnsName = @("localhost", "localhost")
-CertStoreLocation = "Cert:\LocalMachine\My"
+CertStoreLocation = "Cert:\CurrentUser\My"
 NotAfter = (Get-Date).AddMonths(6)
 KeyAlgorithm = "RSA"
 KeyLength = 2048
@@ -217,7 +217,7 @@ New-SelfSignedCertificate @Params
 ```
 
 > NOTE: 
-> For Unbuntu the following could be used to create local certificate
+> For Ubuntu the following could be used to create local certificate
 >
 > openssl req -x509 -nodes -days 180 -newkey rsa:2048 -keyout mycert.key -out mycert.crt -subj "/CN=localhost"
 

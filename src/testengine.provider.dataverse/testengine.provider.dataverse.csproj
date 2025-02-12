@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
@@ -24,11 +24,13 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
-
   <ItemGroup>
-    <PackageReference Include="AdaptiveCards" Version="3.1.0" />
-    <PackageReference Include="Microsoft.Agents.CopilotStudio.Client" Version="0.1.26"/>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
+    <PackageReference Include="Microsoft.PowerFx.Dataverse.Eval" Version="1.2.0-build.20231002-1005">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference> 
+    <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.2">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

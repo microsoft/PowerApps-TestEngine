@@ -1,0 +1,31 @@
+testSuite:
+  testSuiteName: Dataverse Sample
+  testSuiteDescription: Interact with dataverse
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Started
+      testCaseDescription: Test can start test provider
+      testSteps: |
+        = Assert(1=1)
+    - testCaseName: Has Rows in account table
+      testCaseDescription: Can filter
+      testSteps: |
+        = Assert(CountRows(account)>=0)
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 480000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

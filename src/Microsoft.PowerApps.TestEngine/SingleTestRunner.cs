@@ -277,7 +277,6 @@ namespace Microsoft.PowerApps.TestEngine
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseComplete, locale);
                             }
 
-                            _eventHandler.TestCaseEnd(true);
                             casesPass++;
                         }
                         catch (Exception ex)

@@ -166,6 +166,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 Logger.LogDebug($"Syntax check failed. Now attempting to execute lines step by step");
             }
 
+            if (TestState.TestProvider is IExtendedTestWebProvider extendedProvider && extendedProvider.ProviderExecute)
+            {
+                return extendedProvider.ExecutePowerFx(testSteps, culture);
+            }
+
             if (goStepByStep)
             {
                 var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, checkResult, culture);

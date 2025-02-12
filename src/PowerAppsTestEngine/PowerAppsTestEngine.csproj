@@ -35,6 +35,8 @@
     <ProjectReference Include="..\testengine.module.sample\testengine.module.sample.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.module.simulation\testengine.module.simulation.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.canvas\testengine.provider.canvas.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\testengine.provider.copilot.portal\testengine.provider.copilot.portal.csproj" />
+    <ProjectReference Include="..\testengine.provider.dataverse\testengine.provider.dataverse.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.mda\testengine.provider.mda.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.user.storagestate\testengine.user.storagestate.csproj" PrivateAssets="all" />
