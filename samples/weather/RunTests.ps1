@@ -84,10 +84,15 @@ try {
     $runResult = pac pfx run --environment $environmentUrl --file $file --echo
 
     # Search every line and return the line with a non-blank value after applying the replace operation
-    $matchingLine = $runResult | Where-Object { ($_ -replace '[^a-zA-Z0-9-]', '').Trim() -ne '' } | Select-Object -First 1
+    $matchingLine = $runResult | Where-Object { $_.IndexOf("GUID(") -gt 0 } | Select-Object -First 1
 
     if ($matchingLine) {
-        $appId = $matchingLine -replace '[^a-zA-Z0-9-]', ''
+        $matchingLine = $matchingLine.Trim()
+        $start = $matchingLine.IndexOf("""")
+        $text = $matchingLine.SubString($start+1)
+        $appId = $text.SubString(0,$text.IndexOf(""""))
+        # Rmove non printable
+        $appId = $appId -replace "[^a-zA-Z0-9]"
     } else {
         throw "No matching lines found in the output."
     }
@@ -101,6 +106,9 @@ if ([string]::IsNullOrEmpty($appId)) {
 }
 
 $customPage = $config.customPage
+if ($environmentUrl.EndsWith("/")) {
+    $environmentUrl = $environmentUrl.SubString(0,$environmentUrl.Length-1)
+}
 $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
 
 if ([string]::IsNullOrEmpty($pac)) {
@@ -129,7 +137,8 @@ $env:user1Email = $user1Email
 if ($null -eq $languages) {
     if ([string]::IsNullOrEmpty($pac)) {
         # Run the tests for each user in the configuration file.
-        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a $auth -i "$currentDirectory/testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+        $fileName = Join-Path -Path $currentDirectory -ChildPath "testPlan.fx.yaml"
+        dotnet PowerAppsTestEngine.dll -w "True" -u "dataverse" -p "mda" -a $auth -i "$fileName" -t "$tenantId" -e "$environmentId" -d "$mdaUrl"
     } else {
 
     }
@@ -151,7 +160,7 @@ if ($null -eq $languages) {
         $text = $text.Replace("locale: ""en-US""", "locale: ""${languageName}""")
         Set-Content -Path  $languageTest -Value $text 
 
-        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a $auth -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w True
+        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a $auth -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w "True"
     }
 }
 

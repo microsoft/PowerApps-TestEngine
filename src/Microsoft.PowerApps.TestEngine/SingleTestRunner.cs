@@ -278,6 +278,7 @@ namespace Microsoft.PowerApps.TestEngine
                             }
 
                             casesPass++;
+                            _eventHandler.TestCaseEnd(true);
                         }
                         catch (Exception ex)
                         {

@@ -154,6 +154,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
@@ -178,6 +179,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var powerFxExpression = "1+1; //some comment \n 2+2;\n Concatenate(\"hello\", \"world\");";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -200,6 +202,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             // en-US locale
             var culture = new CultureInfo("en-US");
@@ -264,6 +267,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
             powerFxEngine.Setup();
@@ -292,6 +296,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var powerFxExpression = "someNonExistentPowerFxFunction(1, 2, 3)";
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
@@ -308,6 +313,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -323,6 +329,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var powerFxExpression = "Assert(1+1=2, \"Adding 1 + 1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -342,6 +349,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns("C:\\testResults");
             MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
@@ -365,6 +373,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
@@ -438,6 +447,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.SetPropertyAsync(It.IsAny<ItemPath>(), It.IsAny<StringValue>())).Returns(Task.FromResult(true));
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
@@ -508,6 +518,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
@@ -615,6 +626,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
 
             var mockModule = new Mock<ITestEngineModule>();
             var modules = new List<ITestEngineModule>() { mockModule.Object };
