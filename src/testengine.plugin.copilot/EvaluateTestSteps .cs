@@ -17,6 +17,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Linq;
 using System.IO;
+using testengine.provider.copilot.portal.services;
 
 namespace testengine.plugin.copilot
 {
@@ -24,7 +25,30 @@ namespace testengine.plugin.copilot
     {
         public string EnvironmentId { get; set; }
 
-        public async Task<string> ExecuteAsync(string identifer, string steps, string token)
+        public IWorkerService WorkerService { get; set; } = null;
+
+        private CopilotAPIProvider _provider = null;
+
+        public string ConversationId { 
+            get {
+                return _provider != null ? _provider.ConversationId : String.Empty;
+            } 
+        }
+
+        public string[] Messages {  
+            get {
+                return _provider != null ? _provider.Messages.ToArray() : new string[] { };
+            } 
+            set
+            {
+                _provider.Messages.Clear();
+                foreach (var message in value) {
+                    _provider.Messages.Enqueue(message);
+                }
+            }
+        }
+
+        public async Task<string> ExecuteAsync(string identifer, string conversationId, string steps, string token)
         {
             string result = "Unknown";
             try
@@ -33,7 +57,7 @@ namespace testengine.plugin.copilot
                 var yamlContent = CreateYamlFromSteps(identifer, steps);
 
                 // Pass the YAML file to the Test Engine
-                return await ExecuteTestEngineAsync(yamlContent, token);
+                return await ExecuteTestEngineAsync(conversationId, yamlContent, token);
             } 
             catch (Exception ex)
             {
@@ -72,12 +96,27 @@ environmentVariables:
       emailKey: user1Email", identifer, steps.Replace("\r", "").Replace("\n", ""));
         }
 
-        public async Task<string> ExecuteTestEngineAsync(string yamlContent, string token)
+        private void Init(string yamlContent, string token)
+        {  
+            var environment = new InMemoryEnvironment();
+            _provider = new CopilotAPIProvider()
+            {
+                Environment = environment
+            };
+
+            environment.Values.Add("AgentToken", token);
+        }
+
+        public async Task<string> ExecuteTestEngineAsync(string conversationId, string yamlContent, string token)
         {
+            if ( _provider == null )
+            {
+                Init(yamlContent, token);
+            }
+
+            _provider.ConversationId = conversationId;
+
             var fileSystem = new InMemoryFileSystem();
-
-            fileSystem.Files.Add("test.yaml", yamlContent);
-
             var state = new TestState(new YamlTestConfigParser(fileSystem));
             state.SetEnvironment(this.EnvironmentId);
 
@@ -88,32 +127,29 @@ environmentVariables:
 
             var logger = loggerFactory.CreateLogger<EvaluateTestSteps>();
 
-            var environment = new InMemoryEnvironment();
-            var provider = new CopilotAPIProvider() { Environment = environment };
+            fileSystem.Files.Add("test.yaml", yamlContent);
 
-            environment.Values.Add("AgentToken", token);
-            
             var serviceProvider = new ServiceCollection()
-                .AddSingleton<ITestState>(state)
-                .AddSingleton<ILoggerFactory>(loggerFactory)
-                .AddSingleton<ITestEngineEvents, TestEngineEventHandler>()
-                .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
-                .AddSingleton<ITestWebProvider>(sp => provider)
-                .AddScoped<IPowerFxEngine, PowerFxEngine>()
-                .AddSingleton<ITestReporter, TestReporter>()
-                .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
-                .AddScoped<ISingleTestRunner, SingleTestRunner>()
-                .AddSingleton<ILogger>((sp) => logger)
-                .AddSingleton<IFileSystem>(fileSystem)
-                .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
-                .AddSingleton<IEnvironmentVariable>(environment)
-                .AddSingleton<IUserManagerLogin, UserManagerLogin>()
-                // START Not needed for this provider
-                .AddTransient<IUserManager>(sp => null)
-                .AddTransient<IUserCertificateProvider>(sp => null)
-                // END Not Needed
-                .AddSingleton<TestEngine>()
-                .BuildServiceProvider();
+               .AddSingleton<ITestState>(state)
+               .AddSingleton<ILoggerFactory>(loggerFactory)
+               .AddSingleton<ITestEngineEvents, TestEngineEventHandler>()
+               .AddSingleton<ITestConfigParser, YamlTestConfigParser>()
+               .AddSingleton<ITestWebProvider>(sp => _provider)
+               .AddScoped<IPowerFxEngine, PowerFxEngine>()
+               .AddSingleton<ITestReporter, TestReporter>()
+               .AddScoped<ISingleTestInstanceState, SingleTestInstanceState>()
+               .AddScoped<ISingleTestRunner, SingleTestRunner>()
+               .AddSingleton<ILogger>((sp) => logger)
+               .AddSingleton<IFileSystem>(fileSystem)
+               .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
+               .AddSingleton<IEnvironmentVariable>(_provider.Environment)
+               .AddSingleton<IUserManagerLogin, UserManagerLogin>()
+               // START Not needed for this provider
+               .AddTransient<IUserManager>(sp => null)
+               .AddTransient<IUserCertificateProvider>(sp => null)
+               // END Not Needed
+               .AddSingleton<TestEngine>()
+               .BuildServiceProvider();
 
             var testEngine = serviceProvider.GetService<TestEngine>();
 
@@ -144,7 +180,7 @@ environmentVariables:
             var id = "UNKNOWN";
             try
             {
-                id = provider.GetPropertyValueFromControl<string>(new ItemPath { PropertyName = "ConversationId" });
+                id = _provider.ConversationId;
             } 
             catch
             {

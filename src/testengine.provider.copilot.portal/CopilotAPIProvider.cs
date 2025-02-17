@@ -44,9 +44,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public Func<IHttpClientWrapper> GetHttpWrapper = () => { return new HttpClientWrapper(new HttpClient()); };
 
+        public IWorkerService WorkerService { get; set; } = null;
+
         public CopilotAPIProvider()
         {
-
         }
 
         public CopilotAPIProvider(ITestInfraFunctions? testInfraFunctions, ISingleTestInstanceState? singleTestInstanceState, ITestState? testState, IEnvironmentVariable environment)
@@ -55,6 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             this.SingleTestInstanceState = singleTestInstanceState;
             this.TestState = testState;
             this.Environment = environment;
+            WorkerService = new MultiThreadedWorkerService(singleTestInstanceState.GetLogger());
         }
 
         public string Name { get { return "copilot.api"; } }
@@ -264,10 +266,16 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// <param name="powerFxConfig"></param>
         public void ConfigurePowerFx(PowerFxConfig powerFxConfig)
         {
+            var logger = SingleTestInstanceState.GetLogger();
+            if (WorkerService == null)
+            {
+                WorkerService = new MultiThreadedWorkerService(logger);
+            }
             // Add 
-            powerFxConfig.AddFunction(new ApiConnectFunction(_apiService, SingleTestInstanceState.GetLogger()));
-            powerFxConfig.AddFunction(new ApiSendTextFunction(_apiService, SingleTestInstanceState.GetLogger()));
-            powerFxConfig.AddFunction(new WaitUntilMessageFunction(TestInfraFunctions, TestState, SingleTestInstanceState.GetLogger(), this));
+            powerFxConfig.AddFunction(new ApiConnectFunction(_apiService, logger));
+            powerFxConfig.AddFunction(new WaitUntilConnectedFunction(TestInfraFunctions, TestState, logger, this, WorkerService));
+            powerFxConfig.AddFunction(new ApiSendTextFunction(_apiService, logger));
+            powerFxConfig.AddFunction(new WaitUntilMessageFunction(TestInfraFunctions, TestState, logger, this));
         }
 
         /// <summary>
@@ -297,6 +305,20 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public bool ProviderExecute { 
             get { return false; } 
+        }
+
+        public string? ConversationId { 
+            get 
+            { 
+                return _apiService.ConversationId;
+            }
+            set
+            {
+                if (_apiService != null)
+                {
+                    _apiService.ConversationId = value;
+                }
+            }
         }
     }
 }

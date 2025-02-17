@@ -178,5 +178,10 @@ namespace testengine.plugin.copilot
                 Dirs.Add(dirName);
             }
         }
+
+        public void Delete(string fileName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -60,7 +60,7 @@ public class ReadEvaluatePrintLoop
         steps.EnvironmentId = settings.EnvironmentId;
         var token = await GetToken();
 
-        var response = await steps.ExecuteAsync(settings.BotIdentifier, input, token);
+        var response = await steps.ExecuteAsync(settings.BotIdentifier, "",  input, token);
         var file = DateTime.Now.ToString("yyyy-MM-dd-HHmmss") + ".json";
         File.WriteAllText(file, response);
 

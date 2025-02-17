@@ -5,6 +5,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 {
     public interface IMessageProvider
     {
+        public string? ConversationId { get; set; }
+
         Task GetNewMessages();
 
         /// <summary>

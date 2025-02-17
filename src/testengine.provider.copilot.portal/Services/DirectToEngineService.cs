@@ -14,7 +14,7 @@ namespace testengine.provider.copilot.portal.services
     public class DirectToEngineService : ICopilotApiService
     {
         
-        public string? ConversationId { get; private set; }
+        public string? ConversationId { get; set; }
 
         public string BotIdentifier { get; set; } = string.Empty;
 
@@ -66,7 +66,8 @@ namespace testengine.provider.copilot.portal.services
                 await foreach (Activity act in _copilotClient.StartConversationAsync(emitStartConversationEvent: true, cancellationToken: cancellationToken))
                 {
                     if (string.IsNullOrEmpty(ConversationId) && act.Conversation != null) {
-                        ConversationId = act.Conversation.Id;
+                        _provider.ConversationId = act.Conversation.Id;
+                        ConversationId = _provider.ConversationId;
                     }
                     _provider.Messages.Enqueue(JsonSerializer.Serialize(act, _options));
                 }

@@ -1,4 +1,5 @@
 Experimental.Connect();
+Experimental.WaitUntilConnected();
 Experimental.WaitUntilMessage("Hello");
 Experimental.SendText("Where can I fly today?");
 Experimental.WaitUntilMessage("Is there anything else I can help you with");

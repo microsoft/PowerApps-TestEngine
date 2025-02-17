@@ -7,7 +7,7 @@ namespace testengine.provider.copilot.portal.services
 {
     public interface ICopilotApiService
     {
-        string? ConversationId { get; }
+        string? ConversationId { get; set; }
 
         public Task Setup();
 

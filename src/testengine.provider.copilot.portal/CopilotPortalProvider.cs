@@ -12,6 +12,7 @@ using Microsoft.PowerFx.Types;
 using Microsoft.PowerApps.TestEngine.Providers.Functions;
 using System.Collections.Concurrent;
 using System.Globalization;
+using testengine.provider.copilot.portal.services;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -352,8 +353,10 @@ document.head.appendChild(style);");
         /// <param name="powerFxConfig"></param>
         public void ConfigurePowerFx(PowerFxConfig powerFxConfig)
         {
+            var logger = SingleTestInstanceState.GetLogger();
+            powerFxConfig.AddFunction(new WaitUntilConnectedFunction(TestInfraFunctions, TestState, logger, this, new MultiThreadedWorkerService(logger)));
             powerFxConfig.AddFunction(new SendTextFunction(TestInfraFunctions, TestState, SingleTestInstanceState.GetLogger()));
-            powerFxConfig.AddFunction(new WaitUntilMessageFunction(TestInfraFunctions, TestState, SingleTestInstanceState.GetLogger(), this));
+            powerFxConfig.AddFunction(new WaitUntilMessageFunction(TestInfraFunctions, TestState, logger, this));
         }
 
         /// <summary>
@@ -384,5 +387,18 @@ document.head.appendChild(style);");
         public bool ProviderExecute { 
             get { return false; } 
         }
+
+        private string _conversationId = String.Empty;
+
+        public string? ConversationId
+        {
+            get
+            {
+                return _conversationId;
+            }
+
+            set => _conversationId = value != null ? value : String.Empty;
+        }
+
     }
 }
