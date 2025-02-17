@@ -1,6 +1,8 @@
 ﻿self.onmessage = async function (event) {
-    const { config, conversationId, messages, expression } = event.data;
+    const { location, baseURI, config, conversationId, messages, expression } = event.data;
     self.document = {
+        baseURI: baseURI,
+        location: JSON.parse(location),
         createElement: function (tagName) {
             class MockElement {
                 constructor(tagName) {
@@ -28,7 +30,15 @@
         },
         createElementNS(namespaceURI, qualifiedName) {
             return self.document.createElement(qualifiedName);
-        }
+        },
+        documentElement: {
+            style: {
+                setProperty: function (name, value) {
+                    console.log(`Property ${name} set to ${value}`);
+                }
+            }
+        },
+        childNodes: []
     }
     self.window = {
         document: self.document,
@@ -39,18 +49,65 @@
         fetch: self.fetch,
         setTimeout: self.setTimeout,
         clearTimeout: self.clearTimeout,
-        console: self.console
+        console: self.console,
+        addEventListener: function (type, listener, options) {
+            console.log(`Event listener added for ${type}`);
+        }
     };
 
-    // Include Blazor script
-    importScripts('_framework/blazor.webassembly.js');
-
-    // Initialize Blazor
-    await self.window.Blazor.start({
-        loadBootResource: function (type, name, defaultUri, integrity) {
-            console.log(defaultUri);
+    self.history = {
+        state: null,
+        stateStack: [],
+        currentStateIndex: -1,
+        pushState: function (state, title, url) {
+            this.stateStack = this.stateStack.slice(0, this.currentStateIndex + 1);
+            this.stateStack.push(state);
+            this.currentStateIndex++;
+            console.log(`History pushState: ${url}, state: ${JSON.stringify(state)}`);
+        },
+        replaceState: function (state, title, url) {
+            if (this.currentStateIndex >= 0) {
+                this.stateStack[this.currentStateIndex] = state;
+                console.log(`History replaceState: ${url}, state: ${JSON.stringify(state)}`);
+            }
+        },
+        back: function () {
+            if (this.currentStateIndex > 0) {
+                this.currentStateIndex--;
+                console.log('History back');
+            }
+        },
+        forward: function () {
+            if (this.currentStateIndex < this.stateStack.length - 1) {
+                this.currentStateIndex++;
+                console.log('History forward');
+            }
+        },
+        go: function (delta) {
+            const newIndex = this.currentStateIndex + delta;
+            if (newIndex >= 0 && newIndex < this.stateStack.length) {
+                this.currentStateIndex = newIndex;
+                console.log(`History go: ${delta}`);
+            }
+        },
+        get state() {
+            return this.stateStack[this.currentStateIndex] || null;
         }
-    });
+    };
+
+    if (typeof self.loaded === "undefined") {
+        // Include Blazor script
+        importScripts('_framework/blazor.webassembly.js');
+
+        // Initialize Blazor
+        await self.window.Blazor.start({
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                console.log(defaultUri);
+            }
+        });
+
+        self.loaded = true
+    }
 
     // Get exports
     var r = self.window.Blazor.runtime;
@@ -71,6 +128,6 @@
 
     // Execute Power Fx lines of text
     if (expression) {
-       executePowerFx(expression);
+        executePowerFx(expression);
     }
 };

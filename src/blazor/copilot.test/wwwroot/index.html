@@ -87,12 +87,12 @@
             });
 
             // Start two workers
-            worker1 = startWorker('worker1.js?v=1.7');
-            worker2 = startWorker('worker2.js?v=1.7');
+            worker1 = startWorker('worker1.js?v=1.20');
+            worker2 = startWorker('worker2.js?v=1.20');
         });
 
         function connect() {
-            worker1.postMessage({ accessToken });
+            worker1.postMessage({ location: JSON.stringify(document.location), baseURI: document.baseURI, accessToken });
         }
 
         function sendMessageToWorker(worker, message) {
@@ -115,7 +115,7 @@
                 if (index < powerFxStatements.length) {
                     const expression = powerFxStatements[index].trim();
                     if (expression) {
-                        var result = await sendMessageToWorker(worker2, { config: { token: accessToken }, expression, conversationId, messages });
+                        var result = await sendMessageToWorker(worker2, { location: JSON.stringify(document.location), baseURI: document.baseURI, config: { token: accessToken }, expression, conversationId, messages });
                         console.log(result);
                         index++;
                     }
