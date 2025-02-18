@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 # Get current directory so we can reset back to it after running the tests
 $currentDirectory = Get-Location
 

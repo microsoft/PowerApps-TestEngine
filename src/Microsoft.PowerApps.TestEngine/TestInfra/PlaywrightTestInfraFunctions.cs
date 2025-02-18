@@ -30,24 +30,26 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly IFileSystem _fileSystem;
         private readonly ITestWebProvider _testWebProvider;
         private readonly IEnvironmentVariable _environmentVariable;
+        private readonly IUserCertificateProvider _certificateProvider;
 
         public static string BrowserNotSupportedErrorMessage = "Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers";
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         public IPage Page { get; set; }
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider, IEnvironmentVariable environmentVariable)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider, IEnvironmentVariable environmentVariable, IUserCertificateProvider certificateProvider)
         {
             _testState = testState;
             _singleTestInstanceState = singleTestInstanceState;
             _fileSystem = fileSystem;
             _testWebProvider = testWebProvider;
             _environmentVariable = environmentVariable;
+            _certificateProvider = certificateProvider;
         }
 
         // Constructor to aid with unit testing
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem,
-            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null, ITestWebProvider testWebProvider = null, IEnvironmentVariable environmentVariable = null) : this(testState, singleTestInstanceState, fileSystem, testWebProvider, environmentVariable)
+            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null, ITestWebProvider testWebProvider = null, IEnvironmentVariable environmentVariable = null, IUserCertificateProvider certificateProvider = null) : this(testState, singleTestInstanceState, fileSystem, testWebProvider, environmentVariable, certificateProvider)
         {
             PlaywrightObject = playwrightObject;
             Page = page;
@@ -163,6 +165,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 // Add file state as user manager may need access to file system
                 configurableUserManager.Settings.Add("FileSystem", _fileSystem);
+                // Add Evironment variable as provider may need additional settings
+                configurableUserManager.Settings.Add("Environment", _environmentVariable);
+                // Pass in current test state
+                configurableUserManager.Settings.Add("TestState", _testState);
+                configurableUserManager.Settings.Add("SingleTestState", _singleTestInstanceState);
+                // Pass in certificate provider
+                configurableUserManager.Settings.Add("UserCertificate", _certificateProvider);
 
                 if (configurableUserManager.Settings.ContainsKey("LoadState")
                     && configurableUserManager.Settings["LoadState"] is Func<IEnvironmentVariable, ISingleTestInstanceState, ITestState, IFileSystem, string> loadState)
