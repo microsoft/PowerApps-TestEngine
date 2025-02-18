@@ -9,7 +9,6 @@ testSuite:
       testCaseDescription: Verify that the button performs the correct action when selected once.
       testSteps: |        
         Select(Button1);
-      # Assert(Label1.Text = "Button Clicked!", "Verify button performs the correct action when selected once");
 
     - testCaseName: Test TextInput Sample Text
       testCaseDescription: Verify that the text box accepts and displays input correctly.
