@@ -54,6 +54,8 @@ namespace targets
             var solution = Path.Combine(SrcDir, "PowerAppsTestEngine.sln");
             
             var project = Path.Combine(PATestEngineDir, "Microsoft.PowerApps.TestEngine.csproj");
+            var projectTestEngine2 = Path.Combine(SrcDir, "PowerAppsTestEngineWrapper", "PowerAppsTestEngineWrapper.csproj");
+            var customPackageId = "Microsoft.PowerApps.TestEngine";
 
             Target("squeaky-clean",
                 () =>
@@ -81,6 +83,9 @@ namespace targets
 
             Target("pack",
                 () => RunDotnet("pack", $"{EscapePath(project)} --configuration {options.Configuration} --no-build -o {options.OutputDirectory} -p:Packing=true", gitExists, LogDir));
+
+            Target("pack-AlphaV2",
+                () => RunDotnet("pack", $"{EscapePath(projectTestEngine2)} --configuration {options.Configuration} --no-build -o {options.OutputDirectory} -p:Packing=true /p:PackageID={customPackageId}", gitExists, LogDir));
 
             Target("ci",
                 DependsOn("squeaky-clean", "rebuild", "test"));

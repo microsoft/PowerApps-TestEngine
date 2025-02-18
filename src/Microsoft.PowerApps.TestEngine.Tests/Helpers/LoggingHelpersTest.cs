@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Threading.Tasks;
@@ -44,8 +47,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public async Task DebugInfoWithSessionTest()
         {
-            var obj = new ExpandoObject();
-            obj.TryAdd("sessionId", "somesessionId");
+            IDictionary<string, object> obj = new ExpandoObject() as IDictionary<string, object>;
+            obj["sessionId"] = "somesessionId";
 
             MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
             var loggingHelper = new LoggingHelper(MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
@@ -59,11 +62,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public async Task DebugInfoReturnDetailsTest()
         {
-            var obj = new ExpandoObject();
-            obj.TryAdd("appId", "someAppId");
-            obj.TryAdd("appVersion", "someAppVersionId");
-            obj.TryAdd("environmentId", "someEnvironmentId");
-            obj.TryAdd("sessionId", "someSessionId");
+            IDictionary<string, object> obj = new ExpandoObject() as IDictionary<string, object>;
+            obj["appId"] = "someAppId";
+            obj["appVersion"] = "someAppVersionId";
+            obj["environmentId"] = "someEnvironmentId";
+            obj["sessionId"] = "someSessionId";
 
             MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
             var loggingHelper = new LoggingHelper(MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestEngineEventHandler.Object);
@@ -80,11 +83,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public async Task DebugInfoWithNullValuesTest()
         {
-            var obj = new ExpandoObject();
-            obj.TryAdd("appId", "someAppId");
-            obj.TryAdd("appVersion", null);
-            obj.TryAdd("environmentId", null);
-            obj.TryAdd("sessionId", "someSessionId");
+            IDictionary<string, object> obj = new ExpandoObject() as IDictionary<string, object>;
+            obj["appId"] = "someAppId";
+            obj["appVersion"] = null;
+            obj["environmentId"] = null;
+            obj["sessionId"] = "someSessionId";
 
             MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)obj));
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));

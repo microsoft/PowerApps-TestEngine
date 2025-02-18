@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 #r "Microsoft.Playwright.dll"
 #r "Microsoft.Extensions.Logging.dll"
 using Microsoft.Playwright;

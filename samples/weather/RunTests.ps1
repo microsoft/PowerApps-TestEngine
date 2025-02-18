@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 # Get current directory so we can reset back to it after running the tests
 $currentDirectory = Get-Location
 
@@ -8,6 +11,13 @@ $environmentId = $config.environmentId
 $user1Email = $config.user1Email
 $appDescription = $config.appDescription
 $languages = $config.languages
+$env:DataProtectionUrl = $config.DataProtectionUrl
+$env:DataProtectionCertificateName = $config.DataProtectionCertificateName
+$configuration = $config.configuration
+
+if ([string]::IsNullOrEmpty($configuration)) {
+    $configuration = "Debug"
+}
 
 if ([string]::IsNullOrEmpty($environmentId)) {
     Write-Error "Environment not configured. Please update config.json"
@@ -69,22 +79,22 @@ if ([string]::IsNullOrEmpty($appId)) {
 $customPage = $config.customPage
 $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
 
-# Build the latest debug version of Test Engine from source
+# Build the latest configuration version of Test Engine from source
 Set-Location ..\..\src
-dotnet build
+dotnet build --configuration $configuration
 
 if ($config.installPlaywright) {
-    Start-Process -FilePath "pwsh" -ArgumentList "-Command `"..\bin\Debug\PowerAppsTestEngine\playwright.ps1 install`"" -Wait
+    Start-Process -FilePath "pwsh" -ArgumentList "-Command `"..\bin\$configuration\PowerAppsTestEngine\playwright.ps1 install`"" -Wait
 } else {
     Write-Host "Skipped playwright install"
 }
 
-Set-Location ..\bin\Debug\PowerAppsTestEngine
+Set-Location "..\bin\$configuration\PowerAppsTestEngine"
 $env:user1Email = $user1Email
 
 if ($null -eq $languages) {
     # Run the tests for each user in the configuration file.
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
 } else {
     foreach ($language in $languages) {
         $uri = "$environmentUrl/api/data/v9.1/usersettingscollection($userId)"
@@ -103,7 +113,7 @@ if ($null -eq $languages) {
         $text = $text.Replace("locale: ""en-US""", "locale: ""${languageName}""")
         Set-Content -Path  $languageTest -Value $text 
 
-        dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a "certstore" -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w True
     }
 }
 
