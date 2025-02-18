@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
-using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using Moq;
 using Xunit;
 
@@ -67,7 +66,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             loader.DirectoryGetFiles = (location, pattern) =>
             {
                 var searchPattern = Regex.Escape(pattern).Replace(@"\*", ".*?");
-                return files.Split(",").Where(f => Regex.IsMatch(f, searchPattern)).ToArray();
+                return files.Split(',').Where(f => Regex.IsMatch(f, searchPattern)).ToArray();
             };
             // Use current test assembly as test
             loader.LoadAssembly = (file) => new AssemblyCatalog(this.GetType().Assembly);
@@ -102,6 +101,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
         [InlineData("user", "test", true, false)]
         [InlineData("user", "test", false, false)]
         [InlineData("auth", "certstore", true, true, Skip = "No auth providers whitelisted for releases")]
+        [InlineData("auth", "environment.certificate", true, true)]
         [InlineData("auth", "test", true, false)]
         [InlineData("auth", "test", false, false)]
         public void ProviderMatch(string providerType, string specificName, bool verify, bool valid)
