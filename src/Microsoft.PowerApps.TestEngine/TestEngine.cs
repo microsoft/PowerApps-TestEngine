@@ -56,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine
         /// <param name="environmentId">The environment ID where the Power App is published.</param>
         /// <param name="tenantId">The tenant ID where the Power App is published.</param>
         /// <param name="outputDirectory">The output directory where the test results and logs are to be saved.</param>
-        /// <param name="domain">The domain of the Power Apps Canvas Designer application where the app is published (Example: "apps.powerapps.com").</param>
+        /// <param name="domain">The domain of the Power Apps Canvas Designer application where the app is published (Example: "https://apps.powerapps.com").</param>
         /// <param name="queryParams">Optional query parameters that would be passed to the Player URL for optional features or parameters.</param>
         /// <returns>The full path where the test results are saved.</returns>
         /// <exception cref="ArgumentNullException">Throws ArgumentNullException if any of testConfigFile, environmentId, tenantId or domain are missing or empty.</exception>
@@ -86,6 +86,14 @@ namespace Microsoft.PowerApps.TestEngine
                 if (tenantId == null)
                 {
                     throw new ArgumentNullException(nameof(tenantId));
+                }
+
+                if (!string.IsNullOrEmpty(domain))
+                {
+                    if (!IsValidHttpsUrl(domain))
+                    {
+                        throw new ArgumentException(string.Format("   [Critical Error]: Invalid uri: {0}", nameof(domain)));
+                    }
                 }
 
                 if (outputDirectory == null)
@@ -142,7 +150,14 @@ namespace Microsoft.PowerApps.TestEngine
             catch (UserInputException e)
             {
                 _eventHandler.EncounteredException(e);
-                return testRunDirectory;
+                if (string.IsNullOrEmpty(testRunDirectory))
+                {
+                    return "InvalidOutputDirectory";
+                }
+                else
+                {
+                    return testRunDirectory;
+                }
             }
             catch (DirectoryNotFoundException)
             {
@@ -151,13 +166,26 @@ namespace Microsoft.PowerApps.TestEngine
             }
             catch (Exception e)
             {
+#if RELEASE
+                if(string.IsNullOrEmpty(testRunDirectory))
+                {
+                    _eventHandler.EncounteredException(e);
+                    return "InvalidOutputDirectory";
+                }
+                else
+                {
+                    Logger.LogError(e.Message);
+                    return testRunDirectory;
+                }
+#else
                 Logger.LogError(e.Message);
                 throw;
+#endif
             }
             finally
 
             {
-                if (TestLoggerProvider.TestLoggers.ContainsKey(testRunId))
+                if (!string.IsNullOrEmpty(testRunDirectory) && TestLoggerProvider.TestLoggers.ContainsKey(testRunId))
                 {
                     var testLogger = TestLoggerProvider.TestLoggers[testRunId];
                     testLogger.WriteToLogsFile(testRunDirectory, null);
@@ -209,6 +237,11 @@ namespace Microsoft.PowerApps.TestEngine
                 Logger.LogError($"Locale from test suite definition {strLocale} unrecognized.");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
+        }
+
+        public bool IsValidHttpsUrl(string val)
+        {
+            return Uri.TryCreate(val, UriKind.Absolute, out var uriResult) && uriResult?.Scheme == Uri.UriSchemeHttps;
         }
     }
 }

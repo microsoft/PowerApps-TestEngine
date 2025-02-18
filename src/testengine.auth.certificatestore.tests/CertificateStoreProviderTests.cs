@@ -20,7 +20,7 @@ namespace testengine.auth.certificatestore.tests
         public CertificateStoreProviderTests()
         {
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
-            provider = new CertificateStoreProvider(MockFileSystem.Object);
+            provider = new CertificateStoreProvider();
         }
 
         [Fact]
