@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -36,9 +36,5 @@
   <ItemGroup>
     <MySourceFiles Include="..\..\bin\$(configuration)\testengine.common.user\testengine.common.user.dll" />
   </ItemGroup>
-
-  <Target Name="CopyFiles" AfterTargets="AfterBuild">
-    <Copy SourceFiles="@(MySourceFiles)" DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine" />
-  </Target>
 
 </Project>

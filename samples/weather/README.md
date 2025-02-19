@@ -54,7 +54,19 @@ Before you start, you'll need a few tools and permissions:
     pac auth create --environment <Your environment ID>
     ```
 
-5. Add the config.json in the same folder as RunTests.ps1 replacing the value with your tenant and  environment id
+5. Import the **TestEngine_*.zip** solution into an environment. NOTE: Note this Dataverse environment does not need to be the same as the environment you are testing.
+
+6. Login using Azure CLI with an account using az login
+
+    ```pwsh
+    az login --allow-no-subscriptions
+    ```
+
+7. Add the config.json in the same folder as RunTests.ps1 replacing the value with your tenant and environment id. 
+
+8. Update you Data Protection Url for thr Dataverse Environment you imported the Test Engine solution
+
+9. Add the Certificate subject name of the certificate you have a private key for to encrypt the user profile
 
     ```json
     {
@@ -64,11 +76,13 @@ Before you start, you'll need a few tools and permissions:
         "appDescription": "Weather Sample",
         "user1Email": "test@contoso.onmicrosoft.com",
         "runInstall": true,
-        "installPlaywright": true
+        "installPlaywright": true,
+        "DataProtectionUrl": "https://contoso.crm.dynamics.com/",
+        "DataProtectionCertificateName": "CN=localhost"
     }
     ```
 
-6. If you are testing multiple languages and you have those languages enabled in the environment you can use the following template to map languages to the the correct Language()
+10. If you are testing multiple languages and you have those languages enabled in the environment you can use the following template to map languages to the the correct Language
 
 
     ```json
@@ -84,11 +98,13 @@ Before you start, you'll need a few tools and permissions:
             {"id":1031, "name": "fr-fr", "file":"testPlan.eu.fx.yaml"},
             {"id":1033, "name": "en-us", "file":"testPlan.fx.yaml"},
             {"id":1036, "name": "de-de", "file":"testPlan.eu.fx.yaml"}
-        ]
+        ],
+        "DataProtectionUrl": "https://contoso.crm.dynamics.com/",
+        "DataProtectionCertificateName": "CN=localhost"
     }
     ```
 
-7. Ensure the sample WeatherSample_*.zip solution has been imported
+11. Ensure the sample WeatherSample_*.zip solution has been imported
 
 ## Run Test
 

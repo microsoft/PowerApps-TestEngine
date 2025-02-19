@@ -57,26 +57,7 @@ This sesction provides an overview of the extensibility model for Test Engine. F
 
 ### User Authentication
 
-Provides the capability to authenticate the test session.
-
-![Authentication provider overview diagram](./media/authentication.png)
-
-User authentication contains Extensible Authentication Mechanisms. They allows for different methods of authentication to be plugged in, ensuring secure test sessions.
-
-Current authentication providers and scenarios
-
-| Type |	Description	| Considerations |
-|------|------------------|-------------|
-|Browser Persistent Cookies | One time login and using persistent cookies for headless login	 | 1.	Storage of Browser Context that contains Persistent Cookies |
-|                           |  | 2.	Configuration of Persistent Cookie settings in Entra |
-|                           |  | 3.	Conditional Access Policies |
-| Certificate Based Authentication |	Configuration of Entra to allow Certificate Based Authentication |	1.	Issue and Revocation of Certificates
-|                           |  | 2.	Certificate renewal process
-| Conditional Access Policies	| Compliance with applied conditional Access polices	| 1.	Supported Browser type selection. For example, Edge, Chrome |
-|                           |  | 2.	Test Agent network locations |
-|                           |  | 3.	Risk profile of users |
-
-Projects like the [CoE Starter Kit](https://github.com/microsoft/coe-starter-kit) are in the process of using these authentication providers as part of their automated tests.
+Please refer https://microsoft.github.io/PowerApps-TestEngine/context/security-testengine-authentication-changes/.
 
 ### Providers
 

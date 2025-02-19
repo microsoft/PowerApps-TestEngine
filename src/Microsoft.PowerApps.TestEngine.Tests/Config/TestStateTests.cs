@@ -141,7 +141,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Config
 
             var environmentId = Guid.NewGuid().ToString();
             var tenantId = Guid.NewGuid().ToString();
-            var domain = "apps.powerapps.com";
+            var domain = "https://apps.powerapps.com";
             var outputDirectory = Guid.NewGuid().ToString();
 
             state.SetEnvironment(environmentId);

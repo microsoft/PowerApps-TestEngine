@@ -1,4 +1,7 @@
-﻿using Microsoft.PowerFx;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 
 namespace Microsoft.PowerApps.TestEngine.Config
