@@ -208,6 +208,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     {
                         case "disabled":
                         case "visible":
+                        case "checked":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())
