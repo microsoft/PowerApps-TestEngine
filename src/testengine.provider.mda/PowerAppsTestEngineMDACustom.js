@@ -158,7 +158,6 @@ class PowerAppsModelDrivenCanvas {
                         case 'OptionSet':
                             mappedType = ''
                             break;
-
                     }
 
                     if (!existingProperties.includes(item.name)) {
