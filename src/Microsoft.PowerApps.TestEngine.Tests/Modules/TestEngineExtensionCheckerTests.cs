@@ -122,7 +122,9 @@ public class Test : IUserManager
 
     public int Priority => throw new NotImplementedException();
 
-    public bool UseStaticContext => throw new NotImplementedException();
+    public bool UseStaticContext {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
+
+    public string ContextLocation => throw new NotImplementedException();
 
     public string Location {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
 

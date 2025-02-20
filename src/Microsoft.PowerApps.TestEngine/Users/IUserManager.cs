@@ -33,13 +33,19 @@ namespace Microsoft.PowerApps.TestEngine.Users
         /// Determines if the user manager should use static context to provide cached user state as part of a test session
         /// </summary>
         /// <value><c>True</c> if static context, <c>False</c> if not</value>
-        public bool UseStaticContext { get; }
+        public bool UseStaticContext { get; set; }
 
         /// <summary>
         /// The location to use for this user session
         /// </summary>
         /// <value>Path or resource where the user session should be located</value>
         public string Location { get; }
+
+        /// <summary>
+        /// The location to use for this user session
+        /// </summary>
+        /// <value>Path or resource where the user temporary context should be located</value>
+        public string ContextLocation { get; }
 
         /// <summary>
         /// Log in as user for currently running test

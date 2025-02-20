@@ -47,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Ends the test run
         /// </summary>
         /// <returns>Task</returns>
-        public Task EndTestRunAsync();
+        public Task EndTestRunAsync(IUserManager userManager);
 
         /// <summary>
         /// Dispose the instances

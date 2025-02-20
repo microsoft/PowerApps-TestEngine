@@ -399,5 +399,36 @@ enablePowerFxOverlay: false";
             // Verify the message is logged in this case
             LoggingTestHelper.VerifyLogging(MockLogger, "Invalid YAML format: TestSettings in test config file.", LogLevel.Error, Times.Once());
         }
+
+        [Fact]
+        public void YamlTestConfigParserParseTestSettingsWithExecutablePathTest()
+        {
+            var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            var parser = new YamlTestConfigParser(mockFileSystem.Object);
+
+            var testSettingsFile = @"recordVideo: true
+browserConfigurations:
+    - browser: Chromium
+    - browser: Firefox
+headless: false
+enablePowerFxOverlay: false
+executablePath: ""/path/to/browser""";
+
+            var filePath = "testSettings.fx.yaml";
+            mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var testSettings = parser.ParseTestConfig<TestSettings>(filePath, logger.Object);
+
+            Assert.NotNull(testSettings);
+            Assert.True(testSettings.RecordVideo);
+            Assert.False(testSettings.Headless);
+            Assert.False(testSettings.EnablePowerFxOverlay);
+            Assert.Equal(2, testSettings.BrowserConfigurations?.Count);
+            Assert.Equal("Chromium", testSettings.BrowserConfigurations?[0].Browser);
+            Assert.Equal("Firefox", testSettings.BrowserConfigurations?[1].Browser);
+            Assert.Equal("/path/to/browser", testSettings.ExecutablePath);
+        }
     }
 }

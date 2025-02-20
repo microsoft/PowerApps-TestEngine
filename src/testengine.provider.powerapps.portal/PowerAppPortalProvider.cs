@@ -206,7 +206,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
             TestState.SetDomain(BaseEnviromentUrl);
 
-            return BaseEnviromentUrl + "?source=testengine";
+            return BaseEnviromentUrl + "/home?source=testengine";
         }
     }
 }
