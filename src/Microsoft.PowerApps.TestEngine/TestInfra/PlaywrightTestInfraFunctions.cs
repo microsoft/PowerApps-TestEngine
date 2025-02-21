@@ -443,27 +443,30 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = content });
         }
 
-        public async Task TriggerControlClickEvent(string controlName, string filePath)
+        public async Task<bool> TriggerControlClickEvent(string controlName, string filePath)
         {
             ValidatePage();
 
-            if (string.IsNullOrEmpty(filePath))
+            if (!string.IsNullOrEmpty(filePath))
             {
-                // general control click event
-                var match = Page.Locator($"[data-control-name='{controlName}']");
-                await match.ClickAsync();
-            }
-            else
-            {
-                //Add Picture Control
-                var fileChooser = await Page.RunAndWaitForFileChooserAsync(async () =>
+                try
                 {
-                    var match = Page.Locator($"[data-control-name='{controlName}']");
-                    await match.ClickAsync();
-                });
-                await fileChooser.SetFilesAsync(filePath);
+                    //Add Picture Control
+                    var fileChooser = await Page.RunAndWaitForFileChooserAsync(async () =>
+                    {
+                        var match = Page.Locator($"[data-control-name='{controlName}']");
+                        await match.ClickAsync();
+                    });
+                    await fileChooser.SetFilesAsync(filePath);
+                    return true;
+                }
+                catch (Exception ex) 
+                {
+                    _singleTestInstanceState.GetLogger().LogError($"Error triggering Add Picture control click event: {ex.Message}");
+                    return false; // Return false if there was an error
+                }               
             }
-            
+            return false;
         }
     }
 }

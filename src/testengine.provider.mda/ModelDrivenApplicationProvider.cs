@@ -412,11 +412,17 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             try
             {
                 ValidateItemPath(itemPath, false);
-                await TestInfraFunctions.TriggerControlClickEvent(itemPath.ControlName, filePath);
-                var itemPathString = JsonConvert.SerializeObject(itemPath);
-                // TODO Select a choice item
-                var expression = $"PowerAppsTestEngine.select({itemPathString})";
-                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    return await TestInfraFunctions.TriggerControlClickEvent(itemPath.ControlName, filePath);
+                }
+                else
+                {
+                    var itemPathString = JsonConvert.SerializeObject(itemPath);
+                    // TODO Select a choice item
+                    var expression = $"PowerAppsTestEngine.select({itemPathString})";
+                    return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                }
             }
             catch (Exception ex)
             {

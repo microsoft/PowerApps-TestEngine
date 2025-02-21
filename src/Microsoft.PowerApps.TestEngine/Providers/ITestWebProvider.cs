@@ -53,6 +53,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// Runs the onSelect function of a control
         /// </summary>
         /// <param name="itemPath">Path to the item</param>
+        /// <param name="filePath">The physical file path for image file</param>
         /// <returns>True if onSelect function was successfully executed.</returns>
         public Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null);
 
