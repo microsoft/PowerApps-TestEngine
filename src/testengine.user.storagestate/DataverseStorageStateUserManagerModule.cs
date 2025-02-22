@@ -197,7 +197,7 @@ namespace testengine.user.storagestate
             return keys.AsReadOnly();
         }
 
-        public static void StoreValue(IOrganizationService service, string keyName, string valueName, string data)
+        public void StoreValue(IOrganizationService service, string keyName, string valueName, string data)
         {
             logger?.LogDebug("Storing new key");
 
@@ -216,14 +216,14 @@ namespace testengine.user.storagestate
             if (match.Count > 0)
             {
                 // Update match
-                logger?.LogDebug($"Updating existing key data {keyName}-{valueName}")
+                logger?.LogDebug($"Updating existing key data {keyName}-{valueName}");
                 var first = match.First();
                 first["te_data"] = data;
                 service.Update(first);
             }
             else
             {
-                logger?.LogDebug($"Creating new key data {keyName}-{valueName}")
+                logger?.LogDebug($"Creating new key data {keyName}-{valueName}");
                 var keyEntity = new Entity("te_keydata")
                 {
                     ["te_keyname"] = keyName,
