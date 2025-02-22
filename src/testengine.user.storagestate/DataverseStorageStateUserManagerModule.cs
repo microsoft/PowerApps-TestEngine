@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.ComponentModel.Composition;
-using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +32,7 @@ namespace testengine.user.storagestate
         ISingleTestInstanceState _singleTestInstanceState;
         ServiceProvider _services = null;
         bool _setup = false;
+        ILogger logger = null;
 
         public const string LOAD_SETTINGS = "LoadState";
 
@@ -59,8 +59,6 @@ namespace testengine.user.storagestate
             }
 
             var serviceCollection = new ServiceCollection();
-
-            ILogger logger = null;
 
             IOrganizationService serviceClient = null;
 
@@ -160,7 +158,12 @@ namespace testengine.user.storagestate
 
                 if (matches.Count() > 0)
                 {
+                    logger?.LogInformation($"Found {matches.Count()} key data matches");
                     return _userProtector.Unprotect(matches.First().Data);
+                } 
+                else
+                {
+                    logger?.LogInformation($"Found no key data matches for {machine}-{persona}");
                 }
 
                 return String.Empty;
