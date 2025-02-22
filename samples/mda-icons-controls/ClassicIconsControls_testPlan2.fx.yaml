@@ -1,0 +1,1790 @@
+testSuite:
+  testSuiteName: Classic Icon Controls
+  testSuiteDescription: Verifies that the classic icon controls work correctly.
+  persona: User1
+  appLogicalName: MDA_Icons_app
+
+  testCases:
+    - testCaseName: Test Checkbadge Icon
+      testCaseDescription: Verify that the Checkbadge icon is displayed correctly.
+      testSteps: |
+        SetProperty(Checkbadge.Visible, true);
+        Assert(Checkbadge.Visible = true, "Expected Checkbadge icon to be visible");
+
+    - testCaseName: Test Cleardrawing Icon
+      testCaseDescription: Verify that the Cleardrawing icon is displayed correctly.
+      testSteps: |
+        SetProperty(Cleardrawing.Visible, true);
+        Assert(Cleardrawing.Visible = true, "Expected Cleardrawing icon to be visible");
+
+    - testCaseName: Test Clock Icon
+      testCaseDescription: Verify that the Clock icon is displayed correctly.
+      testSteps: |
+        SetProperty(Clock.Visible, true);
+        Assert(Clock.Visible = true, "Expected Clock icon to be visible");
+
+    - testCaseName: Test Collapseview Icon
+      testCaseDescription: Verify that the Collapseview icon is displayed correctly.
+      testSteps: |
+        SetProperty(Collapseview.Visible, true);
+        Assert(Collapseview.Visible = true, "Expected Collapseview icon to be visible");
+
+    - testCaseName: Test Colorpicker Icon
+      testCaseDescription: Verify that the Colorpicker icon is displayed correctly.
+      testSteps: |
+        SetProperty(Colorpicker.Visible, true);
+        Assert(Colorpicker.Visible = true, "Expected Colorpicker icon to be visible");
+
+    - testCaseName: Test Compose Icon
+      testCaseDescription: Verify that the Compose icon is displayed correctly.
+      testSteps: |
+        SetProperty(Compose.Visible, true);
+        Assert(Compose.Visible = true, "Expected Compose icon to be visible");
+
+    - testCaseName: Test Computerdesktop Icon
+      testCaseDescription: Verify that the Computerdesktop icon is displayed correctly.
+      testSteps: |
+        SetProperty(Computerdesktop.Visible, true);
+        Assert(Computerdesktop.Visible = true, "Expected Computerdesktop icon to be visible");
+
+    - testCaseName: Test Controller Icon
+      testCaseDescription: Verify that the Controller icon is displayed correctly.
+      testSteps: |
+        SetProperty(Controller.Visible, true);
+        Assert(Controller.Visible = true, "Expected Controller icon to be visible");
+
+    - testCaseName: Test Copy Icon
+      testCaseDescription: Verify that the Copy icon is displayed correctly.
+      testSteps: |
+        SetProperty(Copy.Visible, true);
+        Assert(Copy.Visible = true, "Expected Copy icon to be visible");
+
+    - testCaseName: Test Crop Icon
+      testCaseDescription: Verify that the Crop icon is displayed correctly.
+      testSteps: |
+        SetProperty(Crop.Visible, true);
+        Assert(Crop.Visible = true, "Expected Crop icon to be visible");
+
+    - testCaseName: Test Currency Icon
+      testCaseDescription: Verify that the Currency icon is displayed correctly.
+      testSteps: |
+        SetProperty(Currency.Visible, true);
+        Assert(Currency.Visible = true, "Expected Currency icon to be visible");
+
+    - testCaseName: Test Cut Icon
+      testCaseDescription: Verify that the Cut icon is displayed correctly.
+      testSteps: |
+        SetProperty(Cut.Visible, true);
+        Assert(Cut.Visible = true, "Expected Cut icon to be visible");
+
+    - testCaseName: Test Check Icon
+      testCaseDescription: Verify that the Check icon is displayed correctly.
+      testSteps: |
+        SetProperty(Check.Visible, true);
+        Assert(Check.Visible = true, "Expected Check icon to be visible");
+
+    - testCaseName: Test Database Icon
+      testCaseDescription: Verify that the Database icon is displayed correctly.
+      testSteps: |
+        SetProperty(Database.Visible, true);
+        Assert(Database.Visible = true, "Expected Database icon to be visible");
+
+    - testCaseName: Test DetailList Icon
+      testCaseDescription: Verify that the DetailList icon is displayed correctly.
+      testSteps: |
+        SetProperty(DetailList.Visible, true);
+        Assert(DetailList.Visible = true, "Expected DetailList icon to be visible");
+
+    - testCaseName: Test Devices Icon
+      testCaseDescription: Verify that the Devices icon is displayed correctly.
+      testSteps: |
+        SetProperty(Devices.Visible, true);
+        Assert(Devices.Visible = true, "Expected Devices icon to be visible");
+
+    - testCaseName: Test Diamond Icon
+      testCaseDescription: Verify that the Diamond icon is displayed correctly.
+      testSteps: |
+        SetProperty(Diamond.Visible, true);
+        Assert(Diamond.Visible = true, "Expected Diamond icon to be visible");
+
+    - testCaseName: Test Dockleft Icon
+      testCaseDescription: Verify that the Dockleft icon is displayed correctly.
+      testSteps: |
+        SetProperty(Dockleft.Visible, true);
+        Assert(Dockleft.Visible = true, "Expected Dockleft icon to be visible");
+
+    - testCaseName: Test Dockright Icon
+      testCaseDescription: Verify that the Dockright icon is displayed correctly.
+      testSteps: |
+        SetProperty(Dockright.Visible, true);
+        Assert(Dockright.Visible = true, "Expected Dockright icon to be visible");
+
+    - testCaseName: Test Document Icon
+      testCaseDescription: Verify that the Document icon is displayed correctly.
+      testSteps: |
+        SetProperty(Document.Visible, true);
+        Assert(Document.Visible = true, "Expected Document icon to be visible");
+
+    - testCaseName: Test DocumentCheckmark Icon
+      testCaseDescription: Verify that the Documentcheckmark icon is displayed correctly.
+      testSteps: |
+        SetProperty(DocumentCheckmark.Visible, true);
+        Assert(DocumentCheckmark.Visible = true, "Expected Documentcheckmark icon to be visible");
+
+    - testCaseName: Test DocumentWithContent Icon
+      testCaseDescription: Verify that the DocumentWithContent icon is displayed correctly.
+      testSteps: |
+        SetProperty(DocumentWithContent.Visible, true);
+        Assert(DocumentWithContent.Visible = true, "Expected DocumentWithcontent icon to be visible");
+
+    - testCaseName: Test Down Icon
+      testCaseDescription: Verify that the Down icon is displayed correctly.
+      testSteps: |
+        SetProperty(Down.Visible, true);
+        Assert(Down.Visible = true, "Expected Down icon to be visible");
+
+    - testCaseName: Test Download Icon
+      testCaseDescription: Verify that the Download icon is displayed correctly.
+      testSteps: |
+        SetProperty(Download.Visible, true);
+        Assert(Download.Visible = true, "Expected Download icon to be visible");
+
+    - testCaseName: Test Draw Icon
+      testCaseDescription: Verify that the Draw icon is displayed correctly.
+      testSteps: |
+        SetProperty(Draw.Visible, true);
+        Assert(Draw.Visible = true, "Expected Draw icon to be visible");
+
+    - testCaseName: Test Edit Icon
+      testCaseDescription: Verify that the Edit icon is displayed correctly.
+      testSteps: |
+        SetProperty(Edit.Visible, true);
+        Assert(Edit.Visible = true, "Expected Edit icon to be visible");
+
+    - testCaseName: Test EmojiFrown Icon
+      testCaseDescription: Verify that the EmojiFrown icon is displayed correctly.
+      testSteps: |
+        SetProperty(EmojiFrown.Visible, true);
+        Assert(EmojiFrown.Visible = true, "Expected EmojiFrown icon to be visible");
+
+    - testCaseName: Test EmojiHappy Icon
+      testCaseDescription: Verify that the EmojiHappy icon is displayed correctly.
+      testSteps: |
+        SetProperty(EmojiHappy.Visible, true);
+        Assert(EmojiHappy.Visible = true, "Expected EmojiHappy icon to be visible");
+
+    - testCaseName: Test EmojiNeutral Icon
+      testCaseDescription: Verify that the EmojiNeutral icon is displayed correctly.
+      testSteps: |
+        SetProperty(EmojiNeutral.Visible, true);
+        Assert(EmojiNeutral.Visible = true, "Expected EmojiNeutral icon to be visible");
+
+    - testCaseName: Test Emojisad Icon
+      testCaseDescription: Verify that the Emojisad icon is displayed correctly.
+      testSteps: |
+        SetProperty(Emojisad.Visible, true);
+        Assert(Emojisad.Visible = true, "Expected Emojisad icon to be visible");
+
+    - testCaseName: Test Emojismile Icon
+      testCaseDescription: Verify that the Emojismile icon is displayed correctly.
+      testSteps: |
+        SetProperty(Emojismile.Visible, true);
+        Assert(Emojismile.Visible = true, "Expected Emojismile icon to be visible");
+
+    - testCaseName: Test Endcall Icon
+      testCaseDescription: Verify that the Endcall icon is displayed correctly.
+      testSteps: |
+        SetProperty(Endcall.Visible, true);
+        Assert(Endcall.Visible = true, "Expected Endcall icon to be visible");
+
+    - testCaseName: Test Enhance Icon
+      testCaseDescription: Verify that the Enhance icon is displayed correctly.
+      testSteps: |
+        SetProperty(Enhance.Visible, true);
+        Assert(Enhance.Visible = true, "Expected Enhance icon to be visible");
+
+    - testCaseName: Test Erase Icon
+      testCaseDescription: Verify that the Erase icon is displayed correctly.
+      testSteps: |
+        SetProperty(Erase.Visible, true);
+        Assert(Erase.Visible = true, "Expected Erase icon to be visible");
+
+    - testCaseName: Test Error Icon
+      testCaseDescription: Verify that the Error icon is displayed correctly.
+      testSteps: |
+        SetProperty(Error.Visible, true);
+        Assert(Error.Visible = true, "Expected Error icon to be visible");
+
+    - testCaseName: Test ExpandView Icon
+      testCaseDescription: Verify that the ExpandView icon is displayed correctly.
+      testSteps: |
+        SetProperty(ExpandView.Visible, true);
+        Assert(ExpandView.Visible = true, "Expected ExpandView icon to be visible");
+
+    - testCaseName: Test Export Icon
+      testCaseDescription: Verify that the Export icon is displayed correctly.
+      testSteps: |
+        SetProperty(Export.Visible, true);
+        Assert(Export.Visible = true, "Expected Export icon to be visible");
+
+    - testCaseName: Test Filter Icon
+      testCaseDescription: Verify that the Filter icon is displayed correctly.
+      testSteps: |
+        SetProperty(Filter.Visible, true);
+        Assert(Filter.Visible = true, "Expected Filter icon to be visible");
+
+    - testCaseName: Test Flag Icon
+      testCaseDescription: Verify that the Flag icon is displayed correctly.
+      testSteps: |
+        SetProperty(Flag.Visible, true);
+        Assert(Flag.Visible = true, "Expected Flag icon to be visible");
+
+    - testCaseName: Test FlatFilter Icon
+      testCaseDescription: Verify that the FlatFilter icon is displayed correctly.
+      testSteps: |
+        SetProperty(FlatFilter.Visible, true);
+        Assert(FlatFilter.Visible = true, "Expected FlatFilter icon to be visible");
+
+    - testCaseName: Test FlatFilterFilled Icon
+      testCaseDescription: Verify that the FlatFilterFilled icon is displayed correctly.
+      testSteps: |
+        SetProperty(FlatFilterFilled.Visible, true);
+        Assert(FlatFilterFilled.Visible = true, "Expected FlatFilterFilled icon to be visible");
+
+    - testCaseName: Test Folder Icon
+      testCaseDescription: Verify that the Folder icon is displayed correctly.
+      testSteps: |
+        SetProperty(Folder.Visible, true);
+        Assert(Folder.Visible = true, "Expected Folder icon to be visible");
+
+    - testCaseName: Test Food Icon
+      testCaseDescription: Verify that the Food icon is displayed correctly.
+      testSteps: |
+        SetProperty(Food.Visible, true);
+        Assert(Food.Visible = true, "Expected Food icon to be visible");
+
+    - testCaseName: Test Globe Icon
+      testCaseDescription: Verify that the Globe icon is displayed correctly.
+      testSteps: |
+        SetProperty(Globe.Visible, true);
+        Assert(Globe.Visible = true, "Expected Globe icon to be visible");
+
+    - testCaseName: Test GlobeChangesPending Icon
+      testCaseDescription: Verify that the GlobeChangesPending icon is displayed correctly.
+      testSteps: |
+        SetProperty(GlobeChangesPending.Visible, true);
+        Assert(GlobeChangesPending.Visible = true, "Expected GlobeChangesPending icon to be visible");
+
+    - testCaseName: Test GlobeError Icon
+      testCaseDescription: Verify that the GlobeError icon is displayed correctly.
+      testSteps: |
+        SetProperty(GlobeError.Visible, true);
+        Assert(GlobeError.Visible = true, "Expected GlobeError icon to be visible");
+
+    - testCaseName: Test GlobeNotConnected Icon
+      testCaseDescription: Verify that the GlobeNotConnected icon is displayed correctly.
+      testSteps: |
+        SetProperty(GlobeNotConnected.Visible, true);
+        Assert(GlobeNotConnected.Visible = true, "Expected GlobeNotConnected icon to be visible");
+
+    - testCaseName: Test GlobeRefresh Icon
+      testCaseDescription: Verify that the GlobeRefresh icon is displayed correctly.
+      testSteps: |
+        SetProperty(GlobeRefresh.Visible, true);
+        Assert(GlobeRefresh.Visible = true, "Expected GlobeRefresh icon to be visible");
+
+    - testCaseName: Test GlobeWarming Icon
+      testCaseDescription: Verify that the GlobeWarming icon is displayed correctly.
+      testSteps: |
+        SetProperty(GlobeWarming.Visible, true);
+        Assert(GlobeWarming.Visible = true, "Expected GlobeWarming icon to be visible");
+
+    - testCaseName: Test HalfFilledCircle Icon
+      testCaseDescription: Verify that the HalfFilledCircle icon is displayed correctly.
+      testSteps: |
+        SetProperty(HalfFilledCircle.Visible, true);
+        Assert(HalfFilledCircle.Visible = true, "Expected HalfFilledCircle icon to be visible");
+
+    - testCaseName: Test HamburgerMenu Icon
+      testCaseDescription: Verify that the HamburgerMenu icon is displayed correctly.
+      testSteps: |
+        SetProperty(HamburgerMenu.Visible, true);
+        Assert(HamburgerMenu.Visible = true, "Expected HamburgerMenu icon to be visible");
+
+    - testCaseName: Test Hashtag Icon
+      testCaseDescription: Verify that the Hashtag icon is displayed correctly.
+      testSteps: |
+        SetProperty(Hashtag.Visible, true);
+        Assert(Hashtag.Visible = true, "Expected Hashtag icon to be visible");
+
+    - testCaseName: Test Health Icon
+      testCaseDescription: Verify that the Health icon is displayed correctly.
+      testSteps: |
+        SetProperty(Health.Visible, true);
+        Assert(Health.Visible = true, "Expected Health icon to be visible");
+
+    - testCaseName: Test Heart Icon
+      testCaseDescription: Verify that the Heart icon is displayed correctly.
+      testSteps: |
+        SetProperty(Heart.Visible, true);
+        Assert(Heart.Visible = true, "Expected Heart icon to be visible");
+
+    - testCaseName: Test Help Icon
+      testCaseDescription: Verify that the Help icon is displayed correctly.
+      testSteps: |
+        SetProperty(Help.Visible, true);
+        Assert(Help.Visible = true, "Expected Help icon to be visible");
+
+    - testCaseName: Test Hide Icon
+      testCaseDescription: Verify that the Hide icon is displayed correctly.
+      testSteps: |
+        SetProperty(Hide.Visible, true);
+        Assert(Hide.Visible = true, "Expected Hide icon to be visible");
+
+    - testCaseName: Test History Icon
+      testCaseDescription: Verify that the History icon is displayed correctly.
+      testSteps: |
+        SetProperty(History.Visible, true);
+        Assert(History.Visible = true, "Expected History icon to be visible");
+
+    - testCaseName: Test Home Icon
+      testCaseDescription: Verify that the Home icon is displayed correctly.
+      testSteps: |
+        SetProperty(Home.Visible, true);
+        Assert(Home.Visible = true, "Expected Home icon to be visible");
+
+    - testCaseName: Test Horizontalline Icon
+      testCaseDescription: Verify that the Horizontalline icon is displayed correctly.
+      testSteps: |
+        SetProperty(Horizontalline.Visible, true);
+        Assert(Horizontalline.Visible = true, "Expected Horizontalline icon to be visible");
+
+    - testCaseName: Test Hospital Icon
+      testCaseDescription: Verify that the Hospital icon is displayed correctly.
+      testSteps: |
+        SetProperty(Hospital.Visible, true);
+        Assert(Hospital.Visible = true, "Expected Hospital icon to be visible");
+
+    - testCaseName: Test Import Icon
+      testCaseDescription: Verify that the Import icon is displayed correctly.
+      testSteps: |
+        SetProperty(Import.Visible, true);
+        Assert(Import.Visible = true, "Expected Import icon to be visible");
+
+    - testCaseName: Test Information Icon
+      testCaseDescription: Verify that the Information icon is displayed correctly.
+      testSteps: |
+        SetProperty(Information.Visible, true);
+        Assert(Information.Visible = true, "Expected Information icon to be visible");
+
+    - testCaseName: Test Items Icon
+      testCaseDescription: Verify that the Items icon is displayed correctly.
+      testSteps: |
+        SetProperty(Items.Visible, true);
+        Assert(Items.Visible = true, "Expected Items icon to be visible");
+
+    - testCaseName: Test Journal Icon
+      testCaseDescription: Verify that the Journal icon is displayed correctly.
+      testSteps: |
+        SetProperty(Journal.Visible, true);
+        Assert(Journal.Visible = true, "Expected Journal icon to be visible");
+
+    - testCaseName: Test Key Icon
+      testCaseDescription: Verify that the Key icon is displayed correctly.
+      testSteps: |
+        SetProperty(Key.Visible, true);
+        Assert(Key.Visible = true, "Expected Key icon to be visible");
+
+    - testCaseName: Test Laptop Icon
+      testCaseDescription: Verify that the Laptop icon is displayed correctly.
+      testSteps: |
+        SetProperty(Laptop.Visible, true);
+        Assert(Laptop.Visible = true, "Expected Laptop icon to be visible");
+
+    - testCaseName: Test Layers Icon
+      testCaseDescription: Verify that the Layers icon is displayed correctly.
+      testSteps: |
+        SetProperty(Layers.Visible, true);
+        Assert(Layers.Visible = true, "Expected Layers icon to be visible");
+
+    - testCaseName: Test Leave Icon
+      testCaseDescription: Verify that the Leave icon is displayed correctly.
+      testSteps: |
+        SetProperty(Leave.Visible, true);
+        Assert(Leave.Visible = true, "Expected Leave icon to be visible");
+
+    - testCaseName: Test Left Icon
+      testCaseDescription: Verify that the Left icon is displayed correctly.
+      testSteps: |
+        SetProperty(Left.Visible, true);
+        Assert(Left.Visible = true, "Expected Left icon to be visible");
+
+    - testCaseName: Test Lightbulb Icon
+      testCaseDescription: Verify that the Lightbulb icon is displayed correctly.
+      testSteps: |
+        SetProperty(Lightbulb.Visible, true);
+        Assert(Lightbulb.Visible = true, "Expected Lightbulb icon to be visible");
+
+    - testCaseName: Test Lightingbolt Icon
+      testCaseDescription: Verify that the Lightingbolt icon is displayed correctly.
+      testSteps: |
+        SetProperty(Lightingbolt.Visible, true);
+        Assert(Lightingbolt.Visible = true, "Expected Lightingbolt icon to be visible");
+
+    - testCaseName: Test LikeDislike Icon
+      testCaseDescription: Verify that the LikeDislike icon is displayed correctly.
+      testSteps: |
+        SetProperty(LikeDislike.Visible, true);
+        Assert(LikeDislike.Visible = true, "Expected LikeDislike icon to be visible");
+
+    - testCaseName: Test Lineweight Icon
+      testCaseDescription: Verify that the Lineweight icon is displayed correctly.
+      testSteps: |
+        SetProperty(Lineweight.Visible, true);
+        Assert(Lineweight.Visible = true, "Expected Lineweight icon to be visible");
+
+    - testCaseName: Test Link Icon
+      testCaseDescription: Verify that the Link icon is displayed correctly.
+      testSteps: |
+        SetProperty(Link.Visible, true);
+        Assert(Link.Visible = true, "Expected Link icon to be visible");
+
+    - testCaseName: Test ListReminder Icon
+      testCaseDescription: Verify that the ListReminder icon is displayed correctly.
+      testSteps: |
+        SetProperty(ListReminder.Visible, true);
+        Assert(ListReminder.Visible = true, "Expected ListReminder icon to be visible");
+
+    - testCaseName: Test ListScrollEmpty Icon
+      testCaseDescription: Verify that the ListScrollEmpty icon is displayed correctly.
+      testSteps: |
+        SetProperty(ListScrollEmpty.Visible, true);
+        Assert(ListScrollEmpty.Visible = true, "Expected ListScrollEmpty icon to be visible");
+
+    - testCaseName: Test ListScrollWatchList Icon
+      testCaseDescription: Verify that the ListScrollWatchList icon is displayed correctly.
+      testSteps: |
+        SetProperty(ListScrollWatchList.Visible, true);
+        Assert(ListScrollWatchList.Visible = true, "Expected ListScrollWatchList icon to be visible");
+
+    - testCaseName: Test Location1 Icon
+      testCaseDescription: Verify that the Location1 icon is displayed correctly.
+      testSteps: |
+        SetProperty(Location1.Visible, true);
+        Assert(Location1.Visible = true, "Expected Location1 icon to be visible");
+
+    - testCaseName: Test Lock Icon
+      testCaseDescription: Verify that the Lock icon is displayed correctly.
+      testSteps: |
+        SetProperty(Lock.Visible, true);
+        Assert(Lock.Visible = true, "Expected Lock icon to be visible");
+
+    - testCaseName: Test LogJournal Icon
+      testCaseDescription: Verify that the LogJournal icon is displayed correctly.
+      testSteps: |
+        SetProperty(LogJournal.Visible, true);
+        Assert(LogJournal.Visible = true, "Expected LogJournal icon to be visible");
+
+    - testCaseName: Test Mail Icon
+      testCaseDescription: Verify that the Mail icon is displayed correctly.
+      testSteps: |
+        SetProperty(Mail.Visible, true);
+        Assert(Mail.Visible = true, "Expected Mail icon to be visible");
+
+    - testCaseName: Test Manufacture Icon
+      testCaseDescription: Verify that the Manufacture icon is displayed correctly.
+      testSteps: |
+        SetProperty(Manufacture.Visible, true);
+        Assert(Manufacture.Visible = true, "Expected Manufacture icon to be visible");
+
+    - testCaseName: Test Medical Icon
+      testCaseDescription: Verify that the Medical icon is displayed correctly.
+      testSteps: |
+        SetProperty(Medical.Visible, true);
+        Assert(Medical.Visible = true, "Expected Medical icon to be visible");
+
+    - testCaseName: Test Message Icon
+      testCaseDescription: Verify that the Message icon is displayed correctly.
+      testSteps: |
+        SetProperty(Message.Visible, true);
+        Assert(Message.Visible = true, "Expected Message icon to be visible");
+
+    - testCaseName: Test Microphone Icon
+      testCaseDescription: Verify that the Microphone icon is displayed correctly.
+      testSteps: |
+        SetProperty(Microphone.Visible, true);
+        Assert(Microphone.Visible = true, "Expected Microphone icon to be visible");
+
+    - testCaseName: Test Money Icon
+      testCaseDescription: Verify that the Money icon is displayed correctly.
+      testSteps: |
+        SetProperty(Money.Visible, true);
+        Assert(Money.Visible = true, "Expected Money icon to be visible");
+
+    - testCaseName: Test More Icon
+      testCaseDescription: Verify that the More icon is displayed correctly.
+      testSteps: |
+        SetProperty(More.Visible, true);
+        Assert(More.Visible = true, "Expected More icon to be visible");
+
+    - testCaseName: Test NewsPaper Icon
+      testCaseDescription: Verify that the NewsPaper icon is displayed correctly.
+      testSteps: |
+        SetProperty(NewsPaper.Visible, true);
+        Assert(NewsPaper.Visible = true, "Expected NewsPaper icon to be visible");
+
+    - testCaseName: Test Next Icon
+      testCaseDescription: Verify that the Next icon is displayed correctly.
+      testSteps: |
+        SetProperty(Next.Visible, true);
+        Assert(Next.Visible = true, "Expected Next icon to be visible");
+
+    - testCaseName: Test Note Icon
+      testCaseDescription: Verify that the Note icon is displayed correctly.
+      testSteps: |
+        SetProperty(Note.Visible, true);
+        Assert(Note.Visible = true, "Expected Note icon to be visible");
+
+    - testCaseName: Test Notebook Icon
+      testCaseDescription: Verify that the Notebook icon is displayed correctly.
+      testSteps: |
+        SetProperty(Notebook.Visible, true);
+        Assert(Notebook.Visible = true, "Expected Notebook icon to be visible");
+
+    - testCaseName: Test Officebuilding Icon
+      testCaseDescription: Verify that the Officebuilding icon is displayed correctly.
+      testSteps: |
+        SetProperty(Officebuilding.Visible, true);
+        Assert(Officebuilding.Visible = true, "Expected Officebuilding icon to be visible");
+
+    - testCaseName: Test OpenInNewWindow Icon
+      testCaseDescription: Verify that the OpenInNewWindow icon is displayed correctly.
+      testSteps: |
+        SetProperty(OpenInNewWindow.Visible, true);
+        Assert(OpenInNewWindow.Visible = true, "Expected OpenInNewWindow icon to be visible");
+
+    - testCaseName: Test OptionsList Icon
+      testCaseDescription: Verify that the OptionsList icon is displayed correctly.
+      testSteps: |
+        SetProperty(OptionsList.Visible, true);
+        Assert(OptionsList.Visible = true, "Expected OptionsList icon to be visible");
+
+    - testCaseName: Test PaperClip Icon
+      testCaseDescription: Verify that the PaperClip icon is displayed correctly.
+      testSteps: |
+        SetProperty(PaperClip.Visible, true);
+        Assert(PaperClip.Visible = true, "Expected PaperClip icon to be visible");
+
+    - testCaseName: Test Paste Icon
+      testCaseDescription: Verify that the Paste icon is displayed correctly.
+      testSteps: |
+        SetProperty(Paste.Visible, true);
+        Assert(Paste.Visible = true, "Expected Paste icon to be visible");
+
+    - testCaseName: Test PdfDocument Icon
+      testCaseDescription: Verify that the PdfDocument icon is displayed correctly.
+      testSteps: |
+        SetProperty(PdfDocument.Visible, true);
+        Assert(PdfDocument.Visible = true, "Expected PdfDocument icon to be visible");
+
+    - testCaseName: Test People Icon
+      testCaseDescription: Verify that the People icon is displayed correctly.
+      testSteps: |
+        SetProperty(People.Visible, true);
+        Assert(People.Visible = true, "Expected People icon to be visible");
+
+    - testCaseName: Test Person Icon
+      testCaseDescription: Verify that the Person icon is displayed correctly.
+      testSteps: |
+        SetProperty(Person.Visible, true);
+        Assert(Person.Visible = true, "Expected Person icon to be visible");
+
+    - testCaseName: Test Phone Icon
+      testCaseDescription: Verify that the Phone icon is displayed correctly.
+      testSteps: |
+        SetProperty(Phone.Visible, true);
+        Assert(Phone.Visible = true, "Expected Phone icon to be visible");
+
+    - testCaseName: Test PictureFrames Icon
+      testCaseDescription: Verify that the PictureFrames icon is displayed correctly.
+      testSteps: |
+        SetProperty(PictureFrames.Visible, true);
+        Assert(PictureFrames.Visible = true, "Expected PictureFrames icon to be visible");
+
+    - testCaseName: Test Pin Icon
+      testCaseDescription: Verify that the Pin icon is displayed correctly.
+      testSteps: |
+        SetProperty(Pin.Visible, true);
+        Assert(Pin.Visible = true, "Expected Pin icon to be visible");
+
+    - testCaseName: Test Post Icon
+      testCaseDescription: Verify that the Post icon is displayed correctly.
+      testSteps: |
+        SetProperty(Post.Visible, true);
+        Assert(Post.Visible = true, "Expected Post icon to be visible");
+
+    - testCaseName: Test Print Icon
+      testCaseDescription: Verify that the Print icon is displayed correctly.
+      testSteps: |
+        SetProperty(Print.Visible, true);
+        Assert(Print.Visible = true, "Expected Print icon to be visible");
+
+    - testCaseName: OnSelect_Update_Label_Checkbadge
+      testSteps: |
+        Select(Checkbadge);
+        Assert(Label1.Text = "Checkbadge clicked!", "Label should display 'Checkbadge icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Cleardrawing
+      testSteps: |
+        Select(Cleardrawing);
+        Assert(Label1.Text = "Cleardrawing clicked!", "Label should display 'Cleardrawing icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Clock
+      testSteps: |
+        Select(Clock);
+        Assert(Label1.Text = "Clock clicked!", "Label should display 'Clock icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Collapseview
+      testSteps: |
+        Select(Collapseview);
+        Assert(Label1.Text = "Collapseview clicked!", "Label should display 'Collapseview icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Colorpicker
+      testSteps: |
+        Select(Colorpicker);
+        Assert(Label1.Text = "Colorpicker clicked!", "Label should display 'Colorpicker icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Compose
+      testSteps: |
+        Select(Compose);
+        Assert(Label1.Text = "Compose clicked!", "Label should display 'Compose icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Computerdesktop
+      testSteps: |
+        Select(Computerdesktop);
+        Assert(Label1.Text = "Computerdesktop clicked!", "Label should display 'Computerdesktop icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Controller
+      testSteps: |
+        Select(Controller);
+        Assert(Label1.Text = "Controller clicked!", "Label should display 'Controller icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Copy
+      testSteps: |
+        Select(Copy);
+        Assert(Label1.Text = "Copy clicked!", "Label should display 'Copy icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Crop
+      testSteps: |
+        Select(Crop);
+        Assert(Label1.Text = "Crop clicked!", "Label should display 'Crop icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Currency
+      testSteps: |
+        Select(Currency);
+        Assert(Label1.Text = "Currency clicked!", "Label should display 'Currency icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Cut
+      testSteps: |
+        Select(Cut);
+        Assert(Label1.Text = "Cut clicked!", "Label should display 'Cut icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Check
+      testSteps: |
+        Select(Check);
+        Assert(Label1.Text = "Check clicked!", "Label should display 'Check icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Database
+      testSteps: |
+        Select(Database);
+        Assert(Label1.Text = "Database clicked!", "Label should display 'Database icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_DetailList
+      testSteps: |
+        Select(DetailList);
+        Assert(Label1.Text = "DetailList clicked!", "Label should display 'DetailList icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Devices
+      testSteps: |
+        Select(Devices);
+        Assert(Label1.Text = "Devices clicked!", "Label should display 'Devices icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Diamond
+      testSteps: |
+        Select(Diamond);
+        Assert(Label1.Text = "Diamond clicked!", "Label should display 'Diamond icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Dockleft
+      testSteps: |
+        Select(Dockleft);
+        Assert(Label1.Text = "Dockleft clicked!", "Label should display 'Dockleft icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Dockright
+      testSteps: |
+        Select(Dockright);
+        Assert(Label1.Text = "Dockright clicked!", "Label should display 'Dockright icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Document
+      testSteps: |
+        Select(Document);
+        Assert(Label1.Text = "Document clicked!", "Label should display 'Document icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_DocumentCheckmark
+      testSteps: |
+        Select(DocumentCheckmark);
+        Assert(Label1.Text = "DocumentCheckmark clicked!", "Label should display 'DocumentCheckmark icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_DocumentWithContent
+      testSteps: |
+        Select(DocumentWithContent);
+        Assert(Label1.Text = "DocumentWithContent clicked!", "Label should display 'DocumentWithContent icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Down
+      testSteps: |
+        Select(Down);
+        Assert(Label1.Text = "Down clicked!", "Label should display 'Down icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Download
+      testSteps: |
+        Select(Download);
+        Assert(Label1.Text = "Download clicked!", "Label should display 'Download icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Draw
+      testSteps: |
+        Select(Draw);
+        Assert(Label1.Text = "Draw clicked!", "Label should display 'Draw icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Edit
+      testSteps: |
+        Select(Edit);
+        Assert(Label1.Text = "Edit clicked!", "Label should display 'Edit icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_EmojiFrown
+      testSteps: |
+        Select(EmojiFrown);
+        Assert(Label1.Text = "EmojiFrown clicked!", "Label should display 'EmojiFrown icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_EmojiHappy
+      testSteps: |
+        Select(EmojiHappy);
+        Assert(Label1.Text = "EmojiHappy clicked!", "Label should display 'EmojiHappy icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_EmojiNeutral
+      testSteps: |
+        Select(EmojiNeutral);
+        Assert(Label1.Text = "EmojiNeutral clicked!", "Label should display 'EmojiNeutral icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Emojisad
+      testSteps: |
+        Select(Emojisad);
+        Assert(Label1.Text = "Emojisad clicked!", "Label should display 'Emojisad icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Emojismile
+      testSteps: |
+        Select(Emojismile);
+        Assert(Label1.Text = "Emojismile clicked!", "Label should display 'Emojismile icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Endcall
+      testSteps: |
+        Select(Endcall);
+        Assert(Label1.Text = "Endcall clicked!", "Label should display 'Endcall icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Enhance
+      testSteps: |
+        Select(Enhance);
+        Assert(Label1.Text = "Enhance clicked!", "Label should display 'Enhance icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Erase
+      testSteps: |
+        Select(Erase);
+        Assert(Label1.Text = "Erase clicked!", "Label should display 'Erase icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Error
+      testSteps: |
+        Select(Error);
+        Assert(Label1.Text = "Error clicked!", "Label should display 'Error icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_ExpandView
+      testSteps: |
+        Select(ExpandView);
+        Assert(Label1.Text = "ExpandView clicked!", "Label should display 'ExpandView icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Export
+      testSteps: |
+        Select(Export);
+        Assert(Label1.Text = "Export clicked!", "Label should display 'Export icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Filter
+      testSteps: |
+        Select(Filter);
+        Assert(Label1.Text = "Filter clicked!", "Label should display 'Filter icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Flag
+      testSteps: |
+        Select(Flag);
+        Assert(Label1.Text = "Flag clicked!", "Label should display 'Flag icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_FlatFilter
+      testSteps: |
+        Select(FlatFilter);
+        Assert(Label1.Text = "FlatFilter clicked!", "Label should display 'FlatFilter icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_FlatFilterFilled
+      testSteps: |
+        Select(FlatFilterFilled);
+        Assert(Label1.Text = "FlatFilterFilled clicked!", "Label should display 'FlatFilterFilled icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Folder
+      testSteps: |
+        Select(Folder);
+        Assert(Label1.Text = "Folder clicked!", "Label should display 'Folder icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Food
+      testSteps: |
+        Select(Food);
+        Assert(Label1.Text = "Food clicked!", "Label should display 'Food icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Globe
+      testSteps: |
+        Select(Globe);
+        Assert(Label1.Text = "Globe clicked!", "Label should display 'Globe icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_GlobeChangesPending
+      testSteps: |
+        Select(GlobeChangesPending);
+        Assert(Label1.Text = "GlobeChangesPending clicked!", "Label should display 'GlobeChangesPending icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_GlobeError
+      testSteps: |
+        Select(GlobeError);
+        Assert(Label1.Text = "GlobeError clicked!", "Label should display 'GlobeError icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_GlobeNotConnected
+      testSteps: |
+        Select(GlobeNotConnected);
+        Assert(Label1.Text = "GlobeNotConnected clicked!", "Label should display 'GlobeNotConnected icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_GlobeRefresh
+      testSteps: |
+        Select(GlobeRefresh);
+        Assert(Label1.Text = "GlobeRefresh clicked!", "Label should display 'GlobeRefresh icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_GlobeWarming
+      testSteps: |
+        Select(GlobeWarming);
+        Assert(Label1.Text = "GlobeWarming clicked!", "Label should display 'GlobeWarming icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_HalfFilledCircle
+      testSteps: |
+        Select(HalfFilledCircle);
+        Assert(Label1.Text = "HalfFilledCircle clicked!", "Label should display 'HalfFilledCircle icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_HamburgerMenu
+      testSteps: |
+        Select(HamburgerMenu);
+        Assert(Label1.Text = "HamburgerMenu clicked!", "Label should display 'HamburgerMenu icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Hashtag
+      testSteps: |
+        Select(Hashtag);
+        Assert(Label1.Text = "Hashtag clicked!", "Label should display 'Hashtag icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Health
+      testSteps: |
+        Select(Health);
+        Assert(Label1.Text = "Health clicked!", "Label should display 'Health icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Heart
+      testSteps: |
+        Select(Heart);
+        Assert(Label1.Text = "Heart clicked!", "Label should display 'Heart icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Help
+      testSteps: |
+        Select(Help);
+        Assert(Label1.Text = "Help clicked!", "Label should display 'Help icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Hide
+      testSteps: |
+        Select(Hide);
+        Assert(Label1.Text = "Hide clicked!", "Label should display 'Hide icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_History
+      testSteps: |
+        Select(History);
+        Assert(Label1.Text = "History clicked!", "Label should display 'History icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Home
+      testSteps: |
+        Select(Home);
+        Assert(Label1.Text = "Home clicked!", "Label should display 'Home icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Horizontalline
+      testSteps: |
+        Select(Horizontalline);
+        Assert(Label1.Text = "Horizontalline clicked!", "Label should display 'Horizontalline icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Hospital
+      testSteps: |
+        Select(Hospital);
+        Assert(Label1.Text = "Hospital clicked!", "Label should display 'Hospital icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Import
+      testSteps: |
+        Select(Import);
+        Assert(Label1.Text = "Import clicked!", "Label should display 'Import icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Information
+      testSteps: |
+        Select(Information);
+        Assert(Label1.Text = "Information clicked!", "Label should display 'Information icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Items
+      testSteps: |
+        Select(Items);
+        Assert(Label1.Text = "Items clicked!", "Label should display 'Items icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Journal
+      testSteps: |
+        Select(Journal);
+        Assert(Label1.Text = "Journal clicked!", "Label should display 'Journal icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Key
+      testSteps: |
+        Select(Key);
+        Assert(Label1.Text = "Key clicked!", "Label should display 'Key icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Laptop
+      testSteps: |
+        Select(Laptop);
+        Assert(Label1.Text = "Laptop clicked!", "Label should display 'Laptop icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Layers
+      testSteps: |
+        Select(Layers);
+        Assert(Label1.Text = "Layers clicked!", "Label should display 'Layers icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Leave
+      testSteps: |
+        Select(Leave);
+        Assert(Label1.Text = "Leave clicked!", "Label should display 'Leave icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Left
+      testSteps: |
+        Select(Left);
+        Assert(Label1.Text = "Left clicked!", "Label should display 'Left icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Lightbulb
+      testSteps: |
+        Select(Lightbulb);
+        Assert(Label1.Text = "Lightbulb clicked!", "Label should display 'Lightbulb icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Lightingbolt
+      testSteps: |
+        Select(Lightingbolt);
+        Assert(Label1.Text = "Lightingbolt clicked!", "Label should display 'Lightingbolt icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_LikeDislike
+      testSteps: |
+        Select(LikeDislike);
+        Assert(Label1.Text = "LikeDislike clicked!", "Label should display 'LikeDislike icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Lineweight
+      testSteps: |
+        Select(Lineweight);
+        Assert(Label1.Text = "Lineweight clicked!", "Label should display 'Lineweight icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Link
+      testSteps: |
+        Select(Link);
+        Assert(Label1.Text = "Link clicked!", "Label should display 'Link icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_ListReminder
+      testSteps: |
+        Select(ListReminder);
+        Assert(Label1.Text = "ListReminder clicked!", "Label should display 'ListReminder icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_ListScrollEmpty
+      testSteps: |
+        Select(ListScrollEmpty);
+        Assert(Label1.Text = "ListScrollEmpty clicked!", "Label should display 'ListScrollEmpty icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_ListScrollWatchList
+      testSteps: |
+        Select(ListScrollWatchList);
+        Assert(Label1.Text = "ListScrollWatchList clicked!", "Label should display 'ListScrollWatchList icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Location1
+      testSteps: |
+        Select(Location1);
+        Assert(Label1.Text = "Location1 clicked!", "Label should display 'Location1 icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Lock
+      testSteps: |
+        Select(Lock);
+        Assert(Label1.Text = "Lock clicked!", "Label should display 'Lock icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_LogJournal
+      testSteps: |
+        Select(LogJournal);
+        Assert(Label1.Text = "LogJournal clicked!", "Label should display 'LogJournal icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Mail
+      testSteps: |
+        Select(Mail);
+        Assert(Label1.Text = "Mail clicked!", "Label should display 'Mail icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Manufacture
+      testSteps: |
+        Select(Manufacture);
+        Assert(Label1.Text = "Manufacture clicked!", "Label should display 'Manufacture icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Medical
+      testSteps: |
+        Select(Medical);
+        Assert(Label1.Text = "Medical clicked!", "Label should display 'Medical icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Message
+      testSteps: |
+        Select(Message);
+        Assert(Label1.Text = "Message clicked!", "Label should display 'Message icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Microphone
+      testSteps: |
+        Select(Microphone);
+        Assert(Label1.Text = "Microphone clicked!", "Label should display 'Microphone icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Money
+      testSteps: |
+        Select(Money);
+        Assert(Label1.Text = "Money clicked!", "Label should display 'Money icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_More
+      testSteps: |
+        Select(More);
+        Assert(Label1.Text = "More clicked!", "Label should display 'More icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_NewsPaper
+      testSteps: |
+        Select(NewsPaper);
+        Assert(Label1.Text = "NewsPaper clicked!", "Label should display 'NewsPaper icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Next
+      testSteps: |
+        Select(Next);
+        Assert(Label1.Text = "Next clicked!", "Label should display 'Next icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Note
+      testSteps: |
+        Select(Note);
+        Assert(Label1.Text = "Note clicked!", "Label should display 'Note icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Notebook
+      testSteps: |
+        Select(Notebook);
+        Assert(Label1.Text = "Notebook clicked!", "Label should display 'Notebook icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Officebuilding
+      testSteps: |
+        Select(Officebuilding);
+        Assert(Label1.Text = "Officebuilding clicked!", "Label should display 'Officebuilding icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_OpenInNewWindow
+      testSteps: |
+        Select(OpenInNewWindow);
+        Assert(Label1.Text = "OpenInNewWindow clicked!", "Label should display 'OpenInNewWindow icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_OptionsList
+      testSteps: |
+        Select(OptionsList);
+        Assert(Label1.Text = "OptionsList clicked!", "Label should display 'OptionsList icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_PaperClip
+      testSteps: |
+        Select(PaperClip);
+        Assert(Label1.Text = "PaperClip clicked!", "Label should display 'PaperClip icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Paste
+      testSteps: |
+        Select(Paste);
+        Assert(Label1.Text = "Paste clicked!", "Label should display 'Paste icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_PdfDocument
+      testSteps: |
+        Select(PdfDocument);
+        Assert(Label1.Text = "PdfDocument clicked!", "Label should display 'PdfDocument icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_People
+      testSteps: |
+        Select(People);
+        Assert(Label1.Text = "People clicked!", "Label should display 'People icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Person
+      testSteps: |
+        Select(Person);
+        Assert(Label1.Text = "Person clicked!", "Label should display 'Person icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Phone
+      testSteps: |
+        Select(Phone);
+        Assert(Label1.Text = "Phone clicked!", "Label should display 'Phone icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_PictureFrames
+      testSteps: |
+        Select(PictureFrames);
+        Assert(Label1.Text = "PictureFrames clicked!", "Label should display 'PictureFrames icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Pin
+      testSteps: |
+        Select(Pin);
+        Assert(Label1.Text = "Pin clicked!", "Label should display 'Pin icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Post
+      testSteps: |
+        Select(Post);
+        Assert(Label1.Text = "Post clicked!", "Label should display 'Post icon clicked!'");
+
+    - testCaseName: OnSelect_Update_Label_Print
+      testSteps: |
+        Select(Print);
+        Assert(Label1.Text = "Print clicked!", "Label should display 'Print icon clicked!'");
+
+    - testCaseName: Test Tooltip for Checkbadge Icon
+      testCaseDescription: Verify that the tooltip for the Checkbadge icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Checkbadge.Tooltip, "Checkbadge");
+        Assert(Checkbadge.Tooltip = "Checkbadge", "Expected tooltip to be 'Checkbadge'");
+
+    - testCaseName: Test Tooltip for Cleardrawing Icon
+      testCaseDescription: Verify that the tooltip for the Cleardrawing icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Cleardrawing.Tooltip, "Cleardrawing");
+        Assert(Cleardrawing.Tooltip = "Cleardrawing", "Expected tooltip to be 'Cleardrawing'");
+
+    - testCaseName: Test Tooltip for Clock Icon
+      testCaseDescription: Verify that the tooltip for the Clock icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Clock.Tooltip, "Clock");
+        Assert(Clock.Tooltip = "Clock", "Expected tooltip to be 'Clock'");
+
+    - testCaseName: Test Tooltip for Collapseview Icon
+      testCaseDescription: Verify that the tooltip for the Collapseview icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Collapseview.Tooltip, "Collapseview");
+        Assert(Collapseview.Tooltip = "Collapseview", "Expected tooltip to be 'Collapseview'");
+
+    - testCaseName: Test Tooltip for Colorpicker Icon
+      testCaseDescription: Verify that the tooltip for the Colorpicker icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Colorpicker.Tooltip, "Colorpicker");
+        Assert(Colorpicker.Tooltip = "Colorpicker", "Expected tooltip to be 'Colorpicker'");
+
+    - testCaseName: Test Tooltip for Compose Icon
+      testCaseDescription: Verify that the tooltip for the Compose icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Compose.Tooltip, "Compose");
+        Assert(Compose.Tooltip = "Compose", "Expected tooltip to be 'Compose'");
+
+    - testCaseName: Test Tooltip for Computerdesktop Icon
+      testCaseDescription: Verify that the tooltip for the Computerdesktop icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Computerdesktop.Tooltip, "Computerdesktop");
+        Assert(Computerdesktop.Tooltip = "Computerdesktop", "Expected tooltip to be 'Computerdesktop'");
+
+    - testCaseName: Test Tooltip for Controller Icon
+      testCaseDescription: Verify that the tooltip for the Controller icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Controller.Tooltip, "Controller");
+        Assert(Controller.Tooltip = "Controller", "Expected tooltip to be 'Controller'");
+
+    - testCaseName: Test Tooltip for Copy Icon
+      testCaseDescription: Verify that the tooltip for the Copy icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Copy.Tooltip, "Copy");
+        Assert(Copy.Tooltip = "Copy", "Expected tooltip to be 'Copy'");
+
+    - testCaseName: Test Tooltip for Crop Icon
+      testCaseDescription: Verify that the tooltip for the Crop icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Crop.Tooltip, "Crop");
+        Assert(Crop.Tooltip = "Crop", "Expected tooltip to be 'Crop'");
+
+    - testCaseName: Test Tooltip for Currency Icon
+      testCaseDescription: Verify that the tooltip for the Currency icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Currency.Tooltip, "Currency");
+        Assert(Currency.Tooltip = "Currency", "Expected tooltip to be 'Currency'");
+
+    - testCaseName: Test Tooltip for Cut Icon
+      testCaseDescription: Verify that the tooltip for the Cut icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Cut.Tooltip, "Cut");
+        Assert(Cut.Tooltip = "Cut", "Expected tooltip to be 'Cut'");
+
+    - testCaseName: Test Tooltip for Check Icon
+      testCaseDescription: Verify that the tooltip for the Check icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Check.Tooltip, "Check");
+        Assert(Check.Tooltip = "Check", "Expected tooltip to be 'Check'");
+
+    - testCaseName: Test Tooltip for Database Icon
+      testCaseDescription: Verify that the tooltip for the Database icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Database.Tooltip, "Database");
+        Assert(Database.Tooltip = "Database", "Expected tooltip to be 'Database'");
+
+    - testCaseName: Test Tooltip for DetailList Icon
+      testCaseDescription: Verify that the tooltip for the DetailList icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(DetailList.Tooltip, "DetailList");
+        Assert(DetailList.Tooltip = "DetailList", "Expected tooltip to be 'DetailList'");
+
+    - testCaseName: Test Tooltip for Devices Icon
+      testCaseDescription: Verify that the tooltip for the Devices icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Devices.Tooltip, "Devices");
+        Assert(Devices.Tooltip = "Devices", "Expected tooltip to be 'Devices'");
+
+    - testCaseName: Test Tooltip for Diamond Icon
+      testCaseDescription: Verify that the tooltip for the Diamond icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Diamond.Tooltip, "Diamond");
+        Assert(Diamond.Tooltip = "Diamond", "Expected tooltip to be 'Diamond'");
+
+    - testCaseName: Test Tooltip for Dockleft Icon
+      testCaseDescription: Verify that the tooltip for the Dockleft icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Dockleft.Tooltip, "Dockleft");
+        Assert(Dockleft.Tooltip = "Dockleft", "Expected tooltip to be 'Dockleft'");
+
+    - testCaseName: Test Tooltip for Dockright Icon
+      testCaseDescription: Verify that the tooltip for the Dockright icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Dockright.Tooltip, "Dockright");
+        Assert(Dockright.Tooltip = "Dockright", "Expected tooltip to be 'Dockright'");
+
+    - testCaseName: Test Tooltip for Document Icon
+      testCaseDescription: Verify that the tooltip for the Document icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Document.Tooltip, "Document");
+        Assert(Document.Tooltip = "Document", "Expected tooltip to be 'Document'");
+
+    - testCaseName: Test Tooltip for DocumentCheckmark Icon
+      testCaseDescription: Verify that the tooltip for the DocumentCheckmark icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(DocumentCheckmark.Tooltip, "DocumentCheckmark");
+        Assert(DocumentCheckmark.Tooltip = "DocumentCheckmark", "Expected tooltip to be 'DocumentCheckmark'");
+
+    - testCaseName: Test Tooltip for DocumentWithContent Icon
+      testCaseDescription: Verify that the tooltip for the DocumentWithContent icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(DocumentWithContent.Tooltip, "DocumentWithContent");
+        Assert(DocumentWithContent.Tooltip = "DocumentWithContent", "Expected tooltip to be 'DocumentWithContent'");
+
+    - testCaseName: Test Tooltip for Down Icon
+      testCaseDescription: Verify that the tooltip for the Down icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Down.Tooltip, "Down");
+        Assert(Down.Tooltip = "Down", "Expected tooltip to be 'Down'");
+
+    - testCaseName: Test Tooltip for Download Icon
+      testCaseDescription: Verify that the tooltip for the Download icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Download.Tooltip, "Download");
+        Assert(Download.Tooltip = "Download", "Expected tooltip to be 'Download'");
+
+    - testCaseName: Test Tooltip for Draw Icon
+      testCaseDescription: Verify that the tooltip for the Draw icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Draw.Tooltip, "Draw");
+        Assert(Draw.Tooltip = "Draw", "Expected tooltip to be 'Draw'");
+
+    - testCaseName: Test Tooltip for Edit Icon
+      testCaseDescription: Verify that the tooltip for the Edit icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Edit.Tooltip, "Edit");
+        Assert(Edit.Tooltip = "Edit", "Expected tooltip to be 'Edit'");
+
+    - testCaseName: Test Tooltip for EmojiFrown Icon
+      testCaseDescription: Verify that the tooltip for the EmojiFrown icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(EmojiFrown.Tooltip, "EmojiFrown");
+        Assert(EmojiFrown.Tooltip = "EmojiFrown", "Expected tooltip to be 'EmojiFrown'");
+
+    - testCaseName: Test Tooltip for EmojiHappy Icon
+      testCaseDescription: Verify that the tooltip for the EmojiHappy icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(EmojiHappy.Tooltip, "EmojiHappy");
+        Assert(EmojiHappy.Tooltip = "EmojiHappy", "Expected tooltip to be 'EmojiHappy'");
+
+    - testCaseName: Test Tooltip for EmojiNeutral Icon
+      testCaseDescription: Verify that the tooltip for the EmojiNeutral icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(EmojiNeutral.Tooltip, "EmojiNeutral");
+        Assert(EmojiNeutral.Tooltip = "EmojiNeutral", "Expected tooltip to be 'EmojiNeutral'");
+
+    - testCaseName: Test Tooltip for Emojisad Icon
+      testCaseDescription: Verify that the tooltip for the Emojisad icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Emojisad.Tooltip, "Emojisad");
+        Assert(Emojisad.Tooltip = "Emojisad", "Expected tooltip to be 'Emojisad'");
+
+    - testCaseName: Test Tooltip for Emojismile Icon
+      testCaseDescription: Verify that the tooltip for the Emojismile icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Emojismile.Tooltip, "Emojismile");
+        Assert(Emojismile.Tooltip = "Emojismile", "Expected tooltip to be 'Emojismile'");
+
+    - testCaseName: Test Tooltip for Endcall Icon
+      testCaseDescription: Verify that the tooltip for the Endcall icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Endcall.Tooltip, "Endcall");
+        Assert(Endcall.Tooltip = "Endcall", "Expected tooltip to be 'Endcall'");
+
+    - testCaseName: Test Tooltip for Enhance Icon
+      testCaseDescription: Verify that the tooltip for the Enhance icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Enhance.Tooltip, "Enhance");
+        Assert(Enhance.Tooltip = "Enhance", "Expected tooltip to be 'Enhance'");
+
+    - testCaseName: Test Tooltip for Erase Icon
+      testCaseDescription: Verify that the tooltip for the Erase icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Erase.Tooltip, "Erase");
+        Assert(Erase.Tooltip = "Erase", "Expected tooltip to be 'Erase'");
+
+    - testCaseName: Test Tooltip for Error Icon
+      testCaseDescription: Verify that the tooltip for the Error icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Error.Tooltip, "Error");
+        Assert(Error.Tooltip = "Error", "Expected tooltip to be 'Error'");
+
+    - testCaseName: Test Tooltip for ExpandView Icon
+      testCaseDescription: Verify that the tooltip for the ExpandView icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(ExpandView.Tooltip, "ExpandView");
+        Assert(ExpandView.Tooltip = "ExpandView", "Expected tooltip to be 'ExpandView'");
+
+    - testCaseName: Test Tooltip for Export Icon
+      testCaseDescription: Verify that the tooltip for the Export icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Export.Tooltip, "Export");
+        Assert(Export.Tooltip = "Export", "Expected tooltip to be 'Export'");
+
+    - testCaseName: Test Tooltip for Filter Icon
+      testCaseDescription: Verify that the tooltip for the Filter icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Filter.Tooltip, "Filter");
+        Assert(Filter.Tooltip = "Filter", "Expected tooltip to be 'Filter'");
+
+    - testCaseName: Test Tooltip for Flag Icon
+      testCaseDescription: Verify that the tooltip for the Flag icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Flag.Tooltip, "Flag");
+        Assert(Flag.Tooltip = "Flag", "Expected tooltip to be 'Flag'");
+
+    - testCaseName: Test Tooltip for FlatFilter Icon
+      testCaseDescription: Verify that the tooltip for the FlatFilter icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(FlatFilter.Tooltip, "FlatFilter");
+        Assert(FlatFilter.Tooltip = "FlatFilter", "Expected tooltip to be 'FlatFilter'");
+
+    - testCaseName: Test Tooltip for FlatFilterFilled Icon
+      testCaseDescription: Verify that the tooltip for the FlatFilterFilled icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(FlatFilterFilled.Tooltip, "FlatFilterFilled");
+        Assert(FlatFilterFilled.Tooltip = "FlatFilterFilled", "Expected tooltip to be 'FlatFilterFilled'");
+
+    - testCaseName: Test Tooltip for Folder Icon
+      testCaseDescription: Verify that the tooltip for the Folder icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Folder.Tooltip, "Folder");
+        Assert(Folder.Tooltip = "Folder", "Expected tooltip to be 'Folder'");
+
+    - testCaseName: Test Tooltip for Food Icon
+      testCaseDescription: Verify that the tooltip for the Food icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Food.Tooltip, "Food");
+        Assert(Food.Tooltip = "Food", "Expected tooltip to be 'Food'");
+
+    - testCaseName: Test Tooltip for Globe Icon
+      testCaseDescription: Verify that the tooltip for the Globe icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Globe.Tooltip, "Globe");
+        Assert(Globe.Tooltip = "Globe", "Expected tooltip to be 'Globe'");
+
+    - testCaseName: Test Tooltip for GlobeChangesPending Icon
+      testCaseDescription: Verify that the tooltip for the GlobeChangesPending icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(GlobeChangesPending.Tooltip, "GlobeChangesPending");
+        Assert(GlobeChangesPending.Tooltip = "GlobeChangesPending", "Expected tooltip to be 'GlobeChangesPending'");
+
+    - testCaseName: Test Tooltip for GlobeError Icon
+      testCaseDescription: Verify that the tooltip for the GlobeError icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(GlobeError.Tooltip, "GlobeError");
+        Assert(GlobeError.Tooltip = "GlobeError", "Expected tooltip to be 'GlobeError'");
+
+    - testCaseName: Test Tooltip for GlobeNotConnected Icon
+      testCaseDescription: Verify that the tooltip for the GlobeNotConnected icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(GlobeNotConnected.Tooltip, "GlobeNotConnected");
+        Assert(GlobeNotConnected.Tooltip = "GlobeNotConnected", "Expected tooltip to be 'GlobeNotConnected'");
+
+    - testCaseName: Test Tooltip for GlobeRefresh Icon
+      testCaseDescription: Verify that the tooltip for the GlobeRefresh icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(GlobeRefresh.Tooltip, "GlobeRefresh");
+        Assert(GlobeRefresh.Tooltip = "GlobeRefresh", "Expected tooltip to be 'GlobeRefresh'");
+
+    - testCaseName: Test Tooltip for GlobeWarming Icon
+      testCaseDescription: Verify that the tooltip for the GlobeWarming icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(GlobeWarming.Tooltip, "GlobeWarming");
+        Assert(GlobeWarming.Tooltip = "GlobeWarming", "Expected tooltip to be 'GlobeWarming'");
+
+    - testCaseName: Test Tooltip for HalfFilledCircle Icon
+      testCaseDescription: Verify that the tooltip for the HalfFilledCircle icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(HalfFilledCircle.Tooltip, "HalfFilledCircle");
+        Assert(HalfFilledCircle.Tooltip = "HalfFilledCircle", "Expected tooltip to be 'HalfFilledCircle'");
+
+    - testCaseName: Test Tooltip for HamburgerMenu Icon
+      testCaseDescription: Verify that the tooltip for the HamburgerMenu icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(HamburgerMenu.Tooltip, "HamburgerMenu");
+        Assert(HamburgerMenu.Tooltip = "HamburgerMenu", "Expected tooltip to be 'HamburgerMenu'");
+
+    - testCaseName: Test Tooltip for Hashtag Icon
+      testCaseDescription: Verify that the tooltip for the Hashtag icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Hashtag.Tooltip, "Hashtag");
+        Assert(Hashtag.Tooltip = "Hashtag", "Expected tooltip to be 'Hashtag'");
+
+    - testCaseName: Test Tooltip for Health Icon
+      testCaseDescription: Verify that the tooltip for the Health icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Health.Tooltip, "Health");
+        Assert(Health.Tooltip = "Health", "Expected tooltip to be 'Health'");
+
+    - testCaseName: Test Tooltip for Heart Icon
+      testCaseDescription: Verify that the tooltip for the Heart icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Heart.Tooltip, "Heart");
+        Assert(Heart.Tooltip = "Heart", "Expected tooltip to be 'Heart'");
+
+    - testCaseName: Test Tooltip for Help Icon
+      testCaseDescription: Verify that the tooltip for the Help icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Help.Tooltip, "Help");
+        Assert(Help.Tooltip = "Help", "Expected tooltip to be 'Help'");
+
+    - testCaseName: Test Tooltip for Hide Icon
+      testCaseDescription: Verify that the tooltip for the Hide icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Hide.Tooltip, "Hide");
+        Assert(Hide.Tooltip = "Hide", "Expected tooltip to be 'Hide'");
+
+    - testCaseName: Test Tooltip for History Icon
+      testCaseDescription: Verify that the tooltip for the History icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(History.Tooltip, "History");
+        Assert(History.Tooltip = "History", "Expected tooltip to be 'History'");
+
+    - testCaseName: Test Tooltip for Home Icon
+      testCaseDescription: Verify that the tooltip for the Home icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Home.Tooltip, "Home");
+        Assert(Home.Tooltip = "Home", "Expected tooltip to be 'Home'");
+
+    - testCaseName: Test Tooltip for Horizontalline Icon
+      testCaseDescription: Verify that the tooltip for the Horizontalline icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Horizontalline.Tooltip, "Horizontalline");
+        Assert(Horizontalline.Tooltip = "Horizontalline", "Expected tooltip to be 'Horizontalline'");
+
+    - testCaseName: Test Tooltip for Hospital Icon
+      testCaseDescription: Verify that the tooltip for the Hospital icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Hospital.Tooltip, "Hospital");
+        Assert(Hospital.Tooltip = "Hospital", "Expected tooltip to be 'Hospital'");
+
+    - testCaseName: Test Tooltip for Import Icon
+      testCaseDescription: Verify that the tooltip for the Import icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Import.Tooltip, "Import");
+        Assert(Import.Tooltip = "Import", "Expected tooltip to be 'Import'");
+
+    - testCaseName: Test Tooltip for Information Icon
+      testCaseDescription: Verify that the tooltip for the Information icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Information.Tooltip, "Information");
+        Assert(Information.Tooltip = "Information", "Expected tooltip to be 'Information'");
+
+    - testCaseName: Test Tooltip for Items Icon
+      testCaseDescription: Verify that the tooltip for the Items icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Items.Tooltip, "Items");
+        Assert(Items.Tooltip = "Items", "Expected tooltip to be 'Items'");
+
+    - testCaseName: Test Tooltip for Journal Icon
+      testCaseDescription: Verify that the tooltip for the Journal icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Journal.Tooltip, "Journal");
+        Assert(Journal.Tooltip = "Journal", "Expected tooltip to be 'Journal'");
+
+    - testCaseName: Test Tooltip for Key Icon
+      testCaseDescription: Verify that the tooltip for the Key icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Key.Tooltip, "Key");
+        Assert(Key.Tooltip = "Key", "Expected tooltip to be 'Key'");
+
+    - testCaseName: Test Tooltip for Laptop Icon
+      testCaseDescription: Verify that the tooltip for the Laptop icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Laptop.Tooltip, "Laptop");
+        Assert(Laptop.Tooltip = "Laptop", "Expected tooltip to be 'Laptop'");
+
+    - testCaseName: Test Tooltip for Layers Icon
+      testCaseDescription: Verify that the tooltip for the Layers icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Layers.Tooltip, "Layers");
+        Assert(Layers.Tooltip = "Layers", "Expected tooltip to be 'Layers'");
+
+    - testCaseName: Test Tooltip for Leave Icon
+      testCaseDescription: Verify that the tooltip for the Leave icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Leave.Tooltip, "Leave");
+        Assert(Leave.Tooltip = "Leave", "Expected tooltip to be 'Leave'");
+
+    - testCaseName: Test Tooltip for Left Icon
+      testCaseDescription: Verify that the tooltip for the Left icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Left.Tooltip, "Left");
+        Assert(Left.Tooltip = "Left", "Expected tooltip to be 'Left'");
+
+    - testCaseName: Test Tooltip for Lightbulb Icon
+      testCaseDescription: Verify that the tooltip for the Lightbulb icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Lightbulb.Tooltip, "Lightbulb");
+        Assert(Lightbulb.Tooltip = "Lightbulb", "Expected tooltip to be 'Lightbulb'");
+
+    - testCaseName: Test Tooltip for Lightingbolt Icon
+      testCaseDescription: Verify that the tooltip for the Lightingbolt icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Lightingbolt.Tooltip, "Lightingbolt");
+        Assert(Lightingbolt.Tooltip = "Lightingbolt", "Expected tooltip to be 'Lightingbolt'");
+
+    - testCaseName: Test Tooltip for LikeDislike Icon
+      testCaseDescription: Verify that the tooltip for the LikeDislike icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(LikeDislike.Tooltip, "LikeDislike");
+        Assert(LikeDislike.Tooltip = "LikeDislike", "Expected tooltip to be 'LikeDislike'");
+
+    - testCaseName: Test Tooltip for Lineweight Icon
+      testCaseDescription: Verify that the tooltip for the Lineweight icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Lineweight.Tooltip, "Lineweight");
+        Assert(Lineweight.Tooltip = "Lineweight", "Expected tooltip to be 'Lineweight'");
+
+    - testCaseName: Test Tooltip for Link Icon
+      testCaseDescription: Verify that the tooltip for the Link icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Link.Tooltip, "Link");
+        Assert(Link.Tooltip = "Link", "Expected tooltip to be 'Link'");
+
+    - testCaseName: Test Tooltip for ListReminder Icon
+      testCaseDescription: Verify that the tooltip for the ListReminder icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(ListReminder.Tooltip, "ListReminder");
+        Assert(ListReminder.Tooltip = "ListReminder", "Expected tooltip to be 'ListReminder'");
+
+    - testCaseName: Test Tooltip for ListScrollEmpty Icon
+      testCaseDescription: Verify that the tooltip for the ListScrollEmpty icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(ListScrollEmpty.Tooltip, "ListScrollEmpty");
+        Assert(ListScrollEmpty.Tooltip = "ListScrollEmpty", "Expected tooltip to be 'ListScrollEmpty'");
+
+    - testCaseName: Test Tooltip for ListScrollWatchList Icon
+      testCaseDescription: Verify that the tooltip for the ListScrollWatchList icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(ListScrollWatchList.Tooltip, "ListScrollWatchList");
+        Assert(ListScrollWatchList.Tooltip = "ListScrollWatchList", "Expected tooltip to be 'ListScrollWatchList'");
+
+    - testCaseName: Test Tooltip for Location1 Icon
+      testCaseDescription: Verify that the tooltip for the Location1 icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Location1.Tooltip, "Location1");
+        Assert(Location1.Tooltip = "Location1", "Expected tooltip to be 'Location1'");
+
+    - testCaseName: Test Tooltip for Lock Icon
+      testCaseDescription: Verify that the tooltip for the Lock icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Lock.Tooltip, "Lock");
+        Assert(Lock.Tooltip = "Lock", "Expected tooltip to be 'Lock'");
+
+    - testCaseName: Test Tooltip for LogJournal Icon
+      testCaseDescription: Verify that the tooltip for the LogJournal icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(LogJournal.Tooltip, "LogJournal");
+        Assert(LogJournal.Tooltip = "LogJournal", "Expected tooltip to be 'LogJournal'");
+
+    - testCaseName: Test Tooltip for Mail Icon
+      testCaseDescription: Verify that the tooltip for the Mail icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Mail.Tooltip, "Mail");
+        Assert(Mail.Tooltip = "Mail", "Expected tooltip to be 'Mail'");
+
+    - testCaseName: Test Tooltip for Manufacture Icon
+      testCaseDescription: Verify that the tooltip for the Manufacture icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Manufacture.Tooltip, "Manufacture");
+        Assert(Manufacture.Tooltip = "Manufacture", "Expected tooltip to be 'Manufacture'");
+
+    - testCaseName: Test Tooltip for Medical Icon
+      testCaseDescription: Verify that the tooltip for the Medical icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Medical.Tooltip, "Medical");
+        Assert(Medical.Tooltip = "Medical", "Expected tooltip to be 'Medical'");
+
+    - testCaseName: Test Tooltip for Message Icon
+      testCaseDescription: Verify that the tooltip for the Message icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Message.Tooltip, "Message");
+        Assert(Message.Tooltip = "Message", "Expected tooltip to be 'Message'");
+
+    - testCaseName: Test Tooltip for Microphone Icon
+      testCaseDescription: Verify that the tooltip for the Microphone icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Microphone.Tooltip, "Microphone");
+        Assert(Microphone.Tooltip = "Microphone", "Expected tooltip to be 'Microphone'");
+
+    - testCaseName: Test Tooltip for Money Icon
+      testCaseDescription: Verify that the tooltip for the Money icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Money.Tooltip, "Money");
+        Assert(Money.Tooltip = "Money", "Expected tooltip to be 'Money'");
+
+    - testCaseName: Test Tooltip for More Icon
+      testCaseDescription: Verify that the tooltip for the More icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(More.Tooltip, "More");
+        Assert(More.Tooltip = "More", "Expected tooltip to be 'More'");
+
+    - testCaseName: Test Tooltip for NewsPaper Icon
+      testCaseDescription: Verify that the tooltip for the NewsPaper icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(NewsPaper.Tooltip, "NewsPaper");
+        Assert(NewsPaper.Tooltip = "NewsPaper", "Expected tooltip to be 'NewsPaper'");
+
+    - testCaseName: Test Tooltip for Next Icon
+      testCaseDescription: Verify that the tooltip for the Next icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Next.Tooltip, "Next");
+        Assert(Next.Tooltip = "Next", "Expected tooltip to be 'Next'");
+
+    - testCaseName: Test Tooltip for Note Icon
+      testCaseDescription: Verify that the tooltip for the Note icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Note.Tooltip, "Note");
+        Assert(Note.Tooltip = "Note", "Expected tooltip to be 'Note'");
+
+    - testCaseName: Test Tooltip for Notebook Icon
+      testCaseDescription: Verify that the tooltip for the Notebook icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Notebook.Tooltip, "Notebook");
+        Assert(Notebook.Tooltip = "Notebook", "Expected tooltip to be 'Notebook'");
+
+    - testCaseName: Test Tooltip for Officebuilding Icon
+      testCaseDescription: Verify that the tooltip for the Officebuilding icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Officebuilding.Tooltip, "Officebuilding");
+        Assert(Officebuilding.Tooltip = "Officebuilding", "Expected tooltip to be 'Officebuilding'");
+
+    - testCaseName: Test Tooltip for OpenInNewWindow Icon
+      testCaseDescription: Verify that the tooltip for the OpenInNewWindow icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(OpenInNewWindow.Tooltip, "OpenInNewWindow");
+        Assert(OpenInNewWindow.Tooltip = "OpenInNewWindow", "Expected tooltip to be 'OpenInNewWindow'");
+
+    - testCaseName: Test Tooltip for OptionsList Icon
+      testCaseDescription: Verify that the tooltip for the OptionsList icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(OptionsList.Tooltip, "OptionsList");
+        Assert(OptionsList.Tooltip = "OptionsList", "Expected tooltip to be 'OptionsList'");
+
+    - testCaseName: Test Tooltip for PaperClip Icon
+      testCaseDescription: Verify that the tooltip for the PaperClip icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(PaperClip.Tooltip, "PaperClip");
+        Assert(PaperClip.Tooltip = "PaperClip", "Expected tooltip to be 'PaperClip'");
+
+    - testCaseName: Test Tooltip for Paste Icon
+      testCaseDescription: Verify that the tooltip for the Paste icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Paste.Tooltip, "Paste");
+        Assert(Paste.Tooltip = "Paste", "Expected tooltip to be 'Paste'");
+
+    - testCaseName: Test Tooltip for PdfDocument Icon
+      testCaseDescription: Verify that the tooltip for the PdfDocument icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(PdfDocument.Tooltip, "PdfDocument");
+        Assert(PdfDocument.Tooltip = "PdfDocument", "Expected tooltip to be 'PdfDocument'");
+
+    - testCaseName: Test Tooltip for People Icon
+      testCaseDescription: Verify that the tooltip for the People icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(People.Tooltip, "People");
+        Assert(People.Tooltip = "People", "Expected tooltip to be 'People'");
+
+    - testCaseName: Test Tooltip for Person Icon
+      testCaseDescription: Verify that the tooltip for the Person icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Person.Tooltip, "Person");
+        Assert(Person.Tooltip = "Person", "Expected tooltip to be 'Person'");
+
+    - testCaseName: Test Tooltip for Phone Icon
+      testCaseDescription: Verify that the tooltip for the Phone icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Phone.Tooltip, "Phone");
+        Assert(Phone.Tooltip = "Phone", "Expected tooltip to be 'Phone'");
+
+    - testCaseName: Test Tooltip for PictureFrames Icon
+      testCaseDescription: Verify that the tooltip for the PictureFrames icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(PictureFrames.Tooltip, "PictureFrames");
+        Assert(PictureFrames.Tooltip = "PictureFrames", "Expected tooltip to be 'PictureFrames'");
+
+    - testCaseName: Test Tooltip for Pin Icon
+      testCaseDescription: Verify that the tooltip for the Pin icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Pin.Tooltip, "Pin");
+        Assert(Pin.Tooltip = "Pin", "Expected tooltip to be 'Pin'");
+
+    - testCaseName: Test Tooltip for Post Icon
+      testCaseDescription: Verify that the tooltip for the Post icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Post.Tooltip, "Post");
+        Assert(Post.Tooltip = "Post", "Expected tooltip to be 'Post'");
+
+    - testCaseName: Test Tooltip for Print Icon
+      testCaseDescription: Verify that the tooltip for the Print icon is set and displayed correctly.
+      testSteps: |
+        SetProperty(Print.Tooltip, "Print");
+        Assert(Print.Tooltip = "Print", "Expected tooltip to be 'Print'");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

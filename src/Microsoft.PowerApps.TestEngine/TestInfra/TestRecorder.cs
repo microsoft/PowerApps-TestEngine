@@ -32,9 +32,9 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly ITestInfraFunctions _infra;
         private readonly IPowerFxEngine _engine;
         private readonly IFileSystem _fileSystem;
-        private readonly StringBuilder _textBuilder;
         private string _audioPath = string.Empty;
 
+        public ConcurrentBag<string> SetupSteps = new ConcurrentBag<string>();
         public ConcurrentBag<string> TestSteps = new ConcurrentBag<string>();
 
         ///<summary>
@@ -54,7 +54,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             _infra = infra;
             _engine = powerFxEngine;
             _fileSystem = fileSystem;
-            _textBuilder = new StringBuilder();
         }
 
         ///<summary>
@@ -413,7 +412,7 @@ if (event.ctrlKey && event.key === 'r') {{
                         var entity = GetODataEntity(response.Request.Url);
                         var data = await ConvertODataToFormulaValue(response);
                         // TODO: Check for $filter and convert OData $filter to Filter record and Power Fx expression
-                        TestSteps.Add(GenerateDataverseQuery(entity, data));
+                        SetupSteps.Add(GenerateDataverseQuery(entity, data));
                         break;
                     case "POST":
                         // TODO Handle create
@@ -430,7 +429,7 @@ if (event.ctrlKey && event.key === 'r') {{
                         var action = GetActionName(response.Request.Headers["x-ms-request-url"]);
                         var when = GetWhenConnectorValue(response.Request.Headers["x-ms-request-url"]);
                         var then = await ConvertJsonResultToFormulaValue(response);
-                        TestSteps.Add(GenerateConnector(action, when, then));
+                        SetupSteps.Add(GenerateConnector(action, when, then));
                         break;
                 }
             }
@@ -781,8 +780,8 @@ if (event.ctrlKey && event.key === 'r') {{
                 NumberValue numberValue => numberValue.Value.ToString(),
                 BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
                 // Assume all dates should be in UTC
-                DateValue dateValue => dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"), // ISO 8601 format
-                DateTimeValue dateTimeValue => dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"), // ISO 8601 format
+                DateValue dateValue => "\"" + dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o") + "\"", // ISO 8601 format
+                DateTimeValue dateTimeValue => "\"" + dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o") + "\"", // ISO 8601 format
                 RecordValue recordValue => FormatRecordValue(recordValue),
                 TableValue tableValue => FormatTableValue(tableValue),
                 _ => throw new ArgumentException("Unsupported FormulaValue type")
@@ -1001,6 +1000,28 @@ if (event.ctrlKey && event.key === 'r') {{
 
             var line = 0;
 
+            var exists = new List<string>();
+
+            StringBuilder setup = new StringBuilder();
+            while (!SetupSteps.IsEmpty)
+            {
+                if (SetupSteps.TryTake(out string item))
+                {
+                    line++;
+                    var spaces = String.Empty;
+                    var add = !exists.Contains(item);
+                    if (add)
+                    {
+                        exists.Add(item);
+                        if (line > 1)
+                        {
+                            spaces = new string(' ', 8);
+                        }
+                        setup.Append($"{spaces}{item}\r\n");
+                    }
+                }
+            }
+
             // Transfer elements to a ConcurrentQueue
             ConcurrentQueue<string> queue = new ConcurrentQueue<string>();
             while (!TestSteps.IsEmpty)
@@ -1011,6 +1032,10 @@ if (event.ctrlKey && event.key === 'r') {{
                 }
             }
 
+            StringBuilder steps = new StringBuilder();
+
+            line = 0;
+
             // Enumberate in First In First Out (FIFO)
             foreach (var step in queue)
             {
@@ -1020,7 +1045,7 @@ if (event.ctrlKey && event.key === 'r') {{
                 {
                     spaces = new string(' ', 8);
                 }
-                _textBuilder.Append($"{spaces}{step}\r\n");
+                steps.Append($"{spaces}{step}\r\n");
             }
 
             var template = @"# yaml-embedded-languages: powerfx
@@ -1029,13 +1054,16 @@ testSuite:
   testSuiteDescription: Summary of what the test suite
   persona: User1
   appLogicalName: NotNeeded
-
+  onTestSuiteBegin: |
+    =
+    {0}
+  
   testCases:
     - testCaseName: Recorded test cases
       testCaseDescription: Set of test steps recorded from browser
       testSteps: |
         =
-        {0}
+        {1}
 
 testSettings:
   headless: false
@@ -1049,11 +1077,11 @@ testSettings:
 environmentVariables:
   users:
     - personaName: User1
-      emailKey: NotNeeded
+      emailKey: user1Email
       passwordKey: NotNeeded
 ";
 
-            var results = string.Format(template, _textBuilder.ToString());
+            var results = string.Format(template, setup.ToString(), steps.ToString());
 
             //TODO: Write the recorded test steps to the file
             _fileSystem.WriteTextToFile(filePath, results);

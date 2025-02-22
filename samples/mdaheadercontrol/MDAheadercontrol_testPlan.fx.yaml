@@ -1,0 +1,74 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Header Control
+  testSuiteDescription: Verify test cases for Header Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+
+    - testCaseName: Test Header Title Property
+      testCaseDescription: Verify that the Title property of the Header control can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Header1.Title, "Welcome to the MDA App");
+        Assert(Header1.Title = "Welcome to the MDA App", "Checking if the Title is displayed correctly");
+
+    - testCaseName: Test Header LogoTooltip Property
+      testCaseDescription: Verify that the LogoTooltip property of the Header control works as expected.
+      testSteps: |
+        SetProperty(Header1.LogoTooltip, "This is the logo tooltip");        
+        Assert(Header1.LogoTooltip = "This is the logo tooltip", "Checking the tooltip for the logo");         
+
+    - testCaseName: Test Header User Email Display
+      testCaseDescription: Verify that the UserEmail property displays the correct email address.
+      testSteps: |
+        SetProperty(Header1.UserEmail, "user@example.com");
+        Assert(Header1.UserEmail = "user@example.com", "Checking if the user email is displayed correctly");
+
+    - testCaseName: Test Header User Name Display
+      testCaseDescription: Verify that the UserName property displays the correct user name.
+      testSteps: |
+        SetProperty(Header1.UserName, "John Doe");
+        Assert(Header1.UserName = "John Doe", "Checking if the user name is displayed correctly");
+
+    - testCaseName: Test Header Profile Picture Visibility
+      testCaseDescription: Verify that the profile picture visibility can be toggled using IsProfilePictureVisible property.
+      testSteps: |        
+        SetProperty(Header1.IsProfilePictureVisible, true);       
+        Assert(Header1.IsProfilePictureVisible = true, "Checking if the profile picture is visible");       
+
+        SetProperty(Header1.IsProfilePictureVisible, false);
+        Assert(Header1.IsProfilePictureVisible = false, "Checking if the profile picture is hidden");
+
+    - testCaseName: Test Header Title Visibility
+      testCaseDescription: Verify that the title visibility can be toggled using IsTitleVisible property.
+      testSteps: |  
+        SetProperty(Header1.IsTitleVisible, true);    
+        Assert(Header1.IsTitleVisible = true, "Checking if the title is hidden");   
+
+        SetProperty(Header1.IsTitleVisible, false);
+        Assert(Header1.IsTitleVisible = false, "Checking if the title is visible");
+
+    - testCaseName: Test Header Visibile Property
+      testCaseDescription: Verify that the Visibile Property can be toggled using Visible property.
+      testSteps: |
+        SetProperty(Header1.Visible, true);
+        Assert(Header1.Visible = true, "Checking if the Header Control is visible");
+
+        SetProperty(Header1.Visible, false);
+        Assert(Header1.Visible = false, "Checking if the Header Control is hidden");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge      
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded
