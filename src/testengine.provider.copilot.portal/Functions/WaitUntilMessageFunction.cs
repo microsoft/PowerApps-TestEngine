@@ -9,6 +9,7 @@ using Microsoft.PowerFx;
 using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json.Linq;
+using testengine.provider.copilot.portal.services;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Microsoft.PowerApps.TestEngine.Providers.Functions
@@ -40,19 +41,30 @@ namespace Microsoft.PowerApps.TestEngine.Providers.Functions
             {
                 var timeout = _testState.GetTimeout();
 
-                _logger.LogInformation("Start Wait");
-
-                var startTime = DateTime.Now;
-                while (DateTime.Now.Subtract(startTime).TotalSeconds < timeout)
+                var complete = await _provider.MessageWorker.WaitUntilCompleteAsync(async (object? state) =>
                 {
-                    await _provider.GetNewMessages();
-                    var jsonPathQuery = $"$..[?(@.text =~ /.*{Sanitize(text.Value)}.*/i)]";
-                    if (_provider.Messages.Where(json => JToken.Parse(json).SelectTokens(jsonPathQuery).Any()).Any())
+                    TimerState timerState = (TimerState)state;
+                    _logger.LogInformation("Start Wait");
+
+                    var startTime = DateTime.Now;
+                    while (DateTime.Now.Subtract(startTime).TotalSeconds < timeout)
                     {
-                        _logger.LogInformation("Match found");
-                        return;
+                        await _provider.GetNewMessages();
+                        var jsonPathQuery = $"$..[?(@.text =~ /.*{Sanitize(text.Value)}.*/i)]";
+                        if (_provider.Messages.Where(json => JToken.Parse(json).SelectTokens(jsonPathQuery).Any()).Any())
+                        {
+                            _logger.LogInformation("Match found");
+                            timerState.Tcs.SetResult(true);
+                        }
+                        Thread.Sleep(500);
                     }
-                    Thread.Sleep(500);
+
+                    timerState.Tcs.SetResult(false);
+                }, timeout);
+
+                if (!complete)
+                {
+                    throw new TimeoutException($"No match found");
                 }
             }
 

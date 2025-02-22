@@ -18,16 +18,14 @@ namespace Microsoft.PowerApps.TestEngine.Providers.Functions
         private readonly ITestState _testState;
         private readonly ILogger _logger;
         private readonly IMessageProvider _provider;
-        private IWorkerService _workerService;
-
-        public WaitUntilConnectedFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger, IMessageProvider provider, IWorkerService workerService)
+        
+        public WaitUntilConnectedFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger, IMessageProvider provider)
             : base(DPath.Root.Append(new DName("Experimental")), "WaitUntilConnected", FormulaType.Blank)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
             _logger = logger;
             _provider = provider;
-            _workerService = workerService;
         }
 
         public BlankValue Execute()
@@ -41,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.Functions
             var timeout = _testState.GetTimeout();
             _logger.LogInformation("Start Wait");
 
-            await _workerService.WaitUntilCompleteAsync(CheckCondition, _testState.GetTimeout());
+            await _provider.MessageWorker.WaitUntilCompleteAsync(CheckCondition, _testState.GetTimeout());
         }
 
         private void CheckCondition(object? state)

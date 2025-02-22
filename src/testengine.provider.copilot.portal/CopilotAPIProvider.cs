@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.ComponentModel.Composition;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.Providers.Functions;
@@ -44,7 +45,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public Func<IHttpClientWrapper> GetHttpWrapper = () => { return new HttpClientWrapper(new HttpClient()); };
 
-        public IWorkerService WorkerService { get; set; } = null;
+
+        public IWorkerService MessageWorker { get; set; } = null;
+        public IWorkerService ActionWorker { get; set; } = null;
+
 
         public CopilotAPIProvider()
         {
@@ -56,7 +60,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             this.SingleTestInstanceState = singleTestInstanceState;
             this.TestState = testState;
             this.Environment = environment;
-            WorkerService = new MultiThreadedWorkerService(singleTestInstanceState.GetLogger());
+            var logger = singleTestInstanceState.GetLogger();
+            MessageWorker = new MultiThreadedWorkerService(logger);
+            ActionWorker = new MultiThreadedWorkerService(logger);
         }
 
         public string Name { get { return "copilot.api"; } }
@@ -267,13 +273,17 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public void ConfigurePowerFx(PowerFxConfig powerFxConfig)
         {
             var logger = SingleTestInstanceState.GetLogger();
-            if (WorkerService == null)
+            if (MessageWorker == null)
             {
-                WorkerService = new MultiThreadedWorkerService(logger);
+                MessageWorker = new MultiThreadedWorkerService(logger);
+            }
+            if (ActionWorker == null)
+            {
+                ActionWorker = new MultiThreadedWorkerService(logger);
             }
             // Add 
             powerFxConfig.AddFunction(new ApiConnectFunction(_apiService, logger));
-            powerFxConfig.AddFunction(new WaitUntilConnectedFunction(TestInfraFunctions, TestState, logger, this, WorkerService));
+            powerFxConfig.AddFunction(new WaitUntilConnectedFunction(TestInfraFunctions, TestState, logger, this));
             powerFxConfig.AddFunction(new ApiSendTextFunction(_apiService, logger));
             powerFxConfig.AddFunction(new WaitUntilMessageFunction(TestInfraFunctions, TestState, logger, this));
         }

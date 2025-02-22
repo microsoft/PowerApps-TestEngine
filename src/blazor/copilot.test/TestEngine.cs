@@ -11,13 +11,17 @@ namespace copilot.test
     public partial class TestEngine
     {
         private static EvaluateTestSteps _steps = new EvaluateTestSteps();
-
+        
         [JSExport]
         public static async Task Init(string config)
         {
             Dictionary<string, string> settings = JsonSerializer.Deserialize<Dictionary<string, string>>(config);
             _steps.EnvironmentId = settings["environmentId"];
             var token = settings["token"];
+
+
+
+            _steps.WorkerService
             await _steps.ExecuteAsync(settings["botIdentifier"], "", "Experimental.Connect()", token);
         }
 
@@ -42,13 +46,9 @@ namespace copilot.test
         [JSExport]
         public static async Task<string> ExecuteAsync(string config, string code)
         {
-            var serviceProvider = new ServiceCollection()
-               .AddScoped<IJSRuntime, JSRuntime>()
-               .BuildServiceProvider();
-
+           
             Dictionary<string, string> settings = JsonSerializer.Deserialize<Dictionary<string, string>>(config);
             _steps.EnvironmentId = settings["environmentId"];
-            _steps.WorkerService = new SingleThreadedWorkerService();
             if (settings.ContainsKey("messages"))
             {
                 _steps.Messages = JsonSerializer.Deserialize<string[]>(settings["messages"]);

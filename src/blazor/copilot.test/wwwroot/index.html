@@ -25,26 +25,7 @@
         let accessToken = '';
         let conversationId = '';
         let messages = [];
-        let worker1, worker2;
-
-        function startWorker(workerScript) {
-            if (typeof(Worker) !== "undefined") {
-                let worker = new Worker(workerScript);
-                worker.onmessage = function(event) {
-                    console.log("Worker message received:", event.data);
-                    if (event.data.conversationId) {
-                        conversationId = event.data.conversationId;
-                        messages = JSON.parse(event.data.messages);
-                        document.getElementById('tryItButton').disabled = false;
-                        worker2.postMessage({ config: { token: accessToken }, conversationId, messages });
-                    }
-                };
-                return worker;
-            } else {
-                console.log("Sorry, your browser does not support Web Workers...");
-                return null;
-            }
-        }
+        let exports;
 
         document.addEventListener("DOMContentLoaded", function() {
             require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' }});
@@ -79,33 +60,27 @@
                     .then(response => {
                         accessToken = response.accessToken;
                          document.getElementById("connectButton").disabled = false;
-                        console.log("Login successful:", response);
+                        
+                          await Blazor.start({
+                                loadBootResource: function (type, name, defaultUri, integrity) {
+                                    console.log(defaultUri);
+                                }
+                            });
+
+                        var r = Blazor.runtime;
+                        exports = await r.getAssemblyExports(r.config.mainAssemblyName);
+
                     })
                     .catch(error => {
                         console.error("Login failed:", error);
                     });
             });
-
-            // Start two workers
-            worker1 = startWorker('worker1.js?v=1.20');
-            worker2 = startWorker('worker2.js?v=1.20');
         });
 
         function connect() {
-            worker1.postMessage({ location: JSON.stringify(document.location), baseURI: document.baseURI, accessToken });
+            exports;
         }
 
-        function sendMessageToWorker(worker, message) {
-            return new Promise((resolve, reject) => {
-                worker.onmessage = function(event) {
-                    resolve(event.data);
-                };
-                worker.onerror = function(error) {
-                    reject(error);
-                };
-                worker.postMessage(message);
-            });
-        }
 
         function tryIt() {
             const powerFxStatements = window.editor.getValue().split(';');
@@ -160,5 +135,6 @@
         <div id="code-output"></div>
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/editor/editor.main.css">
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
 </body>
 </html>

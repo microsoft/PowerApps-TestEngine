@@ -59,13 +59,14 @@ namespace testengine.provider.copilot.portal.services
 
         public async Task InitiateConversationAsync()
         {
-            _ = Task.Run(async () =>
+            await _provider.MessageWorker.RunAsync(async  () =>
             {
                 var cancellationToken = new CancellationToken();
 
                 await foreach (Activity act in _copilotClient.StartConversationAsync(emitStartConversationEvent: true, cancellationToken: cancellationToken))
                 {
-                    if (string.IsNullOrEmpty(ConversationId) && act.Conversation != null) {
+                    if (string.IsNullOrEmpty(ConversationId) && act.Conversation != null)
+                    {
                         _provider.ConversationId = act.Conversation.Id;
                         ConversationId = _provider.ConversationId;
                     }
@@ -78,10 +79,13 @@ namespace testengine.provider.copilot.portal.services
         {
             if (ConversationId != null)
             {
-                await foreach ( var activity in _copilotClient.AskQuestionAsync(body, ConversationId, CancellationToken.None))
+                await _provider.ActionWorker.RunAsync(async () =>
                 {
-                    _provider.Messages.Enqueue(JsonSerializer.Serialize(activity, _options));
-                }
+                    await foreach (var activity in _copilotClient.AskQuestionAsync(body, ConversationId, CancellationToken.None))
+                    {
+                        _provider.Messages.Enqueue(JsonSerializer.Serialize(activity, _options));
+                    }
+                });
             }
 
             return string.Empty;

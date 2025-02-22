@@ -7,13 +7,18 @@ namespace testengine.provider.copilot.portal.services
 {
     public class MultiThreadedWorkerService : IWorkerService
     {
-        private readonly ILogger _logger;
+        private readonly ILogger? _logger;
         private TimerState _timerState;
 
         public MultiThreadedWorkerService(ILogger logger)
         {
             _logger = logger;
             _timerState = new TimerState();
+        }
+
+        public Task RunAsync(Func<Task> action)
+        {
+            return Task.Factory.StartNew(async () => { await action(); });
         }
 
         public async Task<bool> WaitUntilCompleteAsync(TimerCallback checkcondition, int timeout)
@@ -38,12 +43,12 @@ namespace testengine.provider.copilot.portal.services
 
             if (await Task.WhenAny(task, timeoutTask) == task)
             {
-                _logger.LogInformation("Condition met");
+                _logger?.LogInformation("Condition met");
                 return true;
             }
             else
             {
-                _logger.LogInformation("Timeout reached");
+                _logger?.LogInformation("Timeout reached");
                 return false;
             }
         }

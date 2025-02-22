@@ -39,6 +39,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public string[] Namespaces => new string[] { "Experimental" };
 
+        public IWorkerService MessageWorker { get; set; } = null;
+        public IWorkerService ActionWorker { get; set; } = null;
+
         public CopilotPortalProvider()
         {
 
@@ -354,7 +357,7 @@ document.head.appendChild(style);");
         public void ConfigurePowerFx(PowerFxConfig powerFxConfig)
         {
             var logger = SingleTestInstanceState.GetLogger();
-            powerFxConfig.AddFunction(new WaitUntilConnectedFunction(TestInfraFunctions, TestState, logger, this, new MultiThreadedWorkerService(logger)));
+            powerFxConfig.AddFunction(new WaitUntilConnectedFunction(TestInfraFunctions, TestState, logger, this));
             powerFxConfig.AddFunction(new SendTextFunction(TestInfraFunctions, TestState, SingleTestInstanceState.GetLogger()));
             powerFxConfig.AddFunction(new WaitUntilMessageFunction(TestInfraFunctions, TestState, logger, this));
         }
