@@ -42,6 +42,8 @@ namespace testengine.user.storagestate
             .Select(e => XElement.Parse(e.GetAttributeValue<string>("te_xml")))
             .ToList();
 
+            _logger.LogDebug($"Found {keys.Count()} keys");
+
             return keys.AsReadOnly();
         }
 
