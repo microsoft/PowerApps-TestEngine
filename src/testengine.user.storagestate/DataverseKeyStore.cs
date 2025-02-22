@@ -42,7 +42,7 @@ namespace testengine.user.storagestate
             .Select(e => XElement.Parse(e.GetAttributeValue<string>("te_xml")))
             .ToList();
 
-            _logger.LogDebug($"Found {keys.Count()} keys");
+            _logger?.LogDebug($"Found {keys.Count()} keys for {_friendlyName}");
 
             return keys.AsReadOnly();
         }
@@ -55,7 +55,12 @@ namespace testengine.user.storagestate
                 ["te_xml"] = element.ToString(SaveOptions.DisableFormatting)
             };
 
-            _service.Create(keyEntity);
+            var allKeys = GetAllElements();
+
+            _logger?.LogDebug($"Save key {friendlyName}");
+
+            //TEMP: Remove save
+            //_service.Create(keyEntity);
         }
     }
 }
