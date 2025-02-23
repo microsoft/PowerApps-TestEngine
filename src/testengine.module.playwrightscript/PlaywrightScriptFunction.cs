@@ -41,6 +41,9 @@ namespace testengine.module
             _logger.LogInformation("------------------------------\n\n" +
                 "Executing PlaywrightScript function.");
 
+            // Convert relative path to path relativeto test file
+            var filename = GetFullFile(_testState, file.Value);
+
             if (!_filesystem.FileExists(file.Value))
             {
                 _logger.LogError("Invalid file");
@@ -48,8 +51,6 @@ namespace testengine.module
             }
 
             _logger.LogDebug("Loading file");
-
-            var filename = GetFullFile(_testState, file.Value);
             var script = _filesystem.ReadAllText(filename);
 
             var hash = ComputeSha256Hash(script);
