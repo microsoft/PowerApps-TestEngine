@@ -44,7 +44,7 @@ namespace testengine.module
             // Convert relative path to path relativeto test file
             var filename = GetFullFile(_testState, file.Value);
 
-            if (!_filesystem.FileExists(file.Value))
+            if (!_filesystem.FileExists(filename))
             {
                 _logger.LogError("Invalid file");
                 throw new ArgumentException("Invalid file");
