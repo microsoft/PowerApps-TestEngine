@@ -1,0 +1,102 @@
+testSuite:
+  testSuiteName: Container controls test suite - Container, Vertical, Horizontal Container controls
+  testSuiteDescription: Verifies that you can interact with control in the container
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Test TextBox1 - Default Text Value
+      testCaseDescription: Verify that the TextBox displays the default text value.
+      testSteps: |
+        SetProperty(TextBox1.Value, "Default Value");
+        Assert(TextBox1.Value = "Default Value", "Check if the TextBox displays the default text value.");
+
+    - testCaseName: Test TextBox1 - Text Update
+      testCaseDescription: Verify that the TextBox updates its text value correctly.
+      testSteps: |
+        SetProperty(TextBox1.Value, "New Value");
+        Assert(TextBox1.Value = "New Value", "Check if the TextBox updates the text value.");
+
+    - testCaseName: Test Slider1 - Value
+      testCaseDescription: Verify that the Slider control shows the value.
+      testSteps: |
+        SetProperty(Slider1.Value, 5);
+        Assert(Slider1.Value = 5, "Check if the default value of Slider1 is 5.");
+
+    - testCaseName: Test Slider1 - Value Update
+      testCaseDescription: Verify that the Slider updates its value correctly on interaction.
+      testSteps: |
+        SetProperty(Slider1.Value, 10);
+        Assert(Slider1.Value = 10, "Check if the Slider value updates to 10.");  
+
+    - testCaseName: Test CheckboxCanvas1 - Default Checked State
+      testCaseDescription: Verify that the Checkbox control shows the default checked state.
+      testSteps: |
+        Assert(CheckboxCanvas1.Checked = false, "Check if the default checked state is false.");
+
+    - testCaseName: Test CheckboxCanvas1 - Toggle Checked State
+      testCaseDescription: Verify that toggling the Checkbox updates the checked state.
+      testSteps: |
+        SetProperty(CheckboxCanvas1.Checked, true);
+        Assert(CheckboxCanvas1.Checked = true, "Check if the checked state updates to true.");
+
+    - testCaseName: Test ButtonCanvas1 - Default Text
+      testCaseDescription: Verify that the Button control displays the default text.
+      testSteps: |
+        Assert(ButtonCanvas1.Text = "Submit", "Check if the button displays the default text 'Submit'.");
+
+    - testCaseName: Test ButtonCanvas1 - OnSelect Action
+      testCaseDescription: Verify that clicking the Button triggers the OnSelect action.
+      testSteps: |
+        Select(ButtonCanvas1);
+        Assert(Label2.Text = "Submit Button Clicked", "Check if the Button's OnSelect action is triggered.");
+
+    - testCaseName: Test Vertical Container ButtonCanvas2 - OnSelect Action
+      testCaseDescription: Verify that clicking the Button triggers the OnSelect action.
+      testSteps: |
+        Select(ButtonCanvas3);
+        Assert(Label2.Text = "Vertical Container Clicked", "Check if the Button's OnSelect action is triggered.");
+
+    - testCaseName: Test Horizontal Container ButtonCanvas3 - OnSelect Action
+      testCaseDescription: Verify that clicking the Button triggers the OnSelect action.
+      testSteps: |
+        Select(ButtonCanvas4);
+        Assert(Label2.Text = "Horizontal Container Clicked", "Check if the Button's OnSelect action is triggered.");
+
+    - testCaseName: Test Toggle1 - Default State
+      testCaseDescription: Verify that the Toggle control shows the default state.
+      testSteps: |
+        Assert(Toggle1.Checked = false, "Check if the default state of Toggle is false.");
+
+    - testCaseName: Test Toggle1 - State Change
+      testCaseDescription: Verify that changing the Toggle updates its state.
+      testSteps: |
+        SetProperty(Toggle1.Checked, true);
+        Assert(Toggle1.Checked = true, "Check if the Toggle state updates to true.");
+
+    - testCaseName: Test Rating1 - Default Value
+      testCaseDescription: Verify that the Rating control shows the default value.
+      testSteps: |
+        Assert(Rating1.Value = 0, "Check if the default rating is 0.");
+
+    - testCaseName: Test Rating1 - Value Change
+      testCaseDescription: Verify that changing the Rating updates its value.
+      testSteps: |
+        SetProperty(Rating1.Value, 5);
+        Assert(Rating1.Value = 5, "Check if the rating value updates to 5.");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

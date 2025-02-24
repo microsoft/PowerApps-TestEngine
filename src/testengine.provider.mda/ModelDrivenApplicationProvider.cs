@@ -208,6 +208,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     {
                         case "disabled":
                         case "visible":
+                        case "isprofilepicturevisible":
+                        case "islogovisible":
+                        case "istitlevisible":
+                        case "checked":
+
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())

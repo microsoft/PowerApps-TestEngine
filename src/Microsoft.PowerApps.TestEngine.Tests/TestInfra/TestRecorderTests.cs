@@ -156,11 +156,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             }
 
             // Assert
-            Assert.Equal(count, recorder.TestSteps.Count());
+            Assert.Equal(count, recorder.SetupSteps.Count());
+            Assert.Empty(recorder.TestSteps);
 
             if (count > 0)
             {
-                Assert.Equal(action, recorder.TestSteps.First());
+                Assert.Equal(action, recorder.SetupSteps.First());
             }
         }
 
@@ -221,15 +222,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 await tasks[0];
             }
 
+            Assert.Empty(recorder.TestSteps);
+
             // Assert
             if (string.IsNullOrEmpty(action))
             {
-                Assert.Empty(recorder.TestSteps);
+                Assert.Empty(recorder.SetupSteps);
             }
             else
             {
-                Assert.Single(recorder.TestSteps);
-                Assert.Equal(action, recorder.TestSteps.First());
+                Assert.Single(recorder.SetupSteps);
+                Assert.Equal(action, recorder.SetupSteps.First());
             }
         }
 
@@ -263,7 +266,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [InlineData("{alt: true, text: 'Foo'}", "Experimental.PlaywrightAction(\"[data-test-id='test']:has-text('Foo')\", \"wait\");")]
         [InlineData("{control: true}", "Experimental.WaitUntil(test.Text=\"\");")]
         [InlineData("{control: true, text: 'Foo'}", "Experimental.WaitUntil(test.Text=\"Foo\");")]
-        public async Task ClickCallback(string json, string expectedPowerFx)
+        public async Task ClickCallback(string json, string expectedTestStepsPowerFxFx)
         {
             // Arrange
             Func<IRoute, Task> callbackInstance = null;
@@ -285,8 +288,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await callbackInstance(_mockRoute.Object);
 
             // Assert
-            Assert.Single(recorder.TestSteps);
-            Assert.Equal(expectedPowerFx, recorder.TestSteps.First());
+            if (!string.IsNullOrEmpty(expectedTestStepsPowerFxFx))
+            {
+                Assert.Single(recorder.TestSteps);
+                Assert.Equal(expectedTestStepsPowerFxFx, recorder.TestSteps.First());
+                Assert.Empty(recorder.SetupSteps);
+            }
+
         }
 
         [Theory]
