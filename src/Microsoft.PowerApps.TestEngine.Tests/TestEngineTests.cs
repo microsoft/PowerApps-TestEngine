@@ -375,7 +375,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 #else
             if (exceptionType == typeof(ArgumentNullException))
             {
-                await Assert.ThrowsAsync <ArgumentNullException> (async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
+                await Assert.ThrowsAsync<ArgumentNullException>(async () => await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, ""));
             }
             else if (exceptionType == typeof(ArgumentException))
             {
