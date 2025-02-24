@@ -1,14 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using Microsoft.PowerApps.TestEngine.System;
 using Moq;
-using Xunit;
 
 namespace testengine.auth.certificatestore.tests
 {
@@ -51,7 +47,7 @@ namespace testengine.auth.certificatestore.tests
             string base64Encoded = Convert.ToBase64String(rawData);
 
             MockEnvironmentVariable.Setup(x => x.GetVariable(userSubjectName)).Returns(base64Encoded);
-           
+
             // Act
             X509Certificate2 certificate = provider.RetrieveCertificateForUser(userSubjectName);
 
