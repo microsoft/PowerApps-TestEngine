@@ -208,6 +208,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     {
                         case "disabled":
                         case "visible":
+                        case "isprofilepicturevisible":
+                        case "islogovisible":
+                        case "istitlevisible":
                         case "checked":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
@@ -378,7 +381,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     using (var memoryStream = new MemoryStream())
                     {
                         await stream.CopyToAsync(memoryStream);
-                        scriptHash = "sha256-" + Convert.ToBase64String(SHA256.HashData(memoryStream.ToArray()));
+                        scriptHash = "sha256-" + Convert.ToBase64String(SHA256.Create().ComputeHash(memoryStream.ToArray()));
                     }
                     string scriptUrl = $"/{embeddedScriptName}?hash={scriptHash}";
                     var opt = new PageAddScriptTagOptions()

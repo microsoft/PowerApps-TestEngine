@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -32,11 +32,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <MySourceFiles Include="..\..\bin\$(configuration)\testengine.user.storagestate\testengine.user.storagestate.dll" />
+    <!-- Add required dependancy assemblies -->
+    <MySourceFiles Include="..\..\bin\$(configuration)\testengine.user.storagestate\testengine.user.storagestate.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.AspNetCore.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Extensions.DependencyInjection.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.PowerPlatform.Dataverse.Client.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Xrm.Sdk.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Extensions.Http.dll;..\..\bin\$(configuration)\testengine.user.storagestate\System.ServiceModel.Primitives.dll;..\..\bin\$(configuration)\testengine.user.storagestate\System.Configuration.ConfigurationManager.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Extensions.Caching.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Crm.Sdk.Proxy.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Crm.Sdk.Proxy.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Identity*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\System.ServiceModel.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\System.Security.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Bcl.Cryptography.dll" />
   </ItemGroup>
 
-  <Target Name="CopyFiles" AfterTargets="AfterBuild">
-    <Copy SourceFiles="@(MySourceFiles)" DestinationFolder="..\..\bin\$(configuration)\PowerAppsTestEngine" />
-  </Target>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.2">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+  </ItemGroup>
 
 </Project>

@@ -1,4 +1,7 @@
-﻿namespace Microsoft.PowerApps.TestEngine.Modules
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+namespace Microsoft.PowerApps.TestEngine.Modules
 {
     /// <summary>
     /// A wrapper object to store information about a tested certificate source

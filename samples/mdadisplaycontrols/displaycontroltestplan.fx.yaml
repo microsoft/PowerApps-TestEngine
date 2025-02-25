@@ -1,0 +1,406 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Display Controls
+  testSuiteDescription: Verify test cases for Display Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+      # HtmlText Control Test Cases   
+
+    - testCaseName: Test HtmlText Control-  HtmlText Property
+      testCaseDescription: Verify that the HtmlText property can display the correct HTML content.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate HtmLText Control");
+        SetProperty(HtmlText1.HtmlText, "<h1>Welcome</h1>");
+        Assert(HtmlText1.HtmlText = "<h1>Welcome</h1>", "Checking the HtmlText property for correct HTML content");     
+    
+    - testCaseName: Test HtmlText Control - Tooltip Property
+      testCaseDescription: Verify that the Tooltip property displays the correct text on hover.
+      testSteps: |
+        SetProperty(HtmlText1.Tooltip, "This is a tooltip");
+        Select(HtmlText1);
+        Assert(HtmlText1.Tooltip = "This is a tooltip", "Checking the tooltip text");
+
+    - testCaseName: Test HtmlText Control -OnSelect Property - Positive Scenario
+      testCaseDescription: Verify that the OnSelect property triggers the correct action when HtmlText1 is clicked.
+      testSteps: |        
+        Select(HtmlText1);
+        Assert(true, "Checking the OnSelect action");
+
+    - testCaseName: Test HtmlText Control -Visible Property - Negative Scenario
+      testCaseDescription: Verify that setting Visible to false hides the HtmlText1 control.
+      testSteps: |
+        SetProperty(HtmlText1.Visible, false);
+        Assert(HtmlText1.Visible = false, "Checking the HtmlText1 is hidden");
+
+    - testCaseName: Test HtmlText Control -Visible Property - Positive Scenario
+      testCaseDescription: Verify that setting Visible to true show the HtmlText1 control.
+      testSteps: |
+        SetProperty(HtmlText1.Visible, true);
+        Assert(HtmlText1.Visible = true, "Checking the HtmlText1 is hidden");
+
+    
+
+    # Timer Control Test Cases
+    
+    - testCaseName: Test Timer Control - OnTimerStart, Duration Property - Positive Scenario
+      testCaseDescription: Verify that the OnTimerStart property triggers the correct action when Timer is clicked.
+      testSteps: |  
+        SetProperty(lblDisplayControl.Text, "Validate Timer Control");
+        SetProperty(Timer1.Duration, 5000);        
+        SetProperty(Timer1.Start, true); 
+        Wait(Label1,"Text","Timer Started");
+        Assert(Label1.Text = "Timer Started", "Checking the OnTimerStart action");
+        Assert(Timer1.Duration = 5000, "Checking the OnTimerStart action");        
+
+    - testCaseName: Test Timer Control - OnTimerStop Property - Positive Scenario
+      testCaseDescription: Verify that the OnTimerStop property triggers the correct action when Timer is clicked.
+      testSteps: |   
+        Wait(Label1,"Text","Timer Stopped");
+        Assert(Label1.Text = "Timer Stopped", "Checking the OnTimerStop action");
+
+    - testCaseName: Test Timer Control - Duration Property - Positive Scenario
+      testCaseDescription: Verify that the Duration property triggers and stop after duration period end.
+      testSteps: | 
+        SetProperty(Timer1.Reset, true);    
+        SetProperty(Timer1.Duration, 10000); 
+        SetProperty(Timer1.AutoStart, true);               
+        Wait(Label1,"Text","Timer Started");
+        Wait(Label1,"Text","Timer Stopped");
+        Assert(Label1.Text = "Timer Stopped", "Checking the OnTimerStop action");
+  
+
+
+    # Link Control Test Cases
+
+    - testCaseName: Test Link Control - Text Property
+      testCaseDescription: Verify that the Text property displays the correct text for the link.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate Link Control");
+        SetProperty(LinkCanvas1.Text, "Click Here");
+        Assert(LinkCanvas1.Text = "Click Here", "Checking that the displayed link text matches the expected value");     
+
+    - testCaseName: Test Link Control - AccessibleLabel Property
+      testCaseDescription: Verify that the AccessibleLabel property provides the correct ARIA label for accessibility tools.
+      testSteps: |
+        SetProperty(LinkCanvas1.AccessibleLabel, "Navigate to Example");
+        Assert(LinkCanvas1.AccessibleLabel = "Navigate to Example", "Checking that the accessible label matches the expected value");
+
+    - testCaseName: Test Link Control - Visible Property - Negative Scenario
+      testCaseDescription: Verify that setting Visible to false hides the link control.
+      testSteps: |
+        SetProperty(LinkCanvas1.Visible, false);
+        Assert(LinkCanvas1.Visible = false, "Checking the LinkCanvas1 is hidden");
+
+    - testCaseName: Test Link Control - Visible Property - Positive Scenario
+      testCaseDescription: Verify that the Visible property controls the visibility of the link control.
+      testSteps: |
+        SetProperty(LinkCanvas1.Visible, true);
+        Assert(LinkCanvas1.Visible = true, "Checking the LinkCanvas1 is visible");    
+
+    - testCaseName: Test Link Control - Text Property - Negative Scenario
+      testCaseDescription: Verify that setting an empty Text property does not crash the application.
+      testSteps: |
+        SetProperty(LinkCanvas1.Text, "");
+        Assert(LinkCanvas1.Text = "", "Verifying that the application handles an empty link text gracefully");
+     
+      # Spinner Control
+
+    - testCaseName: Test Spinner Control - Label Property - Positive Scenario
+      testCaseDescription: Verify that the Label property correctly displays the assigned text.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate Spinner Control");
+        SetProperty(Spinner1.Label, "Loading Data...");
+        Assert(Spinner1.Label = "Loading Data...", "Checking that the Spinner displays the correct label text");
+
+    - testCaseName: Test Spinner Control - Label Property - Negative Scenario
+      testCaseDescription: Verify that setting an empty Label property does not crash the application.
+      testSteps: |
+        SetProperty(Spinner1.Label, "");
+        Assert(Spinner1.Label = "", "Checking that the application handles an empty label gracefully");        
+
+    - testCaseName: Test Spinner Control - AccessibleLabel Property - Positive Scenario
+      testCaseDescription: Verify that the AccessibleLabel property provides the correct ARIA label for accessibility.
+      testSteps: |
+        SetProperty(Spinner1.AccessibleLabel, "Loading spinner");
+        Assert(Spinner1.AccessibleLabel = "Loading spinner", "Checking that the AccessibleLabel is correctly set for the Spinner");    
+
+    - testCaseName: Test Spinner Control - Visible Property - Negative Scenario
+      testCaseDescription: Verify that setting the Visible property to false hides the Spinner control.
+      testSteps: |
+        SetProperty(Spinner1.Visible, false);
+        Assert(Spinner1.Visible = false, "Checking that the Spinner control is hidden");
+
+    - testCaseName: Test Spinner Control - Visible Property - Positive Scenario
+      testCaseDescription: Verify that setting the Visible property to true displays the Spinner control.
+      testSteps: |
+        SetProperty(Spinner1.Visible, true);
+        Assert(Spinner1.Visible = true, "Checking that the Spinner control is visible");
+
+    - testCaseName: Test Spinner Control - Behavior During Loading
+      testCaseDescription: Verify that the Spinner behaves correctly during data loading.
+      testSteps: |
+        SetProperty(Spinner1.Label, "Loading Data...");
+        SetProperty(Spinner1.Visible, true);
+        Wait(Spinner1,"Label","Loading Data...");
+        Assert(Spinner1.Visible = true, "Checking that the Spinner is visible during loading");
+        SetProperty(Spinner1.Visible, false);        
+        Assert(Spinner1.Visible = false, "Checking that the Spinner is hidden after loading is complete");
+        SetProperty(Spinner1.Label, "");
+        SetProperty(Spinner1.Visible, true);
+
+    # Info Button Test Cases
+
+    - testCaseName: Test Info Button - Content Property
+      testCaseDescription: Verify that the Content property displays the correct information when the Info Button is clicked.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate Info Button Control");
+        SetProperty(InfoButtonCanvas1.Content, "This is informational content");
+        Select(InfoButtonCanvas1);
+        Assert(lblDisplayControl.Text = "This is informational content", "Checking that the Info Button displays the correct content");
+        Assert(InfoButtonCanvas1.Content = "This is informational content", "Checking that the Info Button displays the correct content");
+
+    - testCaseName: Test Info Button - Content Property - Negative Scenario
+      testCaseDescription: Verify that setting the Content property to an empty string does not crash the application.
+      testSteps: |
+        SetProperty(InfoButtonCanvas1.Content, "");
+        Select(InfoButtonCanvas1);
+        Assert(lblDisplayControl.Text = "", "Checking the application handles empty content gracefully");
+
+    - testCaseName: Test Info Button - AccessibleLabel Property
+      testCaseDescription: Verify that the AccessibleLabel property provides a correct ARIA label for screen readers.
+      testSteps: |
+        SetProperty(InfoButtonCanvas1.AccessibleLabel, "Help Information");
+        Assert(InfoButtonCanvas1.AccessibleLabel = "Help Information", "Checking the accessible label for the Info Button");
+
+    - testCaseName: Test Info Button - Visible Property - Negative Scenario
+      testCaseDescription: Verify that setting the Visible property to false hides the Info Button.
+      testSteps: |
+        SetProperty(InfoButtonCanvas1.Visible, false);
+        Assert(InfoButtonCanvas1.Visible = false, "Checking that the Info Button is hidden");
+
+    # - testCaseName: Test Info Button - Visible Property - Positive Scenario
+    #   testCaseDescription: Verify that setting the Visible property to true displays the Info Button.
+    #   testSteps: |
+    #     SetProperty(InfoButtonCanvas1.Visible, true);
+    #     Assert(InfoButtonCanvas1.Visible = true, "Checking that the Info Button is visible");
+        
+        # Progress Control Test Cases
+   
+    - testCaseName: Test Progress Control - Max Property
+      testCaseDescription: Verify that the Max property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate Progress Bar Control");
+        SetProperty(Progress1.Max, 100);
+        Assert(Progress1.Max = 100, "Checking the Max property");
+        
+    - testCaseName: Test Progress Control - Value Property
+      testCaseDescription: Verify that the Value property can be set and retrieved correctly.
+      testSteps: |       
+        SetProperty(Progress1.Value, 50);
+        Assert(Progress1.Value = 50, "Checking the Value property");
+        SetProperty(Progress1.Value, 25);
+        Assert(Progress1.Value = 25, "Checking the Value property");
+        SetProperty(Progress1.Value, 100);
+        Assert(Progress1.Value = 100, "Checking the Value property");
+        SetProperty(Progress1.Value, 75);
+        Assert(Progress1.Value = 75, "Checking the Value property");   
+
+
+    - testCaseName: Test Progress Control - Value beyond Max value Property
+      testCaseDescription: Verify that the value property can be set beyond max property.
+      testSteps: |
+        SetProperty(Progress1.Max, 50);
+        SetProperty(Progress1.Value, 75);
+        Assert(Progress1.Value = 75, "Checking the value property beyond max property value");
+
+    - testCaseName: Test Progress Control - Visible Property - Negative Scenario
+      testCaseDescription: Verify that setting Visible to false hides the Progress1 control.
+      testSteps: |
+        SetProperty(Progress1.Visible, false);
+        Assert(Progress1.Visible = false, "Checking the Progress1 is hidden");
+
+    - testCaseName: Test Progress Control - Visible Property - Positive Scenario
+      testCaseDescription: Verify that the Visible property controls the visibility of the Progress1 control.
+      testSteps: |
+        SetProperty(Progress1.Visible, true);
+        Assert(Progress1.Visible = true, "Checking the Progress1 is visible");   
+    
+
+    # Badge Canvas Control
+
+    - testCaseName: Test Badge Canvas Control - Content Property - Positive Scenario
+      testCaseDescription: Verify that the Content property correctly displays the assigned text.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate Badge Canvas Control");
+        SetProperty(BadgeCanvas1.Content, "Certified Professional");
+        Assert(BadgeCanvas1.Content = "Certified Professional", "Checking that the Badge displays the correct content");
+
+    - testCaseName: Test Badge Canvas Control -  Content Property - Negative Scenario
+      testCaseDescription: Verify that setting an empty Content property does not crash the application.
+      testSteps: |
+        SetProperty(BadgeCanvas1.Content, "");
+        Assert(BadgeCanvas1.Content = "", "Checking that the application handles empty content gracefully");       
+
+    - testCaseName: Test Badge Canvas Control - AccessibleLabel Property - Positive Scenario
+      testCaseDescription: Verify that the AccessibleLabel property provides the correct ARIA label for accessibility.
+      testSteps: |
+        SetProperty(BadgeCanvas1.AccessibleLabel, "Notification Badge");
+        Assert(BadgeCanvas1.AccessibleLabel = "Notification Badge", "Checking that the AccessibleLabel is correctly set for the Badge");   
+    
+
+    - testCaseName: Test Badge Canvas Control - Visible Property - Negative Scenario
+      testCaseDescription: Verify that setting the Visible property to false hides the Badge control.
+      testSteps: |
+        SetProperty(BadgeCanvas1.Content, "Certified Professional");
+        SetProperty(BadgeCanvas1.Visible, false);
+        Assert(BadgeCanvas1.Visible = false, "Checking that the Badge control is hidden");
+
+    - testCaseName: Test Badge Canvas Control - Visible Property - Positive Scenario
+      testCaseDescription: Verify that setting the Visible property to true displays the Badge control.
+      testSteps: |
+        SetProperty(BadgeCanvas1.Content, "Certified Professional");
+        SetProperty(BadgeCanvas1.Visible, true);
+        Assert(BadgeCanvas1.Visible = true, "Checking that the Badge control is visible");
+
+    - testCaseName: Test Badge Canvas Control - Display During Dynamic Updates
+      testCaseDescription: Verify that the Badge updates dynamically when the Content property changes.
+      testSteps: |
+        SetProperty(BadgeCanvas1.Content, "New");
+        Assert(BadgeCanvas1.Content = "New", "Checking the initial content");
+        SetProperty(BadgeCanvas1.Content, "Updated");
+        Assert(BadgeCanvas1.Content = "Updated", "Checking the updated content");
+
+    - testCaseName: Test Badge Canvas Control - AccessibleLabel Property with Missing Content
+      testCaseDescription: Verify that the AccessibleLabel works correctly when the Content property is empty.
+      testSteps: |
+        SetProperty(BadgeCanvas1.Content, "");
+        SetProperty(BadgeCanvas1.AccessibleLabel, "Badge with no content");
+        Assert(BadgeCanvas1.AccessibleLabel = "Badge with no content", "Checking that AccessibleLabel is correct when Content is missing");
+
+    # Avatar Control
+
+    - testCaseName: Test Avatar Control- Name Property - Positive Scenario
+      testCaseDescription: Verify that the Name property correctly displays the assigned text.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate Avatar Control");
+        SetProperty(Avatar1.Name, "John Doe");
+        Assert(Avatar1.Name = "John Doe", "Checking that the Avatar control displays the correct name");
+
+    - testCaseName: Test Avatar Control- Name Property - Negative Scenario
+      testCaseDescription: Verify that setting an empty Name property does not crash the application.
+      testSteps: |
+        SetProperty(Avatar1.Name, "");
+        Assert(Avatar1.Name = "", "Checking that the application handles an empty Name gracefully");   
+        
+    - testCaseName: Test Avatar Control- Badge Property - Positive Scenario
+      testCaseDescription: Verify that the Badge property displays the correct badge content.
+      testSteps: |
+        SetProperty(Avatar1.Badge, "Online");
+        Assert(Avatar1.Badge = "Online", "Checking that the Badge displays the correct content");
+
+    - testCaseName: Test Avatar Control- Badge Property - Negative Scenario
+      testCaseDescription: Verify that an empty Badge property does not crash the application.
+      testSteps: |
+        SetProperty(Avatar1.Badge, "");
+        Assert(Avatar1.Badge = "", "Checking that the application handles an empty Badge gracefully");
+
+    - testCaseName: Test Avatar Control- Visible Property - Negative Scenario
+      testCaseDescription: Verify that setting the Visible property to false hides the Avatar control.
+      testSteps: |
+        SetProperty(Avatar1.Visible, false);
+        Assert(Avatar1.Visible = false, "Checking that the Avatar control is hidden");
+
+    - testCaseName: Test Avatar Control- Visible Property - Positive Scenario
+      testCaseDescription: Verify that setting the Visible property to true displays the Avatar control.
+      testSteps: |
+        SetProperty(Avatar1.Visible, true);
+        Assert(Avatar1.Visible = true, "Checking that the Avatar control is visible");   
+    
+
+    # Icon Control
+
+    - testCaseName: Test Icon Property - Positive Scenario
+      testCaseDescription: Verify that the Icon property correctly displays the assigned icon.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate Icon Control");
+        SetProperty(Icon1.Icon, "Attach");
+        Assert(Icon1.Icon = "Attach", "Checking that the Icon property is correctly set to 'Attach'");
+
+    - testCaseName: Test Icon Property - Negative Scenario
+      testCaseDescription: Verify that assigning an invalid icon name does not crash the application.
+      testSteps: |
+        SetProperty(Icon1.Icon, "InvalidIconName");
+        Assert(Icon1.Icon = "InvalidIconName", "Checking that the application gracefully handles invalid icon names");         
+    
+    - testCaseName: Test Icon Control-  Visible Property - Negative Scenario
+      testCaseDescription: Verify that setting the Visible property to false hides the Icon control.
+      testSteps: |
+        SetProperty(Icon1.Visible, false);
+        Assert(Icon1.Visible = false, "Checking that the Icon control is hidden");
+
+    - testCaseName: Test Icon Control - Visible Property - Positive Scenario
+      testCaseDescription: Verify that setting the Visible property to true displays the Icon control.
+      testSteps: |
+        SetProperty(Icon1.Visible, true);
+        Assert(Icon1.Visible = true, "Checking that the Icon control is visible");   
+
+    - testCaseName: Test Icon Control- Change During Runtime
+      testCaseDescription: Verify that the Icon property updates dynamically during runtime.
+      testSteps: |
+        SetProperty(Icon1.Icon, "Home");
+        Assert(Icon1.Icon = "Home", "Checking the initial icon");
+        SetProperty(Icon1.Icon, "Settings");
+        Assert(Icon1.Icon = "Settings", "Checking the updated icon");
+
+    # Text Canvas Control
+
+    - testCaseName: Test Text Canvas Control - Text Property - Positive Scenario
+      testCaseDescription: Verify that the Text property correctly displays the assigned string.
+      testSteps: |
+        SetProperty(lblDisplayControl.Text, "Validate Text Canvas Control");
+        SetProperty(TextCanvas1.Text, "Welcome to PowerApps");
+        Assert(TextCanvas1.Text = "Welcome to PowerApps", "Checking the Text property is correctly set to 'Welcome to PowerApps'");
+
+    - testCaseName: Test Text Canvas Control - Text Property - Negative Scenario
+      testCaseDescription: Verify that assigning a null or empty string to the Text property does not cause errors.
+      testSteps: |
+        SetProperty(TextCanvas1.Text, "");
+        Assert(TextCanvas1.Text = "", "Checking the Text property accepts an empty string");        
+
+    - testCaseName: Test Text Canvas Control - Text Updates Dynamically
+      testCaseDescription: Verify that the Text property updates dynamically at runtime.
+      testSteps: |
+        SetProperty(TextCanvas1.Text, "Initial Text");
+        Assert(TextCanvas1.Text = "Initial Text", "Checking the initial text is set");
+        SetProperty(TextCanvas1.Text, "Updated Text");
+        Assert(TextCanvas1.Text = "Updated Text", "Checking the text is updated dynamically");
+
+    - testCaseName: Test Text Canvas Control - Visible Property - Negative Scenario
+      testCaseDescription: Verify that the Visible property set to false hides the TextCanvas control.
+      testSteps: |
+        SetProperty(TextCanvas1.Visible, false);
+        Assert(TextCanvas1.Visible = false, "Checking that the TextCanvas control is hidden");
+
+    - testCaseName: TestText Canvas Control - Visible Property - Positive Scenario
+      testCaseDescription: Verify that the Visible property set to true displays the TextCanvas control.
+      testSteps: |
+        SetProperty(TextCanvas1.Visible, true);
+        Assert(TextCanvas1.Visible = true, "Checking that the TextCanvas control is visible");
+
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

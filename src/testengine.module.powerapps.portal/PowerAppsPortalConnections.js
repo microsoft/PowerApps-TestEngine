@@ -1,4 +1,6 @@
-﻿// WARNING: The implementation of functions in this class are subject to change and the implementation details should not be relied on to provide a stable method of obtaining the required information
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+// WARNING: The implementation of functions in this class are subject to change and the implementation details should not be relied on to provide a stable method of obtaining the required information
 
 var PowerAppsPortalConnections = class {
     static getConnections() {
