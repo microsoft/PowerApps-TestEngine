@@ -129,8 +129,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                     var possibleAuthTypeProviderModule = DirectoryGetFiles(location, "testengine.auth.*.dll");
 #if RELEASE
-                    //temporarily limiting to a fixed set of providers for milestone 2, move to allow deny list later #410
-                    var allowedAuthTypeManager = new string[] { };
+                    //temporarily limiting to a fixed set of providers for milestone 1, move to allow deny list later #410. Environment Certificate used for multi machine auth
+                    var allowedAuthTypeManager = new string[] { Path.Combine(location, "testengine.auth.environment.certificate.dll"), Path.Combine(location, "testengine.auth.certificatestore.dll") };
                     possibleAuthTypeProviderModule = possibleAuthTypeProviderModule.Where(file => allowedAuthTypeManager.Contains(file)).ToArray();
 #endif
                     foreach (var possibleModule in possibleAuthTypeProviderModule)

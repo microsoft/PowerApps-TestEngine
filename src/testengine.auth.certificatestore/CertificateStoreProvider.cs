@@ -23,11 +23,6 @@ namespace testengine.auth
 
         public string Name { get { return "certstore"; } }
 
-        [ImportingConstructor]
-        public CertificateStoreProvider(IFileSystem fileSystem)
-        {
-        }
-
         public X509Certificate2? RetrieveCertificateForUser(string userIdentifier)
         {
             if (string.IsNullOrEmpty(userIdentifier))

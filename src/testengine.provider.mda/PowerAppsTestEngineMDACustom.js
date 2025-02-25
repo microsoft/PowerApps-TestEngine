@@ -1,4 +1,7 @@
-﻿// WARNING:
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+// WARNING:
 // The JavaScript object model of the page is subject to change. Do not take dependencies on the implementation of methods as they could be updated
 
 class PowerAppsModelDrivenCanvas {
@@ -133,50 +136,56 @@ class PowerAppsModelDrivenCanvas {
                 if (typeof value == "undefined" || value == null) {
                     propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
                     return;
-                }
+                }                            
 
-                var metadata = value.dataSource?.tryGetTableMetadata();
-
-                if (typeof metadata === "undefined" || metadata === null) {
+                if (typeof value.dataSource === "undefined") {
                     propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
                     return;
                 }
 
-                var existingProperties = value.dataSource.data.length > 0 ? Object.keys(value.dataSource.data[0]) : metadata.column.map(item => item.name);
+                try {
+                    var metadata = value.dataSource.tryGetTableMetadata();
 
-                var newPropertyType = propertyType.substring(0, 2);
+                    var existingProperties = value.dataSource.data.length > 0 ? Object.keys(value.dataSource.data[0]) : metadata.column.map(item => item.name);
 
-                var mappedColumn = false;
+                    var newPropertyType = propertyType.substring(0, 2);
 
-                metadata.columns.forEach(item => {
-                    var mappedType = item._schema.type
-                    switch (item._schema.type) {
-                        case 'E':
-                            mappedType = 'g'; // GUID
-                            break;
-                        case 'A':
-                        case 'OptionSet':
+                    var mappedColumn = false;
+
+                    metadata.columns.forEach(item => {
+                        var mappedType = item._schema.type
+                        switch (item._schema.type) {
+                            case 'E':
+                                mappedType = 'g'; // GUID
+                                break;
+                            case 'A':
+                            case 'OptionSet':
+                                mappedType = ''
+                                break;
+
+                        }
+
+                        if (!existingProperties.includes(item.name)) {
                             mappedType = ''
-                            break;
+                        }                       
+
+                        if (mappedType.length > 0) {
+                            mappedColumn = true;
+                            newPropertyType += `${item.name}:${mappedType}, `;
+                        }
+                    });
+
+                    if (mappedColumn) {
+                        // Remove commas from the end
+                        newPropertyType = newPropertyType.slice(0, -2);
                     }
 
-                    if (!existingProperties.includes(item.name)) {
-                        mappedType = ''
-                    }
-
-                    if (mappedType.length > 0) {
-                        mappedColumn = true;
-                        newPropertyType += `${item.name}:${mappedType}, `;
-                    }
-                });
-
-                if (mappedColumn) {
-                    // Remove commas from the end
-                    newPropertyType = newPropertyType.slice(0, -2);
+                    newPropertyType += ']'
+                    propertyType = newPropertyType
+                } catch {
+                    propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
+                    return;
                 }
-                
-                newPropertyType += ']'
-                propertyType = newPropertyType
             }
 
             propertiesList.push({ propertyName: propertyName, propertyType: propertyType });

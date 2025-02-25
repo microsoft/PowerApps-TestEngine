@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 // WARNING:
 // The JavaScript object model of the page is subject to change. Do not take dependencies on the implementation of methods as they could be updated
 class PowerAppsTestEngine {
@@ -25,8 +28,8 @@ class PowerAppsTestEngine {
     static buildControlObjectModel() {
         switch (PowerAppsTestEngine.pageType()) {
             case PowerAppsTestEngine.CONSTANTS.EntityList:
-                // TODO - Load list as collection
-                break;
+                var gridJsonString = PowerAppsModelDrivenEntityList.getMainGridControls();
+                return gridJsonString;
             case PowerAppsTestEngine.CONSTANTS.Custom:
                 return PowerAppsModelDrivenCanvas.buildControlObjectModel();
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:

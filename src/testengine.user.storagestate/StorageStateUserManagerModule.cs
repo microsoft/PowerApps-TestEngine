@@ -1,8 +1,9 @@
 ﻿// Copyright(c) Microsoft Corporation.
-// Licensed under the MIT license.using Microsoft.Extensions.Logging;
+// Licensed under the MIT license.
 
 using System.ComponentModel.Composition;
 using System.Net.Mail;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -31,16 +32,42 @@ namespace testengine.user.storagestate
 
         public Dictionary<string, object> Settings { get; private set; }
 
-        public Action<IFileSystem, string> Protect = (IFileSystem filesystem, string fileName) =>
+        public Action<IFileSystem, string> Protect = static (IFileSystem filesystem, string fileName) =>
         {
-            var content = filesystem.ReadAllText(fileName);
-            byte[] dataBytes = Encoding.UTF8.GetBytes(content);
-            byte[] encryptedData = ProtectedData.Protect(dataBytes, null, DataProtectionScope.CurrentUser);
-            filesystem.WriteTextToFile(fileName, Convert.ToBase64String(encryptedData), true);
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                throw new InvalidOperationException("DPAPI protection only available on Windows");
+            }
+
+            bool fileSaved = false;
+            try
+            {
+                var content = filesystem.ReadAllText(fileName);
+
+                byte[] dataBytes = Encoding.UTF8.GetBytes(content);
+                byte[] encryptedData = ProtectedData.Protect(dataBytes, null, DataProtectionScope.CurrentUser);
+                filesystem.WriteTextToFile(fileName, Convert.ToBase64String(encryptedData), true);
+                fileSaved = true;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                if (!fileSaved)
+                {
+                    filesystem.Delete(fileName);
+                }
+            }
         };
 
         public Func<IFileSystem, string, string> Unprotect = (IFileSystem filesystem, string fileName) =>
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                throw new InvalidOperationException("DPAPI protection only available on Windows");
+            }
             var base64Text = filesystem.ReadAllText(fileName);
             byte[] dataBytes = Convert.FromBase64String(base64Text);
             byte[] decryptedData = ProtectedData.Unprotect(dataBytes, null, DataProtectionScope.CurrentUser);
@@ -103,7 +130,7 @@ namespace testengine.user.storagestate
             };
         }
 
-        public string Name => "storagestate";
+        public virtual string Name => "storagestate";
 
         public int Priority => 300;
 
@@ -199,6 +226,7 @@ namespace testengine.user.storagestate
                 },
                 CallbackDesiredUrlFound = async (match) =>
                 {
+
                     var stateFile = Path.Combine(Location, "state.json");
                     await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = stateFile });
                     Protect(fileSystem, stateFile);
@@ -262,6 +290,10 @@ namespace testengine.user.storagestate
         {
             try
             {
+                if (string.IsNullOrEmpty(emailAddress))
+                {
+                    return false;
+                }
                 var email = new MailAddress(emailAddress);
                 return email.Address == emailAddress.Trim();
             }
@@ -271,7 +303,7 @@ namespace testengine.user.storagestate
             }
         }
 
-        public string GetUserNameFromEmail(string? emailAddress)
+        public string GetUserNameFromEmail(string emailAddress)
         {
             if (string.IsNullOrEmpty(emailAddress))
             {
