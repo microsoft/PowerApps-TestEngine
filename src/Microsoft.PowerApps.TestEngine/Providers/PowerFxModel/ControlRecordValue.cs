@@ -1,7 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Runtime.CompilerServices;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 
@@ -111,6 +118,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
                 if (jsPropertyValueModel != null)
                 {
+                    if (string.IsNullOrEmpty(jsPropertyValueModel.PropertyValue) && fieldType is not StringType)
+                    {
+                        result = null;
+                        return false;
+                    }
+
                     if (fieldType is NumberType)
                     {
                         result = NumberValue.New(double.Parse(jsPropertyValueModel.PropertyValue));
@@ -133,12 +146,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                     }
                     else if (fieldType is DateTimeType)
                     {
-                        double milliseconds;
+                        long milliseconds;
 
                         // When converted from DateTime to a string, a value from Wait() gets roundtripped into a UTC Timestamp format
                         // The compiler does not register this format as a valid DateTime format
                         // Because of this, we have to manually convert it into a DateTime
-                        if (double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
+                        if (long.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
                             var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
                             result = DateTimeValue.New(trueDateTime);
@@ -154,14 +167,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                     }
                     else if (fieldType is DateType)
                     {
-                        double milliseconds;
+                        long milliseconds;
 
                         // When converted from Date to a string, a value from Wait() gets roudntripped into a UTC Timestamp format
                         // The compiler does not register this format as a valid DateTime format
                         // Because of this, we have to manually convert it into a DateTime
-                        if (double.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
+                        if (long.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
-                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
+                            var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(milliseconds);
+                            DateTime trueDateTime = dateTimeOffset.LocalDateTime;
                             result = DateValue.NewDateOnly(trueDateTime.Date);
                         }
                         // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format

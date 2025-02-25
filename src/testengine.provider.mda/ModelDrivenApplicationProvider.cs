@@ -212,12 +212,16 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "islogovisible":
                         case "istitlevisible":
                         case "checked":
-
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())
                             {
                                 case "System.String":
+                                    var stringValue = value.ToString();
+                                    if (string.IsNullOrEmpty(stringValue))
+                                    {
+                                        return (T)(object)("{\"PropertyValue\": \"\"}");
+                                    }
                                     return (T)(object)("{PropertyValue: '" + value.ToString() + "'}");
                                 default:
                                     return (T)(object)("{PropertyValue: " + value.ToString() + "}");
@@ -484,7 +488,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 // TODO - Set the Xrm SDK Value and update state for any JS to run
 
                 // Date.parse() parses the date to unix timestamp
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:Date.parse(\"{recordValue}\")}})";
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},Date.parse(\"{recordValue}\"))";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -509,7 +513,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     checkVal = FormatValue(value);
                 }
 
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{{{propertyNameString}:{checkVal}}})";
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{checkVal})";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
             }
@@ -728,5 +732,5 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             return $"?tenantId={tenantId}&source=testengine{additionalQueryParams}";
         }
-    }
+    }      
 }
