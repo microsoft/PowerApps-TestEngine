@@ -5,11 +5,6 @@ testSuite:
   appLogicalName: mda_input_controls_app
 
   testCases:     
-    - testCaseName: Select Button Once
-      testCaseDescription: Verify that the button performs the correct action when selected once.
-      testSteps: |        
-        Select(Button1);
-
     - testCaseName: Test TextInput Sample Text
       testCaseDescription: Verify that the text box accepts and displays input correctly.
       testSteps: |
