@@ -18,5 +18,6 @@ namespace PowerAppsTestEngineWrapper
         public string? UserAuthType { get; set; }
         public string? Wait { get; set; }
         public string? Record { get; set; }
+        public string? UseStaticContext { get; set; }
     }
 }

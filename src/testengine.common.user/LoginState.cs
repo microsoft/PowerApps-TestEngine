@@ -29,5 +29,6 @@ namespace testengine.common.user
 
         public Func<string, Task> CallbackDesiredUrlFound { get; set; } = null;
         public Func<Task> CallbackErrorFound { get; set; } = null;
+        public Func<IPage, Task> CallbackRedirectRequiredFound { get; set; } = null;
     }
 }

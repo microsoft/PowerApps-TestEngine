@@ -48,10 +48,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Theory]
-        [InlineData("", "11112222-3333-4444-5555-66667777888", "https://make.powerapps.com/environments/11112222-3333-4444-5555-66667777888", "?source=testengine")]
-        [InlineData("https://make.gov.powerapps.us", "11112222-3333-4444-5555-66667777888", "https://make.gov.powerapps.us/environments/11112222-3333-4444-5555-66667777888", "?source=testengine")]
-        [InlineData("https://make.high.powerapps.us", "11112222-3333-4444-5555-66667777888", "https://make.high.powerapps.us/environments/11112222-3333-4444-5555-66667777888", "?source=testengine")]
-        [InlineData("https://make.apps.appsplatform.us", "11112222-3333-4444-5555-66667777888", "https://make.apps.appsplatform.us/environments/11112222-3333-4444-5555-66667777888", "?source=testengine")]
+        [InlineData("", "11112222-3333-4444-5555-66667777888", "https://make.powerapps.com/environments/11112222-3333-4444-5555-66667777888", "/home?source=testengine")]
+        [InlineData("https://make.gov.powerapps.us", "11112222-3333-4444-5555-66667777888", "https://make.gov.powerapps.us/environments/11112222-3333-4444-5555-66667777888", "/home?source=testengine")]
+        [InlineData("https://make.high.powerapps.us", "11112222-3333-4444-5555-66667777888", "https://make.high.powerapps.us/environments/11112222-3333-4444-5555-66667777888", "/home?source=testengine")]
+        [InlineData("https://make.apps.appsplatform.us", "11112222-3333-4444-5555-66667777888", "https://make.apps.appsplatform.us/environments/11112222-3333-4444-5555-66667777888", "/home?source=testengine")]
         public void GenerateExpectedTestUrlForDomainAndEnvironment(string domain, string environmentId, string expectedBaseUrl, string expectedParameters)
         {
             // Arrange
