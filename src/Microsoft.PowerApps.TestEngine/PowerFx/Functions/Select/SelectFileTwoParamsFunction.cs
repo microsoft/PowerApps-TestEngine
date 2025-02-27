@@ -25,14 +25,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _TestWebProvider = TestWebProvider;
             _updateModelFunction = updateModelFunction;
             _logger = logger;
-        }        
+        }
 
         public BlankValue Execute(RecordValue obj, StringValue filePath)
         {
             SelectAsync(obj, filePath).Wait();
 
             return FormulaValue.NewBlank();
-        }      
+        }
 
         private async Task SelectAsync(RecordValue obj, StringValue filePath)
         {

@@ -497,11 +497,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                     await fileChooser.SetFilesAsync(filePath);
                     return true;
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     _singleTestInstanceState.GetLogger().LogError($"Error triggering Add Picture control click event: {ex.Message}");
                     return false; // Return false if there was an error
-                }               
+                }
             }
             return false;
         }
