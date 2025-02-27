@@ -104,5 +104,17 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// <param name="filePath">Path to check</param>
         /// <returns>True if it is valid</returns>
         public bool CanAccessDirectoryPath(string filePath);
+
+        /// <summary>
+        /// Delete a file from the system assuming file is in the permitted locations to delete from
+        /// </summary>
+        /// <param name="fileName">The file to delete</param>
+        void Delete(string fileName);
+
+        /// <summary>
+        /// Delete a directory from the system assuming directory is in the permitted locations to delete from
+        /// </summary>
+        /// <param name="directoryName">The file to delete</param>
+        void DeleteDirectory(string directoryName);
     }
 }

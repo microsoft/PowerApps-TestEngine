@@ -16,8 +16,6 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
-using NuGet.Common;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -31,24 +29,26 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private readonly IFileSystem _fileSystem;
         private readonly ITestWebProvider _testWebProvider;
         private readonly IEnvironmentVariable _environmentVariable;
+        private readonly IUserCertificateProvider _certificateProvider;
 
         public static string BrowserNotSupportedErrorMessage = "Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers";
         private IPlaywright PlaywrightObject { get; set; }
         private IBrowser Browser { get; set; }
         private IBrowserContext BrowserContext { get; set; }
         public IPage Page { get; set; }
-        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider, IEnvironmentVariable environmentVariable)
+        public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, ITestWebProvider testWebProvider, IEnvironmentVariable environmentVariable, IUserCertificateProvider certificateProvider)
         {
             _testState = testState;
             _singleTestInstanceState = singleTestInstanceState;
             _fileSystem = fileSystem;
             _testWebProvider = testWebProvider;
             _environmentVariable = environmentVariable;
+            _certificateProvider = certificateProvider;
         }
 
         // Constructor to aid with unit testing
         public PlaywrightTestInfraFunctions(ITestState testState, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem,
-            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null, ITestWebProvider testWebProvider = null, IEnvironmentVariable environmentVariable = null) : this(testState, singleTestInstanceState, fileSystem, testWebProvider, environmentVariable)
+            IPlaywright playwrightObject = null, IBrowserContext browserContext = null, IPage page = null, ITestWebProvider testWebProvider = null, IEnvironmentVariable environmentVariable = null, IUserCertificateProvider certificateProvider = null) : this(testState, singleTestInstanceState, fileSystem, testWebProvider, environmentVariable, certificateProvider)
         {
             PlaywrightObject = playwrightObject;
             Page = page;
@@ -97,6 +97,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 Headless = testSettings.Headless,
                 Timeout = testSettings.Timeout
             };
+
+            if (!string.IsNullOrEmpty(testSettings.ExecutablePath))
+            {
+                launchOptions.ExecutablePath = testSettings.ExecutablePath;
+                staticContext.ExecutablePath = testSettings.ExecutablePath;
+            }
 
             staticContext.Headless = launchOptions.Headless;
             staticContext.Timeout = launchOptions.Timeout;
@@ -164,6 +170,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             {
                 // Add file state as user manager may need access to file system
                 configurableUserManager.Settings.Add("FileSystem", _fileSystem);
+                // Add Evironment variable as provider may need additional settings
+                configurableUserManager.Settings.Add("Environment", _environmentVariable);
+                // Pass in current test state
+                configurableUserManager.Settings.Add("TestState", _testState);
+                configurableUserManager.Settings.Add("SingleTestState", _singleTestInstanceState);
+                // Pass in certificate provider
+                configurableUserManager.Settings.Add("UserCertificate", _certificateProvider);
 
                 if (configurableUserManager.Settings.ContainsKey("LoadState")
                     && configurableUserManager.Settings["LoadState"] is Func<IEnvironmentVariable, ISingleTestInstanceState, ITestState, IFileSystem, string> loadState)
@@ -212,12 +225,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
             if (userManager.UseStaticContext)
             {
-                _fileSystem.CreateDirectory(userManager.Location);
-                var location = userManager.Location;
+                //remove context directory if any present previously
+                await RemoveContext(userManager);
+
+                var location = userManager.ContextLocation;
                 if (!Path.IsPathRooted(location))
                 {
-                    location = Path.Combine(Directory.GetCurrentDirectory(), location);
+                    location = Path.Combine(_fileSystem.GetDefaultRootTestEngine(), location);
                 }
+                _fileSystem.CreateDirectory(location);
 
                 // Check if a channel has been specified
                 if (!string.IsNullOrEmpty(browserConfig.Channel))
@@ -357,12 +373,33 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
-        public async Task EndTestRunAsync()
+        public async Task EndTestRunAsync(IUserManager userManager)
         {
             if (BrowserContext != null)
             {
                 await Task.Delay(200);
                 await BrowserContext.CloseAsync();
+            }
+            await RemoveContext(userManager);
+        }
+
+        public async Task RemoveContext(IUserManager userManager)
+        {
+            try
+            {
+                if (userManager.UseStaticContext)
+                {
+                    var location = userManager.ContextLocation;
+                    if (!Path.IsPathRooted(location))
+                    {
+                        location = Path.Combine(_fileSystem.GetDefaultRootTestEngine(), location);
+                    }
+                    _fileSystem.DeleteDirectory(location);
+                }
+            }
+            catch
+            {
+                _singleTestInstanceState.GetLogger().LogInformation("Missing context or error deleting context");
             }
         }
 

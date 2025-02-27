@@ -199,6 +199,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var dateValue = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Utc);
             var dateUnixValue = new DateTimeOffset(dateValue).ToUnixTimeMilliseconds();
 
+            //yield return new object[] { BlankType.Blank, "{PropertyValue: null}", null }; // Happy path Blank
             yield return new object[] { StringType.String, "{PropertyValue: 'Test'}", "Test" }; // Happy path, text
             yield return new object[] { NumberType.Number, "{PropertyValue: 1}", (double)1 }; // Happy path, number
             yield return new object[] { GuidType.Guid, $"{{PropertyValue: '{guidValue.ToString()}'}}", guidValue }; // Happy path, GUID

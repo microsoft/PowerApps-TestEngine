@@ -42,6 +42,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<IEnvironmentVariable> MockEnvironmentVariable;
         private Mock<IBrowserContext> MockBrowserContext;
         private Mock<IUserManagerLogin> MockUserManagerLogin;
+        private Mock<IPage> MockPage;
 
         public SingleTestRunnerTests()
         {
@@ -60,6 +61,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
             MockUserManagerLogin = new Mock<IUserManagerLogin>(MockBehavior.Strict);
+            MockPage = new Mock<IPage>(MockBehavior.Strict);
         }
 
         private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles, string testSuitelocale)
@@ -121,10 +123,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestInfraFunctions.Setup(x => x.SetupAsync(It.IsAny<IUserManager>())).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.SetupNetworkRequestMockAsync()).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.GoToUrlAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
-            MockTestInfraFunctions.Setup(x => x.EndTestRunAsync()).Returns(Task.CompletedTask);
+            MockTestInfraFunctions.Setup(x => x.EndTestRunAsync(MockUserManager.Object)).Returns(Task.CompletedTask);
             MockTestInfraFunctions.Setup(x => x.DisposeAsync()).Returns(Task.CompletedTask);
+            MockPage.Setup(x => x.Url).Returns(appUrl);
+            MockBrowserContext.Setup(x => x.Pages).Returns(new List<IPage> { MockPage.Object });
+            MockTestInfraFunctions.SetupProperty(x => x.Page, MockPage.Object);
             MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(MockBrowserContext.Object);
-
+            MockUserManager.Setup(x => x.UseStaticContext).Returns(false);
             MockUserManager.Setup(x => x.LoginAsUserAsync(appUrl,
                 It.IsAny<IBrowserContext>(),
                 It.IsAny<ITestState>(),
@@ -196,7 +201,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                 $"\nCases passed: {pass}" +
                                 $"\nCases failed: {fail}";
 
-            MockTestInfraFunctions.Verify(x => x.EndTestRunAsync(), Times.Once());
+            MockTestInfraFunctions.Verify(x => x.EndTestRunAsync(MockUserManager.Object), Times.Once());
             MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory, null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, (string)summaryString, LogLevel.Information, Times.Once());
         }
@@ -344,11 +349,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, testData.additionalFiles, testData.testSuiteLocale);
 
-            var debugObj = new ExpandoObject();
-            debugObj.TryAdd("appId", "someAppId");
-            debugObj.TryAdd("appVersion", "someAppVersionId");
-            debugObj.TryAdd("environmentId", "someEnvironmentId");
-            debugObj.TryAdd("sessionId", "someSessionId");
+            IDictionary<string, object> debugObj = new ExpandoObject() as IDictionary<string, object>;
+            debugObj["appId"] = "someAppId";
+            debugObj["appVersion"] = "someAppVersionId";
+            debugObj["environmentId"] = "someEnvironmentId";
+            debugObj["sessionId"] = "someSessionId";
 
             MockTestWebProvider.Setup(x => x.GetDebugInfo()).Returns(Task.FromResult((object)debugObj));
 

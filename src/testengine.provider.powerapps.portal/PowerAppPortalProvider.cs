@@ -196,23 +196,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 throw new InvalidOperationException();
             }
 
-            // TODO: Other sovereign cloud
-            switch (domain)
-            {
-                case "gcc":
-                    // Source: https://learn.microsoft.com/power-platform/admin/powerapps-us-government
-                    domain = "https://make.gov.powerapps.us";
-                    break;
-                case "gcchigh":
-                    // Source: https://learn.microsoft.com/power-platform/admin/powerapps-us-government
-                    domain = "https://make.high.powerapps.us";
-                    break;
-                case "dod":
-                    // Source: https://learn.microsoft.com/power-platform/admin/powerapps-us-government
-                    domain = "https://make.apps.appsplatform.us";
-                    break;
-            }
-
             if (string.IsNullOrEmpty(domain))
             {
                 // Assume global commerical cloud maker base url
@@ -223,7 +206,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
             TestState.SetDomain(BaseEnviromentUrl);
 
-            return BaseEnviromentUrl + "?source=testengine";
+            return BaseEnviromentUrl + "/home?source=testengine";
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-namespace PowerAppsTestEngine
+namespace PowerAppsTestEngineWrapper
 {
     public class InputOptions
     {
@@ -18,5 +18,6 @@ namespace PowerAppsTestEngine
         public string? UserAuthType { get; set; }
         public string? Wait { get; set; }
         public string? Record { get; set; }
+        public string? UseStaticContext { get; set; }
     }
 }

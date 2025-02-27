@@ -6,7 +6,6 @@ using System.Text;
 using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
-using Microsoft.Playwright.Core;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
@@ -15,7 +14,6 @@ using Microsoft.PowerFx.Syntax;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace testengine.module
 {

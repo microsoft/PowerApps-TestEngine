@@ -13,12 +13,30 @@ using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.System
 {
-    public class FileSystemTests
+    public class FileSystemTests : IDisposable
     {
         private FileSystem fileSystem;
+        private string testFileName;
+        private string testFolderName;
+
         public FileSystemTests()
         {
             fileSystem = new FileSystem();
+            testFileName = string.Empty;
+            testFolderName = string.Empty;
+        }
+
+        public void Dispose()
+        {
+            if (!string.IsNullOrEmpty(testFileName) && File.Exists(testFileName))
+            {
+                File.Delete(testFileName);
+            }
+            if (!string.IsNullOrEmpty(testFolderName) && Directory.Exists(testFolderName))
+            {
+                Directory.Delete(testFolderName, true);
+                testFolderName = "";
+            }
         }
 
         [Theory]
@@ -285,6 +303,68 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
                 var result = fileSystem.IsValidWindowsFileName(fileName);
                 Assert.Equal(expectedValidity, result);
             }
+        }
+
+        [Fact]
+        public void CanDeleteJsonFile()
+        {
+            // Arrange
+            testFileName = Path.Combine(fileSystem.GetDefaultRootTestEngine(), "test.json");
+            if (!Directory.Exists(Path.GetDirectoryName(testFileName)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(testFileName));
+            }
+            File.WriteAllText(testFileName, "data");
+
+            // Act
+            fileSystem.Delete(testFileName);
+
+            // Assert
+            Assert.False(File.Exists(testFileName));
+        }
+
+
+        [Theory]
+        [InlineData("test.yaml")]
+        [InlineData("test.csx")]
+        public void CannotDeleteOtherFiles(string fileName)
+        {
+            // Arrange
+            testFileName = Path.Combine(fileSystem.GetDefaultRootTestEngine(), fileName);
+            if (!Directory.Exists(Path.GetDirectoryName(testFileName)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(testFileName));
+            }
+
+            File.WriteAllText(testFileName, "data");
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => fileSystem.Delete(testFileName));
+            Assert.True(File.Exists(testFileName));
+            File.Delete(testFileName);
+        }
+
+        [Fact]
+        public void CanDeleteFolder()
+        {
+            // Arrange
+            testFolderName = Path.Combine(fileSystem.GetDefaultRootTestEngine(), ".TestDir");
+            if (!Directory.Exists(testFolderName))
+            {
+                Directory.CreateDirectory(testFolderName);
+            }
+
+            // Act
+            fileSystem.DeleteDirectory(testFolderName);
+
+            // Assert
+            Assert.False(Directory.Exists(testFolderName));
+        }
+
+        [Fact]
+        public void CannotDeleteFolder()
+        {
+            Assert.Throws<InvalidOperationException>(() => fileSystem.DeleteDirectory(Path.Combine(fileSystem.GetTempPath(), Guid.NewGuid().ToString())));
         }
     }
 }
