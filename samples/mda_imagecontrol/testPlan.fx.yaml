@@ -61,9 +61,9 @@ testSuite:
     - testCaseName: Test AddMediaButton1 - Select the file from local drive
       testCaseDescription: Verify that the control correctly displays the selected image along with its file name.
       testSteps: | 
-        Select(AddMediaButton1, "C:\\TFS\\Custom\\PowerApps-TestEngine\\samples\\mda_imagecontrol\\Images\\ring.jpg");
+        Select(AddMediaButton1, "--Physical Path of image--");
         Assert(AddMediaButton1.FileName = "ring.jpg", "Check if Image displays the correct uploaded file name.");  
-        Select(AddMediaButton1, "C:\\TFS\\Custom\\PowerApps-TestEngine\\samples\\mda_imagecontrol\\Images\\monitor.jpg"); 
+        Select(AddMediaButton1, "--Physical Path of image--"); 
         Assert(AddMediaButton1.FileName = "monitor.jpg", "Check if Image displays the correct uploaded file name.");
 
     - testCaseName: Test AddMediaButton1 - PlaceholderText Property
