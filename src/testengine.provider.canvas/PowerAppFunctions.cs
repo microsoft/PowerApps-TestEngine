@@ -239,14 +239,21 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             return controlDictionary;
         }
 
-        public async Task<bool> SelectControlAsync(ItemPath itemPath)
+        public async Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null)
         {
             try
             {
                 ValidateItemPath(itemPath, false);
-                var itemPathString = JsonConvert.SerializeObject(itemPath);
-                var expression = $"PowerAppsTestEngine.select({itemPathString})";
-                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    return await TestInfraFunctions.TriggerControlClickEvent(itemPath.ControlName, filePath);
+                }
+                else
+                {
+                    var itemPathString = JsonConvert.SerializeObject(itemPath);
+                    var expression = $"PowerAppsTestEngine.select({itemPathString})";
+                    return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                } 
             }
             catch (Exception ex)
             {

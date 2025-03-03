@@ -1,6 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
+using System.Net;
+using System.Runtime;
+using System.Security;
+using ICSharpCode.Decompiler.CSharp.Syntax;
+using ICSharpCode.Decompiler.IL;
+using ICSharpCode.Decompiler.TypeSystem;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -469,6 +478,32 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             ValidatePage();
 
             await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = content });
+        }
+
+        public async Task<bool> TriggerControlClickEvent(string controlName, string filePath)
+        {
+            ValidatePage();
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                try
+                {
+                    //Add Picture Control
+                    var fileChooser = await Page.RunAndWaitForFileChooserAsync(async () =>
+                    {
+                        var match = Page.Locator($"[data-control-name='{controlName}']");
+                        await match.ClickAsync();
+                    });
+                    await fileChooser.SetFilesAsync(filePath);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _singleTestInstanceState.GetLogger().LogError($"Error triggering Add Picture control click event: {ex.Message}");
+                    return false; // Return false if there was an error
+                }
+            }
+            return false;
         }
     }
 }
