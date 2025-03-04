@@ -9,7 +9,7 @@ namespace testengine.module.sample
 {
     public class SampleFunction : ReflectionFunction
     {
-        public SampleFunction() : base(DPath.Root.Append(new DName("Experimental")), "Sample", FormulaType.Blank)
+        public SampleFunction() : base(DPath.Root.Append(new DName("Preview")), "Sample", FormulaType.Blank)
         {
         }
 

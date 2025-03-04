@@ -24,7 +24,7 @@ namespace testengine.module
         private readonly ILogger _logger;
 
         public SelectSectionFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "SelectSection", FormulaType.Blank, StringType.String)
+            : base(DPath.Root.Append(new DName("Preview")), "SelectSection", FormulaType.Blank, StringType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

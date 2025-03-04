@@ -1,9 +1,9 @@
 # Simulate Connection
 
-The Experimental.SimluateConnection function allows you to simulate requests to Power Platform connector and provide responses without actually making live requests. This is particularly useful for testing and development purposes, as it enables you to create predictable and controlled responses for various scenarios.
+The Preview.SimluateConnection function allows you to simulate requests to Power Platform connector and provide responses without actually making live requests. This is particularly useful for testing and development purposes, as it enables you to create predictable and controlled responses for various scenarios.
 
 ```powerfx
-Experimental.SimulateConnection({Name: "connectorname", Action: "actionname", Parameters: {}, Filter: "optionalfilter", Then: {Value: Table()}})
+Preview.SimulateConnection({Name: "connectorname", Action: "actionname", Parameters: {}, Filter: "optionalfilter", Then: {Value: Table()}})
 ```
 
 ## Parameters
@@ -17,14 +17,14 @@ Experimental.SimulateConnection({Name: "connectorname", Action: "actionname", Pa
 
 ## Recording Sample Values
 
-To obtain values for the `Experimental.SimulateConnection()` function you can use the network trace of the Browser Developer Tools when using [Experimental.Pause()](./Pause.md) where you can filter traffic by searching for **/invoke**
+To obtain values for the `Preview.SimulateConnection()` function you can use the network trace of the Browser Developer Tools when using [Preview.Pause()](./Pause.md) where you can filter traffic by searching for **/invoke**
 
 ## Examples
 
 1. Query user using Power 365 Users connector
 
 ```powerfx
-Experimental.SimulateConnection({Name: "office365users", Action: "/v1.0/me", Then: {
+Preview.SimulateConnection({Name: "office365users", Action: "/v1.0/me", Then: {
     displayName: "Sample User",
     "id": "c12345678-1111-2222-3333-44445555666",
     "jobTitle": null,
@@ -37,5 +37,5 @@ Experimental.SimulateConnection({Name: "office365users", Action: "/v1.0/me", The
 2. Query groups using Power 365 groups connector
 
 ```powerfx
-Experimental.SimulateConnection({Name: "office365groups", Filter: "name = 'allcompany@contoso.onmicrosoft.com'", Then: Table()})
+Preview.SimulateConnection({Name: "office365groups", Filter: "name = 'allcompany@contoso.onmicrosoft.com'", Then: Table()})
 ```

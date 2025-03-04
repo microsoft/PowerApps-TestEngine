@@ -8,7 +8,7 @@ testSuite:
     - testCaseName: Power Apps Portal
       testCaseDescription: Can start port apps portal with user who exists in the environment and with valid MFA credentials
       testSteps: |
-        = Experimental.SelectSection("home")
+        = Preview.SelectSection("home")
 
 testSettings:
   headless: false
