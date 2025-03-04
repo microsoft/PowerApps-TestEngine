@@ -1,0 +1,159 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Form Control
+  testSuiteDescription: Verify test cases for Form Control in Custom Page
+  persona: User1
+  appLogicalName: NotNeeded
+
+  # onTestSuiteStart: |
+  #   = Experimental.SimulateDataverse({
+  #         Action: "Query",
+  #         Entity: "cr693_employees",
+  #         Then: Table(
+  #                   {
+  #       "cr693_address":"369 Fir St, Seattle",
+  #       "cr693_department":681470003,
+  #       "cr693_dob":"30:00.0",
+  #       "cr693_email":"ian@example.com",
+  #       "cr693_employeeid":"5b0b0f11-0b88-4eee-b5d6-32df4c31bcba",
+  #       "cr693_employeename":"Ian Malcolm",
+  #       "cr693_gender":681470000,
+  #       "cr693_phonenumber":"+1 555-1357"
+  #   },
+  #   {
+  #       "cr693_address":"159 Willow Str",
+  #       "cr693_department":681470004,
+  #       "cr693_dob":"30:00.0",
+  #       "cr693_email":"julia@example.com",
+  #       "cr693_employeeid":"e22d2908-0d4c-470c-aa8d-76f24b14e933",
+  #       "cr693_employeename":"Julia Roberts",
+  #       "cr693_gender":681470001,
+  #       "cr693_phonenumber":"+1 555-2468"
+  #   },
+  #   {
+  #       "cr693_address":"987 Birch St",
+  #       "cr693_department":681470002,
+  #       "cr693_dob":"30:00.0",
+  #       "cr693_email":"fiona@example.com",
+  #       "cr693_employeeid":"17e6be92-96ad-43f8-8dbc-2a4464f7c97f",
+  #       "cr693_employeename":"Fiona Gallagher",
+  #       "cr693_gender":681470001,
+  #       "cr693_phonenumber":"+1 555-6543"
+  #   },
+  #   {
+  #       "cr693_address":"246 Spruce St",
+  #       "cr693_department":681470002,
+  #       "cr693_dob":"30:00.0",
+  #       "cr693_email":"hannah@example.com",
+  #       "cr693_employeeid":"b9dc7c78-e393-4ba8-90e9-2fa0ba2a07c6",
+  #       "cr693_employeename":"Hannah Montana",
+  #       "cr693_gender":681470001,
+  #       "cr693_phonenumber":"+1 555-0987"
+  #   });      
+
+  testCases:
+    - testCaseName: Test Table Control - Items Property
+      testCaseDescription: Verify that the Table Control correctly loads and displays items.
+      testSteps: |        
+        Assert(CountRows(Table1.Items) = 10, "Checking if Table displays correct number of items");
+
+    - testCaseName: Test Table Control - ReflowBehavior Property
+      testCaseDescription: Verify that the Table Control refresh behavior works as expected.
+      testSteps: |
+        SetProperty(Table1.ReflowBehavior, "Reflow");
+        Assert(Table1.ReflowBehavior = "Reflow", "Checking the refresh behavior setting");
+
+    - testCaseName: Test Table Control - Selected Property
+      testCaseDescription: Verify that selecting a row updates the Selected property correctly.
+      testSteps: |
+        SetProperty(Table1.SelectedItems, Table(First(Table1.Items)));
+        Assert(CountRows(Table1.SelectedItems) = 1, "Checking if the selected row updates correctly");
+
+    - testCaseName: Test Table Control - Multiple Select Property
+      testCaseDescription: Verify that selecting a row updates the Selected property correctly.
+      testSteps: |      
+        SetProperty(Table1.SelectedItems, Table(First(Table1.Items), Last(Table1.Items)));
+        Assert(CountRows(Table1.SelectedItems) = 2, "Checking if the table control allow to select multiple values");
+
+    # - testCaseName: Test Form Control - New Values
+    #   testCaseDescription: Verify that values in the Form Control fields can be updated correctly.
+    #   testSteps: |
+    #     SetProperty(Form1.Item, Table({'cr693_employeename': "James Clear", 'cr693_department': "IT", 'cr693_gender': "Male", 'cr693_dob': "1980-12-12", 'cr693_address': "152 South Cross Street", 'cr693_email': "james@abc.com", 'cr693_phonenumber': "9994446767"}));
+        # Assert(Table1.Selected.cr693_employeename = "Ethlan Hunt", "Verifying updated Gender field");
+
+
+
+     # SetProperty(Table1.EnableMultipleSelection, true);
+    # - testCaseName: Test Form Control - New Values
+    #   testCaseDescription: Verify that values in the Form Control fields can be updated correctly.
+    #   testSteps: |
+    #     SetProperty(Table1.SelectedItems, First(Table1.Items));
+    #     Assert(Table1.Selected.cr693_employeename = "Ethlan Hunt", "Verifying updated Gender field");
+
+        # SetProperty('Form1'.Item, Table({'cr693_employeename': "James Clear", 'cr693_department': "IT", 'cr693_gender': "Male", 'cr693_dob': "1980-12-12", 'cr693_address': "152 South Cross Street", 'cr693_email': "james@abc.com", 'cr693_phonenumber': "9994446767"})  );
+        # Assert(CountRows(LookUp(Employees, "James Clear" in 'Employee Name')) = 1, "Verifying updated Name field");
+
+    # - testCaseName: Test Form Control - Update Values
+    #   testCaseDescription: Verify that values in the Form Control fields can be updated correctly.
+    #   testSteps: |
+    #     SetProperty(DataCardValue7.SearchText, "Female");
+    #     Assert(DataCardValue7.SearchText = "Female", "Verifying updated Gender field");
+
+    # - testCaseName: Test Form Control - Update Values
+    #   testCaseDescription: Verify that values in the Form Control fields can be updated correctly.
+    #   testSteps: |
+    #     SetProperty(DateValue2.SelectedDate, Date(1990,5,5));
+    #     Assert(DateValue2.SelectedDate = Date(1990,5,5), "Verifying updated DOB field");
+    
+    # - testCaseName: Test Form Control - Negative Scenario - Invalid Email
+    #   testCaseDescription: Verify error message when an invalid email is entered.
+    #   testSteps: |
+    #     SetProperty(DataCardKey10.Text, "invalid-email");
+    #     Assert(ShowsErrorMessage("Invalid email format"), "Checking email validation error message");
+
+    # - testCaseName: Test Form Control - Negative Scenario - Mandatory Fields
+    #   testCaseDescription: Verify that the required fields cannot be left empty.
+    #   testSteps: |
+    #     SetProperty(DataCardKey4.Text, "");
+    #     ClickSubmitButton();
+    #     Assert(ShowsErrorMessage("Name is required"), "Checking mandatory validation for Name field");
+    
+    #     SetProperty(DataCardKey10.Text, "");
+    #     ClickSubmitButton();
+    #     Assert(ShowsErrorMessage("Email is required"), "Checking mandatory validation for Email field");
+    
+    #     SetProperty(DataCardKey11.Text, "");
+    #     ClickSubmitButton();
+    #     Assert(ShowsErrorMessage("Phone Number is required"), "Checking mandatory validation for Phone Number field");
+
+    # - testCaseName: Test Form Control - Edge Case - Large Input
+    #   testCaseDescription: Verify system behavior when an excessively long text is entered.
+    #   testSteps: |
+    #     SetProperty(DataCardKey12.Text, "A" * 500);
+    #     Assert(ShowsErrorMessage("Address is too long"), "Checking max length validation for Address field");
+
+    # - testCaseName: Test Form Control - Default Values
+    #   testCaseDescription: Verify that the Form Control loads with default values correctly.
+    #   testSteps: |
+    #     Assert(DataCardKey4.Text = "James Clear", "Checking default value for Name field");
+    #     Assert(DataCardValue7.SearchText = "Male", "Checking default value for Gender field");
+    #     Assert(DateValue2.SelectedDate = Date(1980,12,12), "Checking default value for DOB field");
+    #     Assert(DataCardKey12.Text = "152 South Cross Street", "Checking default value for Address field");
+    #     Assert(DataCardKey10.Text = "james@abc.com", "Checking default value for Email field");
+    #     Assert(DataCardKey11.Text = "9994446767", "Checking default value for Phone Number field");
+    #     Assert(DataCardValue8.SearchText = "IT", "Checking default value for Department field");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge      
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
