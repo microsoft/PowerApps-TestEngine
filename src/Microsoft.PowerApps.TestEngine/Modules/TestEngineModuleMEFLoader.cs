@@ -64,7 +64,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     }
 
                     // Check if want all modules in the location
-                    if (settings.DenyModule.Count == 0 && settings.AllowModule.Count() == 1 && settings.AllowModule[0].Equals("*") || settings.AllowModule.Count() == 0)
+                    if (settings.DenyModule.Count == 0 && (settings.AllowModule.Count() == 1 && settings.AllowModule.Contains("*") || settings.AllowModule.Count() == 0))
                     {
                         _logger.LogInformation("Load all modules from " + location);
 

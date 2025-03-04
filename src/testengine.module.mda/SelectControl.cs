@@ -27,7 +27,7 @@ namespace testengine.module
               .Add(new NamedFormulaType("Text", FormulaType.String, displayName: "Text"));
 
         public SelectControlFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "SelectControl", FormulaType.Blank, RecordType.Empty(), FormulaType.Number)
+            : base(DPath.Root.Append(new DName("Preview")), "SelectControl", FormulaType.Blank, RecordType.Empty(), FormulaType.Number)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
@@ -37,7 +37,7 @@ namespace testengine.module
         public BlankValue Execute(RecordValue control, NumberValue index)
         {
             _logger.LogInformation("------------------------------\n\n" +
-                "Executing Experimental.SelectControl() function.");
+                "Executing Preview.SelectControl() function.");
 
             ExecuteAsync(control, index).Wait();
 
@@ -60,7 +60,7 @@ namespace testengine.module
             var itemPath = powerAppControlModel.GetItemPath();
             itemPath.Index = (int)index.Value;
 
-            // Experimental support allow selection control using data-control-name DOM element
+            // Preview support allow selection control using data-control-name DOM element
             var match = _testInfraFunctions.Page.Locator($"[data-control-name='{powerAppControlModel.Name}']").Nth((int)index.Value - 1);
 
             await match.ClickAsync();

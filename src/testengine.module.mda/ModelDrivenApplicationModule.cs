@@ -28,7 +28,7 @@ namespace testengine.module
             logger.LogInformation("Registered ConsentDialog()");
 
             config.AddFunction(new SelectControlFunction(testInfraFunctions, testState, logger));
-            logger.LogInformation("Registered Experimental.SelectControlFunction()");
+            logger.LogInformation("Registered Preview.SelectControlFunction()");
         }
 
         public async Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)

@@ -1,9 +1,9 @@
 # Simulate Dataverse
 
-The Experimental.SimulateDataverse function allows you to simulate responses from the Dataverse without actually querying the live data. This is particularly useful for testing and development purposes, as it enables you to create predictable and controlled responses for various scenarios.
+The Preview.SimulateDataverse function allows you to simulate responses from the Dataverse without actually querying the live data. This is particularly useful for testing and development purposes, as it enables you to create predictable and controlled responses for various scenarios.
 
 ```powerfx
-Experimental.SimulateDatarse({ Action: "query", Entity: "TableName", When: { Field: "value" }, Then: Table({Name: "Test"}) })
+Preview.SimulateDatarse({ Action: "query", Entity: "TableName", When: { Field: "value" }, Then: Table({Name: "Test"}) })
 ```
 
 | Name | Description |
@@ -16,7 +16,7 @@ Experimental.SimulateDatarse({ Action: "query", Entity: "TableName", When: { Fie
 
 ## Recording Sample Values
 
-To obtain values for the `Experimental.SimulateDataverse()` function you can use the network trace of the Browser Developer Tools when using [Experimental.Pause()](./Pause.md) where you can filter traffic by searching for **/api/data/v**
+To obtain values for the `Preview.SimulateDataverse()` function you can use the network trace of the Browser Developer Tools when using [Preview.Pause()](./Pause.md) where you can filter traffic by searching for **/api/data/v**
 
 ## Example
 
@@ -25,7 +25,7 @@ To obtain values for the `Experimental.SimulateDataverse()` function you can use
 When the Power App queries all accounts, respond with sample data:
 
 ```powerfx
-Experimental.SimulateDataverse({Action:"query",Entity: "accounts", Then: Table({accountid: "a1234567-1111-2222-3333-44445555666", name: "Test"}) });
+Preview.SimulateDataverse({Action:"query",Entity: "accounts", Then: Table({accountid: "a1234567-1111-2222-3333-44445555666", name: "Test"}) });
 ```
 
 2. Simulate a Query with Specific Conditions
@@ -33,11 +33,11 @@ Experimental.SimulateDataverse({Action:"query",Entity: "accounts", Then: Table({
 When make request with account with query name of Other return no results
 
 ```powerfx
-Experimental.SimulateDataverse({Action:"query",Entity: "accounts", When: {Name: "Other"}, Then: Table()});
+Preview.SimulateDataverse({Action:"query",Entity: "accounts", When: {Name: "Other"}, Then: Table()});
 ```
 
 ## Why This Function is Useful
-The `Experimental.SimulateDataverse()` function is useful because it allows developers and makers to:
+The `Preview.SimulateDataverse()` function is useful because it allows developers and makers to:
 
 1. **Test and Debug**: Simulate different scenarios and responses without affecting live data, making it easier to test and debug applications.
 1. **Predictable Results**: Create controlled and predictable responses, which is essential for automated testing and ensuring consistent behavior.

@@ -211,9 +211,9 @@ public class TestScript {
                 Enable = true,
 #if RELEASE
 #else
-                AllowNamespaces = new List<string>() { allow },
+                AllowNamespaces = new HashSet<string>() { allow },
 #endif
-                DenyNamespaces = new List<string>() { deny }
+                DenyNamespaces = new HashSet<string>() { deny }
             };
 #if RELEASE
             if (!string.IsNullOrWhiteSpace(allow) && !settings.AllowNamespaces.Contains(allow)) 
@@ -252,8 +252,8 @@ public class TestScript {
             var settings = new TestSettingExtensions()
             {
                 Enable = true,
-                AllowPowerFxNamespaces = new List<string>() { allow },
-                DenyPowerFxNamespaces = new List<string>() { deny }
+                AllowPowerFxNamespaces = new HashSet<string>() { allow },
+                DenyPowerFxNamespaces = new HashSet<string>() { deny }
             };
 
             // Act
@@ -287,8 +287,8 @@ public class TestScript {
             var settings = new TestSettingExtensions()
             {
                 Enable = true,
-                AllowPowerFxNamespaces = new List<string>() { allow },
-                DenyPowerFxNamespaces = new List<string>() { deny }
+                AllowPowerFxNamespaces = new HashSet<string>() { allow },
+                DenyPowerFxNamespaces = new HashSet<string>() { deny }
             };
 
             // Act
@@ -323,8 +323,8 @@ using Microsoft.PowerFx.Core.Utils;
             var assembly = CompileScript(_functionTemplate.Replace("%CODE%", code));
 
             var settings = new TestSettingExtensions();
-            settings.AllowPowerFxNamespaces.AddRange(allow.Split(','));
-            settings.DenyPowerFxNamespaces.AddRange(deny.Split(','));
+            settings.AllowPowerFxNamespaces.UnionWith(allow.Split(','));
+            settings.DenyPowerFxNamespaces.UnionWith(deny.Split(','));
 
             var isValid = checker.VerifyContainsValidNamespacePowerFxFunctions(settings, assembly);
 

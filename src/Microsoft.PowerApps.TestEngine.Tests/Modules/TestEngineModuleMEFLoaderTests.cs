@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
@@ -77,12 +78,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
                 mockChecker.Setup(x => x.Validate(It.IsAny<TestSettingExtensions>(), files)).Returns(checkResult);
             }
 
-            if (!string.IsNullOrEmpty(allow))
+            if (!string.IsNullOrEmpty(allow) && !setting.AllowModule.Contains(allow, StringComparer.OrdinalIgnoreCase))
             {
                 setting.AllowModule.Add(allow);
             }
 
-            if (!string.IsNullOrEmpty(deny))
+            if (!string.IsNullOrEmpty(deny) && !setting.DenyModule.Contains(deny, StringComparer.OrdinalIgnoreCase))
             {
                 setting.DenyModule.Add(deny);
             }
