@@ -86,7 +86,7 @@ public class Test : ITestWebProvider
         throw new NotImplementedException();
     }}
 
-    public Task<bool> SelectControlAsync(ItemPath itemPath)
+    public Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null)
     {{
         throw new NotImplementedException();
     }}

@@ -203,11 +203,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 var nameValues = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(propertiesString);
                 if (nameValues.Any(k => k.Key == itemPath.PropertyName))
                 {
-                    var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;
+                    var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;                   
                     switch (itemPath.PropertyName.ToLower())
                     {
                         case "disabled":
                         case "visible":
+                        case "usemobilecamera":
                         case "isprofilepicturevisible":
                         case "islogovisible":
                         case "istitlevisible":
@@ -415,15 +416,22 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             return controlDictionary;
         }
 
-        public async Task<bool> SelectControlAsync(ItemPath itemPath)
+        public async Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null)
         {
             try
             {
                 ValidateItemPath(itemPath, false);
-                var itemPathString = JsonConvert.SerializeObject(itemPath);
-                // TODO Select a choice item
-                var expression = $"PowerAppsTestEngine.select({itemPathString})";
-                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    return await TestInfraFunctions.TriggerControlClickEvent(itemPath.ControlName, filePath);
+                }
+                else
+                {
+                    var itemPathString = JsonConvert.SerializeObject(itemPath);
+                    // TODO Select a choice item
+                    var expression = $"PowerAppsTestEngine.select({itemPathString})";
+                    return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                }
             }
             catch (Exception ex)
             {

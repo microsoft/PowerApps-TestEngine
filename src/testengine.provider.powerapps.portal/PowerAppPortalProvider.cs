@@ -136,7 +136,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             return controlDictionary;
         }
 
-        public async Task<bool> SelectControlAsync(ItemPath itemPath)
+        public async Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null)
         {
             // TODO
             return true;
