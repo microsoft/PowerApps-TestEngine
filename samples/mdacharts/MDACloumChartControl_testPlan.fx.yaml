@@ -1,0 +1,91 @@
+testSuite:
+  testSuiteName: Column Chart Controls
+  testSuiteDescription: Verifies that the column chart controls work correctly.
+  persona: User1
+  appLogicalName: column_chart_controls_app
+
+  testCases:
+      - testCaseName: Verify Items Property
+        testCaseDescription: Check if the column chart correctly sets and displays the items.
+        testSteps: |
+          SetProperty(ColumnChart1.Items, Table(
+            {Labels: "City", Series1: 31, Series2: 39, Series3: 12, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Delhi", Series1: 15, Series2: 78, Series3: 18, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Mexico City", Series1: 11, Series2: 60, Series3: 8, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Istanbul", Series1: 22, Series2: 65, Series3: 14, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "New York", Series1: 20, Series2: 50, Series3: 10, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Tokyo", Series1: 25, Series2: 55, Series3: 15, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0}
+          ));
+          Assert(CountRows(ColumnChart1.Items) = 6, "Verify the chart contains 6 data points");
+
+      - testCaseName: Verify Chart Width
+        testCaseDescription: Ensure that the column chart width is set correctly.
+        testSteps: |
+          SetProperty(ColumnChart1.Width, 620);
+          Assert(ColumnChart1.Width = 620, "Verify chart width is set correctly");
+
+      - testCaseName: Verify Chart Height
+        testCaseDescription: Ensure that the column chart height is set correctly.
+        testSteps: |
+          SetProperty(ColumnChart1.Height, 400);
+          Assert(ColumnChart1.Height = 400, "Verify chart height is set correctly");
+
+      - testCaseName: Verify Chart X Position
+        testCaseDescription: Ensure that the column chart X position is set correctly.
+        testSteps: |
+          SetProperty(ColumnChart1.X, 180);
+          Assert(ColumnChart1.X = 180, "Verify chart X position is set correctly");
+
+      - testCaseName: Verify Chart Y Position
+        testCaseDescription: Ensure that the column chart Y position is set correctly.
+        testSteps: |
+          SetProperty(ColumnChart1.Y, 65);
+          Assert(ColumnChart1.Y = 65, "Verify chart Y position is set correctly");
+        
+      - testCaseName: Verify Number of Series
+        testCaseDescription: Ensure that the column chart number of series is set correctly.
+        testSteps: |
+          SetProperty(ColumnChart1.NumberOfSeries, 3);
+          Assert(ColumnChart1.NumberOfSeries = 3, "Verify number of series is set correctly");
+
+      - testCaseName: Verify Grid Style
+        testCaseDescription: Ensure that the column chart grid style is set correctly.
+        testSteps: |
+          SetProperty(ColumnChart1.GridStyle, "Both");
+          Assert(ColumnChart1.GridStyle = "Both", "Verify grid style is set correctly");
+
+      - testCaseName: Verify Column Chart Markers
+        testCaseDescription: Ensure that the column chart markers are shown correctly for all data points when markers are enabled.
+        testSteps: |          
+          SetProperty(ColumnChart1.Markers, true);
+          Assert(ColumnChart1.Markers, "Verify markers are shown correctly");
+      
+      - testCaseName: Verify OnSelect Action
+        testCaseDescription: Ensure that the OnSelect action is triggered correctly.
+        testSteps: |
+          Select(ColumnChart1);
+          Assert(Label1.Text = "Chart Clicked!", "Verify OnSelect action is triggered correctly");
+
+      - testCaseName: Verify Visibility
+        testCaseDescription: Ensure that the chart visibility can be toggled.
+        testSteps: |
+          SetProperty(ColumnChart1.Visible, false);
+          Assert(ColumnChart1.Visible = false, "Verify chart is hidden");
+          SetProperty(ColumnChart1.Visible, true);
+          Assert(ColumnChart1.Visible = true, "Verify chart is visible");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Emailaurora
+      passwordKey: NotNeeded
