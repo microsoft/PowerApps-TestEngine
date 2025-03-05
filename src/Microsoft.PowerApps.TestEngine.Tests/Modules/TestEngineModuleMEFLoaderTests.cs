@@ -38,13 +38,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
 
         [Theory]
         [InlineData(false, false, "", "", "", "AssemblyCatalog")]
+        [InlineData(false, false, null, "", "testengine.module.foo.dll", "AssemblyCatalog")]
+        [InlineData(false, false, null, null, "testengine.module.foo.dll", "AssemblyCatalog")]
+        [InlineData(false, false, "", null, "testengine.module.foo.dll", "AssemblyCatalog")]
+        [InlineData(false, false, "", "", "testengine.module.foo.dll", "AssemblyCatalog")]
+        [InlineData(true, true, "", "", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
+        [InlineData(true, false, "", "", "testengine.module.foo.dll", "AssemblyCatalog")]
+        [InlineData(false, false, "foo1", "foo2", "testengine.module.foo.dll", "AssemblyCatalog")]
+        [InlineData(true, true, "foo1,*", "foo2", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
         [InlineData(false, false, "*", "foo", "testengine.module.foo.dll", "AssemblyCatalog")]
         [InlineData(false, false, "foo", "*", "testengine.module.foo.dll", "AssemblyCatalog")]
         [InlineData(false, false, "Foo", "*", "testengine.module.foo.dll", "AssemblyCatalog")]
         [InlineData(false, false, "*", "foo*", "testengine.module.foo1.dll", "AssemblyCatalog")]
         [InlineData(true, false, "*", "", "testengine.module.foo.dll", "AssemblyCatalog")]
         [InlineData(true, true, "*", "", "testengine.module.foo.dll", "AssemblyCatalog,AssemblyCatalog")]
-        public void ModuleMatch(bool checkAssemblies, bool checkResult, string allow, string deny, string files, string expected)
+        public void ModuleMatch(bool checkAssemblies, bool checkResult, string? allow, string? deny, string files, string expected)
         {
 #if RELEASE
             if (!checkAssemblies)
@@ -76,16 +84,29 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Modules
             if (checkAssemblies)
             {
                 mockChecker.Setup(x => x.Validate(It.IsAny<TestSettingExtensions>(), files)).Returns(checkResult);
+                mockChecker.Setup(x => x.Verify(It.IsAny<TestSettingExtensions>(), files)).Returns(checkResult);
             }
 
-            if (!string.IsNullOrEmpty(allow) && !setting.AllowModule.Contains(allow, StringComparer.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(allow))
             {
-                setting.AllowModule.Add(allow);
+                //assigning instead of adding since it replaces default * allow all
+                var allowList = allow.Split(',').Select(a => a.Trim()).ToList();
+                setting.AllowModule = new HashSet<string>(allowList);
+            }
+            if (allow == null)
+            {
+                setting.AllowModule = null;
             }
 
-            if (!string.IsNullOrEmpty(deny) && !setting.DenyModule.Contains(deny, StringComparer.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(deny))
             {
-                setting.DenyModule.Add(deny);
+                //assigning instead of adding since it replaces default * allow all
+                var denyList = deny.Split(',').Select(a => a.Trim()).ToList();
+                setting.DenyModule = new HashSet<string>(denyList);
+            }
+            if (deny == null)
+            {
+                setting.DenyModule = null;
             }
 
             var catalog = loader.LoadModules(setting);

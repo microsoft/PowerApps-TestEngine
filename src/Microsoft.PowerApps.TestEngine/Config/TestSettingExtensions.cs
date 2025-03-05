@@ -16,7 +16,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public TestSettingExtensionSource Source { get; set; } = new TestSettingExtensionSource() { };
 
         /// <summary>
-        /// Determine if extension modules should be checks for Namespace rules
+        /// Determine if extension modules should be checks for Namespace and Certificate rules
         /// </summary>
 #if RELEASE
         public bool CheckAssemblies { get; } = true;
