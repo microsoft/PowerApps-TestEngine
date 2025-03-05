@@ -163,8 +163,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             {
                                 // Convert from testegine.module.name.dll format to name for search comparision
                                 var moduleName = Path.GetFileNameWithoutExtension(possibleModule).Replace("testengine.module.", "").ToLower();
-                                var allow = settings.AllowModule != null ? settings.AllowModule.Any(a => Regex.IsMatch(moduleName, WildCardToRegular(a.ToLower()))):false;
-                                var deny = settings.DenyModule != null ? settings.DenyModule.Any(d => Regex.IsMatch(moduleName, WildCardToRegular(d.ToLower()))): true;
+                                var allow = settings.AllowModule != null ? settings.AllowModule.Any(a => Regex.IsMatch(moduleName, WildCardToRegular(a.ToLower()))) : false;
+                                var deny = settings.DenyModule != null ? settings.DenyModule.Any(d => Regex.IsMatch(moduleName, WildCardToRegular(d.ToLower()))) : true;
                                 var allowLongest = settings.AllowModule?.Max(a => Regex.IsMatch(moduleName, WildCardToRegular(a.ToLower())) ? a : "");
                                 var denyLongest = settings.DenyModule?.Max(d => Regex.IsMatch(moduleName, WildCardToRegular(d.ToLower())) ? d : "");
 
