@@ -9,7 +9,7 @@ testSuite:
       testCaseDescription: Verify can open the page
       testSteps: |
         = 
-        Experimental.Pause();    
+        Preview.Pause();    
 testSettings:
   headless: false
   locale: "en-US"
