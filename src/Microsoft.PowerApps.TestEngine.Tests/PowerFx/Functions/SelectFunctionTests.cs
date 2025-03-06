@@ -106,7 +106,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             LoggingTestHelper.VerifyLogging(MockLogger, "Successfully finished executing Select function.", LogLevel.Information, Times.Once());
             Assert.Equal(1, updaterFunctionCallCount);
         }
-       
+
         [Fact]
         public void SelectThreeParamFunctionTest()
         {

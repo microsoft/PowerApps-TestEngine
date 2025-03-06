@@ -5,7 +5,7 @@ testSuite:
   persona: User1
   appLogicalName: new_connectorapp_da583
   onTestSuiteStart: |
-    = Experimental.SimulateConnector({name: "msnweather", then: {responses: { daily: { day: { summary: "You are seeing the mock response" }}}}})
+    = Preview.SimulateConnector({name: "msnweather", then: {responses: { daily: { day: { summary: "You are seeing the mock response" }}}}})
   testCases:
     - testCaseName: Fill in a city name and do the search
       testSteps: |

@@ -20,7 +20,7 @@ namespace testengine.module
         private readonly ILogger _logger;
 
         public PauseFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "Pause", FormulaType.Blank)
+            : base(DPath.Root.Append(new DName("Preview")), "Pause", FormulaType.Blank)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: Run Sample
       testCaseDescription: Test case will pass as WriteLine method has been allowed
       testSteps: |
-        = Experimental.Sample();
+        = Preview.Sample();
 
 testSettings:
   locale: "en-US"

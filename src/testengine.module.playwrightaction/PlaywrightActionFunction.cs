@@ -21,7 +21,7 @@ namespace testengine.module
         private readonly ILogger _logger;
 
         public PlaywrightActionFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "PlaywrightAction", FormulaType.Blank, FormulaType.String, FormulaType.String)
+            : base(DPath.Root.Append(new DName("Preview")), "PlaywrightAction", FormulaType.Blank, FormulaType.String, FormulaType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
