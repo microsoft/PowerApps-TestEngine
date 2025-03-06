@@ -9,8 +9,8 @@ testSuite:
       testCaseDescription: Verify pre-requistes in place
       testSteps: |
         = 
-        Experimental.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
-        Experimental.Pause();
+        Preview.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
+        Preview.Pause();
         Set(configStep, 1); 
         Assert(configStep=1);
         Select(btnNext);
@@ -20,8 +20,8 @@ testSuite:
         =
         Assert(configStep=2);
         Assert(CountRows(colCommunicate)=3);
-        Experimental.SelectControl(Button3,1);
-        Experimental.Pause();    
+        Preview.SelectControl(Button3,1);
+        Preview.Pause();    
 testSettings:
   headless: false
   locale: "en-US"

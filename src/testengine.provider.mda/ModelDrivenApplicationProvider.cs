@@ -57,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ModelDrivenApplicationCanvasState? CanvasState { get; set; } = new ModelDrivenApplicationCanvasState();
 
-        public string[] Namespaces => new string[] { "Experimental" };
+        public string[] Namespaces => new string[] { "Preview" };
 
         public static string QueryFormField = "JSON.stringify({{PropertyValue: PowerAppsTestEngine.getValue('{0}') }})";
 
@@ -203,7 +203,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 var nameValues = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(propertiesString);
                 if (nameValues.Any(k => k.Key == itemPath.PropertyName))
                 {
-                    var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;                   
+                    var value = nameValues.First(nv => nv.Key == itemPath.PropertyName).Value;
                     switch (itemPath.PropertyName.ToLower())
                     {
                         case "disabled":
@@ -740,5 +740,5 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             return $"?tenantId={tenantId}&source=testengine{additionalQueryParams}";
         }
-    }      
+    }
 }

@@ -253,7 +253,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var itemPathString = JsonConvert.SerializeObject(itemPath);
                     var expression = $"PowerAppsTestEngine.select({itemPathString})";
                     return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
-                } 
+                }
             }
             catch (Exception ex)
             {

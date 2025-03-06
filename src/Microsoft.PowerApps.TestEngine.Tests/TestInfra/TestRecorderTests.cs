@@ -123,13 +123,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Theory]
         [InlineData("https://www.example.com", 0, "", "")]
         // Empty table
-        [InlineData("https://www.example.com/api/data/v9.2/accounts", 1, "{\"value\":[]}", "Experimental.SimulateDataverse({Action: \"Query\", Entity: \"accounts\", Then: Table()});")]
+        [InlineData("https://www.example.com/api/data/v9.2/accounts", 1, "{\"value\":[]}", "Preview.SimulateDataverse({Action: \"Query\", Entity: \"accounts\", Then: Table()});")]
         // Single record from array
-        [InlineData("https://www.example.com/api/data/v9.2/accounts", 1, "{\"value\":[{\"Name\":\"Test\"}]}", "Experimental.SimulateDataverse({Action: \"Query\", Entity: \"accounts\", Then: Table({Name: \"Test\"})});")]
+        [InlineData("https://www.example.com/api/data/v9.2/accounts", 1, "{\"value\":[{\"Name\":\"Test\"}]}", "Preview.SimulateDataverse({Action: \"Query\", Entity: \"accounts\", Then: Table({Name: \"Test\"})});")]
         // Two records from array
-        [InlineData("https://www.example.com/api/data/v9.2/accounts", 1, "{\"value\":[{\"Name\":\"Test\"},{\"Name\":\"Other\"}]}", "Experimental.SimulateDataverse({Action: \"Query\", Entity: \"accounts\", Then: Table({Name: \"Test\"}, {Name: \"Other\"})});")]
+        [InlineData("https://www.example.com/api/data/v9.2/accounts", 1, "{\"value\":[{\"Name\":\"Test\"},{\"Name\":\"Other\"}]}", "Preview.SimulateDataverse({Action: \"Query\", Entity: \"accounts\", Then: Table({Name: \"Test\"}, {Name: \"Other\"})});")]
         // Record value
-        [InlineData("https://www.example.com/api/data/v9.2/accounts", 1, "{\"value\":{\"Name\":\"Test\"}}", "Experimental.SimulateDataverse({Action: \"Query\", Entity: \"accounts\", Then: {Name: \"Test\"}});")]
+        [InlineData("https://www.example.com/api/data/v9.2/accounts", 1, "{\"value\":{\"Name\":\"Test\"}}", "Preview.SimulateDataverse({Action: \"Query\", Entity: \"accounts\", Then: {Name: \"Test\"}});")]
         public async Task OnResponse_HandlesDataverseResponse(string url, int count, string json, string action)
         {
             // Arrange
@@ -168,26 +168,26 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         [Theory]
         [InlineData("", "", "")]
         // Empty table
-        [InlineData("/apim/test", "{}", "Experimental.SimulateConnector({Name: \"test\", Then: Blank()});")]
+        [InlineData("/apim/test", "{}", "Preview.SimulateConnector({Name: \"test\", Then: Blank()});")]
         // Record match
-        [InlineData("/apim/test", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", Then: {Name: \"Test\"}});")]
         // Complex object
-        [InlineData("/apim/test", "{\"Name\": {\"Child\":\"Test\"}}", "Experimental.SimulateConnector({Name: \"test\", Then: {Name: {Child: \"Test\"}}});")]
-        [InlineData("/apim/test", "{\"List\": [{\"Child\":\"Test\"}]}", "Experimental.SimulateConnector({Name: \"test\", Then: {List: Table({Child: \"Test\"})}});")]
-        [InlineData("/apim/test", @"[{""Name"": {""Child"":""Test""}}]", "Experimental.SimulateConnector({Name: \"test\", Then: Table({Name: {Child: \"Test\"}})});")]
+        [InlineData("/apim/test", "{\"Name\": {\"Child\":\"Test\"}}", "Preview.SimulateConnector({Name: \"test\", Then: {Name: {Child: \"Test\"}}});")]
+        [InlineData("/apim/test", "{\"List\": [{\"Child\":\"Test\"}]}", "Preview.SimulateConnector({Name: \"test\", Then: {List: Table({Child: \"Test\"})}});")]
+        [InlineData("/apim/test", @"[{""Name"": {""Child"":""Test""}}]", "Preview.SimulateConnector({Name: \"test\", Then: Table({Name: {Child: \"Test\"}})});")]
         // Test for action after the connector id
-        [InlineData("/apim/test/a1234567-1111-2222-3333-44445555666/v1.0/action", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Action: \"v1.0/action\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test/a1234567-1111-2222-3333-44445555666/v1.0/action", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Action: \"v1.0/action\"}, Then: {Name: \"Test\"}});")]
         // OData filter scenarios
-        [InlineData("/apim/test?$filter=a eq 1", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"a = 1\"}, Then: {Name: \"Test\"}});")]
-        [InlineData("/apim/test?$filter=a ne 1", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"a != 1\"}, Then: {Name: \"Test\"}});")]
-        [InlineData("/apim/test?$filter=a ge 1", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"a >= 1\"}, Then: {Name: \"Test\"}});")]
-        [InlineData("/apim/test?$filter=a gt 1", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"a > 1\"}, Then: {Name: \"Test\"}});")]
-        [InlineData("/apim/test?$filter=a le 1", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"a <= 1\"}, Then: {Name: \"Test\"}});")]
-        [InlineData("/apim/test?$filter=a lt 1", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"a < 1\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=a eq 1", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"a = 1\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=a ne 1", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"a != 1\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=a ge 1", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"a >= 1\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=a gt 1", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"a > 1\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=a le 1", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"a <= 1\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=a lt 1", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"a < 1\"}, Then: {Name: \"Test\"}});")]
         // OData filter to function
-        [InlineData("/apim/test?$filter=(a eq 1) and (b eq 2)", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"AND(a = 1,b = 2)\"}, Then: {Name: \"Test\"}});")]
-        [InlineData("/apim/test?$filter=(a eq 1) or (b eq 2)", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"OR(a = 1,b = 2)\"}, Then: {Name: \"Test\"}});")]
-        [InlineData("/apim/test?$filter=(a eq 'value')", "{\"Name\": \"Test\"}", "Experimental.SimulateConnector({Name: \"test\", When: {Filter: \"a = \"\"value\"\"\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=(a eq 1) and (b eq 2)", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"AND(a = 1,b = 2)\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=(a eq 1) or (b eq 2)", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"OR(a = 1,b = 2)\"}, Then: {Name: \"Test\"}});")]
+        [InlineData("/apim/test?$filter=(a eq 'value')", "{\"Name\": \"Test\"}", "Preview.SimulateConnector({Name: \"test\", When: {Filter: \"a = \"\"value\"\"\"}, Then: {Name: \"Test\"}});")]
         public async Task OnResponse_HandlesConnectorResponse(string url, string body, string action)
         {
             // Arrange
@@ -262,10 +262,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
         [Theory]
         [InlineData("{}", "Select(test);")]
-        [InlineData("{alt: true}", "Experimental.PlaywrightAction(\"[data-test-id='test']:has-text('')\", \"wait\");")]
-        [InlineData("{alt: true, text: 'Foo'}", "Experimental.PlaywrightAction(\"[data-test-id='test']:has-text('Foo')\", \"wait\");")]
-        [InlineData("{control: true}", "Experimental.WaitUntil(test.Text=\"\");")]
-        [InlineData("{control: true, text: 'Foo'}", "Experimental.WaitUntil(test.Text=\"Foo\");")]
+        [InlineData("{alt: true}", "Preview.PlaywrightAction(\"[data-test-id='test']:has-text('')\", \"wait\");")]
+        [InlineData("{alt: true, text: 'Foo'}", "Preview.PlaywrightAction(\"[data-test-id='test']:has-text('Foo')\", \"wait\");")]
+        [InlineData("{control: true}", "Preview.WaitUntil(test.Text=\"\");")]
+        [InlineData("{control: true, text: 'Foo'}", "Preview.WaitUntil(test.Text=\"Foo\");")]
         public async Task ClickCallback(string json, string expectedTestStepsPowerFxFx)
         {
             // Arrange

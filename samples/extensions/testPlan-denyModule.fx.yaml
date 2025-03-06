@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: Run Sample
       testCaseDescription: Test case will fail as the Sample Power Fx function is not loaded
       testSteps: |
-        = Experimental.Sample();
+        = Preview.Sample();
 
 testSettings:
   locale: "en-US"

@@ -48,7 +48,7 @@ namespace testengine.module
 
         // NOTE: Order of calling base is name, return type then argument types
         public CreateConnectionFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "CreateConnection", FormulaType.Blank, ConnectionType)
+            : base(DPath.Root.Append(new DName("Preview")), "CreateConnection", FormulaType.Blank, ConnectionType)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

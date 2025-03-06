@@ -12,7 +12,7 @@ testSuite:
     - testCaseName: Case1
       testCaseDescription: Run sample action
       testSteps: |
-        = Experimental.Sample();
+        = Preview.Sample();
 
 testSettings:
   headless: false

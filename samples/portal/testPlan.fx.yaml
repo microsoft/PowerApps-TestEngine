@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: Create connections
       testCaseDescription: Create connections in environment required for CoE Starter Kit
       testSteps: |
-        =   Experimental.CreateConnection(
+        =   Preview.CreateConnection(
             Table(
               {Name: "shared_approvals"},
               {Name: "shared_arm", Interactive: true},
@@ -32,7 +32,7 @@ testSuite:
     - testCaseName: Export connections
       testCaseDescription: Export the connections to json file
       testSteps: |
-        = Experimental.ExportConnections("connections.json")
+        = Preview.ExportConnections("connections.json")
 
 testSettings:
   headless: false
