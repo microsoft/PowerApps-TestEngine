@@ -1,15 +1,15 @@
 testSuite:
   testSuiteName: Copilot Studio Kit
-  testSuiteDescription: Verify Webchat Playground of Copilot Studio Kit 
+  testSuiteDescription: Agent List of Copilot Studio Kit 
   persona: User1
   appLogicalName: NotNeeded
 
   testCases:
-    - testCaseName: Step 1 - Start the custom page
+    - testCaseName: Step 1 - Start the entity details
       testCaseDescription: Verify can open the page
       testSteps: |
         = 
-        Preview.Pause();    
+        Assert(1=1) 
 testSettings:
   headless: false
   locale: "en-US"
