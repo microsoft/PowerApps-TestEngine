@@ -282,7 +282,7 @@ if (event.ctrlKey && event.key === 'r') {{
                 // TODO: handle click for known controls
                 // TODO: handle click for known like combobox (Or use Keyboard shortcuts to handle differences?
                 // TODO: handle click for known controls inside gallery or components
-                // TODO: handle click for controls inside PCF using css selector using Experimental.PlaywrightAction()?
+                // TODO: handle click for controls inside PCF using css selector using Preview.PlaywrightAction()?
                 var segments = new Uri(route.Request.Url).AbsolutePath.Split('/');
                 if (segments.Length >= 4
                     && segments[1].Equals("testengine", StringComparison.OrdinalIgnoreCase)
@@ -314,11 +314,11 @@ if (event.ctrlKey && event.key === 'r') {{
                     if (alt)
                     {
                         // TODO: Handle single quote in the text
-                        TestSteps.Add($"Experimental.PlaywrightAction(\"[data-test-id='{controlName}']:has-text('{text}')\", \"wait\");");
+                        TestSteps.Add($"Preview.PlaywrightAction(\"[data-test-id='{controlName}']:has-text('{text}')\", \"wait\");");
                     }
                     else if (control)
                     {
-                        TestSteps.Add($"Experimental.WaitUntil({controlName}.Text=\"{text}\");");
+                        TestSteps.Add($"Preview.WaitUntil({controlName}.Text=\"{text}\");");
                     }
                     else
                     {
@@ -446,7 +446,7 @@ if (event.ctrlKey && event.key === 'r') {{
         {
             StringBuilder connectorBuilder = new StringBuilder();
 
-            connectorBuilder.Append($"Experimental.SimulateConnector({{Name: \"{name}\"");
+            connectorBuilder.Append($"Preview.SimulateConnector({{Name: \"{name}\"");
 
             if (when is RecordValue whenRecord)
             {
@@ -703,7 +703,7 @@ if (event.ctrlKey && event.key === 'r') {{
         }
 
         /// <summary>
-        /// Generate a Power Fx Experimental.SimulateDataverse() from extracted HTTP request data
+        /// Generate a Power Fx Preview.SimulateDataverse() from extracted HTTP request data
         /// </summary>
         /// <param name="entity">The entity that the request relates to</param>
         /// <param name="data">The optional data to convert</param>
@@ -712,7 +712,7 @@ if (event.ctrlKey && event.key === 'r') {{
         {
             StringBuilder queryBuilder = new StringBuilder();
 
-            queryBuilder.Append($"Experimental.SimulateDataverse({{Action: \"Query\", Entity: \"{entity}\", Then: ");
+            queryBuilder.Append($"Preview.SimulateDataverse({{Action: \"Query\", Entity: \"{entity}\", Then: ");
 
             if (data is TableValue tableValue)
             {

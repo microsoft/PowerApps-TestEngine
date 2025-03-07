@@ -33,7 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
         public Func<string, byte[]> GetExtentionContents = (file) => File.ReadAllBytes(file);
 
-        public const string NAMESPACE_EXPERIMENTAL = "Experimental";
+        public const string NAMESPACE_PREVIEW = "Preview";
         public const string NAMESPACE_TEST_ENGINE = "TestEngine";
         public const string NAMESPACE_DEPRECATED = "Deprecated";
 
@@ -245,7 +245,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         /// <returns><c>True</c> if the assembly meets the test setting requirements, <c>False</c> if not</returns>
         public virtual bool Validate(TestSettingExtensions settings, string file)
         {
-            var allowList = new List<string>(settings.AllowNamespaces)
+            var allowList = new HashSet<string>(settings.AllowNamespaces)
             {
                 // Add minimum namespaces for a MEF plugin used by TestEngine
                 "System.Threading.Tasks",
@@ -256,7 +256,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 "Microsoft.Playwright"
             };
 
-            var denyList = new List<string>(settings.DenyNamespaces)
+            var denyList = new HashSet<string>(settings.DenyNamespaces)
             {
                 "Microsoft.PowerApps.TestEngine.Modules.",
             };
@@ -305,9 +305,9 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
 #if DEBUG
             // Add Experimenal namespaces in Debug compile if it has not been added in allow list
-            if (!settings.AllowPowerFxNamespaces.Contains(NAMESPACE_EXPERIMENTAL))
+            if (!settings.AllowPowerFxNamespaces.Contains(NAMESPACE_PREVIEW))
             {
-                settings.AllowPowerFxNamespaces.Add(NAMESPACE_EXPERIMENTAL);
+                settings.AllowPowerFxNamespaces.Add(NAMESPACE_PREVIEW);
             }
 #endif
 

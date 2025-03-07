@@ -28,7 +28,7 @@ namespace testengine.module
         public Action<string, string> WriteAllText = (file, json) => File.WriteAllText(file, json);
 
         public ExportConnectionsFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "ExportConnections", FormulaType.Blank, StringType.String)
+            : base(DPath.Root.Append(new DName("Preview")), "ExportConnections", FormulaType.Blank, StringType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

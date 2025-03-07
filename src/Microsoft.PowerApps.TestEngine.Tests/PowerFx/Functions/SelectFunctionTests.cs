@@ -59,7 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectOneParamFunctionTest()
         {
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(true));
             LoggingTestHelper.SetupMock(MockLogger);
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
 
@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             var result = selectFunction.Execute(recordValue);
             Assert.IsType<BlankValue>(result);
-            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
+            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "Successfully finished executing Select function.", LogLevel.Information, Times.Once());
             Assert.Equal(1, updaterFunctionCallCount);
@@ -84,7 +84,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectTwoParamFunctionTest()
         {
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(true));
             LoggingTestHelper.SetupMock(MockLogger);
             var recordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
 
@@ -101,7 +101,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             var result = selectFunction.Execute(recordValue, rowOrColumn);
             Assert.IsType<BlankValue>(result);
-            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
+            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "Successfully finished executing Select function.", LogLevel.Information, Times.Once());
             Assert.Equal(1, updaterFunctionCallCount);
@@ -110,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectThreeParamFunctionTest()
         {
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(true));
             LoggingTestHelper.SetupMock(MockLogger);
             var parentRecordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
             var childRecordType = RecordType.Empty().Add("Button1", RecordType.Empty());
@@ -129,7 +129,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             var result = selectFunction.Execute(parentValue, rowOrColumn, childValue);
             Assert.IsType<BlankValue>(result);
-            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Once());
+            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name), null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "Successfully finished executing Select function.", LogLevel.Information, Times.Once());
             Assert.Equal(1, updaterFunctionCallCount);
@@ -139,7 +139,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         public void SelectOneParamFunctionFailsTest()
         {
             LoggingTestHelper.SetupMock(MockLogger);
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(false));
 
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
 
@@ -154,7 +154,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var selectFunction = new SelectOneParamFunction(MockTestWebProvider.Object, updaterFunction, MockLogger.Object);
 
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue));
-            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
+            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "Control name: Button1", LogLevel.Trace, Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "Unable to select control", LogLevel.Error, Times.Once());
@@ -164,7 +164,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectTwoParamFunctionFailsTest()
         {
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(false));
             LoggingTestHelper.SetupMock(MockLogger);
             var recordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
 
@@ -189,7 +189,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             recordValue = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Gallery1");
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(recordValue, rowOrColumn));
-            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name)), Times.Once());
+            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == recordValue.Name), null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Control name: Gallery1", LogLevel.Trace, Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Unable to select control", LogLevel.Error, Times.AtLeastOnce());
@@ -199,7 +199,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectThreeParamFunctionFailsTest()
         {
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(false));
             LoggingTestHelper.SetupMock(MockLogger);
             var parentRecordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
             var childRecordType = RecordType.Empty().Add("Button1", RecordType.Empty());
@@ -229,7 +229,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             parentValue = new ControlRecordValue(parentRecordType, MockTestWebProvider.Object, "Gallery1");
             childValue = new ControlRecordValue(childRecordType, MockTestWebProvider.Object, "Button1");
             Assert.ThrowsAny<Exception>(() => selectFunction.Execute(parentValue, rowOrColumn, childValue));
-            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Once());
+            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name), null), Times.Once());
             LoggingTestHelper.VerifyLogging(MockLogger, "------------------------------\n\n" + "Executing Select function.", LogLevel.Information, Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Control name: Button1", LogLevel.Trace, Times.AtLeastOnce());
             LoggingTestHelper.VerifyLogging(MockLogger, "Unable to select control", LogLevel.Error, Times.AtLeastOnce());
@@ -239,7 +239,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         [Fact]
         public void SelectGalleryTest()
         {
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(true));
             LoggingTestHelper.SetupMock(MockLogger);
             var parentRecordType = RecordType.Empty().Add("Gallery1", RecordType.Empty());
             var childRecordType = RecordType.Empty().Add("Button1", RecordType.Empty());
@@ -285,7 +285,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             result = selectthreeParamsFunction.Execute(parentValue, rowOrColumn, childValue);
             Assert.IsType<BlankValue>(result);
 
-            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name)), Times.Exactly(2));
+            MockTestWebProvider.Verify(x => x.SelectControlAsync(It.Is<ItemPath>((item) => item.ControlName == childValue.Name), null), Times.Exactly(2));
             Assert.Equal(2, updaterFunctionCallCount);
         }
     }

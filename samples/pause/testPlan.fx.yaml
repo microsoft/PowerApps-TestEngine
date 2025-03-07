@@ -10,7 +10,7 @@ testSuite:
     - testCaseName: Pause
       testCaseDescription: Pause example
       testSteps: |
-        = Experimental.Pause();
+        = Preview.Pause();
 
 testSettings:
   headless: false

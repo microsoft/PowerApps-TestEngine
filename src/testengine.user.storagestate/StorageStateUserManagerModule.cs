@@ -134,12 +134,11 @@ namespace testengine.user.storagestate
 
         public int Priority => 300;
 
-        /// <summary>
-        /// Not required as store data in storage state file
-        /// </summary>
-        public bool UseStaticContext => false;
+        public bool UseStaticContext { get; set; } = false;
 
         public string Location { get; set; } = ".storage-state";
+
+        public string ContextLocation { get; } = ".TemporaryContext";
 
         public static string EmailSelector = "input[type=\"email\"]";
 
@@ -230,6 +229,24 @@ namespace testengine.user.storagestate
                     var stateFile = Path.Combine(Location, "state.json");
                     await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = stateFile });
                     Protect(fileSystem, stateFile);
+                },
+                CallbackRedirectRequiredFound = !UseStaticContext ? null : async (matchPage) =>
+                {
+                    try
+                    {
+                        var present = context.Pages.First(p => p == matchPage);
+                        if (present != null)
+                        {
+                            var resp = await present.GotoAsync(desiredUrl);
+                            if (resp?.Ok == true)
+                            {
+                                await present.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
                 },
                 Module = this
             };

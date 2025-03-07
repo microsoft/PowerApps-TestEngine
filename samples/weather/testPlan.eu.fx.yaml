@@ -5,7 +5,7 @@ testSuite:
   persona: User1
   appLogicalName: NotNeeded
   onTestSuiteStart: |
-    = Experimental.SimulateDataverse({
+    = Preview.SimulateDataverse({
           Action: "Query";
           Entity: "te_weathercategories";
           Then: Table(
@@ -16,7 +16,7 @@ testSuite:
             }
           )
       });;
-      Experimental.SimulateDataverse({
+      Preview.SimulateDataverse({
       Action: "Query";
       Entity: "te_weathersnapshots";
       Then: Table(
@@ -32,7 +32,7 @@ testSuite:
               'te_date@OData.Community.Display.V1.FormattedValue': "12/3/2024"
           })
       });;
-      Experimental.SimulateConnector(
+      Preview.SimulateConnector(
           {
           name: "msnweather"; 
           then: {

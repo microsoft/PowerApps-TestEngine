@@ -78,7 +78,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var button1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Button1");
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(true));
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(false));
 
@@ -362,7 +362,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var recordType = RecordType.Empty().Add("Text", FormulaType.String);
             var button1 = new ControlRecordValue(recordType, MockTestWebProvider.Object, "Button1");
             MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.FromResult(true));
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(true));
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
@@ -386,7 +386,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         [Fact]
         public async Task ExecuteSelectFunctionFailingTest()
         {
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(false));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(false));
             MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.FromResult(true));
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
 
@@ -569,7 +569,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             });
             MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
-            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>())).Returns(Task.FromResult(true));
+            MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(true));
 
             var oldUICulture = CultureInfo.CurrentUICulture;
             var frenchCulture = new CultureInfo("fr");

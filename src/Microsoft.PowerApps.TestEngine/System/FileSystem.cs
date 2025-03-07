@@ -519,5 +519,21 @@ namespace Microsoft.PowerApps.TestEngine.System
 
             File.Delete(fileName);
         }
+
+        public void DeleteDirectory(string directoryName)
+        {
+            directoryName = Path.GetFullPath(directoryName);
+            if (CanAccessDirectoryPath(directoryName))
+            {
+                var fullPathUri = new Uri(directoryName.StartsWith(@"\\?\") ? directoryName.Replace(@"\\?\", "") : directoryName);
+                var baseUri = new Uri(GetDefaultRootTestEngine(), UriKind.Absolute);
+                if (baseUri.IsBaseOf(fullPathUri))
+                {
+                    Directory.Delete(directoryName, true);
+                    return;
+                }
+            }
+            throw new InvalidOperationException(string.Format("Path invalid or write to path: '{0}' not permitted.", directoryName));
+        }
     }
 }

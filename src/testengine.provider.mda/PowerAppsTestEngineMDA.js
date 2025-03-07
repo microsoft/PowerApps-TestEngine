@@ -28,8 +28,8 @@ class PowerAppsTestEngine {
     static buildControlObjectModel() {
         switch (PowerAppsTestEngine.pageType()) {
             case PowerAppsTestEngine.CONSTANTS.EntityList:
-                // TODO - Load list as collection
-                break;
+                var gridJsonString = PowerAppsModelDrivenEntityList.getMainGridControls();
+                return gridJsonString;
             case PowerAppsTestEngine.CONSTANTS.Custom:
                 return PowerAppsModelDrivenCanvas.buildControlObjectModel();
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:

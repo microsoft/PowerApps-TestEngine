@@ -43,7 +43,7 @@ namespace testengine.auth
             {
                 return null;
             }
-        
+
             // Convert the base64 string to a byte array
             byte[] rawData = Convert.FromBase64String(base64Encoded);
 

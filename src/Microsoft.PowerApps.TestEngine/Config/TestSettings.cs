@@ -52,6 +52,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int Timeout { get; set; } = 30000;
 
         /// <summary>
+        /// Location of existing browser to launch by playwright
+        /// </summary>
+        public string ExecutablePath { get; set; } = "";
+
+        /// <summary>
         /// Define settings for Test Engine Extensions
         /// </summary>
         public TestSettingExtensions ExtensionModules { get; set; } = new TestSettingExtensions();
