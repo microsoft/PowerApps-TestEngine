@@ -1,0 +1,103 @@
+{
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "page1",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "question1",
+            "title": "Which of the following best describes the purpose of using Power Apps Test Engine for error handling and transient fault handling?",
+            "choices": [
+              "To automate UI testing for Power Apps",
+              "To strengthen the resiliency of your workload by implementing error handling and transient fault handling",
+              "To create custom connectors for Power Apps",
+              "To manage user roles and permissions in Power Apps"
+            ],
+            "correctAnswer": "To strengthen the resiliency of your workload by implementing error handling and transient fault handling"
+          }
+        ]
+      },
+      {
+        "name": "page2",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "question2",
+            "title": "Which capabilities can be tested using Power Apps Test Engine to handle component failures and transient errors? (Select all that apply)",
+            "choices": [
+              "Mocking connectors with failure states",
+              "Testing setup flows",
+              "Unit integration handling error states",
+              "Creating new Power Apps environments"
+            ],
+            "correctAnswer": [
+              "Mocking connectors with failure states",
+              "Testing setup flows",
+              "Unit integration handling error states"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "page3",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "question3",
+            "title": "How does Power Apps Test Engine help in applying the principles of chaos engineering?",
+            "choices": [
+              "By providing a user-friendly interface for app development",
+              "By enabling the simulation of real-world failures and disruptions to test workload resilience",
+              "By integrating with Azure DevOps for CI/CD pipelines",
+              "By offering pre-built templates for common app scenarios"
+            ],
+            "correctAnswer": "By enabling the simulation of real-world failures and disruptions to test workload resilience"
+          }
+        ]
+      },
+      {
+        "name": "page4",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "question4",
+            "title": "What are the benefits of using Power Apps Test Engine for active malfunction and simulated load testing? (Select all that apply)",
+            "choices": [
+              "Ensuring graceful degradation implementation strategies are effective",
+              "Identifying potential performance bottlenecks",
+              "Improving user interface design",
+              "Validating the robustness of error handling mechanisms"
+            ],
+            "correctAnswer": [
+              "Ensuring graceful degradation implementation strategies are effective",
+              "Identifying potential performance bottlenecks",
+              "Validating the robustness of error handling mechanisms"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "page5",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "question5",
+            "title": "Which of the following scenarios can be tested using Power Apps Test Engine to ensure resiliency and availability? (Select all that apply)",
+            "choices": [
+              "User role management",
+              "Data migration between environments",
+              "Handling of transient faults and component failures",
+              "Creating custom connectors"
+            ],
+            "correctAnswer": [
+              "User role management",
+              "Handling of transient faults and component failures"
+            ]
+          }
+        ]
+      }
+    ]
+  }

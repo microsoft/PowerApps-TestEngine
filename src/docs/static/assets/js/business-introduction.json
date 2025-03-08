@@ -1,0 +1,247 @@
+{
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "Introduction",
+        "elements": [
+          {
+            "type": "html",
+            "name": "introText",
+            "html": "<h2>Introduction to the Business Value of Automated Testing</h2><p>In this section, we will explore the business value of automated testing and discuss key concepts and questions that will help you understand its importance. This discussion-focused module will guide you through the maturity model of an organization, existing investments in automated testing, and business motivators.</p>"
+          }
+        ]
+      },
+      {
+        "name": "Maturity",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "maturityStage",
+            "title": "What is the current maturity stage of your organization in terms of automated testing?",
+            "choices": [
+              "Initial Stage",
+              "Developing Stage",
+              "Mature Stage"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Challenges",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "initialStageChallenges",
+            "visibleIf": "{maturityStage} = 'Initial Stage'",
+            "title": "What are the challenges and limitations of manual testing in your organization?",
+            "choices": [
+              "Time-consuming",
+              "Prone to human error",
+              "Difficult to scale",
+              "Inconsistent results",
+              "High cost",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "Impact",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "developingStageImpact",
+            "visibleIf": "{maturityStage} = 'Developing Stage'",
+            "title": "How does the transition to automated testing impact your team's efficiency and effectiveness?",
+            "choices": [
+              "Increased speed of testing",
+              "Improved accuracy",
+              "Better resource allocation",
+              "Enhanced test coverage",
+              "Reduced costs",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "Benefits",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "matureStageBenefits",
+            "visibleIf": "{maturityStage} = 'Mature Stage'",
+            "title": "What are the benefits of reaching this level of maturity, and how does it contribute to business goals?",
+            "choices": [
+              "Higher quality products",
+              "Faster time to market",
+              "Increased customer satisfaction",
+              "Greater innovation",
+              "Sustainable processes",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "Current Tools",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "currentTools",
+            "title": "What automated testing tools and practices are currently in place in your organization? How effective are they in meeting your business objectives?",
+            "choices": [
+              "Selenium",
+              "JUnit",
+              "TestNG",
+              "Cucumber",
+              "Appium",
+              "Effective",
+              "Somewhat effective",
+              "Not effective",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "ROIMeasurement",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "roiMeasurement",
+            "title": "How do you measure the ROI of your automated testing investments? What metrics do you use to evaluate their success?",
+            "choices": [
+              "Cost savings",
+              "Time savings",
+              "Increased test coverage",
+              "Improved product quality",
+              "Customer satisfaction",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "ContinuousImprovement",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "continuousImprovement",
+            "title": "How does your organization continuously improve its automated testing practices? What strategies do you use to stay ahead of industry trends?",
+            "choices": [
+              "Regular training",
+              "Adopting new tools",
+              "Benchmarking against industry standards",
+              "Feedback loops",
+              "Continuous integration",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "BusinessContinuity",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "businessContinuity",
+            "title": "How does automated testing contribute to business continuity? What role does it play in ensuring the reliability and performance of your solutions?",
+            "choices": [
+              "Early detection of issues",
+              "Consistent performance",
+              "Reduced downtime",
+              "Reliable deployments",
+              "Scalability",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "Innovation",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "innovation",
+            "title": "How does automated testing drive innovation within your organization? What new opportunities does it create for your team?",
+            "choices": [
+              "Faster experimentation",
+              "New product features",
+              "Improved user experience",
+              "Competitive advantage",
+              "Enhanced collaboration",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "Efficiency",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "efficiency",
+            "title": "How does automated testing enhance efficiency in your development processes? What time and cost savings have you observed?",
+            "choices": [
+              "Reduced manual effort",
+              "Faster test cycles",
+              "Lower costs",
+              "Better resource utilization",
+              "Increased productivity",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "Optimization",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "optimization",
+            "title": "How does automated testing optimize IT processes? What improvements have you seen in terms of resource allocation and process management?",
+            "choices": [
+              "Streamlined workflows",
+              "Better resource management",
+              "Improved process efficiency",
+              "Reduced bottlenecks",
+              "Enhanced scalability",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      },
+      {
+        "name": "Sustainability",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "sustainability",
+            "title": "How does automated testing support a sustainability model for your solutions? What practices do you follow to ensure long-term success?",
+            "choices": [
+              "Regular maintenance",
+              "Continuous improvement",
+              "Scalable solutions",
+              "Resource optimization",
+              "Long-term planning",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      }
+    ]
+  }

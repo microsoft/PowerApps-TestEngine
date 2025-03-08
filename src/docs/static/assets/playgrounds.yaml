@@ -1,0 +1,206 @@
+default: "boolean-expressions"
+playgrounds:
+  - shortId: "boolean-expressions"
+    title: "Boolean Expressions"
+    description: "Explore different true / false expressions in Power Fx"
+    code: |
+      1=1
+    steps: |
+      - Press "Try It!" to see that the value of **true** is returned
+      - Change **1=1** to **1=2** and see that **false** is returned
+      - Change to **"a"="a"** to see that the value of **true** is returned
+      - Change to **"a"="b"** to see that the value of **false** is returned
+      - Change to **And(1=1,"a"="a")** to check both of the values are true
+      - Change to **Or(1=1,"a"="b")** to check that either one of the conditions is true
+      - Change to **Not(1=1)** to show that **false** is returned 
+      - Change to **Not(1=2)** to show that **true** is returned 
+    relatedTasks:
+      - "collections"
+      - "intro-assert"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"
+      - "localization"
+  - shortId: "collections"
+    title: "Collections"
+    description: "Explore common collection expresions in Power Fx that could be used in your tests"
+    code: |
+      accounts
+    steps: |
+      - Press "Try It!" to see the values of the accounts collection
+      - Change the text to **CountRows(accounts)** to see value of **1**
+      - Change the text to **First(accounts).Name** to see value of **Test**
+      - Change the test to **CountRows(Filter(accounts,Name = "Test"))** to see value of 1
+      - Change the test to **CountRows(Filter(accounts,Name = "Not Exist"))** to see value of 0
+      - Change the test to **CountRows(Table())** to see a value of 0 for an empty table
+      - Change the test to **CountRows(Table({Name:"Test"}, {Name: "Test 2"}))** to see value of 2
+      - Change the test to **Last(Table({Name:"Test"}, {Name: "Test 2"})).Name** to see value of **Test 2**
+      - Change the test to the following to get **Test 2**
+
+          Set(item,Last(Table({Name:"Test"}, {Name: "Test 2"})));
+          item.Name
+
+    relatedTasks:
+      - "boolean-expressions"
+      - "intro-assert"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"
+      - "localization"
+  - shortId: "intro-assert"
+    title: "Introduction to Assert() Function"
+    description: "Learn how to use the Assert() function in Power Apps Test Engine to validate conditions in your test."
+    code: |
+      // Setup simulated Label Control with Text Value to check below
+      SetProperty(Label1.Text, "Heading");
+
+      Assert(Label1.Text = "Heading", "Unexpected header value");
+    steps: |
+      - Press "Try It!" to verify that the test run and returns a value of **true**
+      - Change the value of Label1.Text from Heading to **Heading2** in the SetProperty
+      - Change the text to th following
+
+        <pre>
+        // File: text.pa.yaml
+        Controls:
+          Input1:
+            Value: "World"
+          Label1:
+            Text: ="Hello " & text
+        // Code:
+        Assert(Label1.Text="Hello World");
+        SetProperty(Input1.Value, "Today");
+        Assert(Label1.Text="Hello Today");
+        </pre>
+
+      - Press "Try It!" and see the error result
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"
+      - "localization"
+  - shortId: "assert-multiple-values"
+    title: "Assert() Function with Multiple Values"
+    description: "Learn how to use the Assert() function to validate multiple values in your test."
+    code: |
+      // Setup simulated Label Control with Text Value to check below
+      SetProperty(Label1.Text, "Start of test");
+      Assert(Label1.Text = "Start of test", "Unexpected start value");
+
+      SetProperty(Label1.Text, "End of the test");
+      Assert(Label1.Text = "End of the test", "Unexpected end value");
+    steps: |
+      - Press "Try It!" to verify that the test run and returns a value of **true** that the final value of Labal1.Text is **End of the test**
+      - Change either the start or end value text to get an error **One or more errors occurred**
+      - Try [Learn Module: Asserting Results](/PowerApps-TestEngine/learning/06-asserting-results)
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "intro-assert"
+      - "set-property"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"
+      - "localization"
+  - shortId: "set-property"
+    title: "SetProperty to change the page"
+    description: "Learn how to use the SetProperty() function to update the page"
+    code: |
+      // File: test.pa.yml
+      Controls:
+         Label1:
+           Text: ="Hello"
+      // Code:
+      Assert(Label1.Text="Hello");
+      SetProperty(Label1.Text, "Updated");
+      Assert(Label1.Text="Updated");
+    steps: |
+      - Press "Try It!" to verify that the test run and returns a value of **true** that the final value of Labal1.Text is **Updated**
+      - Change either the start or end value text to get an error **One or more errors occurred**
+      - Try [Learn Module: Updating Control Value using SetProperty](/PowerApps-TestEngine/learning/technical/06-updating-control-value-using-setproperty)
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "intro-assert"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"
+      - "localization"
+  - shortId: "assert-simulated-connector"
+    title: "Assert() Function with Simulated Connector"
+    description: "Learn how to use the Assert() function with a simulated connector in your test."
+    code: |
+      Assert(WeatherService.GetCurrentWeather("Seattle, WA").Location="Seattle, WA");
+      Assert(WeatherService.GetCurrentWeather("Seattle, WA").Condition="Sunny");
+
+      Experimental.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
+
+      Assert(WeatherService.GetCurrentWeather("Seattle, WA").Location="Other");
+      Assert(WeatherService.GetCurrentWeather("Seattle, WA").Condition="Cold");
+    steps: |
+      - Press "Try It!"  to verify that the test run and returns a value of **true** that the simulated values are found
+      - Reset the test and only place **WeatherService.GetCurrentWeather("Seattle, WA")** to see the orginal value
+      - Change the value of the city name to see that the results change. For example **WeatherService.GetCurrentWeather("Paris")**
+      - Reset the test and use the following to see that Other and Cold are returned:
+        
+        Experimental.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
+        WeatherService.GetCurrentWeather("Seattle, WA")
+
+      - Try [Learn Module: Simulated Connector](/PowerApps-TestEngine/learning/technical/08-simulating-connector)
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "intro-assert"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-dataverse"
+      - "localization"
+  - shortId: "assert-simulated-dataverse"
+    title: "Assert() Function with Simulated Dataverse"
+    description: "Learn how to use the Assert() function with a simulated dataverse in your test."
+    code: |
+      Assert(CountRows(accounts)=1);
+
+      Experimental.SimulateDataverse({Entity:"accounts", Then: Table()});
+
+      Assert(CountRows(accounts)=0);
+    steps: |
+      - Press "Try It!"  to verify that an empty table is returned
+      - Select Reset then add only **accounts** to see the orginal value of account
+      - Select Reset then change the last link to **Assert(CountRows(accounts)=1);** to see the test return error
+      - Select Reset then change the text to be onlt **Assert(First(accounts).Name="Test")** to see that the first value in the collection is Test
+      - Try [Learn Module: Simulated Dataverse](/PowerApps-TestEngine/learning/technical/09-simulating-dataverse)
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "intro-assert"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "localization"
+  - shortId: "localization"
+    title: "Localize your application"
+    description: "Set the culture and Language() function to localize your application"
+    code: |
+      // Settings:
+      locale: en-us
+      // Code:
+      Language()
+    steps: |
+      - Press "Try It!"  to verify that locale of **en-US** is returned
+      - Change the culture to **fr-fr** and verify that locale of **fr-FR** is returned
+      - Change change the locale to **fr-fr** and change Code to the following **If(Lower(Language())="fr-fr"; If(Hour(Now())<12; "Bonjour"; "Bonsoir"); "Hello")**   
+      - Notice that that Power Fx changes with the locale in en-us the function uses , in French the ";" should be used between arguments. 
+      - Try [Learn Module: Localization](/PowerApps-TestEngine/learning/technical/11-localization)
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "intro-assert"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"

@@ -1,0 +1,470 @@
+{
+    "title": "Journey Map: Manual Testing to Automated Testing",
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "adoption_stage",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "adoption_type",
+            "title": "Select your adoption type",
+            "isRequired": true,
+            "choices": [
+              {
+                "value": "early_adopter",
+                "text": "Early Adopter"
+              },
+              {
+                "value": "beta_user",
+                "text": "Beta User"
+              },
+              {
+                "value": "general_availability",
+                "text": "General Availability"
+              }
+            ],
+            "defaultValue": "early_adopter"
+          }
+        ]
+      },
+      {
+        "name": "engagement_blockers",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "engagement_blockers",
+            "title": "Select the level of engagement and blockers",
+            "isRequired": true,
+            "choices": [
+              {
+                "value": "hesitation_resistance",
+                "text": "Initial Hesitation and Resistance"
+              },
+              {
+                "value": "lack_of_strategy",
+                "text": "Lack of Clear Strategy"
+              },
+              {
+                "value": "inadequate_resources",
+                "text": "Inadequate Resources and Support"
+              },
+              {
+                "value": "poor_communication",
+                "text": "Poor Communication and Collaboration"
+              },
+              {
+                "value": "failure_to_measure",
+                "text": "Failure to Measure and Improve"
+              },
+              {
+                "value": "none",
+                "text": "None of the above"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "mitigators",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "mitigators",
+            "title": "Select the mitigators that could apply",
+            "isRequired": false,
+            "choices": [
+              {
+                "value": "record_replay",
+                "text": "Record and Replay to generate tests"
+              },
+              {
+                "value": "generative_ai",
+                "text": "Generative AI to build test cases"
+              },
+              {
+                "value": "training_resources",
+                "text": "Training and Resources"
+              },
+              {
+                "value": "stakeholder_engagement",
+                "text": "Stakeholder Engagement"
+              },
+              {
+                "value": "collaboration_tools",
+                "text": "Collaboration Tools"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "matrix",
+        "elements": [
+            {
+                "type": "matrix",
+                "name": "matrixQuestion",
+                "title": "Select cells to customized the recommendation",
+                "columns": [
+                  {
+                    "value": "initial_adoption",
+                    "text": "Initial Adoption"
+                  },
+                  {
+                    "value": "peak_expectations",
+                    "text": "Peak of Expectations"
+                  },
+                  {
+                    "value": "disillusionment",
+                    "text": "Disillusionment"
+                  },
+                  {
+                    "value": "outcome",
+                    "text": "Outcome"
+                  }
+                ],
+                "rows": [
+                  {
+                    "value": "initial_hesitation",
+                    "text": "Initial Hesitation and Resistance",
+                    "visibleIf": "{engagement_blockers} contains 'hesitation_resistance'"
+                  },
+                  {
+                    "value": "lack_of_strategy",
+                    "text": "Lack of Clear Strategy",
+                    "visibleIf": "{engagement_blockers} contains 'lack_of_strategy'"
+                  },
+                  {
+                    "value": "inadequate_resources",
+                    "text": "Inadequate Resources and Support",
+                    "visibleIf": "{engagement_blockers} contains 'inadequate_resources'"
+                  },
+                  {
+                    "value": "poor_communication",
+                    "text": "Poor Communication and Collaboration",
+                    "visibleIf": "{engagement_blockers} contains 'poor_communication'"
+                  },
+                  {
+                    "value": "failure_to_measure",
+                    "text": "Failure to Measure and Improve",
+                    "visibleIf": "{engagement_blockers} contains 'failure_to_measure'"
+                  },
+                  {
+                    "value": "record_replay",
+                    "text": "Record and Replay",
+                    "visibleIf":"{mitigators} contains 'record_replay'"
+                  },
+                  {
+                    "value": "generative_ai",
+                    "text": "Generative AI",
+                    "visibleIf":"{mitigators} contains 'generative_ai'"
+                  },
+                  {
+                    "value": "training_resources",
+                    "text": "Training and Resources",
+                    "visibleIf":"{mitigators} contains 'training_resources'"
+                  },
+                  {
+                    "value": "stakeholder_engagement",
+                    "text": "Stakeholder Engagement",
+                    "visibleIf":"{mitigators} contains 'stakeholder_engagement'"
+                  },
+                  {
+                    "value": "collaboration_tools",
+                    "text": "Collaboration Tools",
+                    "visibleIf":"{mitigators} contains 'collaboration_tools'"
+                  }
+                ],
+                "cells": {
+                    "initial_hesitation": {
+                        "initial_adoption": "<input type='checkbox' data-id='slower-adoption'/> Slower Adoption",
+                        "peak_expectations": "<input type='checkbox' data-id='abandon-early'/>  Abandon Early",
+                        "disillusionment": "<input type='checkbox' data-id='failure'/>  Failure",
+                        "outcome":  "<input type='checkbox' data-id='manual'/> Revert to Manual"
+                    },
+                    "lack_of_strategy": {
+                        "initial_adoption": "<input type='checkbox' data-id='ustructured'/> Unstructured",
+                        "peak_expectations": "<input type='checkbox' data-id='slower-adoption'/> Slower Adoption",
+                        "disillusionment": "<input type='checkbox' data-id='failure'/> Failure",
+                        "outcome":  "<input type='checkbox' data-id='manual'/> Revert to Manual"
+                    },
+                    "inadequate_resources": {
+                        "initial_adoption": "<input type='checkbox' data-id='tools'/> Technical Tooling",
+                        "peak_expectations": "<input type='checkbox' data-id='unsupported'/> Unsupported",
+                        "disillusionment": "<input type='checkbox' data-id='failure'/> Failure",
+                        "outcome":  "<input type='checkbox' data-id='manual'/> Revert to Manual"
+                    },
+                    "poor_communication": {
+                        "initial_adoption": "<input type='checkbox' data-id='silo'/> Silo",
+                        "peak_expectations": "<input type='checkbox' data-id='disconnected'/> Disconnected",
+                        "disillusionment": "<input type='checkbox' data-id='failure'/> Failure",
+                        "outcome":  "<input type='checkbox' data-id='inconsistent'/> Inconsistent"
+                    },
+                    "failure_to_measure": {
+                        "initial_adoption": "<input type='checkbox' data-id='adhoc'/> Adhoc",
+                        "peak_expectations": "<input type='checkbox' data-id='measure'/> Measure",
+                        "disillusionment": "<input type='checkbox' data-id='failure'/> Failure",
+                        "outcome":  "<input type='checkbox' data-id='no-learnings'/> Learnings not applied"
+                    },
+                    "record_replay": {
+                        "initial_adoption": "<input type='checkbox' data-id='fast'/> Fast Generation",
+                        "peak_expectations": "<input type='checkbox' data-id='basic'/> Basic Use Cases",
+                        "disillusionment": "<input type='checkbox' data-id='complex'/> Complex scenarios",
+                        "outcome":  "<input type='checkbox' data-id='extensions'/> Extensions"
+                    },
+                    "generative_ai": {
+                        "initial_adoption": "<input type='checkbox' data-id='fast'/> Fast Generation",
+                        "peak_expectations": "<input type='checkbox' data-id='cases'/> Egde and Error Case",
+                        "disillusionment": "<input type='checkbox' data-id='complex'/> Complex scenarios",
+                        "outcome":  "<input type='checkbox' data-id='extensions'/> Extensions"
+                    },
+                    "training_resources": {
+                        "initial_adoption": "<input type='checkbox' data-id='models'/> Learning Modules",
+                        "peak_expectations": "<input type='checkbox' data-id='simple'/> Simple tests",
+                        "disillusionment": "<input type='checkbox' data-id='maintain'/> Maintaining Tests",
+                        "outcome":  "<input type='checkbox' data-id='examples'/> Examples and peer support"
+                    },
+                    "stakeholder_engagement": {
+                        "initial_adoption": "<input type='checkbox' data-id='support'/> Management Support",
+                        "peak_expectations": "<input type='checkbox' data-id='pilot'/> Pilot Success",
+                        "disillusionment": "<input type='checkbox' data-id='scale'/> Scaling to org",
+                        "outcome":  "<input type='checkbox' data-id='measure'/> Measurable statistics"
+                    },
+                    "collaboration_tools": {
+                        "initial_adoption": "<input type='checkbox' data-id='guidelines'/> Guidelines",
+                        "peak_expectations": "<input type='checkbox' data-id='approval'/> Approval Process",
+                        "disillusionment": "<input type='checkbox' data-id='tests-fail'/> Test Fail / Lose Confidence",
+                        "outcome": "<input type='checkbox' data-id='CI/CD'/> Continuous Integration and Deployment"
+                    }
+                    }
+              }
+        ]
+      },
+      {
+        "name": "adoption_stage_recommendations",
+        "elements": [
+          {
+            "type": "html",
+            "name": "adoption_stage_intro",
+            "title": "Adoption Stage Recommendations",
+            "html": "<h3>Recommendations Based on Your Adoption Stage</h3>"
+          },
+          {
+            "type": "html",
+            "name": "early_adopter_recommendations",
+            "visibleIf": "{adoption_type} = 'early_adopter'",
+            "html": "<h4>For Early Adopters:</h4><ul><li>Engage stakeholders and start with a pilot project.</li><li>Work with Microsoft to provide feedback and help shape product direction.</li></ul>"
+          },
+          {
+            "type": "html",
+            "name": "beta_user_recommendations",
+            "visibleIf": "{adoption_type} = 'beta_user'",
+            "html": "<h4>For Beta Users:</h4><ul><li>Be comfortable using experimental features that are subject to change.</li></ul>"
+          },
+          {
+            "type": "html",
+            "name": "general_availability_recommendations",
+            "visibleIf": "{adoption_type} = 'general_availability'",
+            "html": "<h4>For General Availability:</h4><ul><li>Continue with manual testing until wider availability.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "adoption_challenges_mitigation",
+        "elements": [
+          {
+            "type": "html",
+            "name": "adoption_challenges_intro",
+            "title": "Adoption Challenges and Mitigation",
+            "html": "<h3>Recommendations to Overcome Adoption Challenges</h3>"
+          },
+          {
+            "type": "html",
+            "name": "slower_adoption_recommendations",
+            "visibleIf": "{slower-adoption} = true",
+            "html": "<h4>Slower Adoption:</h4><p>Consider selecting one or more of the mitigation approaches to accelerate adoption.</p>"
+          },
+          {
+            "type": "html",
+            "name": "abandon_early_recommendations",
+            "visibleIf": "{abandon-early} = true",
+            "html": "<h4>Abandon Early:</h4><p>If adoption issues are not addressed, teams may be dissatisfied and not continue to the stage where the benefits of automated testing are realized.</p>"
+          },
+          {
+            "type": "html",
+            "name": "failure_recommendations",
+            "visibleIf": "{failure} = true",
+            "html": "<h4>Failure:</h4><p>Initial investments in automated testing are not realized, and the benefits of automated testing are not achieved.</p>"
+          },
+          {
+            "type": "html",
+            "name": "manual_recommendations",
+            "visibleIf": "{manual} = true",
+            "html": "<h4>Manual Testing:</h4><p>Teams may revert to manual testing processes, making scaling, time-consuming, and support more difficult.</p>"
+          },
+          {
+            "type": "html",
+            "name": "unstructured_recommendations",
+            "visibleIf": "{unstructured} = true",
+            "html": "<h4>Unstructured Adoption:</h4><p>Initial adoption may be held back by different teams taking different approaches.</p>"
+          },
+          {
+            "type": "html",
+            "name": "tools_recommendations",
+            "visibleIf": "{tools} = true",
+            "html": "<h4>Focus on Technical Tooling:</h4><p>Focus may be on technical tooling without also considering people and process changes to ensure successful adoption.</p>"
+          },
+          {
+            "type": "html",
+            "name": "unsupported_recommendations",
+            "visibleIf": "{unsupported} = true",
+            "html": "<h4>Unsupported:</h4><p>May not reach the highest level of expectation if the correct set of tools, people, and processes are not adopted.</p>"
+          },
+          {
+            "type": "html",
+            "name": "silo_recommendations",
+            "visibleIf": "{silo} = true",
+            "html": "<h4>Siloed Adoption:</h4><p>Each team may be siloed in adoption, holding back overall adoption.</p>"
+          },
+          {
+            "type": "html",
+            "name": "disconnected_recommendations",
+            "visibleIf": "{disconnected} = true",
+            "html": "<h4>Disconnected Approach:</h4><p>May not reach the highest level of expectation as a siloed approach does not share common approaches and learnings.</p>"
+          },
+          {
+            "type": "html",
+            "name": "inconsistent_recommendations",
+            "visibleIf": "{inconsistent} = true",
+            "html": "<h4>Inconsistent Adoption:</h4><p>May not fully realize the value of automated testing.</p>"
+          },
+          {
+            "type": "html",
+            "name": "adhoc_recommendations",
+            "visibleIf": "{adhoc} = true",
+            "html": "<h4>Adhoc Adoption:</h4><p>Adoption may be selective without a clear view of how to measure success.</p>"
+          },
+          {
+            "type": "html",
+            "name": "measure_recommendations",
+            "visibleIf": "{measure} = true",
+            "html": "<h4>Measurable Goals:</h4><p>Moving towards consistent and measurable quality goals can help reach overall goals.</p>"
+          },
+          {
+            "type": "html",
+            "name": "no_learnings_recommendations",
+            "visibleIf": "{no-learnings} = true",
+            "html": "<h4>Continuous Learning:</h4><p>Need to look at learnings and how a continuous learning process can be applied to apply the correct level of testing and avoid causes of test failure.</p>"
+          }
+        ]
+      },
+      {
+        "name": "tools_techniques",
+        "elements": [
+          {
+            "type": "html",
+            "name": "tools_techniques_intro",
+            "title": "Tools and Techniques",
+            "html": "<h3>Recommendations on Tools and Techniques</h3>"
+          },
+          {
+            "type": "html",
+            "name": "fast_recommendations",
+            "visibleIf": "{fast} = true",
+            "html": "<h4>Fast Generation:</h4><p>Using generative and recording approaches can help accelerate the ability to create tests.</p>"
+          },
+          {
+            "type": "html",
+            "name": "basic_recommendations",
+            "visibleIf": "{basic} = true",
+            "html": "<h4>Basic Use Cases:</h4><p>Initial success with generative tests may give overinflated expectations.</p>"
+          },
+          {
+            "type": "html",
+            "name": "complex_recommendations",
+            "visibleIf": "{complex} = true",
+            "html": "<h4>Complex Scenarios:</h4><p>Dealing with complex situations could cause a slowdown in adoption.</p>"
+          },
+          {
+            "type": "html",
+            "name": "extensions_recommendations",
+            "visibleIf": "{extensions} = true",
+            "html": "<h4>Extensions:</h4><p>Investigate extensions to testing to allow complex concepts to be encapsulated and simplified.</p>"
+          },
+          {
+            "type": "html",
+            "name": "models_recommendations",
+            "visibleIf": "{models} = true",
+            "html": "<h4>Learning Modules:</h4><p>Use learning modules to accelerate the ability to learn concepts.</p>"
+          },
+          {
+            "type": "html",
+            "name": "maintain_recommendations",
+            "visibleIf": "{maintain} = true",
+            "html": "<h4>Maintaining Tests:</h4><p>The process of keeping tests working can slow adoption.</p>"
+          },
+          {
+            "type": "html",
+            "name": "examples_recommendations",
+            "visibleIf": "{examples} = true",
+            "html": "<h4>Examples and Peer Support:</h4><p>Focus on creating common examples and a peer support community to help new learners.</p>"
+          }
+        ]
+      },
+      {
+        "name": "support_scaling",
+        "elements": [
+          {
+            "type": "html",
+            "name": "support_scaling_intro",
+            "title": "Support and Scaling",
+            "html": "<h3>Recommendations for Support and Scaling</h3>"
+          },
+          {
+            "type": "html",
+            "name": "support_recommendations",
+            "visibleIf": "{support} = true",
+            "html": "<h4>Management Support:</h4><p>Highlight the key role of multi-level support to ensure early adoption success.</p>"
+          },
+          {
+            "type": "html",
+            "name": "pilot_recommendations",
+            "visibleIf": "{pilot} = true",
+            "html": "<h4>Pilot Success:</h4><p>Start with smaller pilots to show value and allow transfer of skills.</p>"
+          },
+          {
+            "type": "html",
+            "name": "scale_recommendations",
+            "visibleIf": "{scale} = true",
+            "html": "<h4>Scaling to Organization:</h4><p>Moving beyond pilot can present issues and need key support and learning structures to maintain success.</p>"
+          },
+          {
+            "type": "html",
+            "name": "guidelines_recommendations",
+            "visibleIf": "{guidelines} = true",
+            "html": "<h4>Guidelines:</h4><p>To help with initial adoption, highlight the benefit of common guidelines to provide a common approach.</p>"
+          },
+          {
+            "type": "html",
+            "name": "approval_recommendations",
+            "visibleIf": "{approval} = true",
+            "html": "<h4>Approval Process:</h4><p>Point out the key role of the approval process as a key stage to have a review process to ensure changes are included with tests and build confidence in the approach.</p>"
+          },
+          {
+            "type": "html",
+            "name": "tests_fail_recommendations",
+            "visibleIf": "{tests-fail} = true",
+            "html": "<h4>Test Failures:</h4><p>Key issue to mitigate and watch out for is failing tests. Look at how tests are created and what type and how more isolated and quick to run tests can be used.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ci_cd_recommendations",
+            "visibleIf": "{CI/CD} = true",
+            "html": "<h4>Continuous Integration and Deployment:</h4><p>Work towards building a set of automated continuous integration and deployment processes to catch errors early.</p>"
+          }
+        ]
+      }
+    ]
+  }

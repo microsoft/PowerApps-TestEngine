@@ -1,0 +1,109 @@
+default: "lookup-account"
+playgrounds:
+  - shortId: "lookup-account"
+    title: "Lookup account that does not exist"
+    description: "Lookup an account by name that does not exist"
+    code: |
+      Experimental.TruncateTable(Accounts);
+      Assert(IsBlank(Lookup(Acccounts, Name = "Contoso")));
+    steps: |
+      - Press "Try It!" to see that the value of **true** is returned
+    relatedTasks:
+      - "lookup-account"
+      - "create-account"
+      - "update-account"
+      - "delete-account"
+      - "execute-function"
+  - shortId: "create-account"
+    title: "Create an account"
+    description: "Create an account in dateverse and validate that it was created"
+    code: |
+      Experimental.TruncateTable(Accounts);
+      Patch(
+          Accounts, // Dataverse table name
+          Defaults(Accounts), // Create a new record
+          {
+              Name: "Contoso Ltd",
+              AccountNumber: "12345",
+              Address1_City: "Redmond",
+              Address1_StateOrProvince: "WA",
+              Address1_Country: "USA"
+          }
+      )
+      Assert(CountRows(Accounts)=1)
+    steps: |
+      - Press "Try It!" to see that the value of **true** is returned
+    relatedTasks:
+      - "lookup-account"
+      - "create-account"
+      - "update-account"
+      - "delete-account"
+      - "execute-function"
+  - shortId: "update-account"
+    title: "Update an existing record in dataverse"
+    description: "Update an existing record and verify that the change made"
+    code: |
+      Experimental.TruncateTable(Accounts);
+      Patch(
+          Accounts, // Dataverse table name
+          Defaults(Accounts), // Create a new record
+          {
+              Name: "Contoso Ltd",
+              AccountNumber: "12345",
+              Address1_City: "Redmond",
+              Address1_StateOrProvince: "WA",
+              Address1_Country: "USA"
+          }
+      );
+      Patch(Accounts, First(Accounts), {Name: "Contoso"});
+      Assert(Not(IsBlank(Lookup(Acccounts, Name = "Contoso"));
+    steps: |
+      - Press "Try It!" to see that the value of **true** is returned
+    relatedTasks:
+      - "lookup-account"
+      - "create-account"
+      - "update-account"
+      - "delete-account"
+      - "execute-function"
+  - shortId: "delete-account"
+    title: "Delete an existing record in dataverse"
+    description: "Update an existing record and verify that the change made"
+    code: |
+      Experimental.TruncateTable(Accounts);
+      Patch(
+          Accounts, // Dataverse table name
+          Defaults(Accounts), // Create a new record
+          {
+              Name: "Contoso Ltd",
+              AccountNumber: "12345",
+              Address1_City: "Redmond",
+              Address1_StateOrProvince: "WA",
+              Address1_Country: "USA"
+          }
+      );
+      Remove(Accounts, Lookup(Acccounts, Name = "Contoso"));
+      Assert(IsBlank(Lookup(Acccounts, Name = "Contoso")));
+    steps: |
+      - Press "Try It!" to see that the value of **true** is returned
+    relatedTasks:
+      - "lookup-account"
+      - "create-account"
+      - "update-account"
+      - "delete-account"
+      - "execute-function"
+  - shortId: "execute-function"
+    title: "Execute function"
+    description: "Execute a function"
+    code: |
+      // Setup: Sample
+      1 + 1
+      // Steps:
+      Assert(Environment.Sample()=2)
+    steps: |
+      - Press "Try It!" to see that the value of **true** is returned
+    relatedTasks:
+      - "lookup-account"
+      - "create-account"
+      - "update-account"
+      - "delete-account"
+      - "execute-function"

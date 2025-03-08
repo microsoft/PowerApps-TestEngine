@@ -1,0 +1,135 @@
+{
+    "pages": [
+    {
+        "name": "Introduction",
+        "elements": [
+            {
+            "type": "html",
+            "name": "introText",
+            "html": "<h2>Welcome to the Technical Learn Module</<h2><br/><h4>Lets take a moment to check if this module is a great match for you.</h4>"
+            }
+        ]
+        },
+      {
+        "name": "page1",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "role",
+            "title": "What is your role?",
+            "isRequired": true,
+            "choices": [
+              "Code-first Developer",
+              "Low-code Maker",
+              "Business User",
+              "Architect"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "business_user_info",
+            "visibleIf": "{role} = 'Business User'",
+            "html": "<p>We also have <a href='/PowerApps-TestEngine/learning/business-path'>business learning module</a></p>"
+          },
+          {
+            "type": "html",
+            "name": "architecture_info",
+            "visibleIf": "{role} = 'Architect'",
+            "html": "<p>We also have <a href='/PowerApps-TestEngine/learning/architecture'>architecture learning module</a></p>"
+          }
+        ]
+      },
+      {
+        "name": "page2",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "user_type",
+            "title": "What type of user are you?",
+            "isRequired": true,
+            "choices": [
+              "Early Adopter",
+              "Preview User",
+              "General Availability User"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "early_adopter_info",
+            "visibleIf": "{user_type} = 'Early Adopter'",
+            "html": "<p>In this case we are looking for <b>Early Adopters</b> are comfortable building from code and seeing the latest features.</p>"
+          },
+          {
+            "type": "html",
+            "name": "preview_user_info",
+            "visibleIf": "{user_type} = 'Preview User'",
+            "html": "<p><b>Preview Users</b> are comfortable using Experimental features to complete the learning modules.</p>"
+          },
+          {
+            "type": "html",
+            "name": "general_availability_user_info",
+            "visibleIf": "{user_type} = 'General Availability User'",
+            "html": "<p><b>General Availability</b> Users who are comfortable using command line tools and willing to wait for features to be released to wider availability.</p>"
+          }
+        ]
+      },
+      {
+        "name": "page4",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "comfort_level",
+            "title": "Are you comfortable with the following?",
+            "isRequired": true,
+            "choices": [
+              "Downloading and installing the .NET SDK",
+              "Installing Azure Command Line Tools",
+              "Installing Power Platform Command Line Tools",
+              "Using Visual Studio Code to author and edit tests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "page5",
+        "elements": [
+          {
+            "type": "html",
+            "name": "recommendation",
+            "visibleIf": "{user_type} = 'Early Adopter' and {role} = 'Code-first Developer'",
+            "html": "<p>The learn module is a great match for you! As an Early Adopter and Code-first Developer, you will be building from source code and using the latest feature branches.</p>"
+          },
+          {
+            "type": "html",
+            "name": "recommendation",
+            "visibleIf": "{user_type} = 'Preview User' and {role} = 'Code-first Developer'",
+            "html": "<p>You might need to wait a little longer until features are available as part of the Power Platform CLI. Stay tuned for updates as the features are updated in the Power Platform Command Line Interface!</p>"
+          },
+          {
+            "type": "html",
+            "name": "recommendation",
+            "visibleIf": "{user_type} = 'General Availability User' and {role} = 'Code-first Developer'",
+            "html": "<p>Keep an eye on this site for future updates. The learn module will be available once the features are released to wider availability and beyond Experimental features.</p>"
+          },
+          {
+            "type": "html",
+            "name": "recommendation",
+            "visibleIf": "{role} = 'Low-code Maker'",
+            "html": "<p>As a Low-code Maker, you might find the learn module challenging if you are not comforatble installing command line tools. Consider exploring modules tailored for low-code development like record and replay.</p>"
+          },
+          {
+            "type": "html",
+            "name": "recommendation",
+            "visibleIf": "{role} = 'Business User'",
+            "html": "<p>As a Business User, this learn module might not be the best fit if you are not comforatble installing command line tools. Look for modules that focus on business applications and low-code solutions like the record and replay to share with your team.</p>"
+          },
+          {
+            "type": "html",
+            "name": "recommendation",
+            "visibleIf": "{role} = 'Architect'",
+            "html": "<p>As an Architect, you may find this module useful for understanding the latest features and how they can be integrated into your solutions. However, if it involves hands-on command line tools, you might want to collaborate with developers or advanced makers.</p>"
+          }
+        ]
+      }
+    ]
+  }

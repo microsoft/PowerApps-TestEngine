@@ -1,0 +1,358 @@
+{
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "Introduction",
+        "elements": [
+          {
+            "type": "html",
+            "name": "introText",
+            "html": "<h2>Setting Up People and Processes for Success</h2><p>In this section, we will discuss the key elements required to set up people and processes for success in automated testing. This includes identifying the right team members, defining clear roles and responsibilities, and establishing effective processes to ensure smooth implementation and continuous improvement. We will address the needs of two communities: code-first teams incorporating low code in their solutions, and business-driven testing teams creating low code solutions to solve business needs.</p>"
+          }
+        ]
+      },
+      {
+        "name": "IdentifyingTeamMembers",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "teamRoles",
+            "title": "Which of the following roles are part of your automated testing team?",
+            "choices": [
+              "Test Automation Engineer",
+              "Quality Assurance (QA) Analyst",
+              "Software Developer",
+              "Low Code Developer",
+              "Project Manager",
+              "Business Analyst",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "teamRolesMoreInfo",
+            "title": "Are you familiar with these roles?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "testAutomationEngineerInfo",
+            "visibleIf": "{teamRolesMoreInfo} = 'Not sure, tell me more' and {teamRoles} contains 'Test Automation Engineer'",
+            "html": "<p><b>Test Automation Engineer:</b> Responsible for designing, developing, and maintaining automated test scripts. This role is crucial for code-first teams that integrate low code solutions.</p>"
+          },
+          {
+            "type": "html",
+            "name": "qaAnalystInfo",
+            "visibleIf": "{teamRolesMoreInfo} = 'Not sure, tell me more' and {teamRoles} contains 'Quality Assurance (QA) Analyst'",
+            "html": "<p><b>Quality Assurance (QA) Analyst:</b> Ensures that the automated tests meet the required quality standards and cover all necessary test cases. This role is essential for both code-first and business-driven testing teams.</p>"
+          },
+          {
+            "type": "html",
+            "name": "softwareDeveloperInfo",
+            "visibleIf": "{teamRolesMoreInfo} = 'Not sure, tell me more' and {teamRoles} contains 'Software Developer'",
+            "html": "<p><b>Software Developer:</b> Collaborates with the test automation engineer to integrate automated tests into the development process. This role is more prominent in code-first teams.</p>"
+          },
+          {
+            "type": "html",
+            "name": "lowCodeDeveloperInfo",
+            "visibleIf": "{teamRolesMoreInfo} = 'Not sure, tell me more' and {teamRoles} contains 'Low Code Developer'",
+            "html": "<p><b>Low Code Developer:</b> Focuses on creating and maintaining low code solutions that meet business needs. This role is vital for business-driven testing teams.</p>"
+          },
+          {
+            "type": "html",
+            "name": "projectManagerInfo",
+            "visibleIf": "{teamRolesMoreInfo} = 'Not sure, tell me more' and {teamRoles} contains 'Project Manager'",
+            "html": "<p><b>Project Manager:</b> Oversees the entire automated testing project, ensuring that it stays on track and meets business objectives. This role is important for both communities.</p>"
+          },
+          {
+            "type": "html",
+            "name": "businessAnalystInfo",
+            "visibleIf": "{teamRolesMoreInfo} = 'Not sure, tell me more' and {teamRoles} contains 'Business Analyst'",
+            "html": "<p><b>Business Analyst:</b> Provides insights into business requirements and ensures that the automated tests align with business goals. This role is crucial for business-driven testing teams.</p>"
+          }
+        ]
+      },
+      {
+        "name": "BusinessRoles",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "businessRoles",
+            "title": "Which business roles are involved in your automated testing efforts?",
+            "choices": [
+              "Business Stakeholders",
+              "Business Unit Leads",
+              "Managers",
+              "Makers",
+              "Trainers",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "businessRolesMoreInfo",
+            "title": "Are you familiar with these roles?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "businessStakeholdersInfo",
+            "visibleIf": "{businessRolesMoreInfo} = 'Not sure, tell me more' and {businessRoles} contains 'Business Stakeholders'",
+            "html": "<p><b>Business Stakeholders:</b> Represents business stakeholders who have invested in the Power Platform and want to ensure automated testing is applied at the correct level. They are concerned with business continuity, solution performance, and mitigating security risks.</p>"
+          },
+          {
+            "type": "html",
+            "name": "businessUnitLeadsInfo",
+            "visibleIf": "{businessRolesMoreInfo} = 'Not sure, tell me more' and {businessRoles} contains 'Business Unit Leads'",
+            "html": "<p><b>Business Unit Leads:</b> Responsible for achieving goals set by business stakeholders and demonstrating the impact and quality of the solutions created.</p>"
+          },
+          {
+            "type": "html",
+            "name": "managersInfo",
+            "visibleIf": "{businessRolesMoreInfo} = 'Not sure, tell me more' and {businessRoles} contains 'Managers'",
+            "html": "<p><b>Managers:</b> Ensure that makers or software developers in their teams have the required knowledge and training to effectively build and test solutions. They also focus on succession planning and sharing successful solutions among the team.</p>"
+          },
+          {
+            "type": "html",
+            "name": "makersInfo",
+            "visibleIf": "{businessRolesMoreInfo} = 'Not sure, tell me more' and {businessRoles} contains 'Makers'",
+            "html": "<p><b>Makers:</b> Low-code maker community who build solutions using low-code tools to rapidly achieve business goals. They may be unfamiliar with formal testing skills and need low-code testing processes to create sustainable solutions.</p>"
+          },
+          {
+            "type": "html",
+            "name": "trainersInfo",
+            "visibleIf": "{businessRolesMoreInfo} = 'Not sure, tell me more' and {businessRoles} contains 'Trainers'",
+            "html": "<p><b>Trainers:</b> Responsible for enterprise training and skilling by role to make the most of low code Power Platform.</p>"
+          }
+        ]
+      },
+      {
+        "name": "DefiningRolesResponsibilities",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "rolesResponsibilities",
+            "title": "How do you define roles and responsibilities for your automated testing team?",
+            "choices": [
+              "Developing and maintaining automated test scripts",
+              "Reviewing automated test scripts",
+              "Integrating automated tests into the development process",
+              "Ensuring tests meet quality standards",
+              "Managing the automated testing project",
+              "Analyzing business requirements",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "rolesResponsibilitiesMoreInfo",
+            "title": "Are you familiar with these responsibilities?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "developingScriptsInfo",
+            "visibleIf": "{rolesResponsibilitiesMoreInfo} = 'Not sure, tell me more' and {rolesResponsibilities} contains 'Developing and maintaining automated test scripts'",
+            "html": "<p><b>Developing and maintaining automated test scripts:</b> Creating and updating test scripts to ensure they are reliable and efficient.</p>"
+          },
+          {
+            "type": "html",
+            "name": "reviewingScriptsInfo",
+            "visibleIf": "{rolesResponsibilitiesMoreInfo} = 'Not sure, tell me more' and {rolesResponsibilities} contains 'Reviewing automated test scripts'",
+            "html": "<p><b>Reviewing automated test scripts:</b> Ensuring that test scripts meet quality standards and cover all necessary test cases.</p>"
+          },
+          {
+            "type": "html",
+            "name": "integratingTestsInfo",
+            "visibleIf": "{rolesResponsibilitiesMoreInfo} = 'Not sure, tell me more' and {rolesResponsibilities} contains 'Integrating automated tests into the development process'",
+            "html": "<p><b>Integrating automated tests into the development process:</b> Collaborating with developers to incorporate automated tests into the development workflow.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ensuringQualityInfo",
+            "visibleIf": "{rolesResponsibilitiesMoreInfo} = 'Not sure, tell me more' and {rolesResponsibilities} contains 'Ensuring tests meet quality standards'",
+            "html": "<p><b>Ensuring tests meet quality standards:</b> Verifying that automated tests adhere to quality standards and best practices.</p>"
+          },
+          {
+            "type": "html",
+            "name": "managingProjectInfo",
+            "visibleIf": "{rolesResponsibilitiesMoreInfo} = 'Not sure, tell me more' and {rolesResponsibilities} contains 'Managing the automated testing project'",
+            "html": "<p><b>Managing the automated testing project:</b> Overseeing the project to ensure it stays on track and meets business objectives.</p>"
+          },
+          {
+            "type": "html",
+            "name": "analyzingRequirementsInfo",
+            "visibleIf": "{rolesResponsibilitiesMoreInfo} = 'Not sure, tell me more' and {rolesResponsibilities} contains 'Analyzing business requirements'",
+            "html": "<p><b>Analyzing business requirements:</b> Understanding business needs and ensuring that automated tests align with these requirements.</p>"
+          }
+        ]
+      },
+      {
+        "name": "EffectiveProcesses",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "effectiveProcesses",
+            "title": "What processes do you have in place for automated testing?",
+            "choices": [
+              "Test Planning",
+              "Test Development",
+              "Test Execution",
+              "Test Maintenance",
+              "Continuous Improvement",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "effectiveProcessesMoreInfo",
+            "title": "Are you familiar with these processes?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "testPlanningInfo",
+            "visibleIf": "{effectiveProcessesMoreInfo} = 'Not sure, tell me more' and {effectiveProcesses} contains 'Test Planning'",
+            "html": "<p><b>Test Planning:</b> Defining the scope, objectives, and approach for automated testing, including identifying test cases, selecting tools, and setting up the test environment.</p>"
+          },
+          {
+            "type": "html",
+            "name": "testDevelopmentInfo",
+            "visibleIf": "{effectiveProcessesMoreInfo} = 'Not sure, tell me more' and {effectiveProcesses} contains 'Test Development'",
+            "html": "<p><b>Test Development:</b> Creating and maintaining automated test scripts to ensure they are reliable, efficient, and easy to maintain.</p>"
+          },
+          {
+            "type": "html",
+            "name": "testExecutionInfo",
+            "visibleIf": "{effectiveProcessesMoreInfo} = 'Not sure, tell me more' and {effectiveProcesses} contains 'Test Execution'",
+            "html": "<p><b>Test Execution:</b> Running automated tests, monitoring their performance, and reporting any issues or failures.</p>"
+          },
+          {
+            "type": "html",
+            "name": "testMaintenanceInfo",
+            "visibleIf": "{effectiveProcessesMoreInfo} = 'Not sure, tell me more' and {effectiveProcesses} contains 'Test Maintenance'",
+            "html": "<p><b>Test Maintenance:</b> Regularly reviewing and updating automated test scripts to ensure they remain effective and relevant.</p>"
+          },
+          {
+            "type": "html",
+            "name": "continuousImprovementInfo",
+            "visibleIf": "{effectiveProcessesMoreInfo} = 'Not sure, tell me more' and {effectiveProcesses} contains 'Continuous Improvement'",
+            "html": "<p><b>Continuous Improvement:</b> Continuously evaluating and improving automated testing processes, incorporating feedback from team members and stakeholders.</p>"
+          }
+        ]
+      },
+      {
+        "name": "LowCodeTestingApproaches",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "lowCodeTestingApproaches",
+            "title": "Which low code testing approaches do you use?",
+            "choices": [
+              "Record and Replay Strategies",
+              "AI-Driven Agents",
+              "Integration with Low Code Platforms",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "lowCodeTestingApproachesMoreInfo",
+            "title": "Are you familiar with these approaches?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "recordReplayInfo",
+            "visibleIf": "{lowCodeTestingApproachesMoreInfo} = 'Not sure, tell me more' and {lowCodeTestingApproaches} contains 'Record and Replay Strategies'",
+            "html": "<p><b>Record and Replay Strategies:</b> Utilizing tools to capture user interactions and create automated test scripts, allowing for quick and easy test creation without extensive coding knowledge.</p>"
+          },
+          {
+            "type": "html",
+            "name": "aiDrivenAgentsInfo",
+            "visibleIf": "{lowCodeTestingApproachesMoreInfo} = 'Not sure, tell me more' and {lowCodeTestingApproaches} contains 'AI-Driven Agents'",
+            "html": "<p><b>AI-Driven Agents:</b> Implementing AI-driven agents that observe how the solution is being used and automate the process of generating tests. These agents can identify common usage patterns, detect anomalies, and create test cases that reflect real-world scenarios.</p>"
+          },
+          {
+            "type": "html",
+            "name": "integrationPlatformsInfo",
+            "visibleIf": "{lowCodeTestingApproachesMoreInfo} = 'Not sure, tell me more' and {lowCodeTestingApproaches} contains 'Integration with Low Code Platforms'",
+            "html": "<p><b>Integration with Low Code Platforms:</b> Ensuring that automated testing tools and processes are seamlessly integrated with low code platforms like Power Platform, allowing for continuous testing and validation of low code solutions.</p>"
+          }
+        ]
+      },
+      {
+        "name": "AdaptingToChanges",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "adaptingToChanges",
+            "title": "How does your team adapt to changing roles and requirements?",
+            "choices": [
+              "Cross-Training",
+              "Documentation",
+              "Agile Practices",
+              "Collaboration Tools",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "adaptingToChangesMoreInfo",
+            "title": "Are you familiar with these strategies?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "crossTrainingInfo",
+            "visibleIf": "{adaptingToChangesMoreInfo} = 'Not sure, tell me more' and {adaptingToChanges} contains 'Cross-Training'",
+            "html": "<p><b>Cross-Training:</b> Encouraging team members to learn multiple roles and skills to handle changes in roles and responsibilities smoothly.</p>"
+          },
+          {
+            "type": "html",
+            "name": "documentationInfo",
+            "visibleIf": "{adaptingToChangesMoreInfo} = 'Not sure, tell me more' and {adaptingToChanges} contains 'Documentation'",
+            "html": "<p><b>Documentation:</b> Maintaining comprehensive documentation of processes, test scripts, and business requirements to help new team members get up to speed quickly and ensure continuity.</p>"
+          },
+          {
+            "type": "html",
+            "name": "agilePracticesInfo",
+            "visibleIf": "{adaptingToChangesMoreInfo} = 'Not sure, tell me more' and {adaptingToChanges} contains 'Agile Practices'",
+            "html": "<p><b>Agile Practices:</b> Adopting agile practices to respond to changing requirements effectively, including regular sprint planning, reviews, and retrospectives to ensure continuous improvement.</p>"
+          },
+          {
+            "type": "html",
+            "name": "collaborationToolsInfo",
+            "visibleIf": "{adaptingToChangesMoreInfo} = 'Not sure, tell me more' and {adaptingToChanges} contains 'Collaboration Tools'",
+            "html": "<p><b>Collaboration Tools:</b> Using collaboration tools to facilitate communication and knowledge sharing among team members, ensuring that everyone is on the same page and can react quickly to changes.</p>"
+          }
+        ]
+      }
+    ]
+  }
