@@ -54,7 +54,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.Functions
                         if (_provider.Messages.Where(json => JToken.Parse(json).SelectTokens(jsonPathQuery).Any()).Any())
                         {
                             _logger.LogInformation("Match found");
-                            timerState.Tcs.SetResult(true);
+                            timerState.Tcs.TrySetResult(true);
                         }
                         Thread.Sleep(500);
                     }
