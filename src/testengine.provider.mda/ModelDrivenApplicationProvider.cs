@@ -213,6 +213,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "istitlevisible":
                         case "checked":
                         case "markers":
+                        case "powerbiinteractions":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())

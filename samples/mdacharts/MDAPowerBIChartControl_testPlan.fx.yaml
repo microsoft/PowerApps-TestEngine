@@ -1,0 +1,78 @@
+testSuite:
+  testSuiteName: MDA Input Controls
+  testSuiteDescription: Verifies that the classic input controls work correctly.
+  persona: User1
+  appLogicalName: mda_input_controls_app
+
+  testCases:     
+  - testCaseName: Verify Tile URL
+    testCaseDescription: Verify that the TileUrl property can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(PowerBI1.TileUrl, "https://app.powerbi.com/embed?dashboardId=5038859c-c804-4c50-a776-25994fa7ae65&tileId=a0a6ddeb-da27-4958-be47-c5b407c43ffd");
+      Assert(PowerBI1.TileUrl = "https://app.powerbi.com/embed?dashboardId=5038859c-c804-4c50-a776-25994fa7ae65&tileId=a0a6ddeb-da27-4958-be47-c5b407c43ffd", "Checking the TileUrl property");
+
+  - testCaseName: Verify Dashboard ID
+    testCaseDescription: Verify that the DashboardId property can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(PowerBI1.DashboardId, "5038859c-c804-4c50-a776-25994fa7ae65");
+      Assert(PowerBI1.DashboardId = "5038859c-c804-4c50-a776-25994fa7ae65", "Checking the DashboardId property");
+
+  - testCaseName: Verify Workspace ID
+    testCaseDescription: Verify that the WorkspaceId property can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(PowerBI1.WorkspaceId, "12345678-abcd-1234-efgh-567890abcdef");
+      Assert(PowerBI1.WorkspaceId = "12345678-abcd-1234-efgh-567890abcdef", "Checking the WorkspaceId property");
+
+  - testCaseName: Verify Power BI Interactions
+    testCaseDescription: Verify that the PowerBIInteractions property can be enabled.
+    testSteps: |
+      SetProperty(PowerBI1.PowerBIInteractions, true);
+      Assert(PowerBI1.PowerBIInteractions = true, "Checking the PowerBIInteractions property");
+
+  - testCaseName: Verify Visibility of Power BI Control
+    testCaseDescription: Verify that the Visible property can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(PowerBI1.Visible, true);
+      Assert(PowerBI1.Visible = true, "Checking the Visible property");
+
+  - testCaseName: Verify Display Mode
+    testCaseDescription: Verify that the DisplayMode property can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(PowerBI1.DisplayMode, "View");
+      Assert(PowerBI1.DisplayMode = "View", "Checking the DisplayMode property");
+
+  - testCaseName: Verify Border Properties
+    testCaseDescription: Verify that the border properties can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(PowerBI1.BorderStyle, "Dashed");
+
+  - testCaseName: Verify Dimensions
+    testCaseDescription: Verify that the Width and Height properties can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(PowerBI1.Width, 500);
+      SetProperty(PowerBI1.Height, 300);
+      Assert(PowerBI1.Width = 500, "Checking the Width property");
+      Assert(PowerBI1.Height = 300, "Checking the Height property");
+
+  - testCaseName: Verify Z-Index
+    testCaseDescription: Verify that the ZIndex property can be set and retrieved correctly.
+    testSteps: |
+      SetProperty(PowerBI1.ZIndex, 10);
+      Assert(PowerBI1.ZIndex = 10, "Checking the ZIndex property");
+
+    
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

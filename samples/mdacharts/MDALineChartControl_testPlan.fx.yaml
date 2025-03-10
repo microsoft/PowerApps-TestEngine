@@ -71,5 +71,5 @@ testSettings:
 environmentVariables:
   users:
     - personaName: User1
-      emailKey: user1Emailaurora
+      emailKey: user1Email
       passwordKey: NotNeeded
