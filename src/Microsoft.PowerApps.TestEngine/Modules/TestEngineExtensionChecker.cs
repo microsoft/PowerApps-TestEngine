@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.IO;
-using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Security.Cryptography.X509Certificates;
@@ -36,6 +34,81 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         public const string NAMESPACE_PREVIEW = "Preview";
         public const string NAMESPACE_TEST_ENGINE = "TestEngine";
         public const string NAMESPACE_DEPRECATED = "Deprecated";
+        public const string SELFREFERENCE_NAMESPACE = "<module>";
+
+        private static readonly HashSet<string> AllowedNamespaces = InitializeAllowedNamespaces();
+        private static HashSet<string> InitializeAllowedNamespaces()
+        {
+            return new HashSet<string>
+            {
+                "Microsoft.Bcl.AsyncInterfaces",
+                "Microsoft.CodeAnalysis",
+                "Microsoft.CSharp",
+                "Microsoft.Extensions.Logging",
+                "Microsoft.Playwright",
+                "Microsoft.PowerApps.TestEngine.",
+                "Microsoft.PowerFx",
+                "netstandard",
+                "Newtonsoft.Json",
+                "Submission#0", //REPL
+                "System.Action",
+                "System.ArgumentException",
+                "System.Array",
+                "System.Attribute",
+                "System.Byte",
+                "System.Collections",
+                "System.ComponentModel.Composition",
+                "System.Console",
+                "System.Convert",
+                "System.DateTime",
+                "System.Decimal",
+                "System.Dynamic",
+                "System.Environment::get_NewLine()",
+                "System.Exception",
+                "System.Func",
+                "System.GC::Collect()",
+                "System.IAsyncDisposable",
+                "System.IDisposable",
+                "System.Int32",
+                "System.InvalidOperationException",
+                "System.IO.File::Exists",
+                "System.IO.File::WriteAllBytes",
+                "System.IO.File::WriteAllText",
+                "System.IO.FileInfo",
+                "System.IO.FileSystemInfo",
+                "System.IO.InvalidDataException",
+                "System.IO.MemoryStream",
+                "System.IO.Path::Combine",
+                "System.IO.Path::GetDirectoryName",
+                "System.IO.Path::GetExtension",
+                "System.IO.Path::GetFileNameWithoutExtension",
+                "System.IO.Path::IsPathRooted",
+                "System.IO.Stream",
+                "System.IO.StringReader",
+                "System.IO.TextReader",
+                "System.Linq",
+                "System.NotSupportedException",
+                "System.Nullable",
+                "System.Object",
+                "System.Private",
+                "System.Reflection",
+                "System.Runtime.CompilerServices",
+                "System.Runtime.ExceptionServices",
+                "System.Security.Cryptography",
+                "System.String",
+                "System.Text",
+                "System.Threading.CancellationToken",
+                "System.Threading.Tasks",
+                "System.Threading.Thread",
+                "System.TimeSpan",
+                "System.Type",
+                "System.Uri",
+                "System.ValueTuple",
+                "System.Void",
+                "System.Web.HttpUtility",
+                "testengine.module",
+            };
+        }
 
         public TestEngineExtensionChecker()
         {
@@ -245,16 +318,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         /// <returns><c>True</c> if the assembly meets the test setting requirements, <c>False</c> if not</returns>
         public virtual bool Validate(TestSettingExtensions settings, string file)
         {
-            var allowList = new HashSet<string>(settings.AllowNamespaces)
-            {
-                // Add minimum namespaces for a MEF plugin used by TestEngine
-                "System.Threading.Tasks",
-                "Microsoft.PowerFx",
-                "System.ComponentModel.Composition",
-                "Microsoft.Extensions.Logging",
-                "Microsoft.PowerApps.TestEngine.",
-                "Microsoft.Playwright"
-            };
+            var allowList = new HashSet<string>(settings.AllowNamespaces);
+            allowList.UnionWith(AllowedNamespaces);
 
             var denyList = new HashSet<string>(settings.DenyNamespaces)
             {
@@ -262,7 +327,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             };
 
             byte[] contents = GetExtentionContents(file);
-            var found = LoadTypes(contents);
+            //ignore generic types
+            var found = LoadTypes(contents).Where(item => !item.StartsWith("!")).ToList();
 
             var valid = true;
 
@@ -270,6 +336,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             {
                 Logger.LogInformation("Invalid Power FX Namespace");
                 valid = false;
+                return valid;
             }
 
             foreach (var item in found)
@@ -280,16 +347,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 var allow = !String.IsNullOrEmpty(allowLongest);
                 var deny = !String.IsNullOrEmpty(denyLongest);
 
-                if (allow && deny && denyLongest?.Length > allowLongest?.Length || !allow && deny)
+                if (allow && deny && denyLongest?.Length > allowLongest?.Length || !allow)
                 {
                     _logger.LogInformation("Deny usage of " + item);
                     _logger.LogInformation("Allow rule " + allowLongest);
                     _logger.LogInformation("Deny rule " + denyLongest);
                     valid = false;
+                    break;
                 }
             }
-
-
             return valid;
         }
 
@@ -662,7 +728,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                 foreach (TypeDefinition type in module.GetAllTypes())
                 {
-                    AddType(type, found);
+                    //ignoring self reference additional ignore checks for specialcases might be needed 
+                    if (!type.Name.ToLower().Equals(SELFREFERENCE_NAMESPACE))
+                    {
+                        AddType(type, found);
+                    }
 
                     // Load each constructor parameter and types in the body
                     foreach (var constructor in type.GetConstructors())
