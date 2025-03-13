@@ -16,7 +16,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public TestSettingExtensionSource Source { get; set; } = new TestSettingExtensionSource() { };
 
         /// <summary>
-        /// Determine if extension modules should be checks for Namespace rules
+        /// Determine if extension modules should be checks for Namespace and Certificate rules
         /// </summary>
 #if RELEASE
         public bool CheckAssemblies { get; } = true;
@@ -27,42 +27,37 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// List of allowed Test Engine Modules that can be referenced.
         /// </summary>
-#if RELEASE
-        //restricting for current milestone 1
-        public List<string> AllowModule { get; } = new List<string>();
-#else
-        public List<string> AllowModule { get; set; } = new List<string>();
-#endif
+        public HashSet<string> AllowModule { get; set; } = new HashSet<string>() { "*" };
 
         /// <summary>
         /// List of allowed Test Engine Modules cannot be loaded unless there is an explict allow
         /// </summary>
-        public List<string> DenyModule { get; set; } = new List<string>();
+        public HashSet<string> DenyModule { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// List of allowed .Net Namespaces that can be referenced in a Test Engine Module
         /// </summary>
 #if RELEASE
         //restricting for current milestone 1
-        public List<string> AllowNamespaces { get; } = new List<string>();
+        public HashSet<string> AllowNamespaces { get; } = new HashSet<string>();
 #else
-        public List<string> AllowNamespaces { get; set; } = new List<string>();
+        public HashSet<string> AllowNamespaces { get; set; } = new HashSet<string>();
 #endif
 
         /// <summary>
         /// List of allowed .Net Namespaces that deney load unless explict allow is defined
         /// </summary>
-        public List<string> DenyNamespaces { get; set; } = new List<string>();
+        public HashSet<string> DenyNamespaces { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// List of allowed PowerFx Namespaces that can be referenced in a Test Engine Module
         /// </summary>
-        public List<string> AllowPowerFxNamespaces { get; set; } = new List<string>();
+        public HashSet<string> AllowPowerFxNamespaces { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// List of allowed PowerFx Namespaces that deny load unless explict allow is defined
         /// </summary>
-        public List<string> DenyPowerFxNamespaces { get; set; } = new List<string>();
+        public HashSet<string> DenyPowerFxNamespaces { get; set; } = new HashSet<string>();
 
 
         /// <summary>

@@ -110,5 +110,11 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// </summary>
         /// <param name="fileName">The file to delete</param>
         void Delete(string fileName);
+
+        /// <summary>
+        /// Delete a directory from the system assuming directory is in the permitted locations to delete from
+        /// </summary>
+        /// <param name="directoryName">The file to delete</param>
+        void DeleteDirectory(string directoryName);
     }
 }

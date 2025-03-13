@@ -32,7 +32,7 @@ namespace testengine.module
         private static readonly RecordType dataverseRequest = RecordType.Empty();
 
         public SimulateDataverseFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "SimulateDataverse", FormulaType.Blank, dataverseRequest)
+            : base(DPath.Root.Append(new DName("Preview")), "SimulateDataverse", FormulaType.Blank, dataverseRequest)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

@@ -30,7 +30,7 @@ namespace testengine.module
 
         // NOTE: Order of calling base is name, return type then argument types
         public UpdateConnectionReferencesFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "UpdateConnectionReferences", FormulaType.Blank)
+            : base(DPath.Root.Append(new DName("Preview")), "UpdateConnectionReferences", FormulaType.Blank)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

@@ -5,13 +5,13 @@ testSuite:
   persona: User1
   appLogicalName: contoso_canvasdata_23901
   onTestCaseStart: |
-    = Experimental.SimulateDataverse({Action:"query",Entity: "accounts", Then: Table({accountid: "a1234567-1111-2222-3333-44445555666", name: "Test"}) });
+    = Preview.SimulateDataverse({Action:"query",Entity: "accounts", Then: Table({accountid: "a1234567-1111-2222-3333-44445555666", name: "Test"}) });
   
   testCases:
     - testCaseName: Simulate account
       testCaseDescription: Test 1
       testSteps: |
-        =   Experimental.Pause()
+        =   Preview.Pause()
 
 testSettings:
   headless: false

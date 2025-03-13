@@ -10,9 +10,9 @@ testSuite:
     - testCaseName: Run Script
       testCaseDescription: CSX example
       testSteps: |
-        = Experimental.Pause();
-          Experimental.PlaywrightScript("sample.csx");
-          Experimental.Pause();
+        = Preview.Pause();
+          Preview.PlaywrightScript("sample.csx");
+          Preview.Pause();
 
 testSettings:
   headless: false

@@ -55,9 +55,6 @@ namespace testengine.common.user
             // Remove any redirect added by Microsoft Cloud for Web Apps so we get the desired url
             url = url?.Replace(".mcas.ms", "");
 
-            // Remove home location, required for Portal Providers
-            url = url?.Replace("/home", "");
-
             // Need to check if page is idle to avoid case where we can get race condition before redirect to login
             if (url.IndexOf(state.DesiredUrl) >= 0 && await LoginIsComplete(state.Page) && !state.IsError)
             {
@@ -73,13 +70,13 @@ namespace testengine.common.user
 
             if (!(state.Page.Url.IndexOf(state.DesiredUrl) >= 0) && !state.IsError)
             {
-                if (state.Page.Url != "about:blank")
+                if (state.Page.Url != "about:blank" && !await HandleUserEmailScreen(EmailSelector, state))
                 {
-                    // Default the user into the dialog if it is visible
-                    await HandleUserEmailScreen(EmailSelector, state);
-
-                    // Next user could be presented with password
-                    // Could also be presented with others configured MFA options
+                    //assume page url is different and try to redirect to desired url
+                    if (state.CallbackRedirectRequiredFound != null)
+                    {
+                        await state.CallbackRedirectRequiredFound(state.Page);
+                    }
                 }
             }
         }
@@ -90,11 +87,11 @@ namespace testengine.common.user
         /// <param name="selector">The selector to fid the email</param>
         /// <param name="state">The current login session state</param>
         /// <returns>Completed task</returns>
-        private async Task HandleUserEmailScreen(string selector, LoginState state)
+        private async Task<bool> HandleUserEmailScreen(string selector, LoginState state)
         {
             if (state.EmailHandled)
             {
-                return;
+                return true;
             }
             try
             {
@@ -104,10 +101,13 @@ namespace testengine.common.user
                     state.EmailHandled = true;
                     await page.Locator(selector).PressSequentiallyAsync(state.UserEmail, new LocatorPressSequentiallyOptions { Delay = 50 });
                     await page.Keyboard.PressAsync("Tab", new KeyboardPressOptions { Delay = 20 });
+                    return true;
                 }
+                return false;
             }
             catch
             {
+                return false;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Net;
@@ -15,8 +16,6 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
-using NuGet.Common;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -98,6 +97,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 Headless = testSettings.Headless,
                 Timeout = testSettings.Timeout
             };
+
+            if (!string.IsNullOrEmpty(testSettings.ExecutablePath))
+            {
+                launchOptions.ExecutablePath = testSettings.ExecutablePath;
+                staticContext.ExecutablePath = testSettings.ExecutablePath;
+            }
 
             staticContext.Headless = launchOptions.Headless;
             staticContext.Timeout = launchOptions.Timeout;
@@ -220,12 +225,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
             if (userManager.UseStaticContext)
             {
-                _fileSystem.CreateDirectory(userManager.Location);
-                var location = userManager.Location;
+                //remove context directory if any present previously
+                await RemoveContext(userManager);
+
+                var location = userManager.ContextLocation;
                 if (!Path.IsPathRooted(location))
                 {
-                    location = Path.Combine(Directory.GetCurrentDirectory(), location);
+                    location = Path.Combine(_fileSystem.GetDefaultRootTestEngine(), location);
                 }
+                _fileSystem.CreateDirectory(location);
 
                 // Check if a channel has been specified
                 if (!string.IsNullOrEmpty(browserConfig.Channel))
@@ -365,12 +373,33 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
-        public async Task EndTestRunAsync()
+        public async Task EndTestRunAsync(IUserManager userManager)
         {
             if (BrowserContext != null)
             {
                 await Task.Delay(200);
                 await BrowserContext.CloseAsync();
+            }
+            await RemoveContext(userManager);
+        }
+
+        public async Task RemoveContext(IUserManager userManager)
+        {
+            try
+            {
+                if (userManager.UseStaticContext)
+                {
+                    var location = userManager.ContextLocation;
+                    if (!Path.IsPathRooted(location))
+                    {
+                        location = Path.Combine(_fileSystem.GetDefaultRootTestEngine(), location);
+                    }
+                    _fileSystem.DeleteDirectory(location);
+                }
+            }
+            catch
+            {
+                _singleTestInstanceState.GetLogger().LogInformation("Missing context or error deleting context");
             }
         }
 
@@ -449,6 +478,32 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             ValidatePage();
 
             await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Content = content });
+        }
+
+        public async Task<bool> TriggerControlClickEvent(string controlName, string filePath)
+        {
+            ValidatePage();
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                try
+                {
+                    //Add Picture Control
+                    var fileChooser = await Page.RunAndWaitForFileChooserAsync(async () =>
+                    {
+                        var match = Page.Locator($"[data-control-name='{controlName}']");
+                        await match.ClickAsync();
+                    });
+                    await fileChooser.SetFilesAsync(filePath);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _singleTestInstanceState.GetLogger().LogError($"Error triggering Add Picture control click event: {ex.Message}");
+                    return false; // Return false if there was an error
+                }
+            }
+            return false;
         }
     }
 }

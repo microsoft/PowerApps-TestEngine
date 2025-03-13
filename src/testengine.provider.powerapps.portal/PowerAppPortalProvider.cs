@@ -29,7 +29,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ITestProviderState? ProviderState { get; set; }
 
-        public string[] Namespaces => new string[] { "Experimental" };
+        public string[] Namespaces => new string[] { "Preview" };
 
         public PowerAppPortalProvider()
         {
@@ -136,7 +136,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             return controlDictionary;
         }
 
-        public async Task<bool> SelectControlAsync(ItemPath itemPath)
+        public async Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null)
         {
             // TODO
             return true;
@@ -206,7 +206,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
             TestState.SetDomain(BaseEnviromentUrl);
 
-            return BaseEnviromentUrl + "?source=testengine";
+            return BaseEnviromentUrl + "/home?source=testengine";
         }
     }
 }

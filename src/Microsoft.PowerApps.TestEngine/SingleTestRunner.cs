@@ -159,6 +159,12 @@ namespace Microsoft.PowerApps.TestEngine
 
                 await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
 
+                if (_userManager.UseStaticContext)
+                {
+                    //reset page to desired url to avoid redirect failures
+                    TestInfraFunctions.Page = TestInfraFunctions.GetContext().Pages.FirstOrDefault(p => string.Equals(p.Url, desiredUrl, StringComparison.InvariantCultureIgnoreCase)) ?? TestInfraFunctions.Page;
+                }
+
                 if (Logger.IsEnabled(LogLevel.Debug) || Logger.IsEnabled(LogLevel.Trace))
                 {
                     Logger.LogDebug("After desired login found");
@@ -335,7 +341,7 @@ namespace Microsoft.PowerApps.TestEngine
                 LoggingHelper loggingHelper = new LoggingHelper(provider, TestState, _eventHandler);
                 loggingHelper.DebugInfo();
 
-                await TestInfraFunctions.EndTestRunAsync();
+                await TestInfraFunctions.EndTestRunAsync(_userManager);
 
                 if (allTestsSkipped)
                 {

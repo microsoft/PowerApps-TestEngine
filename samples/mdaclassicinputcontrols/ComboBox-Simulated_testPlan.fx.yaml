@@ -4,7 +4,7 @@ testSuite:
   persona: User1
   appLogicalName: NotNeeded
   onTestSuiteStart: |
-    = Experimental.SimulateDataverse({
+    = Preview.SimulateDataverse({
           Action: "Query",
           Entity: "cr693_combotable",
           Then: Table(
