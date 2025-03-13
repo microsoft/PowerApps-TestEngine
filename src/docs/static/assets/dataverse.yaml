@@ -4,7 +4,7 @@ playgrounds:
     title: "Lookup account that does not exist"
     description: "Lookup an account by name that does not exist"
     code: |
-      Experimental.TruncateTable(Accounts);
+      Preview.TruncateTable(Accounts);
       Assert(IsBlank(Lookup(Acccounts, Name = "Contoso")));
     steps: |
       - Press "Try It!" to see that the value of **true** is returned
@@ -18,7 +18,7 @@ playgrounds:
     title: "Create an account"
     description: "Create an account in dateverse and validate that it was created"
     code: |
-      Experimental.TruncateTable(Accounts);
+      Preview.TruncateTable(Accounts);
       Patch(
           Accounts, // Dataverse table name
           Defaults(Accounts), // Create a new record
@@ -43,7 +43,7 @@ playgrounds:
     title: "Update an existing record in dataverse"
     description: "Update an existing record and verify that the change made"
     code: |
-      Experimental.TruncateTable(Accounts);
+      Preview.TruncateTable(Accounts);
       Patch(
           Accounts, // Dataverse table name
           Defaults(Accounts), // Create a new record
@@ -69,7 +69,7 @@ playgrounds:
     title: "Delete an existing record in dataverse"
     description: "Update an existing record and verify that the change made"
     code: |
-      Experimental.TruncateTable(Accounts);
+      Preview.TruncateTable(Accounts);
       Patch(
           Accounts, // Dataverse table name
           Defaults(Accounts), // Create a new record

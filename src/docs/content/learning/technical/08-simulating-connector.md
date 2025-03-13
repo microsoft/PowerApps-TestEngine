@@ -28,7 +28,7 @@ Lets look at an example of simulating a connection. The first set fo checks vali
 Assert(WeatherService.GetCurrentWeather("Seattle, WA").Location="Seattle, WA");
 Assert(WeatherService.GetCurrentWeather("Seattle, WA").Condition="Sunny");
 
-Experimental.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
+Preview.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
 
 Assert(WeatherService.GetCurrentWeather("Seattle, WA").Location="Other");
 Assert(WeatherService.GetCurrentWeather("Seattle, WA").Condition="Cold");
@@ -66,7 +66,7 @@ testSuite:
   persona: User1
   appLogicalName: new_connectorapp_da583
   onTestSuiteStart: |
-    = Experimental.SimulateConnector({name: "msnweather", then: {responses: { daily: { day: { summary: "You are seeing the mock response" }}}}})
+    = Preview.SimulateConnector({name: "msnweather", then: {responses: { daily: { day: { summary: "You are seeing the mock response" }}}}})
   testCases:
     - testCaseName: Fill in a city name and do the search
       testSteps: |
@@ -91,7 +91,7 @@ environmentVariables:
 
 ### Explanation
 
-- onTestSuiteStart: This block uses the Experimental.SimulateConnector function to mock the MSN Weather connector. It specifies that any request to the msnweather connector should return a predefined response with the summary "You are seeing the mock response".
+- onTestSuiteStart: This block uses the Preview.SimulateConnector function to mock the MSN Weather connector. It specifies that any request to the msnweather connector should return a predefined response with the summary "You are seeing the mock response".
 - testCases: This section defines the test steps. It includes filling in a city name, performing a search, and asserting that the label displays the mock response.
 Steps in Detail
 Simulate Connector:
@@ -99,7 +99,7 @@ Simulate Connector:
 The onTestSuiteStart block sets up the simulated connector response.
 
 ```powerfx
-= Experimental.SimulateConnector({name: "msnweather", then: {responses: { daily: { day: { summary: "You are seeing the mock response" }}}}})
+= Preview.SimulateConnector({name: "msnweather", then: {responses: { daily: { day: { summary: "You are seeing the mock response" }}}}})
 ```
 
 Test Steps:

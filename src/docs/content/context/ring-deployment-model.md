@@ -14,9 +14,9 @@ Lets have a look at what that looks like for the target release process for Test
 
 ## The Core Rings
 
-1. **Inner Ring (Canary Users)**: At the heart of the model lies the Inner Ring, often referred to as the Canary Users. These are the early adopters who are willing to test new features first. These feature are linked to feature request in GitHub open source project. The feedback of early adopters feedback is crucial as it helps identify critical bugs and usability issues that might have been overlooked during development. This ring is typically small, consisting of internal teams or a select group of trusted users using a [build from source strategy](../examples/coe-kit-build-from-source-run-tests.md). New features in this ring are marked as Experimental.
+1. **Inner Ring (Canary Users)**: At the heart of the model lies the Inner Ring, often referred to as the Canary Users. These are the early adopters who are willing to test new features first. These feature are linked to feature request in GitHub open source project. The feedback of early adopters feedback is crucial as it helps identify critical bugs and usability issues that might have been overlooked during development. This ring is typically small, consisting of internal teams or a select group of trusted users using a [build from source strategy](../examples/coe-kit-build-from-source-run-tests.md). New features in this ring are marked as Preview.
 
-2. **Second Ring (Beta Testers)**: Once the initial feedback is incorporated, the deployment expands to the Second Ring. This group is larger and includes beta testers who are more representative of the general user base. The goal here is to validate the changes in a more diverse environment, ensuring that the updates work seamlessly across different configurations and use cases. Experimental features at this stage could be available in the `pac cli` using opt-in configuration
+2. **Second Ring (Beta Testers)**: Once the initial feedback is incorporated, the deployment expands to the Second Ring. This group is larger and includes beta testers who are more representative of the general user base. The goal here is to validate the changes in a more diverse environment, ensuring that the updates work seamlessly across different configurations and use cases. Preview features at this stage could be available in the `pac cli` using opt-in configuration
 
 3. **Outer Ring (General Availability)**: Finally, after thorough testing and refinement, the deployment reaches the Outer Ring. This is the general availability phase where the new features are rolled out to all users. By this stage, the updates are expected to be stable and reliable, having been vetted through the previous rings. Features that reach this level move to TestEngine namespace for wider usage.
 
@@ -32,7 +32,7 @@ The Ring Deployment Model is closely tied to the development workflow, particula
 
 Within each release, features are introduced in different namespaces to facilitate testing and feedback:
 
-- **Experimental Namespace**: New features are first included in the Experimental namespace. This allows early adopters to test and provide feedback on these features before they are widely released.
+- **Preview Namespace**: New features are first included in the Preview namespace. This allows early adopters to test and provide feedback on these features before they are widely released.
 - **TestEngine Namespace**: After initial testing and refinement, features are promoted to the TestEngine namespace. This namespace is designed for wider usage, ensuring that the features are robust and ready for broader deployment.
 
 ## Integration into Power Platform Command Line

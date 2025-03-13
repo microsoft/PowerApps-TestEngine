@@ -13,7 +13,7 @@ public class SimulateConnectorFunction : ReflectionFunction
     private static readonly RecordType dataverseRequest = RecordType.Empty();
 
     public SimulateConnectorFunction()
-        : base(DPath.Root.Append(new DName("Experimental")), "SimulateConnector", FormulaType.Blank, dataverseRequest)
+        : base(DPath.Root.Append(new DName("Preview")), "SimulateConnector", FormulaType.Blank, dataverseRequest)
     {
     }
 

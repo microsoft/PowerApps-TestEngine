@@ -29,7 +29,7 @@ Power FX, a low-code language used in Power Apps, helps abstract the complexity 
 Here is an example of how Power FX can be used to handle a consent dialog in a custom page:
 
 ```powerfx
-Experimental.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}))
+Preview.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}))
 ```
 
 In this example, the ConsentDialog function checks if the consent dialog is visible. If it is, the function responds to the dialog confirming consent for the test account. Once the dialog is handled the remaining test steps will be executed.
@@ -38,7 +38,7 @@ The Table argument allows the consent dialog wait process to exit is a label wit
 
 ## Extending Power FX Test functions using C#
 
-The following code provides a high level example of of a Power Fx [ReflectionFunction](https://learn.microsoft.com/dotnet/api/microsoft.powerfx.reflectionfunction) is defined that allows the `Experimental.ConsentDialog()` to be defined and make use of C# to define the conditional logic to react to searching for the conditional dialog within a timeout interval. 
+The following code provides a high level example of of a Power Fx [ReflectionFunction](https://learn.microsoft.com/dotnet/api/microsoft.powerfx.reflectionfunction) is defined that allows the `Preview.ConsentDialog()` to be defined and make use of C# to define the conditional logic to react to searching for the conditional dialog within a timeout interval. 
 
 ```csharp
 ﻿// Copyright (c) Microsoft Corporation.

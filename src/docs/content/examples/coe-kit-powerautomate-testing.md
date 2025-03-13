@@ -76,7 +76,7 @@ By being able to interact with variable values and simulate connectors and Datav
 
 ## Layer 1 Example - Integration Testing from Power App
 
-Lets look at the first layer of the scenario above integration testing from Power App where we simulate the result of a call to a workflow. This starts with testing the Setup and Upgrade Wizard and using the `Experimental.SimulateWorkflow()` function to allow integration testing of a deployed application.
+Lets look at the first layer of the scenario above integration testing from Power App where we simulate the result of a call to a workflow. This starts with testing the Setup and Upgrade Wizard and using the `Preview.SimulateWorkflow()` function to allow integration testing of a deployed application.
 
 ## Example of Setup Wizard > Get User Details
 
@@ -85,7 +85,7 @@ Lets look at the first layer of the scenario above integration testing from Powe
 One of the steps of the tests for the Power App for could be the following. 
 
 ```powerfx
-Experimental.SimulateWorkflow({
+Preview.SimulateWorkflow({
     Name: "SetupWizard>GetUserDetails",
     Then: {haspowerapps:"Yes",haspowerautomate:"No"}
 });
@@ -120,43 +120,43 @@ Let's have a look at how this cloud flow could be tested using Test Engine using
 
 ```powerfx
 // Start the workflow with empty parameters
-Experimental.TriggerWorkflow({});
+Preview.TriggerWorkflow({});
 
 // Verify empty value
-Experimental.BeforeAction([Get User Details Scope], Assert(GraphUrl, ""));
+Preview.BeforeAction([Get User Details Scope], Assert(GraphUrl, ""));
 
 // Simulate calls to dataverse and connectors with sample data
-Experimental.SimulateDataverse({
+Preview.SimulateDataverse({
     Action: "Query",
     Entity: "Environment Variable Definitions",
     Then: Table({environmentvariabledefinitionid: "a1234567-1111-2222-3333-44445555666" })
 });
-Experimental.SimulateDataverse({
+Preview.SimulateDataverse({
     Action: "Query",
     Entity: "Environment Variable Values",
     Then: Table({Value: "https://graph.microsoft.com" })
 });
-Experimental.SimulateConnector({
+Preview.SimulateConnector({
     Name: "webcontents",
     Then: Table({id: "11111111-0000-0000-0000-22222222222", skuId: "", skuPartNumber: "POWERAPPS_PER_USER" })
 });
 
 // Verify selected Graph endpoint and Results of the flow
-Experimental.BeforeAction([Invoke an HTTP request], Assert(GraphUrl, "https://graph.microsoft.com"));
-Experimental.AfterAction([Respond to a PowerApp or flow],Assert([Respond to a PowerApp or flow].haspowerapps = "Yes"));
-Experimental.AfterAction([Respond to a PowerApp or flow],Assert([Respond to a PowerApp or flow].haspowerautomate ="No"));
+Preview.BeforeAction([Invoke an HTTP request], Assert(GraphUrl, "https://graph.microsoft.com"));
+Preview.AfterAction([Respond to a PowerApp or flow],Assert([Respond to a PowerApp or flow].haspowerapps = "Yes"));
+Preview.AfterAction([Respond to a PowerApp or flow],Assert([Respond to a PowerApp or flow].haspowerautomate ="No"));
 ```
 
  Power Fx Function                | Parameters                                                                 | Usage                                                                                                      |
 |----------------------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| Experimental.TriggerWorkflow()   | {}                                                                         | Triggers the workflow to start the testing process.In this case with no parameters,                                                       |
-| Experimental.BeforeAction()      | [Action], Assert(Parameter, Value)                                         | Executes assertions before a specified action to ensure the initial conditions are met.                    |
-| Experimental.SimulateDataverse() | { Action: "Query", Entity: "EntityName", Then: Table({Column: "Value"}) }  | Simulates a Dataverse query to return predefined values, allowing the testing of logic that depends on Dataverse data. |
-| Experimental.SimulateConnector() | { Name: "ConnectorName", Then: Table({Column: "Value"}) }                  | Simulates a connector call to return predefined values, enabling the testing of logic that depends on external connectors. |
-| Experimental.AfterAction()       | [Action], Assert(Parameter, Value)                                         | Executes assertions after a specified action to ensure the expected outcomes are achieved.                 |
+| Preview.TriggerWorkflow()   | {}                                                                         | Triggers the workflow to start the testing process.In this case with no parameters,                                                       |
+| Preview.BeforeAction()      | [Action], Assert(Parameter, Value)                                         | Executes assertions before a specified action to ensure the initial conditions are met.                    |
+| Preview.SimulateDataverse() | { Action: "Query", Entity: "EntityName", Then: Table({Column: "Value"}) }  | Simulates a Dataverse query to return predefined values, allowing the testing of logic that depends on Dataverse data. |
+| Preview.SimulateConnector() | { Name: "ConnectorName", Then: Table({Column: "Value"}) }                  | Simulates a connector call to return predefined values, enabling the testing of logic that depends on external connectors. |
+| Preview.AfterAction()       | [Action], Assert(Parameter, Value)                                         | Executes assertions after a specified action to ensure the expected outcomes are achieved.                 |
 
 By being able to interact with variable values and simulate connectors and Dataverse calls, the process of testing the control logic and error handling of a cloud flow becomes easier.
 
 ## Summary
 
-This proposed feature demonstrates the ability to use Power Fx as a common language to not only test Power Apps but other Power Platform components. This builds on the extensibility of Power Fx to test from a Power App using `Experimental.SimulateWorkflow()` and add new actions like `Experimental.TriggerWorkflow()`, `Experimental.BeforeAction()`, and `Experimental.AfterAction()` that apply when testing a Power Automate Cloud flow using simulated state isolated from the end to end system.
+This proposed feature demonstrates the ability to use Power Fx as a common language to not only test Power Apps but other Power Platform components. This builds on the extensibility of Power Fx to test from a Power App using `Preview.SimulateWorkflow()` and add new actions like `Preview.TriggerWorkflow()`, `Preview.BeforeAction()`, and `Preview.AfterAction()` that apply when testing a Power Automate Cloud flow using simulated state isolated from the end to end system.

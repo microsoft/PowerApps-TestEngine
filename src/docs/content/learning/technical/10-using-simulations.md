@@ -71,7 +71,7 @@ Lets have a closer look at the weather [testPlan.fx.yaml](https://github.com/mic
 2. Dateverse simulation. Power Fx commands that will watch for queries to dateverse and return test data so that application is an a known state. This approach also allows for edge case and exception cases to be managed without needing to manage and maintain data in dataverse.
 
     ```powerfx
-    Experimental.SimulateDataverse({
+    Preview.SimulateDataverse({
             Action: "Query",
             Entity: "te_weathercategories",
             Then: Table(
@@ -87,7 +87,7 @@ Lets have a closer look at the weather [testPlan.fx.yaml](https://github.com/mic
 3. Simulating connectors. Setup watch for calls to Power Platform connectors and return test results. For this test the following Power Fx allows the application to be tested for how it uses the results.
 
     ```powerfx
-    Experimental.SimulateConnector(
+    Preview.SimulateConnector(
         {
         name: "msnweather", 
         then: {

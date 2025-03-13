@@ -89,12 +89,12 @@ testSuite:
       testCaseDescription: Set of test steps recorded from browser
       testSteps: |
         =
-        Experimental.SimulateDataverse({Action: "Query", Entity: "workflows", Then: Table({@odata.etag: "W/"2066801"", name: "SetupWizard>CreateGroup", statecode: "1", statecode@OData.Community.Display.V1.FormattedValue: "Activated", workflowid: "a1234567-1111-2222-3333-444455556666"})});
+        Preview.SimulateDataverse({Action: "Query", Entity: "workflows", Then: Table({@odata.etag: "W/"2066801"", name: "SetupWizard>CreateGroup", statecode: "1", statecode@OData.Community.Display.V1.FormattedValue: "Activated", workflowid: "a1234567-1111-2222-3333-444455556666"})});
         Select(Button3);
         Select(btnBack);
         Select(btnBack);
         Select(Button2);
-        Experimental.SimulateConnector({Name: "logicflows", When: {Action: "triggers/manual/run"}, Then: {tenantid: "c1111111-0000-1111-2222-33334444555"}});
+        Preview.SimulateConnector({Name: "logicflows", When: {Action: "triggers/manual/run"}, Then: {tenantid: "c1111111-0000-1111-2222-33334444555"}});
         Select(lblStepName);
 
 testSettings:
@@ -129,14 +129,14 @@ The testCases section contains individual test cases within the suite. Each test
 
 ####  SimulateDataverse
 
-The `Experimental.SimulateDataverse()` function allows you to simulate interactions with Dataverse. This includes querying entities and handling different states, edge cases, and exception cases. This is important for demonstrating how the application responds in various scenarios.
+The `Preview.SimulateDataverse()` function allows you to simulate interactions with Dataverse. This includes querying entities and handling different states, edge cases, and exception cases. This is important for demonstrating how the application responds in various scenarios.
 
 #### Select()
 
 The Select() function is used to simulate user interactions with the application, such as clicking buttons or selecting controls. This is essential for triggering functionality within the app. However you can see that some of the controls are still using default control names like Button3 can make tests harder to understand. By having tests, you can update these names to more meaningful ones, ensuring the application continues to work and making it more maintainable for new makers.
 
 #### SimulateConnector
-The `Experimental.SimulateConnector()` function allows you to simulate interactions with connectors. This is useful for isolating and making tests more portable, as it enables you to test the application without relying on live data or external systems.
+The `Preview.SimulateConnector()` function allows you to simulate interactions with connectors. This is useful for isolating and making tests more portable, as it enables you to test the application without relying on live data or external systems.
 
 
 #### Test Settings
@@ -176,27 +176,27 @@ testCases:
 
 #### Power Platform Connector Simulation
 
-In this example, the If function checks if the action is "office365users" and then sets the Then variable to the redacted data using the `Experimental.RedactData() function that will take the sample data and apply defined steps to remove sentive data from the response
+In this example, the If function checks if the action is "office365users" and then sets the Then variable to the redacted data using the `Preview.RedactData() function that will take the sample data and apply defined steps to remove sentive data from the response
 
 ```yaml
 testCases:
   - testCaseName: SimulateConnector
     testCaseDescription: Actions to apply to SimulateConnector generation
     testSteps: |
-      = If(Action="office365users", Set(Then,Experimental.RedactData(Then)));
+      = If(Action="office365users", Set(Then,Preview.RedactData(Then)));
 ```
 
 #### Action Templates
 
 
-This sample shows how to use the If function to check if the Alt key is pressed. If it is, it waits until the text of a control matches the selected text and then selects the control using the `Experimental.WaitUntil()` otherwise it uses the `Select()` function.
+This sample shows how to use the If function to check if the Alt key is pressed. If it is, it waits until the text of a control matches the selected text and then selects the control using the `Preview.WaitUntil()` otherwise it uses the `Select()` function.
 
 ```yaml
 testCases:
   - testCaseName: SelectAction
     testCaseDescription: The default template to apply to select action
     testSteps: |
-      = If(AltKey, "Experimental.WaitUntil(\"{ControlName}\.Text = {SelectedText}\" "Select(\"{ControlName}\");");
+      = If(AltKey, "Preview.WaitUntil(\"{ControlName}\.Text = {SelectedText}\" "Select(\"{ControlName}\");");
 ```
 
 ## No Cliffs Extensibility

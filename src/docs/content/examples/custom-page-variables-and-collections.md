@@ -55,7 +55,7 @@ Key parts of this [example test](https://github.com/microsoft/PowerApps-TestEngi
 
 
 ```powerfx
-Experimental.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
+Preview.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
 Set(configStep, 1); 
 Assert(configStep=1);
 ```

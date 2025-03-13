@@ -5,7 +5,7 @@ playgrounds:
     description: "Look at how to test knowledge sources of Safety"
     code: |
       // Setup:
-      Experimental.SimulateResponse({
+      Preview.SimulateResponse({
         Type: "message", 
         Then: {
             SentText: "The available information does not specify flight destinations for today.  However, if you are planning to travel internationally, please be aware of..",
@@ -13,8 +13,8 @@ playgrounds:
         }
       });
       // Steps:
-      Experimental.SendText("Where can I fly today?");
-      Set(messages, Experimental.WaitUntilMessage({Type: "message"}));
+      Preview.SendText("Where can I fly today?");
+      Set(messages, Preview.WaitUntilMessage({Type: "message"}));
     relatedTasks:
       - "sick-days"
       - "leave-statement"
@@ -25,12 +25,12 @@ playgrounds:
     description: "Explore a self service request for sick leave balance"
     code: |
       // Setup:
-      Experimental.SimulateResponse({
+      Preview.SimulateResponse({
         Type: "message", 
         When: {Pattern: "leave"},
         Then: {SendText: "What leave enquiry do you have?"}
       });
-      Experimental.SimulateResponse({
+      Preview.SimulateResponse({
         Type: "message", 
         When: {Type: "How many sick days have I taken"},
         Then: Table(
@@ -39,13 +39,13 @@ playgrounds:
         )
       });
       // Steps:
-      Experimental.SendText("I have a question about my leave balance");
-      Experimental.WaitUntilMessage({Text: "What leave enquiry do you have?"});
-      Experimental.SendText("How many sick days have I taken");
-      Set(matches,Experimental.WaitUntilMessage({Pattern: "So far, you have taken {days} days off as sick leave"}));
+      Preview.SendText("I have a question about my leave balance");
+      Preview.WaitUntilMessage({Text: "What leave enquiry do you have?"});
+      Preview.SendText("How many sick days have I taken");
+      Set(matches,Preview.WaitUntilMessage({Pattern: "So far, you have taken {days} days off as sick leave"}));
       Assert(CountRows(matches)=1);
       Assert(matches.Value>0);
-      Experimental.WaitUntilMessage("Can I do anything else for you?");
+      Preview.WaitUntilMessage("Can I do anything else for you?");
     steps: |
       - Press "Try It!" to see that the value of **true** is returned
     relatedTasks:
@@ -58,23 +58,23 @@ playgrounds:
     description: "Validate leave statement adaptive card data"
     code: |
       // Setup:
-      Experimental.SimulateResponse({
+      ExperimPreviewental.SimulateResponse({
         Type: "message", 
         When: {Pattern: "leave"},
         Then: {SendText: "What leave enquiry do you have?"}
       });
-      Experimental.SimulateResponse({
+      Preview.SimulateResponse({
         Type: "message", 
         When: {Type: "balance"},
         Then: Table(
-          Experimental.LoadAdaptiveCard("sample.json")
+          Preview.LoadAdaptiveCard("sample.json")
         )
       });
       // Steps:
       SendText("I have a question about my leave balance");
-      Experimental.WaitUntilMessage({Text: "What leave enquiry do you have?"});
-      Experimental.SendText("What is my balance?");
-      Set(card,Experimental.WaitUntilMessage({AdaptiveCard: True}));
+      Preview.WaitUntilMessage({Text: "What leave enquiry do you have?"});
+      Preview.SendText("What is my balance?");
+      Set(card,Preview.WaitUntilMessage({AdaptiveCard: True}));
       Assert(CountRows(card)=1);
       Set(heading, Expermental.AdpativeCardMatch(card, {Type: "Heading"}));
       Assert(First(heading).Text="Leave Statement");
@@ -92,15 +92,15 @@ playgrounds:
     description: "Validate that responses match using AI Prompt"
     code: |
       // Setup:
-      Experimental.SimulateResponse({
+      Preview.SimulateResponse({
         Type: "message", 
         When: {Pattern: "leave"},
         Then: {SendText: "What leave enquiry do you have?"}
       });
       // Code:
-      Experimental.SendText("I have a question about my leave balance");
-      Set(message, Experimental.FindMessage({Type:"message", Wait: True}));
-      Experimental.ValidateMessage(message, {Type: "AIMatch", Text: "Validate that the response is helpful and polite"})
+      Preview.SendText("I have a question about my leave balance");
+      Set(message, Preview.FindMessage({Type:"message", Wait: True}));
+      Preview.ValidateMessage(message, {Type: "AIMatch", Text: "Validate that the response is helpful and polite"})
     steps: |
       - Press "Try It!" to see that the value of **true** is returned
     relatedTasks:

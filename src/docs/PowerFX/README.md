@@ -8,16 +8,16 @@ There are several specifically defined functions for the test framework.
 - [SetProperty](./SetProperty.md)
 - [Wait](./Wait.md)
 
-- [Experimental.Pause](./Pause.md)
-- [Experimental.PlaywrightAction](./PlaywrightAction.md)
-- [Experimental.PlaywrightScript](./PlaywrightAction.md)
+- [Preview.Pause](./Pause.md)
+- [Preview.PlaywrightAction](./PlaywrightAction.md)
+- [Preview.PlaywrightScript](./PlaywrightAction.md)
 
-## Experimental Functions
+## Preview Functions
 
-The following functions will be enabled in Debug build and when Experimental is enabled as a Namespace
+The following functions will be enabled in Debug build and when Preview is enabled as a Namespace
 
-- [Experimental.SimulateConnector](./SimulateConnector.md)
-- [Experimental.SimulateDataverse](./SimulateDataverse.md)
+- [Preview.SimulateConnector](./SimulateConnector.md)
+- [Preview.SimulateDataverse](./SimulateDataverse.md)
 
 ## Naming
 

@@ -5,7 +5,7 @@ The following test authoring method exist for different personas to create and e
 | Method| Description |	Considerations
 |-------|-------------|------------------|
 | Test Studio| Record of test and export as Test Engine Yaml |	1.	Limitations in support as documented in [Test Studio - Power Apps \| Microsoft Learn](https://learn.microsoft.com/power-apps/maker/canvas-apps/test-studio#known-limitations)
-| Visual Studio Code Extension	| Experimental Visual Studio Code extension that offers Text Completion and Syntax validation | 1.	Extension are still work in progress
+| Visual Studio Code Extension	| Preview Visual Studio Code extension that offers Text Completion and Syntax validation | 1.	Extension are still work in progress
 | | | 2.	More likely to meet the skill level of advanced makers and code first developers
 | AI Generated Tests | Use of Generative AI to define test cases and test steps |1.	AI Generated tests is not yet a Generally available feature.
 

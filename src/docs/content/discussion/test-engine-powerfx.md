@@ -11,7 +11,7 @@ This discussion post looks at Test Engine from the lens of Power Fx. We will cov
 - **Why Power Fx and Test Engine?**: Provides a robust framework for testing and validating workflows and applications with declarative YAML definitions and new functions like Assert().
 Power Platform Provider Model: Uses a common language for provider-specific functions like `SimulateWorkflow()`, `SimulateDataverse()`, and `SimulateConnector()`.
 - **Power Fx as an Intermediate Language in Generative AI**: Bridges the gap between natural language and specific instructions, essential for generative AI applications.
-- **Namespace Actions and Experimental Validation**: Allows creation and validation of experimental actions before production, ensuring reliability and robustness.
+- **Namespace Actions and Preview Validation**: Allows creation and validation of experimental actions before production, ensuring reliability and robustness.
 - **Transferability of Skills Across the Platform**: Consistent language and testing approach across Power Apps, Power Pages, and Power Automate, simplifying the learning curve and enhancing collaboration.
 
 ## Join The Discussion
@@ -104,7 +104,7 @@ Power Fx serves as an intermediate language that translates natural language inp
 #### Advanced AI Integration
 Advanced users can explore the integration of Power Fx with AI models to create intelligent applications that can understand and respond to natural language inputs.
 
-### Namespace Actions and Experimental Validation
+### Namespace Actions and Preview Validation
 Power Fx allows for the creation of namespace actions, enabling experimental actions to be validated before migrating to the TestEngine namespace. This feature ensures that new actions can be tested and refined in a controlled environment before being deployed in production. It enhances the reliability and robustness of workflows by allowing for thorough testing and validation.
 
 #### Basics of Namespace Actions

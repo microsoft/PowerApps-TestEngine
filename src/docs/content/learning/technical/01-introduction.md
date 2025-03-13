@@ -41,7 +41,7 @@ Follow the instructions on [Get Started Now](../context/get-started-now.md) ensu
 
 ### Second Ring (Beta Testers)
 
-Currently the features of Test Engine are not available for second ring (beta testers). The features required will soon be available using the Power Platform Command Line and enabling the Experimental namespace. 
+Currently the features of Test Engine are not available for second ring (beta testers). The features required will soon be available using the Power Platform Command Line and enabling the Preview namespace. 
 
 > NOTE: Once the pac test run command is updated we will update setup notes here
 

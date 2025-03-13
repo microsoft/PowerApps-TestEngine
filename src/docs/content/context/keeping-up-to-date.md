@@ -38,12 +38,12 @@ Beta testers use the latest version of the Power Platform Command Line Interface
 pac install latest
 ```
 
-2. Additionally, to use experimental features, include the following YAML configuration in your test settings:
+2. Additionally, to use preview features, include the following YAML configuration in your test settings:
 
 ```yaml
 testSettings:
   allowPowerFxNamespaces:
-    - Experimental
+    - Preview
 ```
 
 #### Outer Ring (General Availability)

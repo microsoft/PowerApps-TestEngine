@@ -4,7 +4,7 @@ title: 09 - Simulating Dataverse
 
 ## Introduction
 
-The `Experimental.SimulateDataverse` function allows you to simulate responses from the Dataverse without actually querying the live data. This is particularly useful for testing and development purposes, as it enables you to create predictable and controlled responses for various scenarios.
+The `Preview.SimulateDataverse` function allows you to simulate responses from the Dataverse without actually querying the live data. This is particularly useful for testing and development purposes, as it enables you to create predictable and controlled responses for various scenarios.
 
 ## What is Mocking?
 
@@ -27,19 +27,19 @@ Lets look at an example of simulating a dataverse. The first set fo checks valid
 {{% powerfx-interactive %}}
 Assert(CountRows(accounts)=1);
 
-Experimental.SimulateDataverse({Entity:"accounts", Then: Table()});
+Preview.SimulateDataverse({Entity:"accounts", Then: Table()});
 
 Assert(CountRows(accounts)=0);
 {{% /powerfx-interactive %}}
 
 Want to explore more concepts examples checkout the [Learning Playground](/PowerApps-TestEngine/learning/playground?title=assert-simulated-dataverse) to explore related testing concepts.
 
-## Using Experimental.SimulateDataverse
+## Using Preview.SimulateDataverse
 
-The `Experimental.SimulateDataverse` function allows you to define simulated responses for Dataverse actions such as query, create, update, and delete. Here is the syntax:
+The `Preview.SimulateDataverse` function allows you to define simulated responses for Dataverse actions such as query, create, update, and delete. Here is the syntax:
 
     ```powerfx
-    Experimental.SimulateDataverse({ Action: "Query", Entity: "TableName", When: { Field: "value" }, Then: Table({Name: "Test"}) })
+    Preview.SimulateDataverse({ Action: "Query", Entity: "TableName", When: { Field: "value" }, Then: Table({Name: "Test"}) })
     ```
 
 ## Parameters
@@ -54,9 +54,9 @@ The `Experimental.SimulateDataverse` function allows you to define simulated res
 
 ## Recording Sample Values
 
-To obtain values for the Experimental.SimulateDataverse function, you can:
+To obtain values for the Preview.SimulateDataverse function, you can:
 
-1. Use the network trace of the Browser Developer Tools when using Experimental.Pause(). Filter the traffic by searching for /api/data/v.
+1. Use the network trace of the Browser Developer Tools when using Preview.Pause(). Filter the traffic by searching for /api/data/v.
 
 2. Use [Recording your first test](./05-recording-your-first-test.md) to record an app that queries Dataverse.
 
@@ -64,18 +64,18 @@ To obtain values for the Experimental.SimulateDataverse function, you can:
 1. Simulate a Query Response with Sample Data. When the Power App queries all accounts, respond with sample data:
 
     ```powerfx
-    Experimental.SimulateDataverse({Action: "query", Entity: "accounts", Then: Table({accountid: "a1234567-1111-2222-3333-44445555666", name: "Test"}) })
+    Preview.SimulateDataverse({Action: "query", Entity: "accounts", Then: Table({accountid: "a1234567-1111-2222-3333-44445555666", name: "Test"}) })
     ```
 
 2. Simulate a Query with Specific Conditions. When a request is made with an account query name of "Other", return no results:
 
     ```powerfx
-    Experimental.SimulateDataverse({Action: "query", Entity: "accounts", When: {Name: "Other"}, Then: Table()})
+    Preview.SimulateDataverse({Action: "query", Entity: "accounts", When: {Name: "Other"}, Then: Table()})
     ```
 
 ## Why This Function is Useful
 
-The Experimental.SimulateDataverse function is useful because it allows developers and makers to:
+The Preview.SimulateDataverse function is useful because it allows developers and makers to:
 
 - Test and Debug: Simulate different scenarios and responses without affecting live data, making it easier to test and debug applications.
 - Predictable Results: Create controlled and predictable responses, which is essential for automated testing and ensuring consistent behavior.
@@ -85,4 +85,4 @@ By using this function, you can ensure that your Power Apps behave as expected i
 
 ## Summary
 
-In this section, you learned how to use the `Experimental.SimulateDataverse` function to simulate responses from the Dataverse. This function allows you to create controlled and predictable responses for various scenarios, making it easier to test and debug your applications. By using mocking techniques, you can isolate components, create specific test scenarios, and ensure consistent results. This leads to more efficient development and more reliable applications.
+In this section, you learned how to use the `Preview.SimulateDataverse` function to simulate responses from the Dataverse. This function allows you to create controlled and predictable responses for various scenarios, making it easier to test and debug your applications. By using mocking techniques, you can isolate components, create specific test scenarios, and ensure consistent results. This leads to more efficient development and more reliable applications.

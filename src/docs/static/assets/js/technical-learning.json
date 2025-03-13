@@ -63,7 +63,7 @@
             "type": "html",
             "name": "preview_user_info",
             "visibleIf": "{user_type} = 'Preview User'",
-            "html": "<p><b>Preview Users</b> are comfortable using Experimental features to complete the learning modules.</p>"
+            "html": "<p><b>Preview Users</b> are comfortable using Preview features to complete the learning modules.</p>"
           },
           {
             "type": "html",
@@ -109,7 +109,7 @@
             "type": "html",
             "name": "recommendation",
             "visibleIf": "{user_type} = 'General Availability User' and {role} = 'Code-first Developer'",
-            "html": "<p>Keep an eye on this site for future updates. The learn module will be available once the features are released to wider availability and beyond Experimental features.</p>"
+            "html": "<p>Keep an eye on this site for future updates. The learn module will be available once the features are released to wider availability and beyond Preview features.</p>"
           },
           {
             "type": "html",

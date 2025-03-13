@@ -12,7 +12,7 @@ public class SimulateDataverseFunction : ReflectionFunction
     public RecalcEngine Engine { get; set; } = new RecalcEngine();
 
     public SimulateDataverseFunction()
-        : base(DPath.Root.Append(new DName("Experimental")), "SimulateDataverse", FormulaType.Blank, dataverseRequest)
+        : base(DPath.Root.Append(new DName("Preview")), "SimulateDataverse", FormulaType.Blank, dataverseRequest)
     {
     }
 

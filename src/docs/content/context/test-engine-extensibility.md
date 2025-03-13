@@ -30,7 +30,7 @@ MEF enables three main classes of extensibility in the test engine:
 
 Just like software features, the providers and modules in the test engine follow a **[Ring Deployment Model](./ring-deployment-model.md)**. This model ensures that new extensions are introduced in a controlled manner:
 
-- **Experimental Namespace**: New features and extensions are first introduced in the Experimental namespace. This allows early adopters to test and provide feedback on these new capabilities before they are widely released.
+- **Preview Namespace**: New features and extensions are first introduced in the Preview namespace. This allows early adopters to test and provide feedback on these new capabilities before they are widely released.
 
 - **TestEngine Namespace**: After initial testing and refinement, features are promoted to the TestEngine namespace. This stage is designed for wider usage, ensuring that the extensions are robust and ready for broader deployment.
 

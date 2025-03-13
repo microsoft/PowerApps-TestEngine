@@ -61,7 +61,7 @@ In the context of low code solutions, Power Fx commands allow developers to simu
 #### Simulating a Dataverse Patch Call
 
 ```PowerFx
-Experimental.SimulateDataverse({
+Preview.SimulateDataverse({
     Action: "Patch",
     Entity: "Processes",
     When: {Status: 1},
@@ -74,7 +74,7 @@ This function simulates a Dataverse Patch call to the "Processes" entity when th
 #### Simulating a Dataverse Query Call
 
 ```PowerFx
-Experimental.SimulateDataverse({
+Preview.SimulateDataverse({
     Action: "Query",
     Entity: "Workflow",
     When: Table({Status: "Active", CreatedOn: "> 2023-01-01"}),
@@ -87,7 +87,7 @@ This function simulates a Dataverse Query call to the "Workflow" entity when the
 #### Simulating a Workflow Call
 
 ```PowerFx
-Experimental.SimulateWorkflow({
+Preview.SimulateWorkflow({
     Name: "SetupWizard>GetTenantID",
     Then: {Id:"a1234567-1111-2222-3333-4444555666"}
 });
@@ -98,7 +98,7 @@ This function simulates a workflow call to the "SetupWizard>GetTenantID" workflo
 #### Simulating a Connector Call
 
 ```PowerFx
-Experimental.SimulateConnector({
+Preview.SimulateConnector({
     Name: "Office365Groups",
     When: {Action: "ListOwnedGroupsV2"},
     Then: Table({Name: "Test"})

@@ -2,7 +2,7 @@
 title: Extending the Test Engine to Support Testing of the CoE Starter Kit Setup and Upgrade Wizard
 ---
 
-In this article, we will discuss how the CoE Starter Kit has made use of extensions to the test engine to support testing of Setup and Upgrade Wizard. This journey involves breaking down tests into smaller, more manageable steps, demonstrating the use of variables and collections, utilizing the Experimental namespace to overcome current limitations.
+In this article, we will discuss how the CoE Starter Kit has made use of extensions to the test engine to support testing of Setup and Upgrade Wizard. This journey involves breaking down tests into smaller, more manageable steps, demonstrating the use of variables and collections, utilizing the Preview namespace to overcome current limitations.
 
 By following these guidelines and examples, you can effectively make use of the test engine to learn how to to apply similar approaches. This ensures thorough and reliable testing, ultimately leading to a more robust and user-friendly application.
 
@@ -16,8 +16,8 @@ To start of the discussion lets look at a snippet of yaml and Power Fx testSteps
       testCaseDescription: Verify pre-requistes in place
       testSteps: |
         = 
-        Experimental.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
-        Experimental.Pause();
+        Preview.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
+        Preview.Pause();
         Set(configStep, 1); 
         Assert(configStep=1);
         Select(btnNext);
@@ -27,8 +27,8 @@ To start of the discussion lets look at a snippet of yaml and Power Fx testSteps
         =
         Assert(configStep=2);
         Assert(CountRows(colCommunicate)=3);
-        Experimental.SelectControl(Button3,1);
-        Experimental.Pause(); 
+        Preview.SelectControl(Button3,1);
+        Preview.Pause(); 
 ```
 
 ## Test Case Design
@@ -66,20 +66,20 @@ In the context of testing, collections are particularly useful for verifying tha
 
 By leveraging collections and these Power Fx functions, you can create robust test cases that accurately reflect the state of your data. This not only enhances the reliability of your tests but also ensures that your application behaves as expected under various scenarios.
 
-## Experimental Namespace
+## Preview Namespace
 
-The Experimental Power Fx namespace is another vital aspect of this extension. It includes functions that are still under review and approval, providing testers with the opportunity to experiment with new features and offer valuable feedback for improvement. This experimental approach fosters innovation and helps in refining the testing process.
+The Preview Power Fx namespace is another vital aspect of this extension. It includes functions that are still under review and approval, providing testers with the opportunity to experiment with new features and offer valuable feedback for improvement. This experimental approach fosters innovation and helps in refining the testing process.
 
-One example of this is the use of the `Experimental.SelectControl()` function. This function is particularly useful for selecting controls, such as Button3, that exist in galleries. This capability addresses a limitation in the current released version that did not allow `Select()` to be applied to repeating controls inside a gallery. The result enables more comprehensive testing scenarios and ensuring that all aspects of the application are thoroughly tested.
+One example of this is the use of the `Preview.SelectControl()` function. This function is particularly useful for selecting controls, such as Button3, that exist in galleries. This capability addresses a limitation in the current released version that did not allow `Select()` to be applied to repeating controls inside a gallery. The result enables more comprehensive testing scenarios and ensuring that all aspects of the application are thoroughly tested.
 
-## Experimental.Pause()
+## Preview.Pause()
 
-The `Experimental.Pause()` function is a powerful tool in the testing process, allowing you to pause test execution and present the Playwright inspector. This feature is particularly useful for building and verifying tests, as it provides an opportunity to interact with the application in real-time.
+The `Preview.Pause()` function is a powerful tool in the testing process, allowing you to pause test execution and present the Playwright inspector. This feature is particularly useful for building and verifying tests, as it provides an opportunity to interact with the application in real-time.
 
-When you invoke `Experimental.Pause()`, the test execution halts, and the Playwright inspector is displayed. This interactive environment enables you to examine the current state of the application, inspect elements, and perform actions manually. By doing so, you can verify that the test steps are executing as expected and make any necessary adjustments on the fly.
+When you invoke `Preview.Pause()`, the test execution halts, and the Playwright inspector is displayed. This interactive environment enables you to examine the current state of the application, inspect elements, and perform actions manually. By doing so, you can verify that the test steps are executing as expected and make any necessary adjustments on the fly.
 
-Using `Experimental.Pause()` is especially beneficial during the development of test cases. It allows you to step through the test script, observe the behavior of the application, and ensure that each step produces the desired outcome. This iterative process helps in identifying and resolving issues early, leading to more robust and reliable test scripts.
+Using `Preview.Pause()` is especially beneficial during the development of test cases. It allows you to step through the test script, observe the behavior of the application, and ensure that each step produces the desired outcome. This iterative process helps in identifying and resolving issues early, leading to more robust and reliable test scripts.
 
 Moreover, the Playwright inspector provides a visual representation of the application, making it easier to understand the context of each test step. You can interact with the application elements, check their properties, and validate that the test assertions are correct. This hands-on approach enhances the accuracy of your tests and ensures that they cover all necessary scenarios.
 
-In summary, Experimental.Pause() is an invaluable feature for building and verifying tests. By pausing test execution and presenting the Playwright inspector, it allows you to interact with the application, inspect elements, and ensure that your test scripts are accurate and reliable. This interactive process not only simplifies test development but also enhances the overall quality of your testing efforts.
+In summary, Preview.Pause() is an invaluable feature for building and verifying tests. By pausing test execution and presenting the Playwright inspector, it allows you to interact with the application, inspect elements, and ensure that your test scripts are accurate and reliable. This interactive process not only simplifies test development but also enhances the overall quality of your testing efforts.

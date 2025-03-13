@@ -45,10 +45,10 @@ public class PowerFxTests
     [InlineData("Set(data, Table({Name:\"Test\"}))", "data", "{\"value\":[{\"Name\":\"Test\"}]}")]
     [InlineData("Collect(data, {Name:\"Test\"})", "data", "{\"value\":[{\"Name\":\"Test\"}]}")]
     [InlineData("WeatherService.GetCurrentWeather(\"Test\")", "", @"{""Condition"":""Sunny"",""Humidity"":50,""Location"":""Test"",""Temperature"":25,""WindSpeed"":10}")]
-    [InlineData("Experimental.SimulateConnector({Name:\"WeatherService\",Then:{Humidity:1}});WeatherService.GetCurrentWeather(\"Test\")", "", "{\"Humidity\":1}")]
+    [InlineData("Preview.SimulateConnector({Name:\"WeatherService\",Then:{Humidity:1}});WeatherService.GetCurrentWeather(\"Test\")", "", "{\"Humidity\":1}")]
     [InlineData("WeatherService.GetCurrentWeather(\"Test\").Condition", "", "\"Sunny\"")]
     [InlineData("CountRows(accounts)", "", "1")]
-    [InlineData("Experimental.SimulateDataverse({Entity:\"accounts\",Then:Table()});CountRows(accounts)", "", "0")]
+    [InlineData("Preview.SimulateDataverse({Entity:\"accounts\",Then:Table()});CountRows(accounts)", "", "0")]
     public void ExpectedJsonResults(string code, string variable, string expectedResult)
     {
         // Arange

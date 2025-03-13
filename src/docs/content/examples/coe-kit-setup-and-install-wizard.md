@@ -67,7 +67,7 @@ The custom page of the application introduced testing complexities such as the c
 We does this look like? In one of our test steps we take advantage of the Power Fx extensions for test engine to add a command similar to the following.
 
 ```powerfx
-Experimental.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
+Preview.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
 ```
 
 This function waits to see if the Consent Dialog Appears, if it does it accepts the connections. If the text "Center of Excellence Setup Wizard" appears then it continues with the remaining test steps.

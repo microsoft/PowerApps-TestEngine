@@ -137,7 +137,7 @@ playgrounds:
       Assert(WeatherService.GetCurrentWeather("Seattle, WA").Location="Seattle, WA");
       Assert(WeatherService.GetCurrentWeather("Seattle, WA").Condition="Sunny");
 
-      Experimental.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
+      Preview.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
 
       Assert(WeatherService.GetCurrentWeather("Seattle, WA").Location="Other");
       Assert(WeatherService.GetCurrentWeather("Seattle, WA").Condition="Cold");
@@ -147,7 +147,7 @@ playgrounds:
       - Change the value of the city name to see that the results change. For example **WeatherService.GetCurrentWeather("Paris")**
       - Reset the test and use the following to see that Other and Cold are returned:
         
-        Experimental.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
+        Preview.SimulateConnector({Name:"WeatherService", Then: {Location: "Other", Condition: "Cold"}});
         WeatherService.GetCurrentWeather("Seattle, WA")
 
       - Try [Learn Module: Simulated Connector](/PowerApps-TestEngine/learning/technical/08-simulating-connector)
@@ -165,7 +165,7 @@ playgrounds:
     code: |
       Assert(CountRows(accounts)=1);
 
-      Experimental.SimulateDataverse({Entity:"accounts", Then: Table()});
+      Preview.SimulateDataverse({Entity:"accounts", Then: Table()});
 
       Assert(CountRows(accounts)=0);
     steps: |
