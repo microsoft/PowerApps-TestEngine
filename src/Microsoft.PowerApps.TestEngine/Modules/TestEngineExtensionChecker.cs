@@ -1,8 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Collections;
+using System.Globalization;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Resources;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -39,75 +42,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         private static readonly HashSet<string> AllowedNamespaces = InitializeAllowedNamespaces();
         private static HashSet<string> InitializeAllowedNamespaces()
         {
-            return new HashSet<string>
+            var allowedNamespaces = new HashSet<string>();
+            var resourceManager = new ResourceManager(typeof(NamespaceResource));
+            var resourceSet = resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true);
+
+            foreach (DictionaryEntry entry in resourceSet)
             {
-                "Microsoft.Bcl.AsyncInterfaces",
-                "Microsoft.CodeAnalysis",
-                "Microsoft.CSharp",
-                "Microsoft.Extensions.Logging",
-                "Microsoft.Playwright",
-                "Microsoft.PowerApps.TestEngine.",
-                "Microsoft.PowerFx",
-                "netstandard",
-                "Newtonsoft.Json",
-                "Submission#0", //REPL
-                "System.Action",
-                "System.ArgumentException",
-                "System.Array",
-                "System.Attribute",
-                "System.Byte",
-                "System.Collections",
-                "System.ComponentModel.Composition",
-                "System.Console",
-                "System.Convert",
-                "System.DateTime",
-                "System.Decimal",
-                "System.Dynamic",
-                "System.Environment::get_NewLine()",
-                "System.Exception",
-                "System.Func",
-                "System.GC::Collect()",
-                "System.IAsyncDisposable",
-                "System.IDisposable",
-                "System.Int32",
-                "System.InvalidOperationException",
-                "System.IO.File::Exists",
-                "System.IO.File::WriteAllBytes",
-                "System.IO.File::WriteAllText",
-                "System.IO.FileInfo",
-                "System.IO.FileSystemInfo",
-                "System.IO.InvalidDataException",
-                "System.IO.MemoryStream",
-                "System.IO.Path::Combine",
-                "System.IO.Path::GetDirectoryName",
-                "System.IO.Path::GetExtension",
-                "System.IO.Path::GetFileNameWithoutExtension",
-                "System.IO.Path::IsPathRooted",
-                "System.IO.Stream",
-                "System.IO.StringReader",
-                "System.IO.TextReader",
-                "System.Linq",
-                "System.NotSupportedException",
-                "System.Nullable",
-                "System.Object",
-                "System.Private",
-                "System.Reflection",
-                "System.Runtime.CompilerServices",
-                "System.Runtime.ExceptionServices",
-                "System.Security.Cryptography",
-                "System.String",
-                "System.Text",
-                "System.Threading.CancellationToken",
-                "System.Threading.Tasks",
-                "System.Threading.Thread",
-                "System.TimeSpan",
-                "System.Type",
-                "System.Uri",
-                "System.ValueTuple",
-                "System.Void",
-                "System.Web.HttpUtility",
-                "testengine.module",
-            };
+                allowedNamespaces.Add(entry.Value.ToString());
+            }
+            return allowedNamespaces;
         }
 
         public TestEngineExtensionChecker()
@@ -319,6 +262,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         public virtual bool Validate(TestSettingExtensions settings, string file)
         {
             var allowList = new HashSet<string>(settings.AllowNamespaces);
+
             allowList.UnionWith(AllowedNamespaces);
 
             var denyList = new HashSet<string>(settings.DenyNamespaces)
