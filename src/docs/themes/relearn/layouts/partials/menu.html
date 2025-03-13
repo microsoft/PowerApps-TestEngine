@@ -76,10 +76,15 @@
         </select>
         <script>
           function validateAndRedirect(url) {
-            const allowedPattern = /^(https:\/\/microsoft\.github\.io\/PowerApps-TestEngine|http:\/\/localhost)/; // Updated allowed domain or pattern
-            if (allowedPattern.test(url)) {
-              location = url;
-            } else {
+            try {
+              const parsedUrl = new URL(url);
+              const allowedHosts = ['microsoft.github.io', 'localhost'];
+              if (allowedHosts.includes(parsedUrl.host)) {
+                location = parsedUrl.href;
+              } else {
+                console.error('Invalid URL');
+              }
+            } catch (e) {
               console.error('Invalid URL');
             }
           }
