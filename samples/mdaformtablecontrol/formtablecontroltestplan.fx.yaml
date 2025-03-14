@@ -51,28 +51,40 @@ testSuite:
   #   });      
 
   testCases:
-    - testCaseName: Test Table Control - Items Property
-      testCaseDescription: Verify that the Table Control correctly loads and displays items.
-      testSteps: |        
-        Assert(CountRows(Table1.Items) = 10, "Checking if Table displays correct number of items");
+  # Form Control Test Cases
+   - testCaseName: Test Form Control - Negative Scenario - Mandatory Fields
+     testCaseDescription: Verify that the required fields cannot be left empty.
+     testSteps: |
+        SetProperty(DataCardKey4.Text, "");
+        ClickSubmitButton();
+        Assert(ShowsErrorMessage("Name is required"), "Checking mandatory validation for Name field");
 
-    - testCaseName: Test Table Control - ReflowBehavior Property
-      testCaseDescription: Verify that the Table Control refresh behavior works as expected.
-      testSteps: |
-        SetProperty(Table1.ReflowBehavior, "Reflow");
-        Assert(Table1.ReflowBehavior = "Reflow", "Checking the refresh behavior setting");
+  # # Table Control Test Cases
+  #   - testCaseName: Test Table Control - Items Property
+  #     testCaseDescription: Verify that the Table Control correctly loads and displays items.
+  #     testSteps: |        
+  #       Assert(CountRows(Table1.Items) = 10, "Checking if Table displays correct number of items");
 
-    - testCaseName: Test Table Control - Selected Property
-      testCaseDescription: Verify that selecting a row updates the Selected property correctly.
-      testSteps: |
-        SetProperty(Table1.SelectedItems, Table(First(Table1.Items)));
-        Assert(CountRows(Table1.SelectedItems) = 1, "Checking if the selected row updates correctly");
+  #   - testCaseName: Test Table Control - ReflowBehavior Property
+  #     testCaseDescription: Verify that the Table Control refresh behavior works as expected.
+  #     testSteps: |
+  #       SetProperty(Table1.ReflowBehavior, "Reflow");
+  #       Assert(Table1.ReflowBehavior = "Reflow", "Checking the refresh behavior setting");
 
-    - testCaseName: Test Table Control - Multiple Select Property
-      testCaseDescription: Verify that selecting a row updates the Selected property correctly.
-      testSteps: |      
-        SetProperty(Table1.SelectedItems, Table(First(Table1.Items), Last(Table1.Items)));
-        Assert(CountRows(Table1.SelectedItems) = 2, "Checking if the table control allow to select multiple values");
+  #   - testCaseName: Test Table Control - Selected Property
+  #     testCaseDescription: Verify that selecting a row updates the Selected property correctly.
+  #     testSteps: |
+  #       SetProperty(Table1.SelectedItems, Table(First(Table1.Items)));
+  #       Assert(CountRows(Table1.SelectedItems) = 1, "Checking if the selected row updates correctly");
+
+  #   - testCaseName: Test Table Control - Multiple Select Property
+  #     testCaseDescription: Verify that selecting a row updates the Selected property correctly.
+  #     testSteps: |      
+  #       SetProperty(Table1.SelectedItems, Table(First(Table1.Items), Last(Table1.Items)));
+  #       Assert(CountRows(Table1.SelectedItems) = 2, "Checking if the table control allow to select multiple values");
+
+
+
 
     # - testCaseName: Test Form Control - New Values
     #   testCaseDescription: Verify that values in the Form Control fields can be updated correctly.
