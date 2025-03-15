@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
   # Runs on pushes targeting the specified branch
   push:
-    branches: ["main", "integration", "grant-archibald-ms/new-docs"]
+    branches: ["main", "integration"]
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
