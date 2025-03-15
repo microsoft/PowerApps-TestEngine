@@ -78,9 +78,9 @@ Set-Location ..\bin\Debug\PowerAppsTestEngine
 $env:user1Email = $user1Email
 
 if ($record) {
-    Write-Host "========================================" -ForegroundColor Orange
-    Write-Host "RECODE MODE" -ForegroundColor Orange
-    Write-Host "========================================" -ForegroundColor Orange
+    Write-Host "========================================" -ForegroundColor Blue
+    Write-Host "RECODE MODE" -ForegroundColor Blue
+    Write-Host "========================================" -ForegroundColor Blue
 }
 
 Write-Host "========================================" -ForegroundColor Green
