@@ -7,12 +7,11 @@
 name: Deploy Hugo site to Pages
 
 on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
   # Runs on pushes targeting the specified branch
   push:
     branches: ["grant-archibald-ms/new-docs"]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
