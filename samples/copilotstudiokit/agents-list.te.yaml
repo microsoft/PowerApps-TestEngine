@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: Copilot Studio Kit
+  testSuiteDescription: Agent List of Copilot Studio Kit 
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Step 1 - Start the entity details
+      testCaseDescription: Verify can open the page
+      testSteps: |
+        = 
+        Assert(1=1) 
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 480000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

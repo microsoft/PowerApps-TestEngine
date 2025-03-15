@@ -1,0 +1,30 @@
+testSuite:
+  testSuiteName: Copilot Studio Kit
+  testSuiteDescription: Verify Webchat Playground of Copilot Studio Kit 
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Step 1 - Start the custom page
+      testCaseDescription: Verify can open the page
+      testSteps: |
+        = Assert(1=1)
+    - testCaseName: Verify PCF control
+      testCaseDescription: Verify can check if PCF control exists
+      testSteps: |
+        = Preview.PlaywrightAction("//[@data-control-name='PFxCodeEditor1']", "wait")
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 480000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
