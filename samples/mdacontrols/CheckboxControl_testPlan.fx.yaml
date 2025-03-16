@@ -1,0 +1,185 @@
+testSuite:
+  testSuiteName: Checkbox Control Tests
+  testSuiteDescription: Verify checkbox control properties
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Test Label Property
+      testCaseDescription: Verify that the label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Label, "Label");
+        Assert(Checkbox1.Label, "Label");
+
+    - testCaseName: Test AccessibleLabel Property
+      testCaseDescription: Verify that the accessible label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.AccessibleLabel, "No value");
+        Assert(Checkbox1.AccessibleLabel, "No value");
+
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the visibility can be toggled correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Visible, true);
+        Assert(Checkbox1.Visible, true);
+        SetProperty(Checkbox1.Visible, false);
+        Assert(Checkbox1.Visible, false);
+
+    - testCaseName: Test Checked Property
+      testCaseDescription: Verify that the checked state can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Checked, false);
+        Assert(Checkbox1.Checked, false);
+        SetProperty(Checkbox1.Checked, true);
+        Assert(Checkbox1.Checked, true);
+
+    - testCaseName: Test DisplayMode Property
+      testCaseDescription: Verify that the display mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.DisplayMode, "edit");
+        Assert(Checkbox1.DisplayMode, "edit");
+
+    - testCaseName: Test Position Property
+      testCaseDescription: Verify that the position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Position, {x: 31, y: 35});
+        Assert(Checkbox1.Position, {x: 31, y: 35});
+
+    - testCaseName: Test Size Property
+      testCaseDescription: Verify that the size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Size, {width: 113, height: 39});
+        Assert(Checkbox1.Size, {width: 113, height: 39});
+
+    - testCaseName: Test ColorPalette Property
+      testCaseDescription: Verify that the color palette can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.ColorPalette, "Default");
+        Assert(Checkbox1.ColorPalette, "Default");
+
+    - testCaseName: Test CheckboxSize Property
+      testCaseDescription: Verify that the checkbox size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.CheckboxSize, "Medium");
+        Assert(Checkbox1.CheckboxSize, "Medium");
+
+    - testCaseName: Test Font Property
+      testCaseDescription: Verify that the font can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Font, "Arial");
+        Assert(Checkbox1.Font, "Arial");
+
+    - testCaseName: Test FontSize Property
+      testCaseDescription: Verify that the font size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.FontSize, 14);
+        Assert(Checkbox1.FontSize, 14);
+
+    - testCaseName: Test FontColor Property
+      testCaseDescription: Verify that the font color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.FontColor, "#FF0000");
+        Assert(Checkbox1.FontColor, "#FF0000");
+
+    - testCaseName: Test FontWeight Property
+      testCaseDescription: Verify that the font weight can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.FontWeight, "Bold");
+        Assert(Checkbox1.FontWeight, "Bold");
+
+    - testCaseName: Test FontStyle Property
+      testCaseDescription: Verify that the font style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.FontStyle, "Italic");
+        Assert(Checkbox1.FontStyle, "Italic");
+
+    - testCaseName: Test OnCheck Property
+      testCaseDescription: Verify that the OnCheck action can be set and triggered correctly.
+      testSteps: |
+        SetProperty(Checkbox1.OnCheck, "Notify('Checked')");
+        TriggerEvent(Checkbox1.OnCheck);
+        Assert(NotificationMessage, "Checked");
+
+    - testCaseName: Test OnSelect Property
+      testCaseDescription: Verify that the OnSelect action can be set and triggered correctly.
+      testSteps: |
+        SetProperty(Checkbox1.OnSelect, "Notify('Selected')");
+        TriggerEvent(Checkbox1.OnSelect);
+        Assert(NotificationMessage, "Selected");
+
+    - testCaseName: Test OnUnCheck Property
+      testCaseDescription: Verify that the OnUnCheck action can be set and triggered correctly.
+      testSteps: |
+        SetProperty(Checkbox1.OnUnCheck, "Notify('Unchecked')");
+        TriggerEvent(Checkbox1.OnUnCheck);
+        Assert(NotificationMessage, "Unchecked");
+
+    - testCaseName: Test BasePaletteColor Property
+      testCaseDescription: Verify that the base palette color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.BasePaletteColor, "Blue");
+        Assert(Checkbox1.BasePaletteColor, "Blue");
+
+    - testCaseName: Test ContentLanguage Property
+      testCaseDescription: Verify that the content language can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.ContentLanguage, "en-US");
+        Assert(Checkbox1.ContentLanguage, "en-US");
+
+    - testCaseName: Test FontItalic Property
+      testCaseDescription: Verify that the font italic style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.FontItalic, true);
+        Assert(Checkbox1.FontItalic, true);
+
+    - testCaseName: Test FontStrikethrough Property
+      testCaseDescription: Verify that the font strikethrough style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.FontStrikethrough, true);
+        Assert(Checkbox1.FontStrikethrough, true);
+
+    - testCaseName: Test FontUnderline Property
+      testCaseDescription: Verify that the font underline style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.FontUnderline, true);
+        Assert(Checkbox1.FontUnderline, true);
+
+    - testCaseName: Test Height Property
+      testCaseDescription: Verify that the height can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Height, 50);
+        Assert(Checkbox1.Height, 50);
+
+    - testCaseName: Test Width Property
+      testCaseDescription: Verify that the width can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Width, 100);
+        Assert(Checkbox1.Width, 100);
+
+    - testCaseName: Test X Property
+      testCaseDescription: Verify that the X position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.X, 10);
+        Assert(Checkbox1.X, 10);
+
+    - testCaseName: Test Y Property
+      testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Checkbox1.Y, 20);
+        Assert(Checkbox1.Y, 20);
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+      
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: User1Email
+      passwordKey: NotNeeded
