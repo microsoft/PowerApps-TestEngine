@@ -1,0 +1,173 @@
+{{- $id := printf "powerfx-%d" (mod (now.UnixNano | int) 9000 | add 1000) -}}{{- $buttonText := .Get 0 | default "Try It!" -}}
+{{- $source := "playgrounds.yaml" -}}
+{{- $queryString := "" -}}
+{{- if strings.Contains .Page.Permalink "?" -}}
+  {{- $queryString = (strings.Split .Page.Permalink "?") | index 1 -}}
+{{- end -}}
+{{- $files := slice -}}
+{{- range (readDir "static/assets") -}}
+  {{- if (strings.HasSuffix .Name ".yaml") -}}
+    {{- $file := resources.Get (printf "assets/%s" .Name) -}}
+    {{- if $file -}}
+      {{- $fingerprinted := $file | fingerprint -}}
+      {{- $files = $files | append (dict "name" $file.Name "url" $fingerprinted.Permalink) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{ $fileNames := $files | jsonify }}
+
+{{- $params := dict -}}
+{{- range (split $queryString "&") -}}
+  {{- $pair := split . "=" -}}
+  {{- if eq (len $pair) 2 -}}
+    {{- $params = merge $params (dict (index $pair 0) (index $pair 1)) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $source = $params.source | default "playgrounds.yaml" -}}
+{{- $code := .Inner -}}
+
+{{ $html := (print `
+<style>
+  .monaco-editor {
+    border: 1px solid #eee;
+    height: auto;
+  }
+  .page { 
+    float: none !important;
+    width: 100%;
+  }
+  .results-section {
+    margin-top: 20px;
+    padding: 10px;
+    border: 2px solid #000;
+    background-color: #f9f9f9;
+  }
+  .actions > select { display: inline; }
+</style>
+<div id="` $id `-title"></div>
+<div id="` $id `-description"></div>
+<div id="` $id `-editor" style="width: 100%; height: 400px"></div>
+<div class="actions">
+  <button id="` $id `-runButton" disabled>` $buttonText `</button>
+  <button id="` $id `-resetButton">Reset</button>
+  <select id="` $id `-relatedTasksDropdown">
+    <option value="">Select a related task</option>
+  </select>
+  <button id="` $id `-openRelatedButton" disabled>Open Related Task</button>
+</div>
+<h3>Results</h3>
+<div class="results-section">
+  <div id="` $id `-output"></div>
+</div>
+<h3>Playground Steps</h3>
+<p>You can try the following to experiment with this playground task:</p>
+<div id="` $id `-steps"></div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/editor/editor.main.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js" integrity="sha512-ZG31AN9z/CQD1YDDAK4RUAvogwbJHv6bHrumrnMLzdCrVu4HeAqrUX7Jsal/cbUwXGfaMUNmQU04tQ8XXl5Znw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/yamljs/0.3.0/yaml.min.js" integrity="sha512-f/K0Q5lZ1SrdNdjc2BO2I5kTx8E5Uw1EU3PhSUB9fYPohap5rPWEmQRCjtpDxNmQB4/+MMI/Cf+nvh1VSiwrTA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    const fingerprintedFiles = ` $fileNames `;
+    const base = document.createElement('base');
+    base.href = '` .Site.BaseURL `';
+    document.head.appendChild(base);
+</script>
+<script src="` .Site.BaseURL `_framework/blazor.webassembly.js" autostart="false"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+// DOMContentLoaded
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+let playgroundTitle = urlParams.get('title');
+let sourceFileName = urlParams.get('source') || 'playgrounds';
+// Use regex to remove anything not in [a-z] and [-]
+sourceFileName = sourceFileName.replace(/[^a-z-]/g, '');
+if (!sourceFileName.endsWith('.yaml')) {
+  sourceFileName += '.yaml';
+}
+// Ensure the source file is within the assets folder
+const sourceFilePath = '` .Site.BaseURL `assets/' + sourceFileName;
+const data = YAML.load(sourceFilePath);
+if (playgroundTitle == null) {
+  playgroundTitle = data.default
+}
+const playground = playgroundTitle ? data.playgrounds.find(p => p.shortId === playgroundTitle) : null;
+if (playground) {
+// Playground is loaded
+const { title, description, code, steps, relatedTasks } = playground;
+Blazor.start({
+  loadBootResource: function (type, name, defaultUri, integrity) {
+    console.log(defaultUri)
+  }
+}).then(async () => {
+// Blazor Started
+var r = Blazor.runtime
+const exports = await r.getAssemblyExports(r.config.mainAssemblyName);
+document.getElementById('` $id `-runButton').addEventListener('click', function() {
+  const expression = window.editor.getValue();
+  const result = exports.PowerFxEngine.Execute(expression);
+  document.getElementById("` $id `-output").innerHTML = result;
+});
+document.getElementById('` $id `-runButton').disabled = false;
+})
+require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' }});
+require(['vs/editor/editor.main'], function() {
+// Editor started
+window.editor = monaco.editor.create(document.getElementById('` $id `-editor'), {
+value: code,
+language: 'javascript',
+automaticLayout: true,
+minimap: { enabled: false } // Disable the minimap
+});
+});
+document.getElementById('` $id `-title').innerHTML = markdown.toHTML('## ' + title);
+document.getElementById('` $id `-description').innerHTML = markdown.toHTML(description);
+// Convert markdown steps to HTML and display
+const stepsHtml = markdown.toHTML(steps);
+document.getElementById('` $id `-steps').innerHTML = stepsHtml;
+// Populate related tasks dropdown
+const dropdown = document.getElementById('` $id `-relatedTasksDropdown');
+relatedTasks.forEach(taskId => {
+// Related Task Each
+var relatedPlayground = data.playgrounds.find(p => p.shortId === taskId);
+if (relatedPlayground) {
+  const option = document.createElement('option');
+  option.value = taskId;
+  option.text = relatedPlayground.title;
+  dropdown.appendChild(option);
+}
+// End forEach
+});
+// Enable the open related button when a related task is selected
+dropdown.addEventListener('change', function() {
+  const selectedTaskId = dropdown.value;
+  document.getElementById('` $id `-openRelatedButton').disabled = !selectedTaskId;
+});
+// Add event listener to open related task in new page
+document.getElementById('` $id `-openRelatedButton').addEventListener('click', function() {
+  const selectedTaskId = dropdown.value;
+  if (selectedTaskId) {
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('title', selectedTaskId);
+    if(typeof sourceFileName !== "undefined") {
+    currentUrl.searchParams.set('source', sourceFileName.split('.')[0]);
+    }
+    if (urlParams.has('source')) {
+      currentUrl.searchParams.set('source', urlParams.get('source'));
+    }
+    window.open(currentUrl.toString(), '_blank');
+  }
+});
+// Add event listener to reset button
+document.getElementById('` $id `-resetButton').addEventListener('click', function() {
+  window.location.reload();
+});
+// End if playground loaded
+}
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js" integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUklpXp6R6wMnYf5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js" integrity="sha512-kaDP6dcDG3+X87m9SnhyJzwBMKrYnd2tLJjGdBrZ9yEL8Zcl2iJRsPwylLkbd2g3QC5S8efV3sgwI5r73U0HnA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+`) }}
+
+{{ $html | safeHTML }}

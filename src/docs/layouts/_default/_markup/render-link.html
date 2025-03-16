@@ -1,0 +1,13 @@
+{{- $url := .Destination -}}
+{{- if and (strings.HasPrefix $url "../") (strings.HasSuffix $url ".png") -}}
+  {{- $url = (print (path.Dir .Page.File.Path) "/" $url | relURL) -}}
+{{- else if strings.HasPrefix $url "../" -}}
+  {{- $url = (print (path.Dir .Page.File.Path) "/" $url | relURL | replaceRE "\\.md$" "/") -}}
+{{- else if and (strings.HasPrefix $url "./") (strings.HasSuffix $url ".md") -}}
+  {{- $url = (print (path.Dir .Page.File.Path) "/" (path.Base $url | replaceRE "\\.md$" "/" ) ) | relURL -}}
+{{- else if strings.HasPrefix $url "./" -}}
+  {{- $url = (print (path.Dir .Page.File.Path) "/" (path.Base $url)) | relURL -}}
+{{- else if strings.HasSuffix $url ".png" -}}
+  {{- $url = (print (path.Dir .Page.File.Path) "/" $url | relURL) -}}
+{{- end -}}
+<a href="{{ $url }}">{{ .Text | safeHTML }}</a>

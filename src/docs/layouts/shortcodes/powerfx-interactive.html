@@ -1,0 +1,62 @@
+{{- $id := printf "powerfx-%d" (mod (now.UnixNano | int) 9000 | add 1000) -}}
+{{- $buttonText := .Get 0 | default "Try It!" -}}
+{{- $code := .Inner | strings.TrimSpace | base64Encode -}}
+
+{{ $html := (print `
+<style>
+  .monaco-editor {
+    border: 1px solid #eee;
+    height: auto;
+  }
+  .results-section {
+    margin-top: 20px;
+    padding: 10px;
+    border: 2px solid #000;
+    background-color: #f9f9f9;
+  }
+</style>
+<div id="` $id `-editor" style="width: 100%; height: 200px;"></div>
+<button id="` $id `-runButton" disabled>` $buttonText `</button>
+<h3>Results</h3>
+<div class="results-section">
+  <div id="` $id `-output"></div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/editor/editor.main.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js" integrity="sha512-ZG31AN9z/CQD1YDDAK4RUAvogwbJHv6bHrumrnMLzdCrVu4HeAqrUX7Jsal/cbUwXGfaMUNmQU04tQ8XXl5Znw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    const base = document.createElement('base');
+    base.href = '` .Site.BaseURL `';
+    document.head.appendChild(base);
+</script>
+<script src="` .Site.BaseURL `_framework/blazor.webassembly.js" autostart="false"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+Blazor.start({
+loadBootResource: function (type, name, defaultUri, integrity) {
+console.log(defaultUri)
+}
+}).then(async () => {
+var r = Blazor.runtime
+const exports = await r.getAssemblyExports(r.config.mainAssemblyName);
+document.getElementById('` $id `-runButton').addEventListener('click', function() {
+const expression = window.editor.getValue();
+const result = exports.PowerFxEngine.Execute(expression);
+document.getElementById("` $id `-output").innerHTML = result;
+});
+document.getElementById('` $id `-runButton').disabled = false;
+})
+require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' }});
+require(['vs/editor/editor.main'], function() {
+const decodedCode = atob('` $code `');
+window.editor = monaco.editor.create(document.getElementById('` $id `-editor'), {
+value: decodedCode,
+language: 'javascript',
+automaticLayout: true,
+minimap: { enabled: false } // Disable the minimap
+});
+});
+});
+</script>
+`) }}
+
+{{ $html | safeHTML }}
