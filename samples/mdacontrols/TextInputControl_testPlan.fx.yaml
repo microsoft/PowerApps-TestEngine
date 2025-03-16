@@ -1,0 +1,205 @@
+testSuite:
+  testSuiteName: Text Input Controls Test Suite
+  testSuiteDescription: Verify text input controls' design, functional, and negative scenarios.
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    # Design Testing
+    - testCaseName: Test Value Property for TextInput1
+      testCaseDescription: Verify that the value can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.Value, "Sample Text");
+        Assert(TextInput1.Value = "Sample Text", "Checking the value for TextInput1");
+
+    - testCaseName: Test FontSize Property for TextInput1
+      testCaseDescription: Verify that the font size can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.FontSize, 22);
+        Assert(TextInput1.FontSize = 22, "Checking the font size for TextInput1");
+
+    - testCaseName: Test FontWeight Property for TextInput1
+      testCaseDescription: Verify that the font weight can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.FontWeight, "Bold");
+        Assert(TextInput1.FontWeight = "Bold", "Checking the font weight for TextInput1");
+
+    - testCaseName: Test TextAlign Property for TextInput1
+      testCaseDescription: Verify that the text alignment can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.TextAlign, "Center");
+        Assert(TextInput1.TextAlign = "Center", "Checking the text alignment");
+
+    - testCaseName: Test VerticalAlignment Property for TextInput1
+      testCaseDescription: Verify that the vertical alignment can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.VerticalAlignment, "Middle");
+        Assert(TextInput1.VerticalAlignment = "Middle", "Checking the vertical alignment");
+
+    - testCaseName: Test FontFamily Property for TextInput1
+      testCaseDescription: Verify that the font family can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.FontFamily, "Arial");
+        Assert(TextInput1.FontFamily = "Arial", "Checking the font family");
+
+    - testCaseName: Test BorderThickness Property for TextInput1
+      testCaseDescription: Verify that the border thickness can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.BorderThickness, 2);
+        Assert(TextInput1.BorderThickness = 2, "Checking the border thickness for TextInput1");
+
+    - testCaseName: Test CornerRadius Properties for TextInput1
+      testCaseDescription: Verify that all corner radius properties can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.CornerRadiusTopLeft, 5);
+        Assert(TextInput1.CornerRadiusTopLeft = 5, "Checking the top-left corner radius for TextInput1");
+        SetProperty(TextInput1.CornerRadiusTopRight, 5);
+        Assert(TextInput1.CornerRadiusTopRight = 5, "Checking the top-right corner radius for TextInput1");
+        SetProperty(TextInput1.CornerRadiusBottomRight, 5);
+        Assert(TextInput1.CornerRadiusBottomRight = 5, "Checking the bottom-right corner radius for TextInput1");
+        SetProperty(TextInput1.CornerRadiusBottomLeft, 5);
+        Assert(TextInput1.CornerRadiusBottomLeft = 5, "Checking the bottom-left corner radius for TextInput1");
+
+    - testCaseName: Test Padding Properties for TextInput1
+      testCaseDescription: Verify that all padding properties can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.PaddingTop, 10);
+        Assert(TextInput1.PaddingTop = 10, "Checking the top padding for TextInput1");
+        SetProperty(TextInput1.PaddingRight, 10);
+        Assert(TextInput1.PaddingRight = 10, "Checking the right padding for TextInput1");
+        SetProperty(TextInput1.PaddingBottom, 10);
+        Assert(TextInput1.PaddingBottom = 10, "Checking the bottom padding for TextInput1");
+        SetProperty(TextInput1.PaddingLeft, 10);
+        Assert(TextInput1.PaddingLeft = 10, "Checking the left padding for TextInput1");
+
+    - testCaseName: Test BackgroundColor Property for TextInput1
+      testCaseDescription: Verify that the background color can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.BackgroundColor, "#FFFFFF");
+        Assert(TextInput1.BackgroundColor = "#FFFFFF", "Checking the background color for TextInput1");
+
+    - testCaseName: Test BorderStyle Property for TextInput1
+      testCaseDescription: Verify that the border style can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.BorderStyle, "Solid");
+        Assert(TextInput1.BorderStyle = "Solid", "Checking the border style for TextInput1");
+
+    - testCaseName: Test BorderColor Property for TextInput1
+      testCaseDescription: Verify that the border color can be set and retrieved correctly for TextInput1.
+      testSteps: |
+        SetProperty(TextInput1.BorderColor, "#000000");
+        Assert(TextInput1.BorderColor = "#000000", "Checking the border color for TextInput1");
+
+    # Functional Testing
+    - testCaseName: Test Height Property for TextInput2
+      testCaseDescription: Verify that the height can be set and retrieved correctly for TextInput2.
+      testSteps: |
+        SetProperty(TextInput2.Height, 100);
+        Assert(TextInput2.Height = 100, "Checking the height for TextInput2");
+
+    - testCaseName: Test TabIndex Property for TextInput3
+      testCaseDescription: Verify that the tab index can be set and retrieved correctly for TextInput3.
+      testSteps: |
+        SetProperty(TextInput3.TabIndex, 1);
+        Assert(TextInput3.TabIndex = 1, "Checking the tab index for TextInput3");
+
+    - testCaseName: Test Tooltip Property for TextInput4
+      testCaseDescription: Verify that the tooltip can be set and retrieved correctly for TextInput4.
+      testSteps: |
+        SetProperty(TextInput4.Tooltip, "Sample Tooltip");
+        Assert(TextInput4.Tooltip = "Sample Tooltip", "Checking the tooltip for TextInput4");
+
+    - testCaseName: Test PCFTeamsTheme Property for TextInput5
+      testCaseDescription: Verify that the PCF Teams Theme can be set and retrieved correctly for TextInput5.
+      testSteps: |
+        SetProperty(TextInput5.PCFTeamsTheme, "Dark");
+        Assert(TextInput5.PCFTeamsTheme = "Dark", "Checking the PCF Teams Theme for TextInput5");
+
+    - testCaseName: Test X Position Property for TextInput6
+      testCaseDescription: Verify that the X position can be set and retrieved correctly for TextInput6.
+      testSteps: |
+        SetProperty(TextInput6.X, 50);
+        Assert(TextInput6.X = 50, "Checking the X position for TextInput6");
+
+    - testCaseName: Test Y Position Property for TextInput7
+      testCaseDescription: Verify that the Y position can be set and retrieved correctly for TextInput7.
+      testSteps: |
+        SetProperty(TextInput7.Y, 50);
+        Assert(TextInput7.Y = 50, "Checking the Y position for TextInput7");
+
+    - testCaseName: Test Width Property for TextInput8
+      testCaseDescription: Verify that the width can be set and retrieved correctly for TextInput8.
+      testSteps: |
+        SetProperty(TextInput8.Width, 200);
+        Assert(TextInput8.Width = 200, "Checking the width for TextInput8");
+
+    - testCaseName: Test Visible Property for TextInput9
+      testCaseDescription: Verify that the visibility can be set and retrieved correctly for TextInput9.
+      testSteps: |
+        SetProperty(TextInput9.Visible, true);
+        Assert(TextInput9.Visible = true, "Checking the visibility for TextInput9");
+
+    - testCaseName: Test DisplayMode Property for TextInput10
+      testCaseDescription: Verify that the display mode can be set and retrieved correctly for TextInput10.
+      testSteps: |
+        SetProperty(TextInput10.DisplayMode, "Edit");
+        Assert(TextInput10.DisplayMode = "Edit", "Checking the display mode for TextInput10");
+
+    # Negative Testing
+    - testCaseName: Test Invalid Text Property for TextInput4
+      testCaseDescription: Verify system behavior when setting an invalid text property for TextInput4.
+      testSteps: |
+        SetProperty(TextInput4.Text, 67890);
+        Assert(TextInput4.Text = "", "Ensuring invalid text values are handled correctly for TextInput4");
+
+    - testCaseName: Test Invalid Height Property for TextInput5
+      testCaseDescription: Verify system behavior when setting an invalid height value (negative) for TextInput5.
+      testSteps: |
+        SetProperty(TextInput5.Height, -10);
+        Assert(TextInput5.Height = 0, "Ensuring negative height values are not accepted for TextInput5");
+
+    - testCaseName: Test Invalid Width Property for TextInput6
+      testCaseDescription: Verify system behavior when setting an invalid width for TextInput6.
+      testSteps: |
+        SetProperty(TextInput6.Width, -20);
+        Assert(TextInput6.Width = 0, "Ensuring negative width values are not accepted for TextInput6");
+
+    - testCaseName: Test Invalid X Position Property for TextInput7
+      testCaseDescription: Verify system behavior when setting an invalid X position for TextInput7.
+      testSteps: |
+        SetProperty(TextInput7.X, "10");
+        Assert(TextInput7.X = 0, "Ensuring non-numeric X position values are not accepted for TextInput7");
+
+    - testCaseName: Test Invalid Y Position Property for TextInput8
+      testCaseDescription: Verify system behavior when setting an invalid Y position for TextInput8.
+      testSteps: |
+        SetProperty(TextInput8.Y, "20");
+        Assert(TextInput8.Y = 0, "Ensuring non-numeric Y position values are not accepted for TextInput8");
+
+    - testCaseName: Test Invalid DisplayMode Property for TextInput9
+      testCaseDescription: Verify system behavior when setting an invalid display mode for TextInput9.
+      testSteps: |
+        SetProperty(TextInput9.DisplayMode, "InvalidMode");
+        Assert(TextInput9.DisplayMode = "InvalidMode", "Ensuring invalid display modes are not accepted for TextInput9");
+
+    - testCaseName: Test Invalid Visible Property for TextInput10
+      testCaseDescription: Verify system behavior when setting an invalid visible property for TextInput10.
+      testSteps: |
+        SetProperty(TextInput10.Visible, true);
+        Assert(TextInput10.Visible = true, "Ensuring non-boolean values are not accepted for visible property for TextInput10");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+      
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
