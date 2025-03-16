@@ -1,0 +1,173 @@
+testSuite:
+  testSuiteName: Number Input Control Tests
+  testSuiteDescription: Verify number input control properties
+  persona: User1
+  appLogicalName: NotNeeded
+
+  # Test Cases
+  testCases:
+    - testCaseName: Test Value Property
+      testCaseDescription: Verify that the value can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Value, 50);
+        Assert(NumberInput1.Value, 50);
+
+    - testCaseName: Test Min Property
+      testCaseDescription: Verify that the minimum value can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Min, 10);
+        Assert(NumberInput1.Min, 10);
+
+    - testCaseName: Test Max Property
+      testCaseDescription: Verify that the maximum value can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Max, 100);
+        Assert(NumberInput1.Max, 100);
+
+    - testCaseName: Test Decimal Precision Property
+      testCaseDescription: Verify that the decimal precision can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.DecimalPrecision, "Auto");
+        Assert(NumberInput1.DecimalPrecision, "Auto");
+
+    - testCaseName: Test Step Value Property
+      testCaseDescription: Verify that the step value can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.StepValue, 1);
+        Assert(NumberInput1.StepValue, 1);
+
+    - testCaseName: Test Accessible Label Property
+      testCaseDescription: Verify that the accessible label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.AccessibleLabel, "No value");
+        Assert(NumberInput1.AccessibleLabel, "No value");
+
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the visibility can be toggled and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Visible, true);
+        Assert(NumberInput1.Visible, true);
+
+    - testCaseName: Test Display Mode Property
+      testCaseDescription: Verify that the display mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.DisplayMode, "Edit");
+        Assert(NumberInput1.DisplayMode, "Edit");
+
+    - testCaseName: Test Align Property
+      testCaseDescription: Verify that the alignment can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Align, "Center");
+        Assert(NumberInput1.Align, "Center");
+
+    - testCaseName: Test Position Property
+      testCaseDescription: Verify that the position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Position, "576 by 32");
+        Assert(NumberInput1.Position, "576 by 32");
+
+    - testCaseName: Test Size Property
+      testCaseDescription: Verify that the size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Size, "No value by No value");
+        Assert(NumberInput1.Size, "No value by No value");
+
+    - testCaseName: Test Padding Property
+      testCaseDescription: Verify that the padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Padding, "No value by No value by No value by No value");
+        Assert(NumberInput1.Padding, "No value by No value by No value by No value");
+
+    - testCaseName: Test Appearance Property
+      testCaseDescription: Verify that the appearance can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Appearance, "Filled Darker");
+        Assert(NumberInput1.Appearance, "Filled Darker");
+
+    - testCaseName: Test Base Palette Color Property
+      testCaseDescription: Verify that the base palette color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.BasePaletteColor, "Primary");
+        Assert(NumberInput1.BasePaletteColor, "Primary");
+
+    - testCaseName: Test Font Size Property
+      testCaseDescription: Verify that the font size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.FontSize, "No value");
+        Assert(NumberInput1.FontSize, "No value");
+
+    - testCaseName: Test Border Property
+      testCaseDescription: Verify that the border can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.Border, "No value");
+        Assert(NumberInput1.Border, "No value");
+
+    - testCaseName: Test Border Radius Property
+      testCaseDescription: Verify that the border radius can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.BorderRadius, "No value");
+        Assert(NumberInput1.BorderRadius, "No value");
+
+    - testCaseName: Test OnChange Property
+      testCaseDescription: Verify that the OnChange event can be triggered and handled correctly.
+      testSteps: |
+        SetProperty(NumberInput1.OnChange, "UpdateValue");
+        Assert(NumberInput1.OnChange, "UpdateValue");
+
+    - testCaseName: Test BorderColor Property
+      testCaseDescription: Verify that the border color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.BorderColor, "Red");
+        Assert(NumberInput1.BorderColor, "Red");
+
+    - testCaseName: Test BorderStyle Property
+      testCaseDescription: Verify that the border style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.BorderStyle, "Solid");
+        Assert(NumberInput1.BorderStyle, "Solid");
+
+    - testCaseName: Test Border Thickness Property
+      testCaseDescription: Verify that the border thickness can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.BorderThickness, "2px");
+        Assert(NumberInput1.BorderThickness, "2px");
+
+    - testCaseName: Test Content Language Property
+      testCaseDescription: Verify that the content language can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.ContentLanguage, "en-US");
+        Assert(NumberInput1.ContentLanguage, "en-US");
+
+    - testCaseName: Test Delay Output Property
+      testCaseDescription: Verify that the delay output can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.DelayOutput, "500ms");
+        Assert(NumberInput1.DelayOutput, "500ms");
+
+    - testCaseName: Test Padding Left Property
+      testCaseDescription: Verify that the left padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.PaddingLeft, "10px");
+        Assert(NumberInput1.PaddingLeft, "10px");
+
+    - testCaseName: Test Padding Top Property
+      testCaseDescription: Verify that the top padding can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(NumberInput1.PaddingTop, "10px");
+        Assert(NumberInput1.PaddingTop, "10px");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
