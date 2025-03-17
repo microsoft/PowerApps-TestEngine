@@ -4,7 +4,7 @@
 
 Power Apps Visual Compare can be a powerful tool designed to streamline the process of UI testing by comparing visual elements within your applications.
 
-This by making use of the PowerFx formulas like `Assert(Preview.VisualCompare("//*[data-control-name='locator'", "some-control.png", Table({type:"similarity"}))>=90)` you can ensure that the visual elements match a reference control image with a specified percentage of similarity. 
+This by making use of the PowerFx formulas like `Assert(Preview.VisualCompare("//*[data-control-name='locator'", "some-control.png", Table()).Similarity>=0.7)` you can ensure that the visual elements match a reference control image with a specified percentage of similarity. 
 
 This article will delve into the approaches for visual comparison, the challenges faced, common patterns of comparison, and the importance of visual checks for accessibility.
 
@@ -52,6 +52,42 @@ Several algorithms can be used for visual comparison, each with its strengths an
 | Feature Extraction | Identifies key features, robust to transformations | Computationally intensive
 | Fourier Transform	| Captures patterns and textures	| Complex to interpret
 | Cosine Transform	| Similar to Fourier, useful for compression | May not capture spatial details
+
+## Examples
+
+Using the following PCf control that similuates a web chat.
+
+![Example of web change playground](./media/web-chat-playground.png)
+
+### Edge
+
+`Assert(Preview.VisualCompare("//*[data-control-name='locator'", "some-control.png", Table({type:"edge"})).Similarity>=0.7)`
+
+![Example of web change playground](./media/web-chat-playground-edge.png)
+
+### Color
+
+`Assert(Preview.VisualCompare("//*[data-control-name='locator'", "some-control.png", Table({type:"color"})).Similarity>=0.7)`
+
+![Example of web change playground](./media/web-chat-playground-color.png)
+
+### Simplify
+
+`Assert(Preview.VisualCompare("//*[data-control-name='locator'", "some-control.png", Table({type:"simplify"})).Similarity>=0.7)`
+
+![Example of web change playground](./media/web-chat-playground-simplify.png)
+
+### Feature
+
+`Assert(Preview.VisualCompare("//*[data-control-name='locator'", "some-control.png", Table({type:"feature"})).Similarity>=0.7)`
+
+![Example of web change playground](./media/web-chat-playground-feature.png)
+
+### Color Simplify
+
+`Assert(Preview.VisualCompare("//*[data-control-name='locator'", "some-control.png", Table({type:"colorsimplify"})).Similarity>=0.7)`
+
+![Example of web change playground](./media/web-chat-playground-16-color.png)
 
 ## Cumulative Effect of Multiple Filters
 
