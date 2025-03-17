@@ -2,7 +2,7 @@
 
 [![CI Build](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml/badge.svg)](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml)
 
-> This is currently an experimental project.
+> This is currently an preview project.
 
 ## Overview
 
@@ -66,7 +66,7 @@ Test Engine includes a library of samples you can use to get started. Each sampl
 
 To use the samples, import the solution into your environment and then execute the corresponding test plan file with Test Engine.
 
-See [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
+See [Samples Introduction](./samples/SamplesIntroduction.md) for more sample solutions.
 
 #### 1. Import a sample solution
 
@@ -96,12 +96,12 @@ Fill in the required properties:
 
 Both environmentId and tenantId can be found by opening the `Settings > Session details` dialog from within the environment:
 
-![Screenshot of Power Apps session details dialog](docs/images/findenvironment.png)
+![Screenshot of Power Apps session details dialog](./docs/media/findenvironment.png)
 
 - testPlanFile: Path to the test plan YAML filethat you wish to run. (e.g., `../../samples/basicgallery/testPlan.fx.yaml`)
 - outputDirectory: Relative path inside the designated user temp location where the test results will be placed.
 
-For more information about the config and the inputs to the command, please view [this link](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/CommandInput.md).
+For more information about the config and the inputs to the command, please view [this link](./docs/CommandInput.md).
 
 ### Set up user authentication
 
@@ -129,35 +129,35 @@ dotnet run
 
 When the run is complete, check the folder specified in the `outputDirectory` configuration setting for test run results.
 
-Check [Samples Introduction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/SamplesIntroduction.md) for more sample solutions.
+Check [Samples Introduction](./samples/SamplesIntroduction.md) for more sample solutions.
 
 #### Languages and regions that use period as the decimal separator
 
-The syntax of Power Fx can differ based on your system's language settings. Use the `locale` property in the `testSettings` section of the test plan file to specify the locale in which your Power Fx is written. (See `locale` in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md)). This is useful if you are working across regions that use different decimal or thousands separators. For example, `,` instead of `.` for decimals and `;` instead of `,`.
+The syntax of Power Fx can differ based on your system's language settings. Use the `locale` property in the `testSettings` section of the test plan file to specify the locale in which your Power Fx is written. (See `locale` in [test settings](./docs/Yaml/testSettings.md)). This is useful if you are working across regions that use different decimal or thousands separators. For example, `,` instead of `.` for decimals and `;` instead of `,`.
 
 See the following samples that have the `locale` property specified as examples of its usage:
 
-1. `;` instead of `,` for separator - [testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml](samples/basicgallery/testPlanForRegionUseSemicolonAsSeparator.fx.yaml)
-2. `,` instead of `.` for separator - [testPlanWithCommaForDecimal.fx.yaml.fx.yaml](samples/calculator/testPlanWithCommaForDecimal.fx.yaml)
+1. `;` instead of `,` for separator - [testPlanForRegionUsePeriodAsDecimalSeparator.fx.yaml](./samples/basicgallery/testPlanForRegionUseSemicolonAsSeparator.fx.yaml)
+2. `,` instead of `.` for separator - [testPlanWithCommaForDecimal.fx.yaml.fx.yaml](./samples/calculator/testPlanWithCommaForDecimal.fx.yaml)
 
 NOTE: Since the integration tests that use these samples run in an `en-US` locale, the `testPlanWithCommaForDecimal` sample represents absolute numbers with decimals as `,` but their string representations of the decimals are still `.` to match the locale these tests are running in. Additionally, this is also because the corresponding sample app is also hosted in an `en-US` locale. But for real-world applications make sure the syntax of the tests represent the locale for the app and environment as well.
 
 ## What to do next
 
-**Option 1** - Author your own test plan: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App apps and create new tests for your updated app. Check [Power Fx](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX) for writing functions. The sample test plan will be [here](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/template/TestPlanTemplate.fx.yaml).
+**Option 1** - Author your own test plan: Modify the `testPlan.fx.yaml` of a provided sample to run tests created on your own. You can also modify the sample Power App apps and create new tests for your updated app. Check [Power Fx](./docs/PowerFX) for writing functions. The sample test plan will be [here](./samples/template/TestPlanTemplate.fx.yaml).
 
 **Option 2** - Download recorded tests from Test Studio: If you have tests that you have recorded in [Test Studio](https://docs.microsoft.com/en-us/power-apps/maker/canvas-apps/test-studio), you can download them from Test Studio to reuse in Test Engine.
 
-- Make use of the "Download suite" button available in Test Studio to download the test plan. Choose the test suite to download if you have multiple test suites. ![Screenshot of Test Studio download test suite button](docs/images/downloadtestsuite.png)
-- Alternatively you can make use of the "Download" button available under each test suite.![Screenshot of Test Studio download test suite individual button](docs/images/downloadtestsuiteindividual.png)
+- Make use of the "Download suite" button available in Test Studio to download the test plan. Choose the test suite to download if you have multiple test suites. ![Screenshot of Test Studio download test suite button](./docs/media/downloadtestsuite.png)
+- Alternatively you can make use of the "Download" button available under each test suite.![Screenshot of Test Studio download test suite individual button](./docs/media/downloadtestsuiteindividual.png)
 - Make sure you update the config file and user configurations if you are using a different tenant or environment for this app.
 - Now you should be ready to run the test with `dotnet run`
 
 ## More about the test plan
 
-[Yaml Format](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/Yaml)
+[Yaml Format](./docs/Yaml)
 
-[Power Fx](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs/PowerFX)
+[Power Fx](./docs/PowerFX)
 
 ## How apps are referenced in test plan files
 
@@ -203,7 +203,7 @@ We suggest checking the logs and recording in the test result folder to see what
 - Requiring authorization to certain controls or features (you will need to manually open the app and grant the access before using test engine to run tests on the app)
 - Having a bad network connection (which causes Test Engine to not load the app)
 
-Occasionally, you might get a timeout error due to the app taking longer to load than the default 30 second timeout. Most of the time, re-running the program will solve this problem. If this error still happens, you will probably want to check the recording as mentioned. If your app takes a while to load, you can also modify the timeout limit in [test settings](https://github.com/microsoft/PowerApps-TestEngine/blob/main/docs/Yaml/testSettings.md) to give it more time.
+Occasionally, you might get a timeout error due to the app taking longer to load than the default 30 second timeout. Most of the time, re-running the program will solve this problem. If this error still happens, you will probably want to check the recording as mentioned. If your app takes a while to load, you can also modify the timeout limit in [test settings](./docs/Yaml/testSettings.md) to give it more time.
 
 If these steps don't help, you can run
 
@@ -231,7 +231,7 @@ You are invited to contribute corrections to both code and documentation. See th
 This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution.
 For details, visit https://cla.microsoft.com.
 
-> **Note:** We are not accepting contributions for content within the [JS folder](https://github.com/microsoft/PowerApps-TestEngine/tree/main/src/testengine.provider.canvas/JS).
+> **Note:** We are not accepting contributions for content within the [JS folder](./src/testengine.provider.canvas/JS).
 
 When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
