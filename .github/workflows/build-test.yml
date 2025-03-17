@@ -45,12 +45,12 @@ jobs:
       - name: Build
         run: |
           cd src
-          dotnet build --configuration Release --no-restore
+          dotnet build --no-restore
 
       - name: Test
         run: |
           cd src
-          dotnet test --configuration Release --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
+          dotnet test --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
