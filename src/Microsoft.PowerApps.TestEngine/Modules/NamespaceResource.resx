@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&lt;PrivateImplementationDetails&gt;::ComputeStringHash(System.String)" xml:space="preserve">
+    <value>&lt;PrivateImplementationDetails&gt;::ComputeStringHash(System.String)</value>
+  </data>
   <data name="Microsoft.Bcl.AsyncInterfaces" xml:space="preserve">
     <value>Microsoft.Bcl.AsyncInterfaces</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="Newtonsoft.Json" xml:space="preserve">
     <value>Newtonsoft.Json</value>
+  </data>
+  <data name="OpenCvSharp" xml:space="preserve">
+    <value>OpenCvSharp</value>
   </data>
   <data name="Submission#0" xml:space="preserve">
     <value>Submission#0</value>
@@ -254,6 +260,9 @@
   </data>
   <data name="System.Linq" xml:space="preserve">
     <value>System.Linq</value>
+  </data>
+  <data name="System.Math" xml:space="preserve">
+    <value>System.Math</value>
   </data>
   <data name="System.NotSupportedException" xml:space="preserve">
     <value>System.NotSupportedException</value>

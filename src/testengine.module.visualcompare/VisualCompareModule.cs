@@ -14,7 +14,7 @@ using Microsoft.PowerFx;
 namespace testengine.module.visualcompare
 {
     [Export(typeof(ITestEngineModule))]
-    public class TestEngineSampleModule : ITestEngineModule
+    public class VisualCompareModule : ITestEngineModule
     {
         public void ExtendBrowserContextOptions(BrowserNewContextOptions options, TestSettings settings)
         {
@@ -24,7 +24,7 @@ namespace testengine.module.visualcompare
         public void RegisterPowerFxFunction(PowerFxConfig config, ITestInfraFunctions testInfraFunctions, ITestWebProvider testWebProvider, ISingleTestInstanceState singleTestInstanceState, ITestState testState, IFileSystem fileSystem)
         {
             ILogger logger = singleTestInstanceState.GetLogger();
-            config.AddFunction(new VisualCompareFunction());
+            config.AddFunction(new VisualCompareFunction(testInfraFunctions, testState, fileSystem, logger));
             logger.LogInformation("Registered VisualCompare()");
         }
 

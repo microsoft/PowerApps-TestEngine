@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-      <MySourceFiles Include="..\..\bin\$(configuration)\testengine.module.sample\testengine.module.sample.dll" />
+      <MySourceFiles Include="..\..\bin\$(configuration)\testengine.module.visualcompare\testengine.module.visualcompare.dll" />
   </ItemGroup>
 
 </Project>

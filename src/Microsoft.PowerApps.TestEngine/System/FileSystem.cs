@@ -452,7 +452,17 @@ namespace Microsoft.PowerApps.TestEngine.System
                 if (!baseUri.IsBaseOf(fullPathUri))
                 {
                     var ext = Path.GetExtension(fileName);
-                    if (!(ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase) || ext.Equals(".json", StringComparison.OrdinalIgnoreCase) || ext.Equals(".csx", StringComparison.OrdinalIgnoreCase)))
+                    if (
+                        !(
+                            ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase)
+                            ||
+                            ext.Equals(".json", StringComparison.OrdinalIgnoreCase) 
+                            ||
+                            ext.Equals(".csx", StringComparison.OrdinalIgnoreCase)
+                            ||
+                            ext.Equals(".png", StringComparison.OrdinalIgnoreCase)
+                        )
+                    )
                     {
                         return false;
                     }

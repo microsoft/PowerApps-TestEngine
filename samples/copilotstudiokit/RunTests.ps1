@@ -83,32 +83,32 @@ if ($record) {
     Write-Host "========================================" -ForegroundColor Blue
 }
 
-Write-Host "========================================" -ForegroundColor Green
-Write-Host "Entity List" -ForegroundColor Green
-Write-Host "========================================" -ForegroundColor Green
+# Write-Host "========================================" -ForegroundColor Green
+# Write-Host "Entity List" -ForegroundColor Green
+# Write-Host "========================================" -ForegroundColor Green
 
-Write-Host "----------------------------------------" -ForegroundColor Green
-Write-Host "Agent List" -ForegroundColor Green
-Write-Host "----------------------------------------" -ForegroundColor Green
+# Write-Host "----------------------------------------" -ForegroundColor Green
+# Write-Host "Agent List" -ForegroundColor Green
+# Write-Host "----------------------------------------" -ForegroundColor Green
 
-$entityListUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entitylist&etn=cat_copilotconfiguration&viewid=77dec5f3-551c-ef11-840b-6045bdd6c0ee&viewType=1039"
-if ($record) {
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityListUrl" -l Debug
-} else {
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityListUrl" -l Debug
-}
+# $entityListUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entitylist&etn=cat_copilotconfiguration&viewid=77dec5f3-551c-ef11-840b-6045bdd6c0ee&viewType=1039"
+# if ($record) {
+#     dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityListUrl" -l Debug
+# } else {
+#     dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityListUrl" -l Debug
+# }
 
-Write-Host "----------------------------------------" -ForegroundColor Green
-Write-Host "Agent Details" -ForegroundColor Green
-Write-Host "----------------------------------------" -ForegroundColor Green
+# Write-Host "----------------------------------------" -ForegroundColor Green
+# Write-Host "Agent Details" -ForegroundColor Green
+# Write-Host "----------------------------------------" -ForegroundColor Green
 
-$entityDetails = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=cat_copilotconfiguration&id=af89dc3e-f1fa-ef11-bae2-7c1e5246ee31"
+# $entityDetails = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=cat_copilotconfiguration&id=af89dc3e-f1fa-ef11-bae2-7c1e5246ee31"
                                                       
-if ($record) {
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityDetails" -l Debug
-} else {
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityDetails" -l Debug
-}
+# if ($record) {
+#     dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityDetails" -l Debug
+# } else {
+#     dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityDetails" -l Debug
+# }
 
 Write-Host "========================================" -ForegroundColor Green
 Write-Host "Custom Pages" -ForegroundColor Green
@@ -124,7 +124,7 @@ if ($record) {
 } else {
     Write-Host "Skipped recording"
     # Run the tests for each user in the configuration file.
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\webChat-playground.te.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\webChat-playground.te.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w "True"
 }
 
 # Reset the location back to the original directory.
