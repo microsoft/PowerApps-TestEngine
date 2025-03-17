@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1280"
+   height="720"
+   overflow="hidden"
+   version="1.1"
+   id="svg59"
+   sodipodi:docname="TestEngineOverview-E2E.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview59"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.6398438"
+     inkscape:cx="640"
+     inkscape:cy="360.09528"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="2869"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g59" />
+  <defs
+     id="defs2">
+    <clipPath
+       id="clip0">
+      <rect
+         x="0"
+         y="0"
+         width="1228725"
+         height="771525"
+         id="rect1" />
+    </clipPath>
+    <image
+       width="200"
+       height="125"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAB9CAYAAADnXyxYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABIcSURBVHhe7Z15kBxVHcffRkAQLxAUT0RRNHGnZ7p3Y0RgsrMJBBKy02EXNEgUObxv8EYQiEcpWvwhHoCUCiXiQWGBqIjcWqBgIQFJQBE0BsPuzC4khESS9fvr+U2Y6Xkz87qnj9md36fqWzPpee91Z/v37d97fbxWgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIghAZ0/n8LuUR56RS0b6u7DoPlIv2rWXXPm3D4syeXERIkUOyat+hrPpMwVI3HZGb868j7TkbF2f7HlyYVT/H8lWOo3blokLUlMacF0wW7d9Pus60XzDLffj9VVxUSAEY4CioDE0300JL3X1oRh3AVYSoGF8y//kwx606c1RVLjoPTIwMvJKrCAkybKv+IUtt0ZnCL5jk3gUL1B5cVeiU8eNhDte+RWcKv8Qk6YCgv0pnhmZCF+yDXFXohB3LD34exhm36czQTGKSZFkyXz0fY4yndEZoKkv9jqsLYfG6VYaZwy+YZJ2YJBkQ8FaDAdoIhvrvtFJ93IQQFJMxRztJJkmGQr86VGeCVoJBNp15pprDTQSCjKUTfuoNwz2GblXYzOGXZJL4QcAnlkEwdhnCeGcKXbRGZdWVXGx2M+HaF+iCPawkk8RLmDEIyl/P1QORz6qTde2xfs3FZjeTS/v3wsD8Dl2whxWZZNyd/wpehRAxOIL/ShOwzWWpj3HVQKDe17XtVdQbBiEmRxfsHblJXHutZJJ4GM6qQQTvNk3QNgjZ4+/5ueq5XDUQlHl0bbJmp0GaDdYkk8wsEKCr2na1LPUINI+rBGJ0gdoDbTzR0OYzmn0GqZzKdX43uWLgOF5Uh5dJXOdP/kDvRJRJxCTxQMEPXYSB9HrKKDDMdmgrgveeQladubRf7cVFA4M26FYWnTGqml0GobNVCP6bvaAt2tsm3IG38U91TK48JKZM0i8miY++vKVeWHiTegkd+XlZR8AAV/oM4dfsMch/x+Y+d9K1b6gPXHvbZNE+lovUQZmkVLTvqi/foYr23zYvz72MVyF0MUO2cpCVntaYolazwyDedY6ic5MuaCmTTK7Iabtb65c5+yCo79TVCyu6TiKZpLuhGxsR/Hf5zKDTzDeIlzma3LJelWeSJpmETeJlEpR7Gkbb7q8fWJJJuha6xoLAv9pnhGaa2QbhK+Q3aoPUJxzZt2J8MspV65gqDr5oYsTup+dD/o3v466zuOTaP+vILDDJ+Kj1cl6FkDJnKjUHAX8UBvhrfSZoLktdx9VnHjvekdmzbGiOqiiTlEcGjuEm2kJZB/We8rdjKmzf/TM9k+TzavfhQfWiJVm17zJH7UNHYAo2/jlSxuaq3eisVBgtctQLuJmdHD5PvRJBfjiC/Vx6ZqTBAO1kqf8Vsup+Q53Dq02fypijdbeqmQKbxHXe428jkCiTLJ0RmaQPA9fXIpDeg+C4BEfa2xEgG6EtFChYtp0GtXyK9XF8fxDLr8V3Cr7j8bkysHzXL7BsFa2L1hP4M6vu5GY86FFcbOsmLNcHf9Sy1IW86nQJkzn8ou7W1MjAwdxkS64YU8+Cqe7RtWOqbs4kSw5Uz0YgnYQdfAd29I6GHR+jCjn1Kd4MD2zDF3XlDPUXbsajJw1iMiA3EsYWU8sHDuJm24JxzhnadgIIJuu6gftwRi3Djn1Au8MTkN8gyAQ/0JUzVG8bhGYZ6TRz7FTR3nJDPr8LN92WiaLzdm07AdUtmQTjil0QPN/Ajk00Y/ilMchtunKG6l2DULcqkszBQqA+9dA787tz822ZWjFwgq6dMKJM8liKJhlDlxE79NKGHZyCag3inWWy1H905QzVmwahzFFquEIehQYGeRVtgTm/om8jnNLMJNiRq7U7OAXVGoTuxkUG2awrZ6jeMwiZA+OF63VB1qlKRfs7vJq2UDDT2ShdO2FF825tGhvcj1eRCAsz6s18xke/k5PRDgTT/xC8E9D7edM86D4rmp0Ev/8Bv23X1G2lOoNwRjod7Xy2Vlj2M01dvSy1zl+/mVD+KF51MsRpjorodK+zkFfXFjIJHfn1bYWTZxLXfimvIm76YI6bGoKghVD+n/g8t5BRR9O9SzjiZ/KWWgijfRzBQ2e9tPVqheCho/iqoZw6DJ8WMsV+yxz1HOrq8XZpGe5Xr0H5djcT1qrOIM3wTkzo6+vUnVfS4zfHTpVL7sByXm1b6HpG5CZBZnri6De/hFcRG4tyakATAM1E1zzOplPAXF1HH0xyIgxg8mjsN7lOILANb9W01Uy9YRDPHPQ8hyaYYtIOjHHO4NXv5KER64X8tY7NowsiNwm0Ju7uFrouX9MEQDM1/D2aAYO8U1O/XpbaBoO+kasYkw9m6tlvkBTM4WnKtb/Nm7ATjDm+MV60D+d/1kH3WMVgknvjzCQI0j9rAqBR6HfPnat242omUF+/fXfLUhdxeWPEIDVML3Oeg+7GdZrAiV06g9AybM+T4yuyi3hRHZxJ1uraCyusb00cJqH7qdBdMTtDZKmzuJox3phE11a9ykHnzxWDMGSOhMYcWjUzSOV3ezPd3cuL66DHbKM2CRR5Jsn3q1dodr5Whaw6kqsZszCnhnVt+UUTwnEVI8QgYH2KmaOq1gbxjuxPji9vkUmKzjq6fYXMhLLbatsOpaJ9z6MRmgRBP1ez8/WylcPVjEE9s4neMurdXMWInjeIlzlSGHP41c4gJGSKzc1MssHNvJiyyZqxubvROKq0IndY2XV+Au2obSOQ0N2KauAexCB0rYSrGYN6B/vb0QndvE9yFSN62iA7RhfskXbmqMrEIBXZmx8byQ1zkbZMrLBX0vWWxnbMhL/PPU/AfNxcaLznIvQB0KBCTmknumgFAp9ukde2V6eAk7v1tEGw8y/TBUUaMjeIp01BTIL/5+maNoxVcp0/P5Q3v29MhzdIN7/t4lKuZkof6tzqa0OrYUsdz3WM6FmD0H1Q2Pnhux8RK6BBIHvzxuLg67loS6ZPdXZFd+lhfTtmKhXtj3BzoTE6FVvRVrpiztXagvKrfPWbK+D4pmcNgqPq2bpASEtBDYLt30azNHLRtqD8+bp2TFUuOjdxU6FBBjlHEwBaocv0TwRSjqs2ow9jm5MNr6RTm+P0SC3XNaJ3M0jRvlAXCGkpsEFcZz0XM6I04nxI146p6CwZNxUaBMbrEaTmNypa3ry4PypYyl2cUQfQpG0kLJ+Xz6j3whi3N9RpJblQaA51GXSBkJaCGmSy6GycDvCylrJrn6Ztx1Cofws31REwyGWaIDARPVhFd9cGvcPWExvT4s0wpmcNQg8ModvxpC4Y0lBgg9D4acXAa7hoWzDQvkLThrGiGIMQi3LqZTiSP6YJhFiFbPNd3oRA9KxBiJJrfwA7vysG6iEMQkH7VS7aEr4DeLOuDRNhPXdNB3j6sR0LM+oIBCzNTKILiMiFda3RTcljQk8bhJhwnU8hCFI3SRiDYBzy1Phyu+VFNXruHZnyGl19Q62J8op6FXR5liKTPK4JiGhlqXUwx6t4tYHpeYMQOEJ+BoGQqknCGISE4J8ojeSO5ip10GyNkzQ7o6aeoe6N8xb4/JvUGxAAN0DxTNxgqWsPyap9eXWhSN0g3TKzYtomCWsQFm33jVPuwEeREcdgmBPQpboA446yr1wQxZI5/BQs9S50gUINvJsJ2enBoYw6IYrZF7vAIHdwtfQpFZ1PIzBSMUmHBolU3mO4CTyrDmN8uI05jI0DU0zi80oYrkiTJfAqOiYOg6Bcu5fmPCNLbYhrmtVQpJVJusggazYm8Iw6AvlzCIBWXau/0LPjhaxaPJRTH0KgrIboLU8/hGhyt+/g32dBJ9LV8TaP5oYmFoNkVEFTt5nobxT49HSsIJN8DoGSqEm6xCCJZA4EyBm+IKgTDPD0cE69hYunShwGCfhsPv09rqGJ9rh6M/poRhb+Hi/0MvjJhE2StkGoW5VE5sAOPw1qOShHQFzAxVMnDoMcYauXauq20y35rBqlmVaqr4HDWCaH5TQB9/noqq7F3+1uNN9XWUvMkEloIgUETwImsR+eKA40PEVXLtqnQJ0//NRe9yZhDhqcGgzIS4f1q366btENfW90BedrtrGZ/srVWuLNLGmpjZr6pqIDTMNBhv62ZCBeTTJgTPIFBFBsJoEBbqUX5vDqGqAHn2Cgx3V1oxDWn8g0pPn9vWfSH/bv1Cainb8VO3wT9CiC6T583o76v8X3H+P7d/H7V/H9dOgUmjOLumR0vSPoM+c6KIAXZ9SLqU2s8+Ka7WoplKVn7lfSncj0DhM01fRojrJX+etHIfxtIrnjwRgvk8RnkvX0+jVeVVMmKi/RiXz9ZI6kph+lGw51OzRy0btEsuof+PTeG5JH1uJgbUveUfsgcO+GxlG3ZTewrSrvDKHXRp/HzdeBMvR+En3dzvR7XkWyTIzkzkJQRRqkGGN8lJtvCZm07Nq369oIK7R3f5ITWOOoerZmZyYiPrJfTt0l3hwt+P3l/rqdCuu+hpuvgzIqfv+Hv3ynQgbZSm/i4tUkhxekUZqk6Gwvj1iv5ubbgvJ0jUbfVlAlmDmqIFBSM0iNaPxzycEHqefxZtWRpEEImr0Fv8cxT/EqXkXylF0nEpOge7MlyO3qCGrqZmnbCiLKHGnM6o6uxrGaHZmKEJS3YYyxJ2/aTpI2CIG/y6kQPfeirR9I6Nbh85euvavNzadDJJmk6Gzd8I5Mw05qRtnNnahtJ4hSyBxVKCCxAzt590akQuA2nEpOwyAEyrwVfxvTx5HrhLqUge5C1+qz9FAZN5k+E67zRQRdRyahM1TcXFtw5O/omgjqr03LHFUQgEPYmU/U7uDUREdbW72WN82DDVI9hRqJTAzC0Cuiaeqi81DnNmwfPTNDbdRuN722YSP9Dn2b7jej2WK4fndRGTh31t1CN+vH3FxL6ExXueiUdG0YCZmD5szi5lJlqF8dhB19i2/HpyNLfZ43q0rfcoxPotRoyNPOdKqZxkrejJQwMp3CpvbavbKhq2CThM4kCPrtqD/KzWmhcQrKhn4asBsyRy0ITIuOgg3BmoLQLfkNb5YQJ8gENENKyExib8ER/n3TY2MNR4bHkTlQpiNz/HtkoGtS8KKseh2C8lFdsLKoC0FvdlqDz0fw7zL3sXVlo9BDvGlCnHiZpCOTUDA79yGjrC4XB96NAfx7oe9jeejnOdI6W9UMusKNgPyrL0DrZanzubgH3bbudTMG1X74bR5NPE0X/vKVZ0g+gmV0N++38P0XbCo6i6NvW68Sr0pIgqkOTRKVYLQHJroocxAYANPt7bog9YRM8SDNvsjFQzGUU/ujrav9bbdQmQ5uXF2Im8rFRPscBGlqJqH5q7plQF6FMgGO7hs0AVqr07h4RyztV3shm5hOJBdobjEhIqbcdExCmaPbzEHQA026AK0VzXTCxTvCe7Msuk7+9rWy1I1cTUiapDMJZY5u61ZVKWTVqDZAa4Sjft3rmMPCz2/4rx9ohQzyJa4mpMGUO3Augjd2k3Rr5qhCrzPQBahP/xqaV3/hLig0KR2CvvWJgBoNZ9UgVxXSoHKdxI7VJN2cOaqYvh4NKvOZqXmmD0t545vKtZXVyEITvvZa6WZUlwF62sRpkm7PHFUOn6v2Nh04s+gWjXEE/R/x/UrUvRj6Hr7TRA0X4vNS/H4Nlt2Jf09xnSDaWuhX6d7QJzxD5TqJsxpBHZlJyBzdnjlqQVBe7gvS9BTwLVNCAtRkEm3AB9FM6Fb5OTSjDkBwlhuCNVnRlXp6xbR0rbqRKDLJTMsctdBYBF2jMF2ijoX10sRyK3lThG6FTDJVMYnWAK00EzOHH28+Xkvd7A/gGEWzyF9Cd8XyJgjdThiTzOTMoWHOcEYtwVH9qoCDd2Oh7YcLlvpy4tPgCNEQxCSzIXM0wzvDlVPHIKucB7Ncj89HILrp0OhiH0Tjii3QOuinhaz6BF25n1HPTQh6TEwyyzKHCX30eC49IEQX8ugpRMhdmFHHISscT4IJxujWFCyfH9VcWEKXQiaZdO0zYITtGnPcXVqR25+LCkLvUh4ZzJZc+7yJon11uWhfRpM0rFtyYCwzlguCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAiCIAgJodT/AdqndLncAHU8AAAAAElFTkSuQmCC"
+       preserveAspectRatio="none"
+       id="img1" />
+    <clipPath
+       id="clip2">
+      <rect
+         x="0"
+         y="0"
+         width="1228725"
+         height="767953"
+         id="rect2" />
+    </clipPath>
+  </defs>
+  <g
+     id="g59">
+    <rect
+       x="-0.60981369"
+       y="1.2196294"
+       width="1280"
+       height="720"
+       fill="#ffffff"
+       id="rect3" />
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="24px"
+       transform="translate(48,52)"
+       id="text3">Test Engine- Local Development and ALM Process</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="700"
+       font-size="24"
+       transform="translate(979.138 396)"
+       id="text10">Run Tests</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="400"
+       font-size="24"
+       transform="translate(979.138 454)"
+       id="text11">Validate least privilege</text>
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       id="text12"
+       x="979.138"
+       y="479.34109">Upload results</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="400"
+       font-size="24"
+       transform="translate(979.138 511)"
+       id="text14">Quality gate</text>
+    <g
+       id="g17">
+      <g
+         id="g16">
+        <g
+           id="g15">
+          <path
+             d="M188.875 174.375 124.125 174.375 124.125 135.062 188.875 135.062 188.875 174.375ZM195.812 132.75C195.812 130.206 193.731 128.125 191.188 128.125L121.812 128.125C119.269 128.125 117.188 130.206 117.188 132.75L117.188 181.312 195.812 181.312 195.812 132.75Z"
+             id="path14" />
+          <path
+             d="M163.438 185.938 163.438 187.094C163.438 187.788 162.975 188.25 162.281 188.25L150.719 188.25C150.025 188.25 149.562 187.788 149.562 187.094L149.562 185.938 103.312 185.938 103.312 188.25C103.312 190.794 105.394 192.875 107.938 192.875L205.062 192.875C207.606 192.875 209.688 190.794 209.688 188.25L209.688 185.938 163.438 185.938Z"
+             id="path15" />
+        </g>
+      </g>
+    </g>
+    <g
+       id="g20">
+      <g
+         id="g19">
+        <g
+           id="g18">
+          <path
+             d="M163.986 252C143.011 252 126.007 269.004 126.007 289.979 126.007 310.954 143.011 327.958 163.986 327.958 184.961 327.958 201.965 310.954 201.965 289.979 201.965 289.978 201.965 289.976 201.965 289.975 201.972 269.009 184.982 252.007 164.016 252 164.006 252 163.996 252 163.986 252ZM168.152 306.1 162.375 306.1 162.375 278.509C161.887 278.842 161.372 279.163 160.83 279.472 160.288 279.782 159.729 280.059 159.154 280.302 158.533 280.546 157.88 280.773 157.195 280.983 156.51 281.193 155.758 281.398 154.937 281.597L154.937 276.982C155.49 276.827 155.994 276.672 156.447 276.517 156.9 276.362 157.349 276.207 157.793 276.052 158.234 275.875 158.678 275.693 159.121 275.504 159.564 275.315 160.006 275.134 160.449 274.956 160.869 274.735 161.295 274.513 161.726 274.292 162.157 274.071 162.584 273.837 163.006 273.592 163.473 273.349 163.932 273.083 164.383 272.792 164.834 272.501 165.294 272.235 165.762 271.992L168.152 271.992Z"
+             fill="#00B050"
+             id="path17" />
+        </g>
+      </g>
+    </g>
+    <path
+       d="M243.5 162.167 369.77 162.167 369.77 166.833 243.5 166.833ZM367.437 157.5 381.437 164.5 367.437 171.5Z"
+       fill="#00B050"
+       id="path20" />
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="700"
+       font-size="24px"
+       id="text20"
+       x="37.023346"
+       y="396.6098">Local Development</text>
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       id="text21"
+       x="37.023346"
+       y="454.6098">Execute with user</text>
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       id="text22"
+       x="37.023346"
+       y="483.6098">permissions</text>
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       id="text23"
+       x="37.023346"
+       y="511.6098">Run tests with Interactive</text>
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       id="text24"
+       x="37.023346"
+       y="540.6098">User Login</text>
+    <g
+       id="g26">
+      <g
+         id="g25">
+        <g
+           id="g24">
+          <path
+             d="M494.986 259C474.011 259 457.007 276.004 457.007 296.979 457.007 317.954 474.011 334.958 494.986 334.958 515.961 334.958 532.965 317.954 532.965 296.979 532.965 296.978 532.965 296.977 532.965 296.976 532.972 276.01 515.981 259.007 495.015 259 495.005 259 494.996 259 494.986 259ZM505.844 314.009 484.129 314.009 484.129 310.822C484.109 309.486 484.357 308.16 484.859 306.922 485.351 305.754 486.029 304.673 486.867 303.722 487.759 302.712 488.756 301.8 489.84 301 490.969 300.159 492.187 299.34 493.492 298.543 494.585 297.888 495.622 297.144 496.592 296.318 497.321 295.696 497.969 294.984 498.521 294.2 498.975 293.551 499.307 292.826 499.502 292.058 499.684 291.274 499.773 290.472 499.767 289.667 499.768 288.968 499.656 288.273 499.435 287.609 499.227 286.969 498.894 286.376 498.455 285.866 497.998 285.347 497.431 284.937 496.795 284.666 496.055 284.354 495.258 284.202 494.455 284.218 492.887 284.212 491.34 284.576 489.939 285.281 488.466 286.029 487.112 286.991 485.922 288.136L485.922 282.956C487.072 281.885 488.451 281.09 489.955 280.632 491.578 280.151 493.263 279.915 494.955 279.932 496.306 279.923 497.651 280.125 498.939 280.532 500.125 280.901 501.229 281.492 502.193 282.275 503.13 283.048 503.88 284.025 504.385 285.13 504.935 286.355 505.208 287.687 505.185 289.03 505.197 290.238 505.057 291.442 504.768 292.615 504.485 293.716 504.023 294.763 503.4 295.714 502.706 296.761 501.874 297.71 500.928 298.537 499.763 299.553 498.52 300.474 497.209 301.292 496.013 302.045 494.95 302.743 494.021 303.384 493.179 303.955 492.385 304.594 491.646 305.293 491.045 305.856 490.546 306.519 490.17 307.252 489.832 307.951 489.661 308.718 489.67 309.494L505.84 309.494Z"
+             fill="#00B050"
+             id="path24" />
+        </g>
+      </g>
+    </g>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="700"
+       font-size="24"
+       transform="translate(358.379 396)"
+       id="text26">Share Test Assets</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="400"
+       font-size="24"
+       transform="translate(358.379 454)"
+       id="text27">Share Apps and Flows</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="400"
+       font-size="24"
+       transform="translate(358.379 483)"
+       id="text28">with Test User</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="400"
+       font-size="24"
+       transform="translate(358.379 511)"
+       id="text29">Least privileges user</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="400"
+       font-size="24"
+       transform="translate(358.379 540)"
+       id="text30">setup</text>
+    <g
+       id="g36">
+      <g
+         id="g35">
+        <g
+           id="g34">
+          <path
+             d="M443.844 147.886C433.92 147.886 425.875 155.93 425.875 165.854 425.875 175.778 433.92 183.823 443.844 183.823 453.768 183.823 461.812 175.778 461.812 165.854 461.812 155.93 453.768 147.886 443.844 147.886ZM443.844 154.843C446.63 154.835 448.896 157.088 448.904 159.874 448.912 162.661 446.659 164.926 443.872 164.934 441.086 164.942 438.82 162.69 438.812 159.903 438.812 159.898 438.812 159.893 438.812 159.889 438.812 157.108 441.063 154.851 443.844 154.843ZM453.906 175.069 433.781 175.069 433.781 171.188C433.8 170.4 434.169 169.663 434.788 169.175 436.282 168.14 437.939 167.363 439.689 166.875 441.041 166.487 442.438 166.279 443.844 166.257 445.251 166.261 446.65 166.469 447.998 166.875 449.781 167.338 451.453 168.154 452.914 169.276 453.533 169.763 453.902 170.501 453.921 171.288Z"
+             id="path30" />
+          <path
+             d="M481.794 143.185 464.199 153.736C465.19 155.401 465.981 157.176 466.556 159.026L484.683 148.188C483.47 146.677 482.496 144.99 481.794 143.185Z"
+             id="path31" />
+          <path
+             d="M512.125 136.386C512.125 143.531 506.333 149.323 499.188 149.323 492.042 149.323 486.25 143.531 486.25 136.386 486.25 129.24 492.042 123.448 499.188 123.448 506.333 123.448 512.125 129.24 512.125 136.386Z"
+             id="path32" />
+          <path
+             d="M484.683 183.55 466.556 172.625C465.981 174.475 465.19 176.251 464.199 177.915L481.794 188.524C482.5 186.729 483.474 185.052 484.683 183.55Z"
+             id="path33" />
+          <path
+             d="M512.125 195.323C512.125 202.468 506.333 208.261 499.188 208.261 492.042 208.261 486.25 202.468 486.25 195.323 486.25 188.178 492.042 182.386 499.188 182.386 506.333 182.386 512.125 188.178 512.125 195.323Z"
+             id="path34" />
+        </g>
+      </g>
+    </g>
+    <path
+       d="M532.5 162.167 658.77 162.167 658.77 166.833 532.5 166.833ZM656.437 157.5 670.437 164.5 656.437 171.5Z"
+       fill="#00B050"
+       id="path36" />
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="700"
+       font-size="24"
+       transform="translate(668.759 396)"
+       id="text36">Source Control</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="400"
+       font-size="24"
+       transform="translate(668.759 454)"
+       id="text37">Commit to Source</text>
+    <text
+       font-family="Aptos,Aptos_MSFontService,sans-serif"
+       font-weight="400"
+       font-size="24"
+       transform="translate(668.759 483)"
+       id="text38">Control</text>
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       transform="translate(668.759,511)"
+       id="text39">Trigger Build</text>
+    <g
+       id="g42">
+      <g
+         id="g41">
+        <g
+           id="g40">
+          <path
+             d="M763.986 259C743.01 258.999 726.006 276.003 726.005 296.979 726.004 317.955 743.008 334.959 763.984 334.96 784.96 334.961 801.964 317.957 801.965 296.981 801.965 296.98 801.965 296.978 801.965 296.977 801.973 276.011 784.982 259.008 764.016 259 764.006 259 763.996 259 763.986 259ZM774.034 308.532C773.335 309.773 772.364 310.841 771.194 311.653 769.927 312.527 768.517 313.173 767.028 313.562 765.398 314 763.716 314.218 762.028 314.21 760.325 314.216 758.624 314.066 756.948 313.761 755.545 313.535 754.188 313.081 752.931 312.417L752.931 307.3C754.266 308.232 755.755 308.918 757.331 309.326 758.916 309.76 760.551 309.983 762.194 309.99 762.985 309.984 763.775 309.906 764.552 309.757 765.375 309.609 766.167 309.323 766.894 308.911 767.615 308.5 768.229 307.926 768.687 307.234 769.188 306.429 769.436 305.492 769.399 304.545 769.428 303.576 769.194 302.618 768.72 301.772 768.258 301.001 767.606 300.361 766.827 299.913 765.94 299.408 764.975 299.055 763.972 298.867 762.796 298.638 761.599 298.527 760.401 298.535L757.315 298.535 757.315 294.285 760.237 294.285C761.302 294.293 762.365 294.192 763.409 293.985 764.293 293.818 765.138 293.486 765.899 293.006 766.579 292.57 767.139 291.971 767.526 291.262 767.935 290.462 768.135 289.571 768.107 288.673 768.14 287.857 767.951 287.048 767.56 286.332 767.218 285.748 766.737 285.257 766.16 284.904 765.592 284.56 764.968 284.318 764.316 284.19 763.682 284.06 763.038 283.993 762.391 283.99 760.997 284.003 759.612 284.205 758.273 284.59 756.878 284.969 755.554 285.574 754.355 286.382L754.355 281.671C755.598 281.012 756.925 280.526 758.3 280.226 759.799 279.898 761.33 279.737 762.864 279.745 764.235 279.742 765.601 279.904 766.933 280.226 768.175 280.517 769.359 281.016 770.433 281.704 771.43 282.346 772.265 283.21 772.874 284.227 773.503 285.327 773.819 286.579 773.786 287.846 773.865 289.838 773.183 291.785 771.878 293.292 770.48 294.779 768.651 295.789 766.648 296.18 767.733 296.292 768.795 296.562 769.802 296.98 770.792 297.384 771.707 297.951 772.509 298.657 773.288 299.346 773.925 300.181 774.384 301.114 774.856 302.08 775.095 303.144 775.084 304.219 775.115 305.724 774.753 307.21 774.034 308.532Z"
+             fill="#00B050"
+             id="path40" />
+        </g>
+      </g>
+    </g>
+    <path
+       d="M853.5 162.167 979.77 162.167 979.77 166.833 853.5 166.833ZM977.437 157.5 991.437 164.5 977.437 171.5Z"
+       fill="#00B050"
+       id="path42" />
+    <g
+       clip-path="url(#clip0)"
+       transform="matrix(0.000104987 0 0 0.000104987 695 122)"
+       id="g44">
+      <g
+         clip-path="url(#clip2)"
+         transform="scale(1 1.00465)"
+         id="g43">
+        <use
+           width="100%"
+           height="100%"
+           xlink:href="#img1"
+           transform="scale(6143.62 6143.62)"
+           id="use42" />
+      </g>
+    </g>
+    <g
+       id="g47">
+      <g
+         id="g46">
+        <g
+           id="g45">
+          <path
+             d="M1060.96 295C1060.19 296.118 1059.42 297.151 1058.67 298.1 1057.92 299.049 1057.13 300 1056.31 300.955L1066.27 300.955 1066.27 286.416C1065.23 288.253 1064.28 289.864 1063.42 291.247 1062.56 292.63 1061.74 293.881 1060.96 295Z"
+             fill="#00B050"
+             id="path44" />
+          <path
+             d="M1064.99 259C1044.01 258.999 1027.01 276.003 1027.01 296.979 1027 317.955 1044.01 334.959 1064.98 334.96 1085.96 334.961 1102.96 317.957 1102.96 296.981 1102.96 296.981 1102.96 296.98 1102.96 296.98 1102.97 276.014 1085.99 259.009 1065.02 259 1065.01 259 1065 259 1064.99 259ZM1076.57 305.773 1072.02 305.773 1072.02 312.912 1066.27 312.912 1066.27 305.773 1050.64 305.773 1050.64 301.225C1052.18 299.542 1053.7 297.771 1055.18 295.912 1056.67 294.053 1058.06 292.166 1059.37 290.251 1060.67 288.336 1061.89 286.433 1063.01 284.54 1064.12 282.647 1065.11 280.816 1065.97 279.045L1072.02 279.045 1072.02 300.959 1076.57 300.959Z"
+             fill="#00B050"
+             id="path45" />
+        </g>
+      </g>
+    </g>
+    <g
+       id="g50">
+      <g
+         id="g49">
+        <g
+           id="g48">
+          <path
+             d="M1087.2 127C1087.2 131.418 1083.62 135 1079.2 135 1074.78 135 1071.2 131.418 1071.2 127 1071.2 122.582 1074.78 119 1079.2 119 1083.62 119 1087.2 122.582 1087.2 127Z"
+             id="path47" />
+          <path
+             d="M1098.6 138C1096.6 137 1094.2 137.7 1093.2 139.7L1089.7 146.3 1074.3 136.6C1073.7 136.2 1073 136 1072.2 136L1055.2 136C1053.7 136 1052.4 136.8 1051.7 138.1L1045.2 150.1C1044.1 152 1044.9 154.5 1046.8 155.5 1047.4 155.8 1048.1 156 1048.7 156 1050.1 156 1051.5 155.2 1052.2 153.9L1057.6 144 1063.5 144 1045.8 177 1029.2 177C1027 177 1025.2 178.8 1025.2 181 1025.2 183.2 1027 185 1029.2 185L1048.2 185C1049.7 185 1051 184.2 1051.7 182.9L1058.7 170 1070.2 180.7 1069.3 200.8C1069.1 203 1070.8 204.9 1073 205 1073.1 205 1073.1 205 1073.2 205 1075.3 205 1077.1 203.3 1077.2 201.2L1078.2 179.2C1078.3 178 1077.8 176.9 1076.9 176.1L1067.2 167.1 1077.4 148.1 1089 155.4C1089.9 156 1091.1 156.2 1092.2 155.9 1093.3 155.6 1094.2 154.9 1094.7 153.9L1100.2 143.4C1101.3 141.5 1100.6 139.1 1098.6 138Z"
+             id="path48" />
+        </g>
+      </g>
+    </g>
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       id="text50"
+       x="102.59325"
+       y="653.68225">Unit Tests - Mock dependencies / data, Connectors, Trigger Actions</text>
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       id="text55"
+       x="519.97314"
+       y="610.39014">Integration Tests -Known data state</text>
+    <path
+       d="m 891.27585,687.90186 163.99995,-130 164,130 z"
+       stroke="#00b050"
+       stroke-width="2"
+       stroke-miterlimit="8"
+       fill="#00b050"
+       fill-rule="evenodd"
+       id="path57" />
+    <path
+       d="m 978.27585,619.90186 77.49995,-62 77.5,62 z"
+       stroke="#13501b"
+       stroke-width="2"
+       stroke-miterlimit="8"
+       fill="#13501b"
+       fill-rule="evenodd"
+       id="path58" />
+    <text
+       font-family="Aptos, Aptos_MSFontService, sans-serif"
+       font-weight="400"
+       font-size="24px"
+       id="text58"
+       x="913.63348"
+       y="574.73132">UI Tests</text>
+    <path
+       d="m 1020.2758,584.90186 35.5,-28 35.5,28 z"
+       stroke="#7f7f7f"
+       stroke-width="2"
+       stroke-miterlimit="8"
+       fill="#a6a6a6"
+       fill-rule="evenodd"
+       id="path59" />
+  </g>
+</svg>

@@ -1,6 +1,6 @@
 # Support
 
-> This is currently an experimental project.
+> This is currently an preview project.
 
 ## How to file issues and get help
 

@@ -1,0 +1,260 @@
+{
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "Introduction",
+        "elements": [
+          {
+            "type": "html",
+            "name": "introText",
+            "html": "<h2>Growing to Enterprise Grade</h2><p>In this section, we will explore how to grow your solutions to enterprise grade, ensuring they are sustainable, reliable, secure, and performant as they scale.</p>"
+          }
+        ]
+      },
+      {
+        "name": "KeyConcepts",
+        "elements": [
+          {
+            "type": "html",
+            "name": "keyConceptsText",
+            "html": "<h3>Key Concepts</h3><p>Let's understand the key components of an enterprise-grade model.</p>"
+          },
+          {
+            "type": "radiogroup",
+            "name": "keyConceptsQuestion",
+            "title": "Looking at your organization which of the following is the goal for your enterprise-grade solutions?",
+            "choices": [
+              "On-Demand Deployment",
+              "Manual Testing",
+              "Infrequent Updates"
+            ]
+          },
+          {
+            "type": "radiogroup",
+            "name": "keyConceptsInfo",
+            "title": "Are you familiar with these concepts?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "onDemandDeploymentInfo",
+            "visibleIf": "{keyConceptsInfo} = 'Not sure, tell me more' and {keyConceptsQuestion} = 'On-Demand Deployment'",
+            "html": "<p><b>On-Demand Deployment:</b> The ability to deploy updates and new features quickly and efficiently is crucial for maintaining a competitive edge. Automated testing ensures that these deployments are reliable and do not introduce new issues.</p>"
+          },
+          {
+            "type": "html",
+            "name": "manualTestingInfo",
+            "visibleIf": "{keyConceptsInfo} = 'Not sure, tell me more' and {keyConceptsQuestion} = 'Manual Testing'",
+            "html": "<p><b>Manual Testing:</b> Manual testing involves human testers executing test cases without the use of automation tools. While it can be useful for exploratory testing and identifying user experience issues, it is less efficient and scalable compared to automated testing.</p>"
+          },
+          {
+            "type": "html",
+            "name": "infrequentUpdatesInfo",
+            "visibleIf": "{keyConceptsInfo} = 'Not sure, tell me more' and {keyConceptsQuestion} = 'Infrequent Updates'",
+            "html": "<p><b>Infrequent Updates:</b> Infrequent updates refer to the practice of deploying new features or fixes at long intervals. This can lead to larger, riskier releases and slower response times to market demands or security issues. Frequent, smaller updates are generally preferred in an enterprise-grade model.</p>"
+          }
+        ]
+      },
+      {
+        "name": "RapidResponse",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "rapidResponseQuestion",
+            "title": "Are you familiar with the importance of rapid response to changes in an enterprise-grade model?",
+            "choices": [
+              "Yes",
+              "No, I'd like to learn more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "rapidResponseInfo",
+            "visibleIf": "{rapidResponseQuestion} = 'No, I'd like to learn more'",
+            "html": "<p><b>Rapid Response to Changes:</b> Whether it's a new feature request, a bug fix, or a security update, the ability to respond quickly is essential. Automated tests provide a safety net that allows you to make changes with confidence, knowing that any issues will be caught early.</p>"
+          }
+        ]
+      },
+      {
+        "name": "CICD",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "ciCdQuestion",
+            "title": "Have you come across the concept of Continuous Integration and Deployment (CI/CD)?",
+            "choices": [
+              "Yes",
+              "No, please explain"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "ciCdInfo",
+            "visibleIf": "{ciCdQuestion} = 'No, please explain'",
+            "html": "<p><b>Continuous Integration and Deployment (CI/CD):</b> Integrating automated tests into your CI/CD pipeline ensures that every code change is tested and validated before it reaches production. This reduces the risk of defects and ensures that your application remains stable and reliable.</p>"
+          },
+          {
+            "type": "checkbox",
+            "name": "ciCdTools",
+            "title": "Which of the following tools or methods do you use for CI/CD?",
+            "choices": [
+              "Manual Deployment",
+              "Pipelines for Power Platform",
+              "Azure DevOps",
+              "GitHub"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "manualDeploymentInfo",
+            "visibleIf": "{ciCdTools} contains 'Manual Deployment'",
+            "html": "<p><b>Manual Deployment:</b> Manual deployment involves manually transferring code changes to the production environment. While it can be straightforward, it is prone to human error and less efficient compared to automated deployment methods.</p>"
+          },
+          {
+            "type": "html",
+            "name": "pipelinesForPowerPlatformInfo",
+            "visibleIf": "{ciCdTools} contains 'Pipelines for Power Platform'",
+            "html": "<p><b>Pipelines for Power Platform:</b> Pipelines for Power Platform provide a way to automate the deployment of Power Platform solutions, ensuring consistency and reducing the risk of errors during deployment.</p>"
+          },
+          {
+            "type": "html",
+            "name": "azureDevOpsInfo",
+            "visibleIf": "{ciCdTools} contains 'Azure DevOps'",
+            "html": "<p><b>Azure DevOps:</b> Azure DevOps offers a suite of tools for CI/CD, including pipelines for automated builds, tests, and deployments. It supports a wide range of languages and platforms, making it a versatile choice for enterprise-grade applications.</p>"
+          },
+          {
+            "type": "html",
+            "name": "gitHubInfo",
+            "visibleIf": "{ciCdTools} contains 'GitHub'",
+            "html": "<p><b>GitHub:</b> GitHub provides CI/CD capabilities through GitHub Actions, allowing you to automate workflows for building, testing, and deploying your code directly from your GitHub repository.</p>"
+          }
+        ]
+      },
+      {
+        "name": "AutomatedTestingBenefits",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "automatedTestingBenefitsQuestion",
+            "title": "Are you aware of the benefits of automated testing in an enterprise-grade model?",
+            "choices": [
+              "Yes",
+              "No, I'd like to know more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "automatedTestingBenefitsInfo",
+            "visibleIf": "{automatedTestingBenefitsQuestion} = 'No, I'd like to know more'",
+            "html": "<p><b>Benefits of Automated Testing:</b> Automated testing provides several benefits, including confidence in deployments, faster time to market, improved quality, and scalability. It ensures that your application will continue to function correctly after each deployment, allows you to deploy more frequently with less risk, and can handle large volumes of test cases.</p>"
+          }
+        ]
+      },
+      {
+        "name": "ConfidenceInDeployments",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "confidenceInDeploymentsQuestion",
+            "title": "Do you feel confident in your deployments with your current testing practices?",
+            "choices": [
+              "Yes",
+              "No, I'd like to improve"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "confidenceInDeploymentsInfo",
+            "visibleIf": "{confidenceInDeploymentsQuestion} = 'No, I'd like to improve'",
+            "html": "<p><b>Confidence in Deployments:</b> Automated tests provide assurance that your application will continue to function correctly after each deployment. This confidence allows you to deploy more frequently and with less risk.</p>"
+          }
+        ]
+      },
+      {
+        "name": "FasterTimeToMarket",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "fasterTimeToMarketQuestion",
+            "title": "Are you able to release new features and updates quickly?",
+            "choices": [
+              "Yes",
+              "No, I'd like to speed up"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "fasterTimeToMarketInfo",
+            "visibleIf": "{fasterTimeToMarketQuestion} = 'No, I'd like to speed up'",
+            "html": "<p><b>Faster Time to Market:</b> By automating repetitive testing tasks, you can reduce the time required for testing and accelerate the release of new features and updates.</p>"
+          }
+        ]
+      },
+      {
+        "name": "ImprovedQuality",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "improvedQualityQuestion",
+            "title": "Do you believe your application is thoroughly tested and of high quality?",
+            "choices": [
+              "Yes",
+              "No, I'd like to enhance quality"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "improvedQualityInfo",
+            "visibleIf": "{improvedQualityQuestion} = 'No, I'd like to enhance quality'",
+            "html": "<p><b>Improved Quality:</b> Automated tests can cover a wide range of scenarios, including edge cases and negative tests, ensuring that your application is thoroughly tested and of high quality.</p>"
+          }
+        ]
+      },
+      {
+        "name": "Scalability",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "scalabilityQuestion",
+            "title": "Do your current testing practices need to scale to include low-code Power Platform solutions?",
+            "choices": [
+              "Yes",
+              "Partially, as we are using code-first tools to execute tests",
+              "No, I would like to expand my low-code test practices"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "scalabilityInfo",
+            "visibleIf": "{scalabilityQuestion} = 'No, I would like to expand my low-code test practices'",
+            "html": "<p><b>Scalability:</b> Automated testing can handle large volumes of test cases, making it suitable for large-scale Power Platform applications. It can also be easily scaled to accommodate growing testing needs.</p>"
+          }
+        ]
+      },
+      {
+        "name": "KeyOutcomes",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "keyOutcomesQuestion",
+            "title": "What key outcomes are you looking to achieve with automated testing for Power Platform solutions?",
+            "choices": [
+              "Increased deployment confidence",
+              "Faster time to market",
+              "Improved application quality",
+              "Enhanced scalability",
+              "Better performance monitoring",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          }
+        ]
+      }
+    ]
+  }
+  

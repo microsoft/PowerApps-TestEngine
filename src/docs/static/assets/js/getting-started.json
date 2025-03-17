@@ -1,0 +1,1011 @@
+{
+    "title": "Powerful Dev Conference - Getting Started Assessment",
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "welcome",
+        "elements": [
+          {
+            "type": "html",
+            "name": "welcomeMessage",
+            "html": "<h2>Welcome to the Getting Started Assessment</h2><p>This assessment will help you get started by identifying your role and aligning you with the appropriate learning path and getting started reading.</p>"
+          }
+        ]
+      },
+      {
+        "name": "roleSelection",
+        "elements": [
+            {
+              "type": "radiogroup",
+              "name": "bestMatchingRole",
+              "title": "What is your best matching role?",
+              "choices": [
+                  "Business Aligned User",
+                  "Architect",
+                  "Technical"
+              ],
+              "defaultValue": ""
+            },
+            {
+              "type": "html",
+              "name": "roleDescription",
+              "visibleIf": "{bestMatchingRole} notempty",
+              "html": "<p>You selected: {bestMatchingRole}. Here is a brief description of this role:</p>"
+            },
+            {
+              "type": "html",
+              "name": "businessAlignedUserDescription",
+              "visibleIf": "{bestMatchingRole} = 'Business Aligned User'",
+              "html": "<h3>Business Aligned User</h3><p>Represents business stakeholders who have invested in the Power Platform and want to ensure automated testing is applied at the correct level. They are concerned with business continuity, solution performance, and mitigating security risks.</p>"
+            },
+            {
+              "type": "html",
+              "name": "architectDescription",
+              "visibleIf": "{bestMatchingRole} = 'Architect'",
+              "html": "<h3>Architect</h3><p>Responsible for reviewing the pillars of the Power Well-Architected Framework and implementing quality control and integration with other information technology investments. They ensure holistic integration across low-code and code-first investments.</p>"
+            },
+            {
+              "type": "html",
+              "name": "technicalDescription",
+              "visibleIf": "{bestMatchingRole} = 'Technical'",
+              "html": "<h3>Technical</h3><p>Includes roles such as DevOps Engineers, Software Engineers, and Support Engineers who are responsible for the overall Continuous Integration / Deployment process and integrating Power Platform into this process. They can manage source control integration, test assets, and quality processes for deployment and updates.</p>"
+            }
+        ]
+      },
+      {
+        "name": "businessAlignedUser",
+        "visibleIf": "{bestMatchingRole} = 'Business Aligned User'",
+        "elements": [
+          {
+            "type": "html",
+            "name": "businessAlignedUserDescription",
+            "html": "<h3>Business Aligned User</h3><p>Represents business stakeholders who have invested in the Power Platform and want to ensure automated testing is applied at the correct level. They are concerned with business continuity, solution performance, and mitigating security risks.</p>"
+          },
+          {
+            "type": "radiogroup",
+            "name": "businessPersona",
+            "title": "Select your persona:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Business Stakeholders",
+              "Business Unit Leads",
+              "Managers",
+              "Makers",
+              "Trainers"
+            ],
+            "defaultValue": ""
+          }
+        ]
+      },
+      {
+        "name": "businessStakeholderConcerns",
+        "visibleIf": "{businessPersona} = 'Business Stakeholders'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "stakeholderConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Business Continuity",
+              "Solution Performance",
+              "Security Risks",
+              "Empowering Business Users",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "businessContinuityInfo",
+            "visibleIf": "{stakeholderConcerns} contains 'Business Continuity'",
+            "html": "<h4>Business Continuity</h4><p>Automated testing plays a critical role in ensuring business continuity by providing a safety net that ensures new features do not disrupt existing functionality. This continuous validation helps maintain the stability and reliability of the solutions, thereby supporting uninterrupted business operations.</p>"
+          },
+          {
+            "type": "html",
+            "name": "solutionPerformanceInfo",
+            "visibleIf": "{stakeholderConcerns} contains 'Solution Performance'",
+            "html": "<h4>Solution Performance</h4><p>Automated testing helps in identifying performance bottlenecks early in the development process, allowing for timely optimizations. By incorporating performance tests into the automated testing suite, you can ensure that the solutions meet the required performance standards and deliver a seamless user experience.</p>"
+          },
+          {
+            "type": "html",
+            "name": "securityRisksInfo",
+            "visibleIf": "{stakeholderConcerns} contains 'Security Risks'",
+            "html": "<h4>Security Risks</h4><p>Automated testing includes security tests that validate the application's resilience to various attack scenarios. These tests ensure that the solutions comply with security best practices and protect sensitive business data. By integrating security tests into the automated testing process, you can proactively address potential vulnerabilities and safeguard the organization's assets.</p>"
+          },
+          {
+            "type": "html",
+            "name": "empoweringBusinessUsersInfo",
+            "visibleIf": "{stakeholderConcerns} contains 'Empowering Business Users'",
+            "html": "<h4>Empowering Business Users</h4><p>Low-code solutions offer a scalable way to empower business users to build solutions independently and in coordination with IT development teams or partners. Automated testing ensures that even solutions developed by non-technical users meet the organization's standards and can be scaled effectively.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{stakeholderConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Business Continuity:</strong> Ensures new features do not disrupt existing functionality, maintaining stability and reliability.</li><li><strong>Solution Performance:</strong> Identifies performance bottlenecks early, ensuring solutions meet performance standards.</li><li><strong>Security Risks:</strong> Validates resilience to attacks, ensuring compliance with security best practices.</li><li><strong>Empowering Business Users:</strong> Ensures solutions developed by non-technical users meet organizational standards and can be scaled effectively.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "businessUnitLeadConcerns",
+        "visibleIf": "{businessPersona} = 'Business Unit Leads'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "unitLeadConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Achieving Business Goals",
+              "Demonstrating Impact and Quality",
+              "Balancing Competing Priorities",
+              "Ensuring Business Continuity",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "achievingBusinessGoalsInfo",
+            "visibleIf": "{unitLeadConcerns} contains 'Achieving Business Goals'",
+            "html": "<h4>Achieving Business Goals</h4><p>Automated testing ensures that the solutions developed on the Power Platform meet the business goals set by stakeholders. It provides a reliable framework for validating the functionality and performance of the solutions, ensuring they align with business objectives and track performance against key metrics.</p>"
+          },
+          {
+            "type": "html",
+            "name": "demonstratingImpactQualityInfo",
+            "visibleIf": "{unitLeadConcerns} contains 'Demonstrating Impact and Quality'",
+            "html": "<h4>Demonstrating Impact and Quality</h4><p>Automated testing provides evidence that the solutions are delivering the expected benefits and meeting the quality standards set by the organization. It ensures that the solutions meet the defined requirements and deliver consistent results, demonstrating their impact and quality.</p>"
+          },
+          {
+            "type": "html",
+            "name": "balancingCompetingPrioritiesInfo",
+            "visibleIf": "{unitLeadConcerns} contains 'Balancing Competing Priorities'",
+            "html": "<h4>Balancing Competing Priorities</h4><p>Automated testing helps streamline the development process by providing faster feedback and reducing the need for extensive manual testing. This allows your team to focus on delivering high-quality solutions within the set timelines and resource constraints, balancing competing priorities effectively.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ensuringBusinessContinuityInfo",
+            "visibleIf": "{unitLeadConcerns} contains 'Ensuring Business Continuity'",
+            "html": "<h4>Ensuring Business Continuity</h4><p>Automated testing provides a safety net that ensures new features do not disrupt existing functionality, thereby supporting uninterrupted business operations. It helps maintain the stability and reliability of the solutions, ensuring business continuity.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{unitLeadConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Achieving Business Goals:</strong> Ensures solutions meet business objectives and track performance against key metrics.</li><li><strong>Demonstrating Impact and Quality:</strong> Provides evidence that solutions deliver expected benefits and meet quality standards.</li><li><strong>Balancing Competing Priorities:</strong> Streamlines development with faster feedback, reducing manual testing needs.</li><li><strong>Ensuring Business Continuity:</strong> Maintains stability and reliability, supporting uninterrupted operations.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "managerConcerns",
+        "visibleIf": "{businessPersona} = 'Managers'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "managerConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Knowledge and Training",
+              "Succession Planning",
+              "Ensuring Quality and Reliability",
+              "Supporting Innovation",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "knowledgeTrainingInfo",
+            "visibleIf": "{managerConcerns} contains 'Knowledge and Training'",
+            "html": "<h4>Knowledge and Training</h4><p>Automated testing is a critical component of training, equipping your team with the skills needed to create reliable and high-quality solutions. It involves providing access to training resources, workshops, and hands-on learning opportunities.</p>"
+          },
+          {
+            "type": "html",
+            "name": "successionPlanningInfo",
+            "visibleIf": "{managerConcerns} contains 'Succession Planning'",
+            "html": "<h4>Succession Planning</h4><p>Automated testing provides a framework for validating the functionality and performance of solutions, ensuring they can be maintained and scaled effectively. This is essential for maintaining the continuity and scalability of low-code solutions.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ensuringQualityReliabilityInfo",
+            "visibleIf": "{managerConcerns} contains 'Ensuring Quality and Reliability'",
+            "html": "<h4>Ensuring Quality and Reliability</h4><p>Automated testing provides a robust framework for validating the functionality and performance of solutions, ensuring they meet the defined requirements and deliver consistent results. This helps maintain high standards of quality and reliability.</p>"
+          },
+          {
+            "type": "html",
+            "name": "supportingInnovationInfo",
+            "visibleIf": "{managerConcerns} contains 'Supporting Innovation'",
+            "html": "<h4>Supporting Innovation</h4><p>Automated testing provides a safety net that ensures new features do not disrupt existing functionality, allowing your team to experiment and innovate with confidence. This supports a culture of continuous learning and improvement.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{managerConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Knowledge and Training:</strong> Equips your team with the skills needed to create reliable and high-quality solutions.</li><li><strong>Succession Planning:</strong> Ensures solutions can be maintained and scaled effectively.</li><li><strong>Ensuring Quality and Reliability:</strong> Provides a robust framework for validating functionality and performance.</li><li><strong>Supporting Innovation:</strong> Provides a safety net for experimenting and innovating with confidence.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "makerConcerns",
+        "visibleIf": "{businessPersona} = 'Makers'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "makerConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Rapid Development",
+              "Ensuring Quality and Reliability",
+              "Meeting Organizational Requirements",
+              "Collaboration with IT Teams",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "rapidDevelopmentInfo",
+            "visibleIf": "{makerConcerns} contains 'Rapid Development'",
+            "html": "<h4>Rapid Development</h4><p>Automated testing helps ensure that the solutions you create are reliable and perform as expected, even as you iterate and add new features. It supports rapid development by providing a safety net that catches issues early in the development process.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ensuringQualityReliabilityInfo",
+            "visibleIf": "{makerConcerns} contains 'Ensuring Quality and Reliability'",
+            "html": "<h4>Ensuring Quality and Reliability</h4><p>Automated testing provides a robust framework for validating the functionality and performance of your solutions, ensuring that they meet the defined requirements and deliver consistent results. This helps maintain high standards of quality and reliability.</p>"
+          },
+          {
+            "type": "html",
+            "name": "meetingOrganizationalRequirementsInfo",
+            "visibleIf": "{makerConcerns} contains 'Meeting Organizational Requirements'",
+            "html": "<h4>Meeting Organizational Requirements</h4><p>Automated testing helps you adhere to organizational standards by providing a systematic approach to validating your solutions. This ensures that your applications are compliant with policies and can be confidently deployed to production environments.</p>"
+          },
+          {
+            "type": "html",
+            "name": "collaborationWithITTeamsInfo",
+            "visibleIf": "{makerConcerns} contains 'Collaboration with IT Teams'",
+            "html": "<h4>Collaboration with IT Teams</h4><p>Automated testing facilitates collaboration with IT development teams or partners by providing a common framework for validating the functionality and performance of solutions. This ensures that both low-code and code-first teams can work together seamlessly to deliver high-quality applications.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{makerConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Rapid Development:</strong> Ensures solutions are reliable and perform as expected, supporting rapid development.</li><li><strong>Ensuring Quality and Reliability:</strong> Provides a robust framework for validating functionality and performance, maintaining high standards.</li><li><strong>Meeting Organizational Requirements:</strong> Ensures applications are compliant with policies and can be confidently deployed.</li><li><strong>Collaboration with IT Teams:</strong> Facilitates collaboration by providing a common framework for validating solutions.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "trainerConcerns",
+        "visibleIf": "{businessPersona} = 'Trainers'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "trainerConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Developing Training Programs",
+              "Delivering Hands-On Training",
+              "Ensuring Continuous Learning",
+              "Supporting Organizational Goals",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "developingTrainingProgramsInfo",
+            "visibleIf": "{trainerConcerns} contains 'Developing Training Programs'",
+            "html": "<h4>Developing Training Programs</h4><p>Automated testing should be incorporated into training programs to ensure participants understand its importance and are equipped with the skills needed to create reliable and high-quality solutions. This involves developing comprehensive training programs that cover all aspects of low-code development.</p>"
+          },
+          {
+            "type": "html",
+            "name": "deliveringHandsOnTrainingInfo",
+            "visibleIf": "{trainerConcerns} contains 'Delivering Hands-On Training'",
+            "html": "<h4>Delivering Hands-On Training</h4><p>Hands-on training sessions should include automated testing, enabling participants to practice creating and running automated tests. This helps them understand how automated testing can be integrated into the development process.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ensuringContinuousLearningInfo",
+            "visibleIf": "{trainerConcerns} contains 'Ensuring Continuous Learning'",
+            "html": "<h4>Ensuring Continuous Learning</h4><p>Training programs should be regularly updated with the latest developments in low-code tools and automated testing practices. Continuous learning opportunities should be provided to keep participants informed about new tools and techniques.</p>"
+          },
+          {
+            "type": "html",
+            "name": "supportingOrganizationalGoalsInfo",
+            "visibleIf": "{trainerConcerns} contains 'Supporting Organizational Goals'",
+            "html": "<h4>Supporting Organizational Goals</h4><p>Training programs should align with the broader organizational goals and objectives. Automated testing ensures that the solutions developed on the Power Platform are reliable, secure, and meet the required standards, supporting these goals.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{trainerConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Developing Training Programs:</strong> Ensures participants understand the importance of automated testing and are equipped with necessary skills.</li><li><strong>Delivering Hands-On Training:</strong> Includes practical sessions on creating and running automated tests.</li><li><strong>Ensuring Continuous Learning:</strong> Keeps training programs up-to-date with the latest developments.</li><li><strong>Supporting Organizational Goals:</strong> Aligns training programs with organizational objectives, ensuring solutions meet required standards.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "architect",
+        "visibleIf": "{bestMatchingRole} = 'Architect'",
+        "elements": [
+          {
+            "type": "html",
+            "name": "architectDescription",
+            "html": "<h3>Architect</h3><p>Responsible for reviewing the pillars of the Power Well-Architected Framework and implementing quality control and integration with other information technology investments. They ensure holistic integration across low-code and code-first investments.</p>"
+          },
+          {
+            "type": "radiogroup",
+            "name": "architectPersona",
+            "title": "Select your persona:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Enterprise Architects",
+              "Solution Architects",
+              "DevOps Architects",
+              "Security Architects"
+            ],
+            "defaultValue": ""
+          }
+        ]
+      },
+      {
+        "name": "enterpriseArchitectConcerns",
+        "visibleIf": "{architectPersona} = 'Enterprise Architects'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "architectConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Implementing Quality Control",
+              "Integrating with Existing IT Investments",
+              "Ensuring Holistic Integration",
+              "Leveraging Existing Investments",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "implementingQualityControlInfo",
+            "visibleIf": "{architectConcerns} contains 'Implementing Quality Control'",
+            "html": "<h4>Implementing Quality Control</h4><p>Automated testing provides a systematic approach to validating the functionality and performance of solutions. By incorporating automated tests, you can ensure that solutions meet the required standards and deliver consistent results.</p>"
+          },
+          {
+            "type": "html",
+            "name": "integratingWithExistingITInvestmentsInfo",
+            "visibleIf": "{architectConcerns} contains 'Integrating with Existing IT Investments'",
+            "html": "<h4>Integrating with Existing IT Investments</h4><p>Automated testing ensures that low-code solutions integrate seamlessly with existing IT investments, including automated testing and CI/CD processes. This facilitates a smooth transition between low-code and code-first approaches.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ensuringHolisticIntegrationInfo",
+            "visibleIf": "{architectConcerns} contains 'Ensuring Holistic Integration'",
+            "html": "<h4>Ensuring Holistic Integration</h4><p>Automated testing validates that solutions comply with security standards, data privacy regulations, and other organizational policies. This ensures that low-code solutions are secure, compliant, and aligned with the broader IT strategy.</p>"
+          },
+          {
+            "type": "html",
+            "name": "leveragingExistingInvestmentsInfo",
+            "visibleIf": "{architectConcerns} contains 'Leveraging Existing Investments'",
+            "html": "<h4>Leveraging Existing Investments</h4><p>Automated testing provides a bridge between low-code and code-first environments, enabling you to maximize the value of your existing investments in automated testing and CI/CD processes.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{architectConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Implementing Quality Control:</strong> Provides a systematic approach to validating functionality and performance.</li><li><strong>Integrating with Existing IT Investments:</strong> Ensures seamless integration with existing IT investments and processes.</li><li><strong>Ensuring Holistic Integration:</strong> Validates compliance with security standards and organizational policies.</li><li><strong>Leveraging Existing Investments:</strong> Maximizes the value of existing investments in automated testing and CI/CD processes.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "solutionArchitectConcerns",
+        "visibleIf": "{architectPersona} = 'Solution Architects'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "architectConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Implementing Enterprise Standards",
+              "Ensuring a Robust ALM Process",
+              "Making Strategic Recommendations",
+              "Facilitating Collaboration",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "implementingEnterpriseStandardsInfo",
+            "visibleIf": "{architectConcerns} contains 'Implementing Enterprise Standards'",
+            "html": "<h4>Implementing Enterprise Standards</h4><p>Automated testing provides a systematic approach to validating the functionality and performance of solutions. By incorporating automated tests, you can ensure that solutions meet the required standards and deliver consistent results.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ensuringRobustALMProcessInfo",
+            "visibleIf": "{architectConcerns} contains 'Ensuring a Robust ALM Process'",
+            "html": "<h4>Ensuring a Robust ALM Process</h4><p>Automated testing provides continuous validation of solutions throughout their lifecycle. This ensures that any issues are identified and addressed early, reducing the risk of defects in production.</p>"
+          },
+          {
+            "type": "html",
+            "name": "makingStrategicRecommendationsInfo",
+            "visibleIf": "{architectConcerns} contains 'Making Strategic Recommendations'",
+            "html": "<h4>Making Strategic Recommendations</h4><p>By advocating for the adoption of automated testing tools and practices, you can help ensure that low-code solutions are reliable, secure, and scalable. Automated testing is a critical area where your recommendations can have a significant impact.</p>"
+          },
+          {
+            "type": "html",
+            "name": "facilitatingCollaborationInfo",
+            "visibleIf": "{architectConcerns} contains 'Facilitating Collaboration'",
+            "html": "<h4>Facilitating Collaboration</h4><p>Automated testing provides a common framework for validating solutions, enabling seamless collaboration between low-code and code-first teams. This ensures that all stakeholders are aligned and working towards the same goals.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{architectConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Implementing Enterprise Standards:</strong> Provides a systematic approach to validating functionality and performance.</li><li><strong>Ensuring a Robust ALM Process:</strong> Provides continuous validation throughout the lifecycle, reducing the risk of defects.</li><li><strong>Making Strategic Recommendations:</strong> Ensures solutions are reliable, secure, and scalable.</li><li><strong>Facilitating Collaboration:</strong> Provides a common framework for validating solutions, enabling seamless collaboration.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "devOpsArchitectConcerns",
+        "visibleIf": "{architectPersona} = 'DevOps Architects'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "devOpsConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Source Control Integration",
+              "Test Assets Management",
+              "Quality Processes",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "sourceControlIntegrationInfo",
+            "visibleIf": "{devOpsConcerns} contains 'Source Control Integration'",
+            "html": "<h4>Source Control Integration</h4><p>Automated testing ensures that changes tracked in source control are validated continuously, maintaining version control and reducing the risk of integration issues.</p>"
+          },
+          {
+            "type": "html",
+            "name": "testAssetsManagementInfo",
+            "visibleIf": "{devOpsConcerns} contains 'Test Assets Management'",
+            "html": "<h4>Test Assets Management</h4><p>Automated testing helps manage the creation, maintenance, and execution of test assets, ensuring quality and reliability throughout the development lifecycle.</p>"
+          },
+          {
+            "type": "html",
+            "name": "qualityProcessesInfo",
+            "visibleIf": "{devOpsConcerns} contains 'Quality Processes'",
+            "html": "<h4>Quality Processes</h4><p>Automated testing implements and manages quality processes to ensure that deployments and updates meet the required standards, reducing the risk of defects in production.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{devOpsConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Source Control Integration:</strong> Validates changes tracked in source control continuously, maintaining version control.</li><li><strong>Test Assets Management:</strong> Manages the creation, maintenance, and execution of test assets, ensuring quality and reliability.</li><li><strong>Quality Processes:</strong> Ensures deployments and updates meet required standards, reducing the risk of defects.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "securityArchitectConcerns",
+        "visibleIf": "{architectPersona} = 'Security Architects'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "securityConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Cybersecurity Management",
+              "Data Privacy",
+              "Compliance Assurance",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "cybersecurityManagementInfo",
+            "visibleIf": "{securityConcerns} contains 'Cybersecurity Management'",
+            "html": "<h4>Cybersecurity Management</h4><p>Automated testing ensures that low-code solutions are secure and do not introduce vulnerabilities into the organization's IT infrastructure. It helps in identifying and mitigating security risks early in the development process.</p>"
+          },
+          {
+            "type": "html",
+            "name": "dataPrivacyInfo",
+            "visibleIf": "{securityConcerns} contains 'Data Privacy'",
+            "html": "<h4>Data Privacy</h4><p>Automated testing helps protect sensitive data by ensuring that low-code solutions comply with data privacy regulations and organizational policies. It validates that data handling practices are secure and compliant.</p>"
+          },
+          {
+            "type": "html",
+            "name": "complianceAssuranceInfo",
+            "visibleIf": "{securityConcerns} contains 'Compliance Assurance'",
+            "html": "<h4>Compliance Assurance</h4><p>Automated testing verifies that low-code solutions adhere to security standards and regulatory requirements, providing a secure environment for development and deployment. It ensures that solutions are compliant with industry regulations and internal policies.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{securityConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Cybersecurity Management:</strong> Ensures solutions are secure and do not introduce vulnerabilities.</li><li><strong>Data Privacy:</strong> Validates compliance with data privacy regulations and secure data handling practices.</li><li><strong>Compliance Assurance:</strong> Verifies adherence to security standards and regulatory requirements.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "technical",
+        "visibleIf": "{bestMatchingRole} = 'Technical'",
+        "elements": [
+          {
+            "type": "html",
+            "name": "technicalDescription",
+            "html": "<h3>Technical</h3><p>Includes roles such as DevOps Engineers, Software Engineers, and Support Engineers who are responsible for the overall Continuous Integration / Deployment process and integrating Power Platform into this process. They manage source control integration, test assets, and quality processes for deployment and updates.</p>"
+          },
+          {
+            "type": "radiogroup",
+            "name": "technicalPersona",
+            "title": "Select your persona:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Software Engineers",
+              "DevOps Engineers",
+              "Support Engineers"
+            ],
+            "defaultValue": ""
+          }
+        ]
+      },
+      {
+        "name": "softwareEngineerConcerns",
+        "visibleIf": "{technicalPersona} = 'Software Engineers'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "softwareConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Augmenting Productivity",
+              "Contributing Extensions",
+              "Ensuring Quality",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "augmentingProductivityInfo",
+            "visibleIf": "{softwareConcerns} contains 'Augmenting Productivity'",
+            "html": "<h4>Augmenting Productivity</h4><p>Automated testing helps boost productivity by ensuring that custom solutions, automated tasks, and streamlined workflows are reliable and perform as expected. It reduces the manual effort required for testing, allowing you to focus on development.</p>"
+          },
+          {
+            "type": "html",
+            "name": "contributingExtensionsInfo",
+            "visibleIf": "{softwareConcerns} contains 'Contributing Extensions'",
+            "html": "<h4>Contributing Extensions</h4><p>Automated testing ensures that extensions or add-ons developed for the Power Platform are robust and provide additional functionality without introducing issues. It validates the performance and reliability of these extensions.</p>"
+          },
+          {
+            "type": "html",
+            "name": "ensuringQualityInfo",
+            "visibleIf": "{softwareConcerns} contains 'Ensuring Quality'",
+            "html": "<h4>Ensuring Quality</h4><p>Automated testing implements best practices for development, testing, and deployment, ensuring that low-code solutions are robust, reliable, and meet the required standards. It provides a systematic approach to validating functionality and performance.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{softwareConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Augmenting Productivity:</strong> Ensures custom solutions and automated tasks are reliable, reducing manual testing effort.</li><li><strong>Contributing Extensions:</strong> Validates the performance and reliability of extensions or add-ons.</li><li><strong>Ensuring Quality:</strong> Implements best practices for development, testing, and deployment, ensuring robust and reliable solutions.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "devOpsEngineerConcerns",
+        "visibleIf": "{technicalPersona} = 'DevOps Engineers / Architects'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "devOpsConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Source Control Integration",
+              "Test Assets Management",
+              "Quality Processes",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "sourceControlIntegrationInfo",
+            "visibleIf": "{devOpsConcerns} contains 'Source Control Integration'",
+            "html": "<h4>Source Control Integration</h4><p>Automated testing ensures that changes tracked in source control are validated continuously, maintaining version control and reducing the risk of integration issues.</p>"
+          },
+          {
+            "type": "html",
+            "name": "testAssetsManagementInfo",
+            "visibleIf": "{devOpsConcerns} contains 'Test Assets Management'",
+            "html": "<h4>Test Assets Management</h4><p>Automated testing helps manage the creation, maintenance, and execution of test assets, ensuring quality and reliability throughout the development lifecycle.</p>"
+          },
+          {
+            "type": "html",
+            "name": "qualityProcessesInfo",
+            "visibleIf": "{devOpsConcerns} contains 'Quality Processes'",
+            "html": "<h4>Quality Processes</h4><p>Automated testing implements and manages quality processes to ensure that deployments and updates meet the required standards, reducing the risk of defects in production.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{devOpsConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Source Control Integration:</strong> Validates changes tracked in source control continuously, maintaining version control.</li><li><strong>Test Assets Management:</strong> Manages the creation, maintenance, and execution of test assets, ensuring quality and reliability.</li><li><strong>Quality Processes:</strong> Ensures deployments and updates meet required standards, reducing the risk of defects.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "supportEngineerConcerns",
+        "visibleIf": "{technicalPersona} = 'Support Engineers'",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "supportConcerns",
+            "title": "Select the concerns you have that automated testing could address:",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              "Ownership of Low-Code Solutions",
+              "Quality Assurance",
+              "Issue Resolution",
+              "Not sure"
+            ],
+            "defaultValue": []
+          },
+          {
+            "type": "html",
+            "name": "ownershipLowCodeSolutionsInfo",
+            "visibleIf": "{supportConcerns} contains 'Ownership of Low-Code Solutions'",
+            "html": "<h4>Ownership of Low-Code Solutions</h4><p>Automated testing ensures that low-code solutions are reliable, maintainable, and scalable. It provides a systematic approach to validating functionality and performance, ensuring solutions meet the required standards.</p>"
+          },
+          {
+            "type": "html",
+            "name": "qualityAssuranceInfo",
+            "visibleIf": "{supportConcerns} contains 'Quality Assurance'",
+            "html": "<h4>Quality Assurance</h4><p>Automated testing implements best practices for testing and quality assurance, ensuring that low-code solutions meet the required standards. It helps maintain high quality and reliability throughout the development lifecycle.</p>"
+          },
+          {
+            "type": "html",
+            "name": "issueResolutionInfo",
+            "visibleIf": "{supportConcerns} contains 'Issue Resolution'",
+            "html": "<h4>Issue Resolution</h4><p>Automated testing helps identify and resolve issues early in the development process, ensuring that low-code solutions continue to function as intended and meet user needs. It reduces the impact of issues on the final product.</p>"
+          },
+          {
+            "type": "html",
+            "name": "notSureInfo",
+            "visibleIf": "{supportConcerns} contains 'Not sure'",
+            "html": "<h4>Common Concerns Addressed by Automated Testing</h4><ul><li><strong>Ownership of Low-Code Solutions:</strong> Ensures solutions are reliable, maintainable, and scalable.</li><li><strong>Quality Assurance:</strong> Implements best practices for testing and quality assurance, maintaining high standards.</li><li><strong>Issue Resolution:</strong> Identifies and resolves issues early, reducing their impact on the final product.</li></ul>"
+          }
+        ]
+      },
+      {
+        "name": "informationLevel",
+        "elements": [
+          {
+            "type": "checkbox",
+            "name": "informationLevel",
+            "title": "What level of information are you looking for?",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              {
+                "text": "High level roadmap so I can factor into planning",
+                "value": "Roadmap"
+              },
+              {
+                "text": "High Level concepts",
+                "value": "Concepts"
+              },
+              {
+                "text": "Discussion topics based on my role",
+                "value": "Dicussion"
+              },
+              {
+                "text": "Hands-on, get me started",
+                "value": "Hands-on"
+              },
+              {
+                "text": "Provide me examples",
+                "value": "Examples"
+              }
+            ],
+            "defaultValue": []
+          }
+        ]
+      },
+      {
+        "name": "businessReleaseStage",
+        "visibleIf": "{bestMatchingRole} = 'Business Aligned User'",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "businessReleaseStage",
+            "title": "Which release stage do you prefer to participate in?",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              {
+                "text": "Early Adopter (Understand the clear need for testing and want to be involved early to apply it now and steer product direction)",
+                "value": "Early Adopter"
+              },
+              {
+                "text": "Beta User (Want to try experimental features but don't want to be at the cutting edge)",
+                "value": "Beta User"
+              },
+              {
+                "text": "General Availability (Want to use features as they are ready for wider usage)",
+                "value": "General Availability"
+              }
+            ],
+            "defaultValue": ""
+          },
+          {
+            "type": "html",
+            "name": "earlyAdopterInfo",
+            "visibleIf": "{businessReleaseStage} = 'Early Adopter'",
+            "html": "<h4>Early Adopter</h4><p>As an early adopter, you understand the clear need for testing and want to be involved early to apply it now and steer product direction. Your feedback is crucial in identifying critical bugs and usability issues.</p>"
+          },
+          {
+            "type": "html",
+            "name": "betaUserInfo",
+            "visibleIf": "{businessReleaseStage} = 'Beta User'",
+            "html": "<h4>Beta User</h4><p>As a beta user, you want to try experimental features but don't want to be at the cutting edge. This stage aims to validate changes in a more diverse environment, ensuring updates work seamlessly across different configurations and use cases.</p>"
+          },
+          {
+            "type": "html",
+            "name": "generalAvailabilityInfo",
+            "visibleIf": "{businessReleaseStage} = 'General Availability'",
+            "html": "<h4>General Availability</h4><p>In the general availability stage, you want to use features as they are ready for wider usage. By this stage, updates are expected to be stable and reliable, having been vetted through previous testing stages.</p>"
+          }
+        ]
+      },
+      {
+        "name": "architectReleaseStage",
+        "visibleIf": "{bestMatchingRole} = 'Architect'",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "architectReleaseStage",
+            "title": "Which release stage do you prefer to participate in?",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              {
+                "text": "Early Adopter (Looking to advise and set direction to assist the business)",
+                "value": "Early Adopter"
+              },
+              {
+                "text": "Beta User (Want to try experimental features but don't want to be at the cutting edge)",
+                "value": "Beta User"
+              },
+              {
+                "text": "General Availability (Want to use features as they are ready for wider usage)",
+                "value": "General Availability"
+              }
+            ],
+            "defaultValue": ""
+          },
+          {
+            "type": "html",
+            "name": "earlyAdopterInfo",
+            "visibleIf": "{architectReleaseStage} = 'Early Adopter'",
+            "html": "<h4>Early Adopter</h4><p>As an early adopter, you are looking to advise and set direction to assist the business. Your feedback is crucial in identifying critical bugs and usability issues.</p>"
+          },
+          {
+            "type": "html",
+            "name": "betaUserInfo",
+            "visibleIf": "{architectReleaseStage} = 'Beta User'",
+            "html": "<h4>Beta User</h4><p>As a beta user, you want to try experimental features but don't want to be at the cutting edge. This stage aims to validate changes in a more diverse environment, ensuring updates work seamlessly across different configurations and use cases.</p>"
+          },
+          {
+            "type": "html",
+            "name": "generalAvailabilityInfo",
+            "visibleIf": "{architectReleaseStage} = 'General Availability'",
+            "html": "<h4>General Availability</h4><p>In the general availability stage, you want to use features as they are ready for wider usage. By this stage, updates are expected to be stable and reliable, having been vetted through previous testing stages.</p>"
+          }
+        ]
+      },
+      {
+        "name": "technicalReleaseStage",
+        "visibleIf": "{bestMatchingRole} = 'Technical'",
+        "elements": [
+          {
+            "type": "radiogroup",
+            "name": "technicalReleaseStage",
+            "title": "Which release stage do you prefer to participate in?",
+            "resetValueIf": "{pageNo} < {currentPageNo}",
+            "choices": [
+              {
+                "text": "Canary User (Build with the latest code version)",
+                "value": "Canary User"
+              },
+              {
+                "text": "Beta User (Use experimental features and the Power Platform Command Line)",
+                "value": "Beta User"
+              },
+              {
+                "text": "General Availability (Want to use features as they are ready for wider usage)",
+                "value": "General Availability"
+              }
+            ],
+            "defaultValue": ""
+          },
+          {
+            "type": "html",
+            "name": "canaryUserInfo",
+            "visibleIf": "{technicalReleaseStage} = 'Canary User'",
+            "html": "<h4>Canary User</h4><p>As a canary user, you build with the latest code version. Your feedback is crucial in identifying critical bugs and usability issues early in the development process.</p>"
+          },
+          {
+            "type": "html",
+            "name": "betaUserInfo",
+            "visibleIf": "{technicalReleaseStage} = 'Beta User'",
+            "html": "<h4>Beta User</h4><p>As a beta user, you use experimental features and the Power Platform Command Line. This stage aims to validate changes in a more diverse environment, ensuring updates work seamlessly across different configurations and use cases.</p>"
+          },
+          {
+            "type": "html",
+            "name": "generalAvailabilityInfo",
+            "visibleIf": "{technicalReleaseStage} = 'General Availability'",
+            "html": "<h4>General Availability</h4><p>In the general availability stage, you want features to be ready for wider usage. By this stage, updates are expected to be stable and reliable, having been vetted through previous testing stages.</p>"
+          }
+        ]
+      },
+      {
+        "name": "businessRecommendations",
+        "visibleIf": "{businessReleaseStage} notempty",
+        "elements": [
+          {
+            "type": "html",
+            "name": "earlyAdopterRecommendations",
+            "visibleIf": "{businessReleaseStage} = 'Early Adopter'",
+            "html": "<h4>Early Adopter Recommendations</h4><p>As an early adopter, you can start reading the provided content and begin planning your testing strategies. Your involvement is crucial in steering product direction and ensuring that the solutions meet business needs.</p>"
+          },
+          {
+            "type": "html",
+            "name": "betaUserRecommendations",
+            "visibleIf": "{businessReleaseStage} = 'Beta User'",
+            "html": "<h4>Beta User Recommendations</h4><p>As a beta user, stay tuned and check back for updates on when features will be available for testing. Your feedback on experimental features will help refine them for general use.</p>"
+          },
+          {
+            "type": "html",
+            "name": "generalAvailabilityRecommendations",
+            "visibleIf": "{businessReleaseStage} = 'General Availability'",
+            "html": "<h4>General Availability Recommendations</h4><p>For general availability, discuss and think about the issues that are important to you. Provide feedback on what features and improvements you would like to see in the final release.</p>"
+          },
+          {
+            "type": "html",
+            "name": "callToAction",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/context/getting-started-business'\">Getting Started Business</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{businessPersona} = 'Business Stakeholders'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/business-stakeholders'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{businessPersona} = 'Business Unit Leads'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/business-unit-leads'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{businessPersona} = 'Managers'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/managers'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{businessPersona} = 'Makers'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/makers'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{businessPersona} = 'Trainers'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/trainers'\">Explore Role</button>"
+          }
+        ]
+      },
+      {
+        "name": "architectRecommendations",
+        "visibleIf": "{architectReleaseStage} notempty",
+        "elements": [
+          {
+            "type": "html",
+            "name": "earlyAdopterRecommendations",
+            "visibleIf": "{architectReleaseStage} = 'Early Adopter'",
+            "html": "<h4>Early Adopter Recommendations</h4><p>As an early adopter, you can start reading the provided content and begin planning your testing strategies. Your role is crucial in advising and setting direction to assist the business in adopting new features.</p>"
+          },
+          {
+            "type": "html",
+            "name": "betaUserRecommendations",
+            "visibleIf": "{architectReleaseStage} = 'Beta User'",
+            "html": "<h4>Beta User Recommendations</h4><p>As a beta user, stay tuned and check back for updates on when features will be available for testing. Your feedback on experimental features will help refine them for general use.</p>"
+          },
+          {
+            "type": "html",
+            "name": "generalAvailabilityRecommendations",
+            "visibleIf": "{architectReleaseStage} = 'General Availability'",
+            "html": "<h4>General Availability Recommendations</h4><p>For general availability, discuss and think about the issues that are important to you. Provide feedback on what features and improvements you would like to see in the final release.</p>"
+          },
+          {
+            "type": "html",
+            "name": "callToAction",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/context/getting-started-architects'\">Getting Started Architecture</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{architectPersona} = 'Enterprise Architects'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/enterprise-architects'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{architectPersona} = 'Solution Architects'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/solution-architects'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{architectPersona} = 'DevOps Architects'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/devops-engineers-architects'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{architectPersona} = 'Security Architects'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/security-architects'\">Explore Role</button>"
+          }
+        ]
+      },
+      {
+        "name": "technicalRecommendations",
+        "visibleIf": "{technicalReleaseStage} notempty",
+        "elements": [
+          {
+            "type": "html",
+            "name": "canaryUserRecommendations",
+            "visibleIf": "{technicalReleaseStage} = 'Canary User'",
+            "html": "<h4>Canary User Recommendations</h4><p>As a canary user, the current state is best matched for those comfortable with building from source. Start reading the provided content and begin planning your testing strategies.</p>"
+          },
+          {
+            "type": "html",
+            "name": "betaUserRecommendations",
+            "visibleIf": "{technicalReleaseStage} = 'Beta User'",
+            "html": "<h4>Beta User Recommendations</h4><p>As a beta user, stay tuned and check back for updates on when features will be available for testing. Your feedback on experimental features will help refine them for general use.</p>"
+          },
+          {
+            "type": "html",
+            "name": "generalAvailabilityRecommendations",
+            "visibleIf": "{technicalReleaseStage} = 'General Availability'",
+            "html": "<h4>General Availability Recommendations</h4><p>For general availability, discuss and think about the issues that are important to you. Provide feedback on what features and improvements you would like to see in the final release.</p>"
+          },
+          {
+            "type": "html",
+            "name": "callToAction",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/context/getting-started-technical'\">Getting Started Technical</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{technicalPersona} = 'Software Engineers'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/software-engineers'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{technicalPersona} = 'DevOps Engineers'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/devops-engineers-architects'\">Explore Role</button>"
+          },
+          {
+            "type": "html",
+            "visibleIf": "{technicalPersona} = 'Support Engineers'",
+            "html": "<button onclick=\"window.location.href='/PowerApps-TestEngine/roles-and-responsibilities/support-engineers'\">Explore Role</button>"
+          }
+        ]
+      }
+    ]
+  }

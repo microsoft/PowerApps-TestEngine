@@ -459,7 +459,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                         if (!settings.AllowPowerFxNamespaces.Contains(name) && name != NAMESPACE_TEST_ENGINE)
                         {
-                            Logger.LogInformation($"Not allow Power FX Namespace {name} for {type.Name}");
+                            Logger.LogInformation($"Do not allow Power FX Namespace {name} for {type.Name}");
                             // Not in allow list or the Reserved TestEngine namespace
                             return false;
                         }
