@@ -1,0 +1,76 @@
+testSuite:
+  testSuiteName: ComboBox Data Load
+  testSuiteDescription: Load data into Combobox1
+  persona: User1
+  appLogicalName: NotNeeded
+  onTestSuiteStart: |
+    = Experimental.SimulateDataverse({
+          Action: "Query",
+          Entity: "cr693_combotable",
+          Then: Table(
+            {
+                'cr693_name': "Item 1",
+                'cr693_id': 3,
+                'cr693_combotableid': "8cd3faaa-97ac-4e78-8b71-16c82cabb856",
+                'createdon': "2024-12-02T17:52:45Z"                
+            },
+            {
+                'cr693_name': "RR2",
+                'cr693_id': 4,
+                'cr693_combotableid': "ff58de6c-905d-457d-846b-3e0b2aa4c5fd",
+                'createdon': "2024-12-02T17:54:45Z"                
+            },
+             {
+                'cr693_name': "RR3",
+                'cr693_id': 5,
+                'cr693_combotableid': "ff58de6c-905d-457d-846b-3e0b2aa4c5fe",
+                'createdon': "2024-12-02T17:54:45Z"                
+            }
+          )
+      });
+      
+  testCases:
+    - testCaseName: Load ComboBox Data
+      testCaseDescription: Verify data loaded into Combobox1
+      testSteps: |
+        = SetProperty(Combobox1.SelectedItems, Table(First(Combobox1.Items)));             
+          Assert(CountRows(Combobox1.SelectedItems)=1, "True");
+        
+    - testCaseName: Test ComboBox Search Functionality
+      testCaseDescription: Verify that the ComboBox can filter items based on the search query.
+      testSteps: | 
+        = SetProperty(Combobox1.SelectedItems, Table());  
+          SetProperty(Combobox1.SearchText, "Nonexistent");
+          Assert(CountRows(Combobox1.SelectedItems) = 0, "Expected no items to match the search query 'Nonexistent'.");
+    
+    - testCaseName: Test ComboBox Multi-Search Functionality
+      testCaseDescription: Verify that the ComboBox can filter items based on multiple search queries.
+      testSteps: |
+        = SetProperty(Combobox1.SelectedItems, Table());  
+          SetProperty(Combobox1.SearchText, "Item");
+          SetProperty(Combobox1.SearchText, "RR2");
+          Assert(CountRows(Filter(Combobox1.Items, "Item" in cr693_name || "RR2" in cr693_name)) = 2, "Expected two items to match the search queries 'Item' and 'RR2'.");
+
+    - testCaseName: Test ComboBox SelectMultiple
+      testCaseDescription: Verify that the ComboBox can select multiple items.
+      testSteps: |
+        = SetProperty(Combobox1.SelectMultiple, true);
+          SetProperty(Combobox1.SelectedItems, Table(First(Combobox1.Items), Last(Combobox1.Items)));
+          Assert(CountRows(Combobox1.SelectedItems) = 2, "Expected two items to be selected.");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  timeout: 480000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
