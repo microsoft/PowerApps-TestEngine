@@ -67,12 +67,20 @@ testSuite:
         {'Value1':"Item 10",'Value2':10,'Value3':100},{'Value1':"Item 12",'Value2':12,'Value3':120})); 
         Assert(CountRows('Combobox1'.SelectedItems) = 3, "Validated Successfully");  
    
-    - testCaseName: Test SelectedDate Property
-      testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly.
+    - testCaseName: Test SelectedDate Property in UTC
+      testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly in UTC.
       testSteps: |
         SetProperty(DatePicker1.SelectedDate, Date(2024,10,01));
-        Assert(DatePicker1.SelectedDate = Date(2024,10,01), "Checking the SelectedDate property");
+        SetProperty(DatePicker1.DateTimeZone, "UTC");
+        Assert(DatePicker1.SelectedDate = Date(2024,09,30), "Checking the SelectedDate property in UTC");	
 
+    - testCaseName: Test SelectedDate Property in Local Timezone
+      testCaseDescription: Verify that the SelectedDate property can be set and retrieved correctly in local timezone.
+      testSteps: |
+        SetProperty(DatePicker1.SelectedDate, Date(2024,10,01));
+        SetProperty(DatePicker1.DateTimeZone, "local");
+        Assert(DatePicker1.SelectedDate = Date(2024,10,01), "Checking the SelectedDate property in local timezone");
+ 
     - testCaseName: Test RadioGroup DefaultSelectedItems Property
       testCaseDescription: Verify that the RadioGroup control's DefaultSelectedItems property can be set and retrieved correctly.
       testSteps: |    
@@ -119,8 +127,7 @@ testSuite:
         SetProperty(Toggle1.Visible, true);
         Assert(Toggle1.Visible = true, "Toggle1 is visible.");
         SetProperty(Toggle1.Visible, false);
-        Assert(Toggle1.Visible = false, "Toggle1 is not visible.");
-   
+        Assert(Toggle1.Visible = false, "Toggle1 is not visible.");   
     
 testSettings:
   headless: false
