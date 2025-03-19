@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: ScriptInjectionTestingOnDifferentVariableTypes
   testSuiteDescription: Testing script injection for SetProperty with multiple types
@@ -43,4 +44,4 @@ environmentVariables:
   users:
     - personaName: User1
       emailKey: user1Email
-      passwordKey: user1Password
+      passwordKey: NotNeeded

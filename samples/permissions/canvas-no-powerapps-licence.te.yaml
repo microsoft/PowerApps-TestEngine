@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: Permissions
+  testSuiteDescription: Power Platform tests
+  persona: User1
+  appLogicalName: contoso_canvas_4033c
+
+  testCases:
+    - testCaseName: No Power Apps License assligned
+      testCaseDescription: Behaviour when no Power Apps license assigned. Assumes app is shared
+      testSteps: |
+        = Assert(ErrorDialogTitle="Start a Power Apps trial?")
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 10000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

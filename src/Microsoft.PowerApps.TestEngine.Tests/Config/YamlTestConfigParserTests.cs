@@ -67,7 +67,8 @@ environmentVariables:
     users:
         - personaName: User1
           emailKey: user1Email
-          passwordKey: user1Password";
+          passwordKey: user1Password
+          certificateSubjectKey: user1CertificateSubject";
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
@@ -100,7 +101,7 @@ environmentVariables:
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);
             Assert.Equal("user1Password", testPlan.EnvironmentVariables?.Users[0].PasswordKey);
-
+            Assert.Equal("user1CertificateSubject", testPlan.EnvironmentVariables?.Users[0].CertificateSubjectKey);
         }
 
         [Fact]
@@ -147,7 +148,8 @@ environmentVariables:
     users:
         - personaName: User1
           emailKey: user1Email
-          passwordKey: user1Password";
+          passwordKey: user1Password
+          certificateSubjectKey: user1CertificateSubject";
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
@@ -181,7 +183,7 @@ environmentVariables:
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);
             Assert.Equal("user1Password", testPlan.EnvironmentVariables?.Users[0].PasswordKey);
-
+            Assert.Equal("user1CertificateSubject", testPlan.EnvironmentVariables?.Users[0].CertificateSubjectKey);
         }
 
         [Fact]
@@ -229,7 +231,8 @@ environmentVariables:
     users:
         - personaName: User1
           emailKey: user1Email
-          passwordKey: user1Password";
+          passwordKey: user1Password
+          certificateSubjectKey: user1CertificateSubject";
 
             var filePath = "testplan.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(yamlFile);
@@ -264,7 +267,7 @@ environmentVariables:
             Assert.Equal("User1", testPlan.EnvironmentVariables?.Users[0].PersonaName);
             Assert.Equal("user1Email", testPlan.EnvironmentVariables?.Users[0].EmailKey);
             Assert.Equal("user1Password", testPlan.EnvironmentVariables?.Users[0].PasswordKey);
-
+            Assert.Equal("user1CertificateSubject", testPlan.EnvironmentVariables?.Users[0].CertificateSubjectKey);
         }
 
         [Fact]
@@ -276,7 +279,8 @@ environmentVariables:
             var environmentVariablesFile = @"users:
   - personaName: User1
     emailKey: user1Email
-    passwordKey: user1Password";
+    passwordKey: user1Password
+    certificateSubjectKey: user1CertificateSubject";
 
             var filePath = "environmentVariables.fx.yaml";
             mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(environmentVariablesFile);
@@ -290,6 +294,7 @@ environmentVariables:
             Assert.Equal("User1", environmentVariables.Users[0].PersonaName);
             Assert.Equal("user1Email", environmentVariables.Users[0].EmailKey);
             Assert.Equal("user1Password", environmentVariables.Users[0].PasswordKey);
+            Assert.Equal("user1CertificateSubject", environmentVariables.Users[0].CertificateSubjectKey);
         }
 
         [Fact]
@@ -355,7 +360,7 @@ enablePowerFxOverlay: false";
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void YamlTestConfigParserThrowsOnNullArguments(string filePath)
+        public void YamlTestConfigParserThrowsOnNullArguments(string? filePath)
         {
             var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
             var parser = new YamlTestConfigParser(mockFileSystem.Object);
@@ -393,6 +398,37 @@ enablePowerFxOverlay: false";
             Assert.Equal(ex.Message, UserInputException.ErrorMapping.UserInputExceptionYAMLFormat.ToString());
             // Verify the message is logged in this case
             LoggingTestHelper.VerifyLogging(MockLogger, "Invalid YAML format: TestSettings in test config file.", LogLevel.Error, Times.Once());
+        }
+
+        [Fact]
+        public void YamlTestConfigParserParseTestSettingsWithExecutablePathTest()
+        {
+            var mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            var parser = new YamlTestConfigParser(mockFileSystem.Object);
+
+            var testSettingsFile = @"recordVideo: true
+browserConfigurations:
+    - browser: Chromium
+    - browser: Firefox
+headless: false
+enablePowerFxOverlay: false
+executablePath: ""/path/to/browser""";
+
+            var filePath = "testSettings.fx.yaml";
+            mockFileSystem.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(testSettingsFile);
+            mockFileSystem.Setup(f => f.FileExists(It.IsAny<string>())).Returns(true);
+            var logger = new Mock<ILogger>(MockBehavior.Strict);
+
+            var testSettings = parser.ParseTestConfig<TestSettings>(filePath, logger.Object);
+
+            Assert.NotNull(testSettings);
+            Assert.True(testSettings.RecordVideo);
+            Assert.False(testSettings.Headless);
+            Assert.False(testSettings.EnablePowerFxOverlay);
+            Assert.Equal(2, testSettings.BrowserConfigurations?.Count);
+            Assert.Equal("Chromium", testSettings.BrowserConfigurations?[0].Browser);
+            Assert.Equal("Firefox", testSettings.BrowserConfigurations?[1].Browser);
+            Assert.Equal("/path/to/browser", testSettings.ExecutablePath);
         }
     }
 }

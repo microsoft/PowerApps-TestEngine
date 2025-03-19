@@ -42,6 +42,13 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         /// <summary>
         /// Gets or sets the Power FX functions that need to be triggered
+        /// Before any ay test case is started
+        /// </summary>
+        [YamlMember(ScalarStyle = ScalarStyle.Literal)]
+        public string OnTestSuiteStart { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Power FX functions that need to be triggered
         /// for every test case in a suite before the case begins executing.
         /// </summary>
         [YamlMember(ScalarStyle = ScalarStyle.Literal)]
@@ -69,5 +76,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Gets or sets the test cases to be executed.
         /// </summary>
         public List<TestCase> TestCases { get; set; } = new List<TestCase>();
+
+        /// <summary>
+        /// Indicate if record mode rather than execute test suite / test case
+        /// </summary>
+        public bool RecordMode { get; set; }
     }
 }

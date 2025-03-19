@@ -31,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [InlineData(null)]
         [InlineData("")]
         [InlineData("nonexistentid")]
-        public void ThrowsOnInvalidTestRunIdTest(string testRunId)
+        public void ThrowsOnInvalidTestRunIdTest(string? testRunId)
         {
             var testReporter = new TestReporter(MockFileSystem.Object);
             Assert.Throws<ArgumentException>(() => testReporter.GetTestRun(testRunId));
@@ -163,7 +163,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testRunName = "testRunName";
             var testUser = "testUser";
             var testName = "testName";
-            var testSuiteName = "testSuite";            
+            var testSuiteName = "testSuite";
             var testReporter = new TestReporter(MockFileSystem.Object);
             var testRunId = testReporter.CreateTestRun(testRunName, testUser);
             var testLocation = $"{TestReporter.ResultsPrefix}{testRunId}";
@@ -290,7 +290,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         [InlineData(true, "some logs", new string[] { "file1.txt", "file2.txt", "file3.txt" }, null)]
         [InlineData(false, "some logs", new string[] { }, null)]
         [InlineData(true, "some logs", new string[] { }, "error message")]
-        public void EndTestTest(bool success, string stdout, string[] additionalFiles, string errorMessage)
+        public void EndTestTest(bool success, string stdout, string[] additionalFiles, string? errorMessage)
         {
             var testRunName = "testRunName";
             var testUser = "testUser";
@@ -394,7 +394,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             testReporter.EndTestRun(testRunId);
 
-            MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>()));
+            MockFileSystem.Setup(x => x.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>(), false));
 
             var trxPath = testReporter.GenerateTestReport(testRunId, resultDirectory);
 
@@ -418,7 +418,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 Assert.Equal("{ \"AppURL\": \"someAppURL\", \"TestResults\": \"someResultsDirectory\"}", testRun.ResultSummary.Output.StdOut);
                 return true;
             };
-            MockFileSystem.Verify(x => x.WriteTextToFile(expectedTrxPath, It.Is<string>(y => validateTestResults(y))), Times.Once());
+            MockFileSystem.Verify(x => x.WriteTextToFile(expectedTrxPath, It.Is<string>(y => validateTestResults(y)), false), Times.Once());
         }
-    }  
+    }
 }

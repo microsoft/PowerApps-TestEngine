@@ -2,7 +2,9 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.TestInfra
 {
@@ -12,10 +14,21 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
     public interface ITestInfraFunctions
     {
         /// <summary>
+        /// The current page to execute actions
+        /// </summary>
+        public IPage Page { get; set; }
+
+        /// <summary>
+        /// Return the current browser context
+        /// </summary>
+        /// <returns>The current browser context</returns>
+        public IBrowserContext GetContext();
+
+        /// <summary>
         /// Setup the test infrastructure
         /// </summary>
         /// <returns>Task</returns>
-        public Task SetupAsync();
+        public Task SetupAsync(IUserManager userManager);
 
         /// <summary>
         /// Setup the network request mocking
@@ -34,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Ends the test run
         /// </summary>
         /// <returns>Task</returns>
-        public Task EndTestRunAsync();
+        public Task EndTestRunAsync(IUserManager userManager);
 
         /// <summary>
         /// Dispose the instances
@@ -73,6 +86,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task AddScriptTagAsync(string scriptTag, string frameName);
 
         /// <summary>
+        /// Adds a script content to page
+        /// </summary>
+        /// <param name="content">The script to add</param>
+        /// <returns>Task</returns>
+        public Task AddScriptContentAsync(string content);
+
+        /// <summary>
         /// Runs javascript on the page
         /// </summary>
         /// <typeparam name="T">Expected return type</typeparam>
@@ -81,19 +101,11 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
 
         /// <summary>
-        /// Fills in user email 
+        /// Triggers a click event on a control
         /// </summary>
-        /// <param name="selector">Selector to find element</param>
-        /// <param name="value">Value to fill in</param>
-        /// <returns>Task</returns>
-        public Task HandleUserEmailScreen(string selector, string value);
-
-        /// <summary>
-        /// Fills in user password
-        /// </summary>
-        /// <param name="selector">Selector to find element</param>
-        /// <param name="value">Value to fill in</param>
-        /// <returns>Task</returns>
-        public Task HandleUserPasswordScreen(string selector, string value, string desiredUrl);
+        /// <param name="controlName">Control name to trigger event</param>
+        /// <param name="filePath">The physical file path for image file</param>
+        /// <returns></returns>
+        public Task<bool> TriggerControlClickEvent(string controlName, string filePath);
     }
 }

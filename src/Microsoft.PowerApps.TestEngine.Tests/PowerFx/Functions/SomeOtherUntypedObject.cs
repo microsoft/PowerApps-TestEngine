@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Collections.Generic;
 using Microsoft.PowerFx.Types;
 using NotImplementedException = System.NotImplementedException;
-using System.Collections.Generic;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 {

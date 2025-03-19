@@ -1,9 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Users;
 
 namespace Microsoft.PowerApps.TestEngine.Config
 {
@@ -13,6 +18,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestState : ITestState
     {
         private readonly ITestConfigParser _testConfigParser;
+        private bool _recordMode = false;
+
+        public event EventHandler<TestStepEventArgs> BeforeTestStepExecuted;
+        public event EventHandler<TestStepEventArgs> AfterTestStepExecuted;
+
         private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
         private string EnvironmentId { get; set; }
@@ -22,7 +32,24 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         private string OutputDirectory { get; set; }
 
+        private FileInfo TestConfigFile { get; set; }
+
+        private string ModulePath { get; set; }
+
+        private List<ITestEngineModule> Modules { get; set; } = new List<ITestEngineModule>();
+
+        private List<IUserManager> UserManagers { get; set; } = new List<IUserManager>();
+
+        private List<ITestWebProvider> WebProviders { get; set; } = new List<ITestWebProvider>();
+
+        private List<IUserCertificateProvider> CertificateProviders { get; set; } = new List<IUserCertificateProvider>();
+
         private bool IsValid { get; set; } = false;
+
+        // Determine if Power FX expressions delimited by ; should be executed step by step
+        public bool ExecuteStepByStep { get; set; } = false;
+
+        public ITestWebProvider TestProvider { get; set; }
 
         public TestState(ITestConfigParser testConfigParser)
         {
@@ -31,6 +58,17 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public TestSuiteDefinition GetTestSuiteDefinition()
         {
+            if (_recordMode)
+            {
+                return new TestSuiteDefinition
+                {
+                    RecordMode = true,
+                    AppId = TestPlanDefinition?.TestSuite.AppId,
+                    AppLogicalName = TestPlanDefinition?.TestSuite.AppLogicalName,
+                    Persona = TestPlanDefinition?.TestSuite.Persona,
+                };
+            }
+
             return TestPlanDefinition?.TestSuite;
         }
 
@@ -96,7 +134,13 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 }
                 else if (!string.IsNullOrEmpty(TestPlanDefinition.TestSettings?.FilePath))
                 {
-                    TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(TestPlanDefinition.TestSettings.FilePath, logger);
+                    var testSettingFile = TestPlanDefinition.TestSettings.FilePath;
+                    if (!Path.IsPathRooted(testSettingFile))
+                    {
+                        // Generate a absolte path relative to the test file
+                        testSettingFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(testConfigFile), testSettingFile));
+                    }
+                    TestPlanDefinition.TestSettings = _testConfigParser.ParseTestConfig<TestSettings>(testSettingFile, logger);
                 }
 
                 if (TestPlanDefinition.TestSettings?.BrowserConfigurations == null
@@ -127,7 +171,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
                 }
                 else if (!string.IsNullOrEmpty(TestPlanDefinition.EnvironmentVariables.FilePath))
                 {
-                    TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(TestPlanDefinition.EnvironmentVariables.FilePath, logger);
+                    var testEnvironmentFile = TestPlanDefinition.EnvironmentVariables.FilePath;
+                    if (!Path.IsPathRooted(testEnvironmentFile))
+                    {
+                        testEnvironmentFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(testConfigFile), testEnvironmentFile));
+                    }
+                    TestPlanDefinition.EnvironmentVariables = _testConfigParser.ParseTestConfig<EnvironmentVariables>(testEnvironmentFile, logger);
                 }
 
                 if (TestPlanDefinition.EnvironmentVariables?.Users == null
@@ -147,11 +196,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
                         if (string.IsNullOrEmpty(userConfig.EmailKey))
                         {
                             userInputExceptionMessages.Add("Missing email key");
-                        }
-
-                        if (string.IsNullOrEmpty(userConfig.PasswordKey))
-                        {
-                            userInputExceptionMessages.Add("Missing password key");
                         }
                     }
                 }
@@ -191,10 +235,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
         public void SetDomain(string domain)
         {
-            if (string.IsNullOrEmpty(domain))
-            {
-                throw new ArgumentNullException(nameof(domain));
-            }
             Domain = domain;
         }
 
@@ -229,6 +269,19 @@ namespace Microsoft.PowerApps.TestEngine.Config
             return OutputDirectory;
         }
 
+        public void SetTestConfigFile(FileInfo testConfig)
+        {
+            if (testConfig == null)
+            {
+                throw new ArgumentNullException(nameof(testConfig));
+            }
+            TestConfigFile = testConfig;
+        }
+        public FileInfo GetTestConfigFile()
+        {
+            return TestConfigFile;
+        }
+
         public UserConfiguration GetUserConfiguration(string persona)
         {
             if (!IsValid)
@@ -253,6 +306,101 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public int GetTimeout()
         {
             return GetTestSettings().Timeout;
+        }
+
+        public void SetModulePath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+            ModulePath = path;
+        }
+
+        /// <summary>
+        /// Load Managed Extensibility Framework (MEF) Test Engine modules
+        /// </summary>
+        public void LoadExtensionModules(ILogger logger)
+        {
+            var loader = new TestEngineModuleMEFLoader(logger);
+            var settings = this.GetTestSettings();
+            var catalogModules = loader.LoadModules(settings.ExtensionModules);
+
+            using var catalog = new AggregateCatalog(catalogModules);
+            using var container = new CompositionContainer(catalog);
+
+            var mefComponents = new MefComponents();
+            container.ComposeParts(mefComponents);
+            var components = mefComponents.MefModules.Select(v => v.Value).ToArray();
+            this.AddModules(components);
+
+            var userManagers = mefComponents.UserModules.Select(v => v.Value).OrderByDescending(v => v.Priority).ToArray();
+            this.AddUserModules(userManagers);
+
+            var webProviders = mefComponents.WebProviderModules.Select(v => v.Value).ToArray();
+            this.AddWebProviderModules(webProviders);
+
+            var certificateProviders = mefComponents.CertificateProviderModules.Select(v => v.Value).ToArray();
+            this.AddCertificateProviders(certificateProviders);
+        }
+
+        public void AddModules(IEnumerable<ITestEngineModule> modules)
+        {
+            Modules.Clear();
+            Modules.AddRange(modules);
+        }
+
+        public void AddUserModules(IEnumerable<IUserManager> modules)
+        {
+            UserManagers.Clear();
+            UserManagers.AddRange(modules);
+        }
+
+        public void AddWebProviderModules(IEnumerable<ITestWebProvider> modules)
+        {
+            WebProviders.Clear();
+            WebProviders.AddRange(modules);
+        }
+
+        public void AddCertificateProviders(IEnumerable<IUserCertificateProvider> modules)
+        {
+            CertificateProviders.Clear();
+            CertificateProviders.AddRange(modules);
+        }
+
+        public List<ITestEngineModule> GetTestEngineModules()
+        {
+            return Modules;
+        }
+
+        public List<IUserManager> GetTestEngineUserManager()
+        {
+            return UserManagers;
+        }
+
+        public List<ITestWebProvider> GetTestEngineWebProviders()
+        {
+            return WebProviders;
+        }
+
+        public List<IUserCertificateProvider> GetTestEngineAuthProviders()
+        {
+            return CertificateProviders;
+        }
+
+        public void OnBeforeTestStepExecuted(TestStepEventArgs e)
+        {
+            BeforeTestStepExecuted?.Invoke(this, e);
+        }
+
+        public void OnAfterTestStepExecuted(TestStepEventArgs e)
+        {
+            AfterTestStepExecuted?.Invoke(this, e);
+        }
+
+        public void SetRecordMode()
+        {
+            _recordMode = true;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Moq;
@@ -18,9 +21,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Helpers
         [Fact]
         public void CheckIfOutDatedPublishedAppTrue()
         {
-            Exception exception= new Exception(ExceptionHandlingHelper.PublishedAppWithoutJSSDKErrorCode);
+            Exception exception = new Exception(ExceptionHandlingHelper.PublishedAppWithoutJSSDKErrorCode);
             LoggingTestHelper.SetupMock(MockLogger);
-            ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(exception,MockLogger.Object);
+            ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(exception, MockLogger.Object);
 
             // Verify the message is logged in this case
             LoggingTestHelper.VerifyLogging(MockLogger, ExceptionHandlingHelper.PublishedAppWithoutJSSDKMessage, LogLevel.Error, Times.Once());

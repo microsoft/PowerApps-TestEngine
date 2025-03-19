@@ -1,0 +1,27 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Power Apps Portal Test
+  testSuiteDescription: Interact with the Power Apps Portal
+  persona: User1
+  appLogicalName: NA
+
+  testCases:
+    - testCaseName: Update Connection References
+      testCaseDescription: Connect created connections with connection references
+      testSteps: |
+        = Preview.UpdateConnectionReferences();
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: NotNeeded
+      passwordKey: NotNeeded

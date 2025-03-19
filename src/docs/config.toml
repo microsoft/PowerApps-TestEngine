@@ -1,0 +1,27 @@
+baseURL = "https://microsoft.github.io/PowerApps-TestEngine/"
+languageCode = "en-us"
+title = "PowerApps Test Engine"
+theme = "relearn"
+publishDir = "site"
+uglyURLs = false
+
+[permalinks]
+  post = "/:slug/"
+
+[params]
+  themeVariant = "blue"
+  landingPageURL = "/PowerApps-TestEngine"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[server]
+  baseURL = "http://localhost:8080/PowerApps-TestEngine"
+  appendPort = false
+
+[languages]
+  [languages.en]
+    languageName = "English"
+    weight = 1

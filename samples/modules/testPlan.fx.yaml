@@ -1,0 +1,33 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Button Clicker
+  testSuiteDescription: Verifies that counter increments when the button is clicked
+  persona: User1
+  appLogicalName: new_buttonclicker_0a877
+  onTestCaseStart: Screenshot("buttonclicker_onTestCaseStart.png");
+  onTestCaseComplete: Select(ResetButton);
+  onTestSuiteComplete: Screenshot("buttonclicker_onTestSuiteComplete.png");
+
+  testCases:
+    - testCaseName: Case1
+      testCaseDescription: Run sample action
+      testSteps: |
+        = Preview.Sample();
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  timeout: 600000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
+

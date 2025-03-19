@@ -34,11 +34,20 @@ namespace Microsoft.PowerApps.TestEngine.System
         public string[] GetFiles(string directoryName);
 
         /// <summary>
+        /// Gets files in a directory matching search pattern
+        /// </summary>
+        /// <param name="directoryName">Directory name</param>
+        /// <param name="searchPattern">Directory name</param>
+        /// <returns>Array of files in directory</returns>
+        public string[] GetFiles(string directoryName, string searchPattern);
+
+        /// <summary>
         /// Writes text to file
         /// </summary>
         /// <param name="filePath">File to write to</param>
         /// <param name="text">Text to put in file</param>
-        public void WriteTextToFile(string filePath, string text);
+        /// <param name="overwrite">Determine if the contents of the file should be replaced with the text. Default value if <c>False</c></param>
+        public void WriteTextToFile(string filePath, string text, bool overwrite = false);
 
         /// <summary>
         /// Writes text to file
@@ -48,11 +57,11 @@ namespace Microsoft.PowerApps.TestEngine.System
         public void WriteTextToFile(string filePath, string[] text);
 
         /// <summary>
-        /// Checks whether file path is valid
+        /// Checks whether file path is accessible
         /// </summary>
         /// <param name="filePath">Path to check</param>
-        /// <returns>True if it is valid</returns>
-        public bool IsValidFilePath(string filePath);
+        /// <returns>True if it is accessible</returns>
+        public bool CanAccessFilePath(string filePath);
 
         /// <summary>
         /// Reads all text in a file
@@ -67,5 +76,45 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// <param name="fileName">File name</param>
         /// <returns>File name with all valid characters</returns>
         public string RemoveInvalidFileNameChars(string fileName);
+
+        /// <summary>
+        /// Writes a binary file to the file system imlementation
+        /// </summary>
+        /// <param name="filePath">The name of the file to create</param>
+        /// <param name="data">The data to write</param>
+        /// <returns></returns>
+        public void WriteFile(string filePath, byte[] data);
+
+        /// <summary>
+        /// Returns default root location of all testengine artifacts
+        /// </summary>
+        /// <returns>Location of the root folder for test engine output and log files</returns>
+        public string GetDefaultRootTestEngine();
+
+        /// <summary>
+        /// Checks whether file path is permitted for write operations
+        /// </summary>
+        /// <param name="filePath">Path to check</param>
+        /// <returns>True if it is permitted</returns>
+        public bool IsWritePermittedFilePath(string filePath);
+
+        /// <summary>
+        /// Checks whether directory path is accessible
+        /// </summary>
+        /// <param name="filePath">Path to check</param>
+        /// <returns>True if it is valid</returns>
+        public bool CanAccessDirectoryPath(string filePath);
+
+        /// <summary>
+        /// Delete a file from the system assuming file is in the permitted locations to delete from
+        /// </summary>
+        /// <param name="fileName">The file to delete</param>
+        void Delete(string fileName);
+
+        /// <summary>
+        /// Delete a directory from the system assuming directory is in the permitted locations to delete from
+        /// </summary>
+        /// <param name="directoryName">The file to delete</param>
+        void DeleteDirectory(string directoryName);
     }
 }

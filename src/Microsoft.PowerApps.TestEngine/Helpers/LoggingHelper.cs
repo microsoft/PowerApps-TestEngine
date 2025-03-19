@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -6,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.PowerApps;
+using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 
@@ -14,15 +17,15 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 {
     public class LoggingHelper
     {
-        private readonly IPowerAppFunctions _powerAppFunctions;
+        private readonly ITestWebProvider _testWebProvider;
         private readonly ISingleTestInstanceState _singleTestInstanceState;
         private readonly ITestEngineEvents _eventHandler;
         private ILogger Logger { get { return _singleTestInstanceState.GetLogger(); } }
 
-        public LoggingHelper(IPowerAppFunctions powerAppFunctions,
+        public LoggingHelper(ITestWebProvider testWebProvider,
                              ISingleTestInstanceState singleTestInstanceState, ITestEngineEvents eventHandler)
         {
-            _powerAppFunctions = powerAppFunctions;
+            _testWebProvider = testWebProvider;
             _singleTestInstanceState = singleTestInstanceState;
             _eventHandler = eventHandler;
         }
@@ -31,7 +34,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         {
             try
             {
-                ExpandoObject debugInfo = (ExpandoObject)await _powerAppFunctions.GetDebugInfo();
+                ExpandoObject debugInfo = (ExpandoObject)await _testWebProvider.GetDebugInfo();
                 if (debugInfo != null && debugInfo.ToString() != "undefined")
                 {
                     Logger.LogInformation($"------------------------------\n Debug Info \n------------------------------");

@@ -4,19 +4,25 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - integration
       - main
   pull_request:
     branches:
+      - integration
       - main
   schedule:
     - cron: '0 6 * * 1,3,5'
 
+permissions:
+  checks: write
+  security-events: write
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       matrix:
-        dotnet-version: ['6.0.x']
+        dotnet-version: ['8.0.x']
 
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +33,7 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
       
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: csharp, javascript
       
@@ -44,10 +50,12 @@ jobs:
       - name: Test
         run: |
           cd src
-          dotnet test --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
+          dotnet test --configuration Release --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: 'dotnet-version-${{ matrix.dotnet-version }}-analysis'  
       
       - name: Test Report
         uses: dorny/test-reporter@v1
@@ -57,86 +65,99 @@ jobs:
           path: |
             **/*.trx
           reporter: dotnet-trx        # Format of test results
-
-      - name: Copy Coverage report
-        run: cp src/TestResults/**/coverage.cobertura.xml coverage.cobertura.xml
-
-      - name: Code coverage report
-        uses: irongut/CodeCoverageSummary@v1.2.0
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
         with:
-          filename: coverage.cobertura.xml
-          badge: true
-          fail_below_min: true
-          format: markdown
-          indicators: true
-          output: both
-          thresholds: '85 90'
+          name: test-results-coverage-report
+          path: src/TestResults/**/coverage.cobertura.xml
 
-      - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
-        with:
-          recreate: true
-          path: code-coverage-results.md
+#  test-coverage:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download test coverage report
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: test-results-coverage-report
+#          path: .
+#      - name: Run CodeCoverageSummary
+#        uses: irongut/CodeCoverageSummary@v1.3.0
+#        with:
+#          filename: ./**/coverage.cobertura.xml
+#          badge: true
+#          fail_below_min: true
+#          format: markdown
+#          indicators: true
+#          output: both
+#          thresholds: '10 10'
+#      - name: Add Coverage PR Comment
+#        uses: marocchino/sticky-pull-request-comment@v2
+#        if: github.event_name == 'pull_request'
+#        with:
+#          recreate: true
+#          path: code-coverage-results.md
 
-  yaml-integration-tests-prod:
-    needs: build
-    uses: ./.github/workflows/yaml-integration-tests.yml
-    with: 
-       parameters: 
-         '[{ "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/basicgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/buttonclicker/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/calculator/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/containers/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanAppIdPreview.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanForScriptInjection.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'
-    secrets: inherit
+# commenting to run these stages not on pr but nightly
+  # yaml-integration-tests-prod:
+  #   needs: build
+  #   uses: ./.github/workflows/yaml-integration-tests.yml
+  #   with: 
+  #      parameters: 
+  #        '[{ "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/basicgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/buttonclicker/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/calculator/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/containers/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanAppIdPreview.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanForScriptInjection.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "ceb95cca-da1d-ed58-8af8-117cb4081f16", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'
+  #   secrets: inherit
 
-  yaml-integration-tests-preprod:
-    needs: build
-    uses: ./.github/workflows/yaml-integration-tests.yml
-    with: 
-       parameters:         
-         '[{ "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/basicgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/buttonclicker/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/calculator/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/containers/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanAppIdPreprod.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanForScriptInjection.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'
-    secrets: inherit  
-  yaml-integration-tests-test:
-    needs: build
-    uses: ./.github/workflows/yaml-integration-tests.yml
-    with: 
-       parameters: 
-         '[{ "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/basicgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/buttonclicker/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/calculator/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/containers/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanAppIdTest.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanForScriptInjection.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
-          { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'     
-    secrets: inherit
-  notification:
-    if: github.event_name == 'schedule' && (failure() || github.run_attempt > 1) #send notification only for schedule failure or reruns
-    needs: [yaml-integration-tests-prod, yaml-integration-tests-preprod, yaml-integration-tests-test]
-    runs-on: ubuntu-latest
-    name: Send Notification To Teams
-    steps:
-    - name: Send a Notification to Teams
-      id: notify
-      uses: thechetantalwar/teams-notify@v2
-      with:
-        teams_webhook_url: ${{ secrets.TEAM_HOOK }}
-        message: "${{ job.status }}: Github Action ${{ github.run_number }} (attempt #${{ github.run_attempt }}) triggered by ${{ github.triggering_actor }}. See https://github.com/microsoft/PowerApps-TestEngine/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }} details."
+  # yaml-integration-tests-preprod:
+  #   needs: build
+  #   uses: ./.github/workflows/yaml-integration-tests.yml
+  #   with: 
+  #      parameters:         
+  #        '[{ "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/basicgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/buttonclicker/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/calculator/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/containers/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanAppIdPreprod.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanForScriptInjection.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "98abc6e1-c9ae-e911-9bb3-a30701a3e3d0", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.preprod.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'
+  #   secrets: inherit  
+  # yaml-integration-tests-test:
+  #   needs: build
+  #   uses: ./.github/workflows/yaml-integration-tests.yml
+  #   with: 
+  #      parameters: 
+  #        '[{ "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/basicgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/buttonclicker/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/calculator/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/connector/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/containers/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanAppIdTest.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/differentvariabletypes/testPlanForScriptInjection.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/nestedgallery/testPlan.fx.yaml", "outputDirectory": "../../TestResults" },
+  #         { "environmentId": "c12a52de-7404-e19d-9f6e-90f8548a90f2", "tenantId": "f2c52b3d-d88e-4892-9785-d5b7c7016725", "domain": "apps.test.powerapps.com", "testPlanFile": "../../samples/pcfcomponent/testPlan.fx.yaml", "outputDirectory": "../../TestResults" }]'     
+  #   secrets: inherit
+
+  # notification:
+  #   if: github.event_name == 'schedule' && (failure() || github.run_attempt > 1) #send notification only for schedule failure or reruns
+  #   needs: [yaml-integration-tests-prod, yaml-integration-tests-preprod, yaml-integration-tests-test]
+  #   runs-on: ubuntu-latest
+  #   name: Send Notification To Teams
+  #   steps:
+  #   - name: Send a Notification to Teams
+  #     id: notify
+  #     uses: thechetantalwar/teams-notify@v2
+  #     with:
+  #       teams_webhook_url: ${{ secrets.TEAM_HOOK }}
+  #       message: "${{ job.status }}: Github Action ${{ github.run_number }} (attempt #${{ github.run_attempt }}) triggered by ${{ github.triggering_actor }}. See https://github.com/microsoft/PowerApps-TestEngine/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }} details."

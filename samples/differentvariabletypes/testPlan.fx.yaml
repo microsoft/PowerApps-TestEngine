@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: DifferentVariableTypes
   testSuiteDescription: Showcases usage of Assert/Wait/SetProperty with multiple types
@@ -83,4 +84,4 @@ environmentVariables:
   users:
     - personaName: User1
       emailKey: user1Email
-      passwordKey: user1Password
+      passwordKey: NotNeeded

@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Connector App
   testSuiteDescription: Verifies that you can mock network requests
@@ -8,7 +9,7 @@ testSuite:
       method: POST
       headers:
         x-ms-request-method: GET
-      responseDataFile: ../../samples/connector/response.json
+      responseDataFile: response.json
 
   testCases:
     - testCaseName: Fill in a city name and do the search
@@ -29,4 +30,4 @@ environmentVariables:
   users:
     - personaName: User1
       emailKey: user1Email
-      passwordKey: user1Password
+      passwordKey: NotNeeded

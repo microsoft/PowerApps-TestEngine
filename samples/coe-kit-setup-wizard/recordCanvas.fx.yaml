@@ -1,0 +1,28 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: CoE Starter Canvas App
+  testSuiteDescription: Provide the ability to record actions
+  persona: User1
+  appLogicalName: cr998_app_f2001
+
+  testCases:
+    - testCaseName: Failure case
+      testCaseDescription: User not licenced
+      testSteps: |
+        = Assert(ErrorDialogTitle="Start a Power Apps trial?")
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 10000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

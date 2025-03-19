@@ -39,5 +39,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         ///  If not specified, the browser will be used
         /// </summary>
         public string ConfigName { get; set; }
+
+        /// <summary>
+        ///  Gets or sets the channel to be used for browser
+        /// </summary>
+        public string Channel { get; set; } = "";
     }
 }

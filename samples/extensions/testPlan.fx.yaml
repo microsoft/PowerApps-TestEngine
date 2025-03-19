@@ -1,0 +1,27 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Extension example
+  testSuiteDescription: Demonstrate the use of PowerFx extension
+  persona: User1
+  appLogicalName: new_buttonclicker_0a877
+
+  testCases:
+    - testCaseName: Run Sample
+      testCaseDescription: Run the Sample Command
+      testSteps: |
+        = Preview.Sample();
+
+testSettings:
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
+

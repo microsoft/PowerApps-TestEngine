@@ -1,0 +1,28 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Connector App
+  testSuiteDescription: Verifies that you can mock network requests
+  persona: User1
+  appLogicalName: new_connectorapp_da583
+  onTestSuiteStart: |
+    = Preview.SimulateConnector({name: "msnweather", then: {responses: { daily: { day: { summary: "You are seeing the mock response" }}}}})
+  testCases:
+    - testCaseName: Fill in a city name and do the search
+      testSteps: |
+        = Screenshot("connectorapp_loaded.png");
+          SetProperty(TextInput1.Text, "Atlanta");
+          Select(Button1);
+          Assert(Label4.Text = "You are seeing the mock response", "Validate the output is from the mock");
+          Screenshot("connectorapp_end.png");
+
+testSettings:
+  locale: "en-US"
+  recordVideo: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: user1Password

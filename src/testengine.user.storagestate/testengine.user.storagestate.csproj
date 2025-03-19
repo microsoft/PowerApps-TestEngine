@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <SignAssembly>true</SignAssembly>
+    <PublicSign>true</PublicSign>
+    <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
+    <ProjectReference Include="..\testengine.common.user\testengine.common.user.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Add required dependancy assemblies -->
+    <MySourceFiles Include="..\..\bin\$(configuration)\testengine.user.storagestate\testengine.user.storagestate.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.AspNetCore.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Extensions.DependencyInjection.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.PowerPlatform.Dataverse.Client.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Xrm.Sdk.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Extensions.Http.dll;..\..\bin\$(configuration)\testengine.user.storagestate\System.ServiceModel.Primitives.dll;..\..\bin\$(configuration)\testengine.user.storagestate\System.Configuration.ConfigurationManager.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Extensions.Caching.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Crm.Sdk.Proxy.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Crm.Sdk.Proxy.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Identity*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\System.ServiceModel.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\System.Security.*.dll;..\..\bin\$(configuration)\testengine.user.storagestate\Microsoft.Bcl.Cryptography.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.2">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+  </ItemGroup>
+
+</Project>

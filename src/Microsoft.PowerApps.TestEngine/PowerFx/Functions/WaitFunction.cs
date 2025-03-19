@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Helpers;
-using Microsoft.PowerApps.TestEngine.PowerApps.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 

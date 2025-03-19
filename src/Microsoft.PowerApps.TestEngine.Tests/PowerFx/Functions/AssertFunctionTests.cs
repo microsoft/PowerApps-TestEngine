@@ -4,8 +4,8 @@
 using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
-using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerApps.TestEngine.System;
+using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx.Types;
 using Moq;
 using Xunit;

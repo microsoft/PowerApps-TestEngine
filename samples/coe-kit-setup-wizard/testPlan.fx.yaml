@@ -1,0 +1,39 @@
+testSuite:
+  testSuiteName: CoE Starter Kit Setup Wizard
+  testSuiteDescription: Verify custom page of CoE Starter Kit Setup Wizard and step through install
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Step 1 - Confirm Pre-requisites
+      testCaseDescription: Verify pre-requistes in place
+      testSteps: |
+        = 
+        Preview.ConsentDialog(Table({Text: "Center of Excellence Setup Wizard"}));
+        Preview.Pause();
+        Set(configStep, 1); 
+        Assert(configStep=1);
+        Select(btnNext);
+    - testCaseName: Step 2 - Configure communication methods
+      testCaseDescription: Verify communication methods setup
+      testSteps: |
+        =
+        Assert(configStep=2);
+        Assert(CountRows(colCommunicate)=3);
+        Preview.SelectControl(Button3,1);
+        Preview.Pause();    
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 480000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
