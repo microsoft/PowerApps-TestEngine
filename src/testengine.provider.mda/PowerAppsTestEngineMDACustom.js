@@ -209,7 +209,13 @@ class PowerAppsModelDrivenCanvas {
         var control = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName];
 
         if (typeof control === "undefined") {
-            return null;
+            var childControlContext = PowerAppsModelDrivenCanvas.FindControlContextForChildControl(itemPath.controlName);
+            if (childControlContext) {
+                control = childControlContext;
+            }
+            else{
+                return null;
+            }            
         }
 
         var property = control.modelProperties[itemPath.propertyName];
@@ -264,10 +270,28 @@ class PowerAppsModelDrivenCanvas {
             if (controlContext.modelProperties[itemPath.propertyName]) {
                 propertyValue = controlContext.modelProperties[itemPath.propertyName]?.getValue();
 
-                if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) { 
+                if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) {
                     // TODO: Transform data to display data
                     propertyValue = propertyValue.dataSource.data;
                 }
+            }
+        }
+        else {
+            try {
+                var childControlContext = PowerAppsModelDrivenCanvas.FindControlContextForChildControl(itemPath.controlName);
+                if (childControlContext) {
+                    if (childControlContext.modelProperties[itemPath.propertyName]) {
+                        propertyValue = childControlContext.modelProperties[itemPath.propertyName]?.getValue();
+                        
+                        if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) {
+                            // TODO: Transform data to display data
+                            propertyValue = propertyValue.dataSource.data;
+                        }
+                    }
+                }
+            }
+            catch (error) {
+                return console.log(error);
             }
         }
 
@@ -338,9 +362,58 @@ class PowerAppsModelDrivenCanvas {
                 return true;
             }
         }
-
+        else {
+            try {
+                var childControlContext = PowerAppsModelDrivenCanvas.FindControlContextForChildControl(itemPath.controlName);
+                if (childControlContext) {
+                    if (childControlContext.modelProperties[itemPath.propertyName]) {
+                        propertyValue = childControlContext.modelProperties[itemPath.propertyName]?.setValue(value);
+                        return true;
+                    }
+                }
+            }
+            catch (error) {
+                return console.log(error);
+            }
+            
+        }
         return false;
     }
+
+    static FindControlContextForChildControl(controlToFind) {
+        var appMagic = PowerAppsModelDrivenCanvas.getAppMagic();
+
+        var controlContext = appMagic.Controls.GlobalContextManager.bindingContext.controlContexts;
+        var controlNames = Object.keys(controlContext);
+        for (let controlName of controlNames) {
+            var control = controlContext[controlName];
+            var bindingContext = PowerAppsModelDrivenCanvas.findControl(controlName, control, controlToFind);
+            if (bindingContext) {
+                return bindingContext;
+            }
+        }
+        return null;
+    }
+
+    static findControl(controlName, controlObject, controlToFind) {
+        if (controlName === controlToFind) {
+            return controlObject;
+        }
+
+        if (controlObject.controlWidget.replicatedContextManager) {
+            var childrenControlContext = controlObject.controlWidget.replicatedContextManager.authoringAreaBindingContext.controlContexts;
+            var childControlNames = Object.keys(childrenControlContext);
+            for (let childControlName of childControlNames) {
+                var childControlObject = childrenControlContext[childControlName];
+                var foundControl = PowerAppsModelDrivenCanvas.findControl(childControlName, childControlObject, controlToFind);
+                if (foundControl) {
+                    return foundControl;
+                }
+            }
+        }
+        return null;
+    }
+
 
     static interactWithControl(itemPath, value) {
         var appMagic = PowerAppsModelDrivenCanvas.getAppMagic()

@@ -1,0 +1,144 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Form Control
+  testSuiteDescription: Verify test cases for Form Control in Custom Page
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:       
+
+  # Table control test cases
+    - testCaseName: Test Table Control - Items Property
+      testCaseDescription: Verify that the Table Control correctly loads and displays items.
+      testSteps: |        
+        Assert(CountRows(Table1.Items) = 14, "Checking if Table displays correct number of items");
+
+    - testCaseName: Test Table Control - ReflowBehavior Property
+      testCaseDescription: Verify that the Table Control refresh behavior works as expected.
+      testSteps: |
+        SetProperty(Table1.ReflowBehavior, "Reflow");
+        Assert(Table1.ReflowBehavior = "Reflow", "Checking the refresh behavior setting");
+
+    - testCaseName: Test Table Control - Selected Property
+      testCaseDescription: Verify that selecting a row updates the Selected property correctly.
+      testSteps: |
+        SetProperty(Table1.SelectedItems, Table(First(Table1.Items)));
+        Assert(CountRows(Table1.SelectedItems) = 1, "Checking if the selected row updates correctly");
+
+    - testCaseName: Test Table Control - Multiple Select Property
+      testCaseDescription: Verify that selecting a row updates the Selected property correctly.
+      testSteps: |      
+        SetProperty(Table1.SelectedItems, Table(First(Table1.Items), Last(Table1.Items)));
+        Assert(CountRows(Table1.SelectedItems) = 2, "Checking if the table control allow to select multiple values");
+
+    - testCaseName: Test Form Control in View Mode - Validate Mode
+      testCaseDescription: Verify that Form control is in read only mode before edit.
+      testSteps: |     
+        Assert(Form2.DefaultMode = 2, "Checking if the form control is in readonly mode before edit operation");
+
+    - testCaseName: Test Form Control in Edit Mode - Validate Mode
+      testCaseDescription: Verify that Form control is in edit mode during edit operation.
+      testSteps: |     
+        SetProperty(Form2.DefaultMode, 0);
+        Assert(Form2.DefaultMode = 0, "Checking if the form control is in edit mode during edit operation");
+
+    - testCaseName: Test Form Control in Edit Mode - Edit Value of Form Controls
+      testCaseDescription: Verify that Form control is in edit mode during edit operation.
+      testSteps: |    
+        SetProperty(Department_DataCard2.Default, {Id:681470003,Value:"Sales"});
+        SetProperty(Address_DataCard2.Default, "152 South Cross Street");
+        SetProperty(Email_DataCard2.Default, "xyz@abc.com");
+        SetProperty(Phone_Number_DataCard2.Default, "0987654321");
+        SetProperty(DOB_DataCard3.Default, DateTime(1983,01,09,09,0,0));
+        Select(btnEdit);
+        SetProperty(Table1.SelectedItems, Table(First(Table1.Items)));
+        Assert(Email_DataCard2.Default = "xyz@abc.com", "Checking if the email value updated to new value");
+        Assert(Phone_Number_DataCard2.Default = "0987654321", "Checking if the phone value updated to new value");
+        Assert(DOB_DataCard3.Default = DateTime(1983,01,09,09,0,0), "Check if the DOB displays '01/09/1983 09:00 AM'.");
+
+
+  # Form control test cases
+    
+    - testCaseName: Navigate to New Employee Form Control
+      testCaseDescription: Verify that the Form Navigate to the new Employee form.
+      testSteps: |
+        Select(btnNew);
+
+    - testCaseName: Test Employee_Name_DataCard2 - Default Value
+      testCaseDescription: Verify that the Employee Name field displays the default value correctly.
+      testSteps: |
+        SetProperty(Employee_Name_DataCard2.Default, "David Benjamin12");
+        Assert(Employee_Name_DataCard2.Default = "David Benjamin12", "Check if the Employee Name displays 'James Clear'.");
+
+    - testCaseName: Test Gender_DataCard2 - Default Value
+      testCaseDescription: Verify that updating the Gender field reflects correctly.
+      testSteps: |
+        SetProperty(Gender_DataCard2.Default, {Id:681470001,Value:"Female"});
+        Assert(CountRows('DataCardValue7'.SelectedItems) = 1, "Check if only one item is selected in Gender Field.");
+
+    - testCaseName: Test DOB_DataCard3 - DateTime Value
+      testCaseDescription: Verify that setting DateTime in the DOB field reflects correctly.
+      testSteps: |
+        SetProperty(DOB_DataCard3.Default, DateTime(1975,01,01,05,0,0));
+        Assert(DOB_DataCard3.Default = DateTime(1975,01,01,05,0,0), "Check if the DOB displays '01/01/1975 05:00 AM'.");    
+
+    - testCaseName: Test Department_DataCard2 - Default Value
+      testCaseDescription: Verify that the Department field displays the default value correctly.
+      testSteps: |
+        SetProperty(Department_DataCard2.Default, {Id:681470003,Value:"Sales"});
+        Assert(CountRows('DataCardValue8'.SelectedItems) = 1, "Check if only one item is selected in Department Field.");
+
+    - testCaseName: Test Address_DataCard3 - Default Value
+      testCaseDescription: Verify that the Address field displays the default value correctly.
+      testSteps: |
+        SetProperty(Address_DataCard3.Default, "100 North Cross Street");
+        Assert(Address_DataCard3.Default = "100 North Cross Street", "Check if the Address displays '152 South Cross Street'.");
+
+    - testCaseName: Test Email_DataCard2 - Default Value
+      testCaseDescription: Verify that the Email field displays the default value correctly.
+      testSteps: |
+        SetProperty(Email_DataCard2.Default, "DavidBenjamin@abc.com");
+        Assert(Email_DataCard2.Default = "DavidBenjamin@abc.com", "Check if the Email displays 'DavidBenjamin@abc.com'.");
+
+    - testCaseName: Test Phone_Number_DataCard2 - Default Value
+      testCaseDescription: Verify that the Phone Number field displays the default value correctly.
+      testSteps: |
+        SetProperty(Phone_Number_DataCard2.Default, "1112223344");
+        Assert(Phone_Number_DataCard2.Default = "1112223344", "Check if the Phone Number displays '1112223344'.");
+    
+    - testCaseName: Test Save Functionality of the New Employee Form Control
+      testCaseDescription: Verify that the Employee data in the form saved correctly.
+      testSteps: |
+        Select(btnSubmit);
+        Assert(CountRows(Table1.Items) = 14, "Checking if Table displays correct number of items");
+
+    # - testCaseName: Test Reset Functionality of the New Employee Form Control
+    #   testCaseDescription: Verify that the Employee data in the form is reset to default value.
+    #   testSteps: |
+    #     SetProperty(Employee_Name_DataCard2.Default, "John Benjamin");
+    #     SetProperty(Gender_DataCard2.Default, {Id:681470001,Value:"Female"});
+    #     SetProperty(DOB_DataCard3.Default, DateTime(1975,01,01,05,0,0));
+    #     SetProperty(Department_DataCard2.Default, {Id:681470003,Value:"Sales"});
+    #     SetProperty(Address_DataCard3.Default, "152 South Cross Street");
+    #     SetProperty(Email_DataCard2.Default, "JohnBenjamin@abc.com");
+    #     SetProperty(Phone_Number_DataCard2.Default, "1112223344");
+    #     Select(btnReset);       
+    #     Wait(Employee_Name_DataCard2, "Default","");
+    #     Assert(Employee_Name_DataCard2.Default = "", "Check if the Employee Name displays default value.");
+    #     Assert(DOB_DataCard3.Default = DateTime(1980,01,01,03,0,0), "Check if the DOB displays '01/01/1980 03:00 AM'."); 
+    #     Assert(CountRows('DataCardValue8'.SelectedItems) = 1, "Check if only one item is selected in Department Field.");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge      
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

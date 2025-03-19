@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             typeMappings.Add("g", FormulaType.Guid);
             typeMappings.Add("m", FormulaType.Decimal);
             typeMappings.Add("v", FormulaType.UntypedObject);
-            typeMappings.Add("i", FormulaType.String);
+            typeMappings.Add("i", FormulaType.String); 
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
         private bool IsRecord(string typeString)
         {
-            return typeString.StartsWith("!");
+            return typeString.StartsWith("!") || typeString.StartsWith("l");
         }
 
         /// <summary>
