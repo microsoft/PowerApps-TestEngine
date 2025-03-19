@@ -197,7 +197,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                         {
                             result = DateValue.NewDateOnly(trueDateTime.Date);
                             return true;
-                        }                       
+                        }
                     }
 
                     result = New(jsPropertyValueModel.PropertyValue);
