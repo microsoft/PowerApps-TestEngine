@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.IO;
-using System.Reflection;
+using System.Collections;
+using System.Globalization;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Resources;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -36,6 +37,21 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         public const string NAMESPACE_PREVIEW = "Preview";
         public const string NAMESPACE_TEST_ENGINE = "TestEngine";
         public const string NAMESPACE_DEPRECATED = "Deprecated";
+        public const string SELFREFERENCE_NAMESPACE = "<module>";
+
+        private static readonly HashSet<string> AllowedNamespaces = InitializeAllowedNamespaces();
+        private static HashSet<string> InitializeAllowedNamespaces()
+        {
+            var allowedNamespaces = new HashSet<string>();
+            var resourceManager = new ResourceManager(typeof(NamespaceResource));
+            var resourceSet = resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true);
+
+            foreach (DictionaryEntry entry in resourceSet)
+            {
+                allowedNamespaces.Add(entry.Value.ToString());
+            }
+            return allowedNamespaces;
+        }
 
         public TestEngineExtensionChecker()
         {
@@ -245,16 +261,9 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         /// <returns><c>True</c> if the assembly meets the test setting requirements, <c>False</c> if not</returns>
         public virtual bool Validate(TestSettingExtensions settings, string file)
         {
-            var allowList = new HashSet<string>(settings.AllowNamespaces)
-            {
-                // Add minimum namespaces for a MEF plugin used by TestEngine
-                "System.Threading.Tasks",
-                "Microsoft.PowerFx",
-                "System.ComponentModel.Composition",
-                "Microsoft.Extensions.Logging",
-                "Microsoft.PowerApps.TestEngine.",
-                "Microsoft.Playwright"
-            };
+            var allowList = new HashSet<string>(settings.AllowNamespaces);
+
+            allowList.UnionWith(AllowedNamespaces);
 
             var denyList = new HashSet<string>(settings.DenyNamespaces)
             {
@@ -262,7 +271,8 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             };
 
             byte[] contents = GetExtentionContents(file);
-            var found = LoadTypes(contents);
+            //ignore generic types
+            var found = LoadTypes(contents).Where(item => !item.StartsWith("!")).ToList();
 
             var valid = true;
 
@@ -270,6 +280,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             {
                 Logger.LogInformation("Invalid Power FX Namespace");
                 valid = false;
+                return valid;
             }
 
             foreach (var item in found)
@@ -280,16 +291,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 var allow = !String.IsNullOrEmpty(allowLongest);
                 var deny = !String.IsNullOrEmpty(denyLongest);
 
-                if (allow && deny && denyLongest?.Length > allowLongest?.Length || !allow && deny)
+                if (allow && deny && denyLongest?.Length > allowLongest?.Length || !allow)
                 {
                     _logger.LogInformation("Deny usage of " + item);
                     _logger.LogInformation("Allow rule " + allowLongest);
                     _logger.LogInformation("Deny rule " + denyLongest);
                     valid = false;
+                    break;
                 }
             }
-
-
             return valid;
         }
 
@@ -449,7 +459,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                         if (!settings.AllowPowerFxNamespaces.Contains(name) && name != NAMESPACE_TEST_ENGINE)
                         {
-                            Logger.LogInformation($"Not allow Power FX Namespace {name} for {type.Name}");
+                            Logger.LogInformation($"Do not allow Power FX Namespace {name} for {type.Name}");
                             // Not in allow list or the Reserved TestEngine namespace
                             return false;
                         }
@@ -662,7 +672,11 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                 foreach (TypeDefinition type in module.GetAllTypes())
                 {
-                    AddType(type, found);
+                    //ignoring self reference additional ignore checks for specialcases might be needed 
+                    if (!type.Name.ToLower().Equals(SELFREFERENCE_NAMESPACE))
+                    {
+                        AddType(type, found);
+                    }
 
                     // Load each constructor parameter and types in the body
                     foreach (var constructor in type.GetConstructors())

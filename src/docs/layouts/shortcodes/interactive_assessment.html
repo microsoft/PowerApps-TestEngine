@@ -1,0 +1,97 @@
+{{ $jsonFile := .Get 0 }}
+
+{{ $baseURL := .Site.BaseURL }}
+{{ $filePath := (print $baseURL "assets/js/" $jsonFile) }}
+
+{{ $html := (print `
+<div id="surveyContainer"></div>
+<link href="https://unpkg.com/survey-core/defaultV2.min.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="https://unpkg.com/survey-core/survey.core.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/survey-js-ui/survey-js-ui.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/survey-core/themes/default-light-panelless.min.js"></script>
+<style>
+.sd-progress-buttons__button span {
+    color: #ffffff !important; /* Ensure the color is always white */
+}
+:root {
+    --sjs-primary-backcolor: #1e3a5f; /* Dark blue background */
+    --sjs-primary-backcolor-dark: #162d47; /* Even darker blue background */
+    --sjs-primary-backcolor-light: #1e3a5f; /* Dark blue background */
+    --sjs-primary-forecolor: #0d1b2a; /* Charcoal text color */
+    --sjs-primary-forecolor-light: #0d1b2a; /* Charcoal text color */
+    --sjs-primary-forecolor-dark: #000000; /* Black text color */
+    --sjs-border-color: #1e3a5f; /* Dark blue border color */
+    --sjs-border-color-light: #162d47; /* Even darker blue border color */
+    --sjs-border-color-dark: #0d1b2a; /* Charcoal border color */
+    --sjs-page-title-backcolor: #ffffff; /* Light background for page title */
+    --sjs-page-title-forecolor: #1e3a5f; /* Dark blue text color for page title */
+    --sjs-page-number-circle-backcolor: #1e3a5f; /* Dark blue background for page number circle */
+    --sjs-page-number-text-color: #ffffff; /* White text color for page number */
+   
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // DOMContentLoaded
+    fetch('` $filePath `')
+    .then(response => response.json())
+    .then(surveyJSON => 
+    {
+        const survey = new Survey.Model(surveyJSON);
+        survey.applyTheme(SurveyTheme.DefaultLightPanellessTheme);
+        survey.showTitle = false;
+        survey.showCompleteButton = false;
+        survey.render(document.getElementById("surveyContainer"));
+        survey.onTextMarkdown.add((_, options) => {
+            options.html = options.text;
+        });
+        survey.onAfterRenderQuestion.add(function (survey, options) {
+    if (options.question.name === "matrixQuestion") {
+        // Add event listener to all checkboxes within the matrix
+        document.querySelectorAll('input[type="checkbox"][data-id]').forEach(function (checkbox) {
+            checkbox.addEventListener('click', function () {
+                let dataId = checkbox.getAttribute('data-id');
+                survey.setValue(dataId, checkbox.checked);
+                console.log('Checkbox clicked:', dataId, 'Value set to:', checkbox.checked);
+            });
+        });
+    }});
+    survey.onCurrentPageChanging.add(function (survey, options) {
+    // onCurrentPageChanging
+    var oldPage = options.oldCurrentPage;
+    var newPage = options.newCurrentPage;
+    if (newPage.visibleIndex === 0) { 
+        survey.pages.forEach(function (page) {
+            page.questions.forEach(function (question) {
+                question.clearValue();
+            });
+        });
+    }
+    else {
+        if (newPage.visibleIndex < oldPage.visibleIndex) {
+            oldPage.questions.forEach(function (q) {
+                q.clearValue();
+            });
+        }    
+    }});
+    survey.onValueChanged.add(function (survey, options) {
+    // onValueChanged
+    var currentPageIndex = survey.currentPageNo;
+    var currentVisible = survey.currentPage.visibleIndex
+    var visiblePages = survey.visiblePageCount;
+    survey.pages.forEach(function (page, index) {
+        if (page.visibleIndex > currentVisible) {
+            page.questions.forEach(function (question) {
+                question.clearValue();
+            });
+        }
+    });
+});
+// End of fetch
+})
+.catch(error => console.error('Error loading survey questions:', error));
+});
+</script>
+`) }}
+
+{{ $html | safeHTML }}
