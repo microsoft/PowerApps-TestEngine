@@ -74,7 +74,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
         protected override bool TryGetField(FormulaType fieldType, string fieldName, out FormulaValue result)
         {
 
-            result = null;
             if (fieldType is TableType)
             {
                 // This would be if we were referencing a property that could be indexed. Eg. Gallery1.AllItems (fieldName = AllItems)
@@ -111,7 +110,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
                 if (string.IsNullOrEmpty(propertyValueJson))
                 {
-                    result = NewBlank(fieldType);
+                    result = BlankValue.NewBlank(fieldType);
                     return true;
                 }
 
@@ -127,22 +126,22 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
                     if (fieldType is NumberType)
                     {
-                        result = New(double.Parse(jsPropertyValueModel.PropertyValue));
+                        result = NumberValue.New(double.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
                     else if (fieldType is DecimalType)
                     {
-                        result = New(decimal.Parse(jsPropertyValueModel.PropertyValue));
+                        result = DecimalValue.New(decimal.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
                     else if (fieldType is BooleanType)
                     {
-                        result = New(bool.Parse(jsPropertyValueModel.PropertyValue));
+                        result = BooleanValue.New(bool.Parse(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
                     else if (fieldType is GuidType)
                     {
-                        result = New(new Guid(jsPropertyValueModel.PropertyValue));
+                        result = GuidValue.New(new Guid(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
                     else if (fieldType is DateTimeType || fieldType is DateType)
@@ -192,12 +191,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                         if (fieldType is DateTimeType)
                         {
                             result = DateTimeValue.New(trueDateTime);
+                            return true;
                         }
                         else if (fieldType is DateType)
                         {
                             result = DateValue.NewDateOnly(trueDateTime.Date);
-                        }
-                        return true;
+                            return true;
+                        }                       
                     }
 
                     result = New(jsPropertyValueModel.PropertyValue);
