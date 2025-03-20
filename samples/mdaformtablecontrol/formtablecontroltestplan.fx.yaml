@@ -4,8 +4,8 @@ testSuite:
   persona: User1
   appLogicalName: NotNeeded
 
-  testCases:       
-
+  testCases:  
+   
   # Table control test cases
     - testCaseName: Test Table Control - Items Property
       testCaseDescription: Verify that the Table Control correctly loads and displays items.
@@ -30,6 +30,30 @@ testSuite:
         SetProperty(Table1.SelectedItems, Table(First(Table1.Items), Last(Table1.Items)));
         Assert(CountRows(Table1.SelectedItems) = 2, "Checking if the table control allow to select multiple values");
 
+    - testCaseName: Test Table Control - EnableMultipleSelection Property
+      testCaseDescription: Verify that the Table Control EnableMultipleSelection works as expected.
+      testSteps: |
+        SetProperty(Table1.EnableMultipleSelection, "no");
+        Assert(Table1.EnableMultipleSelection = "no", "Checking the EnableMultipleSelection setting");
+        SetProperty(Table1.EnableMultipleSelection, "yes");
+        Assert(Table1.EnableMultipleSelection = "yes", "Checking the EnableMultipleSelection setting");
+
+    - testCaseName: Test Table Control - EnableRangeSelection Property
+      testCaseDescription: Verify that the Table Control EnableRangeSelection works as expected.
+      testSteps: |
+        SetProperty(Table1.EnableRangeSelection, "no");
+        Assert(Table1.EnableRangeSelection = "no", "Checking the EnableRangeSelection setting");
+        SetProperty(Table1.EnableRangeSelection, "yes");
+        Assert(Table1.EnableRangeSelection = "yes", "Checking the EnableRangeSelection setting");
+
+    - testCaseName: Test Table Control - EnableSorting Property
+      testCaseDescription: Verify that the Table Control EnableSorting works as expected.
+      testSteps: |
+        SetProperty(Table1.EnableSorting, "no");
+        Assert(Table1.EnableSorting = "no", "Checking the EnableSorting setting");
+        SetProperty(Table1.EnableSorting, "yes");
+        Assert(Table1.EnableSorting = "yes", "Checking the EnableSorting setting");
+
     - testCaseName: Test Form Control in View Mode - Validate Mode
       testCaseDescription: Verify that Form control is in read only mode before edit.
       testSteps: |     
@@ -44,8 +68,9 @@ testSuite:
     - testCaseName: Test Form Control in Edit Mode - Edit Value of Form Controls
       testCaseDescription: Verify that Form control is in edit mode during edit operation.
       testSteps: |    
+        SetProperty(Table1.SelectedItems, Table(First(Table1.Items)));
         SetProperty(Department_DataCard2.Default, {Id:681470003,Value:"Sales"});
-        SetProperty(Address_DataCard2.Default, "152 South Cross Street");
+        SetProperty(Address_DataCard2.Default, "152 North East Cross Street");
         SetProperty(Email_DataCard2.Default, "xyz@abc.com");
         SetProperty(Phone_Number_DataCard2.Default, "0987654321");
         SetProperty(DOB_DataCard3.Default, DateTime(1983,01,09,09,0,0));
@@ -109,7 +134,7 @@ testSuite:
       testCaseDescription: Verify that the Employee data in the form saved correctly.
       testSteps: |
         Select(btnSubmit);
-        Assert(CountRows(Table1.Items) = 14, "Checking if Table displays correct number of items");
+        Assert(CountRows(Table1.Items) = 15, "Checking if Table displays correct number of items");
 
     # - testCaseName: Test Reset Functionality of the New Employee Form Control
     #   testCaseDescription: Verify that the Employee data in the form is reset to default value.
