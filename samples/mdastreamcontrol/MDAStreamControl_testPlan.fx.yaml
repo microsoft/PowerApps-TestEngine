@@ -1,0 +1,72 @@
+testSuite:
+  testSuiteName: Stream Control Tests
+  testSuiteDescription: Verify stream control functionality in PowerApps
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Verify StreamUrl Property
+      testCaseDescription: Verify that the StreamUrl property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.StreamUrl, "https://microsoft-my.sharepoint.com/personal/v-raghulraja_microsoft_com/_layouts/15/embed.aspx?UniqueId=11ba78b1-1b18-4479-ad05-6752581abd29");
+        Assert(StreamVideo1.StreamUrl = "https://microsoft-my.sharepoint.com/personal/v-raghulraja_microsoft_com/_layouts/15/embed.aspx?UniqueId=11ba78b1-1b18-4479-ad05-6752581abd29", "Expected StreamVideo1.StreamUrl to be set correctly");
+
+    - testCaseName: Verify Autoplay Property
+      testCaseDescription: Verify that the Autoplay property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Autoplay, true);
+        Assert(StreamVideo1.Autoplay = true, "Expected StreamVideo1.Autoplay to be true");
+
+    - testCaseName: Verify ShowTitle Property
+      testCaseDescription: Verify that the ShowTitle property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.ShowTitle, false);
+        Assert(StreamVideo1.ShowTitle = false, "Expected StreamVideo1.ShowTitle to be false");
+
+    - testCaseName: Verify StartTime Property
+      testCaseDescription: Verify that the StartTime property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.StartTime, 10);
+        Assert(StreamVideo1.StartTime = 10, "Expected StreamVideo1.StartTime to be 10");
+
+    - testCaseName: Verify Visible Property
+      testCaseDescription: Verify that the Visible property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Visible, true);
+        Assert(StreamVideo1.Visible = true, "Expected StreamVideo1.Visible to be true");
+
+    - testCaseName: Verify Tooltip Property
+      testCaseDescription: Verify that the Tooltip property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Tooltip, "Stream Video Tooltip");
+        Assert(StreamVideo1.Tooltip = "Stream Video Tooltip", "Expected StreamVideo1.Tooltip to be 'Stream Video Tooltip'");
+
+    - testCaseName: Verify Height Property
+      testCaseDescription: Verify that the Height property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Height, 720);
+        Assert(StreamVideo1.Height = 720, "Expected StreamVideo1.Height to be 720");
+
+    - testCaseName: Verify Width Property
+      testCaseDescription: Verify that the Width property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Width, 1280);
+        Assert(StreamVideo1.Width = 1280, "Expected StreamVideo1.Width to be 1280");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  timeout: 600000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
+
