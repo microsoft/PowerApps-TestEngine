@@ -414,7 +414,6 @@ class PowerAppsModelDrivenCanvas {
         return null;
     }
 
-
     static interactWithControl(itemPath, value) {
         var appMagic = PowerAppsModelDrivenCanvas.getAppMagic()
 
