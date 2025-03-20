@@ -22,9 +22,14 @@ testSuite:
 
 testSettings:
   locale: "en-US"
+  headless: false
   recordVideo: true
   browserConfigurations:
     - browser: Chromium
+      channel: msedge
+  timeout: 60000    
+  extensionModules:
+    enable: true   
 
 environmentVariables:
   users:
