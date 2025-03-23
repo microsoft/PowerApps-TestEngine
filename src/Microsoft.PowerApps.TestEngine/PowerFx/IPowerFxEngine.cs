@@ -25,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <param name="testSteps">Test steps</param>
         /// <param name="culture">The locale to be used when excecuting tests. This is typically provided by the test plan file</param>
         /// <returns>A task</returns>
-        public Task ExecuteWithRetryAsync(string testSteps, CultureInfo culture);
+        public Task<FormulaValue> ExecuteWithRetryAsync(string testSteps, CultureInfo culture);
 
         /// <summary>
         /// Executes a list of Power FX functions
@@ -33,7 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <param name="testSteps">Test steps</param>
         /// <param name="culture">The locale to be when excecuting tests. This is typically provided by the test plan file</param>
         /// <returns>Result of the Power FX.</returns>
-        public FormulaValue Execute(string testSteps, CultureInfo culture);
+        public Task<FormulaValue> ExecuteAsync(string testSteps, CultureInfo culture);
 
         /// <summary>
         /// Update the Power FX object model

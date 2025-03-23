@@ -3,7 +3,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PowerFxVersion>1.3.0-build.*</PowerFxVersion>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -12,28 +19,17 @@
     <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Playwright" Version="1.48.0" />
-    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="$(PowerFxVersion)" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
+    <Compile Remove="JS\**" />
+    <EmbeddedResource Remove="JS\**" />
+    <None Remove="JS\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <MySourceFiles Include="..\..\bin\$(configuration)\testengine.module.simulation\testengine.module.simulation.dll" />
-  </ItemGroup>
-
 </Project>

@@ -157,7 +157,10 @@ namespace Microsoft.PowerApps.TestEngine
                     await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestSuiteStart, locale);
                 }
 
-                await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
+                if (_testWebProvider.GenerateTestUrl(_state.GetDomain(),"") != "about:blank")
+                {
+                    await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
+                }
 
                 if (_userManager.UseStaticContext)
                 {
@@ -258,7 +261,24 @@ namespace Microsoft.PowerApps.TestEngine
                                 await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestCaseStart, locale);
                             }
 
-                            await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps, locale);
+                            var result = await _powerFxEngine.ExecuteWithRetryAsync(testCase.TestSteps, locale);
+                            if (result is NumberValue numberValue)
+                            {
+                                Logger.LogInformation($"Result: {numberValue.Value.ToString()}");
+                            }
+                            if (result is StringValue stringValue)
+                            {
+                                Logger.LogInformation($"Result: {stringValue.Value.ToString()}");
+                            }
+                            if (result is BooleanValue boolValue)
+                            {
+                                Logger.LogInformation($"Result: {boolValue.Value.ToString()}");
+                            }
+                            if (result is DateTimeValue dateTimeValue)
+                            {
+                                Logger.LogInformation($"Result: {dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString()}");
+                            }
+
 
                             if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
                             {
@@ -317,7 +337,7 @@ namespace Microsoft.PowerApps.TestEngine
                 {
                     Logger.LogInformation($"Running OnTestSuiteComplete for test suite: {testSuiteName}");
                     TestState.SetTestResultsDirectory(testResultDirectory);
-                    _powerFxEngine.Execute(testSuiteDefinition.OnTestSuiteComplete, locale);
+                    await _powerFxEngine.ExecuteAsync(testSuiteDefinition.OnTestSuiteComplete, locale);
                 }
             }
             catch (UserInputException ex)

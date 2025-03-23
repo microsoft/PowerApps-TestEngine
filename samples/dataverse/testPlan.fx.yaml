@@ -1,0 +1,68 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Dataverse tests
+  testSuiteDescription: Validate Power Fx can be used to run Dataverse integration tests
+  persona: User1
+  appLogicalName: N/A
+  onTestCaseStart: |
+    = ForAll(Accounts, Remove(Accounts, ThisRecord))
+
+  testCases:
+    - testCaseName: No Accounts
+      testCaseDescription: Should have no accounts as onTestCaseStart removes all accounts
+      testSteps: |
+        = Assert(CountRows(Accounts)=0)
+    - testCaseName: Insert Account
+      testCaseDescription: Insert a new record into account table
+      testSteps: |
+        = Collect(
+            Accounts,
+            {
+                name: "New Account"
+            }
+          );
+          Assert(CountRows(Accounts)=1)
+    - testCaseName: Insert and Remove Account
+      testCaseDescription: Insert a new record into account table and then remove
+      testSteps: |
+        = Collect(
+            Accounts,
+            {
+                name: "New Account"
+            }
+          );
+          Assert(CountRows(Accounts)=1);
+          Remove(Accounts, First(Accounts));
+          Assert(CountRows(Accounts)=0)
+    - testCaseName: Update Account
+      testCaseDescription: Update created record
+      testSteps: |
+        =  Collect(
+            Accounts,
+            {
+                name: "New Account"
+            }
+          );
+          Patch(
+            Accounts,
+            First(Accounts),
+            {
+                name: "Updated Account"
+            }
+          );
+          Assert(First(Accounts).name = "Updated Account");
+    
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

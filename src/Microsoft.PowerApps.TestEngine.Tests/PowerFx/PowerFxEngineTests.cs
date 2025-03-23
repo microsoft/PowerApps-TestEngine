@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         private Mock<ITestWebProvider> MockTestWebProvider;
         private Mock<IFileSystem> MockFileSystem;
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
+        private Mock<IEnvironmentVariable> MockEnvironmentVariable;
         private Mock<Microsoft.Extensions.Logging.ILogger> MockLogger;
 
         public PowerFxEngineTests()
@@ -44,6 +46,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>(MockBehavior.Strict);
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
             MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
+            MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
             LoggingTestHelper.SetupMock(MockLogger);
         }
 
@@ -52,23 +55,26 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
         }
 
         [Fact]
-        public void ExecuteThrowsOnNoSetupTest()
+        public async Task ExecuteThrowsOnNoSetupTest()
         {
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
-            Assert.Throws<InvalidOperationException>(() => powerFxEngine.Execute("", It.IsAny<CultureInfo>()));
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.ExecuteAsync("", It.IsAny<CultureInfo>()));
             LoggingTestHelper.VerifyLogging(MockLogger, "Engine is null, make sure to call Setup first", LogLevel.Error, Times.Once());
         }
 
         [Fact]
         public async Task UpdatePowerFxModelAsyncThrowsOnNoSetupTest()
         {
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             await Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.UpdatePowerFxModelAsync());
             LoggingTestHelper.VerifyLogging(MockLogger, "Engine is null, make sure to call Setup first", LogLevel.Error, Times.Once());
         }
@@ -85,8 +91,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await Assert.ThrowsAsync<TimeoutException>(() => powerFxEngine.UpdatePowerFxModelAsync());
             LoggingTestHelper.VerifyLogging(MockLogger, "Something went wrong when Test Engine tried to get App status.", LogLevel.Error, Times.Once());
@@ -97,11 +106,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
             MockTestWebProvider.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
 
             await powerFxEngine.RunRequirementsCheckAsync();
@@ -115,11 +127,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Throws(new Exception());
             MockTestWebProvider.Setup(x => x.TestEngineReady()).Returns(Task.FromResult(true));
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
 
             await Assert.ThrowsAsync<Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
@@ -133,11 +148,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.CompletedTask);
             MockTestWebProvider.Setup(x => x.TestEngineReady()).Throws(new Exception());
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
 
             await Assert.ThrowsAsync<Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
@@ -147,28 +165,30 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         }
 
         [Fact]
-        public void ExecuteOneFunctionTest()
+        public async Task ExecuteOneFunctionTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
-            var result = powerFxEngine.Execute("1+1", new CultureInfo("en-US"));
+            var result = await powerFxEngine.ExecuteAsync("1+1", new CultureInfo("en-US"));
             Assert.Equal(2, ((NumberValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Once());
 
-            result = powerFxEngine.Execute("=1+1", new CultureInfo("en-US"));
+            result = await powerFxEngine.ExecuteAsync("=1+1", new CultureInfo("en-US"));
             Assert.Equal(2, ((NumberValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Exactly(2));
         }
 
         [Fact]
-        public void ExecuteMultipleFunctionsTest()
+        public async Task ExecuteMultipleFunctionsTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
@@ -178,42 +198,48 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var powerFxExpression = "1+1; //some comment \n 2+2;\n Concatenate(\"hello\", \"world\");";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
-            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.Equal("helloworld", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
 
-            result = powerFxEngine.Execute($"={powerFxExpression}", It.IsAny<CultureInfo>());
+            result = await powerFxEngine.ExecuteAsync($"={powerFxExpression}", It.IsAny<CultureInfo>());
             Assert.Equal("helloworld", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
         }
 
         [Fact]
-        public void ExecuteMultipleFunctionsWithDifferentLocaleTest()
+        public async Task ExecuteMultipleFunctionsWithDifferentLocaleTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             // en-US locale
             var culture = new CultureInfo("en-US");
             var enUSpowerFxExpression = "1+1;2+2;";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
-            var enUSResult = powerFxEngine.Execute(enUSpowerFxExpression, culture);
+            var enUSResult = await powerFxEngine.ExecuteAsync(enUSpowerFxExpression, culture);
 
             // fr locale
             culture = new CultureInfo("fr");
             var frpowerFxExpression = "1+1;;2+2;;";
-            powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
-            var frResult = powerFxEngine.Execute(frpowerFxExpression, culture);
+            var frResult = await powerFxEngine.ExecuteAsync(frpowerFxExpression, culture);
 
             // Assertions
             Assert.Equal(4, ((NumberValue)enUSResult).Value);
@@ -264,20 +290,23 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
 
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
 
-            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
             MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Once());
             MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label2ItemPath.ControlName && itemPath.PropertyName == label2ItemPath.PropertyName)), Times.Once());
 
-            result = powerFxEngine.Execute($"={powerFxExpression}", It.IsAny<CultureInfo>());
+            result = await powerFxEngine.ExecuteAsync($"={powerFxExpression}", It.IsAny<CultureInfo>());
             Assert.Equal($"{label1Text}{label2Text}", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Exactly(2));
             MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == label1ItemPath.ControlName && itemPath.PropertyName == label1ItemPath.PropertyName)), Times.Exactly(2));
@@ -292,12 +321,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
-
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
+            MockTestWebProvider.Setup(m => m.GenerateTestUrl("https://contoso.crm.dynamics.com", "")).Returns("https://contoso.crm.dynamics.com");
+            
             var powerFxExpression = "someNonExistentPowerFxFunction(1, 2, 3)";
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
-            await Assert.ThrowsAsync<AggregateException>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
@@ -308,30 +340,34 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
-            await Assert.ThrowsAsync<AggregateException>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
-        public void ExecuteAssertFunctionTest()
+        public async Task ExecuteAssertFunctionTest()
         {
             MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var powerFxExpression = "Assert(1+1=2, \"Adding 1 + 1\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
-            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
 
             var failingPowerFxExpression = "Assert(1+1=3, \"Supposed to fail\")";
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(failingPowerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAnyAsync<Exception>(() => powerFxEngine.ExecuteAsync(failingPowerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
@@ -342,18 +378,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns("C:\\testResults");
             MockFileSystem.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
             MockTestInfraFunctions.Setup(x => x.ScreenshotAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
             var powerFxExpression = "Screenshot(\"1.jpg\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
-            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
 
             var failingPowerFxExpression = "Screenshot(\"1.txt\")";
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(failingPowerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<TargetInvocationException>(() => powerFxEngine.ExecuteAsync(failingPowerFxExpression, It.IsAny<CultureInfo>()));
         }
 
         [Fact]
@@ -365,6 +403,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(true));
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
@@ -374,11 +413,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
 
             var powerFxExpression = "Select(Button1)";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
-            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Exactly(3));
         }
@@ -389,6 +429,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.SelectControlAsync(It.IsAny<ItemPath>(), null)).Returns(Task.FromResult(false));
             MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.FromResult(true));
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestState.Setup(x => x.ExecuteStepByStep).Returns(false);
+            MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
@@ -399,10 +443,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
 
             var powerFxExpression = "Select(Button1)";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<TargetInvocationException>(() => powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>()));
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
@@ -415,16 +460,21 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { { "Button1", button1 } }));
             MockTestWebProvider.Setup(x => x.CheckProviderAsync()).Returns(Task.FromResult(true));
             MockTestWebProvider.Setup(x => x.CheckIsIdleAsync()).Returns(Task.FromResult(true));
+            MockTestState.Setup(x => x.ExecuteStepByStep).Returns(false);
+            MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
 
             var powerFxExpression = "Select(Button1)";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<TargetInvocationException>(() => powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>()));
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
@@ -445,14 +495,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
-            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BooleanValue>(result);
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
@@ -470,13 +522,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.Setup(x => x.ExecuteStepByStep).Returns(false);
+            MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var powerFxExpression = "SetProperty(Button1.Text, \"10\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>()));
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
@@ -508,13 +565,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
-            var result = powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>());
+            var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
@@ -532,12 +592,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var testSettings = new TestSettings() { Timeout = 3000 };
             MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.Setup(x => x.ExecuteStepByStep).Returns(false);
+            MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var powerFxExpression = "Wait(Label1, \"Text\", \"1\")";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(powerFxExpression, It.IsAny<CultureInfo>()));
+            await Assert.ThrowsAsync<TargetInvocationException>(() => powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>()));
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
         }
 
@@ -583,9 +649,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
             // Engine.Eval should throw an exception when none of the used first names exist in the underlying symbol table yet.
             // This confirms that we would be hitting goStepByStep branch
-            Assert.ThrowsAny<Exception>(() => powerFxEngine.Execute(expression, frenchCulture));
+            await Assert.ThrowsAsync<Exception>(() => powerFxEngine.ExecuteAsync(expression, frenchCulture));
             await powerFxEngine.UpdatePowerFxModelAsync();
-            var result = powerFxEngine.Execute(expression, frenchCulture);
+            var result = await powerFxEngine.ExecuteAsync(expression, frenchCulture);
 
             try
             {
@@ -605,7 +671,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 
         private PowerFxEngine GetPowerFxEngine()
         {
-            return new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            return new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
         }
 
         [Fact]
@@ -615,6 +681,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
             MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var mockModule = new Mock<ITestEngineModule>();
             var modules = new List<ITestEngineModule>() { mockModule.Object };
@@ -633,10 +700,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>() { }));
 
             var powerFxExpression = "Foo()";
-            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
             powerFxEngine.Setup();
             await powerFxEngine.UpdatePowerFxModelAsync();
-            powerFxEngine.Execute(powerFxExpression, CultureInfo.CurrentCulture);
+            await powerFxEngine.ExecuteAsync(powerFxExpression, CultureInfo.CurrentCulture);
         }
     }
 
