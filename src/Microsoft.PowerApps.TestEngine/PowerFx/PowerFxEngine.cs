@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
@@ -11,13 +10,10 @@ using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Core;
 using Microsoft.PowerFx.Dataverse;
-using Microsoft.PowerFx.Syntax;
 using Microsoft.PowerFx.Types;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Metadata;
 
 namespace Microsoft.PowerApps.TestEngine.PowerFx
 {
@@ -26,6 +22,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
     /// </summary>
     public class PowerFxEngine : IPowerFxEngine
     {
+        public const string ENABLE_DATAVERSE_FUNCTIONS = "enableDataverseFunctions";
+        public const string ENABLE_AI_FUNCTIONS = "enableAIFunctions";
+
         private readonly ITestInfraFunctions TestInfraFunctions;
         private readonly ITestWebProvider _testWebProvider;
         private readonly IFileSystem _fileSystem;
@@ -34,6 +33,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly IEnvironmentVariable _environmentVariable;
         private IOrganizationService _orgService;
         private DataverseConnection _dataverseConnection;
+        private bool enableAIFunctions = false;
+
         private int _retryLimit = 2;
 
         public RecalcEngine Engine { get; private set; }
@@ -106,7 +107,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             Engine = new RecalcEngine(powerFxConfig);
 
-            ConditionallySetupDataverse();
+            var testSettings = TestState.GetTestSettings();
+
+            ConditionallySetupDataverse(testSettings, powerFxConfig);
 
             var symbolValues = new SymbolValues(powerFxConfig.SymbolTable);
 
@@ -123,11 +126,23 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <summary>
         /// Attach dataverse state to the test session if we are testing a Model Driven Application or have a dataverse URL we are testing
         /// </summary>
-        private void ConditionallySetupDataverse()
+        private void ConditionallySetupDataverse(TestSettings testSettings, PowerFxConfig powerFxConfig)
         {
+            if ( testSettings == null || !testSettings.ExtensionModules.Parameters.ContainsKey(ENABLE_DATAVERSE_FUNCTIONS) || (testSettings != null && testSettings.ExtensionModules.Parameters[ENABLE_DATAVERSE_FUNCTIONS].ToString().ToLower() != "true"))
+            {
+                return;
+            }
+
+            // Must have dataverse enabled to enable AI Functions
+            if (testSettings != null && testSettings.ExtensionModules.Parameters.ContainsKey(ENABLE_AI_FUNCTIONS) && testSettings.ExtensionModules.Parameters[ENABLE_AI_FUNCTIONS].ToString().ToLower() == "true")
+            {
+                enableAIFunctions = true;
+            }
+
             DataverseConnection dataverse = null;
 
             var domainUrl = TestState.GetDomain();
+
             if (domainUrl.Contains("dynamics.com"))
             {
                 domainUrl = "https://" + new Uri(domainUrl).Host;
@@ -159,6 +174,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     dataverse = SingleOrgPolicy.New(svcClient);
 
                     _dataverseConnection = dataverse;
+
+                    if (enableAIFunctions)
+                    {
+                        powerFxConfig.AddFunction(new AIPredictFunction(Logger, svcClient));
+                    }
                 }
             }
         }
@@ -211,7 +231,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var parseResult = Engine.Parse(testSteps);
 
-
             // Check if the syntax is correct
             var checkResult = Engine.Check(testSteps, null, GetPowerFxParserOptions(culture));
             if (!checkResult.IsSuccess)
@@ -253,8 +272,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                                     , CancellationToken.None
                                     , parseOption, null, runtimeConfig);
 
-                    //result = Engine.Eval(step, null, );
-
                     TestState.OnAfterTestStepExecuted(new TestStepEventArgs { TestStep = step, Result = result, StepNumber = stepNumber, Engine = Engine });
                     stepNumber++;
                 }
@@ -271,7 +288,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                                     , CancellationToken.None
                                     , parseOption, null, runtimeConfig);
 
-                //var result = Engine.Eval(testSteps, null, new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true });
                 TestState.OnAfterTestStepExecuted(new TestStepEventArgs { TestStep = testSteps, Result = result, StepNumber = 1 });
                 return result;
             }

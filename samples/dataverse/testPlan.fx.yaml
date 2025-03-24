@@ -58,6 +58,9 @@ testSettings:
   recordVideo: true
   extensionModules:
     enable: true
+    parameters:
+      enableDataverseFunctions: true
+      enableAIFunctions: true
   browserConfigurations:
     - browser: Chromium
 
