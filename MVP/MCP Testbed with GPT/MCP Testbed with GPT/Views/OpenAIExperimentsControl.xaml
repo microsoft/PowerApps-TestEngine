@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="OpenAITestGenerator.Views.OpenAIExperimentsControl"
+             x:Name="OpenAIExperimentsWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OpenAITestGenerator.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="400"
+             >
+
+    <UserControl.Resources>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition >
+                    <RowDefinition.Style>
+                        <Style>
+                            <Setter Property="RowDefinition.Height" Value="7*"/>
+                        </Style>
+                    </RowDefinition.Style>
+                </RowDefinition>
+
+                <RowDefinition >
+                    <RowDefinition.Style>
+                        <Style>
+                            <Setter Property="RowDefinition.Height" Value="Auto"/>
+                        </Style>
+                    </RowDefinition.Style>
+                </RowDefinition>
+
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="32"/>
+            </Grid.RowDefinitions>
+            <GroupBox Header="System Prompt" Grid.Row="0" >
+                <TextBox x:Name="SystemPrompt" VerticalAlignment="Top" 
+                         BorderThickness="0" TextWrapping="Wrap" 
+                         AcceptsReturn="True" 
+                         FontSize="{StaticResource FontSize}"
+                         HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto"/>
+            </GroupBox>
+            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Style="{StaticResource HorizontalSplitter}"/>
+            <GroupBox Header="User prompt" Grid.Row="2" >
+                <TextBox x:Name="UserPrompt" 
+                         FontSize="{StaticResource FontSize}"
+                         VerticalAlignment="Top" 
+                         BorderThickness="0"
+                         TextWrapping="Wrap" 
+                         FontFamily="{Binding QueryFontFamily}"
+                         AcceptsReturn="True"
+                         HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto" />
+            </GroupBox>
+            <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" Style="{StaticResource HorizontalSplitter}"/>
+            <GroupBox Header="Results" Grid.Row="4" Margin="0,4,0,0">
+                <TextBox x:Name="Result" 
+                         FontSize="{StaticResource FontSize}"
+                         VerticalAlignment="Top" 
+                         BorderThickness="0"
+                         TextWrapping="Wrap" 
+                         FontFamily="{Binding QueryFontFamily}"
+                         AcceptsReturn="True"                     
+                         HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto" >
+                    <TextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Insert" Command="ApplicationCommands.Paste"/>
+                        </ContextMenu>
+                    </TextBox.ContextMenu>
+                </TextBox>
+            </GroupBox>
+            <Grid Grid.Row="5" Margin="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="ElapsedTime" Grid.Column="0" VerticalAlignment="Center"/>
+                <Rectangle Grid.Column="1" />
+                <Button x:Name="Generate" Grid.Column="2" Width="64" IsDefault="True" Click="Generate_Click">Submit</Button>
+                <Button x:Name="Reset" Grid.Column="3" Width="64" Click="Reset_Click" Margin="4,0,0,0">Reset</Button>
+                <Button x:Name="Insert" Grid.Column="4" Width="64" Click="Insert_Click" Margin="4,0,0,0">Copy</Button>
+            </Grid>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource VerticalSplitter}"/>
+
+        <GroupBox Header="Functions" Grid.Column="2">
+            <ListBox ItemsSource="{Binding Functions}"></ListBox>
+
+        </GroupBox>
+    </Grid>
+</UserControl>

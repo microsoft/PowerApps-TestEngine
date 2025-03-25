@@ -1,0 +1,46 @@
+﻿X++ is an object oriented language used for developing applications for the Finance and Operations platform.
+It resembles C# and is a managed language. C# can be called easily from X++, using the normal X++ syntax as described below.
+
+#Classes
+A class in X++ is defined like this:
+
+class MyClass extends BaseClass implements MYInterface, ANotherInterface
+{
+    public int MyMethod(real parm = 0.0) { return 1; }
+}
+
+Classes are instantiated using the "new" operator, like in C#. Constructors are named "new", and can call "super()" to call the parent constructors.
+
+#Tables
+In addition to classes, X++ has the concept of tables that are special classes that contain data in a relational database. There are no namespaces or generics in X++.
+Tables are objext that represent data in a SQL database. They are classes that are derived from the "Common" class. They are never explicitly instantiated - They are instantiated by the system when needed. Each instantiation represents a record in the database. The most important methods on tables are insert(), and delete(). All tables have some predefined fields, like RecId, an int64 value that uniquely identifies the record. Database transactions are handled with the ttsbegin, ttscommit and ttsabort statements. Any insertion, deletion or update of data must happen within a transaction.
+
+#Methods
+Classes and tables can have any number of methods. All methods are virtual, so they can be overridden in child classes. Methods can be public, private, protected or internal, with the same semantics as C#. These access specifiers are specified in front of the method's return type. Methods contain one or more statements.
+
+#Statements:
+X++ has the same statements as C#, as well as data access statements:
+select Statements. This example will find the records in the MyTable class where the field1 field has the value 5: select * from MyTable where field1 == 5;
+while select statements. This example will iterate over all the records in the MyTable class: while select * from MyTable { ... }
+delete_from statements. This example will delete all records in the MyTable table where the field2 field has the value "Banana": delete_from MyTable where field2 == "Banana"
+
+#Expressions:
+Expressions look like expressions in C#. However, the priority of the && and || operations are the same, so parenthesis should be used when appplicable.
+The types int (32 bit integers), uint (unsigned 32 bit integers), int64 (64 bit integers), real (decimal numbers), str (string), container (i.e. tuples of values), guid and enumeration types are native to X++. 
+Classes: Classes in X++ look like classes in C#. They are derived from a superclass, and may implement any number of interfaces.
+
+##Literals:
+Literals are represented line in C#. Container literals, however, are represented with brackets, like this: [1,2, "string"]
+
+Predefined functions:
+This is the list of predefined functions available in the language. 
+int strlen(str s): returns the length of the argument. Example: strlen("Hello") returns 5.
+str strupr(str s): returns the argument in upper case.
+str strlwr(str s): returns the argument in lower case.
+int str2int(str s): returns an integer represenatation of the argument.
+real abs(real a): returns the absolute value of the argument.
+str int2str(int i): returns a string representation of the argument.
+str int642str(int64 i): returns a string representation of the argument.
+
+#Best Practices
+Method names must start with a lowercase letterand class name must start with uppercase letters. Method parameters must start with an underscore. All code snippets must follow these best practises.
