@@ -36,7 +36,8 @@ namespace PowerAppsTestEngineWrapper
                 { "-p", "Provider" },
                 { "-a", "UserAuthType"},
                 { "-w", "Wait" },
-                { "-r", "Record" }
+                { "-r", "Record" },
+                { "-c", "UseStaticContext" }
             };
 
             var inputOptions = new ConfigurationBuilder()
@@ -121,21 +122,44 @@ namespace PowerAppsTestEngineWrapper
                         return;
                     }
                 }
-                if (!string.IsNullOrEmpty(inputOptions.Wait) && inputOptions.Wait.ToLower() == "true")
+                if (!string.IsNullOrEmpty(inputOptions.Wait))
                 {
-                    Console.WriteLine("Waiting, press enter to continue. You can now optionally attach debugger to dotnet PowerAppsTestEngine.dll process now");
-                    Console.ReadLine();
-                    if (Debugger.IsAttached)
+                    if (inputOptions.Wait.Substring(0, 1) == "-")
                     {
-                        // Welcome to the debugger experience for Power Apps Test Engine
-                        //
-                        // Key classes you may want to investigate and add breakpoint inside to understand key components or :
-                        // - SingleTestRunner.RunTestAsync that will run a single test case
-                        // - PlaywrightTestInfraFunctions.SetupAsync for setup of Playwright state
-                        // - PowerFxEngine.ExecuteWithRetryAsync that execute Power Fx test steps
-                        // - Implementations or ITestWebProvider for Test Engine providers that get the state of the resource to be tested
-                        // - Implementations of ITestEngineModule for Power Fx extensions
-                        Debugger.Break();
+                        Console.WriteLine("[Critical Error]: Wait field is blank. Set value to True or False.");
+                        return;
+                    }
+
+                    if (inputOptions.Wait.ToLower() == "true")
+                    {
+                        Console.WriteLine("Waiting, press enter to continue. You can now optionally attach debugger to dotnet PowerAppsTestEngine.dll process now");
+                        Console.ReadLine();
+                        if (Debugger.IsAttached)
+                        {
+                            // Welcome to the debugger experience for Power Apps Test Engine
+                            //
+                            // Key classes you may want to investigate and add breakpoint inside to understand key components or :
+                            // - SingleTestRunner.RunTestAsync that will run a single test case
+                            // - PlaywrightTestInfraFunctions.SetupAsync for setup of Playwright state
+                            // - PowerFxEngine.ExecuteWithRetryAsync that execute Power Fx test steps
+                            // - Implementations or ITestWebProvider for Test Engine providers that get the state of the resource to be tested
+                            // - Implementations of ITestEngineModule for Power Fx extensions
+                            Debugger.Break();
+                        }
+                    }
+                }
+                var UseStaticContextValue = false;
+                if (!string.IsNullOrEmpty(inputOptions.UseStaticContext))
+                {
+                    if (inputOptions.UseStaticContext.Substring(0, 1) == "-")
+                    {
+                        Console.WriteLine("[Critical Error]: UseStaticContext field is blank. Set value to True or False.");
+                        return;
+                    }
+
+                    if (inputOptions.UseStaticContext.ToLower() == "true")
+                    {
+                        UseStaticContextValue = true;
                     }
                 }
 
@@ -195,6 +219,7 @@ namespace PowerAppsTestEngineWrapper
                         {
                             throw new InvalidDataException($"Unable to find user auth {userAuth}");
                         }
+                        match.UseStaticContext = UseStaticContextValue;
 
                         return match;
                     })

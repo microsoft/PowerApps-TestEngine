@@ -306,18 +306,34 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await playwrightTestInfraFunctions.SetupAsync(MockUserManager.Object));
         }
 
-        [Fact]
-        public async Task EndTestRunSuccessTest()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task EndTestRunSuccessTest(bool useStaticContext)
         {
+            MockUserManager.SetupGet(x => x.UseStaticContext).Returns(useStaticContext);
+            MockUserManager.SetupGet(x => x.ContextLocation).Returns("TestLocation");
+            MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("");
+            MockFileSystem.Setup(x => x.DeleteDirectory(It.IsAny<string>()));
             MockBrowserContext.Setup(x => x.CloseAsync(null)).Returns(Task.CompletedTask);
             MockPage.Setup(x => x.WaitForRequestFinishedAsync(It.IsAny<PageWaitForRequestFinishedOptions>())).Returns(Task.FromResult(MockRequest.Object));
 
             var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
                 MockFileSystem.Object, browserContext: MockBrowserContext.Object, page: MockPage.Object);
 
-            await playwrightTestInfraFunctions.EndTestRunAsync();
+            await playwrightTestInfraFunctions.EndTestRunAsync(MockUserManager.Object);
 
             MockBrowserContext.Verify(x => x.CloseAsync(null), Times.Once);
+
+            //if staticcontext is used, then this should be called 
+            if (useStaticContext)
+            {
+                MockFileSystem.Verify(x => x.DeleteDirectory(It.IsAny<string>()), Times.Once);
+            }
+            else
+            {
+                MockFileSystem.Verify(x => x.DeleteDirectory(It.IsAny<string>()), Times.Never);
+            }
         }
 
         [Fact]
@@ -792,6 +808,39 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
 
             // Assert
             Assert.Equal(javaScript, tagOptions.Content);
+        }
+
+        [Fact]
+        public async Task RemoveContext_RemovesContextDirectory_WhenUseStaticContextIsTrue()
+        {
+            // Arrange
+            MockUserManager.SetupGet(x => x.UseStaticContext).Returns(true);
+            MockUserManager.SetupGet(x => x.ContextLocation).Returns("TestLocation");
+            MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("");
+            MockFileSystem.Setup(x => x.DeleteDirectory(It.IsAny<string>()));
+
+            // Act
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, MockPlaywrightObject.Object);
+            await playwrightTestInfraFunctions.RemoveContext(MockUserManager.Object);
+
+            // Assert
+            MockFileSystem.Verify(fs => fs.DeleteDirectory("TestLocation"), Times.Once);
+        }
+
+        [Fact]
+        public async Task RemoveContext_DoesNotRemoveContextDirectory_WhenUseStaticContextIsFalse()
+        {
+            // Arrange
+            MockUserManager.SetupGet(x => x.UseStaticContext).Returns(false);
+
+            // Act
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(MockTestState.Object, MockSingleTestInstanceState.Object,
+                MockFileSystem.Object, MockPlaywrightObject.Object);
+            await playwrightTestInfraFunctions.RemoveContext(MockUserManager.Object);
+
+            // Assert
+            MockFileSystem.Verify(fs => fs.DeleteDirectory(It.IsAny<string>()), Times.Never);
         }
     }
 }

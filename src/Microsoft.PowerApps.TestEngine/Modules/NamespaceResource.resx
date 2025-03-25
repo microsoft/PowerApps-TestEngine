@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Microsoft.Bcl.AsyncInterfaces" xml:space="preserve">
+    <value>Microsoft.Bcl.AsyncInterfaces</value>
+  </data>
+  <data name="Microsoft.CodeAnalysis" xml:space="preserve">
+    <value>Microsoft.CodeAnalysis</value>
+  </data>
+  <data name="Microsoft.CSharp" xml:space="preserve">
+    <value>Microsoft.CSharp</value>
+  </data>
+  <data name="Microsoft.Extensions.Logging" xml:space="preserve">
+    <value>Microsoft.Extensions.Logging</value>
+  </data>
+  <data name="Microsoft.Playwright" xml:space="preserve">
+    <value>Microsoft.Playwright</value>
+  </data>
+  <data name="Microsoft.PowerApps.TestEngine." xml:space="preserve">
+    <value>Microsoft.PowerApps.TestEngine.</value>
+  </data>
+  <data name="Microsoft.PowerFx" xml:space="preserve">
+    <value>Microsoft.PowerFx</value>
+  </data>
+  <data name="netstandard" xml:space="preserve">
+    <value>netstandard</value>
+  </data>
+  <data name="Newtonsoft.Json" xml:space="preserve">
+    <value>Newtonsoft.Json</value>
+  </data>
+  <data name="Submission#0" xml:space="preserve">
+    <value>Submission#0</value>
+  </data>
+  <data name="System.Action" xml:space="preserve">
+    <value>System.Action</value>
+  </data>
+  <data name="System.ArgumentException" xml:space="preserve">
+    <value>System.ArgumentException</value>
+  </data>
+  <data name="System.Array" xml:space="preserve">
+    <value>System.Array</value>
+  </data>
+  <data name="System.Attribute" xml:space="preserve">
+    <value>System.Attribute</value>
+  </data>
+  <data name="System.Byte" xml:space="preserve">
+    <value>System.Byte</value>
+  </data>
+  <data name="System.Collections" xml:space="preserve">
+    <value>System.Collections</value>
+  </data>
+  <data name="System.ComponentModel.Composition" xml:space="preserve">
+    <value>System.ComponentModel.Composition</value>
+  </data>
+  <data name="System.Console" xml:space="preserve">
+    <value>System.Console</value>
+  </data>
+  <data name="System.Convert" xml:space="preserve">
+    <value>System.Convert</value>
+  </data>
+  <data name="System.DateTime" xml:space="preserve">
+    <value>System.DateTime</value>
+  </data>
+  <data name="System.Decimal" xml:space="preserve">
+    <value>System.Decimal</value>
+  </data>
+  <data name="System.Dynamic" xml:space="preserve">
+    <value>System.Dynamic</value>
+  </data>
+  <data name="System.Environment::get_NewLine()" xml:space="preserve">
+    <value>System.Environment::get_NewLine()</value>
+  </data>
+  <data name="System.Exception" xml:space="preserve">
+    <value>System.Exception</value>
+  </data>
+  <data name="System.Func" xml:space="preserve">
+    <value>System.Func</value>
+  </data>
+  <data name="System.GC::Collect()" xml:space="preserve">
+    <value>System.GC::Collect()</value>
+  </data>
+  <data name="System.IAsyncDisposable" xml:space="preserve">
+    <value>System.IAsyncDisposable</value>
+  </data>
+  <data name="System.IDisposable" xml:space="preserve">
+    <value>System.IDisposable</value>
+  </data>
+  <data name="System.Int32" xml:space="preserve">
+    <value>System.Int32</value>
+  </data>
+  <data name="System.InvalidOperationException" xml:space="preserve">
+    <value>System.InvalidOperationException</value>
+  </data>
+  <data name="System.IO.File::Exists" xml:space="preserve">
+    <value>System.IO.File::Exists</value>
+  </data>
+  <data name="System.IO.File::WriteAllBytes" xml:space="preserve">
+    <value>System.IO.File::WriteAllBytes</value>
+  </data>
+  <data name="System.IO.File::WriteAllText" xml:space="preserve">
+    <value>System.IO.File::WriteAllText</value>
+  </data>
+  <data name="System.IO.FileInfo" xml:space="preserve">
+    <value>System.IO.FileInfo</value>
+  </data>
+  <data name="System.IO.FileSystemInfo" xml:space="preserve">
+    <value>System.IO.FileSystemInfo</value>
+  </data>
+  <data name="System.IO.InvalidDataException" xml:space="preserve">
+    <value>System.IO.InvalidDataException</value>
+  </data>
+  <data name="System.IO.MemoryStream" xml:space="preserve">
+    <value>System.IO.MemoryStream</value>
+  </data>
+  <data name="System.IO.Path::Combine" xml:space="preserve">
+    <value>System.IO.Path::Combine</value>
+  </data>
+  <data name="System.IO.Path::GetDirectoryName" xml:space="preserve">
+    <value>System.IO.Path::GetDirectoryName</value>
+  </data>
+  <data name="System.IO.Path::GetExtension" xml:space="preserve">
+    <value>System.IO.Path::GetExtension</value>
+  </data>
+  <data name="System.IO.Path::GetFileNameWithoutExtension" xml:space="preserve">
+    <value>System.IO.Path::GetFileNameWithoutExtension</value>
+  </data>
+  <data name="System.IO.Path::IsPathRooted" xml:space="preserve">
+    <value>System.IO.Path::IsPathRooted</value>
+  </data>
+  <data name="System.IO.Stream" xml:space="preserve">
+    <value>System.IO.Stream</value>
+  </data>
+  <data name="System.IO.StringReader" xml:space="preserve">
+    <value>System.IO.StringReader</value>
+  </data>
+  <data name="System.IO.TextReader" xml:space="preserve">
+    <value>System.IO.TextReader</value>
+  </data>
+  <data name="System.Linq" xml:space="preserve">
+    <value>System.Linq</value>
+  </data>
+  <data name="System.NotSupportedException" xml:space="preserve">
+    <value>System.NotSupportedException</value>
+  </data>
+  <data name="System.Nullable" xml:space="preserve">
+    <value>System.Nullable</value>
+  </data>
+  <data name="System.Object" xml:space="preserve">
+    <value>System.Object</value>
+  </data>
+  <data name="System.Private" xml:space="preserve">
+    <value>System.Private</value>
+  </data>
+  <data name="System.Reflection" xml:space="preserve">
+    <value>System.Reflection</value>
+  </data>
+  <data name="System.Runtime.CompilerServices" xml:space="preserve">
+    <value>System.Runtime.CompilerServices</value>
+  </data>
+  <data name="System.Runtime.ExceptionServices" xml:space="preserve">
+    <value>System.Runtime.ExceptionServices</value>
+  </data>
+  <data name="System.Security.Cryptography" xml:space="preserve">
+    <value>System.Security.Cryptography</value>
+  </data>
+  <data name="System.String" xml:space="preserve">
+    <value>System.String</value>
+  </data>
+  <data name="System.Text" xml:space="preserve">
+    <value>System.Text</value>
+  </data>
+  <data name="System.Threading.CancellationToken" xml:space="preserve">
+    <value>System.Threading.CancellationToken</value>
+  </data>
+  <data name="System.Threading.Tasks" xml:space="preserve">
+    <value>System.Threading.Tasks</value>
+  </data>
+  <data name="System.Threading.Thread" xml:space="preserve">
+    <value>System.Threading.Thread</value>
+  </data>
+  <data name="System.TimeSpan" xml:space="preserve">
+    <value>System.TimeSpan</value>
+  </data>
+  <data name="System.Type" xml:space="preserve">
+    <value>System.Type</value>
+  </data>
+  <data name="System.Uri" xml:space="preserve">
+    <value>System.Uri</value>
+  </data>
+  <data name="System.ValueTuple" xml:space="preserve">
+    <value>System.ValueTuple</value>
+  </data>
+  <data name="System.Void" xml:space="preserve">
+    <value>System.Void</value>
+  </data>
+  <data name="System.Web.HttpUtility" xml:space="preserve">
+    <value>System.Web.HttpUtility</value>
+  </data>
+  <data name="testengine.module" xml:space="preserve">
+    <value>testengine.module</value>
+  </data>
+</root>

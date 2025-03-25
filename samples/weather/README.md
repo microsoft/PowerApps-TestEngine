@@ -139,7 +139,7 @@ To record interaction with Dataverse and generate a sample Test Engine script pe
 - **Login Prompt**: You'll be asked to log in to the Power Apps Portal.
 - **Test Execution**: The Test Engine will run the steps to test your Power Apps Portal.
 - **Cached Credentials**: If you choose "Stay Signed In," future tests will use your saved credentials.
-- **Interactive Testing**: Commands like `Experimental.Pause()` will let you pause and inspect the test steps.
+- **Interactive Testing**: Commands like `Preview.Pause()` will let you pause and inspect the test steps.
 - **Recorded Sessions**: Test Engine provides the ability to generate recorded video of the test session in the TestOutput folder.
 
 ## Context

@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: Run Sample
       testCaseDescription: Test case will pass as WriteLine method has been allowed
       testSteps: |
-        = Experimental.Sample();
+        = Preview.Sample();
 
 testSettings:
   locale: "en-US"
@@ -27,5 +27,5 @@ environmentVariables:
   users:
     - personaName: User1
       emailKey: user1Email
-      passwordKey: user1Password
+      passwordKey: NotNeeded
 

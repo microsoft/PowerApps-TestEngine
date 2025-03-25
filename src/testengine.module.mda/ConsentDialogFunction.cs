@@ -24,7 +24,7 @@ namespace testengine.module
               .Add(new NamedFormulaType("Text", FormulaType.String, displayName: "Text"));
 
         public ConsentDialogFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "ConsentDialog", FormulaType.Blank, SearchType)
+            : base(DPath.Root.Append(new DName("Preview")), "ConsentDialog", FormulaType.Blank, SearchType)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

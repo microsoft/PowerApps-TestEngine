@@ -86,7 +86,7 @@ public class Test : ITestWebProvider
         throw new NotImplementedException();
     }}
 
-    public Task<bool> SelectControlAsync(ItemPath itemPath)
+    public Task<bool> SelectControlAsync(ItemPath itemPath, string filePath = null)
     {{
         throw new NotImplementedException();
     }}
@@ -122,7 +122,9 @@ public class Test : IUserManager
 
     public int Priority => throw new NotImplementedException();
 
-    public bool UseStaticContext => throw new NotImplementedException();
+    public bool UseStaticContext {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
+
+    public string ContextLocation => throw new NotImplementedException();
 
     public string Location {{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }}
 
@@ -179,13 +181,14 @@ public class TestScript {
 }";
         }
 
+        //Default list of allowed namespaces will always be present for Microsoft produced modules, modify to more restricted allow list when external signed actions are allowed
         [Theory]
         [InlineData("", "System.Console.WriteLine(\"Hello World\");", true, "", "", true)]
-        [InlineData("", "System.Console.WriteLine(\"Hello World\");", true, "", "System.", false)] // Deny all System namespace
+        [InlineData("", "System.Console.WriteLine(\"Hello World\");", true, "", "System.Console::WriteLine", false)] // Deny all System namespace, only default list will be allowed unless longer deny is added
         [InlineData("using System;", "Console.WriteLine(\"Hello World\");", true, "System.Console::WriteLine", "System.Console", true)]
         [InlineData("using System;", "Console.WriteLine(\"A\");", true, "System.Console::WriteLine(\"A\")", "System.Console::WriteLine", true)] // Allow System.Console.WriteLine only with a argument of A
         [InlineData("using System;", "Console.WriteLine(\"B\");", true, "System.Console::WriteLine(\"A\")", "System.Console::WriteLine", false)] // Allow System.Console.WriteLine only with a argument of A - Deny
-        [InlineData("using System.IO;", @"File.Exists(""c:\\test.txt"");", true, "", "System.IO", false)] // Deny all System.IO
+        [InlineData("using System.IO;", @"File.Exists(""c:\\test.txt"");", true, "", "System.IO.File::Exists(", false)] // Deny all System.IO
         [InlineData("", @"IPage page = null; page.EvaluateAsync(""alert()"").Wait();", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Constructor code - deny
         [InlineData("", @"} public string Foo { get { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); return ""a""; }", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Get Property Code deny
         [InlineData("", @"} private int _foo; public int Foo { set { IPage page = null; page.EvaluateAsync(""alert()"").Wait(); _foo = value; }", true, "", "Microsoft.Playwright.IPage::EvaluateAsync", false)] // Set property deny
@@ -209,9 +212,9 @@ public class TestScript {
                 Enable = true,
 #if RELEASE
 #else
-                AllowNamespaces = new List<string>() { allow },
+                AllowNamespaces = new HashSet<string>() { allow },
 #endif
-                DenyNamespaces = new List<string>() { deny }
+                DenyNamespaces = new HashSet<string>() { deny }
             };
 #if RELEASE
             if (!string.IsNullOrWhiteSpace(allow) && !settings.AllowNamespaces.Contains(allow)) 
@@ -250,8 +253,8 @@ public class TestScript {
             var settings = new TestSettingExtensions()
             {
                 Enable = true,
-                AllowPowerFxNamespaces = new List<string>() { allow },
-                DenyPowerFxNamespaces = new List<string>() { deny }
+                AllowPowerFxNamespaces = new HashSet<string>() { allow },
+                DenyPowerFxNamespaces = new HashSet<string>() { deny }
             };
 
             // Act
@@ -285,8 +288,8 @@ public class TestScript {
             var settings = new TestSettingExtensions()
             {
                 Enable = true,
-                AllowPowerFxNamespaces = new List<string>() { allow },
-                DenyPowerFxNamespaces = new List<string>() { deny }
+                AllowPowerFxNamespaces = new HashSet<string>() { allow },
+                DenyPowerFxNamespaces = new HashSet<string>() { deny }
             };
 
             // Act
@@ -321,8 +324,8 @@ using Microsoft.PowerFx.Core.Utils;
             var assembly = CompileScript(_functionTemplate.Replace("%CODE%", code));
 
             var settings = new TestSettingExtensions();
-            settings.AllowPowerFxNamespaces.AddRange(allow.Split(','));
-            settings.DenyPowerFxNamespaces.AddRange(deny.Split(','));
+            settings.AllowPowerFxNamespaces.UnionWith(allow.Split(','));
+            settings.DenyPowerFxNamespaces.UnionWith(deny.Split(','));
 
             var isValid = checker.VerifyContainsValidNamespacePowerFxFunctions(settings, assembly);
 

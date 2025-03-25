@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SelfContained>true</SelfContained>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.PowerFx.Core" Version="1.2.0" />
+    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="1.2.0" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
+  </ItemGroup>
+
+  <Target Name="CreateOutputDirectory" BeforeTargets="Build">
+    <MakeDir Directories="..\..\docs\site\_framework\" />
+  </Target>
+
+  <Target Name="PostBuildCopy" AfterTargets="Build">
+    <Exec Command="pwsh -Command &quot;if (!(Test-Path -Path '..\..\docs\site\_framework')) { New-Item -ItemType Directory -Path '..\..\docs\site\_framework' } ; Copy-Item -Path '$(OutputPath)\wwwroot\_framework\*' -Destination '..\..\docs\site\_framework' -Recurse -Force&quot;" />
+  </Target>
+</Project>

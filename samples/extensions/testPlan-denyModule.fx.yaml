@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: Run Sample
       testCaseDescription: Test case will fail as the Sample Power Fx function is not loaded
       testSteps: |
-        = Experimental.Sample();
+        = Preview.Sample();
 
 testSettings:
   locale: "en-US"
@@ -25,5 +25,5 @@ environmentVariables:
   users:
     - personaName: User1
       emailKey: user1Email
-      passwordKey: user1Password
+      passwordKey: NotNeeded
 

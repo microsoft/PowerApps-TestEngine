@@ -1,0 +1,244 @@
+{
+    "showProgressBar": "belowHeader",
+    "progressBarType": "pages",
+    "progressBarShowPageNumbers": true,
+    "pages": [
+      {
+        "name": "Introduction",
+        "elements": [
+          {
+            "type": "html",
+            "name": "introText",
+            "html": "<h2>Building a Sustainability Model</h2><p>In this section, we will explore how to build a sustainability model that keeps your solution relevant and engages the community and stakeholders in the process.</p>"
+          }
+        ]
+      },
+      {
+        "name": "KeyConcepts",
+        "elements": [
+          {
+            "type": "html",
+            "name": "keyConceptsText",
+            "html": "<h3>Key Concepts</h3><p>Let's use an analogy to understand the right sustainability model needed.</p>"
+          },
+          {
+            "type": "radiogroup",
+            "name": "keyConceptsQuestion",
+            "title": "Which analogy best describes the early stages of building a solution?",
+            "choices": [
+              "Rapid Ideation: The Paper Airplane",
+              "Building for Scale: The Commercial Jet"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "rapidIdeationInfo",
+            "visibleIf": "{keyConceptsQuestion} = 'Rapid Ideation: The Paper Airplane'",
+            "html": "<p><b>Rapid Ideation: The Paper Airplane:</b> In the early stages, building a solution is like creating a paper airplane. Quick prototyping and testing allow for rapid ideation and learning from failures. This phase is crucial for refining the idea and ensuring it meets initial requirements.</p>"
+          },
+          {
+            "type": "html",
+            "name": "buildingForScaleInfo",
+            "visibleIf": "{keyConceptsQuestion} = 'Building for Scale: The Commercial Jet'",
+            "html": "<p><b>Building for Scale: The Commercial Jet:</b> As the solution matures beyond personal productivity, it transitions from a paper airplane to a commercial jet. This phase involves meeting rigorous standards and requirements, ensuring safety, reliability, and performance. Building for scale requires a robust infrastructure, comprehensive testing, and continuous improvement to keep the solution flying high.</p>"
+          }
+        ]
+      },
+      {
+        "name": "StarterDiscussionQuestions",
+        "elements": [
+          {
+            "type": "html",
+            "name": "starterDiscussionText",
+            "html": "<h3>Starter Discussion Questions</h3><p>Consider how you currently ensure the sustainability of your solutions after the initial deployment:</p>"
+          },
+          {
+            "type": "checkbox",
+            "name": "starterDiscussionQuestion",
+            "title": "Which of the following challenges have you faced in engaging stakeholders throughout the development process?",
+            "choices": [
+              "Lack of stakeholder involvement",
+              "Misalignment of expectations",
+              "Communication barriers",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "starterDiscussionMoreInfo",
+            "title": "Are you familiar with these challenges?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "lackOfStakeholderInvolvementInfo",
+            "visibleIf": "{starterDiscussionMoreInfo} = 'Not sure, tell me more' and {starterDiscussionQuestion} contains 'Lack of stakeholder involvement'",
+            "html": "<p><b>Lack of Stakeholder Involvement:</b> Engaging stakeholders from the beginning ensures that their needs and expectations are met. Collaborating with cross-functional teams, such as marketing, IT, and customer service, helps in creating a holistic solution that addresses various aspects of the business.</p>"
+          },
+          {
+            "type": "html",
+            "name": "misalignmentOfExpectationsInfo",
+            "visibleIf": "{starterDiscussionMoreInfo} = 'Not sure, tell me more' and {starterDiscussionQuestion} contains 'Misalignment of expectations'",
+            "html": "<p><b>Misalignment of Expectations:</b> Clear communication and regular feedback loops help in aligning expectations and ensuring that the solution meets the needs of all stakeholders.</p>"
+          },
+          {
+            "type": "html",
+            "name": "communicationBarriersInfo",
+            "visibleIf": "{starterDiscussionMoreInfo} = 'Not sure, tell me more' and {starterDiscussionQuestion} contains 'Communication barriers'",
+            "html": "<p><b>Communication Barriers:</b> Establishing clear communication channels and providing ongoing support and resources ensures that support teams feel comfortable handling any issues that may arise.</p>"
+          }
+        ]
+      },
+      {
+        "name": "ContinuousImprovement",
+        "elements": [
+          {
+            "type": "html",
+            "name": "continuousImprovementText",
+            "html": "<h3>Continuous Improvement</h3><p>Once the initial deployment is complete, the focus should shift to continuous improvement. This involves iterative development and feedback loops to adapt to changing business requirements.</p>"
+          },
+          {
+            "type": "checkbox",
+            "name": "continuousImprovementQuestion",
+            "title": "Which of the following strategies do you use for continuous improvement?",
+            "choices": [
+              "Iterative Development",
+              "Feedback Loops",
+              "Engaging Stakeholders",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "continuousImprovementMoreInfo",
+            "title": "Are you familiar with these strategies?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "iterativeDevelopmentInfo",
+            "visibleIf": "{continuousImprovementMoreInfo} = 'Not sure, tell me more' and {continuousImprovementQuestion} contains 'Iterative Development'",
+            "html": "<p><b>Iterative Development:</b> Iterative development involves making small, incremental changes to the solution and continuously improving it based on feedback and new requirements.</p>"
+          },
+          {
+            "type": "html",
+            "name": "feedbackLoopsInfo",
+            "visibleIf": "{continuousImprovementMoreInfo} = 'Not sure, tell me more' and {continuousImprovementQuestion} contains 'Feedback Loops'",
+            "html": "<p><b>Feedback Loops:</b> Feedback loops involve regularly collecting feedback from stakeholders, including users and customers, to identify areas for improvement and drive further enhancements.</p>"
+          },
+          {
+            "type": "html",
+            "name": "engagingStakeholdersInfo",
+            "visibleIf": "{continuousImprovementMoreInfo} = 'Not sure, tell me more' and {continuousImprovementQuestion} contains 'Engaging Stakeholders'",
+            "html": "<p><b>Engaging Stakeholders:</b> Engaging stakeholders from the beginning ensures that their needs and expectations are met. Collaborating with cross-functional teams, such as marketing, IT, and customer service, helps in creating a holistic solution that addresses various aspects of the business.</p>"
+          }
+        ]
+      },
+      {
+        "name": "SuccessfulHandover",
+        "elements": [
+          {
+            "type": "html",
+            "name": "successfulHandoverText",
+            "html": "<h3>Successful Handover to Support Teams</h3><p>A successful handover to support teams is essential for the long-term sustainability of the solution. Comprehensive documentation and training sessions are key components of this process.</p>"
+          },
+          {
+            "type": "checkbox",
+            "name": "successfulHandoverQuestion",
+            "title": "Which of the following strategies do you use for a successful handover to support teams?",
+            "choices": [
+              "Comprehensive Documentation",
+              "Training Sessions",
+              "Clear Communication Channels",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "successfulHandoverMoreInfo",
+            "title": "Are you familiar with these strategies?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "comprehensiveDocumentationInfo",
+            "visibleIf": "{successfulHandoverMoreInfo} = 'Not sure, tell me more' and {successfulHandoverQuestion} contains 'Comprehensive Documentation'",
+            "html": "<p><b>Comprehensive Documentation:</b> Clear and detailed documentation helps support teams understand the solution's intricacies and provides a reference for managing and maintaining it.</p>"
+          },
+          {
+            "type": "html",
+            "name": "trainingSessionsInfo",
+            "visibleIf": "{successfulHandoverMoreInfo} = 'Not sure, tell me more' and {successfulHandoverQuestion} contains 'Training Sessions'",
+            "html": "<p><b>Training Sessions:</b> Training sessions build support teams' confidence in managing and maintaining the solution by providing hands-on experience and addressing any questions or concerns.</p>"
+          },
+          {
+            "type": "html",
+            "name": "clearCommunicationChannelsInfo",
+            "visibleIf": "{successfulHandoverMoreInfo} = 'Not sure, tell me more' and {successfulHandoverQuestion} contains 'Clear Communication Channels'",
+            "html": "<p><b>Clear Communication Channels:</b> Establishing clear communication channels between development and support teams ensures that support teams feel comfortable handling any issues that may arise and can seek assistance when needed.</p>"
+          }
+        ]
+      },
+      {
+        "name": "AutomatedTesting",
+        "elements": [
+          {
+            "type": "html",
+            "name": "automatedTestingText",
+            "html": "<h3>The Role of Automated Testing</h3><p>Automated testing plays a significant role in building sustainable applications. It helps in identifying issues early, ensuring the solution remains reliable and efficient.</p>"
+          },
+          {
+            "type": "checkbox",
+            "name": "automatedTestingQuestion",
+            "title": "Which of the following benefits have you experienced with automated testing?",
+            "choices": [
+              "Early Issue Detection",
+              "Improved Reliability",
+              "Efficient Testing Process",
+              "Other (please specify)"
+            ],
+            "hasOther": true
+          },
+          {
+            "type": "radiogroup",
+            "name": "automatedTestingMoreInfo",
+            "title": "Are you familiar with these benefits?",
+            "choices": [
+              "Yes",
+              "Not sure, tell me more"
+            ]
+          },
+          {
+            "type": "html",
+            "name": "earlyIssueDetectionInfo",
+            "visibleIf": "{automatedTestingMoreInfo} = 'Not sure, tell me more' and {automatedTestingQuestion} contains 'Early Issue Detection'",
+            "html": "<p><b>Early Issue Detection:</b> Automated testing helps in identifying issues early in the development process, allowing for timely resolution and reducing the risk of major problems later on.</p>"
+          },
+          {
+            "type": "html",
+            "name": "improvedReliabilityInfo",
+            "visibleIf": "{automatedTestingMoreInfo} = 'Not sure, tell me more' and {automatedTestingQuestion} contains 'Improved Reliability'",
+            "html": "<p><b>Improved Reliability:</b> Automated tests ensure that the solution remains reliable by continuously checking for issues and verifying that all features work as expected.</p>"
+          },
+          {
+            "type": "html",
+            "name": "efficientTestingProcessInfo",
+            "visibleIf": "{automatedTestingMoreInfo} = 'Not sure, tell me more' and {automatedTestingQuestion} contains 'Efficient Testing Process'",
+            "html": "<p><b>Efficient Testing Process:</b> Automated testing streamlines the testing process, making it more efficient and allowing for faster feedback on code changes.</p>"
+          }
+        ]
+      }
+    ]
+  }

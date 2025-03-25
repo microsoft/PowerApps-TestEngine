@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: Update Connection References
       testCaseDescription: Connect created connections with connection references
       testSteps: |
-        = Experimental.UpdateConnectionReferences();
+        = Preview.UpdateConnectionReferences();
 
 testSettings:
   headless: false

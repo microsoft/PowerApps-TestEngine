@@ -47,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// Ends the test run
         /// </summary>
         /// <returns>Task</returns>
-        public Task EndTestRunAsync();
+        public Task EndTestRunAsync(IUserManager userManager);
 
         /// <summary>
         /// Dispose the instances
@@ -99,5 +99,13 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="jsExpression">Javascript expression to run</param>
         /// <returns>Return value of javascript</returns>
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
+
+        /// <summary>
+        /// Triggers a click event on a control
+        /// </summary>
+        /// <param name="controlName">Control name to trigger event</param>
+        /// <param name="filePath">The physical file path for image file</param>
+        /// <returns></returns>
+        public Task<bool> TriggerControlClickEvent(string controlName, string filePath);
     }
 }

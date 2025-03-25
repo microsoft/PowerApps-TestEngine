@@ -43,4 +43,4 @@ environmentVariables:
   users:
     - personaName: User1
       emailKey: user1Email
-      passwordKey: user1Password
+      passwordKey: NotNeeded

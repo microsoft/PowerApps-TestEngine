@@ -10,7 +10,7 @@ testSuite:
     - testCaseName: Run Script
       testCaseDescription: Action examples
       testSteps: |
-        = Experimental.PlaywrightAction("//button", "wait");
+        = Preview.PlaywrightAction("//button", "wait");
           
 testSettings:
   headless: false
@@ -25,4 +25,4 @@ environmentVariables:
   users:
     - personaName: User1
       emailKey: user1Email
-      passwordKey: user1Password
+      passwordKey: NotNeeded

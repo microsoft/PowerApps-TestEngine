@@ -29,7 +29,7 @@ namespace testengine.module
         private static readonly RecordType dataverseRequest = RecordType.Empty();
 
         public SimulateConnectorFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Experimental")), "SimulateConnector", FormulaType.Blank, dataverseRequest)
+            : base(DPath.Root.Append(new DName("Preview")), "SimulateConnector", FormulaType.Blank, dataverseRequest)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;

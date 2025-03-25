@@ -40,10 +40,10 @@ namespace testengine.module
             config.SymbolTable.CreateValues(values);
 
             config.AddFunction(new SimulateDataverseFunction(testInfraFunctions, testState, logger));
-            logger.LogInformation("Registered Experimental.SimulateDataverse()");
+            logger.LogInformation("Registered Preview.SimulateDataverse()");
 
             config.AddFunction(new SimulateConnectorFunction(testInfraFunctions, testState, logger));
-            logger.LogInformation("Registered Experimental.SimulateConnector()");
+            logger.LogInformation("Registered Preview.SimulateConnector()");
         }
 
         public async Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)

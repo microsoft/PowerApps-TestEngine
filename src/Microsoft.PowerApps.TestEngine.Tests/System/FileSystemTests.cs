@@ -17,17 +17,25 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
     {
         private FileSystem fileSystem;
         private string testFileName;
+        private string testFolderName;
+
         public FileSystemTests()
         {
             fileSystem = new FileSystem();
-            testFileName = String.Empty;
+            testFileName = string.Empty;
+            testFolderName = string.Empty;
         }
 
         public void Dispose()
         {
-            if (!String.IsNullOrEmpty(testFileName) && File.Exists(testFileName))
+            if (!string.IsNullOrEmpty(testFileName) && File.Exists(testFileName))
             {
                 File.Delete(testFileName);
+            }
+            if (!string.IsNullOrEmpty(testFolderName) && Directory.Exists(testFolderName))
+            {
+                Directory.Delete(testFolderName, true);
+                testFolderName = "";
             }
         }
 
@@ -334,6 +342,29 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
             Assert.Throws<InvalidOperationException>(() => fileSystem.Delete(testFileName));
             Assert.True(File.Exists(testFileName));
             File.Delete(testFileName);
+        }
+
+        [Fact]
+        public void CanDeleteFolder()
+        {
+            // Arrange
+            testFolderName = Path.Combine(fileSystem.GetDefaultRootTestEngine(), ".TestDir");
+            if (!Directory.Exists(testFolderName))
+            {
+                Directory.CreateDirectory(testFolderName);
+            }
+
+            // Act
+            fileSystem.DeleteDirectory(testFolderName);
+
+            // Assert
+            Assert.False(Directory.Exists(testFolderName));
+        }
+
+        [Fact]
+        public void CannotDeleteFolder()
+        {
+            Assert.Throws<InvalidOperationException>(() => fileSystem.DeleteDirectory(Path.Combine(fileSystem.GetTempPath(), Guid.NewGuid().ToString())));
         }
     }
 }
