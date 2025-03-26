@@ -136,7 +136,7 @@ class PowerAppsModelDrivenCanvas {
                 if (typeof value == "undefined" || value == null) {
                     propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
                     return;
-                }
+                }                            
 
                 if (typeof value.dataSource === "undefined") {
                     propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
@@ -167,7 +167,7 @@ class PowerAppsModelDrivenCanvas {
 
                         if (!existingProperties.includes(item.name)) {
                             mappedType = ''
-                        }
+                        }                       
 
                         if (mappedType.length > 0) {
                             mappedColumn = true;
