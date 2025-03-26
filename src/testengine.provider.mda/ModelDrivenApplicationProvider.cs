@@ -462,6 +462,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         break;
                     case (DateType):
                         return await SetPropertyDateAsync(itemPath, (DateValue)value);
+                    case (DateTimeType):
+                        return await SetPropertyDateTimeAsync(itemPath, (DateTimeValue)value);
                     case (RecordType):
                         return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
                     case (TableType):
@@ -484,6 +486,30 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         }
 
         public async Task<bool> SetPropertyDateAsync(ItemPath itemPath, DateValue value)
+        {
+            try
+            {
+                ValidateItemPath(itemPath, false);
+
+                var itemPathString = JsonConvert.SerializeObject(itemPath);
+                var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
+                var recordValue = value.GetConvertedValue(null);
+
+                // TODO - Set the Xrm SDK Value and update state for any JS to run
+
+                // Date.parse() parses the date to unix timestamp
+                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},Date.parse(\"{recordValue}\"))";
+
+                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, SingleTestInstanceState.GetLogger());
+                throw;
+            }
+        }
+
+        public async Task<bool> SetPropertyDateTimeAsync(ItemPath itemPath, DateTimeValue value)
         {
             try
             {
