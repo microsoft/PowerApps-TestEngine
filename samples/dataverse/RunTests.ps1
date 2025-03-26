@@ -35,5 +35,7 @@ $env:user1Email = $user1Email
 # Run the tests for each user in the configuration file.
 dotnet PowerAppsTestEngine.dll -u "storagestate" -p "powerfx" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d $environmentUrl
 
+# dotnet PowerAppsTestEngine.dll -u "storagestate" -p "powerfx" -a "none" -i "$currentDirectory\ai-evaluate.fx.yaml" -t $tenantId -e $environmentId -d $environmentUrl -W "True"
+
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

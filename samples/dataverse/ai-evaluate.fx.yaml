@@ -1,0 +1,36 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Dataverse AI Evaluate Tests
+  testSuiteDescription: Validate Evaluate AI Prompts
+  persona: User1
+  appLogicalName: N/A
+
+  testCases:
+    - testCaseName: Execute custom prompt
+      testCaseDescription: Should able call a custom prompt and verify the text result of the model
+      testSteps: |
+        = Assert(
+            "Paris",
+            Preview.AIEvaluate(
+              "Custom", 
+              {
+                Prompt:"What is the capital of France. Answer as a SINGLE word only with the city name ONLY"
+              }).Text
+          );
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+    parameters:
+      enableDataverseFunctions: true
+      enableAIFunctions: true
+  browserConfigurations:
+    - browser: Chromium
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
