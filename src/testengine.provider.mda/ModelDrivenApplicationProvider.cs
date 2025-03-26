@@ -213,6 +213,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "islogovisible":
                         case "istitlevisible":
                         case "checked":
+                        case "autostart":
+                        case "paused":
+                        case "showcontrols":
+                        case "loop":
+                        case "start":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())
@@ -465,7 +470,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     case (RecordType):
                         return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
                     case (TableType):
-                        return await SetPropertyTableAsync(itemPath, (TableValue)value);
+                        return await SetPropertyTableAsync(itemPath, (TableValue)value); 
                     default:
                         throw new ArgumentException("SetProperty must be a valid type.");
                 }
