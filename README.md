@@ -47,7 +47,7 @@ cd PowerApps-TestEngine\src
 dotnet build
 
 # Install browsers required by Playwright
-.\bin\Debug\PowerAppsTestEngine\playwright.ps1 install
+..\bin\Debug\PowerAppsTestEngine\playwright.ps1 install
 ```
 If you face trouble running dotnet build try [Clean locally](https://github.com/microsoft/PowerApps-TestEngine#clean-locally) first.
 
