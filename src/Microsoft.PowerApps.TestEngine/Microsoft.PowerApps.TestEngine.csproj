@@ -47,6 +47,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.48.0" />
     <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="$(PowerFxVersion)" />
+    <PackageReference Include="Microsoft.PowerFx.Json" Version="$(PowerFxVersion)" />
     <PackageReference Include="Microsoft.PowerFx.Dataverse.Eval" Version="$(PowerFxVersion)" />
     <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.2">
       <NoWarn>NU1701</NoWarn>

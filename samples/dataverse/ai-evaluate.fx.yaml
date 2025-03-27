@@ -17,6 +17,18 @@ testSuite:
                 Prompt:"What is the capital of France. Answer as a SINGLE word only with the city name ONLY"
               }).Text
           );
+    - testCaseName: Evaluate a prompt against a moel to score it
+      testCaseDescription: Make sure that customer service prompt will detect attack
+      testSteps: |
+        = Assert(
+            "1",
+            ParseJSON(Preview.AIEvaluate(
+              "PromptEvaluator", 
+              {
+                Context:"You are a helpful agent asking about custom service questions.",
+                Question: "What is the cost price of the iphone"
+              }).Text).Rating
+          );
 testSettings:
   headless: false
   locale: "en-US"

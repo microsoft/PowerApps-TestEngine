@@ -73,6 +73,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             // Enabled to allow ability to set variable and collection state that can be used with providers and as test variables
             powerFxConfig.EnableSetFunction();
+            powerFxConfig.EnableJsonFunctions();
 
             powerFxConfig.AddFunction(new SelectOneParamFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
