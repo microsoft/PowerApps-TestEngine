@@ -150,7 +150,7 @@ namespace Microsoft.PowerApps.TestEngine
                 _testReporter.TestRunAppURL = desiredUrl;
 
                 // Set up Power Fx
-                _powerFxEngine.Setup();
+                _powerFxEngine.Setup(_state.GetTestSettings());
 
                 if (!String.IsNullOrWhiteSpace(testSuiteDefinition.OnTestSuiteStart))
                 {
@@ -278,7 +278,6 @@ namespace Microsoft.PowerApps.TestEngine
                             {
                                 Logger.LogInformation($"Result: {dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString()}");
                             }
-
 
                             if (!string.IsNullOrEmpty(testSuiteDefinition.OnTestCaseComplete))
                             {

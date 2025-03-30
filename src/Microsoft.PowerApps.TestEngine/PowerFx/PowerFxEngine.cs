@@ -61,7 +61,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <summary>
         /// Setup the Power Fx state for test execution
         /// </summary>
-        public void Setup()
+        public void Setup(TestSettings settings)
         {
             var powerFxConfig = new PowerFxConfig(Features.PowerFxV1);
             
@@ -85,7 +85,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new SetPropertyFunction(_testWebProvider, Logger));
             powerFxConfig.AddFunction(new IsMatchFunction(Logger));
 
-            var settings = TestState.GetTestSettings();
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {
                 if (TestState.GetTestEngineModules().Count == 0)
@@ -115,6 +114,16 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var symbolValues = new SymbolValues(powerFxConfig.SymbolTable);
 
+            if ( !string.IsNullOrEmpty(settings.TestFunction) )
+            {
+                var locale = GetLocaleFromTestSettings(settings.Locale);
+                var registerResult = Engine.AddUserDefinedFunction(settings.TestFunction, locale, symbolValues.SymbolTable, true);
+                if (registerResult.IsSuccess)
+                {
+                    Logger.LogInformation($"Registered");
+                }
+            }
+
             foreach (var val in powerFxConfig.SymbolTable.SymbolNames.ToList())
             {
                 if (powerFxConfig.SymbolTable.TryLookupSlot(val.Name, out ISymbolSlot slot))
@@ -122,6 +131,29 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     Engine.UpdateVariable(val.Name, symbolValues.Get(slot));
                     powerFxConfig.SymbolTable.RemoveVariable(val.Name);
                 }
+            }
+        }
+
+        private CultureInfo GetLocaleFromTestSettings(string strLocale)
+        {
+            var locale = CultureInfo.CurrentCulture;
+            try
+            {
+                if (string.IsNullOrEmpty(strLocale))
+                {
+                    Logger.LogDebug($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
+                }
+                else
+                {
+                    locale = new CultureInfo(strLocale);
+                    Logger.LogDebug($"Locale: {locale.Name}");
+                }
+                return locale;
+            }
+            catch (CultureNotFoundException)
+            {
+                Logger.LogError($"Locale from test suite definition {strLocale} unrecognized.");
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
         }
 

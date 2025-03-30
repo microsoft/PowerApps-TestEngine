@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Globalization;
-using System.Text.RegularExpressions;
+using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
@@ -17,7 +17,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <summary>
         /// Set up the Power FX engine
         /// </summary>       
-        public void Setup();
+        public void Setup(TestSettings settings);
 
         /// <summary>
         /// Executes testSteps with retry

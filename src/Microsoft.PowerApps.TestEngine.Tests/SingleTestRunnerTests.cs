@@ -43,6 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private Mock<IBrowserContext> MockBrowserContext;
         private Mock<IUserManagerLogin> MockUserManagerLogin;
         private Mock<IPage> MockPage;
+        private TestSettings _testSettings;
 
         public SingleTestRunnerTests()
         {
@@ -62,6 +63,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockBrowserContext = new Mock<IBrowserContext>(MockBehavior.Strict);
             MockUserManagerLogin = new Mock<IUserManagerLogin>(MockBehavior.Strict);
             MockPage = new Mock<IPage>(MockBehavior.Strict);
+            _testSettings = new TestSettings();
         }
 
         private void SetupMocks(string testRunId, string testSuiteId, string testId, string appUrl, TestSuiteDefinition testSuiteDefinition, bool powerFxTestSuccess, string[]? additionalFiles, string testSuitelocale)
@@ -97,7 +99,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
 
             var locale = string.IsNullOrEmpty(testSuitelocale) ? CultureInfo.CurrentCulture : new CultureInfo(testSuitelocale);
-            MockPowerFxEngine.Setup(x => x.Setup());
+            MockPowerFxEngine.Setup(x => x.Setup(_testSettings));
             MockPowerFxEngine.Setup(x => x.RunRequirementsCheckAsync()).Returns(Task.CompletedTask);
             MockPowerFxEngine.Setup(x => x.UpdatePowerFxModelAsync()).Returns(Task.CompletedTask);
             FormulaValue blank = BlankValue.NewBlank();
@@ -165,7 +167,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         private void VerifySuccessfulTestExecution(string testResultDirectory, TestSuiteDefinition testSuiteDefinition, BrowserConfiguration browserConfig,
             string testSuiteId, string testRunId, string testId, bool testSuccess, string[]? additionalFiles, string? errorMessage, string? stackTrace, string appUrl, CultureInfo locale)
         {
-            MockPowerFxEngine.Verify(x => x.Setup(), Times.Once());
+            MockPowerFxEngine.Verify(x => x.Setup(_testSettings), Times.Once());
             MockPowerFxEngine.Verify(x => x.UpdatePowerFxModelAsync(), Times.Once());
             MockTestInfraFunctions.Verify(x => x.SetupAsync(It.IsAny<IUserManager>()), Times.Once());
             MockUserManager.Verify(x => x.LoginAsUserAsync(appUrl,
@@ -232,6 +234,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLogger.Setup(m => m.IsEnabled(LogLevel.Debug)).Returns(false);
             MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
             MockTestState.Setup(m => m.GetDomain()).Returns("about:blank");
+            MockTestState.Setup(m => m.GetTestSettings()).Returns(_testSettings);
             MockTestWebProvider.Setup(m => m.GenerateTestUrl("about:blank", "")).Returns("");
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
@@ -268,6 +271,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLogger.Setup(m => m.IsEnabled(LogLevel.Debug)).Returns(false);
             MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
             MockTestState.Setup(m => m.GetDomain()).Returns("about:blank");
+            MockTestState.Setup(m => m.GetTestSettings()).Returns(_testSettings);
             MockTestWebProvider.Setup(m => m.GenerateTestUrl("about:blank", "")).Returns("");
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
@@ -329,6 +333,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
             MockTestState.Setup(m => m.GetDomain()).Returns("about:blank");
             MockTestWebProvider.Setup(m => m.GenerateTestUrl("about:blank", "")).Returns("");
+            MockTestState.Setup(m => m.GetTestSettings()).Returns(_testSettings);
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);
 
@@ -393,7 +398,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockPowerFxEngine.Setup(x => x.PowerAppIntegrationEnabled).Returns(true);
             await SingleTestRunnerHandlesExceptionsThrownCorrectlyHelper((Exception exceptionToThrow) =>
             {
-                MockPowerFxEngine.Setup(x => x.Setup()).Throws(exceptionToThrow);
+                MockPowerFxEngine.Setup(x => x.Setup(_testSettings)).Throws(exceptionToThrow);
             });
         }
 
@@ -482,6 +487,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
             MockTestState.Setup(m => m.GetDomain()).Returns("about:blank");
             MockTestWebProvider.Setup(m => m.GenerateTestUrl("about:blank", "")).Returns("");
+            MockTestState.Setup(m => m.GetTestSettings()).Returns(_testSettings);
 
             var exceptionToThrow = new InvalidOperationException("Test exception");
 
@@ -518,6 +524,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockLogger.Setup(m => m.IsEnabled(LogLevel.Debug)).Returns(false);
             MockLogger.Setup(m => m.IsEnabled(LogLevel.Trace)).Returns(false);
             MockTestState.Setup(m => m.GetDomain()).Returns("about:blank");
+            MockTestState.Setup(m => m.GetTestSettings()).Returns(_testSettings);
             MockTestWebProvider.Setup(m => m.GenerateTestUrl("about:blank", "")).Returns("");
 
             var locale = string.IsNullOrEmpty(testData.testSuiteLocale) ? CultureInfo.CurrentCulture : new CultureInfo(testData.testSuiteLocale);

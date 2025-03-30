@@ -57,6 +57,11 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public string ExecutablePath { get; set; } = "";
 
         /// <summary>
+        /// The Power Fx function to add to the Power Fx function execution context
+        /// </summary>
+        public string TestFunction { get; set; } = "";
+
+        /// <summary>
         /// Define settings for Test Engine Extensions
         /// </summary>
         public TestSettingExtensions ExtensionModules { get; set; } = new TestSettingExtensions();

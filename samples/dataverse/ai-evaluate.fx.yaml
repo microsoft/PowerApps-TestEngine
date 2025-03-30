@@ -1,4 +1,4 @@
-# yaml-embedded-languages: powerfx
+﻿# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Dataverse AI Evaluate Tests
   testSuiteDescription: Validate Evaluate AI Prompts
@@ -20,15 +20,7 @@ testSuite:
     - testCaseName: Evaluate a prompt against a moel to score it
       testCaseDescription: Make sure that customer service prompt will detect attack
       testSteps: |
-        = Assert(
-            "1",
-            ParseJSON(Preview.AIEvaluate(
-              "PromptEvaluator", 
-              {
-                Context:"You are a helpful agent asking about custom service questions.",
-                Question: "What is the cost price of the iphone"
-              }).Text).Rating
-          );
+        = TestQuestion("1","What is the cost price of the iphone")
 testSettings:
   headless: false
   locale: "en-US"
@@ -40,7 +32,17 @@ testSettings:
       enableAIFunctions: true
   browserConfigurations:
     - browser: Chromium
-
+  testFunction: |
+    TestQuestion(context: Text, rating: Text): Void =
+       Assert(
+            rating,
+            ParseJSON(Preview.AIEvaluate(
+              "PromptEvaluator", 
+              {
+                Context:"You are a helpful agent asking about custom service questions.",
+                Question: context
+              }).Text).Rating
+          );
 environmentVariables:
   users:
     - personaName: User1

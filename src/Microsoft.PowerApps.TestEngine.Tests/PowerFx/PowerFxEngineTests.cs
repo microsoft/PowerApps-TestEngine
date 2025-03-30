@@ -5,10 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Threading;
 using System.Threading.Tasks;
-using Castle.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Modules;
@@ -35,6 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
         private Mock<ISingleTestInstanceState> MockSingleTestInstanceState;
         private Mock<IEnvironmentVariable> MockEnvironmentVariable;
         private Mock<Microsoft.Extensions.Logging.ILogger> MockLogger;
+        private TestSettings testSettings = new TestSettings();
 
         public PowerFxEngineTests()
         {
@@ -48,19 +46,20 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
             LoggingTestHelper.SetupMock(MockLogger);
+            testSettings = new TestSettings();
         }
 
         [Fact]
         public void SetupDoesNotThrow()
         {
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(new TestSettings());
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
             MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
             MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
 
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
         }
 
         [Fact]
@@ -96,7 +95,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await Assert.ThrowsAsync<TimeoutException>(() => powerFxEngine.UpdatePowerFxModelAsync());
             LoggingTestHelper.VerifyLogging(MockLogger, "Something went wrong when Test Engine tried to get App status.", LogLevel.Error, Times.Once());
         }
@@ -114,7 +113,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
 
             await powerFxEngine.RunRequirementsCheckAsync();
 
@@ -135,7 +134,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
 
             await Assert.ThrowsAsync<Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
 
@@ -156,7 +155,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
 
             await Assert.ThrowsAsync<Exception>(() => powerFxEngine.RunRequirementsCheckAsync());
 
@@ -177,7 +176,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             var result = await powerFxEngine.ExecuteAsync("1+1", new CultureInfo("en-US"));
             Assert.Equal(2, ((NumberValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, "Attempting:\n\n{\n1+1}", LogLevel.Trace, Times.Once());
@@ -204,7 +203,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             MockTestState.Setup(x => x.GetTestSettings()).Returns<TestSettings>(null);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.Equal("helloworld", ((StringValue)result).Value);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Attempting:\n\n{{\n{powerFxExpression}}}", LogLevel.Trace, Times.Once());
@@ -229,7 +228,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var enUSpowerFxExpression = "1+1;2+2;";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             var enUSResult = await powerFxEngine.ExecuteAsync(enUSpowerFxExpression, culture);
 
             // fr locale
@@ -238,7 +237,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             var frResult = await powerFxEngine.ExecuteAsync(frpowerFxExpression, culture);
 
             // Assertions
@@ -295,7 +294,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
 
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
@@ -328,7 +327,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
 
@@ -345,7 +344,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Concatenate(Label1.Text, Label2.Text)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>()));
         }
 
@@ -362,7 +361,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Assert(1+1=2, \"Adding 1 + 1\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
 
@@ -386,7 +385,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Screenshot(\"1.jpg\")";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
             Assert.IsType<BlankValue>(result);
 
@@ -415,7 +414,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
             var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
@@ -445,7 +444,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await Assert.ThrowsAsync<TargetInvocationException>(() => powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>()));
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
@@ -472,7 +471,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Select(Button1)";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await Assert.ThrowsAsync<TargetInvocationException>(() => powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>()));
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
@@ -501,7 +500,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
             var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
@@ -531,7 +530,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await Assert.ThrowsAsync<InvalidOperationException>(() => powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>()));
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
@@ -571,7 +570,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteWithRetryAsync(powerFxExpression, It.IsAny<CultureInfo>());
             var result = await powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>());
@@ -601,7 +600,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
 
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await Assert.ThrowsAsync<TargetInvocationException>(() => powerFxEngine.ExecuteAsync(powerFxExpression, It.IsAny<CultureInfo>()));
             MockTestWebProvider.Verify(x => x.LoadObjectModelAsync(), Times.Once());
@@ -640,9 +639,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var oldUICulture = CultureInfo.CurrentUICulture;
             var frenchCulture = new CultureInfo("fr");
             CultureInfo.CurrentUICulture = frenchCulture;
-            powerFxEngine.Setup();
-            var testSettings = new TestSettings() { Timeout = 3000 };
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
+            powerFxEngine.Setup(testSettings);
             var expression = "Select(Label1/*Label;;22*/);;\"Just stirng \n;literal\";;Select(Label2)\n;;Select(Label3);;Assert(1=1; \"Supposed to pass;;\");;Max(1,2)";
 
             // Act 
@@ -702,7 +699,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var powerFxExpression = "Foo()";
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
             powerFxEngine.GetAzureCliHelper = () => null;
-            powerFxEngine.Setup();
+            powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteAsync(powerFxExpression, CultureInfo.CurrentCulture);
         }
