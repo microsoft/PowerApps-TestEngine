@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Globalization;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
@@ -10,7 +11,9 @@ using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
+using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Dataverse;
+using Microsoft.PowerFx.Syntax;
 using Microsoft.PowerFx.Types;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.Xrm.Sdk;
@@ -63,13 +66,19 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         public void Setup(TestSettings settings)
         {
-            var powerFxConfig = new PowerFxConfig(Features.PowerFxV1);
+            var features = Features.PowerFxV1;
+
+            var powerFxConfig = new PowerFxConfig(features);
             
             var vals = new SymbolValues();
             var symbols = (SymbolTable)vals.SymbolTable;
             symbols.EnableMutationFunctions();
 
+            var testSettings = TestState.GetTestSettings();
+
             powerFxConfig.SymbolTable = symbols;
+
+            ConditionallyRegisterTestTypes(testSettings, powerFxConfig);
 
             // Enabled to allow ability to set variable and collection state that can be used with providers and as test variables
             powerFxConfig.EnableSetFunction();
@@ -82,16 +91,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new ScreenshotFunction(TestInfraFunctions, SingleTestInstanceState, _fileSystem, Logger));
             powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
+            powerFxConfig.AddFunction(new AssertNotErrorFunction(Logger));
             powerFxConfig.AddFunction(new SetPropertyFunction(_testWebProvider, Logger));
             powerFxConfig.AddFunction(new IsMatchFunction(Logger));
 
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {
-                if (TestState.GetTestEngineModules().Count == 0)
+                var modules = TestState.GetTestEngineModules();
+                if (modules.Count == 0)
                 {
                     Logger.LogError("Extension enabled, none loaded");
                 }
-                foreach (var module in TestState.GetTestEngineModules())
+                foreach (var module in modules)
                 {
                     module.RegisterPowerFxFunction(powerFxConfig, TestInfraFunctions, _testWebProvider, SingleTestInstanceState, TestState, _fileSystem);
                 }
@@ -108,21 +119,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             Engine = new RecalcEngine(powerFxConfig);
 
-            var testSettings = TestState.GetTestSettings();
-
             ConditionallySetupDataverse(testSettings, powerFxConfig);
+            ConditionallyRegisterTestFunctions(testSettings, powerFxConfig);
 
             var symbolValues = new SymbolValues(powerFxConfig.SymbolTable);
-
-            if ( !string.IsNullOrEmpty(settings.TestFunction) )
-            {
-                var locale = GetLocaleFromTestSettings(settings.Locale);
-                var registerResult = Engine.AddUserDefinedFunction(settings.TestFunction, locale, symbolValues.SymbolTable, true);
-                if (registerResult.IsSuccess)
-                {
-                    Logger.LogInformation($"Registered");
-                }
-            }
 
             foreach (var val in powerFxConfig.SymbolTable.SymbolNames.ToList())
             {
@@ -130,6 +130,161 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 {
                     Engine.UpdateVariable(val.Name, symbolValues.Get(slot));
                     powerFxConfig.SymbolTable.RemoveVariable(val.Name);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Register Power Fx types that aid and simplify testing
+        /// </summary>
+        /// <param name="testSettings">The settings to obtain the test functions from</param>
+        /// <param name="powerFxConfig">The Power Fx context that the functions should be registered with</param>
+        private void ConditionallyRegisterTestTypes(TestSettings testSettings, PowerFxConfig powerFxConfig)
+        {
+            if (testSettings == null || testSettings.PowerFxTestTypes == null || testSettings.PowerFxTestTypes.Count == 0)
+            {
+                return;
+            }
+
+            var engine = new RecalcEngine(new PowerFxConfig(Features.PowerFxV1));
+
+            foreach (PowerFxTestType type in testSettings.PowerFxTestTypes)
+            {
+                var result = engine.Parse(type.Value);
+                RegisterPowerFxType(type.Name, result.Root, powerFxConfig);
+            }
+        }
+
+        private void RegisterPowerFxType(string name, TexlNode result, PowerFxConfig powerFxConfig)
+        {
+            switch (result.Kind)
+            {
+                case NodeKind.Table:
+                    var table = TableType.Empty();
+                    var tableRecord = RecordType.Empty();
+                    var first = true;
+
+                    TableNode tableNode = result as TableNode; 
+
+                    foreach (var child in tableNode.ChildNodes)
+                    {
+                        if (child is RecordNode recordNode && first)
+                        {
+                            first = false;
+                            tableRecord = GetRecordType(recordNode);
+
+                            foreach ( var field in tableRecord.GetFieldTypes())
+                            {
+                                table = table.Add(field);
+                            }
+                        }
+                    }
+
+                    powerFxConfig.SymbolTable.AddType(new DName(name), table);
+                    break;
+                case NodeKind.Record:
+                    var record = GetRecordType(result as RecordNode);
+
+                    powerFxConfig.SymbolTable.AddType(new DName(name), record);
+                    break;
+            }
+        }
+
+        private RecordType GetRecordType(RecordNode recordNode)
+        {
+            var record = RecordType.Empty();
+            int index = 0;
+            foreach (var child in recordNode.ChildNodes)
+            {
+                if (child is DottedNameNode dottedNameNode)
+                {
+                    var fieldName = dottedNameNode.Right.Name.Value;
+                    var fieldType = GetFormulaTypeFromNode(dottedNameNode.Right);
+                    record = record.Add(new NamedFormulaType(fieldName, fieldType));
+                }
+                if (child is FirstNameNode firstNameNode)
+                {
+                    var fieldName = recordNode.Ids[index].Name.Value;
+                    index++;
+                    var fieldType = GetFormulaTypeFromNode(firstNameNode.Ident);
+                    record = record.Add(new NamedFormulaType(fieldName, fieldType));
+                }
+            }
+            return record;
+        }
+
+        private FormulaType GetFormulaTypeFromNode(Identifier right)
+        {
+            switch (right.Name.Value)
+            {
+                case "Boolean":
+                    return FormulaType.Boolean;
+                case "Number":
+                    return FormulaType.Number;
+                case "Text":
+                    return FormulaType.String;
+                case "Date":
+                    return FormulaType.Date;
+                case "DateTime":
+                    return FormulaType.DateTime;
+                case "Time":
+                    return FormulaType.Time;
+                default:
+                    throw new InvalidOperationException($"Unsupported node type: {right.Name.Value}");
+            }
+        }
+
+        /// <summary>
+        /// Register Power Fx funtions that aid and simplify testing
+        /// </summary>
+        /// <param name="testSettings">The settings to obtain the test functions from</param>
+        /// <param name="powerFxConfig">The Power Fx context that the functions should be registered with</param>
+        private void ConditionallyRegisterTestFunctions(TestSettings testSettings, PowerFxConfig powerFxConfig)
+        {
+            if (testSettings == null)
+            {
+                return;
+            }
+
+            var functionPowerFx = testSettings.TestFunction;
+            if (!string.IsNullOrEmpty(functionPowerFx))
+            {
+                var culture = GetLocaleFromTestSettings(testSettings.Locale);
+
+                var checkResult = Engine.Check(functionPowerFx, new ParserOptions { AllowsSideEffects = true, Culture = culture }, powerFxConfig.SymbolTable);
+                var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, checkResult, culture);
+
+                foreach (var functionPowerFxStep in splitSteps)
+                {
+                    var fomattedFunctionPowerFxStep = functionPowerFxStep.Trim();
+
+                    if (string.IsNullOrWhiteSpace(fomattedFunctionPowerFxStep))
+                    {
+                        continue;
+                    }
+
+                    if (!fomattedFunctionPowerFxStep.EndsWith(";"))
+                    {
+                        fomattedFunctionPowerFxStep += ";";
+                    }
+
+                    var registerResult = Engine.AddUserDefinedFunction(fomattedFunctionPowerFxStep, culture, powerFxConfig.SymbolTable, true);
+                    if (!registerResult.IsSuccess)
+                    {
+                        foreach (var error in registerResult.Errors)
+                        {
+                            var msg = error.ToString();
+
+                            if (error.IsWarning)
+                            {
+                                Logger.LogWarning(msg);
+                            }
+                            else
+                            {
+                                Logger.LogError(msg);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -212,7 +367,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     if (enableAIFunctions)
                     {
                         _dataverseAIPredictHelper = new DataverseAIPredictHelper(dataverseUri, token);
-                        powerFxConfig.AddFunction(new AIEvaluateFunction(Logger, svcClient, _dataverseAIPredictHelper));
+                        powerFxConfig.AddFunction(new AIExecutePromptFunction(Logger, svcClient, _dataverseAIPredictHelper));
                     }
                 }
             }

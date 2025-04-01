@@ -15,7 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     /// <summary>
     /// Execute a Dataverse AI Custom Prompt by name or id
     /// </summary>
-    public class AIEvaluateFunction : ReflectionFunction
+    public class AIExecutePromptFunction : ReflectionFunction
     {
         private readonly ILogger _logger;
         private readonly IOrganizationService _client;
@@ -28,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         private static readonly RecordType _parameters = RecordType.Empty();
 
-        public AIEvaluateFunction(ILogger logger, IOrganizationService client, DataverseAIPredictHelper helper) : base(DPath.Root.Append(new DName("Preview")), "AIEvaluate", _result, FormulaType.String, _parameters)
+        public AIExecutePromptFunction(ILogger logger, IOrganizationService client, DataverseAIPredictHelper helper) : base(DPath.Root.Append(new DName("Preview")), "AIExecutePrompt", _result, FormulaType.String, _parameters)
         {
             _logger = logger;
             _client = client;

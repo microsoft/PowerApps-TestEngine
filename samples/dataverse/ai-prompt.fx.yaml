@@ -1,0 +1,98 @@
+﻿# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Dataverse AI Evaluate Tests
+  testSuiteDescription: Validate Evaluate AI Prompts
+  persona: User1
+  appLogicalName: N/A
+
+  testCases:
+    - testCaseName: Single country test
+      testCaseDescription: Check single country
+      testSteps: |
+        = Assert(0=EvaluateTestCountry({Name:"France", Expected:"Paris"}).PassFail)
+    - testCaseName: Execute custom prompt for country capital
+      testCaseDescription: Should able call a custom AI prompt and verify the text result of the model
+      testSteps: |
+        = TestCountry([
+          {Name:"France", Expected:"Paris"},
+          {Name:"USA", Expected:"Washington"},
+          {Name:"Canada", Expected:"Ottawa"},
+          {Name:"Mexico", Expected:"Mexico City"},
+          {Name:"New Zealand", Expected:"Wellington"}
+        ]);
+    - testCaseName: Evaluate a prompt against a model to score it
+      testCaseDescription: Make sure that customer service AI prompt will detect attack
+      testSteps: |
+        = TestQuestion([{
+          Question: "What is the cost price of the iphone",
+          ExpectedRating: "1"
+        }])
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+    parameters:
+      enableDataverseFunctions: true
+      enableAIFunctions: true
+  browserConfigurations:
+    - browser: Chromium
+  powerFxTestTypes:
+    - name: TestResult
+      value: |
+        {PassFail: Number, Summary: Text}
+    - name: TestQuestion
+      value: |
+        {Question: Text, ExpectedRating: Text}
+    - name: TestQuestionCollection
+      value: |
+        [{Question: Text, ExpectedRating: Text}]
+    - name: TestCountry
+      value: |
+        {Name: Text, Expected: Text}
+    - name: TestCountryCollection
+      value: |
+        [{Name: Text, Expected: Text}]
+  testFunction: |
+    EvaluateTestQuestionPrompt(Prompt: TestQuestion): TestResult =
+      With({
+        Response: ParseJSON(
+          Preview.AIExecutePrompt("PromptEvaluator", 
+          {
+            Context: "You are a helpful agent asking about custom service questions.",
+            Question: Prompt.Question
+          }).Text)
+      },If(
+        IsError(AssertNotError(Prompt.ExpectedRating=Response.Rating, Prompt.Question & ", Expected " & Prompt.ExpectedRating & ", Actual " & Response.Rating)),
+        {PassFail: 1, Summary: Prompt.Question & ", Expected " & Prompt.ExpectedRating & ", Actual " & Response.Rating}, {PassFail: 0, Summary: "Pass " & Prompt.Question}
+      ));
+    TestQuestion(Questions: TestQuestionCollection): Void =
+      Assert(0=Sum(ForAll(
+          Questions,
+          EvaluateTestQuestionPrompt(ThisRecord)
+        ), PassFail));
+    EvaluateTestCountry(Country: TestCountry): TestResult =
+      With({
+          Response: 
+            ParseJSON(Preview.AIExecutePrompt("Custom", 
+            {
+              Prompt: "What is the capital of "
+                       & Country.Name
+                       & ". The response MUST be valid formatted JSON format ONLY with a format like {Capital:'Name'}. The response should be in plain JSON without any markdown formatting"
+            }).Text)
+        },
+        If(
+          IsError(AssertNotError(Country.Expected = Response.Capital, Country.Name & ", Expected " & Country.Expected & ", Actual " & Response.Capital)),
+          {PassFail: 1, Summary: Country.Name & ", Expected " & Country.Expected & ", Actual " & Response.Capital},
+          {PassFail: 0, Summary: "Pass " & Country.Name}
+        )
+      );
+    TestCountry(Countries: TestCountryCollection): Void =
+      Assert(0=EvaluateTestCountry(First(Countries)).PassFail)
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

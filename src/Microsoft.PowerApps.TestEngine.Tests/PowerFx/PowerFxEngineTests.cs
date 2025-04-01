@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -322,7 +324,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
             MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
             MockTestWebProvider.Setup(m => m.GenerateTestUrl("https://contoso.crm.dynamics.com", "")).Returns("https://contoso.crm.dynamics.com");
-            
+
             var powerFxExpression = "someNonExistentPowerFxFunction(1, 2, 3)";
             MockTestWebProvider.Setup(x => x.LoadObjectModelAsync()).Returns(Task.FromResult(new Dictionary<string, ControlRecordValue>()));
             var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
@@ -702,6 +704,51 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             powerFxEngine.Setup(testSettings);
             await powerFxEngine.UpdatePowerFxModelAsync();
             await powerFxEngine.ExecuteAsync(powerFxExpression, CultureInfo.CurrentCulture);
+        }
+
+        [Theory]
+        [MemberData(nameof(PowerFxTypeTest))]
+        public async Task SetupPowerFxType(string type, string sample, string check, int expected)
+        {
+            // Act
+            var testSettings = new TestSettings()
+            {
+                PowerFxTestTypes = new List<PowerFxTestType> { new PowerFxTestType { Name = "Test", Value = type } },
+                TestFunction = check
+            };
+
+            MockTestState.Setup(m => m.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.Setup(m => m.GetTestSettings()).Returns(testSettings);
+
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+            powerFxEngine.GetAzureCliHelper = () => null;
+
+            // Act
+            powerFxEngine.Setup(testSettings);
+
+            // Assert
+            var functionText = $"Foo({sample})";
+
+            var result = await powerFxEngine.Engine.EvalAsync(functionText, CancellationToken.None);
+
+            Assert.True(result is NumberValue);
+
+            NumberValue numberResult = result as NumberValue;
+
+            Assert.Equal(expected, numberResult.Value);
+        }
+
+        public static IEnumerable<object[]> PowerFxTypeTest()
+        {
+            yield return new object[] { "{Name: Text}", "{Name: \"Other\"}", "Foo(x: Test): Number = Len(x.Name);", 5 };
+            yield return new object[] { "[{Name: Text}]", "[{Name: \"Other\"}]", "Foo(x: Test): Number = CountRows(x);", 1 };
+            yield return new object[] { "{Size: Number}", "{Size: 1}", "Foo(x: Test): Number = x.Size;", 1 };
+            yield return new object[] { "{IsOn: Boolean}", "{IsOn: true}", "Foo(x: Test): Number = If(x.IsOn,1,0);", 1 };
+            yield return new object[] { "{IsOn: Boolean}", "{IsOn: false}", "Foo(x: Test): Number = If(x.IsOn,1,0);", 0 };
+            yield return new object[] { "{When: DateTime}", "{When: Now()}", "Foo(x: Test): Number = If(x.When > Date(1970,1,1),1,0);", 1 };
+            yield return new object[] { "[{Value: Number}]", "[{Value: 1},{Value: 1},{Value: 1}]", "Foo(x: Test): Number = Sum(ForAll(x As Item,Item.Value),Value)", 3 };
+            yield return new object[] { "{Size: Number}", "{Size: 0}", "Foo(x: Test): Number = If(IsError(AssertNotError(1/x.Size, \"Test\")),1,0);", 1 };
+            yield return new object[] { "[{Size: Number}]", "[{Size: 0},{Size: 1},{Size: 2}]", "Foo(x: Test): Number = Sum(ForAll(x,If(IsError(AssertNotError(1=ThisRecord.Size,\"Test\")),{Value: 1},{Value:0})),Value);", 2 };
         }
     }
 
