@@ -197,7 +197,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 {
                     primativeDate = DateTime.SpecifyKind(primativeDate, DateTimeKind.Utc);
                 }
-                if (primativeDate.Kind == DateTimeKind.Local)
+                if (primativeDate.Kind == DateTimeKind.Utc)
                 {
                     primativeDate = primativeDate.ToUniversalTime();
                 }
@@ -214,7 +214,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 {
                     primativeDate2 = DateTime.SpecifyKind(primativeDate2, DateTimeKind.Utc);
                 }
-                if (primativeDate2.Kind == DateTimeKind.Local)
+                if (primativeDate2.Kind == DateTimeKind.Utc)
                 {
                     primativeDate2 = primativeDate2.ToUniversalTime();
                 }
@@ -229,10 +229,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         public static IEnumerable<object[]> GetFieldData()
         {
             var guidValue = Guid.NewGuid();
-            var dateTime = new DateTime(2023, 12, 10, 1, 2, 3, DateTimeKind.Utc);
+            var dateTime = new DateTime(2023, 12, 10, 1, 2, 3, DateTimeKind.Local);
             var dateTimeValue = new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
 
-            var dateValue = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Utc);
+            var dateValue = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Local);
             var dateUnixValue = new DateTimeOffset(dateValue).ToUnixTimeMilliseconds();
 
             yield return new object[] { BlankType.Blank, "{PropertyValue: null}", null }; // Happy path Blank
@@ -270,10 +270,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         public static IEnumerable<object[]> GetTableData()
         {
             var guidValue = Guid.NewGuid();
-            var dateTime = new DateTime(2023, 12, 10, 1, 2, 3, DateTimeKind.Utc);
+            var dateTime = new DateTime(2023, 12, 10, 1, 2, 3, DateTimeKind.Local);
             var dateTimeValue = new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
 
-            var dateValue = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Utc);
+            var dateValue = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Local);
             var dateUnixValue = new DateTimeOffset(dateValue).ToUnixTimeMilliseconds();
 
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", StringType.String)), "{PropertyValue: 'A'}", "[{'Test': \"A\"}]" };
@@ -325,8 +325,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: false}", "{'Test': false}" };
             yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: 'false'}", "{'Test': false}" };
 
-            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", DateTimeType.DateTime)), $"{{PropertyValue: {dateTimeValue}}}", $"{{'Test': \"{dateTime.ToString("o")}\"}}" };
-            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", DateTimeType.Date)), $"{{PropertyValue: {dateUnixValue}}}", $"{{'Test': \"{dateValue.ToString("o")}\"}}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", DateTimeType.DateTime)), $"{{PropertyValue: {dateTimeValue}}}", $"{{'Test': \"{dateTime.ToUniversalTime().ToString("O")}\"}}" };
+            yield return new object[] { RecordType.Empty().Add(new NamedFormulaType("Test", DateTimeType.Date)), $"{{PropertyValue: {dateUnixValue}}}", $"{{'Test': \"{dateValue.ToUniversalTime().ToString("O")}\"}}" };
         }
 
         /// <summary>
