@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <PowerFxVersion>1.3.0-build.*</PowerFxVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -28,7 +29,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.48.0" />
-    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="1.2.0" />
+    <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="$(PowerFxVersion)" />
     <PackageReference Include="Mono.Cecil" Version="0.11.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NuGet.Configuration" Version="6.11.1" />
@@ -63,6 +64,7 @@
     <ProjectReference Include="..\testengine.provider.canvas\testengine.provider.canvas.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.mda\testengine.provider.mda.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\testengine.provider.powerfx\testengine.provider.powerfx.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.user.storagestate\testengine.user.storagestate.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.auth.environment.certificate\testengine.auth.environment.certificate.csproj" PrivateAssets="all" />
   </ItemGroup>

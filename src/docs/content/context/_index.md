@@ -29,4 +29,4 @@ Before you dive into deeper discussion and examples you the following articles t
 
 ## Common Topics
 
-Review the [Common Topics](./common-topics.md) section for deeper context to help you gain context on the low code testing using the Test Engine?
+Review the [Common Topics](./common-topics.md) section for deeper context to help you gain context on the low code testing using the Test Engine.
