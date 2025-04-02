@@ -72,10 +72,11 @@ extends:
           condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
           inputs:
             ConnectedServiceName: $(EsrpConServName)
+            UseMSIAuthentication: true
             AppRegistrationClientId: $(EsrpAppRegCliId)
             AppRegistrationTenantId: $(EsrpAppRegTenId)
+            EsrpClientId: $(EsrpClientId)
             AuthAKVName: $(EsrpKVName)
-            AuthCertName: $(EsrpAuthCertName)
             AuthSignCertName: $(EsrpAuthSignCertName)
             FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngineWrapper/'
             Pattern: '*.dll'
@@ -156,10 +157,11 @@ extends:
           displayName: 'ESRP sign nuget packages'
           inputs:
             ConnectedServiceName: $(EsrpConServName)
+            UseMSIAuthentication: true
             AppRegistrationClientId: $(EsrpAppRegCliId)
             AppRegistrationTenantId: $(EsrpAppRegTenId)
+            EsrpClientId: $(EsrpClientId)
             AuthAKVName: $(EsrpKVName)
-            AuthCertName: $(EsrpAuthCertName)
             AuthSignCertName: $(EsrpAuthSignCertName)
             FolderPath: '$(Build.ArtifactStagingDirectory)'
             Pattern: '*.nupkg'
