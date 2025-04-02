@@ -49,6 +49,7 @@ podman run -v ${grandParentLocation}:/app mcr.microsoft.com/dotnet/sdk:8.0 sh -c
     "environmentUrl": "https://contoso.crm.dynamics.com/",
     "tenantId": "ccccdddd-1111-2222-3333-444455556666",
     "installPlaywright": false,
+    "buildFromSource": true,
     "user1Email": "test@contoso.onmicosoft.com"
 }
 ```

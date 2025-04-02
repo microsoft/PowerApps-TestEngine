@@ -61,7 +61,7 @@ testSettings:
         Response: ParseJSON(
           Preview.AIExecutePrompt("PromptEvaluator", 
           {
-            Context: "You are a helpful agent asking about custom service questions.",
+            Context: "You are a helpful agent asking about external customer service questions.",
             Question: Prompt.Question
           }).Text)
       },If(
