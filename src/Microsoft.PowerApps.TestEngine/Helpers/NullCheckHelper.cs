@@ -44,7 +44,6 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             }
         }
 
-
         public static void NullCheck(RecordValue obj, NumberValue rowOrColumn, RecordValue childObj, ILogger logger)
         {
             bool encounteredError = false;
