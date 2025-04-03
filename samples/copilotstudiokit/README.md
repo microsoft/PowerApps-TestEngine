@@ -63,7 +63,28 @@ pac auth create --environment <Your environment ID>
     "runInstall": true,
     "installPlaywright": true,
     "compile": true,
-    "record": false
+    "record": false,
+    "testScripts": {
+        "customPageTestScripts":[
+            "webchatcustomizer-playground.te.yaml",
+            "promptadvisorstudio.te.yaml",
+            "adaptivecards.te.yaml"
+        ]
+    },
+    "pages": {
+        "customPages": [
+            "cat_webchatcustomizer_48d6e",
+            "cat_adaptivecards_4476e",
+            "cat_promptadvisorstudio_6e1ce"
+        ],
+        "entities": [
+            { 
+                "name": "testruns",
+                "entity": "cat_copilottestset",
+                "view": "My Test Sets"
+            }
+        ]
+    }
 }
 ```
 

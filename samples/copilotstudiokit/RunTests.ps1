@@ -9,9 +9,12 @@ $config = $jsonContent | ConvertFrom-Json
 $tenantId = $config.tenantId
 $environmentId = $config.environmentId
 $user1Email = $config.user1Email
-$user1Email = $config.user1Email
 $record = $config.record
 $compile = $config.compile
+# Extract pages and corresponding Test Scripts
+$customPages = $config.pages.customPages
+$entities = $config.pages.entities
+$testScripts = $config.testScripts
 
 if ([string]::IsNullOrEmpty($environmentId)) {
     Write-Error "Environment not configured. Please update config.json"
@@ -56,9 +59,6 @@ if ([string]::IsNullOrEmpty($appId)) {
     return
 }
 
-$customPage = $config.customPage
-$mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
-
 # Build the latest debug version of Test Engine from source
 Set-Location ..\..\src
 if ($compile) {
@@ -83,49 +83,134 @@ if ($record) {
     Write-Host "========================================" -ForegroundColor Blue
 }
 
-# Write-Host "========================================" -ForegroundColor Green
-# Write-Host "Entity List" -ForegroundColor Green
-# Write-Host "========================================" -ForegroundColor Green
-
-# Write-Host "----------------------------------------" -ForegroundColor Green
-# Write-Host "Agent List" -ForegroundColor Green
-# Write-Host "----------------------------------------" -ForegroundColor Green
-
-# $entityListUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entitylist&etn=cat_copilotconfiguration&viewid=77dec5f3-551c-ef11-840b-6045bdd6c0ee&viewType=1039"
-# if ($record) {
-#     dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityListUrl" -l Debug
-# } else {
-#     dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityListUrl" -l Debug
-# }
-
-# Write-Host "----------------------------------------" -ForegroundColor Green
-# Write-Host "Agent Details" -ForegroundColor Green
-# Write-Host "----------------------------------------" -ForegroundColor Green
-
-# $entityDetails = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=cat_copilotconfiguration&id=af89dc3e-f1fa-ef11-bae2-7c1e5246ee31"
-                                                      
-# if ($record) {
-#     dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityDetails" -l Debug
-# } else {
-#     dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\agents-list.te.yaml" -t $tenantId -e $environmentId -d "$entityDetails" -l Debug
-# }
+$token = (az account get-access-token --resource $environmentUrl | ConvertFrom-Json)
 
 Write-Host "========================================" -ForegroundColor Green
-Write-Host "Custom Pages" -ForegroundColor Green
+Write-Host "ENTITIES" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green
 
-Write-Host "----------------------------------------" -ForegroundColor Green
-Write-Host "Web Chat Playground" -ForegroundColor Green
-Write-Host "----------------------------------------" -ForegroundColor Green
+# Loop through Entity (List and details) and Execute Tests
+foreach ($entity in $entities) {
+    Write-Host "----------------------------------------" -ForegroundColor Yellow
+    Write-Host $entity.name -ForegroundColor Yellow
+    Write-Host "----------------------------------------" -ForegroundColor Yellow
 
-if ($record) {
-    # Run the tests for each user in the configuration file.
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\webChat-playground.te.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
-} else {
-    Write-Host "Skipped recording"
-    # Run the tests for each user in the configuration file.
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\webChat-playground.te.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w "True"
+    $formName = $entity.name
+    $matchingScript = "$formName-list.te.yaml"
+
+    if (-not (Test-Path -Path "$currentDirectory\$matchingScript") ) {
+        Write-Host "No matching test script found for: $matchingScript"
+        continue
+    }
+
+    $entityName = $entity.entity
+    $viewName = $entity.view
+
+    # Query the saved query ID for the entity and view name
+    $lookup = "$environmentUrl/api/data/v9.2/savedqueries?`$filter=returnedtypecode%20eq%20%27$entityName%27 and name eq %27$viewName%27&`$select=savedqueryid"
+    $response = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
+
+    $viewId = $response.value.savedqueryid
+
+    $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entitylist&etn=$entityName&viewid=$viewId&viewType=1039"
+    if ($record) {
+        # Run the tests for each user in the configuration file.
+        dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    } else {
+        Write-Host "Skipped recording"
+        # Run the tests for each user in the configuration file.
+        dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    }
+
+    $matchingScript = "$formName-details.te.yaml"
+
+    if (-not (Test-Path -Path "$currentDirectory\$matchingScript") ) {
+        Write-Host "No matching test script found for: $matchingScript"
+        continue
+    }
+
+    # Query the record ID for the entity 
+    $entityNamePlural = $entityName + "s"
+
+    
+    $idColumn = $entity.id
+    $lookup = "$environmentUrl/api/data/v9.2/$entityNamePlural`?`$top=1&`$select=$idColumn"
+    
+    Write-Host "Querying for record ID: $lookup" -ForegroundColor Green
+
+    $entityResponse = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
+    $recordId = $entityResponse.value | Select-Object -ExpandProperty $idColumn
+
+    Write-Host "Record ID: $recordId"
+
+    $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=$entityName&id=$recordId"
+    if ($record) {
+        # Run the tests for each user in the configuration file.
+        dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    } else {
+        Write-Host "Skipped recording"
+        # Run the tests for each user in the configuration file.
+        dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    }
 }
 
+Write-Host "========================================" -ForegroundColor Green
+Write-Host "CUSTOM PAGES" -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
+
+# Loop through Custom Pages and Execute Tests
+foreach ($customPage in $customPages) {
+
+    # Ensure testScripts is an array
+    $testScriptList = @($testScripts.customPageTestScripts)  # Extract values explicitly
+
+    function Split-CustomPageName {
+        param (
+            [string]$inputString
+        )
+        # Step 1: Split by underscore or hyphen
+        $words = $inputString -split "[-_]" 
+        return $words
+    }
+
+    function Get-MatchingTestScript {
+        param (
+            [string[]]$wordList,      # List of words extracted from the custom page name
+            [string[]]$testScriptList # List of available test script names
+        )
+        foreach ($script in $testScriptList) {
+            foreach ($word in $wordList) {
+                if ($script -match [regex]::Escape($word)) {
+                    return $script  # Return the first matching script
+                }
+            }
+        }
+        return $null  # Return null if no match is found
+    }
+    $wordList= Split-CustomPageName -inputString $customPage
+
+    $matchingScript = Get-MatchingTestScript -wordList $wordList -testScriptList $testScriptList
+
+    if (-not $matchingScript) {
+        Write-Host "No matching test script found for custom page: $customPage" -ForegroundColor Red
+        continue  # Skip this iteration if no matching script is found
+    }
+
+    Write-Host "----------------------------------------" -ForegroundColor Yellow
+    Write-Host $matchingScript -ForegroundColor Yellow
+    Write-Host "----------------------------------------" -ForegroundColor Yellow
+
+    $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
+    if ($record) {
+        # Run the tests for each user in the configuration file.
+        dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    } else {
+        Write-Host "Skipped recording"
+        # Run the tests for each user in the configuration file.
+        dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    }
+}
+
+Write-Host "All custompages executed successfully!"
 # Reset the location back to the original directory.
 Set-Location $currentDirectory
