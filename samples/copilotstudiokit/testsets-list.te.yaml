@@ -3,6 +3,14 @@ testSuite:
   testSuiteDescription: TestSet List of Copilot Studio Kit 
   persona: User1
   appLogicalName: NotNeeded
+  onTestSuiteStart: |
+    = If(
+        CountRows(cat_copilottestset) > 0, 
+        ForAll(cat_copilottestset, Remove(cat_copilottestset, ThisRecord))
+      );
+      Collect(cat_copilottestset, {
+        Name: "TestSet1"
+      });
 
   testCases:
     - testCaseName: Step 1 - Start the entity details
@@ -16,6 +24,8 @@ testSettings:
   recordVideo: true
   extensionModules:
     enable: true
+    parameters:
+      enableDataverseFunctions: true
   browserConfigurations:
     - browser: Chromium
   timeout: 480000

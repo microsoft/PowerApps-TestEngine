@@ -72,6 +72,9 @@ pac auth create --environment <Your environment ID>
         ]
     },
     "pages": {
+        "customPage": true,
+        "list": true,
+        "details": true,
         "customPages": [
             "cat_webchatcustomizer_48d6e",
             "cat_adaptivecards_4476e",
