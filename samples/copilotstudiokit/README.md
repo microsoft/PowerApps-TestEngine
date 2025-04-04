@@ -129,6 +129,18 @@ pac auth create --environment <Your environment ID>
 az login --use-device-code --allow-no-subscriptions
 ```
 
+6. Change to Copilot Studio Kit sample
+
+```pwsh
+cd samples\copilotstudiokit
+```
+
+7. Edit the sample in your editor. For example using Visual Studio Code you can open the sample using
+
+```pwsh
+code .
+```
+
 6. Add the config.json in the same folder as RunTests.ps1 replacing the value with your tenant and  environment id
 
 ```json
