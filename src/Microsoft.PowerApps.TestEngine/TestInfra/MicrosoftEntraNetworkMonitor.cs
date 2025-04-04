@@ -105,7 +105,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         private async Task _browserContext_RequestFinished(object sender, IRequest e, string requestUrl)
         {
             var requestHost = new Uri(e.Url).Host;
-            var requestHash = CreateMD5(e.Url);
+            var requestHash = CreateSHA256(e.Url);
             // Only listen for login services
             if (_loginServices.Any(service => requestHost.Contains(service)) || new Uri(requestUrl).Host == requestHost)
             {
@@ -140,12 +140,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
         }
 
-        public static string CreateMD5(string input)
+        public static string CreateSHA256(string input)
         {
-            using (MD5 md5 = MD5.Create())
+            using (var sha256 = SHA256.Create())
             {
                 byte[] inputBytes = Encoding.ASCII.GetBytes(input);
-                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                byte[] hashBytes = sha256.ComputeHash(inputBytes);
 
                 // Convert the byte array to a hexadecimal string
                 StringBuilder sb = new StringBuilder();
