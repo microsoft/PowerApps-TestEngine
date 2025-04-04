@@ -16,19 +16,48 @@ Before you start, you'll need a few tools and permissions:
 
 ## Prerequisites
 
-1. Install of .Net SDK 8.0 from [Downloads](https://dotnet.microsoft.com/download/dotnet/8.0)
-2. An install of PowerShell following the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) for your operating system
-3. The Power Platform Command Line interface installed using the [Learn install guidance](https://learn.microsoft.com/power-platform/developer/cli/introduction?tabs=windows#install-microsoft-power-platform-cli)
+1. Install of .Net SDK 8.0 from [Downloads](https://dotnet.microsoft.com/download/dotnet/8.0). For example on windows you could use the following command
+
+```cmd
+winget install Microsoft.DotNet.SDK.8
+```
+
+2. An install of PowerShell following the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) for your operating system. For example on Windows you could us ethe following command.
+
+```cmd
+winget install --id Microsoft.PowerShell --source winget
+```
+
+3. The Power Platform Command Line interface installed using the [Learn install guidance](https://learn.microsoft.com/power-platform/developer/cli/introduction?tabs=windows#install-microsoft-power-platform-cli). For example assuming you have .NET SDK installed you could use the following command
+
+```pwsh
+dotnet tool install --global Microsoft.PowerApps.CLI.Tool
+```
+
 4. A created Power Platform environment using the [Power Platform Admin Center](https://learn.microsoft.com/power-platform/admin/create-environment) or [Power Platform Command Line](https://learn.microsoft.com/power-platform/developer/cli/reference/admin#pac-admin-create)
 5. Granted System Administrator or System Customizer roles as documented in [Microsoft Learn](https://learn.microsoft.compower-apps/maker/model-driven-apps/privileges-required-customization#system-administrator-and-system-customizer-security-roles)
-6. Git Client has been installed. For example using [GitHub Desktop](https://desktop.github.com/download/) or the [Git application](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+6. Git Client has been installed. For example using [GitHub Desktop](https://desktop.github.com/download/) or the [Git application](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). For example on Windows you could use the following command
+
+```pwsh
+winget install --id Git.Git -e --source winget
+```
+
 7. The Copilot Studio Kit module has been installed into the environment using [Install instructions](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md)
 8. The Azure CLI has been [installed](https://learn.microsoft.com/cli/azure/install-azure-cli)
-9. A code editor like Visual Studio Code is [installed](https://code.visualstudio.com/docs/setup/setup-overview)
+
+```pwsh
+winget install -e --id Microsoft.AzureCLI
+```
+
+9. A code editor like Visual Studio Code is [installed](https://code.visualstudio.com/docs/setup/setup-overview). For example on Windows you could use the following command
+
+```pwsh
+winget install -e --id Microsoft.VisualStudioCode
+```
 
 ## Verification
 
-  > NOTE: If at any stage you find that a component is not installed you may need to restart you command line session to verify that the component has been installed 
+  > NOTE: If at any stage you find that a component is not installed, you may need to restart you command line session to verify that the component has been installed 
 
 1. Verify you have .Net 8.0 SDK installed
 
