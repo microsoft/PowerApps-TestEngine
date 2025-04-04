@@ -15,7 +15,7 @@ testSuite:
         = Assert(cat_name.Text = "TestAgent1") 
 
 testSettings:
-  filePath: testSettings.yaml
+  filePath: ./testSettings.yaml
 
 environmentVariables:
   users:

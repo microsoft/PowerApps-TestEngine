@@ -18,9 +18,9 @@ testSuite:
       testSteps: |
         = 
         Assert(1=1) 
-        
+
 testSettings:
-  filePath: testSettings.yaml
+  filePath: ./testSettings.yaml
 
 environmentVariables:
   users:

@@ -14,15 +14,9 @@ testSuite:
       testSteps: |
         = Preview.PlaywrightAction("//*[@data-control-name='PFxCodeEditor1']", "wait");
           Assert(Preview.VisualCompare("//*[@data-control-name='Container10_1']", "web-chat-playground.png", Table()).Similarity >= 0.7);
+
 testSettings:
-  headless: false
-  locale: "en-US"
-  recordVideo: true
-  extensionModules:
-    enable: true
-  browserConfigurations:
-    - browser: Chromium
-  timeout: 480000
+  filePath: ./testSettings.yaml
 
 environmentVariables:
   users:

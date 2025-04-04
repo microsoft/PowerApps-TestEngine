@@ -154,6 +154,7 @@ code .
     "compile": true,
     "record": false,
     "runTests": true,
+    "useStaticContext": false,
     "testScripts": {
         "customPageTestScripts":[
             "webchatcustomizer-playground.te.yaml",
