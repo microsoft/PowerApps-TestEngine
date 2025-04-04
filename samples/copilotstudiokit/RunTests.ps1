@@ -22,6 +22,7 @@ $entities = $config.pages.entities
 $testScripts = $config.testScripts
 $runTests = $config.runTests
 $useStaticContext = $config.useStaticContext
+$appName = $config.appName
 
 # Define the folder path and time threshold
 $folderPath = "$env:USERPROFILE\AppData\Local\Temp\Microsoft\TestEngine\TestOutput"
@@ -44,6 +45,8 @@ if ($lastRunTime) {
 } else {
     $timeThreshold = Get-Date
 }
+
+
 
 
 if ($runTests)
@@ -78,16 +81,15 @@ if ($runTests)
         return
     }
 
-    $appId = ""
-    try{
-        $runResult = pac pfx run --file .\GetAppId.powerfx --echo
-        $appId = $runResult[8].Split('"')[1] -replace '[^a-zA-Z0-9-]', ''
-    } catch {
+    $token = (az account get-access-token --resource $environmentUrl | ConvertFrom-Json)
 
-    }
+    $appId = ""
+    $lookup = "$environmentUrl/api/data/v9.2/appmodules?`$filter=name eq '$appName'`&`$select=appmoduleid"
+    $appResponse = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
+    $appId = $appResponse.value.appmoduleid
 
     if ([string]::IsNullOrEmpty($appId)) {
-        Write-Error "App id not found. Check that the CoE Starter kit has been installed"
+        Write-Error "App id not found. Check that the Copilot Studio Kit has been installed"
         return
     }
 
@@ -115,7 +117,7 @@ if ($runTests)
         Write-Host "========================================" -ForegroundColor Blue
     }
 
-    $token = (az account get-access-token --resource $environmentUrl | ConvertFrom-Json)
+   
 
     Write-Host "========================================" -ForegroundColor Green
     Write-Host "ENTITIES" -ForegroundColor Green
