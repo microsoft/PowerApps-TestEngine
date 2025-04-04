@@ -20,17 +20,9 @@ testSuite:
       testSteps: |
         = 
         Assert(1=1) 
+
 testSettings:
-  headless: false
-  locale: "en-US"
-  recordVideo: true
-  extensionModules:
-    enable: true
-    parameters:
-      enableDataverseFunctions: true
-  browserConfigurations:
-    - browser: Chromium
-  timeout: 480000
+  filePath: testSettings.yaml
 
 environmentVariables:
   users:

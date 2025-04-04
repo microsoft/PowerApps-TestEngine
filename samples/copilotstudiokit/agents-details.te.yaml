@@ -13,15 +13,9 @@ testSuite:
       testCaseDescription: Check that name is expected value
       testSteps: |
         = Assert(cat_name.Text = "TestAgent1") 
+
 testSettings:
-  headless: false
-  locale: "en-US"
-  recordVideo: true
-  extensionModules:
-    enable: true
-  browserConfigurations:
-    - browser: Chromium
-  timeout: 480000
+  filePath: testSettings.yaml
 
 environmentVariables:
   users:

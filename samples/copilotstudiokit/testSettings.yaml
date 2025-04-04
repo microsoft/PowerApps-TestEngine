@@ -1,0 +1,10 @@
+locale: "en-US"
+headless: false
+recordVideo: true
+extensionModules:
+  enable: true
+  parameters:
+      enableDataverseFunctions: true
+browserConfigurations:
+  - browser: Chromium
+    channel: msedge
