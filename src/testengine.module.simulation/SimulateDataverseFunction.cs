@@ -384,9 +384,9 @@ OData-Version: 4.0
             string jsonString = JsonConvert.SerializeObject(jsonObject);
 
             // Compute the hash of the JSON string
-            using (var md5 = MD5.Create())
+            using (var sha256 = SHA256.Create())
             {
-                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(jsonString));
+                byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(jsonString));
                 return Convert.ToBase64String(hash);
             }
         }
