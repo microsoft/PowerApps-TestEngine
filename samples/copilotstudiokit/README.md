@@ -24,6 +24,47 @@ Before you start, you'll need a few tools and permissions:
 6. Git Client has been installed. For example using [GitHub Desktop](https://desktop.github.com/download/) or the [Git application](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 7. The Copilot Studio Kit module has been installed into the environment using [Install instructions](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md)
 8. The Azure CLI has been [installed](https://learn.microsoft.com/cli/azure/install-azure-cli)
+9. A code editor like Visual Studio Code is [installed](https://code.visualstudio.com/docs/setup/setup-overview)
+
+## Verification
+
+  > NOTE: If at any stage you find that a component is not installed you may need to restart you command line session to verify that the component has been installed 
+
+1. Verify you have .Net 8.0 SDK installed
+
+```pwsh
+dotnet --list-sdks
+```
+
+2. Verify you have PowerShell installed
+
+```pwsh
+pwsh --version
+```
+
+3. Verify that you have Power Platform command line interface (pac cli) installed
+
+```pwsh
+pac
+```
+
+4. Verify that you have Azure command line interface (az cli) installed
+
+```pwsh
+az --version
+```
+
+5. Verify that you have git installed
+
+```pwsh
+git --version
+```
+
+6. Optional verify you have Visual Studio Code installed
+
+```pwsh
+code --version
+```
 
 ## Getting Started
 
@@ -38,7 +79,7 @@ cd PowerApps-TestEngine
 3. Checkout the working branch
 
 ```pwsh
-git checkout grant-archibald-md/copilotstuido-560
+git checkout grant-archibald-ms/copilotstudiokit-560
 ```
 
 3. Ensure logged out out of pac cli. This ensures you're logged out of any previous sessions.
@@ -71,6 +112,7 @@ az login --use-device-code --allow-no-subscriptions
     "installPlaywright": true,
     "compile": true,
     "record": false,
+    "runTests": true,
     "testScripts": {
         "customPageTestScripts":[
             "webchatcustomizer-playground.te.yaml",
