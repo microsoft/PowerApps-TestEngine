@@ -229,3 +229,16 @@ To record interaction with Dataverse and generate a sample Test Engine script pe
 ## Context
 
 This sample is an example of a "build from source" using the open source licensed version of Test Engine. Features in the the source code version can include feature not yet release as part of the ```pac test run`` command in the Power Platform Command line interface action.
+
+## Security
+
+We you look at running this sample in your environment consider the following:
+
+- Multi Factor Authentication Requirements - The initial run is likely to need an interactive logic to obtain the single sign on cookies
+- Conditional Access polices - The policies could mandate specific supported browser types and Machine Device Management policies
+
+This sample assume the following:
+
+- Browser type will be Microsoft Edge
+- If conditional access policies require work profile you will switch to the edge work profile to obtain the single sign on cookies
+- You may need to change you config.json to set "useStaticContext": true for the login as in private browser login may not be supported by your organizations conditional access policies
