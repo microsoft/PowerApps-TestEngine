@@ -23,6 +23,7 @@ Before you start, you'll need a few tools and permissions:
 5. Granted System Administrator or System Customizer roles as documented in [Microsoft Learn](https://learn.microsoft.compower-apps/maker/model-driven-apps/privileges-required-customization#system-administrator-and-system-customizer-security-roles)
 6. Git Client has been installed. For example using [GitHub Desktop](https://desktop.github.com/download/) or the [Git application](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 7. The Copilot Studio Kit module has been installed into the environment using [Install instructions](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md)
+8. The Azure CLI has been [installed](https://learn.microsoft.com/cli/azure/install-azure-cli)
 
 ## Getting Started
 
@@ -34,10 +35,10 @@ Before you start, you'll need a few tools and permissions:
 cd PowerApps-TestEngine
 ```
 
-3. Checkout the integration branch
+3. Checkout the working branch
 
 ```pwsh
-git checkout integration
+git checkout grant-archibald-md/copilotstuido-560
 ```
 
 3. Ensure logged out out of pac cli. This ensures you're logged out of any previous sessions.
@@ -52,7 +53,13 @@ pac auth clear
 pac auth create --environment <Your environment ID>
 ```
 
-5. Add the config.json in the same folder as RunTests.ps1 replacing the value with your tenant and  environment id
+5. Authenticated with Azure CLI
+
+```pwsh
+az login --use-device-code --allow-no-subscriptions
+```
+
+6. Add the config.json in the same folder as RunTests.ps1 replacing the value with your tenant and  environment id
 
 ```json
 {
@@ -82,9 +89,14 @@ pac auth create --environment <Your environment ID>
         ],
         "entities": [
             { 
-                "name": "testruns",
+                "name": "agents",
+                "entity": "cat_copilotconfiguration",
+                "id": "cat_copilotid"
+            },
+            { 
+                "name": "testsets",
                 "entity": "cat_copilottestset",
-                "view": "My Test Sets"
+                "id": "cat_copilottestsetid"
             }
         ]
     }

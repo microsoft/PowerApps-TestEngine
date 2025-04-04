@@ -12,7 +12,7 @@ testSuite:
     - testCaseName: Step 2 - Assert Name
       testCaseDescription: Check that name is expected value
       testSteps: |
-        = Assert(cat_name.Text == "Test") 
+        = Assert(cat_name.Text = "TestAgent1") 
 testSettings:
   headless: false
   locale: "en-US"

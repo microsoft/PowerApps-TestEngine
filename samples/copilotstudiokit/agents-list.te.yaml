@@ -3,6 +3,16 @@ testSuite:
   testSuiteDescription: Agent List of Copilot Studio Kit 
   persona: User1
   appLogicalName: NotNeeded
+  onTestSuiteStart: |
+    = If(
+        CountRows(cat_copilotconfiguration) > 0, 
+        ForAll(cat_copilotconfiguration, Remove(cat_copilotconfiguration, ThisRecord))
+      );
+      Collect(cat_copilotconfiguration, {
+        cat_name: "TestAgent1",
+        cat_tokenendpoint: "http://TE",
+        cat_dataverseurl: "https://contoso.crm.dynamics.com"
+      });
 
   testCases:
     - testCaseName: Step 1 - Start the entity details
@@ -16,6 +26,8 @@ testSettings:
   recordVideo: true
   extensionModules:
     enable: true
+    parameters:
+      enableDataverseFunctions: true
   browserConfigurations:
     - browser: Chromium
   timeout: 480000

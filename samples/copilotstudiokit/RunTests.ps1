@@ -96,6 +96,7 @@ foreach ($entity in $entities) {
     Write-Host "----------------------------------------" -ForegroundColor Yellow
 
     $formName = $entity.name
+    $entityName = $entity.entity
 
     if ($config.pages.list) {
         $matchingScript = "$formName-list.te.yaml"
@@ -105,11 +106,8 @@ foreach ($entity in $entities) {
             continue
         }
 
-        $entityName = $entity.entity
-        $viewName = $entity.view
-
-        # Query the saved query ID for the entity and view name
-        $lookup = "$environmentUrl/api/data/v9.2/savedqueries?`$filter=returnedtypecode%20eq%20%27$entityName%27 and name eq %27$viewName%27&`$select=savedqueryid"
+        # Query the default (isdefault = true) public (querytype = 0) saved query ID for the entity
+        $lookup = "$environmentUrl/api/data/v9.2/savedqueries?`$filter=returnedtypecode eq '$entityName' and isdefault eq true and querytype eq 0&`$select=savedqueryid"
         $response = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
 
         $viewId = $response.value.savedqueryid
@@ -136,12 +134,16 @@ foreach ($entity in $entities) {
         # Query the record ID for the entity 
         $entityNamePlural = $entityName + "s"
 
-        
         $idColumn = $entity.id
         $lookup = "$environmentUrl/api/data/v9.2/$entityNamePlural`?`$top=1&`$select=$idColumn"   
 
         $entityResponse = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
         $recordId = $entityResponse.value | Select-Object -ExpandProperty $idColumn
+
+        if ([string]::IsNullOrEmpty($recordId)) {
+            Write-Host "No record found for entity: $entityName" -ForegroundColor Red
+            continue
+        }
     
         $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=$entityName&id=$recordId"
         if ($record) {
