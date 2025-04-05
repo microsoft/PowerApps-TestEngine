@@ -403,4 +403,18 @@ $preContent = $preContent -replace "#FailCount#", $failCount
 $reportHtml = $testResults | ConvertTo-Html -Property File, Total, Executed, Passed, Failed, Error, Timeout, Aborted, Inconclusive, PassedButRunAborted, NotRunnable, NotExecuted, Disconnected, Warning, Completed, InProgress, Pending -Title "Test Summary Report" -PreContent $preContent
 $reportHtml | Out-File -FilePath $reportPath
 
-Write-Host "HTML summary report generated successfully at $reportPath."
+Write-Host "HTML summary report generated successfully at $folderPath."
+
+$job = Start-Job -ScriptBlock {
+    param($path)
+    python -m http.server 8080 --directory $path
+} -ArgumentList $folderPath
+
+$jobId = $job.Id
+
+python -m webbrowser -t "http://localhost:8080/summary_report_$timestamp.html"
+
+Read-Host "Please press enter when complete"
+
+Stop-Job -Id $jobId
+Remove-Job -Id $jobId

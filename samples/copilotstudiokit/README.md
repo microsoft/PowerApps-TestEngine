@@ -55,6 +55,12 @@ winget install -e --id Microsoft.AzureCLI
 winget install -e --id Microsoft.VisualStudioCode
 ```
 
+10. Python is [installed](https://www.python.org/downloads/) to view the reports. For example on Windows you could use the following command
+
+```pwsh
+winget install python.python.3.12
+```
+
 ## Verification
 
   > NOTE: If at any stage you find that a component is not installed, you may need to restart you command line session to verify that the component has been installed 
@@ -176,7 +182,7 @@ code .
             { 
                 "name": "agents",
                 "entity": "cat_copilotconfiguration",
-                "id": "cat_copilotid"
+                "id": "cat_copilotconfigurationid"
             },
             { 
                 "name": "testsets",
