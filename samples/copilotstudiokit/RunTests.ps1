@@ -183,7 +183,10 @@ if ($runTests)
             }
 
             # Query the record ID for the entity 
-            $entityNamePlural = $entityName + "s"
+            $entityNamePlural = $entityName
+            if (-not ($entityNamePlural -like "*s")) {
+                $entityNamePlural = $entityNamePlural + "s"
+            }
 
             $idColumn = $entity.id
             $lookup = "$environmentUrl/api/data/v9.2/$entityNamePlural`?`$top=1&`$select=$idColumn"   
