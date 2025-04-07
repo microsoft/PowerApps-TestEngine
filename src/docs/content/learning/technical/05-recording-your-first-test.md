@@ -19,7 +19,7 @@ Follow these steps to record your first test:
     - Add `-r True` to the end of this line to enable recording mode. The modified line should look something like this:
 
     ```pwsh
-    dotnet PowerAppsTestEngine.dll -u "storagestate" -p "canvas" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -r True
+    dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "canvas" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -r True
     ```
 
 3. **Run the Script**:

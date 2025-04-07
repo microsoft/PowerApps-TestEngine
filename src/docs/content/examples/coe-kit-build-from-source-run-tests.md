@@ -6,7 +6,7 @@ The Power Platform Center of Excellence (CoE) starter kit is composed of various
 
 ## Context
 
-The sample [RunTests.ps1](https://github.com/microsoft/PowerApps-TestEngine/blob/grant-archibald-md/integration-merge/samples/coe-kit-setup-wizard/RunTests.ps1) serves as an example of a "build from source" using the open-source licensed version of the Test Engine. The source code version may include features not yet released as part of the pac test run command in the Power Platform Command Line Interface action.
+The sample [RunTests.ps1](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/coe-kit-setup-wizard/RunTests.ps1) serves as an example of a "build from source" using the open-source licensed version of the Test Engine. The source code version may include features not yet released as part of the pac test run command in the Power Platform Command Line Interface action.
 
 ## Key Concepts
 
@@ -34,7 +34,7 @@ The build from source approach enables the creation of new pull requests to enha
 
 ### Getting Started
 
-As documented in the [CoE Setup Wizard Sample](https://github.com/microsoft/PowerApps-TestEngine/blob/grant-archibald-md/integration-merge/samples/coe-kit-setup-wizard/) to begin, clone the repository using the git application and PowerShell command line. Ensure you are logged out of the pac CLI to clear any previous sessions. Then, log in to the Power Platform CLI and add the config.json file in the same folder as RunLibraryTests.ps1, replacing the values with your tenant and environment ID. Finally, run the sample tests from PowerShell.
+As documented in the [CoE Setup Wizard Sample](https://github.com/microsoft/PowerApps-TestEngine/tree/main/samples/coe-kit-setup-wizard/) to begin, clone the repository using the git application and PowerShell command line. Ensure you are logged out of the pac CLI to clear any previous sessions. Then, log in to the Power Platform CLI and add the config.json file in the same folder as RunLibraryTests.ps1, replacing the values with your tenant and environment ID. Finally, run the sample tests from PowerShell.
 
 ### What to Expect
 

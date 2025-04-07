@@ -29,5 +29,5 @@ This Power Apps Test Engine sample demonstrates how to assert and interact with 
 ```pwsh
 cd bin\Debug\PowerAppsEngine
 dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda-icons-controls\ClassicIconsControls_testPlan.fx.yaml -e e5e36a60-11a5-e554-9d70-5f3daccad60b
- -t 72f988bf-86f1-41af-91ab-2d7cd011db47 -u browser -p mda -d "https://orgdc37ebb8.crm.dynamics.com/main.aspx?appid=f8d68e39-0fbe-ef11-a72f-000d3a12b0cb&pagetype=custom&name=cr693_mdaiconspage_a1ce1"
+ -t 72f988bf-86f1-41af-91ab-2d7cd011db47 -u "storagestate" --provider mda -d "https://orgdc37ebb8.crm.dynamics.com/main.aspx?appid=f8d68e39-0fbe-ef11-a72f-000d3a12b0cb&pagetype=custom&name=cr693_mdaiconspage_a1ce1"
  ```

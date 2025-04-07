@@ -70,7 +70,7 @@ if ($config.installPlaywright) {
 Set-Location ..\bin\Debug\PowerAppsTestEngine
 # Run the tests for each user in the configuration file.
 $env:user1Email = $user1Email
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -w True
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -w True
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory
