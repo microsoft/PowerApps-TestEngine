@@ -43,32 +43,31 @@ dotnet tool install --global Microsoft.PowerApps.CLI.Tool
 winget install --id Git.Git -e --source winget
 ```
 
-7. The Copilot Studio Kit module has been installed into the environment using [Install instructions](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md)
-8. The Azure CLI has been [installed](https://learn.microsoft.com/cli/azure/install-azure-cli)
+7. The Azure CLI has been [installed](https://learn.microsoft.com/cli/azure/install-azure-cli)
 
 ```pwsh
 winget install -e --id Microsoft.AzureCLI
 ```
 
-9. A code editor like Visual Studio Code is [installed](https://code.visualstudio.com/docs/setup/setup-overview). For example on Windows you could use the following command
+8. A code editor like Visual Studio Code is [installed](https://code.visualstudio.com/docs/setup/setup-overview). For example on Windows you could use the following command
 
 ```pwsh
 winget install -e --id Microsoft.VisualStudioCode
 ```
 
-10. Python is [installed](https://www.python.org/downloads/) to view the reports. For example on Windows you could use the following command
+9. Python is [installed](https://www.python.org/downloads/) to view the reports. For example on Windows you could use the following command
 
 ```pwsh
 winget install python.python.3.12
 ```
 
-11. You have an installed version of Creator kit in the target environment. For example change the ** 00000000-0000-0000-0000-000000000000** to your environment id
+10. You have an installed version of Creator kit in the target environment. For example change the ** 00000000-0000-0000-0000-000000000000** to your environment id
 
 ```pesh
 pac application install --environment-id 00000000-0000-0000-0000-000000000000 --application-name CreatorKitCore
 ```
 
-12. You have the Copilot Studio Kit installed in the target environment. You can use [Install instructions](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md)
+11. You have the Copilot Studio Kit installed in the target environment. You can use [Install instructions](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md)
 
 ## Verification
 
