@@ -24,9 +24,8 @@ The open source repository provides [instructions](../README.md) on how to compi
 
 The respository currently includes the following branching strategy
 
-- [main](https://github.com/microsoft/PowerApps-TestEngine/tree/main) - The current code that includes changes that will be includes in the Power Platform Commands Line features using ```pac test run```
-- [integration](https://github.com/microsoft/PowerApps-TestEngine/tree/integration) - Pre release features that is used to merge features prior pull request into the main branch.
-- Feature branches - Work in progress branches that include ongoing development and changes prior to being merged into the integration branch.
+- [main](https://github.com/microsoft/PowerApps-TestEngine/tree/main) - The current code that includes changes that will be included in the Power Platform Commands Line features using ```pac test run``` on a tag.
+- Feature branches - Work in progress branches that include ongoing development and changes prior to being merged.
 
 ## Further Reading
 

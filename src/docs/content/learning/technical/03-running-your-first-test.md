@@ -132,8 +132,9 @@ Each of the samples will need a **config.json** file in the folder using the fol
 
 ## Git Branch Notes
 
-Samples are currently in the integration branch. As changes are reviewed and updated, they will move to main and the Power Platform pac test run command. To use this branch:
+A particular sample can be present in a feaure branch. As changes are reviewed and updated, they will move to main and the Power Platform pac test run command. To use any feature branch, checkout the branch:
 
+#### For example to checkout integration branch run: 
 ```pwsh
 git checkout integration
 ```

@@ -76,11 +76,11 @@ This function waits to see if the Consent Dialog Appears, if it does it accepts 
 
 Power Fx and the extensibility model made it easy to hide complex operations like the conditional consent dialog behind simple Power Fx functions. This abstraction allowed us to focus on writing tests without worrying about the underlying complexities, making our testing process more efficient and maintainable.
 
-The [ConsentDialogFunction](https://github.com/microsoft/PowerApps-TestEngine/blob/integration/src/testengine.module.mda/ConsentDialogFunction.cs) provides an example of the C# extension to Test Engine that allows the complexity of the conditional consent dialog to be handled. This is a good example of combining the extensibility model of code first C# extensions with low code PowerFX to simplify the test case.
+The [ConsentDialogFunction](https://github.com/microsoft/PowerApps-TestEngine/blob/main/src/testengine.module.mda/ConsentDialogFunction.cs) provides an example of the C# extension to Test Engine that allows the complexity of the conditional consent dialog to be handled. This is a good example of combining the extensibility model of code first C# extensions with low code PowerFX to simplify the test case.
 
 ## Scaling Guidance
 
-In addition to focusing on the technical code elements of core functionality and tests, we are contributing to the wider low-code [testing guidance documentation](https://github.com/microsoft/PowerApps-TestEngine/tree/grant-archibald-md/integration-merge/docs) based on our experiences so far. 
+In addition to focusing on the technical code elements of core functionality and tests, we are contributing to the wider low-code [testing guidance documentation](https://github.com/microsoft/PowerApps-TestEngine/tree/main/docs) based on our experiences so far. 
 
 By sharing our learnings, we aim to help the broader community implement effective automated testing strategies, ensuring that others can benefit from our insights and improve their own testing processes.
 

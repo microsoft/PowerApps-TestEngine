@@ -2,7 +2,7 @@
   "profiles": {
     "PowerAppsTestEngine": {
       "commandName": "Project",
-      "commandLineArgs": "-i ..\\..\\..\\samples\\mda\\testPlan.fx.yaml -e a1234567-1111-2222-3333-444444444444 -t b1234567-1111-2222-3333-444444444444 -u browser -p mda -d \"https://contso.crm.dynamics.com/main.aspx?appid=d5c0321b-a2b7-4207-889f-f0af833f2309&pagetype=custom&name=sample_custom_cf8e6\""
+      "commandLineArgs": "-i ..\\..\\..\\samples\\mda\\testPlan.fx.yaml -e a1234567-1111-2222-3333-444444444444 -t b1234567-1111-2222-3333-444444444444 --provider mda -d \"https://contso.crm.dynamics.com/main.aspx?appid=d5c0321b-a2b7-4207-889f-f0af833f2309&pagetype=custom&name=sample_custom_cf8e6\""
     }
   }
 }
