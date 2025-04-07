@@ -4,7 +4,6 @@ The **Power CAT Copilot Studio Kit** is a comprehensive solution designed to aut
 
 The Power CAT Copilot Studio Kit has user-friendly Model Driven Application that we want to test so that we can ensure that it verifeid the features that empower makers to configure copilots and test sets. The features that will need to be tested include various types of Copilot tests, including response exact match, attachments match, topic match (which requires Dataverse enrichment), and generative answers (which require AI Builder for response analysis and Azure Application Insights for details on why an answer was or was not generated).
 
-
 ## What You Need
 
 Before you start, you'll need a few tools and permissions:
@@ -61,6 +60,14 @@ winget install -e --id Microsoft.VisualStudioCode
 winget install python.python.3.12
 ```
 
+11. You have an installed version of Creator kit in the target environment. For example change the ** 00000000-0000-0000-0000-000000000000** to your environment id
+
+```pesh
+pac application install --environment-id 00000000-0000-0000-0000-000000000000 --application-name CreatorKitCore
+```
+
+12. You have the Copilot Studio Kit installed in the target environment. You can use [Install instructions](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md)
+
 ## Verification
 
   > NOTE: If at any stage you find that a component is not installed, you may need to restart you command line session to verify that the component has been installed 
@@ -103,7 +110,11 @@ code --version
 
 ## Getting Started
 
-1. Clone the repository using the git application and PowerShell command line
+1. Clone the repository using the git application and PowerShell command line. For example using the git command line
+
+```pwsh
+git clone https://github.com/microsoft/PowerApps-TestEngine
+```
 
 2. Change to cloned folder
 
@@ -141,13 +152,15 @@ az login --use-device-code --allow-no-subscriptions
 cd samples\copilotstudiokit
 ```
 
-7. Edit the sample in your editor. For example using Visual Studio Code you can open the sample using
+7. Edit the sample in your editor. For example using Visual Studio Code you can open the sample folder using the following commahd
 
 ```pwsh
 code .
 ```
 
-6. Add the config.json in the same folder as RunTests.ps1 replacing the value with your tenant and  environment id
+6. Using your edit of choice add the a new file named **config.json** in the same folder as RunTests.ps1. You will need to replacing the value with your tenant and environment id. 
+
+  > TIP: You can obtain the environment and tenant information from your Power Apps portal by using **settings** from the main navigation var and selecting **Session Details** 
 
 ```json
 {
@@ -161,7 +174,9 @@ code .
     "compile": true,
     "record": false,
     "runTests": true,
+    "debugTests": false,
     "useStaticContext": false,
+    "getLatest": false,
     "testScripts": {
         "customPageTestScripts":[
             "webchatcustomizer-playground.te.yaml",

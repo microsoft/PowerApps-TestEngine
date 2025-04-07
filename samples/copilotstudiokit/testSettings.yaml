@@ -5,6 +5,7 @@ extensionModules:
   enable: true
   parameters:
       enableDataverseFunctions: true
+timeout: 1200000
 browserConfigurations:
   - browser: Chromium
     channel: msedge

@@ -3,6 +3,8 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
 using Microsoft.PowerFx.Types;
 using Xunit;
@@ -167,5 +169,42 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             Assert.False(typeMapping.TryGetType($"![Label1:v, Button1:v, Image1:v, {Guid.NewGuid().ToString()}:v]", out formulaType));
             Assert.Null(formulaType);
         }
+
+        [Theory]
+        [MemberData(nameof(ComplexTypeTests))]
+        public void GetComplexType(string typeName, Type expectedType, List<KeyValuePair<string, FormulaType>> expectedFields)
+        {
+            // Arrange
+            var typeMapping = new TypeMapping();
+            
+            // Act
+            Assert.True(typeMapping.TryGetType(typeName.ToLower(), out var formulaType));
+            
+            // Assert
+           
+            if (expectedType.IsAssignableFrom(typeof(RecordType)))
+            {
+                RecordType record = formulaType as RecordType;
+                Assert.Equal(expectedFields.Count, record.FieldNames.Count());
+            }
+
+            if (expectedType.IsAssignableFrom(typeof(TableType)))
+            {
+                TableType table = formulaType as TableType;
+                Assert.Equal(expectedFields.Count, table.FieldNames.Count());
+            }
+        }
+
+        public static IEnumerable<object[]> ComplexTypeTests()
+        {
+            yield return new object[] { "!{Name:s}", typeof(RecordType), new List<KeyValuePair<string, FormulaType>> { 
+                new KeyValuePair<string, FormulaType>("Name", FormulaType.String) } };
+            yield return new object[] { "*{Name:s}", typeof(TableType), new List<KeyValuePair<string, FormulaType>> { 
+                new KeyValuePair<string, FormulaType>("Name", FormulaType.String) } };
+            yield return new object[] { "*{Name:s, Other:n}", typeof(TableType), new List<KeyValuePair<string, FormulaType>> {
+                new KeyValuePair<string, FormulaType>("Name", FormulaType.String) ,
+                new KeyValuePair<string, FormulaType>("Other", FormulaType.Number)
+            }};
+        } 
     }
 }

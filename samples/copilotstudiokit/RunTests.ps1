@@ -23,16 +23,27 @@ $testScripts = $config.testScripts
 $runTests = $config.runTests
 $useStaticContext = $config.useStaticContext
 $appName = $config.appName
+$debugTests = $config.debugTests
+$getLatest = $config.getLatest
 
 # Define the folder path and time threshold
 $folderPath = "$env:USERPROFILE\AppData\Local\Temp\Microsoft\TestEngine\TestOutput"
 
 $extraArgs = ""
 
+$debugTestValue = "FALSE"
 $staticContext = "FALSE"
 
 if ($useStaticContext) {
     $staticContext = "TRUE"
+}
+
+if ($debugTests) {
+    $debugTestValue = "TRUE"
+}
+
+if ($getLatest) {
+   git pull
 }
 
 if ($lastRunTime) {
@@ -46,13 +57,17 @@ if ($lastRunTime) {
     $timeThreshold = Get-Date
 }
 
-
-
-
 if ($runTests)
 {
     if ([string]::IsNullOrEmpty($environmentId)) {
-        Write-Error "Environment not configured. Please update config.json"
+        Write-Error "Environment not configured. Please update config.json" -ForegroundColor Red
+        return
+    }
+
+    $azTenantId = az account show --query tenantId --output tsv
+
+    if ($azTenantId -ne $tenantId) {
+        Write-Error "Tenant ID mismatch. Please check your Azure CLI context." -ForegroundColor Red
         return
     }
 
@@ -77,7 +92,7 @@ if ($runTests)
     if ($foundEnvironment) {
         Write-Output "Found matching Environment URL: $environmentUrl"
     } else {
-        Write-Output "Environment ID not found."
+        Write-Output "Environment ID not found." -ForegroundColor Red
         return
     }
 
@@ -89,7 +104,7 @@ if ($runTests)
     $appId = $appResponse.value.appmoduleid
 
     if ([string]::IsNullOrEmpty($appId)) {
-        Write-Error "App id not found. Check that the Copilot Studio Kit has been installed"
+        Write-Error "App id not found. Check that the Copilot Studio Kit has been installed" -ForegroundColor Red
         return
     }
 
@@ -149,12 +164,14 @@ if ($runTests)
             $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entitylist&etn=$entityName&viewid=$viewId&viewType=1039"
             if ($record) {
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext"-u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
             } else {
                 Write-Host "Skipped recording"
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
             }
+        } else {
+            Write-Host "Skipped list test script"
         }
 
         if ($config.pages.details) {
@@ -182,12 +199,14 @@ if ($runTests)
             $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=$entityName&id=$recordId"
             if ($record) {
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
             } else {
                 Write-Host "Skipped recording"
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
             }
+        } else {
+            Write-Host "Skipped details test script"
         }
     }
 
@@ -241,15 +260,15 @@ if ($runTests)
             $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
             if ($record) {
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
             } else {
                 Write-Host "Skipped recording"
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
             }
-        }
+        } 
 
-        Write-Host "All custompages executed successfully!"
+        Write-Host "All custompages executed"
     }
     # Reset the location back to the original directory.
     Set-Location $currentDirectory

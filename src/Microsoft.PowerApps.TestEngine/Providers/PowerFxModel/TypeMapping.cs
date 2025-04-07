@@ -50,11 +50,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             List<string> subTypes = new List<string>();
 
             // Extract the names of the types out of the string
-            var regex = new Regex(@"(?<subType>\w+):\w");
+            var regex = new Regex(@"(?<subType>[\w-]+):(?<dataType>[\w-]+)");
             var matches = regex.Matches(typeString);
             foreach (Match match in matches)
             {
-                var subType = match.Groups["subType"].Value;
+                var subType = match.Groups["subType"].Value  + "," + match.Groups["dataType"].Value;
                 subTypes.Add(subType);
             }
             return subTypes;
@@ -97,9 +97,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
                 foreach (var subType in subTypes)
                 {
-                    if (TryGetType(subType, out var subFormulaType))
+                    var subValue = subType.Split(',');
+                    if (!typeMappings.ContainsKey(subValue[0]) && typeMappings.ContainsKey(subValue[1]))
                     {
-                        recordType = recordType.Add(new NamedFormulaType(subType, subFormulaType));
+                        AddMapping(subValue[0], typeMappings[subValue[1]]);
+                    }
+                   
+                    if (TryGetType(subValue[0], out var subFormulaType))
+                    {
+                        recordType = recordType.Add(new NamedFormulaType(subValue[0], subFormulaType));
                     }
                     else
                     {

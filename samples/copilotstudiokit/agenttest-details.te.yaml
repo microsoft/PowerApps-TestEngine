@@ -8,8 +8,8 @@ testSuite:
     - testCaseName: Step 1 - Start the entity details
       testCaseDescription: Verify can open the page
       testSteps: |
-        = Assert(1=1) 
-
+        = Assert(1=1)
+        
 testSettings:
   filePath: ./testSettings.yaml
 

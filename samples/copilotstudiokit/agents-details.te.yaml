@@ -13,7 +13,6 @@ testSuite:
       testCaseDescription: Check that name is expected value
       testSteps: |
         = Assert(cat_name.Text = "TestAgent1") 
-
 testSettings:
   filePath: ./testSettings.yaml
 
