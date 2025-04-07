@@ -1,0 +1,58 @@
+testSuite:
+  testSuiteName: Pie Chart Controls
+  testSuiteDescription: Verifies that the pie chart controls work correctly.
+  persona: User1
+  appLogicalName: pie_chart_controls_app
+
+  testCases:
+      - testCaseName: Verify Items Property
+        testCaseDescription: Check if the pie chart correctly sets and displays the items.
+        testSteps: |
+          SetProperty(PieChart1.Items, Table(
+            {Labels: "City", Series: 31},
+            {Labels: "Delhi", Series: 15},
+            {Labels: "Mexico City", Series: 11},
+            {Labels: "Istanbul", Series: 22}
+          ));
+          Assert(CountRows(PieChart1.Items) = 4, "Verify the chart contains 4 data points");
+
+      - testCaseName: Verify Chart Width
+        testCaseDescription: Ensure that the pie chart width is set correctly.
+        testSteps: |
+          SetProperty(PieChart1.Width, 620);
+          Assert(PieChart1.Width = 620, "Verify chart width is set correctly");
+
+      - testCaseName: Verify Chart Height
+        testCaseDescription: Ensure that the pie chart height is set correctly.
+        testSteps: |
+          SetProperty(PieChart1.Height, 400);
+          Assert(PieChart1.Height = 400, "Verify chart height is set correctly");
+
+      - testCaseName: Verify Chart X Position
+        testCaseDescription: Ensure that the pie chart X position is set correctly.
+        testSteps: |
+          SetProperty(PieChart1.X, 180);
+          Assert(PieChart1.X = 180, "Verify chart X position is set correctly");
+
+      - testCaseName: Verify Chart Y Position
+        testCaseDescription: Ensure that the pie chart Y position is set correctly.
+        testSteps: |
+          SetProperty(PieChart1.Y, 65);
+          Assert(PieChart1.Y = 65, "Verify chart Y position is set correctly");    
+     
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
