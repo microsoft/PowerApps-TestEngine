@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -183,6 +184,25 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                             return (T)(object)("{PropertyValue: " + value.ToString() + "}");
                         }
                     }
+                    else
+                    {
+                        var parentNameValue = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(parentPropertiesString).FirstOrDefault(k => k.Key == itemPath.ParentControl.PropertyName);
+
+                        var propertyValue = GetControlPropertyValue(parentNameValue.Value.ToString(), itemPath.ControlName, itemPath.PropertyName);
+
+                        if (propertyValue == null)
+                        {
+                            // Null value trivial case
+                            return (T)(object)("{PropertyValue: null}");
+                        }
+
+                        if (propertyValue is string)
+                        {
+                            // Enclose in quotes
+                            return (T)(object)("{PropertyValue: '" + propertyValue.ToString().Replace("'", "\'") + "'}");
+                        }
+
+                    }
                 }
 
                 if (itemPath.PropertyName.ToLower() == "text" && (await TestInfraFunctions.RunJavascriptAsync<object>("PowerAppsTestEngine.pageType()"))?.ToString() == "entityrecord")
@@ -213,6 +233,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "islogovisible":
                         case "istitlevisible":
                         case "checked":
+                        case "shownavigation":
+                        case "selectable":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())
@@ -235,6 +257,41 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             {
                 ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, SingleTestInstanceState.GetLogger());
                 throw;
+            }
+        }
+
+        private string? GetControlPropertyValue(string json, string controlName, string propertyName)
+        {
+            try
+            {
+                JsonNode? root = JsonNode.Parse(json);
+
+                if (root == null || !root.AsObject().TryGetPropertyValue(controlName, out JsonNode? controlNode))
+                    return null;
+
+                if (controlNode == null || !controlNode.AsObject().TryGetPropertyValue(propertyName, out JsonNode? textNode))
+                    return null;
+
+                string? textValue = textNode?.ToString();
+
+                // Extract the lastvalue attribute if it exists
+                if (textNode != null && textNode.AsObject().TryGetPropertyValue("lastValue", out JsonNode? lastValueNode))
+                {
+                    string? lastValue = lastValueNode?.ToString();
+                    return string.IsNullOrWhiteSpace(lastValue) ? null : lastValue;
+                }
+
+                return string.IsNullOrWhiteSpace(textValue) ? null : textValue;
+            }
+            catch (JsonException)
+            {
+                // Handle invalid JSON
+                return null;
+            }
+            catch (Exception)
+            {
+                // Handle other exceptions like null references
+                return null;
             }
         }
 
@@ -461,7 +518,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         objectValue = ((GuidValue)value).Value;
                         break;
                     case (DateType):
-                        return await SetPropertyDateAsync(itemPath, (DateValue)value);
+                        return await SetPropertyDateAsync(itemPath, (DateValue)value);                    
                     case (RecordType):
                         return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
                     case (TableType):
@@ -506,7 +563,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 throw;
             }
         }
-
+        
         public async Task<bool> SetPropertyRecordAsync(ItemPath itemPath, RecordValue value)
         {
             try
@@ -548,6 +605,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 NumberValue numberValue => numberValue.Value.ToString(),
                 DecimalValue decimalValue => decimalValue.Value.ToString(),
                 BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
+                GuidValue guidValue => $"\"{guidValue.Value}\"",
                 // Assume all dates should be in UTC
                 DateValue dateValue => $"\"{dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
                 DateTimeValue dateTimeValue => $"\"{dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
