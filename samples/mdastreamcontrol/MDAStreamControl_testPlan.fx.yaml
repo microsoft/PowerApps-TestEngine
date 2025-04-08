@@ -8,8 +8,8 @@ testSuite:
     - testCaseName: Verify StreamUrl Property
       testCaseDescription: Verify that the StreamUrl property is set and retrieved correctly.
       testSteps: |
-        SetProperty(StreamVideo1.StreamUrl, "https://microsoft-my.sharepoint.com/personal/v-raghulraja_microsoft_com/_layouts/15/embed.aspx?UniqueId=11ba78b1-1b18-4479-ad05-6752581abd29");
-        Assert(StreamVideo1.StreamUrl = "https://microsoft-my.sharepoint.com/personal/v-raghulraja_microsoft_com/_layouts/15/embed.aspx?UniqueId=11ba78b1-1b18-4479-ad05-6752581abd29", "Expected StreamVideo1.StreamUrl to be set correctly");
+        SetProperty(StreamVideo1.StreamUrl, "URL");
+        Assert(StreamVideo1.StreamUrl = "URL");
 
     - testCaseName: Verify Autoplay Property
       testCaseDescription: Verify that the Autoplay property is set and retrieved correctly.
