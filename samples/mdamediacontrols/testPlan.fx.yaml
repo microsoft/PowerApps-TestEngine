@@ -1,0 +1,172 @@
+testSuite:
+  testSuiteName: MDA Custom Page tests - Media Control
+  testSuiteDescription: Verify test cases for Media Control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+  # Video Control Test Cases     
+
+    - testCaseName: Test Video Control - Start Time Property
+      testCaseDescription: Verify that the Start Time property starts video from the given time.
+      testSteps: |
+        SetProperty(Video1.StartTime, 0);        
+        Assert(Video1.StartTime = 0, "Checking if video Started from given time");
+
+    - testCaseName: Test Video Control - AutoStart Property
+      testCaseDescription: Verify that the AutoStart property starts video playback automatically when enabled.
+      testSteps: |
+        SetProperty(Video1.AutoStart, true);
+        Wait(lblVideo, "Text", "Video Playback has started");
+        Assert(Video1.AutoStart = true, "Checking if video AutoStart is enabled");          
+        
+    - testCaseName: Test Video Control - Start Property
+      testCaseDescription: Verify that the Start property correctly sets the start position of the video.
+      testSteps: |
+        SetProperty(Video1.Start, true);
+        Wait(lblVideo, "Text", "Video Playback has started");
+        Assert(Video1.Start = true, "Checking the Start position");
+      
+    - testCaseName: Test Video Control - Paused Property
+      testCaseDescription: Verify that the Paused property reflects the correct state of video playback.
+      testSteps: |
+        SetProperty(Video1.Paused, true);       
+        Assert(Video1.Paused = true, "Checking if video is paused");
+        SetProperty(Video1.Paused, false);
+        Assert(Video1.Paused = false, "Checking if video is playing");
+      
+    - testCaseName: Test Video Control - ShowControls Property
+      testCaseDescription: Verify that the Video control's ShowControls property can be enabled and disabled.
+      testSteps: |
+        SetProperty(Video1.ShowControls, false);
+        Assert(Video1.ShowControls = false, "Checking if ShowControls is disabled");
+        SetProperty(Video1.ShowControls, true);
+        Assert(Video1.ShowControls = true, "Checking if ShowControls is enabled");     
+    
+      
+    - testCaseName: Test Video Control - Image Property
+      testCaseDescription: Verify that the Video control's Image property is set correctly as a placeholder.
+      testSteps: |
+        SetProperty(Video1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
+        Assert(Video1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", "Checking the Image source value");
+      
+    - testCaseName: Test Video Control - Loop Property
+      testCaseDescription: Verify that the Loop property enables looping of the video.
+      testSteps: |
+        SetProperty(Video1.Loop, true);
+        Wait(lblVideo, "Text", "Video Playback has started");
+        Assert(Video1.Loop = true, "Checking if video is looping");
+
+    - testCaseName: Test Video Control - Media Property
+      testCaseDescription: Verify that the Video control can set and retrieve the media source correctly.
+      testSteps: |
+        SetProperty(Video1.Media, "https://www.youtube.com/watch?v=668nUCeBHyY");
+        Wait(Video1, "Media", "https://www.youtube.com/watch?v=668nUCeBHyY");
+        Assert(Video1.Media = "https://www.youtube.com/watch?v=668nUCeBHyY", "Checking the Media source value");   
+        
+
+# Audio Control Test Cases     
+
+    - testCaseName: Test Audio Control - Start Time Property
+      testCaseDescription: Verify that the Start Time property starts audio from the given time.
+      testSteps: |
+        SetProperty(Audio1.StartTime, 0);        
+        Assert(Audio1.StartTime = 0, "Checking if audio Started from given time");
+
+    - testCaseName: Test Audio Control - AutoStart Property
+      testCaseDescription: Verify that the AutoStart property starts audio playback automatically when enabled.
+      testSteps: |
+        SetProperty(Audio1.AutoStart, true);
+        Wait(lblAudio, "Text", "Audio Playback has started");
+        Assert(Audio1.AutoStart = true, "Checking if audio AutoStart is enabled");          
+        
+    - testCaseName: Test Audio Control - Start Property
+      testCaseDescription: Verify that the Start property correctly sets the start position of the audio.
+      testSteps: |
+        SetProperty(Audio1.Start, true);
+        Wait(lblAudio, "Text", "Audio Playback has started");
+        Assert(Audio1.Start = true, "Checking the Start position");
+      
+    - testCaseName: Test Audio Control - Paused Property
+      testCaseDescription: Verify that the Paused property reflects the correct state of audio playback.
+      testSteps: |
+        SetProperty(Audio1.Paused, true);       
+        Assert(Audio1.Paused = true, "Checking if audio is paused");
+        SetProperty(Audio1.Paused, false);
+        Assert(Audio1.Paused = false, "Checking if audio is playing");
+      
+    - testCaseName: Test Audio Control - ShowControls Property
+      testCaseDescription: Verify that the Audio control's ShowControls property can be enabled and disabled.
+      testSteps: |
+        SetProperty(Audio1.ShowControls, false);
+        Assert(Audio1.ShowControls = false, "Checking if ShowControls is disabled");
+        SetProperty(Audio1.ShowControls, true);
+        Assert(Audio1.ShowControls = true, "Checking if ShowControls is enabled");     
+      
+    - testCaseName: Test Audio Control - Image Property
+      testCaseDescription: Verify that the Audio control's Image property is set correctly as a placeholder.
+      testSteps: |
+        SetProperty(Audio1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
+        Assert(Audio1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", "Checking the Image source value");
+      
+    - testCaseName: Test Audio Control - Loop Property
+      testCaseDescription: Verify that the Loop property enables looping of the audio.
+      testSteps: |
+        SetProperty(Audio1.Loop, true);
+        Wait(lblAudio, "Text", "Audio Playback has started");
+        Assert(Audio1.Loop = true, "Checking if audio is looping");
+
+    - testCaseName: Test Audio Control - Media Property
+      testCaseDescription: Verify that the Audio control can set and retrieve the media source correctly.
+      testSteps: |
+        SetProperty(Audio1.Media, "https://pixabay.com/music/main-title-fast-epic-15-sec-108425/");
+        Wait(Audio1, "Media", "https://pixabay.com/music/main-title-fast-epic-15-sec-108425/");
+        Assert(Audio1.Media = "https://pixabay.com/music/main-title-fast-epic-15-sec-108425/", "Checking the Media source value");
+
+# Micrphone Control Test Cases 
+    
+    - testCaseName: Test Microphone Control - Mic Property
+      testCaseDescription: Verify that the Mic property set to 1.
+      testSteps: |
+          SetProperty(Microphone1.Mic, 1);
+          Assert(Microphone1.Mic = 1, "Checking if microphone mic property set to 1");        
+
+    - testCaseName: Test Microphone Control - Mic Property
+      testCaseDescription: Verify that the Mic property starts and stops the microphone recording.
+      testSteps: |          
+          Select(Microphone1);
+          Wait(lblMicrophone, "Text", "Recording has Started");
+          Assert(lblMicrophone.Text = "Recording has Started", "Checking if microphone recording has started");
+          Select(Microphone1);          
+          Wait(lblMicrophone, "Text", "Recording has Stopped");
+          Assert(lblMicrophone.Text = "Recording has Stopped", "Checking if microphone recording has stopped");
+  
+    - testCaseName: Test Microphone Control - Image Property
+      testCaseDescription: Verify that the Microphone control's Image property is set correctly as a placeholder.
+      testSteps: |
+          SetProperty(Microphone1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
+          Assert(Microphone1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", "Checking the Image source value");
+
+    - testCaseName: Test Microphone Control - Audio Property
+      testCaseDescription: Verify that the Microphone control can set and retrieve the audio source correctly.
+      testSteps: |
+          SetProperty(Audio2.Media, Microphone1.Audio);           
+          Wait(Audio2, "Media", Microphone1.Audio);
+          SetProperty(Audio2.Start, true);
+          Assert(Audio2.Start = true, "Checking the Audio source value");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge      
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
