@@ -10,6 +10,8 @@ extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     sdl:
+      binskim:
+        break: true
       policheck:
         enabled: true
       codeql:
