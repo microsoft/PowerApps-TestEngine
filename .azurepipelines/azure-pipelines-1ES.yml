@@ -76,6 +76,7 @@ extends:
             Pattern: |
               *.dll
               JS/*.js
+            UseMinimatch: true  
             signConfigType: inlineSignParams
             inlineOperation: |
               [
@@ -179,7 +180,7 @@ extends:
                   "ToolVersion": "1.0"
                 }
               ]
-          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+          condition: succeeded()
         - task: PublishSymbols@2
           displayName: 'Publish symbols'
           condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq(variables['UpdateVer'], 'true'))
