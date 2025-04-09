@@ -32,10 +32,18 @@ extends:
               BuildConfiguration: 'Release'
         templateContext:
           sdl:
-            codeSignValidation:
-              additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
-              enabled: ${{ if eq(variables['BuildConfiguration'], 'Release') }}true ${{ else }} false
-              break: true
+            ${{ if eq(variables['BuildConfiguration'], 'Release') }}:
+              codeSignValidation:
+                additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
+                enabled: true
+                break: true
+                
+            ${{ if ne(variables['BuildConfiguration'], 'Release') }}:
+              codeSignValidation:
+                additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
+                enabled: false
+                break: true
+            
 
           outputs:
           - output: pipelineArtifact
