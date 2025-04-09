@@ -1,15 +1,15 @@
 testSuite:
   testSuiteName: Copilot Studio Kit
-  testSuiteDescription: Logs List of Copilot Studio Kit 
+  testSuiteDescription: agenttranscripts List of Copilot Studio Kit 
   persona: User1
   appLogicalName: NotNeeded
   onTestSuiteStart: |
     = If(
-        CountRows(cat_copilotstudiokitlogs) > 0, 
-        ForAll(cat_copilotstudiokitlogs, Remove(cat_copilotstudiokitlogs,ThisRecord))
+        CountRows(cat_agenttranscripts) > 0, 
+        ForAll(cat_agenttranscripts, Remove(cat_agenttranscripts,ThisRecord))
       );
-      Collect(cat_copilotstudiokitlogs,{
-        Name:"TestLog1"
+      Collect(cat_agenttranscripts,{
+        Name:"TestAgentTranscript1"
       });
   testCases:
     - testCaseName: Step 1 - Start the entity details

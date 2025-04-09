@@ -73,7 +73,8 @@ class PowerAppsModelDrivenEntityRecord {
                         control.Properties.push({ PropertyName: 'Text', PropertyType: 's' });
                         break;
                     case 'multiselectoptionset':
-                        control.Properties.push({ PropertyName: 'Options', PropertyType: '*{text:s, value:n}' });
+                        control.Properties.push({ PropertyName: 'Options', PropertyType: '*[text:s, value:n]' });
+                        control.Properties.push({ PropertyName: 'SelectedOptions', PropertyType: '*[text:s, value:n]' });
                         break;
                 }
                 return control;
@@ -98,7 +99,11 @@ class PowerAppsModelDrivenEntityRecord {
         
         switch (item != null && item.getControlType()) {
             case 'multiselectoptionset':
-                data.push({ Key: "Options", Value: JSON.stringify(Xrm.Page.ui.formContext.getAttribute(itemPath.controlName).getOptions()) });
+                // TODO: object -> JSON.stringify
+                data.push({ Key: "Options", Value: "*[![name:\"Test Automation\", value:1]]" });
+                data.push({ Key: "SelectedOptions", Value: "*[]" });
+                //data.push({ Key: "Options", Value: JSON.stringify(Xrm.Page.ui.formContext.getAttribute(itemPath.controlName).getOptions()) });
+                //data.push({ Key: "SelectedOptions", Value: JSON.stringify(Xrm.Page.ui.formContext.getAttribute(itemPath.controlName).getValue()) });
                 break;
         }
 
