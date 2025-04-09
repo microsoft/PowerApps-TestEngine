@@ -12,10 +12,6 @@ extends:
     sdl:
       policheck:
         enabled: true
-      codeSignValidation:
-        additionalTargetsGlobPattern: -|$(Build.ArtifactStagingDirectory)/buildoutput/bin/Debug/**;-|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
-        enabled: true
-        break: true
       codeql:
         ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch']) }}:
           enabledOnNonDefaultBranches: true
@@ -35,6 +31,11 @@ extends:
             Release:
               BuildConfiguration: 'Release'
         templateContext:
+          sdl:
+            codeSignValidation:
+              additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
+              enabled: eq(variables['BuildConfiguration'], 'Release')
+              break: true
           outputs:
           - output: pipelineArtifact
             condition: succeeded()
