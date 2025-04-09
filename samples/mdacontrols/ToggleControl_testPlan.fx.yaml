@@ -1,0 +1,204 @@
+testSuite:
+  testSuiteName: Toggle Control Properties
+  testSuiteDescription: Verify various properties of the Toggle control
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    # Test Label Property
+    - testCaseName: Test Label Property
+      testCaseDescription: Verify that the label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Label, "Label");
+        Assert(Toggle1.Label = "Label", "Checking the label property")
+
+    # Test Accessibility Label Property
+    - testCaseName: Test Accessibility Label Property
+      testCaseDescription: Verify that the accessibility label can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.AccessibilityLabel, "Accessibility Label");
+        Assert(Toggle1.AccessibilityLabel = "Accessibility Label", "Checking the accessibility label property")
+
+    # Test Visible Property
+    - testCaseName: Test Visible Property
+      testCaseDescription: Verify that the visibility can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Visible, true);
+        Assert(Toggle1.Visible = true, "Checking the visibility property")
+
+    # Test Checked Property
+    - testCaseName: Test Checked Property
+      testCaseDescription: Verify that the checked state can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Checked, true);
+        Assert(Toggle1.Checked, "Checking the checked state property")
+
+    # Test Display Mode Property
+    - testCaseName: Test Display Mode Property
+      testCaseDescription: Verify that the display mode can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.DisplayMode, "Edit");
+        Assert(Toggle1.DisplayMode = "Edit", "Checking the display mode property")
+
+    # Test Label Position Property
+    - testCaseName: Test Label Position Property
+      testCaseDescription: Verify that the label position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.LabelPosition, "Left");
+        Assert(Toggle1.LabelPosition = "Left", "Checking the label position property")
+
+    # Test Position Property
+    - testCaseName: Test Position Property
+      testCaseDescription: Verify that the position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Position, "Absolute");
+        Assert(Toggle1.Position = "Absolute", "Checking the position property")
+
+    # Test Size Property
+    - testCaseName: Test Size Property
+      testCaseDescription: Verify that the size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Size, "Medium");
+        Assert(Toggle1.Size = "Medium", "Checking the size property")
+
+    # Test Color Palette Property
+    - testCaseName: Test Color Palette Property
+      testCaseDescription: Verify that the color palette can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.ColorPalette, "Primary");
+        Assert(Toggle1.ColorPalette = "Primary", "Checking the color palette property")
+
+    # Test Toggle Size Property
+    - testCaseName: Test Toggle Size Property
+      testCaseDescription: Verify that the toggle size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.ToggleSize, "Large");
+        Assert(Toggle1.ToggleSize = "Large", "Checking the toggle size property")
+
+    # Test Font Property
+    - testCaseName: Test Font Property
+      testCaseDescription: Verify that the font can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Font, "Arial");
+        Assert(Toggle1.Font = "Arial", "Checking the font property")
+
+    # Test Font Size Property
+    - testCaseName: Test Font Size Property
+      testCaseDescription: Verify that the font size can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.FontSize, 14);
+        Assert(Toggle1.FontSize = 14, "Checking the font size property")
+
+    # Test Font Color Property
+    - testCaseName: Test Font Color Property
+      testCaseDescription: Verify that the font color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.FontColor, "Black");
+        Assert(Toggle1.FontColor = "Black", "Checking the font color property")
+
+    # Test Font Weight Property
+    - testCaseName: Test Font Weight Property
+      testCaseDescription: Verify that the font weight can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.FontWeight, "Bold");
+        Assert(Toggle1.FontWeight = "Bold", "Checking the font weight property")
+
+    # Test Font Style Property
+    - testCaseName: Test Font Style Property
+      testCaseDescription: Verify that the font style can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.FontStyle, "Italic");
+        Assert(Toggle1.FontStyle = "Italic", "Checking the font style property")
+
+    # Test OnCheck Property
+    - testCaseName: Test OnCheck Property
+      testCaseDescription: Verify that the OnCheck event can be set and triggered correctly.
+      testSteps: |
+        SetProperty(Toggle1.OnCheck, "OnCheckEventHandler");
+        Assert(Toggle1.OnCheck = "OnCheckEventHandler", "Checking the OnCheck event handler")
+
+    # Test OnSelect Property
+    - testCaseName: Test OnSelect Property
+      testCaseDescription: Verify that the OnSelect event can be set and triggered correctly.
+      testSteps: |
+        SetProperty(Toggle1.OnSelect, "OnSelectEventHandler");
+        Assert(Toggle1.OnSelect = "OnSelectEventHandler", "Checking the OnSelect event handler")
+
+    # Test OnUncheck Property
+    - testCaseName: Test OnUncheck Property
+      testCaseDescription: Verify that the OnUncheck event can be set and triggered correctly.
+      testSteps: |
+        SetProperty(Toggle1.OnUncheck, "OnUncheckEventHandler");
+        Assert(Toggle1.OnUncheck = "OnUncheckEventHandler", "Checking the OnUncheck event handler")
+
+    # Test Base Palette Color Property
+    - testCaseName: Test Base Palette Color Property
+      testCaseDescription: Verify that the base palette color can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.BasePaletteColor, "Blue");
+        Assert(Toggle1.BasePaletteColor = "Blue", "Checking the base palette color")
+
+    # Test Height Property
+    - testCaseName: Test Height Property
+      testCaseDescription: Verify that the height can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Height, "50px");
+        Assert(Toggle1.Height = "50px", "Checking the height property")
+
+    # Test Width Property
+    - testCaseName: Test Width Property
+      testCaseDescription: Verify that the width can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Width, "100px");
+        Assert(Toggle1.Width = "100px", "Checking the width property")
+
+    # Test X Property
+    - testCaseName: Test X Property
+      testCaseDescription: Verify that the X position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.X, 200);
+        Assert(Toggle1.X = 200, "Checking the X position")
+
+    # Test Y Property
+    - testCaseName: Test Y Property
+      testCaseDescription: Verify that the Y position can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.Y, 150);
+        Assert(Toggle1.Y = 150, "Checking the Y position")
+
+    # Test Font Italic Property
+    - testCaseName: Test Font Italic Property
+      testCaseDescription: Verify that the font italic property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.FontItalic, true);
+        Assert(Toggle1.FontItalic = true, "Checking the font italic property")
+
+    # Test Font Strikethrough Property
+    - testCaseName: Test Font Strikethrough Property
+      testCaseDescription: Verify that the font strikethrough property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.FontStrikethrough, true);
+        Assert(Toggle1.FontStrikethrough = true, "Checking the font strikethrough property")
+
+    # Test Font Underline Property
+    - testCaseName: Test Font Underline Property
+      testCaseDescription: Verify that the font underline property can be set and retrieved correctly.
+      testSteps: |
+        SetProperty(Toggle1.FontUnderline, true);
+        Assert(Toggle1.FontUnderline = true, "Checking the font underline property")
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
