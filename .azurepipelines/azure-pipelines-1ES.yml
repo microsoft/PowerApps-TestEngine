@@ -13,7 +13,7 @@ extends:
       policheck:
         enabled: true
       codeSignValidation:
-        additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1
+        additionalTargetsGlobPattern: -|$(Build.ArtifactStagingDirectory)/buildoutput/bin/Debug/**;-|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1
         enabled: true
         break: true
       codeql:
@@ -74,8 +74,8 @@ extends:
             AuthSignCertName: $(EsrpAuthSignCertName)
             FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngineWrapper/'
             Pattern: |
-              '*.dll'
-              'JS/*.js'
+              *.dll
+              JS/*.js
             signConfigType: inlineSignParams
             inlineOperation: |
               [
