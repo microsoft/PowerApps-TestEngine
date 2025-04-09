@@ -595,7 +595,7 @@ function Generate-HTMLTable {
     <p>`$`$ = $percentage `$`$%</p>
 "@
 
-    $htmlTable += $katexCode
+    $htmlTable += $katexCode
 
     return $htmlTable
 }
@@ -614,16 +614,7 @@ $reportHtml | Out-File -FilePath $reportPath
 
 Write-Host "HTML summary report generated successfully at $folderPath."
 
-$job = Start-Job -ScriptBlock {
-    param($path)
-    python -m http.server 8080 --directory $path
-} -ArgumentList $folderPath
+Write-Host "Opening report in browser..."
+Write-Host $reportPath
 
-$jobId = $job.Id
-
-python -m webbrowser -t "http://localhost:8080/summary_report_$timestamp.html"
-
-Read-Host "Please press enter when complete"
-
-Stop-Job -Id $jobId
-Remove-Job -Id $jobId
+Invoke-Item $reportPath
