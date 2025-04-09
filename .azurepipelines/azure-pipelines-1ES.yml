@@ -34,7 +34,7 @@ extends:
           sdl:
             codeSignValidation:
               additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
-              enabled: eq(variables['BuildConfiguration'], 'Release')
+              enabled: $[eq(variables['BuildConfiguration'], 'Release')]
               break: true
           outputs:
           - output: pipelineArtifact
