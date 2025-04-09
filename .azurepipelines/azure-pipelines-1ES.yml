@@ -13,7 +13,9 @@ extends:
       policheck:
         enabled: true
       codeSignValidation:
+        additionalTargetsGlobPattern: -|**\.playwright\**;
         enabled: true
+        break: true
       codeql:
         ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch']) }}:
           enabledOnNonDefaultBranches: true
@@ -38,14 +40,6 @@ extends:
             condition: succeeded()
             artifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
             targetPath: '$(Build.ArtifactStagingDirectory)'
-          - output: nuget
-            condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq(variables['UpdateVer'], 'true'))
-            useDotNetTask: false # The default is false to use the NuGetCommand task. Set to true to use the DotNetCoreCLI task to publish packages.
-            packagesToPush: '$(Build.ArtifactStagingDirectory)/Microsoft.PowerApps.TestEngine.*.nupkg'
-            packageParentPath: '$(Build.ArtifactStagingDirectory)'
-            publishVstsFeed: $(InternalFeed)
-            nuGetFeedType: internal
-            allowPackageConflicts: true # Optional. NuGetCommand task only.
         steps:
         - script: |
             echo "Hello $(myVariable)"
@@ -69,7 +63,7 @@ extends:
             failTaskOnFailedTests: true
         - task: EsrpCodeSigning@5
           displayName: 'ESRP sign'
-          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+          condition: succeeded()
           inputs:
             ConnectedServiceName: $(EsrpConServName)
             UseMSIAuthentication: true
@@ -122,30 +116,30 @@ extends:
         - task: CopyFiles@2
           displayName: 'Copy Built Files to Artifact Staging Directory'
           inputs:
-            SourceFolder: '$(Build.SourcesDirectory)/bin'
-            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/bin'
+            SourceFolder: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngineWrapper'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/bin/$(BuildConfiguration)/PowerAppsTestEngineWrapper'
             # Include all files except abc.txt
             Contents: |
               **/*
               !**/ThirdPartyNotices.txt
-        - task: CopyFiles@2
-          displayName: 'Copy Built Files to Artifact Staging Directory'
-          inputs:
-            SourceFolder: '$(Build.SourcesDirectory)/obj'
-            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/obj'
-            # Include all files except abc.txt
-            Contents: |
-              **/*
-              !**/ThirdPartyNotices.txt
-        - task: CopyFiles@2
-          displayName: 'Copy Built Files to Artifact Staging Directory'
-          inputs:
-            SourceFolder: '$(Build.SourcesDirectory)/pkg'
-            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/pkg'
-            # Include all files except abc.txt
-            Contents: |
-              **/*
-              !**/ThirdPartyNotices.txt
+        # - task: CopyFiles@2
+        #   displayName: 'Copy Built Files to Artifact Staging Directory'
+        #   inputs:
+        #     SourceFolder: '$(Build.SourcesDirectory)/obj'
+        #     TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/obj'
+        #     # Include all files except abc.txt
+        #     Contents: |
+        #       **/*
+        #       !**/ThirdPartyNotices.txt
+        # - task: CopyFiles@2
+        #   displayName: 'Copy Built Files to Artifact Staging Directory'
+        #   inputs:
+        #     SourceFolder: '$(Build.SourcesDirectory)/pkg'
+        #     TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/pkg'
+        #     # Include all files except abc.txt
+        #     Contents: |
+        #       **/*
+        #       !**/ThirdPartyNotices.txt
         - task: DotNetCoreCLI@2
           displayName: 'Pack'
           inputs:
@@ -183,7 +177,7 @@ extends:
                   "ToolVersion": "1.0"
                 }
               ]
-          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+          condition: succeeded()
         - task: PublishSymbols@2
           displayName: 'Publish symbols'
           condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq(variables['UpdateVer'], 'true'))
