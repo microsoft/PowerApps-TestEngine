@@ -134,24 +134,6 @@ extends:
             Contents: |
               **/*
               !**/ThirdPartyNotices.txt
-        # - task: CopyFiles@2
-        #   displayName: 'Copy Built Files to Artifact Staging Directory'
-        #   inputs:
-        #     SourceFolder: '$(Build.SourcesDirectory)/obj'
-        #     TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/obj'
-        #     # Include all files except abc.txt
-        #     Contents: |
-        #       **/*
-        #       !**/ThirdPartyNotices.txt
-        # - task: CopyFiles@2
-        #   displayName: 'Copy Built Files to Artifact Staging Directory'
-        #   inputs:
-        #     SourceFolder: '$(Build.SourcesDirectory)/pkg'
-        #     TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/pkg'
-        #     # Include all files except abc.txt
-        #     Contents: |
-        #       **/*
-        #       !**/ThirdPartyNotices.txt
         - task: DotNetCoreCLI@2
           displayName: 'Pack'
           inputs:
