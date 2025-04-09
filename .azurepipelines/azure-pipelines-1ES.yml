@@ -31,12 +31,13 @@ extends:
             Release:
               BuildConfiguration: 'Release'
         templateContext:
-          ${{ if eq(variables['BuildConfiguration'], 'Release') }}:
-            sdl:
-              codeSignValidation:
-                additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
-                enabled: true
-                break: true
+          sdl:
+            codeSignValidation:
+              additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
+              enabled: 
+              ${{ if eq(variables['BuildConfiguration'], 'Debug') }}: false
+              ${{ if ne(variables['BuildConfiguration'], 'Debug') }}: true
+              break: true
 
           outputs:
           - output: pipelineArtifact
