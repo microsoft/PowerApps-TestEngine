@@ -1,0 +1,28 @@
+testSuite:
+  testSuiteName: Copilot Studio Kit
+  testSuiteDescription: Conversation transcript List of Copilot Studio Kit 
+  persona: User1
+  appLogicalName: NotNeeded
+  onTestSuiteStart: |
+    = If(
+        CountRows(conversationtranscript) > 0, 
+        ForAll(conversationtranscript, Remove(conversationtranscript,ThisRecord))
+      );
+      Collect(conversationtranscript,{
+        Name:"ConversationTranscript1"
+      });
+  testCases:
+    - testCaseName: Step 1 - Start the entity details
+      testCaseDescription: Verify can open the page
+      testSteps: |
+        = 
+        Assert(1=1) 
+      
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

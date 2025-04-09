@@ -182,7 +182,8 @@ code .
         "customPageTestScripts":[
             "webchatcustomizer-playground.te.yaml",
             "promptadvisorstudio.te.yaml",
-            "adaptivecards.te.yaml"
+            "adaptivecards.te.yaml",
+            "home.te.yaml"
         ]
     },
     "pages": {
@@ -192,7 +193,8 @@ code .
         "customPages": [
             "cat_webchatcustomizer_48d6e",
             "cat_adaptivecards_4476e",
-            "cat_promptadvisorstudio_6e1ce"
+            "cat_promptadvisorstudio_6e1ce",
+            "cat_home_c8017"
         ],
         "entities": [
             { 
@@ -204,6 +206,36 @@ code .
                 "name": "testsets",
                 "entity": "cat_copilottestset",
                 "id": "cat_copilottestsetid"
+            },
+            {
+                "name": "testruns",
+                "entity": "cat_copilottestrun",
+                "id": "cat_copilottestrunid"
+            },
+            {
+                "name": "logs",
+                "entity": "cat_copilotstudiokitlogs",
+                "id": "cat_copilotstudiokitlogsid"
+            },
+            {
+                "name":"agenttranscripts",
+                "entity":"cat_agenttranscripts",
+                "id":"cat_agenttranscriptsid"
+            },
+            {
+              "name":"conversationkpi",
+              "entity":"cat_copilotkpi",
+              "id":"cat_copilotkpiid"
+            },
+            {
+                "name":"conversationtranscript",
+                "entity":"conversationtranscript",
+                "id":"conversationtranscriptid"              
+            },
+            {
+                "name":"components",
+                "entity":"botcomponent",
+                "id":"botcomponentid"              
             }
         ]
     }
