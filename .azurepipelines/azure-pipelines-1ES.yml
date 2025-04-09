@@ -34,9 +34,7 @@ extends:
           sdl:
             codeSignValidation:
               additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
-              enabled: 
-              ${{ if eq(variables['BuildConfiguration'], 'Debug') }}: false
-              ${{ if ne(variables['BuildConfiguration'], 'Debug') }}: true
+              enabled: ${{ if eq(variables['BuildConfiguration'], 'Release') }}true ${{ else }} false
               break: true
 
           outputs:
