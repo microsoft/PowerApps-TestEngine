@@ -27,7 +27,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var propertyValue = Guid.NewGuid().ToString();
             var numberPropertyValue = 11;
             var datePropertyValue = new DateTime(2030, 1, 1, 0, 0, 0).Date;
-            var dateTimePropertyValue = new DateTime(2030, 1, 1, 0, 0, 0);
+            var dateTimePropertyValue = new DateTime(2029, 12, 31, 18, 30, 0);
+            var timezoneValue = "UTC";
 
             mockTestWebProvider.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text")))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = propertyValue }));
@@ -37,6 +38,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = datePropertyValue.ToString() }));
             mockTestWebProvider.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "DefaultDate")))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = dateTimePropertyValue.ToString() }));
+            mockTestWebProvider.Setup(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "DateTimeZone")))
+              .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = timezoneValue }));
 
             var controlRecordValue = new ControlRecordValue(recordType, mockTestWebProvider.Object, controlName);
             Assert.Equal(controlName, controlRecordValue.Name);
@@ -51,12 +54,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             Assert.Equal(propertyValue, (controlRecordValue.GetField("Text") as StringValue).Value);
             Assert.Equal(numberPropertyValue, (controlRecordValue.GetField("X") as NumberValue).Value);
             Assert.Equal(datePropertyValue.ToString(), (controlRecordValue.GetField("SelectedDate") as DateValue).GetConvertedValue(null).ToString());
-            Assert.Equal(dateTimePropertyValue.ToString(), (controlRecordValue.GetField("DefaultDate") as DateTimeValue).GetConvertedValue(null).ToString());
 
+            // Adjust the assertion for DefaultDate based on the timezone value
+            var controlDateTimeValue = (controlRecordValue.GetField("DefaultDate") as DateTimeValue).GetConvertedValue(null);
+            var expectedDateTimeValue = timezoneValue.Equals("local", StringComparison.OrdinalIgnoreCase) ? dateTimePropertyValue.ToLocalTime() : dateTimePropertyValue;
+            Assert.Equal(expectedDateTimeValue.ToString(), controlDateTimeValue.ToString());
             mockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == controlName)), Times.Once());
             mockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "X" && x.ControlName == controlName)), Times.Once());
             mockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "SelectedDate" && x.ControlName == controlName)), Times.Once());
             mockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "DefaultDate" && x.ControlName == controlName)), Times.Once());
+            mockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "DateTimeZone" && x.ControlName == controlName)), Times.Exactly(2));
         }
 
         [Fact]
