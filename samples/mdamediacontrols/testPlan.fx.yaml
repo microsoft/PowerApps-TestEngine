@@ -47,8 +47,8 @@ testSuite:
     - testCaseName: Test Video Control - Image Property
       testCaseDescription: Verify that the Video control's Image property is set correctly as a placeholder.
       testSteps: |
-        SetProperty(Video1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
-        Assert(Video1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", "Checking the Image source value");
+        SetProperty(Video1.Image, "https://uhf.microsoft.com/images/microsoft/RE1Mu3b.png");
+        Assert(Video1.Image = "https://uhf.microsoft.com/images/microsoft/RE1Mu3b.png", "Checking the Image source value");
       
     - testCaseName: Test Video Control - Loop Property
       testCaseDescription: Verify that the Loop property enables looping of the video.
@@ -106,8 +106,8 @@ testSuite:
     - testCaseName: Test Audio Control - Image Property
       testCaseDescription: Verify that the Audio control's Image property is set correctly as a placeholder.
       testSteps: |
-        SetProperty(Audio1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
-        Assert(Audio1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", "Checking the Image source value");
+        SetProperty(Audio1.Image, "https://uhf.microsoft.com/images/microsoft/RE1Mu3b.png");
+        Assert(Audio1.Image = "https://uhf.microsoft.com/images/microsoft/RE1Mu3b.png", "Checking the Image source value");
       
     - testCaseName: Test Audio Control - Loop Property
       testCaseDescription: Verify that the Loop property enables looping of the audio.
@@ -144,8 +144,8 @@ testSuite:
     - testCaseName: Test Microphone Control - Image Property
       testCaseDescription: Verify that the Microphone control's Image property is set correctly as a placeholder.
       testSteps: |
-          SetProperty(Microphone1.Image, "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg");
-          Assert(Microphone1.Image = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", "Checking the Image source value");
+          SetProperty(Microphone1.Image, "https://uhf.microsoft.com/images/microsoft/RE1Mu3b.png");
+          Assert(Microphone1.Image = "https://uhf.microsoft.com/images/microsoft/RE1Mu3b.png", "Checking the Image source value");
 
     - testCaseName: Test Microphone Control - Audio Property
       testCaseDescription: Verify that the Microphone control can set and retrieve the audio source correctly.

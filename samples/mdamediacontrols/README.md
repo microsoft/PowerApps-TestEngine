@@ -30,4 +30,4 @@ This Power Apps Test Engine example shows how to validate and manipulate the val
 
 ```pwsh
 cd bin\Debug\PowerAppsEngine
-dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda_imagecontrol\testPlan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u storagestate -c True -p mda -d "https://contoso.crm4.dynamics.com/main.aspx?appid=d67b4662-12fb-ef11-bae2-00224823607e&pagetype=custom&name=cr693_mdamediacontrols_f20f0"
+dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda_imagecontrol\testPlan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u storagestate -c True --provider mda -d "https://contoso.crm4.dynamics.com/main.aspx?appid=d67b4662-12fb-ef11-bae2-00224823607e&pagetype=custom&name=cr693_mdamediacontrols_f20f0"
