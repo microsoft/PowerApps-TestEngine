@@ -61,21 +61,21 @@ Write-Host "======================================================"
 
 $env:user1Email=$config.userEmail1
 
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "powerapps.portal" -a "none" -i "$currentDirectory\user1-power-apps-portal.te.yaml" -t $tenantId -e $environmentId -l Debug
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "powerapps.portal" -a "none" -i "$currentDirectory\user1-power-apps-portal.te.yaml" -t $tenantId -e $environmentId -l Debug
 
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "canvas" -a "none" -i "$currentDirectory\canvas-no-powerapps-licence.te.yaml" -t $tenantId -e $environmentId -l Debug
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "canvas" -a "none" -i "$currentDirectory\canvas-no-powerapps-licence.te.yaml" -t $tenantId -e $environmentId -l Debug
 
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\entity-list-no-permissions.te.yaml" -t $tenantId -e $environmentId -d "$mdaUrlList" -l Debug
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -i "$currentDirectory\custom-page-no-permissions.te.yaml" -t $tenantId -e $environmentId -d "$mdaUrlCustom" -l Debug
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "mda" -a "none" -i "$currentDirectory\entity-list-no-permissions.te.yaml" -t $tenantId -e $environmentId -d "$mdaUrlList" -l Debug
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "mda" -a "none" -i "$currentDirectory\custom-page-no-permissions.te.yaml" -t $tenantId -e $environmentId -d "$mdaUrlCustom" -l Debug
 
 Write-Host "======================================================"
 Write-Host "User 2 Persona Tests"
 Write-Host "======================================================"
 
 $env:user2Email=$config.userEmail2
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "powerapps.portal" -a "none" -i "$currentDirectory\user2-power-apps-portal.te.yaml" -t $tenantId -e $environmentId -l Debug
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "powerapps.portal" -a "none" -i "$currentDirectory\user2-power-apps-portal.te.yaml" -t $tenantId -e $environmentId -l Debug
 
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "canvas" -a "none" -i "$currentDirectory\canvas-not-shared.te.yaml" -t $tenantId -e $environmentId -l Debug
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "canvas" -a "none" -i "$currentDirectory\canvas-not-shared.te.yaml" -t $tenantId -e $environmentId -l Debug
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

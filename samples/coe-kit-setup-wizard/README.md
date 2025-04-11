@@ -37,12 +37,6 @@ git clone https://github.com/microsoft/PowerApps-TestEngine.git
 cd PowerApps-TestEngine
 ```
 
-3. Checkout the integration branch
-
-```pwsh
-git checkout integration
-```
-
 3. Ensure logged out out of pac cli. This ensures you're logged out of any previous sessions.
 
 ```pwsh

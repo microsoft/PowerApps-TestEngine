@@ -40,6 +40,10 @@ Run the commands below in PowerShell. These commands will clone the repo to your
 # Clone GitHub repo
 git clone https://github.com/microsoft/PowerApps-TestEngine.git
 
+# Optionally, after cloning the repository, you can checkout a specific branch or tag:
+# To checkout a branch: git checkout <branch_name> (e.g., git checkout develop)
+# To checkout a tag: git checkout <tag_name> (e.g., git checkout release)
+
 # Change to the PowerAppsTestEngine folder
 cd PowerApps-TestEngine\src
 

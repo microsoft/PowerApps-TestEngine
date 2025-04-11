@@ -26,7 +26,7 @@ Automated testing is a vital tool for Security Architects. It helps in:
 By embracing automated testing, you can ensure that the Power Platform solutions are secure, compliant, and ready for deployment. This not only enhances the quality of the solutions but also contributes to the overall success of the organization.
 
 ## Persona-Based Testing
-Persona-based testing involves creating different user personas to test how the application behaves under various conditions and user scenarios. This approach helps in identifying issues that might not be apparent when testing with a single user type. The [Permissions](https://github.com/microsoft/PowerApps-TestEngine/blob/integration/samples/permissions/README.md) sample provides an example of how to create tests for the following test scenarios.
+Persona-based testing involves creating different user personas to test how the application behaves under various conditions and user scenarios. This approach helps in identifying issues that might not be apparent when testing with a single user type. The [Permissions](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/permissions/README.md) sample provides an example of how to create tests for the following test scenarios.
 
 ### Expected Test Cases
 

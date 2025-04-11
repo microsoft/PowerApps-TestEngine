@@ -51,7 +51,7 @@ The [Setup and Upgrade Wizard](./coe-kit-setup-and-install-wizard.md) of the CoE
 
 Let's look at how the test engine helps with testing this scenario. This example demonstrates that by being able to interact with the Power FX variables, it greatly simplifies the testing of this application as a key global variable controls the state of the application. By being able to get and set the variable rather than having to infer where in the process the app is, the variable can easily be asserted to verify the state of the app.
 
-Key parts of this [example test](https://github.com/microsoft/PowerApps-TestEngine/blob/grant-archibald-md/integration-merge/samples/coe-kit-setup-wizard/testPlan.fx.yaml) that start the test and set the initial state
+Key parts of this [example test](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/coe-kit-setup-wizard/testPlan.fx.yaml) that start the test and set the initial state
 
 
 ```powerfx

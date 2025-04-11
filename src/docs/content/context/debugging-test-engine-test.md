@@ -10,17 +10,12 @@ For code-first developers eager to dive deep into the mechanics of the Test Engi
 
 2. Install Required Extensions: Ensure you have the C# extension installed in VS Code. This extension is essential for debugging .NET applications. You can find it in the Extensions view (Ctrl+Shift+X) by searching for "C#".
 
-3. Ensure that in integration branch and have latest updates
-
-```pwsh
-git checkout integration
-git pull
-```
+3. Verify you are on the correct branch and have pulled the latest changes.
 
 4. Preparing for Debugging. Modify the samples Run Script: To enable debugging, add -w "True" to dotenet PowerAppsTestEngine.dll in the RunTests.ps1 script of the sample you want to debug. This modification allows the script to wait for the debugger to attach. For example for the button clicker example it will look like
 
 ```PowerShell
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "canvas" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -w "True"
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "canvas" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -w "True"
 ```
 
 5. Start the Test: Run your test using PowerShell and wait for the prompt "Waiting, press enter to continue".
