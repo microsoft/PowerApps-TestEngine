@@ -1,18 +1,21 @@
 testSuite:
   testSuiteName: Copilot Studio Kit
-  testSuiteDescription: Conversation transcript List of Copilot Studio Kit 
+  testSuiteDescription: component List of Copilot Studio Kit 
   persona: User1
   appLogicalName: NotNeeded
   onTestSuiteStart: |
-    = Clear(conversationtranscript);
-      Collect(conversationtranscript,{
-        name:"ConversationTranscript2",
-        content:"Hi",
-        conversationstarttime:Now(),
+    = If(
+        CountRows(botcomponents) > 0, 
+        ForAll(botcomponents, Remove(botcomponents,ThisRecord))
+      );
+      Collect(botcomponents,{
+        name:"TestSummary",
+        schemaname:"cat_adaptiveCardGallery.topic.AccountSummary",
         Owner:{
         '@odata.type': "#Microsoft.Dynamics.CRM.systemuser",
          systemuserid: GUID("511adea2-ecfb-ef11-bae3-6045bd009b68")
-        }
+        },
+        componenttype:"Topic (V2)"
       });
   testCases:
     - testCaseName: Step 1 - Start the entity details

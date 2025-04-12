@@ -11,6 +11,14 @@ testSuite:
       Collect(cat_copilottestset, {
         Name: "TestSet1"
       });
+      If(
+        CountRows(cat_copilottest) > 0, 
+        ForAll(cat_copilottest, Remove(cat_copilottest, ThisRecord))
+      );
+      Collect(cat_copilottest, {
+        Name: "SCT001",
+        cat_copilottestsetid: First(Filter(cat_copilottestset,Name="TestSet1")).copilottestsetid
+      });
 
   testCases:
     - testCaseName: Step 1 - Start the entity details

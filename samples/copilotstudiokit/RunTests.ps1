@@ -193,7 +193,7 @@ if ($runTests)
     $appInfo = Invoke-RestMethod -Uri $lookupApp -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
     $appDescriptor = $appInfo.descriptor | ConvertFrom-Json
 
-    $appEntities = $appDescriptor.appInfo.AppComponents.Entities | Where-Object { $_.LogicalName -like "cat_*"} | Measure-Object | Select-Object -ExpandProperty Count;
+    $appEntities = $appDescriptor.appInfo.AppComponents.Entities | Measure-Object | Select-Object -ExpandProperty Count;
 
     Write-Host $appEntities
 
@@ -572,7 +572,7 @@ function Generate-HTMLTable {
     # Close the table
     $htmlTable += "</table>"
     
-    $global:healthPercentage = ($numerator / $total * 100).ToString("0") 
+    $global:healthPercentage = $total -eq 0 ? "0" : ($numerator / $total * 100).ToString("0") 
     $percentage = $global:healthPercentage + "%"
     
     # Add KaTeX code to show the calculation

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.ComponentModel.Design;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
@@ -84,6 +85,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.EnableSetFunction();
             powerFxConfig.EnableJsonFunctions();
 
+            // Perform any provider specific configuration
+            if (_testWebProvider is IExtendedPowerFxProvider extendedPowerFxProvider)
+            {
+                extendedPowerFxProvider.ConfigurePowerFx(powerFxConfig);
+            }
+
             powerFxConfig.AddFunction(new SelectOneParamFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectThreeParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
@@ -117,11 +124,23 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             WaitRegisterExtensions.RegisterAll(powerFxConfig, TestState.GetTimeout(), Logger);
 
+            var provider = TestState.TestProvider;
+            if (provider is IExtendedPowerFxProvider powerFxProvider)
+            {
+                powerFxProvider.Setup(powerFxConfig, TestInfraFunctions, SingleTestInstanceState, TestState, _fileSystem);
+            }
+
             Engine = new RecalcEngine(powerFxConfig);
+
+            // Add any provider specific functions or state
+            if (_testWebProvider is IExtendedPowerFxProvider extendedProviderAfter)
+            {
+                extendedProviderAfter.ConfigurePowerFxEngine(Engine);
+            }
 
             ConditionallySetupDataverse(testSettings, powerFxConfig);
             ConditionallyRegisterTestFunctions(testSettings, powerFxConfig);
-
+            
             var symbolValues = new SymbolValues(powerFxConfig.SymbolTable);
 
             foreach (var val in powerFxConfig.SymbolTable.SymbolNames.ToList())
@@ -440,6 +459,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
                 // And enable dataverse execution as part of this test session
                 runtimeConfig.AddDataverseExecute(_orgService);
+            }
+
+            if (TestState.TestProvider is IExtendedPowerFxProvider extendedProvider && extendedProvider.ProviderExecute)
+            {
+                return extendedProvider.ExecutePowerFx(testSteps, culture);
             }
 
             var parseOption = new ParserOptions() { AllowsSideEffects = true, Culture = culture, NumberIsFloat = true };

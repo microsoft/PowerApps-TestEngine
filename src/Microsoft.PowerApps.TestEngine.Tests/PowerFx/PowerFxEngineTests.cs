@@ -48,6 +48,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             MockTestState.Setup(x => x.GetTimeout()).Returns(30000);
             MockEnvironmentVariable = new Mock<IEnvironmentVariable>(MockBehavior.Strict);
             LoggingTestHelper.SetupMock(MockLogger);
+            MockTestState.Setup(x => x.TestProvider).Returns((ITestWebProvider)null);
             testSettings = new TestSettings();
         }
 

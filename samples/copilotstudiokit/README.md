@@ -172,7 +172,7 @@ code .
     "debugTests": false,
     "useStaticContext": false,
     "getLatest": false,
-    "testScripts": {
+     "testScripts": {
         "customPageTestScripts":[
             "webchatcustomizer-playground.te.yaml",
             "promptadvisorstudio.te.yaml",
@@ -227,9 +227,14 @@ code .
                 "id":"conversationtranscriptid"              
             },
             {
-                "name":"components",
-                "entity":"botcomponent",
+                "name":"botcomponents",
+                "entity":"botcomponents",
                 "id":"botcomponentid"              
+            },
+            {
+                "name":"botcomponentcollection",
+                "entity":"botcomponentcollection",
+                "id":"botcomponentcollectionid"
             }
         ]
     }

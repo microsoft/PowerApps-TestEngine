@@ -1,15 +1,15 @@
 testSuite:
   testSuiteName: Copilot Studio Kit
-  testSuiteDescription: component List of Copilot Studio Kit 
+  testSuiteDescription: component collection List of Copilot Studio Kit 
   persona: User1
   appLogicalName: NotNeeded
   onTestSuiteStart: |
     = If(
-        CountRows(bot_component) > 0, 
-        ForAll(bot_component, Remove(bot_component,ThisRecord))
+        CountRows(botcomponentcollection) > 0, 
+        ForAll(botcomponentcollection, Remove(botcomponentcollection,ThisRecord))
       );
-      Collect(bot_component,{
-        cat_name:"TestComponent1"
+      Collect(botcomponentcollection,{
+        name:"TestComponentCollection1"
       });
   testCases:
     - testCaseName: Step 1 - Start the entity details

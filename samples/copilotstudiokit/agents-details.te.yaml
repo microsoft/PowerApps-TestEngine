@@ -13,6 +13,15 @@ testSuite:
       testCaseDescription: Check that name is expected value
       testSteps: |
         = Assert(cat_name.Text = "TestAgent1") 
+    - testCaseName: Step 3 - Options exist
+      testCaseDescription: Check the expected 
+      testSteps: |
+        = Assert(CountRows(Preview.GetOptions(cat_configurationtypescodes)) = 3) 
+    - testCaseName: Step 4 - Select first option
+      testCaseDescription: Can select an option
+      testSteps: |
+        = Preview.SetOptions(cat_configurationtypescodes,Table(First(Preview.GetOptions(cat_configurationtypescodes))));
+          Assert(cat_regioncode.Visible)
 testSettings:
   filePath: ./testSettings.yaml
 
