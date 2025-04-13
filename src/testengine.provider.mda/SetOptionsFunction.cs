@@ -52,7 +52,7 @@ namespace testengine.provider.mda
             var values = JsonSerializer.Serialize(items);
 
             var page = _testInfraFunctions.GetContext().Pages.First();
-            await page.EvaluateAsync<string>($"Xrm.Page.ui.formContext.getAttribute('{controlModel.Name}').setValue({values})");
+            await page.EvaluateAsync<string>($"var attribute = Xrm.Page.ui.formContext.getAttribute('{controlModel.Name}');attribute.setValue({values});attribute.fireOnChange();");
 
             return BlankValue.NewBlank();
         }

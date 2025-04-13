@@ -71,9 +71,10 @@ namespace testengine.provider.mda.tests
                                 return {
                                     setValue: (values) => {
                                         count = values.length;
-                                    }
+                                    },
+                                    fireOnChange: () => {}
                                 }
-                            }
+                            },
                         }
                     }
                 }
