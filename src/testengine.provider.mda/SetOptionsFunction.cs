@@ -52,7 +52,26 @@ namespace testengine.provider.mda
             var values = JsonSerializer.Serialize(items);
 
             var page = _testInfraFunctions.GetContext().Pages.First();
-            await page.EvaluateAsync<string>($"var attribute = Xrm.Page.ui.formContext.getAttribute('{controlModel.Name}');attribute.setValue({values});attribute.fireOnChange();");
+
+            var timeout = 30000;
+            var started = DateTime.Now;
+            var completed = false;
+
+            while ( completed || DateTime.Now.Subtract(started).TotalMilliseconds > timeout )
+            {
+                var script = @"try { var attribute = Xrm.Page.ui.formContext.getAttribute('" + controlModel.Name + "');attribute.setValue(" + values + ");attribute.fireOnChange(); } catch (err) { return JSON.stringify(err) }";
+
+                var result = await page.EvaluateAsync<string>(script);
+
+                if (string.IsNullOrEmpty(result))
+                {
+                    completed = true;
+                } 
+                else
+                {
+                    Thread.Sleep(1000);
+                }
+            }
 
             return BlankValue.NewBlank();
         }

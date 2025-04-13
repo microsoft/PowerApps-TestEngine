@@ -748,6 +748,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             var logger = singleTestInstanceState.GetLogger();
             powerFxConfig.AddFunction(new GetOptionsFunction(testInfraFunctions, logger));
+            powerFxConfig.AddFunction(new GetValueFunction(testInfraFunctions, logger));
             powerFxConfig.AddFunction(new SetOptionsFunction(testInfraFunctions, logger));
         }
 

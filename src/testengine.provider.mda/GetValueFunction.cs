@@ -21,7 +21,7 @@ namespace testengine.provider.mda
         private readonly ILogger _logger;
 
         public GetValueFunction(ITestInfraFunctions testInfraFunctions, ILogger logger)
-            : base(DPath.Root.Append(new DName("Preview")), "GetValue", FormulaType.UntypedObject)
+            : base(DPath.Root.Append(new DName("Preview")), "GetValue", FormulaType.UntypedObject, RecordType.Empty())
         {
             _testInfraFunctions = testInfraFunctions;
             _logger = logger;
