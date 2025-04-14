@@ -79,7 +79,7 @@ namespace testengine.provider.mda.tests
             if (expectedRecordCount == 0)
             {
                 Assert.IsAssignableFrom<BlankValue>(resultValue);
-            } 
+            }
             else
             {
                 Assert.IsAssignableFrom<TableValue>(resultValue);
@@ -87,7 +87,7 @@ namespace testengine.provider.mda.tests
                 var tableValue = resultValue as TableValue;
 
                 Assert.Equal(expectedRecordCount, tableValue.Rows.Count());
-            } 
+            }
         }
 
         public static IEnumerable<object[]> ScalarTestValue()
@@ -109,6 +109,6 @@ namespace testengine.provider.mda.tests
                 NumberValue.New(1)
             };
         }
-        
-}
+
+    }
 }

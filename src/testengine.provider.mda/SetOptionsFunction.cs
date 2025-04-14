@@ -43,7 +43,7 @@ namespace testengine.provider.mda
 
             List<int> items = new List<int>();
 
-            foreach ( var row in  obj.Rows )
+            foreach (var row in obj.Rows)
             {
                 var value = row.Value.GetField("Value").AsDecimal().ToString();
                 items.Add((int)double.Parse(value));
@@ -55,8 +55,8 @@ namespace testengine.provider.mda
 
             var timeout = 30000;
             var started = DateTime.Now;
-            
-            while ( DateTime.Now.Subtract(started).TotalMilliseconds <= timeout )
+
+            while (DateTime.Now.Subtract(started).TotalMilliseconds <= timeout)
             {
                 try
                 {

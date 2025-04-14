@@ -31,7 +31,7 @@ namespace testengine.module.visualcompare
             .Add("type", FormulaType.String);
 
         public VisualCompareFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, IFileSystem filesystem, ILogger logger) : base(
-            DPath.Root.Append(new DName("Preview")), 
+            DPath.Root.Append(new DName("Preview")),
             "VisualCompare", // Name
             _metrics, // Return
             FormulaType.String, // Locator
@@ -99,7 +99,7 @@ namespace testengine.module.visualcompare
                 string base64String = _filesystem.ReadAllText(filename);
                 referenceImageData = Convert.FromBase64String(base64String);
             }
-            
+
             foreach (var row in compareTypes.Rows)
             {
                 foreach (var column in row.Value.Fields)
@@ -167,7 +167,7 @@ namespace testengine.module.visualcompare
 
             Mat inputImage = Cv2.ImDecode(inputDataImage, ImreadModes.Color);
             Mat refImage = referenceImage != null && referenceImage.Length > 0 ? Cv2.ImDecode(referenceImage, ImreadModes.Color) : new Mat();
-            
+
             // Check if the images were successfully loaded
             if (inputImage.Empty())
             {

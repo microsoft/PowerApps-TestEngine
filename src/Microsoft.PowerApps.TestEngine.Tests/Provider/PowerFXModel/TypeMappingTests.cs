@@ -176,12 +176,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         {
             // Arrange
             var typeMapping = new TypeMapping();
-            
+
             // Act
             Assert.True(typeMapping.TryGetType(typeName.ToLower(), out var formulaType));
-            
+
             // Assert
-           
+
             if (expectedType.IsAssignableFrom(typeof(RecordType)))
             {
                 RecordType record = formulaType as RecordType;
@@ -197,14 +197,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
 
         public static IEnumerable<object[]> ComplexTypeTests()
         {
-            yield return new object[] { "!{Name:s}", typeof(RecordType), new List<KeyValuePair<string, FormulaType>> { 
+            yield return new object[] { "!{Name:s}", typeof(RecordType), new List<KeyValuePair<string, FormulaType>> {
                 new KeyValuePair<string, FormulaType>("Name", FormulaType.String) } };
-            yield return new object[] { "*{Name:s}", typeof(TableType), new List<KeyValuePair<string, FormulaType>> { 
+            yield return new object[] { "*{Name:s}", typeof(TableType), new List<KeyValuePair<string, FormulaType>> {
                 new KeyValuePair<string, FormulaType>("Name", FormulaType.String) } };
             yield return new object[] { "*{Name:s, Other:n}", typeof(TableType), new List<KeyValuePair<string, FormulaType>> {
                 new KeyValuePair<string, FormulaType>("Name", FormulaType.String) ,
                 new KeyValuePair<string, FormulaType>("Other", FormulaType.Number)
             }};
-        } 
+        }
     }
 }

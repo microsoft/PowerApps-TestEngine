@@ -29,8 +29,8 @@ namespace testengine.module
 
         public BlankValue Execute()
         {
-           _logger.LogInformation("------------------------------\n\n" +
-                "Executing Pause function.");
+            _logger.LogInformation("------------------------------\n\n" +
+                 "Executing Pause function.");
 
             if (!_testState.GetTestSettings().Headless)
             {

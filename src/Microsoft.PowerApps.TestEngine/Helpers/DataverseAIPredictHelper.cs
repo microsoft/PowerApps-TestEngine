@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Microsoft.PowerApps.TestEngine.Helpers 
+namespace Microsoft.PowerApps.TestEngine.Helpers
 {
     public class DataverseAIPredictHelper
     {

@@ -54,7 +54,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             var matches = regex.Matches(typeString);
             foreach (Match match in matches)
             {
-                var subType = match.Groups["subType"].Value  + "," + match.Groups["dataType"].Value;
+                var subType = match.Groups["subType"].Value + "," + match.Groups["dataType"].Value;
                 subTypes.Add(subType);
             }
             return subTypes;
@@ -102,7 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                     {
                         AddMapping(subValue[0], typeMappings[subValue[1]]);
                     }
-                   
+
                     if (TryGetType(subValue[0], out var subFormulaType))
                     {
                         recordType = recordType.Add(new NamedFormulaType(subValue[0], subFormulaType));

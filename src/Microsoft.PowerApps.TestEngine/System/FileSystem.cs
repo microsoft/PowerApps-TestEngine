@@ -140,7 +140,8 @@ namespace Microsoft.PowerApps.TestEngine.System
             filePath = Path.GetFullPath(filePath);
             if (CanAccessFilePath(filePath))
             {
-                switch (Path.GetExtension(filePath).ToLower()) {
+                switch (Path.GetExtension(filePath).ToLower())
+                {
                     case ".jpg":
                     case ".jpeg":
                     case ".png":
@@ -456,7 +457,7 @@ namespace Microsoft.PowerApps.TestEngine.System
                         !(
                             ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase)
                             ||
-                            ext.Equals(".json", StringComparison.OrdinalIgnoreCase) 
+                            ext.Equals(".json", StringComparison.OrdinalIgnoreCase)
                             ||
                             ext.Equals(".csx", StringComparison.OrdinalIgnoreCase)
                             ||

@@ -764,7 +764,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public async Task SetupContext()
         {
-            
+
         }
 
         public FormulaValue ExecutePowerFx(string steps, CultureInfo culture)

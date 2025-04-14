@@ -52,7 +52,7 @@ namespace testengine.provider.mda
                 var record = RecordValue.NewRecordFromFields(
                     new NamedValue(new KeyValuePair<string, FormulaValue>(
                             "Name",
-                            StringValue.New(option["text"].ToString()) 
+                            StringValue.New(option["text"].ToString())
                         )),
                     new NamedValue(new KeyValuePair<string, FormulaValue>(
                             "Value",

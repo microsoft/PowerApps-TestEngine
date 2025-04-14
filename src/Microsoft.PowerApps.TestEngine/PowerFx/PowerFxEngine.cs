@@ -45,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         public RecalcEngine Engine { get; private set; }
         private ILogger Logger { get { return SingleTestInstanceState.GetLogger(); } }
 
-        public Func<AzureCliHelper> GetAzureCliHelper  = () => new AzureCliHelper();
+        public Func<AzureCliHelper> GetAzureCliHelper = () => new AzureCliHelper();
 
         public PowerFxEngine(ITestInfraFunctions testInfraFunctions,
                              ITestWebProvider testWebProvider,
@@ -70,7 +70,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             var features = Features.PowerFxV1;
 
             var powerFxConfig = new PowerFxConfig(features);
-            
+
             var vals = new SymbolValues();
             var symbols = (SymbolTable)vals.SymbolTable;
             symbols.EnableMutationFunctions();
@@ -140,7 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             ConditionallySetupDataverse(testSettings, powerFxConfig);
             ConditionallyRegisterTestFunctions(testSettings, powerFxConfig);
-            
+
             var symbolValues = new SymbolValues(powerFxConfig.SymbolTable);
 
             foreach (var val in powerFxConfig.SymbolTable.SymbolNames.ToList())
@@ -183,7 +183,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     var tableRecord = RecordType.Empty();
                     var first = true;
 
-                    TableNode tableNode = result as TableNode; 
+                    TableNode tableNode = result as TableNode;
 
                     foreach (var child in tableNode.ChildNodes)
                     {
@@ -192,7 +192,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                             first = false;
                             tableRecord = GetRecordType(recordNode);
 
-                            foreach ( var field in tableRecord.GetFieldTypes())
+                            foreach (var field in tableRecord.GetFieldTypes())
                             {
                                 table = table.Add(field);
                             }
@@ -336,7 +336,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         private void ConditionallySetupDataverse(TestSettings testSettings, PowerFxConfig powerFxConfig)
         {
-            if ( testSettings == null || !testSettings.ExtensionModules.Parameters.ContainsKey(ENABLE_DATAVERSE_FUNCTIONS) || (testSettings != null && testSettings.ExtensionModules.Parameters[ENABLE_DATAVERSE_FUNCTIONS].ToString().ToLower() != "true"))
+            if (testSettings == null || !testSettings.ExtensionModules.Parameters.ContainsKey(ENABLE_DATAVERSE_FUNCTIONS) || (testSettings != null && testSettings.ExtensionModules.Parameters[ENABLE_DATAVERSE_FUNCTIONS].ToString().ToLower() != "true"))
             {
                 return;
             }
@@ -371,7 +371,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 {
                     // Establish a collection to Dataverse
                     Logger.LogInformation($"Loading dataverse state for {dataverseUri}");
-                    Func<string, Task<string>> callback = async (string item) => {
+                    Func<string, Task<string>> callback = async (string item) =>
+                    {
                         return token;
                     };
                     var svcClient = new ServiceClient(dataverseUri, callback) { UseWebApi = false };
@@ -474,7 +475,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 FormulaValue result = FormulaValue.NewBlank();
 
                 int stepNumber = 0;
-                
+
                 foreach (var step in splitSteps)
                 {
                     TestState.OnBeforeTestStepExecuted(new TestStepEventArgs { TestStep = step, StepNumber = stepNumber, Engine = Engine });

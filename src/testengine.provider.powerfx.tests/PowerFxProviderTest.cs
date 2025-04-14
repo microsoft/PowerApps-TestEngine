@@ -22,7 +22,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
             MockLogger = new Mock<ILogger>(MockBehavior.Strict);
-            
+
         }
 
         [Fact]

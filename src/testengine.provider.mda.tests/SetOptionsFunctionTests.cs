@@ -30,10 +30,10 @@ namespace testengine.provider.mda.tests
             var function = new SetOptionsFunction(testInfraFunctionsMock.Object, loggerMock.Object);
 
             var pageMock = new Mock<IPage>();
-            var javaScript = String.Empty;
+            var javaScript = new List<string>();
 
             pageMock.Setup(p => p.EvaluateAsync<string>(It.IsAny<string>(), null))
-                .Callback((string expression, object? value) => { javaScript = expression; });
+                .Callback((string expression, object? value) => { javaScript.Add(expression); });
 
             var pages = new List<IPage> { pageMock.Object };
 
@@ -82,7 +82,10 @@ namespace testengine.provider.mda.tests
 
             Assert.Equal(0, engine.Evaluate("count"));
 
-            engine.Execute(javaScript);
+            foreach (var text in javaScript)
+            {
+                engine.Execute(text);
+            }
 
             Assert.Equal(expectedCount, engine.Evaluate("count"));
         }

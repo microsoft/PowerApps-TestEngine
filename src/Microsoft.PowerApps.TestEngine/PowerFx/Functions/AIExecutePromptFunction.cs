@@ -46,7 +46,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             ExpandoObject result = new ExpandoObject();
             var dictionary = result as IDictionary<string, object>;
 
-            if ( top )
+            if (top)
             {
                 // Tell Dataverse the encoding type of tye paramaters
                 dictionary.Add("@odata.type", "#Microsoft.Dynamics.CRM.expando");
@@ -133,7 +133,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             var finishReason = new NamedValue("FinishReason", FormulaValue.New(finishReasonValue));
             var text = new NamedValue("Text", FormulaValue.New(textValue));
 
-            return RecordValue.NewRecordFromFields(_result, new[] { id, finishReason, text } );
+            return RecordValue.NewRecordFromFields(_result, new[] { id, finishReason, text });
         }
     }
 }

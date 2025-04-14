@@ -1,4 +1,4 @@
-
+﻿
 using System.Dynamic;
 using System.Globalization;
 using System.Text;
@@ -12,6 +12,7 @@ using YamlDotNet.RepresentationModel;
 using YamlDotNet.Core.Tokens;
 using System.Text.Json;
 using Microsoft.PowerFx.Syntax;
+using Microsoft.PowerFx.Core.Utils;
 
 public class TestState
 {
@@ -20,6 +21,8 @@ public class TestState
     public string? Code { get; private set; }
     private RecalcEngine? _engine;
     private CultureInfo Culture = new CultureInfo("en-us");
+    private Dictionary<string, string> _types = new Dictionary<string, string>();
+    private string _functions = String.Empty;
 
     public TestState(string input)
     {
@@ -33,6 +36,7 @@ public class TestState
         var lines = input.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
         var appContent = new StringBuilder();
         var settingsContent = new StringBuilder();
+        var functionContext = new StringBuilder();
         var codeContent = new StringBuilder();
 
         string currentBlock = "Code";
@@ -54,6 +58,16 @@ public class TestState
                 currentBlock = "Code";
                 continue;
             }
+            if (line.StartsWith("// Types:"))
+            {
+                currentBlock = "Type";
+                continue;
+            }
+            if (line.StartsWith("// Function:"))
+            {
+                currentBlock = "Function";
+                continue;
+            }
             if (line.StartsWith("// Code:") && currentBlock != null)
             {
                 currentBlock = "Code";
@@ -64,11 +78,27 @@ public class TestState
             {
                 appContent.AppendLine(line);
             }
-            else if (currentBlock == "Settings")
+            
+            if (currentBlock == "Type")
+            {
+                var start = line.IndexOf(":");
+                if (start > 0)
+                {
+                    _types.Add(line.Substring(0,start), line.Substring(start+1, line.Length - (start + 1)).Trim());
+                }
+            }
+
+            if (currentBlock == "Function" && !string.IsNullOrWhiteSpace(line))
+            {
+                functionContext.AppendLine(line.Trim());
+            }
+
+            if (currentBlock == "Settings")
             {
                 settingsContent.AppendLine(line);
             }
-            else if (currentBlock == "Code")
+
+            if (currentBlock == "Code")
             {
                 codeContent.AppendLine(line);
             }
@@ -76,6 +106,7 @@ public class TestState
 
         App = appContent.ToString();
         Settings = settingsContent.ToString();
+        _functions = functionContext.ToString();
         Code = codeContent.ToString();
     }
 
@@ -97,7 +128,112 @@ public class TestState
         }
         Culture = new CultureInfo(locale);
 
-        _engine = PowerFxEngine.Init(out var options, locale);
+        PowerFxConfig engineConfig = null;
+
+        _engine = PowerFxEngine.Init(out var options, (config)=> { engineConfig = config; AddUserDefinedTypes(config); }, locale);
+
+        if ( !string.IsNullOrEmpty(_functions) )
+        {
+            if (!_functions.EndsWith(";"))
+            {
+                _functions += ";";
+            }
+            var result = _engine.AddUserDefinedFunction(_functions, Culture, engineConfig.SymbolTable, true);
+            if ( !result.IsSuccess )
+            {
+                throw new InvalidDataException("Unable to register user defined function");
+            }
+        }
+    }
+
+    private void AddUserDefinedTypes(PowerFxConfig powerFxConfig)
+    {
+        if (_types.Count > 0) {
+            foreach (var type in _types) {
+                var engine = new RecalcEngine(new PowerFxConfig(Features.PowerFxV1));
+                var result = engine.Parse(type.Value);
+                RegisterPowerFxType(type.Key, result.Root, powerFxConfig);
+            }
+        }
+    }
+
+    private void RegisterPowerFxType(string name, TexlNode result, PowerFxConfig powerFxConfig)
+    {
+        switch (result.Kind)
+        {
+            case NodeKind.Table:
+                var table = TableType.Empty();
+                var tableRecord = RecordType.Empty();
+                var first = true;
+
+                TableNode tableNode = result as TableNode;
+
+                foreach (var child in tableNode.ChildNodes)
+                {
+                    if (child is RecordNode recordNode && first)
+                    {
+                        first = false;
+                        tableRecord = GetRecordType(recordNode);
+
+                        foreach (var field in tableRecord.GetFieldTypes())
+                        {
+                            table = table.Add(field);
+                        }
+                    }
+                }
+
+                powerFxConfig.SymbolTable.AddType(new DName(name), table);
+                break;
+            case NodeKind.Record:
+                var record = GetRecordType(result as RecordNode);
+
+                powerFxConfig.SymbolTable.AddType(new DName(name), record);
+                break;
+        }
+    }
+
+    private RecordType GetRecordType(RecordNode recordNode)
+    {
+        var record = RecordType.Empty();
+        int index = 0;
+        foreach (var child in recordNode.ChildNodes)
+        {
+            if (child is DottedNameNode dottedNameNode)
+            {
+                var fieldName = dottedNameNode.Right.Name.Value;
+                var fieldType = GetFormulaTypeFromNode(dottedNameNode.Right);
+                record = record.Add(new NamedFormulaType(fieldName, fieldType));
+            }
+            if (child is FirstNameNode firstNameNode)
+            {
+                var fieldName = recordNode.Ids[index].Name.Value;
+                index++;
+                var fieldType = GetFormulaTypeFromNode(firstNameNode.Ident);
+                record = record.Add(new NamedFormulaType(fieldName, fieldType));
+            }
+        }
+        return record;
+    }
+
+    private FormulaType GetFormulaTypeFromNode(Identifier right)
+    {
+        switch (right.Name.Value)
+        {
+            case "Boolean":
+                return FormulaType.Boolean;
+            case "Number":
+                return FormulaType.Number;
+            case "Text":
+                return FormulaType.String;
+            case "Date":
+                return FormulaType.Date;
+            case "DateTime":
+                return FormulaType.DateTime;
+            case "Time":
+                return FormulaType.Time;
+            default:
+                throw new InvalidOperationException($"Unsupported node type: {right.Name.Value}");
+        }
     }
 
     private void ParseAppCode()

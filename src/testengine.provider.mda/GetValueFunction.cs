@@ -47,7 +47,7 @@ namespace testengine.provider.mda
             if (value is JArray jArray)
             {
                 var options = await page.EvaluateAsync<string>($"JSON.stringify(Xrm.Page.ui.formContext.getAttribute('{controlModel.Name}').getOptions())");
-                
+
                 if (options.StartsWith("["))
                 {
                     var optionArray = JArray.Parse(options);
@@ -58,7 +58,7 @@ namespace testengine.provider.mda
 
                     var filteredJArray = JArray.FromObject(filteredOptions);
                     return ConvertToUntypedObjectValue(filteredJArray);
-                } 
+                }
             }
 
             return ConvertToUntypedObjectValue(value);

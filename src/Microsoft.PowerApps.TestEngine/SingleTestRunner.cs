@@ -157,7 +157,7 @@ namespace Microsoft.PowerApps.TestEngine
                     await _powerFxEngine.ExecuteWithRetryAsync(testSuiteDefinition.OnTestSuiteStart, locale);
                 }
 
-                if (_testWebProvider.GenerateTestUrl(_state.GetDomain(),"") != "about:blank")
+                if (_testWebProvider.GenerateTestUrl(_state.GetDomain(), "") != "about:blank")
                 {
                     await _userManager.LoginAsUserAsync(desiredUrl, TestInfraFunctions.GetContext(), _state, TestState, _environmentVariable, _userManagerLoginType);
                 }
