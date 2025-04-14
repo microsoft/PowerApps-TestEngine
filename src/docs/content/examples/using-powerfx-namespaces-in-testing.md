@@ -2,7 +2,7 @@
 title: Using Power Fx Namespaces in Testing
 ---
 
-**NOTE** Namespaces are a preview feature only available in early release integration branches of the Power Apps test engine.
+**NOTE** Namespaces are a preview feature only available in early release branches of the Power Apps test engine.
 
 ## Introduction to Power Fx Namespaces
 Power Fx namespaces are a powerful feature that allows developers to organize and separate different sets of functions within the Power Fx language. By using namespaces, you can distinguish between the default functions provided by Power Fx, such as `CountRows()`, and extensions added for specific purposes, like the Test Engine with functions such as `Preview.Pause()`. This separation helps in maintaining clarity and avoiding conflicts between different sets of features.

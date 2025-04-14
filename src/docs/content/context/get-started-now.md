@@ -154,14 +154,6 @@ To complete this file
 
 7. Note: Some samples will not require the customPage setting
 
-### Git Branch Notes
-
-Samples are currently in the `integration` branch as changes are reviewed and updated they will move to main and the Power Platform `pac test run` command. To use this branch
-
-```pwsh
-git checkout integration
-```
-
 ### Simplest Example: Clicking the Button of a Canvas App
 
 For those looking for a straightforward example, you can start with a simple scenario like clicking a button in a Canvas App. This example will help you understand the basics of automated testing in the Power Platform.

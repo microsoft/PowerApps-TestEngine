@@ -25,8 +25,7 @@ Lets have a look at what that looks like for the target release process for Test
 The Ring Deployment Model is closely tied to the development workflow, particularly the use of branches in version control systems. Here's how it integrates:
 
 - **Development Branches**: New features and updates are initially developed in separate branches. These branches allow developers to work on new functionalities without affecting the main codebase.
-- **Merge to Integration Branch**: Once a feature is ready, it is merged into an integration branch. This branch serves as a staging area where multiple features are combined and tested together.
-- **Merge to Main Branch**: After successful testing in the integration branch, the changes are merged into the main branch. This branch represents the stable version of the software that is ready for deployment.
+- **Merge to Main Branch**: After successful testing in the, the changes are tagged in the main branch for a release. This tag represents the stable version of the software that is ready for deployment.
 
 ## Namespaces for Feature Testing
 

@@ -31,7 +31,7 @@ Using guide [Get Started Now](../context/get-started-now.md) ensure the followin
 - Git Client
 - Azure CLI
 
-> NOTE: Unless stated otherwise to use of the learning module assumed that you are using the `integration` branch. If you are new to feature branched you can read [Understanding Feature Branches](../context/understanding-feature-branches.md).
+> NOTE: If you are new to feature branched you can read [Understanding Feature Branches](../../context/understanding-feature-branches.md).
 
 ## Modules
 

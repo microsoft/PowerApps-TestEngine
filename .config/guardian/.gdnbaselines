@@ -1,0 +1,2293 @@
+{
+  "properties": {
+    "helpUri": "https://eng.ms/docs/microsoft-security/security/azure-security/cloudai-security-fundamentals-engineering/security-integration/guardian-wiki/microsoft-guardian/general/baselines"
+  },
+  "version": "1.0.0",
+  "baselines": {
+    "default": {
+      "name": "default",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "lastUpdatedDate": "2025-03-27 20:12:06Z"
+    }
+  },
+  "results": {
+    "d917a153f9c8f043666b6770d2d0bf0e398d666dfa243056933fd54b72bef6a6": {
+      "signature": "d917a153f9c8f043666b6770d2d0bf0e398d666dfa243056933fd54b72bef6a6",
+      "alternativeSignatures": [],
+      "target": "samples/coe-kit-setup-wizard/Record.ps1",
+      "line": 73,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "daccc8e975d27031e1958b17820779e368367b13414cdac530803267570ccbe8": {
+      "signature": "daccc8e975d27031e1958b17820779e368367b13414cdac530803267570ccbe8",
+      "alternativeSignatures": [],
+      "target": "samples/coe-kit-setup-wizard/RunTests.ps1",
+      "line": 72,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "e39f7c623ee9302f13b6b1ffafbf603869fd985f13d2b2155a3260b96896a960": {
+      "signature": "e39f7c623ee9302f13b6b1ffafbf603869fd985f13d2b2155a3260b96896a960",
+      "alternativeSignatures": [],
+      "target": "samples/mda/README.md",
+      "line": 28,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "dc83db97b6605fe3d88004631c22d7a9a532ce952565e8f21ec0ff2228768d11": {
+      "signature": "dc83db97b6605fe3d88004631c22d7a9a532ce952565e8f21ec0ff2228768d11",
+      "alternativeSignatures": [],
+      "target": "samples/mda/RunTests.ps1",
+      "line": 58,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "4638e91ec57bf5fda0169204a687de07b88efa9e4519eddb4aca89be297ff523": {
+      "signature": "4638e91ec57bf5fda0169204a687de07b88efa9e4519eddb4aca89be297ff523",
+      "alternativeSignatures": [],
+      "target": "samples/mda-icons-controls/README.md",
+      "line": 32,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "8ba2698d0b988098b75a85e06dc81a2603df7ef2c6cf07fa739373d1031ae6b6": {
+      "signature": "8ba2698d0b988098b75a85e06dc81a2603df7ef2c6cf07fa739373d1031ae6b6",
+      "alternativeSignatures": [],
+      "target": "samples/mdaclassicinputcontrols/README.md",
+      "line": 33,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "5b25bdb9315aac2a1c754cfc75ab7881ddd0f349a799f642d2dc2268a17811c9": {
+      "signature": "5b25bdb9315aac2a1c754cfc75ab7881ddd0f349a799f642d2dc2268a17811c9",
+      "alternativeSignatures": [],
+      "target": "samples/mdadisplaycontrols/README.md",
+      "line": 33,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "0f4fc5c0a92d00c1a657ac8ce781160ed94b756bd3de55750df4da2933806161": {
+      "signature": "0f4fc5c0a92d00c1a657ac8ce781160ed94b756bd3de55750df4da2933806161",
+      "alternativeSignatures": [],
+      "target": "samples/mdaheadercontrol/README.md",
+      "line": 32,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "f42b5d1db1ad8f6e47a9b2331c51fd0b1605b4d6c2c9d7d8c5c855c954f01e11": {
+      "signature": "f42b5d1db1ad8f6e47a9b2331c51fd0b1605b4d6c2c9d7d8c5c855c954f01e11",
+      "alternativeSignatures": [],
+      "target": "samples/mdashapecontrols/README.md",
+      "line": 32,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "6378d5010b92fa01a766172ef56c6b9f42064da2df617eeea3284bcfe39d21d1": {
+      "signature": "6378d5010b92fa01a766172ef56c6b9f42064da2df617eeea3284bcfe39d21d1",
+      "alternativeSignatures": [],
+      "target": "samples/mda_containercontrol/ReadMe.md",
+      "line": 31,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "38eeaa7849c7bf0afed177650e32c87ba9794914acef2a0dd4f39a1c9fe23d50": {
+      "signature": "38eeaa7849c7bf0afed177650e32c87ba9794914acef2a0dd4f39a1c9fe23d50",
+      "alternativeSignatures": [],
+      "target": "samples/mda_imagecontrol/README.md",
+      "line": 31,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "a4524997604bb04c002e672c63fe4ff726850628cc454e4ae4a83945df011009": {
+      "signature": "a4524997604bb04c002e672c63fe4ff726850628cc454e4ae4a83945df011009",
+      "alternativeSignatures": [],
+      "target": "samples/permissions/RunTests.ps1",
+      "line": 68,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "a770d187ae4e2d33c0a28ca6c14b40460d2c5dcf93e88b7d43f33d84f2c00286": {
+      "signature": "a770d187ae4e2d33c0a28ca6c14b40460d2c5dcf93e88b7d43f33d84f2c00286",
+      "alternativeSignatures": [],
+      "target": "samples/permissions/RunTests.ps1",
+      "line": 69,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "e0e0858ac34261d7d50624e50ea6805907f7e7cd774b58d14375c0c618a0c875": {
+      "signature": "e0e0858ac34261d7d50624e50ea6805907f7e7cd774b58d14375c0c618a0c875",
+      "alternativeSignatures": [],
+      "target": "samples/weather/Record.ps1",
+      "line": 97,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "03d88309a093e4658b04eb2270812ee448734697f5dae9650e4f193876a70f61": {
+      "signature": "03d88309a093e4658b04eb2270812ee448734697f5dae9650e4f193876a70f61",
+      "alternativeSignatures": [],
+      "target": "samples/weather/RunTests.ps1",
+      "line": 97,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "2943317cdfe52a7ed15e8eb4e3c41f01feeef1e1df6b494341d99b7ac4ba3142": {
+      "signature": "2943317cdfe52a7ed15e8eb4e3c41f01feeef1e1df6b494341d99b7ac4ba3142",
+      "alternativeSignatures": [],
+      "target": "samples/weather/RunTests.ps1",
+      "line": 116,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "0feef40794432e39bafe7c184fed6aa6a3d0f6d08b6186c83ab393a03376f6b3": {
+      "signature": "0feef40794432e39bafe7c184fed6aa6a3d0f6d08b6186c83ab393a03376f6b3",
+      "alternativeSignatures": [],
+      "target": "src/PowerAppsTestEngine/Properties/launchSettings.json",
+      "line": 5,
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0060",
+      "createdDate": "2025-03-27 20:12:06Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "126c948102e2176e1283dbbb5f994d9a0bd37dea908228c5a80d5c79183df516": {
+      "signature": "126c948102e2176e1283dbbb5f994d9a0bd37dea908228c5a80d5c79183df516",
+      "alternativeSignatures": [
+        "2e6c46e5931fea49b2a7484d11c094face49f2b608999d41213b57363c91923c"
+      ],
+      "target": "buildoutput/bin/Debug/Microsoft.PowerApps.TestEngine/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "66acad52e6a4b39d01e5f996ab6c80e7270a7ed9cddb4f6a2968104ebda8a4f1": {
+      "signature": "66acad52e6a4b39d01e5f996ab6c80e7270a7ed9cddb4f6a2968104ebda8a4f1",
+      "alternativeSignatures": [
+        "a95d88d0735838e9acd1fd69062cad7257a984d3512cdae88ed022d9ac2146d5"
+      ],
+      "target": "buildoutput/bin/Debug/Microsoft.PowerApps.TestEngine/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "a9d524e922ef9964fd706d4cd33f3f1f1314764512abff8a7fb402b292b06634": {
+      "signature": "a9d524e922ef9964fd706d4cd33f3f1f1314764512abff8a7fb402b292b06634",
+      "alternativeSignatures": [
+        "0fb15c9947232a6339cc1a71144ac508832d27a67e584497c39c8bd58dc66fa8"
+      ],
+      "target": "buildoutput/bin/Debug/Microsoft.PowerApps.TestEngine.Tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "21804fc43aa3aad1c629a19ca35a661bb1c32fded8506d655b96e86e33fa025f": {
+      "signature": "21804fc43aa3aad1c629a19ca35a661bb1c32fded8506d655b96e86e33fa025f",
+      "alternativeSignatures": [
+        "93f3f589472d083e2af39693d6c5514508e71b2926c75298dc3e7e4cb8dd767c"
+      ],
+      "target": "buildoutput/bin/Debug/Microsoft.PowerApps.TestEngine.Tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "67982c4b1b49a3fc06c22e4052cd004810329772341078ee1179faf2894f754d": {
+      "signature": "67982c4b1b49a3fc06c22e4052cd004810329772341078ee1179faf2894f754d",
+      "alternativeSignatures": [
+        "972f2dac3a05fc72c549fa1717d93830fdc00c6b06df83473ecd5f9f1e6f1470"
+      ],
+      "target": "buildoutput/bin/Debug/PowerAppsTestEngine/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "dc59a43d13c52d4e650d94d1c0adf1bc26cf8c45ff6a6cea048ecd1f9fd23018": {
+      "signature": "dc59a43d13c52d4e650d94d1c0adf1bc26cf8c45ff6a6cea048ecd1f9fd23018",
+      "alternativeSignatures": [
+        "4c87c7f91c45b0c13c2fed9e941ed887a73d56aca974ff04bd062f080720fcbe"
+      ],
+      "target": "buildoutput/bin/Debug/PowerAppsTestEngine/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "b057a63e25bdc6d630ec098251d060c1c86cf058a73da6562a6107bfb8c4d271": {
+      "signature": "b057a63e25bdc6d630ec098251d060c1c86cf058a73da6562a6107bfb8c4d271",
+      "alternativeSignatures": [
+        "5f6b205b31a2d99db69157c9296eda17c6d40ec1c64fdda4e85231be10212554"
+      ],
+      "target": "buildoutput/bin/Debug/PowerAppsTestEngineWrapper/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "c9b43e17b61625127dae42db6261819b13c64c578ff2135c0c7429f1ecf895ae": {
+      "signature": "c9b43e17b61625127dae42db6261819b13c64c578ff2135c0c7429f1ecf895ae",
+      "alternativeSignatures": [
+        "e219cca440574349b1e610f45d9f3cdcf7c8bd3ddd595a6fdcd18731708e6730"
+      ],
+      "target": "buildoutput/bin/Debug/PowerAppsTestEngineWrapper/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "fac123a23708d5341695a7155fcc2c3c9b008bf71f1459fd6ffa85d271e83f90": {
+      "signature": "fac123a23708d5341695a7155fcc2c3c9b008bf71f1459fd6ffa85d271e83f90",
+      "alternativeSignatures": [
+        "1d0f8d862be38a7f9e91fc760935c88b27b2c32cc3b505eeb41812c64b6cf754"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.auth.certificatestore/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "39a6be11572801928a80eeed0fcd35f4fa526f853ad2e1257b21985a4ba0ad1b": {
+      "signature": "39a6be11572801928a80eeed0fcd35f4fa526f853ad2e1257b21985a4ba0ad1b",
+      "alternativeSignatures": [
+        "9b65463d98034c90903f121b56ff752501e061e19461d9bcbc0932c2e3ad246f"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.auth.certificatestore/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "00a623e704a34c325c14abc1a3954e4a744c66d288476446d1c4cb857e030749": {
+      "signature": "00a623e704a34c325c14abc1a3954e4a744c66d288476446d1c4cb857e030749",
+      "alternativeSignatures": [
+        "db3daaad5fe16c8e69a90371be6e4d71cba1fb9c86505cb7773d258de91ef9aa"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.auth.certificatestore.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "f3113ec7cb248b4b63ddd0369357cf35c2cb7043626e6d70fa7a3198caf9df1a": {
+      "signature": "f3113ec7cb248b4b63ddd0369357cf35c2cb7043626e6d70fa7a3198caf9df1a",
+      "alternativeSignatures": [
+        "72879ab7fc44d8a5c72c48f9141bc39b542388b3eeba3d9df5ae2abeedb07da2"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.auth.certificatestore.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "07646186c9b8446753cca8679ca116708ef790f0581f9bdf5b125dae04f53e1a": {
+      "signature": "07646186c9b8446753cca8679ca116708ef790f0581f9bdf5b125dae04f53e1a",
+      "alternativeSignatures": [
+        "8fc73db2015e950c0b4bf50ffb560e082e1c69b2b42ecf2ecf7eb440e5c88bf7"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.auth.environment.certificate/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "6570bb4af2a3787cbba705f208bde93908e2ea275f9bd9b4b47ae89ad565a805": {
+      "signature": "6570bb4af2a3787cbba705f208bde93908e2ea275f9bd9b4b47ae89ad565a805",
+      "alternativeSignatures": [
+        "7583aebecfc237af21e6a32178deae8ccfaaced913b4135887315c8980a750ae"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.auth.environment.certificate/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "252245f2d9ba296a220776f5f98e869250e5c0c7b1671a7cb6539deef3814111": {
+      "signature": "252245f2d9ba296a220776f5f98e869250e5c0c7b1671a7cb6539deef3814111",
+      "alternativeSignatures": [
+        "4c837b8ca85afd366b759c63ee12cbc7ffd201bb8fe32e1ffd97c44ba7790dc2"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.auth.environment.certificatestore.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "f47cb1b5db2e211a70e01459f85bc00f2f2906874e987eb7234531a0ff83238c": {
+      "signature": "f47cb1b5db2e211a70e01459f85bc00f2f2906874e987eb7234531a0ff83238c",
+      "alternativeSignatures": [
+        "bf83fc6ec86f099689dc25a67298e3f61c669d228e47e90db16c92e1cd341a32"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.auth.environment.certificatestore.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "c11741de63350de61d19a24a506ced4122c4df2e4577baedac16b941cfba90f3": {
+      "signature": "c11741de63350de61d19a24a506ced4122c4df2e4577baedac16b941cfba90f3",
+      "alternativeSignatures": [
+        "3e4630bdc967257184d99808f109e7e8222315d75d084b3b065ab8ba34e0af20"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.common.user/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "213a66c0105fb0421f899210451cd9e94366d5a4916219725262d65412d9b694": {
+      "signature": "213a66c0105fb0421f899210451cd9e94366d5a4916219725262d65412d9b694",
+      "alternativeSignatures": [
+        "8f74dc0baa35640069e1ae55abfc44b4b8fdc866ee434ed852882ed846d6a3b4"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.common.user/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "56279a4b5ed09e6239fb5b47a4fb0a16df16ca4e6c84a2f0b21d339b5d4ee4ff": {
+      "signature": "56279a4b5ed09e6239fb5b47a4fb0a16df16ca4e6c84a2f0b21d339b5d4ee4ff",
+      "alternativeSignatures": [
+        "0e62ab58c1928cac729909b3c560d576ab90d523d28f06ea7a31de8f9a69f448"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.common.user.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "aea9046eb2b839b8060cbf4ff74c10c13166266793d290b43780f9e19427d720": {
+      "signature": "aea9046eb2b839b8060cbf4ff74c10c13166266793d290b43780f9e19427d720",
+      "alternativeSignatures": [
+        "924f36d6960b551612d210b517f957b1b3643c9f5b5a651f7e5cbb5af2d181aa"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.common.user.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "bd2c86d796b31610fc4ae4f5107786edc51ca639e133f310e726fa7b12a19310": {
+      "signature": "bd2c86d796b31610fc4ae4f5107786edc51ca639e133f310e726fa7b12a19310",
+      "alternativeSignatures": [
+        "a4dbe12c0f40f2bbe43301088147cdf6671610b26063a13714e8df3b5279f152"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.mda/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "5cd536c38d0f93a2449c1768630b561e90b580ff29f77d81b48297a34df8f44e": {
+      "signature": "5cd536c38d0f93a2449c1768630b561e90b580ff29f77d81b48297a34df8f44e",
+      "alternativeSignatures": [
+        "f96e7a59c2adc0eaa28e3f0e518b3d97799b320cf37d63c62bbd52d900aaa8d5"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.mda/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "b5be7c54ccd36e767383fd8a9a7ef09f3456ea24d9526228564b47a81db2ea4c": {
+      "signature": "b5be7c54ccd36e767383fd8a9a7ef09f3456ea24d9526228564b47a81db2ea4c",
+      "alternativeSignatures": [
+        "61dff4fd53c7dcd887b1eef141a310d6cdbe3b824f04a771dfcc8d87229c47b3"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.mda.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "5d9caaa1f2b61d9b446efda3ce15a4c188cc522d9affdfdb04d70191b249da4f": {
+      "signature": "5d9caaa1f2b61d9b446efda3ce15a4c188cc522d9affdfdb04d70191b249da4f",
+      "alternativeSignatures": [
+        "6ffc2cbaca4e28c4dc8981ac9408994d63799baad6ba3bad4691c3875882297f"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.mda.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "ee05e2dda28105e62327e92e3868765ae40939ef3331c05ac54e67c2381d35b9": {
+      "signature": "ee05e2dda28105e62327e92e3868765ae40939ef3331c05ac54e67c2381d35b9",
+      "alternativeSignatures": [
+        "53f43f882c57f85e391ef529405a96675652919316c85d771e86b07834d015a2"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.pause/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "28c2c3207b29acadd26867b712a278d27468c2deba8285ac2d4aa9f21782f8ec": {
+      "signature": "28c2c3207b29acadd26867b712a278d27468c2deba8285ac2d4aa9f21782f8ec",
+      "alternativeSignatures": [
+        "fef6829a6497ad458ef7b68859b01659e3dc666684049bb7b6143b8d86ee3351"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.pause/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "5775d07d2c0074a67bc203cd977b4d66fec6f710c1eed7da46324669bd206271": {
+      "signature": "5775d07d2c0074a67bc203cd977b4d66fec6f710c1eed7da46324669bd206271",
+      "alternativeSignatures": [
+        "54a347208f35d9ec0147bb3c1d03ffebd9532a0c403295ce8d321aefaf304738"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.pause.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "25b477c1880282222b98c89111815dbeaf8e173c9a86b187bacf3916fbb717f0": {
+      "signature": "25b477c1880282222b98c89111815dbeaf8e173c9a86b187bacf3916fbb717f0",
+      "alternativeSignatures": [
+        "a5e3526c1edbf1f714029a311be902d06abe02e2d65aa9a6065cecde5fda35a8"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.pause.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "14e59b54f72ffa95756ac1c23524d2e50cd406aac445b6ec6b939e46a6666076": {
+      "signature": "14e59b54f72ffa95756ac1c23524d2e50cd406aac445b6ec6b939e46a6666076",
+      "alternativeSignatures": [
+        "0c4a49c2316e67d0b92c89d2350bd09e951d5257a024f3fdaadf45fc2f827f04"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.playwrightaction/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "7e02f950a1f20e226ce49c7406f62a659b3df4da8706472a3741841453b755c6": {
+      "signature": "7e02f950a1f20e226ce49c7406f62a659b3df4da8706472a3741841453b755c6",
+      "alternativeSignatures": [
+        "c72fbf91f0cf01669bd918c11b5a19686b90f74c5c9c5741bdced2680ecf3e2b"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.playwrightaction/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "63df50d41dc94218d9bc19bc8b1706f68ef7740dabd0f29fde1e12205e165860": {
+      "signature": "63df50d41dc94218d9bc19bc8b1706f68ef7740dabd0f29fde1e12205e165860",
+      "alternativeSignatures": [
+        "fb0d28a08368ac6b316d977ba338ab652099cc864404396d3b56cd0ae98634c6"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.playwrightaction.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "bd74fb04a7b13142abb8d44c03addb33ccebf81fc031fff66b156f4f31223edd": {
+      "signature": "bd74fb04a7b13142abb8d44c03addb33ccebf81fc031fff66b156f4f31223edd",
+      "alternativeSignatures": [
+        "777f1ee16f31e84f81f3545a6f8d19bc8c940ab2a050f89932a2cf6dcb71e258"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.playwrightaction.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "bc22f6260685c008e50ff25d26141f97fee681adbdf83d099904b466a4cabc49": {
+      "signature": "bc22f6260685c008e50ff25d26141f97fee681adbdf83d099904b466a4cabc49",
+      "alternativeSignatures": [
+        "a4933862a920164ff79548212c2b823298a63b6082748bccd0b7f8a1577f6af6"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.playwrightscript/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "2913a105045ed9369069c69f049f50fc2353300cf5f644a8b0c9af441e5c93ad": {
+      "signature": "2913a105045ed9369069c69f049f50fc2353300cf5f644a8b0c9af441e5c93ad",
+      "alternativeSignatures": [
+        "622e2bdcbfbb7b8f04bb5b5b46798b040bb6c23696f72663b7e511085e57a238"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.playwrightscript/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "fb761e306a2cd9450edd2a8ecdecec42f786df45560260a2127b710606e5b348": {
+      "signature": "fb761e306a2cd9450edd2a8ecdecec42f786df45560260a2127b710606e5b348",
+      "alternativeSignatures": [
+        "bcf522aff74fe225edcd19ebb7c117e01463175eb1c7cc7b06d96d8e965854e6"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.playwrightscript.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "26d9f35ce02c5dd694ee45975b9556a35e37c43710e455595d6159afae5b64b6": {
+      "signature": "26d9f35ce02c5dd694ee45975b9556a35e37c43710e455595d6159afae5b64b6",
+      "alternativeSignatures": [
+        "c8d40e3cb18a43169deec5c3095b7d4b486f8b8e81a410472b936b1e96ba60d7"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.playwrightscript.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "26b6ea6683eda720c24657a6f59cdf337579250e67508e4effc27f4b473dd494": {
+      "signature": "26b6ea6683eda720c24657a6f59cdf337579250e67508e4effc27f4b473dd494",
+      "alternativeSignatures": [
+        "54c7c1bf2f730dfc24a2f92797f55d1ea9519152293013a5d9820fbdc94ebcf4"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.powerapps.portal/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "ec60fb10c6cac648cee969d4f4fa38354e9387c7c2f7bcdcee007c955b796286": {
+      "signature": "ec60fb10c6cac648cee969d4f4fa38354e9387c7c2f7bcdcee007c955b796286",
+      "alternativeSignatures": [
+        "ef10fd371ba66958760fab97f70b7bc63c7d720e39a1155168853377e860001c"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.powerapps.portal/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "8408e3f8d96b84c3447c66c9858394e54aa75a29ff22914a2e77ff3470565bc1": {
+      "signature": "8408e3f8d96b84c3447c66c9858394e54aa75a29ff22914a2e77ff3470565bc1",
+      "alternativeSignatures": [
+        "fe66f65136ba11bd2dd26246d9f686681ce87b4671604b9fc91002cce8f2abd7"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.powerapps.portal.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "b78c2963c82078206feffe664f46868a192b920f4a9b703534b6bdebab02a4dd": {
+      "signature": "b78c2963c82078206feffe664f46868a192b920f4a9b703534b6bdebab02a4dd",
+      "alternativeSignatures": [
+        "a3a0ab83126d033d20ada455c01fd52fc9ea25ac0a468c52be4718f346546c01"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.powerapps.portal.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "c6ada13b8d0ee1e332993ad4d5498ba6e5c227fc0977625486fc3856735363bf": {
+      "signature": "c6ada13b8d0ee1e332993ad4d5498ba6e5c227fc0977625486fc3856735363bf",
+      "alternativeSignatures": [
+        "81e35dee4223eb0fa55e09b81fb55a3732c25e3f91554cda146ff8b1698824b0"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.sample/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "c0965e52e58c442fa6ca04ba6eedcdb988c68eefd68cbc52cd793cbbdbf93c22": {
+      "signature": "c0965e52e58c442fa6ca04ba6eedcdb988c68eefd68cbc52cd793cbbdbf93c22",
+      "alternativeSignatures": [
+        "99ca91ee0c1a7114a76fdd44e8896a2d609f0d4879e72f13bc38a33c89ae925d"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.sample/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "b22a9011b36c1c171d639d3e47f8f713f44cfccb35ca96f0a877a9836b86e6ca": {
+      "signature": "b22a9011b36c1c171d639d3e47f8f713f44cfccb35ca96f0a877a9836b86e6ca",
+      "alternativeSignatures": [
+        "dddf44cce76d05cac9153a24f50d74d686771076cec290b75328881c6588f371"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.simulation/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "0af8d3f325246cffc8d00fb9567d266142ea9f447173a7ce0108c75386d2b1fe": {
+      "signature": "0af8d3f325246cffc8d00fb9567d266142ea9f447173a7ce0108c75386d2b1fe",
+      "alternativeSignatures": [
+        "a6d955a33ac3c58bdd4af968ce41c49e3e4d0bf6e658d66bfb2931ff7519b5c6"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.module.simulation/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "054a7237ebcea9fe5f359bac589459cd447afdd8377915b122b8bf0990833d8d": {
+      "signature": "054a7237ebcea9fe5f359bac589459cd447afdd8377915b122b8bf0990833d8d",
+      "alternativeSignatures": [
+        "7e059444483218f35fe0ec5a7cc95d6ee1e07b59e539cb49d4eb95e5db5178ac"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.modules.simulation.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "d3cf57f73cbf5137d6e25ee51072924a130de1e3520453cc1e1751a191425d5f": {
+      "signature": "d3cf57f73cbf5137d6e25ee51072924a130de1e3520453cc1e1751a191425d5f",
+      "alternativeSignatures": [
+        "d6e763e400027d5a852435593e7ed1a34483f54dbc0bb70a5e3ddf62deefff4a"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.modules.simulation.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "91242b482512cf637c7c351efe9b3b7f6bf92deb1ac5900794047867df63d507": {
+      "signature": "91242b482512cf637c7c351efe9b3b7f6bf92deb1ac5900794047867df63d507",
+      "alternativeSignatures": [
+        "db6b8a88bfb8f465739b185283579066f71260b2ef7f484126ab7c164514ad9e"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.canvas/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "6d820ebd7f7e97687628639585eeaf7596f3bc03943f473c6b2c4f6cb8b4a2ec": {
+      "signature": "6d820ebd7f7e97687628639585eeaf7596f3bc03943f473c6b2c4f6cb8b4a2ec",
+      "alternativeSignatures": [
+        "42ec079740f7a37bbf5683b4874f9fa4d90163882ea115d673da92f72e15d26c"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.canvas/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "625ccbef5db734a787bcd0f2fa651214829d2e93177372ae6ea243921ad82667": {
+      "signature": "625ccbef5db734a787bcd0f2fa651214829d2e93177372ae6ea243921ad82667",
+      "alternativeSignatures": [
+        "4f4061d6aba0419e2f34c8ee9b43fe5d436f691b508e5b485734a49a2ee5210b"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.canvas.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "aa1f0869f2cd3e620f177051108da8c5307f442a01fbdafc5f4e06fb6c8085e2": {
+      "signature": "aa1f0869f2cd3e620f177051108da8c5307f442a01fbdafc5f4e06fb6c8085e2",
+      "alternativeSignatures": [
+        "a12f985cf287333fe8e5d23eb29a1c92ed7f448b6ad8a53b0ff7603c720d3034"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.canvas.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "8efea45901cd95431c3bc1129facb237adc637f9cc2c574570f0aeda34398c0f": {
+      "signature": "8efea45901cd95431c3bc1129facb237adc637f9cc2c574570f0aeda34398c0f",
+      "alternativeSignatures": [
+        "b460dfca3fe9d12dfc953fb7e25cc94d52088cefc3a8c6509161d196eb75e127"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.mda/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "3a85d6f1908914c3e9d7d7424c1767526865f4f648c9fa10b88e3ed7fac352a1": {
+      "signature": "3a85d6f1908914c3e9d7d7424c1767526865f4f648c9fa10b88e3ed7fac352a1",
+      "alternativeSignatures": [
+        "82fa044fdffa880ed6b25b47693f06957e18d424411f9c284281d5c5fcfc8d43"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.mda/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "e2ca75d5142dabf4c5d141bba4be8a3ece653457ba4a8eac427fe00ea9da044a": {
+      "signature": "e2ca75d5142dabf4c5d141bba4be8a3ece653457ba4a8eac427fe00ea9da044a",
+      "alternativeSignatures": [
+        "d97fb78c1125c9509239534ae36bab2d7a2943c77a8be28d252926fbf2d699b5"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.mda.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "6f8af5cff84e5a982f035d4488e0d216d7a1ead3e18f6db14f581fd67b5537a9": {
+      "signature": "6f8af5cff84e5a982f035d4488e0d216d7a1ead3e18f6db14f581fd67b5537a9",
+      "alternativeSignatures": [
+        "2fb384b24d16cf9653e75d46879ca0d6614312b1900d5a38bcd4f57aa8e6b1db"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.mda.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "ea9437b876b39b07c5a6fcaad2194bd6f877e581211aa1b059b2e1627487f748": {
+      "signature": "ea9437b876b39b07c5a6fcaad2194bd6f877e581211aa1b059b2e1627487f748",
+      "alternativeSignatures": [
+        "c67d0c9e04a77b264736bfc16bb8a06bdb954194313500a9183c3b4d046f247f"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.powerapps.portal/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "7b03d606ef78519653f227bdb12238b155ed2596192dcfe03a685c2828603b8b": {
+      "signature": "7b03d606ef78519653f227bdb12238b155ed2596192dcfe03a685c2828603b8b",
+      "alternativeSignatures": [
+        "29dc2c43e3b45ab32bbb4fcbc5aa9fb6975a9e19dd614ae838639047fc86aa7b"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.powerapps.portal/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "2c091c3070674afb11f3f5fb7cc1f5b0f444a589fe14ede51ebcf49633eb4eed": {
+      "signature": "2c091c3070674afb11f3f5fb7cc1f5b0f444a589fe14ede51ebcf49633eb4eed",
+      "alternativeSignatures": [
+        "5b772de35e3f4905587a8a6c881307a5ab3355c15e5cd7a3f3b9d5f5a1c2d2c9"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.powerapps.portal.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "4e491ea5c6786d929477db529071c2b8b024f0177e000d52d02134c617e5b488": {
+      "signature": "4e491ea5c6786d929477db529071c2b8b024f0177e000d52d02134c617e5b488",
+      "alternativeSignatures": [
+        "c6e74331c0e5104a1795933ae1a329fed72673ba0a8d17b6b1371d276c08d074"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.provider.powerapps.portal.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "6d166c868fbc7b1cdef151c52e2718bab79c287d7b57298ba48f2a6e7b414bcf": {
+      "signature": "6d166c868fbc7b1cdef151c52e2718bab79c287d7b57298ba48f2a6e7b414bcf",
+      "alternativeSignatures": [
+        "69e50c576e1b2c131084d5b5d9a17261b455100929b9d00fc6bb97a258e92999"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.user.storagestate/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "2e4598ca7033120de70641e4d7abd7336822805896eddbbf773b27e90257ed40": {
+      "signature": "2e4598ca7033120de70641e4d7abd7336822805896eddbbf773b27e90257ed40",
+      "alternativeSignatures": [
+        "1dc6f2d1d4407386738c5f420e07a2845c670f337a0e547fed53691a6aeec4be"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.user.storagestate/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "12ff949b324c92628357ba9d44ce17d43eea917fcd4b73193a97f10843d334ff": {
+      "signature": "12ff949b324c92628357ba9d44ce17d43eea917fcd4b73193a97f10843d334ff",
+      "alternativeSignatures": [
+        "7542fe115ec273996f5627aa62deba0c61a9754fff2633796c055292f161465e"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.user.storagestate.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "402b13817d7b9b135fcdc744adb30af71c5be30abe3df47ab2f3abb96e6a3703": {
+      "signature": "402b13817d7b9b135fcdc744adb30af71c5be30abe3df47ab2f3abb96e6a3703",
+      "alternativeSignatures": [
+        "9c1af17fdc98609cc59e5f899f52daa7cacca811da936dd0bd033419965174d0"
+      ],
+      "target": "buildoutput/bin/Debug/testengine.user.storagestate.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:44:15Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "13d65702d966677e896916db03b024f40a11ce6a4cd446d7cf4295ee7fa31c3b": {
+      "signature": "13d65702d966677e896916db03b024f40a11ce6a4cd446d7cf4295ee7fa31c3b",
+      "alternativeSignatures": [
+        "67ef5f903a86b3b59d2f982ac5ea0b4055c7cd9defb63d8098160801fe64c0d4"
+      ],
+      "target": "buildoutput/pkg/microsoft.codecoverage/17.11.1/build/netstandard2.0/CodeCoverage/CodeCoverage.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "ca161213aa4485059789812e262d9b6a87197079f090b69e258b4beec7ad8398": {
+      "signature": "ca161213aa4485059789812e262d9b6a87197079f090b69e258b4beec7ad8398",
+      "alternativeSignatures": [
+        "c47a333bdcae6ea94a92ab398df5eb94ae345849d2093080fbe7b7cc2698dd12"
+      ],
+      "target": "buildoutput/pkg/microsoft.codecoverage/17.11.1/build/netstandard2.0/CodeCoverage/covrun32.dll",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "b26742bde107aec04ab5bc7b7520b2c02532a43a45756c16207b0095bdc9ba74": {
+      "signature": "b26742bde107aec04ab5bc7b7520b2c02532a43a45756c16207b0095bdc9ba74",
+      "alternativeSignatures": [
+        "c435dfdccbf252cff9aa3cb58fe436b4b15666faebffe54db7db0ed9cc2a583f"
+      ],
+      "target": "buildoutput/pkg/microsoft.codecoverage/17.11.1/build/netstandard2.0/CodeCoverage/msdia140.dll",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "5023771d88092c4dc95b360ab895358765e0deafee6724103f8f1054907fcf4d": {
+      "signature": "5023771d88092c4dc95b360ab895358765e0deafee6724103f8f1054907fcf4d",
+      "alternativeSignatures": [
+        "56418c0c255b9f439c6b2fbd7a4c080bc6557ecbfbba0332148ef88452be944c"
+      ],
+      "target": "buildoutput/pkg/microsoft.playwright/1.48.0/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "435acd1d4399e61171e89a723521d2ef34487542fa1caf00a0422c965c690333": {
+      "signature": "435acd1d4399e61171e89a723521d2ef34487542fa1caf00a0422c965c690333",
+      "alternativeSignatures": [
+        "b4146e027c071274a2052c802dfe93e8f701a290fb5546d2335037cfd0c9e2f6"
+      ],
+      "target": "buildoutput/pkg/microsoft.playwright/1.48.0/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "450b1412b0f48740d3f1c40f0590d694539ccbc24c3fbf15942619030ba5df98": {
+      "signature": "450b1412b0f48740d3f1c40f0590d694539ccbc24c3fbf15942619030ba5df98",
+      "alternativeSignatures": [
+        "754fcd3112b9b32cdc84396ec68663fd33e0e2e161a97e7177d694850e64f6a3"
+      ],
+      "target": "buildoutput/pkg/microsoft.testplatform.testhost/17.11.1/lib/netcoreapp3.1/x64/msdia140.dll",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "541fea48b4d7eb08cf962abac89e1e485aedb233566bb17806be48f7684ee801": {
+      "signature": "541fea48b4d7eb08cf962abac89e1e485aedb233566bb17806be48f7684ee801",
+      "alternativeSignatures": [
+        "18da058c32b4653b67751b071e0e7fe06788e3c7a01cbc13834d470316d4c24b"
+      ],
+      "target": "buildoutput/pkg/microsoft.testplatform.testhost/17.11.1/lib/netcoreapp3.1/x86/msdia140.dll",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "347fb852d2782247a3bbe235e70a5b0b64bda2a539f4179b986bbbbc6aa09b15": {
+      "signature": "347fb852d2782247a3bbe235e70a5b0b64bda2a539f4179b986bbbbc6aa09b15",
+      "alternativeSignatures": [
+        "5b4890b39a8bf67852ac9556b2d5af052bf18ac169c8a3ad3c205c60733c8beb"
+      ],
+      "target": "buildoutput/pkg/microsoft.codecoverage/17.11.1/build/netstandard2.0/CodeCoverage/amd64/CodeCoverage.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "9e5ed06100ee7b17642c4bb797940ff8a7442b506433a2ac58c88ebc6bc2d0d0": {
+      "signature": "9e5ed06100ee7b17642c4bb797940ff8a7442b506433a2ac58c88ebc6bc2d0d0",
+      "alternativeSignatures": [
+        "b45aa717dab47023497df5e359771849755159e6dc21c03ca9ed8dfb642796a8"
+      ],
+      "target": "buildoutput/pkg/microsoft.codecoverage/17.11.1/build/netstandard2.0/CodeCoverage/amd64/covrun64.dll",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "89b6d4979732e5ddb92ed56c899faadfe01887cb183aab4e07ee270f94dcc7f8": {
+      "signature": "89b6d4979732e5ddb92ed56c899faadfe01887cb183aab4e07ee270f94dcc7f8",
+      "alternativeSignatures": [
+        "34f6384a8a342b4984d8aae9183a4ef1d4932de2447d4d74be6ee33be43c58a0"
+      ],
+      "target": "buildoutput/pkg/microsoft.codecoverage/17.11.1/build/netstandard2.0/CodeCoverage/amd64/msdia140.dll",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "4212aad782399d56d14f72cdac97dea4982773415b53fd8111729505b3e75486": {
+      "signature": "4212aad782399d56d14f72cdac97dea4982773415b53fd8111729505b3e75486",
+      "alternativeSignatures": [
+        "c50b9efd4cb3c45436c0c756e295f49186c5efb3f420740160a36882a9a34323"
+      ],
+      "target": "buildoutput/pkg/microsoft.codecoverage/17.11.1/build/netstandard2.0/CodeCoverage/arm64/covrunarm64.dll",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "8eef20d7d74417cac517441aaf60fff050bb2d7ecf13bd5fecfa83a2935a5778": {
+      "signature": "8eef20d7d74417cac517441aaf60fff050bb2d7ecf13bd5fecfa83a2935a5778",
+      "alternativeSignatures": [
+        "3cf0ded8164464a4e8147d6798e76122b53e4f878a8ab4da40414102cdf60fa9"
+      ],
+      "target": "buildoutput/pkg/microsoft.codecoverage/17.11.1/build/netstandard2.0/CodeCoverage/arm64/msdia140.dll",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "622c6d347618807307d3272b104c22f768e2a31017c5560673ee0ddc1dc8ba93": {
+      "signature": "622c6d347618807307d3272b104c22f768e2a31017c5560673ee0ddc1dc8ba93",
+      "alternativeSignatures": [
+        "dd6ce6d5713b073dfaf1ab6723cd7d3e7eb54ef3a6cb1dd0361e947fa44a1ce7"
+      ],
+      "target": "buildoutput/bin/Release/Microsoft.PowerApps.TestEngine/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "c5a286a4dad75d72a61b7420761e8073c95ea3e9486c1434198ee2aabd426697": {
+      "signature": "c5a286a4dad75d72a61b7420761e8073c95ea3e9486c1434198ee2aabd426697",
+      "alternativeSignatures": [
+        "e4678a122999c8a17ed0b0387f1096d47638a9e01c8c225f9588179b042cb25f"
+      ],
+      "target": "buildoutput/bin/Release/Microsoft.PowerApps.TestEngine/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "899319e164ee28047e27bf30482d92884ba868fcef82249fbd8c1120e6059700": {
+      "signature": "899319e164ee28047e27bf30482d92884ba868fcef82249fbd8c1120e6059700",
+      "alternativeSignatures": [
+        "bae8394a239332f5548c1ba52b5850561539d3a6b06886b15cb514d9e4dab025"
+      ],
+      "target": "buildoutput/bin/Release/Microsoft.PowerApps.TestEngine.Tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "b61cd897860678ca6c53f36e65361a8dcd87247f9ada275dfb36cd887db28394": {
+      "signature": "b61cd897860678ca6c53f36e65361a8dcd87247f9ada275dfb36cd887db28394",
+      "alternativeSignatures": [
+        "6ab982b8947bd23b128a52ce9618140145cc2ac59a2ddf1b4597aa56fb2cceca"
+      ],
+      "target": "buildoutput/bin/Release/Microsoft.PowerApps.TestEngine.Tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "192855da193bf376256beb6cac7d12bee21b0c025031ad2856a1b19f85ae7f8e": {
+      "signature": "192855da193bf376256beb6cac7d12bee21b0c025031ad2856a1b19f85ae7f8e",
+      "alternativeSignatures": [
+        "78914603e4872b55841c8a1a527c74028ef3d9698247e9ebf84278aed56d5db2"
+      ],
+      "target": "buildoutput/bin/Release/PowerAppsTestEngine/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "4687f0cd8da15ef24c63268b2a68774303f7331d5942902fae7bcf443a2cb26b": {
+      "signature": "4687f0cd8da15ef24c63268b2a68774303f7331d5942902fae7bcf443a2cb26b",
+      "alternativeSignatures": [
+        "14e0604e665fccd3d36ebabc96e33284910db22bee613e021f40b6e69cb5e9a9"
+      ],
+      "target": "buildoutput/bin/Release/PowerAppsTestEngine/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "69b6d4e783a284ae0764beaf3f8727e6d7ccd7b1e4e81c0236e0b47d2c601954": {
+      "signature": "69b6d4e783a284ae0764beaf3f8727e6d7ccd7b1e4e81c0236e0b47d2c601954",
+      "alternativeSignatures": [
+        "8e897bb45731713521d871bb8fd89ae277b6cc716430a4c9912a799ae45b1fd3"
+      ],
+      "target": "buildoutput/bin/Release/PowerAppsTestEngineWrapper/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "258cbb42f12b414eace596f34eb7ea2de3d17a4f57bd5540fbc99bc7f3069f3c": {
+      "signature": "258cbb42f12b414eace596f34eb7ea2de3d17a4f57bd5540fbc99bc7f3069f3c",
+      "alternativeSignatures": [
+        "fa766c38acaf67ade224fa2b6e7cba4c320949b38c09dc64566511836a2776c9"
+      ],
+      "target": "buildoutput/bin/Release/PowerAppsTestEngineWrapper/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "f7f62ed0dbd1c8a9eb43ae29b1864823642dfd7d00593f8ef67cede4feeb6b39": {
+      "signature": "f7f62ed0dbd1c8a9eb43ae29b1864823642dfd7d00593f8ef67cede4feeb6b39",
+      "alternativeSignatures": [
+        "2860d3e82922e14522b5a1fdcb9e4152c01764bd3c60e3f9e2c5b33a24fb55c2"
+      ],
+      "target": "buildoutput/bin/Release/testengine.auth.certificatestore/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "2eaac70336012fefd119e72f5051388bb70e179faa8f71e5d26d0b5d4fdf57ad": {
+      "signature": "2eaac70336012fefd119e72f5051388bb70e179faa8f71e5d26d0b5d4fdf57ad",
+      "alternativeSignatures": [
+        "eccd0c60eded089cbec0b624ef70cac5ac67f68b49c85a784d6505f4fa226b28"
+      ],
+      "target": "buildoutput/bin/Release/testengine.auth.certificatestore/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "26f1d4f5a9a8a1e2eb47c9b09f5adbf846ba58ac0cb857d7c950c2fb1a434881": {
+      "signature": "26f1d4f5a9a8a1e2eb47c9b09f5adbf846ba58ac0cb857d7c950c2fb1a434881",
+      "alternativeSignatures": [
+        "9c8653c176f3f353854bde23b0c7755e99939f11454dd4cd7eb272aa09b928bf"
+      ],
+      "target": "buildoutput/bin/Release/testengine.auth.certificatestore.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "852180ddc97f39292c1f6d40b44d25011e2afcf3a397e75c085c5ecf1f1be59e": {
+      "signature": "852180ddc97f39292c1f6d40b44d25011e2afcf3a397e75c085c5ecf1f1be59e",
+      "alternativeSignatures": [
+        "a59bb749658d4b4a49e413e970e7346a9e0b52770583c8e2f06a9718d6ab18dc"
+      ],
+      "target": "buildoutput/bin/Release/testengine.auth.certificatestore.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "76cbbb4b1660f5d0ee7bae28fdfdf898e9280061c3d97a5c9ba59ef3f4ac42e0": {
+      "signature": "76cbbb4b1660f5d0ee7bae28fdfdf898e9280061c3d97a5c9ba59ef3f4ac42e0",
+      "alternativeSignatures": [
+        "b3dd9f4b41ab0b2b0a7e76bf933298cbc5ff91694dd6becb5582bba98758d56e"
+      ],
+      "target": "buildoutput/bin/Release/testengine.auth.environment.certificate/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "aac2840de7e49c0c49b7d626e901a61b84e33580f207fb0400aff6eeaa9d5a74": {
+      "signature": "aac2840de7e49c0c49b7d626e901a61b84e33580f207fb0400aff6eeaa9d5a74",
+      "alternativeSignatures": [
+        "325801169bcd704d0ff590861cc4af51e96e70013a463a18b246263c6a2f40b5"
+      ],
+      "target": "buildoutput/bin/Release/testengine.auth.environment.certificate/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "6278a6084f1068c41534ddfa4a5f732c5fc5999c574c7352c14ae8197e8337c6": {
+      "signature": "6278a6084f1068c41534ddfa4a5f732c5fc5999c574c7352c14ae8197e8337c6",
+      "alternativeSignatures": [
+        "0e9da4d99391402a19dc35fc6f3fc616a1b890d61bbe66f116278fcc7dbd7c31"
+      ],
+      "target": "buildoutput/bin/Release/testengine.auth.environment.certificatestore.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "ae257fa3ceb47499cd2310b355baa19ade19f8c5d395aaedf9e0cd9eeae06533": {
+      "signature": "ae257fa3ceb47499cd2310b355baa19ade19f8c5d395aaedf9e0cd9eeae06533",
+      "alternativeSignatures": [
+        "0041341df9fb3d82f6c60073ae5950dc9a06a6a13fa29549d130fafd75f67855"
+      ],
+      "target": "buildoutput/bin/Release/testengine.auth.environment.certificatestore.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "9e17f5b9826be43d2753ef51edbb9968e2d0cbfa43ef95a7323214257f3b1903": {
+      "signature": "9e17f5b9826be43d2753ef51edbb9968e2d0cbfa43ef95a7323214257f3b1903",
+      "alternativeSignatures": [
+        "1a2882439d8ef668f89335cb1ea613639d801d820b34dff4520ec6c09d6cb585"
+      ],
+      "target": "buildoutput/bin/Release/testengine.common.user/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "afff1029fd31c185a5b82102d7a544ac53f977d0b4eb2b2e39e649c688eb15b5": {
+      "signature": "afff1029fd31c185a5b82102d7a544ac53f977d0b4eb2b2e39e649c688eb15b5",
+      "alternativeSignatures": [
+        "e5564524c18d1b199c67d3159562817b4672092be497a689d641dc061a401e9d"
+      ],
+      "target": "buildoutput/bin/Release/testengine.common.user/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "d6c4aeeb9290292033c7e84f1c1f2dd90655681fbcf21beed3ab3f07e09250f1": {
+      "signature": "d6c4aeeb9290292033c7e84f1c1f2dd90655681fbcf21beed3ab3f07e09250f1",
+      "alternativeSignatures": [
+        "6063d588f9db9611f0b426479b7ae60613f9d67a7c99741ceb6127de5f314660"
+      ],
+      "target": "buildoutput/bin/Release/testengine.common.user.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "9cdbc63b9e9f49e8f69e44c649f1bfce1816ff714ef1c6ab82ee13620f87d0a2": {
+      "signature": "9cdbc63b9e9f49e8f69e44c649f1bfce1816ff714ef1c6ab82ee13620f87d0a2",
+      "alternativeSignatures": [
+        "b3e2f43607fc4d13040482bca84604e633e0d71947e7bef4ddb50ff27d4f06c9"
+      ],
+      "target": "buildoutput/bin/Release/testengine.common.user.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "7e31efa0bdd50aa4edd0c8f26d31539e81abe6e38779ac6c9b3112cb0546cbfe": {
+      "signature": "7e31efa0bdd50aa4edd0c8f26d31539e81abe6e38779ac6c9b3112cb0546cbfe",
+      "alternativeSignatures": [
+        "be55c919c29992a37e1e501798ee144fa3c52fa2e093a69f0c1fffe1de3da470"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.mda/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "d4dfe8cfdfe6a0b974a661ca3da99219f5d461829d3c3d60ce5580922c3ddd46": {
+      "signature": "d4dfe8cfdfe6a0b974a661ca3da99219f5d461829d3c3d60ce5580922c3ddd46",
+      "alternativeSignatures": [
+        "bda223b250c1950828d1d67aac2cf80a94827a0e94be1068376c333a41f508ae"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.mda/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "f2dc4971e1b056798d4d3c567a84fbcf480503629d3b9a2602acb246c7495839": {
+      "signature": "f2dc4971e1b056798d4d3c567a84fbcf480503629d3b9a2602acb246c7495839",
+      "alternativeSignatures": [
+        "84cf00dcc322cc7e70add4479242999568428a604ec16be3397d9acbfb084354"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.mda.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "4c7dc8708483296e30d6cb7d31e48d3023d5722ce5582c29f3153e24b3ba1516": {
+      "signature": "4c7dc8708483296e30d6cb7d31e48d3023d5722ce5582c29f3153e24b3ba1516",
+      "alternativeSignatures": [
+        "3a0acd507ed4180c77fc6ced645424d9d3af08c59d2fc852130b67f5f216dab2"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.mda.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "56e5dcc5b326f00a6e49cec22023d07d9ade9a1681509f48ef66b221592cff71": {
+      "signature": "56e5dcc5b326f00a6e49cec22023d07d9ade9a1681509f48ef66b221592cff71",
+      "alternativeSignatures": [
+        "c2ab80f8357aebfab7b238cb885d99cb86840f5d9d7a3ce6040c4bd97f759167"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.pause/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "435a92108a838513506dad5837ed32aece2c075965ce9ddc1e35f92f1f002094": {
+      "signature": "435a92108a838513506dad5837ed32aece2c075965ce9ddc1e35f92f1f002094",
+      "alternativeSignatures": [
+        "b4b0ead26b4265edb9ee4aa6f8c09795c813db33139b034221cda254a2fe931e"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.pause/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "fe278904f258e772140e08be5bf6aad12b5cc1e9a6eed93bde9d605a673c247e": {
+      "signature": "fe278904f258e772140e08be5bf6aad12b5cc1e9a6eed93bde9d605a673c247e",
+      "alternativeSignatures": [
+        "8b1aedc6b7a1f3034b485d55fc329fbda403e178ea5c1f87ecdff0b2e74b7746"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.pause.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "14a8808c1ec850a08cd98eb3d21c4101f8741923a9ed0b1b0d58ecfd5265fe19": {
+      "signature": "14a8808c1ec850a08cd98eb3d21c4101f8741923a9ed0b1b0d58ecfd5265fe19",
+      "alternativeSignatures": [
+        "535fe92c2298815bb1c09b5f0b9a1373e5755a91df3992c66f6a284736acbfac"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.pause.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "ffb334724ed8e5b24ad7d8dd74acb2f62435b68373c291ac426eab6aa30ea2cc": {
+      "signature": "ffb334724ed8e5b24ad7d8dd74acb2f62435b68373c291ac426eab6aa30ea2cc",
+      "alternativeSignatures": [
+        "818eb528d59bdf88f36e65c9f3c2c98e3af5aea71214595da2e1fbd6563061be"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.playwrightaction/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "da4bf96fc9b2d565a30b5b70103f0fadfe6076a61822bab65dab2ca935c24d7f": {
+      "signature": "da4bf96fc9b2d565a30b5b70103f0fadfe6076a61822bab65dab2ca935c24d7f",
+      "alternativeSignatures": [
+        "588ee710b23168ad659be91f1b2d13f0daba14ca74944829d3d97726d6dbec5b"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.playwrightaction/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "5d936e6d78472712acda118367cf95700961ed883f96f442c8efda8c47fa8459": {
+      "signature": "5d936e6d78472712acda118367cf95700961ed883f96f442c8efda8c47fa8459",
+      "alternativeSignatures": [
+        "11b93bf133b86e8cfdfa486001c115c1df8eff7b9c9b8a7e78a18d3052a307ef"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.playwrightaction.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "44fc0343a197ed3a83593d33dbb6de554e4e7815ea5d46aa1a776ecf988c0270": {
+      "signature": "44fc0343a197ed3a83593d33dbb6de554e4e7815ea5d46aa1a776ecf988c0270",
+      "alternativeSignatures": [
+        "0f8aeb8d6f5bd5ef66361f9cc817536c1bc8b7eb5556f4c392a0dd68033d06a8"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.playwrightaction.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "39486ab36320eac0e399acecd9baa9ee3c1ab97060c6a32f587ea9c7457315c8": {
+      "signature": "39486ab36320eac0e399acecd9baa9ee3c1ab97060c6a32f587ea9c7457315c8",
+      "alternativeSignatures": [
+        "db030c28bc8c5f1cf1cd0a82eb1c416e2c4623b53a29365def3707744d69d5e5"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.playwrightscript/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "33090bab0e6d8aa06c5572421e74c5fff7eccee257df2e583b6b5f491cc375a8": {
+      "signature": "33090bab0e6d8aa06c5572421e74c5fff7eccee257df2e583b6b5f491cc375a8",
+      "alternativeSignatures": [
+        "49403ee398b4f76ff83bea2f38e2705aef70df08c524a4e1e5c0804b1666fb45"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.playwrightscript/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "e8fa0b0322f1a8d37d1108c2dbd449f0a6eba485c750529c91c6891718671c8f": {
+      "signature": "e8fa0b0322f1a8d37d1108c2dbd449f0a6eba485c750529c91c6891718671c8f",
+      "alternativeSignatures": [
+        "e929bc5f1637891e3a9efff62f31d6266bce379a930688bca44258dcd97efac0"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.playwrightscript.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "e1dc5d7ede8a083b3d7b920d9637a4b2c9da87bc60bfeeb2850155fd5af447ab": {
+      "signature": "e1dc5d7ede8a083b3d7b920d9637a4b2c9da87bc60bfeeb2850155fd5af447ab",
+      "alternativeSignatures": [
+        "0ceb43d49f78d80aa34316f81688b9d72dc7ded9a3f6b2de0b41fd9b082fd066"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.playwrightscript.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "7a113465ded7de8ca5e5869e1ac3170c629922506b6106e8bc79ec4049f2cc3c": {
+      "signature": "7a113465ded7de8ca5e5869e1ac3170c629922506b6106e8bc79ec4049f2cc3c",
+      "alternativeSignatures": [
+        "d8f864dde72ad008f6fce3328ec4b233f124352747f454c01f1817a6b323480c"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.powerapps.portal/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "4b97617ef1badb76a1dc09b16c2c83e4f4324f6e44ad661ae9a8b576ab691f28": {
+      "signature": "4b97617ef1badb76a1dc09b16c2c83e4f4324f6e44ad661ae9a8b576ab691f28",
+      "alternativeSignatures": [
+        "9736efaa62c62bdab524b3154ec47796377138aace8c34e7e24244deeabb53dd"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.powerapps.portal/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "a9ec86e5626e6ff9d40a21f7594f99c19a414597701eeceb2112793f2e258497": {
+      "signature": "a9ec86e5626e6ff9d40a21f7594f99c19a414597701eeceb2112793f2e258497",
+      "alternativeSignatures": [
+        "5d1d50740eaf053a9193ceb1478a81c3705311de5a94d62a194c5ad6c9e14174"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.powerapps.portal.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "58d2dfe07fedc9aa5375deee3cb87f8c2baa2ee36d49ddf96daac4e977fbce77": {
+      "signature": "58d2dfe07fedc9aa5375deee3cb87f8c2baa2ee36d49ddf96daac4e977fbce77",
+      "alternativeSignatures": [
+        "b571684b8d535001e9698f381eb8140ebfaca6b88172c69e4e491fba99459707"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.powerapps.portal.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "d00f9cc96e45d8be381972e3ca4ae3a6a433c82c84a7062ddf0e6979847010ff": {
+      "signature": "d00f9cc96e45d8be381972e3ca4ae3a6a433c82c84a7062ddf0e6979847010ff",
+      "alternativeSignatures": [
+        "7393987247f5c02a904445ae0aaac53e76d4f48dfa11fcccb804c4bab2d9c27a"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.sample/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "f6ee8bb2c6fc21fde8620f69df4aabda5c0cd75f815eb8afab8a47b427c5f4e1": {
+      "signature": "f6ee8bb2c6fc21fde8620f69df4aabda5c0cd75f815eb8afab8a47b427c5f4e1",
+      "alternativeSignatures": [
+        "0319cb36aec714b1e33bc249c4d12851bb4a9317acc67eea9e4c362496d97d2c"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.sample/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "efed7bf9e52b6eb2a9c3b77891e77fcb0fb122b699120da39dd68b401a9fb532": {
+      "signature": "efed7bf9e52b6eb2a9c3b77891e77fcb0fb122b699120da39dd68b401a9fb532",
+      "alternativeSignatures": [
+        "b082fd2218be032d232daec9e5397f9b878d2625a50182b6f01eef61ad4d8179"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.simulation/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "433a84e43fe704ed7d93a6abea10dd05142c1f647831c926715b91008e1d36f7": {
+      "signature": "433a84e43fe704ed7d93a6abea10dd05142c1f647831c926715b91008e1d36f7",
+      "alternativeSignatures": [
+        "8354ca1ec757045a34d364351983c1f3eaee85aec8fdc837f28bf69e9c1862f2"
+      ],
+      "target": "buildoutput/bin/Release/testengine.module.simulation/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "9ea7b4731d3c3fdefa9e712c62395f9e391c5130cf4df07668c5e920f32fe132": {
+      "signature": "9ea7b4731d3c3fdefa9e712c62395f9e391c5130cf4df07668c5e920f32fe132",
+      "alternativeSignatures": [
+        "596a55f1942a60e4832cc74098189cf556e431d7271de728004f620d233577f9"
+      ],
+      "target": "buildoutput/bin/Release/testengine.modules.simulation.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "d2bd7c67a5373f7fec6b32e5c6e5bd1cb1c97158cf0fde6cfbfd2b51e524e5e9": {
+      "signature": "d2bd7c67a5373f7fec6b32e5c6e5bd1cb1c97158cf0fde6cfbfd2b51e524e5e9",
+      "alternativeSignatures": [
+        "123b061d8077cbda4403e6650c30dc55ebdb8fb6511583d2257bfef7686b6287"
+      ],
+      "target": "buildoutput/bin/Release/testengine.modules.simulation.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "bb92c599118702a7bf9b448dadcec62bee1fab2ee402883250296b53c1553a58": {
+      "signature": "bb92c599118702a7bf9b448dadcec62bee1fab2ee402883250296b53c1553a58",
+      "alternativeSignatures": [
+        "4fef12460fdc206448475b4eda9cd69733cccbdbbcf316eed43ce3be9cba332b"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.canvas/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "db18cf1db8caf47513e963304107bb4198e7f949b13ce52e85bcae9fcfd6d4ff": {
+      "signature": "db18cf1db8caf47513e963304107bb4198e7f949b13ce52e85bcae9fcfd6d4ff",
+      "alternativeSignatures": [
+        "22152cab50896fb9bd63e55ec552624cab75bcdc511be7cadad6cc54be009086"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.canvas/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "3931d5eb1cf5c2115d8c92cbdf3e3a85f7e15c12a321e44c6639a1f29a588155": {
+      "signature": "3931d5eb1cf5c2115d8c92cbdf3e3a85f7e15c12a321e44c6639a1f29a588155",
+      "alternativeSignatures": [
+        "1d86a33b396c73c520bfbe70e99fb47333835d8abeb0ff44b52f798c2f2c79a4"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.canvas.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "dfe0c454d93a76a54888ec7304cfdc5b05ba4811e9fc7a44a187efc051b2d352": {
+      "signature": "dfe0c454d93a76a54888ec7304cfdc5b05ba4811e9fc7a44a187efc051b2d352",
+      "alternativeSignatures": [
+        "c5fb1c5342d7c252f1b77eb38ee94fcec41d9f2957df271cf68be7f50401d972"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.canvas.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "42b159c3a377af21a902c7dbf9fe2f7d3ff8c32129f59f10452cc30da1893ee9": {
+      "signature": "42b159c3a377af21a902c7dbf9fe2f7d3ff8c32129f59f10452cc30da1893ee9",
+      "alternativeSignatures": [
+        "e912e2b0d4ba78de21f018850e11ab53bd38005fc73db3670f34e13f3d0c25ca"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.mda/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "0b38083ff30cae9ac7da1525a1a68952d6ba81fd0b0894c26a78539bba467760": {
+      "signature": "0b38083ff30cae9ac7da1525a1a68952d6ba81fd0b0894c26a78539bba467760",
+      "alternativeSignatures": [
+        "1058b7bb1187d398326acaad53b0be0ecdb0d2b3f6ae3dccdb1c2207a1aa97b8"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.mda/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "0782378227f0dcef2a5831a74f8ce4ede898b7011a3401948f8b7df189ed3ff2": {
+      "signature": "0782378227f0dcef2a5831a74f8ce4ede898b7011a3401948f8b7df189ed3ff2",
+      "alternativeSignatures": [
+        "74d9899a34b86aa853cf7b5095f26a92ddd8c7b9d89bde9e5b597ea744684ecc"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.mda.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "10da3870a0ee8e21e3939dda83aa2eea9fecaa0d96421d7daf81460676b34277": {
+      "signature": "10da3870a0ee8e21e3939dda83aa2eea9fecaa0d96421d7daf81460676b34277",
+      "alternativeSignatures": [
+        "92b21be84acd7b90097da0b3c00eda7bcaff803f14f72162c533dd1d0a67d0ba"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.mda.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "4523c925a3001af4292af23dd8af2f73efae8a648d05847efffc3c23ca2c8c69": {
+      "signature": "4523c925a3001af4292af23dd8af2f73efae8a648d05847efffc3c23ca2c8c69",
+      "alternativeSignatures": [
+        "a6e3a333a4a66ac0f6e5caf7742b321990874e3b61223af0776b1f2986f2e958"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.powerapps.portal/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "c5032c83298b492e70cd95ac1e94a646bbb42ba0f17fd4f2932378770bfa9367": {
+      "signature": "c5032c83298b492e70cd95ac1e94a646bbb42ba0f17fd4f2932378770bfa9367",
+      "alternativeSignatures": [
+        "d4a3ce9f242f741362551b1a6e81b368b68534dc2dbd8d1bf189057acc1e52ac"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.powerapps.portal/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "182028f4800cb5785b58aadc210892028311945a7bd814a5f2af950bda4e52c3": {
+      "signature": "182028f4800cb5785b58aadc210892028311945a7bd814a5f2af950bda4e52c3",
+      "alternativeSignatures": [
+        "35104ed465779ebed9e615b3b03872ef16cf2ec356a53d43031b14305a17a396"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.powerapps.portal.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "a351ccab1d5e303ff6715d1649b405e30176e37befed2ce68a637a29439d42a6": {
+      "signature": "a351ccab1d5e303ff6715d1649b405e30176e37befed2ce68a637a29439d42a6",
+      "alternativeSignatures": [
+        "240445059062bce2cfe8a081719cabe1e63add8b4173ba7998eb04959deb405d"
+      ],
+      "target": "buildoutput/bin/Release/testengine.provider.powerapps.portal.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "873bc232f366f8f02cd77f182677d5c2ee36107d8ec1aafaaf9e0b363462ee03": {
+      "signature": "873bc232f366f8f02cd77f182677d5c2ee36107d8ec1aafaaf9e0b363462ee03",
+      "alternativeSignatures": [
+        "bfaca3a412becb2df0fd908a178fb36b7f8c0658375c99d79e63741ad374b9c0"
+      ],
+      "target": "buildoutput/bin/Release/testengine.user.storagestate/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "27f6a8112d4a636dbde0649b350b962e26ad872d3b3d622d029eda5781843f85": {
+      "signature": "27f6a8112d4a636dbde0649b350b962e26ad872d3b3d622d029eda5781843f85",
+      "alternativeSignatures": [
+        "00d317cb10287389b4e9453a3b3fef845f0a40531b667a07ec26653916a64d45"
+      ],
+      "target": "buildoutput/bin/Release/testengine.user.storagestate/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "639e2a51771c44ddb018b92a95f7df55af8011d9a59f5c20f79183b9b589189b": {
+      "signature": "639e2a51771c44ddb018b92a95f7df55af8011d9a59f5c20f79183b9b589189b",
+      "alternativeSignatures": [
+        "6ede41283da06acac713eac3028810e7edeac7da1bc7beb7b8f5ccbfbc169e91"
+      ],
+      "target": "buildoutput/bin/Release/testengine.user.storagestate.tests/.playwright/node/win32_x64/node.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    },
+    "b2f79bb86aa18790764b19f9910bee1f60cd7bf682a997dc7de2635490cbb33c": {
+      "signature": "b2f79bb86aa18790764b19f9910bee1f60cd7bf682a997dc7de2635490cbb33c",
+      "alternativeSignatures": [
+        "dfccccdd1e0bbe7e5ec9597729accec474478d0f77d97f47c091de8e4b9bc311"
+      ],
+      "target": "buildoutput/bin/Release/testengine.user.storagestate.tests/.playwright/package/bin/PrintDeps.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2008",
+      "createdDate": "2025-03-27 20:59:37Z",
+      "expirationDate": "2025-09-13 21:02:32Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2025-03-27 21:02:32Z"
+    }
+  }
+}
