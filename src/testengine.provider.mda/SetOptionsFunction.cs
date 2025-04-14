@@ -55,21 +55,20 @@ namespace testengine.provider.mda
 
             var timeout = 30000;
             var started = DateTime.Now;
-            var completed = false;
-
-            while ( completed || DateTime.Now.Subtract(started).TotalMilliseconds > timeout )
+            
+            while ( DateTime.Now.Subtract(started).TotalMilliseconds <= timeout )
             {
-                var script = @"try { var attribute = Xrm.Page.ui.formContext.getAttribute('" + controlModel.Name + "');attribute.setValue(" + values + ");attribute.fireOnChange(); } catch (err) { return JSON.stringify(err) }";
-
-                var result = await page.EvaluateAsync<string>(script);
-
-                if (string.IsNullOrEmpty(result))
+                try
                 {
-                    completed = true;
-                } 
-                else
+                    await page.EvaluateAsync<string>(@"Xrm.Page.ui.formContext.getAttribute('" + controlModel.Name + "').setValue(" + values + ")");
+                    await page.EvaluateAsync<string>(@"Xrm.Page.ui.formContext.getAttribute('" + controlModel.Name + "').fireOnChange()");
+
+                    break;
+                }
+                catch
                 {
                     Thread.Sleep(1000);
+                    break;
                 }
             }
 

@@ -22,8 +22,10 @@ testSuite:
       testSteps: |
         = Preview.PlaywrightAction("//div[@data-id='cat_configurationtypescodes']", "wait");
           Preview.SetOptions(cat_configurationtypescodes,Table(First(Preview.GetOptions(cat_configurationtypescodes))));
+          Assert(First(Preview.GetValue(cat_configurationtypescodes)).Text = "Test Automation");
           Preview.PlaywrightAction("//div[@data-id='cat_regioncode.fieldControl-pcf-container-id']", "wait");
           Assert(First(Preview.GetValue(cat_regioncode)).Text = "Default");
+          Preview.PlaywrightAction("//*[@aria-label='Save & Close']", "click");
 
 testSettings:
   filePath: ./testSettings.yaml
