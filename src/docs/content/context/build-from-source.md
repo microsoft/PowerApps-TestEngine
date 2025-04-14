@@ -185,25 +185,19 @@ git clone https://github.com/microsoft/PowerApps-TestEngine.git
 cd PowerApps-TestEngine
 ```
 
-3. Change to integration branch
-
-```pwsh
-git checkout integration
-```
-
-4. Open PowerShell (Windows + R)
+3. Open PowerShell (Windows + R)
 
 ```pwsh
 pwsh
 ```
 
-6. Allow local execution policy on Windows
+4. Allow local execution policy on Windows
 
 ```pwsh
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-7. Create a certificate to sign secrets. Using an Admin Version of PowerShell run the following on Windows
+5. Create a certificate to sign secrets. Using an Admin Version of PowerShell run the following on Windows
 
 ```pwsh
 $Params = @{
@@ -221,22 +215,22 @@ New-SelfSignedCertificate @Params
 >
 > openssl req -x509 -nodes -days 180 -newkey rsa:2048 -keyout mycert.key -out mycert.crt -subj "/CN=localhost"
 
-8. Sign into your Power Platform Environment(s) that contain login details and environment(s) to be tested
+6. Sign into your Power Platform Environment(s) that contain login details and environment(s) to be tested
 
 ```pwsh
 pac auth create --name Dev --environment https://contoso.crm.dynamics.com
 pac auth create --name Hosting --environment https://contoso-host.crm.dynamics.com
 ```
 
-9. Sign into Azure Command Line using account that has access to organization. This login could be interactive user or Service Principal.
+7. Sign into Azure Command Line using account that has access to organization. This login could be interactive user or Service Principal.
 
 az login --allow-no-subscriptions
 
-10. Import the WeatherSample_*.zip from samples\weather into the environment you want to test
+8. Import the WeatherSample_*.zip from samples\weather into the environment you want to test
 
-11. Import the TestEngine_*.zip (Will be used to store authentication state)
+9. Import the TestEngine_*.zip (Will be used to store authentication state)
 
-12. Add the config to the "samples/weather" folder using Visual Studio Code
+10. Add the config to the "samples/weather" folder using Visual Studio Code
 
 ```json
 {

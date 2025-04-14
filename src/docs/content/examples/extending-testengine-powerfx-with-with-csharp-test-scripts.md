@@ -49,4 +49,4 @@ To illustrate the integration, we explain how the process works with `Preview.Pl
 
 ## Example Script
 
-A examplof of using `Preview.PlaywrightScript()` is in [testPlan.fx.yaml](https://github.com/microsoft/PowerApps-TestEngine/blob/grant-archibald-md/integration-merge/samples/playwrightscript/testPlan.fx.yaml)
+A examplof of using `Preview.PlaywrightScript()` is in [testPlan.fx.yaml](https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/playwrightscript/testPlan.fx.yaml)

@@ -94,7 +94,7 @@ $env:user1Email = $user1Email
 
 if ($null -eq $languages) {
     # Run the tests for each user in the configuration file.
-    dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
+    dotnet PowerAppsTestEngine.dll -u "dataverse" --provider "mda" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug
 } else {
     foreach ($language in $languages) {
         $uri = "$environmentUrl/api/data/v9.1/usersettingscollection($userId)"
@@ -113,7 +113,7 @@ if ($null -eq $languages) {
         $text = $text.Replace("locale: ""en-US""", "locale: ""${languageName}""")
         Set-Content -Path  $languageTest -Value $text 
 
-        dotnet PowerAppsTestEngine.dll -u "dataverse" -p "mda" -a "certstore" -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w True
+        dotnet PowerAppsTestEngine.dll -u "dataverse" --provider "mda" -a "certstore" -i "$languageTest" -t $tenantId -e $environmentId -d "$mdaUrl" -l Debug -w True
     }
 }
 

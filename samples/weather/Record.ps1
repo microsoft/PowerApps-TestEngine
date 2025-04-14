@@ -86,7 +86,7 @@ Set-Location ..\bin\Debug\PowerAppsTestEngine
 # Run the tests for each user in the configuration file.
 $env:user1Email = $user1Email
 
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" 
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" 
 
 $uri = "$environmentUrl/api/data/v9.1/usersettingscollection($userId)"
 $body = @{
@@ -94,7 +94,7 @@ $body = @{
 } | ConvertTo-Json
 Invoke-RestMethod -Uri $uri -Method Patch -Headers @{Authorization = "Bearer $($token.accessToken)"; "Content-Type" = "application/json"} -Body $body
 
-dotnet PowerAppsTestEngine.dll -u "storagestate" -p "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" 
+dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "mda" -a "none" -r True -i "$currentDirectory\record.fx.yaml" -t $tenantId -e $environmentId -d "$mdaUrl" 
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

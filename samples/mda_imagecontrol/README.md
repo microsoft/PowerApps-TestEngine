@@ -28,4 +28,4 @@ This Power Apps Test Engine sample demonstrates how to assert and interact with 
 
 ```pwsh
 cd bin\Debug\PowerAppsEngine
-dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda_imagecontrol\testPlan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u browser -p mda -d "https://contoso.crm4.dynamics.com/main.aspx?appid=9e9c25f3-1851-ef11-bfe2-6045bd8f802c&pagetype=custom&name=cr693_imagecontrol_dbda3"
+dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mda_imagecontrol\testPlan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u "storagestate" --provider mda -d "https://contoso.crm4.dynamics.com/main.aspx?appid=9e9c25f3-1851-ef11-bfe2-6045bd8f802c&pagetype=custom&name=cr693_imagecontrol_dbda3"
