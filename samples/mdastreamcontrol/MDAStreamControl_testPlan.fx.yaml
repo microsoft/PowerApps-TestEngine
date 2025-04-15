@@ -1,0 +1,108 @@
+testSuite:
+  testSuiteName: Stream Control Tests
+  testSuiteDescription: Verify stream control functionality in PowerApps
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Verify StreamUrl Property
+      testCaseDescription: Verify that the StreamUrl property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.StreamUrl, "URL");
+        Assert(StreamVideo1.StreamUrl = "URL");
+
+    - testCaseName: Verify Autoplay Property
+      testCaseDescription: Verify that the Autoplay property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Autoplay, true);
+        Assert(StreamVideo1.Autoplay = true, "Expected StreamVideo1.Autoplay to be true");
+
+    - testCaseName: Verify ShowTitle Property
+      testCaseDescription: Verify that the ShowTitle property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.ShowTitle, false);
+        Assert(StreamVideo1.ShowTitle = false, "Expected StreamVideo1.ShowTitle to be false");
+
+    - testCaseName: Verify StartTime Property
+      testCaseDescription: Verify that the StartTime property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.StartTime, 10);
+        Assert(StreamVideo1.StartTime = 10, "Expected StreamVideo1.StartTime to be 10");
+
+    - testCaseName: Verify ContentLanguage Property
+      testCaseDescription: Verify that the ContentLanguage property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.ContentLanguage, "en-US");
+        Assert(StreamVideo1.ContentLanguage = "en-US", "Expected StreamVideo1.ContentLanguage to be 'en-US'");
+
+    - testCaseName: Verify TabIndex Property
+      testCaseDescription: Verify that the TabIndex property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.TabIndex, 1);
+        Assert(StreamVideo1.TabIndex = 1, "Expected StreamVideo1.TabIndex to be 1");
+
+    - testCaseName: Verify Tooltip Property
+      testCaseDescription: Verify that the Tooltip property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Tooltip, "Stream Video Tooltip");
+        Assert(StreamVideo1.Tooltip = "Stream Video Tooltip", "Expected StreamVideo1.Tooltip to be 'Stream Video Tooltip'");
+
+    - testCaseName: Verify DisplayMode Property
+      testCaseDescription: Verify that the DisplayMode property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.DisplayMode, "Edit");
+        Assert(StreamVideo1.DisplayMode = "Edit", "Expected StreamVideo1.DisplayMode to be 'Edit'");
+
+    - testCaseName: Verify X Position Property
+      testCaseDescription: Verify that the X position is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.X, 100);
+        Assert(StreamVideo1.X = 100, "Expected StreamVideo1.X to be 100");
+
+    - testCaseName: Verify Y Position Property
+      testCaseDescription: Verify that the Y position is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Y, 200);
+        Assert(StreamVideo1.Y = 200, "Expected StreamVideo1.Y to be 200");
+
+    - testCaseName: Verify Width Property
+      testCaseDescription: Verify that the Width property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Width, 1280);
+        Assert(StreamVideo1.Width = 1280, "Expected StreamVideo1.Width to be 1280");
+
+    - testCaseName: Verify Height Property
+      testCaseDescription: Verify that the Height property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Height, 720);
+        Assert(StreamVideo1.Height = 720, "Expected StreamVideo1.Height to be 720");
+
+    - testCaseName: Verify Visible Property
+      testCaseDescription: Verify that the Visible property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.Visible, true);
+        Assert(StreamVideo1.Visible = true, "Expected StreamVideo1.Visible to be true");
+
+    - testCaseName: Verify ZIndex Property
+      testCaseDescription: Verify that the ZIndex property is set and retrieved correctly.
+      testSteps: |
+        SetProperty(StreamVideo1.ZIndex, 5);
+        Assert(StreamVideo1.ZIndex = 5, "Expected StreamVideo1.ZIndex to be 5");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  timeout: 600000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
+
