@@ -215,6 +215,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "checked":
                         case "markers":
                         case "powerbiinteractions":
+                        case "autoplay":
+                        case "showtitle":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())
