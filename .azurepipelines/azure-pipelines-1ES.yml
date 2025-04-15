@@ -10,8 +10,6 @@ extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     sdl:
-      autobaseline:
-        disableAutoBaselineOnNonDefaultBranches: true
       tsa:
         enabled: true
         config:
