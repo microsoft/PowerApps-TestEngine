@@ -10,11 +10,21 @@ extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     sdl:
+      tsa:
+        enabled: true
+        config:
+          codebaseName: $(Pipeline.CodeBasename)
+          serviceTreeID: $(Pipeline.ServiceTreeId)
+          instanceUrl: $(Pipeline.Org)
+          projectName: $(Pipeline.Project)
+          areaPath: $(Pipeline.AreaPath)
+          notificationAliases: $(Pipeline.NotificationAliases)
       binskim:
         break: true
       policheck:
         enabled: true
       codeql:
+        tsaEnabled: true
         ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch']) }}:
           enabledOnNonDefaultBranches: true
     pool:
