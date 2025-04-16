@@ -10,11 +10,21 @@ extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     sdl:
+      tsa:
+        enabled: true
+        config:
+          codebaseName: $(Pipeline.CodeBasename)
+          serviceTreeID: $(Pipeline.ServiceTreeId)
+          instanceUrl: $(Pipeline.Org)
+          projectName: $(Pipeline.Project)
+          areaPath: $(Pipeline.AreaPath)
+          notificationAliases: $(Pipeline.NotificationAliases)
+      binskim:
+        break: true
       policheck:
         enabled: true
-      codeSignValidation:
-        enabled: true
       codeql:
+        tsaEnabled: true
         ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch']) }}:
           enabledOnNonDefaultBranches: true
     pool:
@@ -33,19 +43,25 @@ extends:
             Release:
               BuildConfiguration: 'Release'
         templateContext:
+          sdl:
+            ${{ if eq(variables['BuildConfiguration'], 'Release') }}:
+              codeSignValidation:
+                additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
+                enabled: true
+                break: true
+                
+            ${{ if ne(variables['BuildConfiguration'], 'Release') }}:
+              codeSignValidation:
+                additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
+                enabled: false
+                break: true
+            
+
           outputs:
           - output: pipelineArtifact
             condition: succeeded()
             artifactName: 'PowerApps.TestEngine ($(BuildConfiguration))'
             targetPath: '$(Build.ArtifactStagingDirectory)'
-          - output: nuget
-            condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq(variables['UpdateVer'], 'true'))
-            useDotNetTask: false # The default is false to use the NuGetCommand task. Set to true to use the DotNetCoreCLI task to publish packages.
-            packagesToPush: '$(Build.ArtifactStagingDirectory)/Microsoft.PowerApps.TestEngine.*.nupkg'
-            packageParentPath: '$(Build.ArtifactStagingDirectory)'
-            publishVstsFeed: $(InternalFeed)
-            nuGetFeedType: internal
-            allowPackageConflicts: true # Optional. NuGetCommand task only.
         steps:
         - script: |
             echo "Hello $(myVariable)"
@@ -79,7 +95,9 @@ extends:
             AuthAKVName: $(EsrpKVName)
             AuthSignCertName: $(EsrpAuthSignCertName)
             FolderPath: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngineWrapper/'
-            Pattern: '*.dll'
+            Pattern: |
+              *.dll
+            UseMinimatch: true  
             signConfigType: inlineSignParams
             inlineOperation: |
               [
@@ -122,26 +140,8 @@ extends:
         - task: CopyFiles@2
           displayName: 'Copy Built Files to Artifact Staging Directory'
           inputs:
-            SourceFolder: '$(Build.SourcesDirectory)/bin'
-            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/bin'
-            # Include all files except abc.txt
-            Contents: |
-              **/*
-              !**/ThirdPartyNotices.txt
-        - task: CopyFiles@2
-          displayName: 'Copy Built Files to Artifact Staging Directory'
-          inputs:
-            SourceFolder: '$(Build.SourcesDirectory)/obj'
-            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/obj'
-            # Include all files except abc.txt
-            Contents: |
-              **/*
-              !**/ThirdPartyNotices.txt
-        - task: CopyFiles@2
-          displayName: 'Copy Built Files to Artifact Staging Directory'
-          inputs:
-            SourceFolder: '$(Build.SourcesDirectory)/pkg'
-            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/pkg'
+            SourceFolder: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/PowerAppsTestEngineWrapper'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)/buildoutput/bin/$(BuildConfiguration)/PowerAppsTestEngineWrapper'
             # Include all files except abc.txt
             Contents: |
               **/*
@@ -192,7 +192,6 @@ extends:
           inputs:
             SearchPattern: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/**/*.pdb'
             SymbolServerType: TeamServices
-            SymbolsPath: http://symweb/
-            CompressSymbols: true
-            IndexSources: True
+            # Unsupported source provider 'GitHub' for source indexing. Unable to index sources.
+            IndexSources: false
             SymbolsArtifactName: TestEngine_Symbols_$(Build.BuildNumber)
