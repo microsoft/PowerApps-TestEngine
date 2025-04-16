@@ -119,9 +119,9 @@ testSuite:
     - testCaseName: Test Audio Control - Media Property
       testCaseDescription: Verify that the Audio control can set and retrieve the media source correctly.
       testSteps: |
-        SetProperty(Audio1.Media, "https://pixabay.com/music/main-title-fast-epic-15-sec-108425/");
-        Wait(Audio1, "Media", "https://pixabay.com/music/main-title-fast-epic-15-sec-108425/");
-        Assert(Audio1.Media = "https://pixabay.com/music/main-title-fast-epic-15-sec-108425/", "Checking the Media source value");
+        SetProperty(Audio1.Media, "https://www.youtube.com/watch?v=mDQQFjM5Bfg&list=RDmDQQFjM5Bfg&start_radio=1");
+        Wait(Audio1, "Media", "https://www.youtube.com/watch?v=mDQQFjM5Bfg&list=RDmDQQFjM5Bfg&start_radio=1");
+        Assert(Audio1.Media = "https://www.youtube.com/watch?v=mDQQFjM5Bfg&list=RDmDQQFjM5Bfg&start_radio=1", "Checking the Media source value");
 
 # Micrphone Control Test Cases 
     
