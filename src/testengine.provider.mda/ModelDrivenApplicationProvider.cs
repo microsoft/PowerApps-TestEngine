@@ -147,7 +147,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var parentPropertiesString = (await TestInfraFunctions.RunJavascriptAsync<object>(parentControlExpression)).ToString();
 
                     if (itemPath.ParentControl.Index.HasValue)
-                    {
+                    {                       
                         // Special case we have an index
                         var parentNameValue = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(parentPropertiesString).FirstOrDefault(k => k.Key == itemPath.ParentControl.PropertyName);
 
@@ -184,25 +184,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                             return (T)(object)("{PropertyValue: " + value.ToString() + "}");
                         }
                     }
-                    else
-                    {
-                        var parentNameValue = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(parentPropertiesString).FirstOrDefault(k => k.Key == itemPath.ParentControl.PropertyName);
-
-                        var propertyValue = GetControlPropertyValue(parentNameValue.Value.ToString(), itemPath.ControlName, itemPath.PropertyName);
-
-                        if (propertyValue == null)
-                        {
-                            // Null value trivial case
-                            return (T)(object)("{PropertyValue: null}");
-                        }
-
-                        if (propertyValue is string)
-                        {
-                            // Enclose in quotes
-                            return (T)(object)("{PropertyValue: '" + propertyValue.ToString().Replace("'", "\'") + "'}");
-                        }
-
-                    }
+                    
                 }
 
                 if (itemPath.PropertyName.ToLower() == "text" && (await TestInfraFunctions.RunJavascriptAsync<object>("PowerAppsTestEngine.pageType()"))?.ToString() == "entityrecord")
@@ -257,41 +239,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             {
                 ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, SingleTestInstanceState.GetLogger());
                 throw;
-            }
-        }
-
-        private string? GetControlPropertyValue(string json, string controlName, string propertyName)
-        {
-            try
-            {
-                JsonNode? root = JsonNode.Parse(json);
-
-                if (root == null || !root.AsObject().TryGetPropertyValue(controlName, out JsonNode? controlNode))
-                    return null;
-
-                if (controlNode == null || !controlNode.AsObject().TryGetPropertyValue(propertyName, out JsonNode? textNode))
-                    return null;
-
-                string? textValue = textNode?.ToString();
-
-                // Extract the lastvalue attribute if it exists
-                if (textNode != null && textNode.AsObject().TryGetPropertyValue("lastValue", out JsonNode? lastValueNode))
-                {
-                    string? lastValue = lastValueNode?.ToString();
-                    return string.IsNullOrWhiteSpace(lastValue) ? null : lastValue;
-                }
-
-                return string.IsNullOrWhiteSpace(textValue) ? null : textValue;
-            }
-            catch (JsonException)
-            {
-                // Handle invalid JSON
-                return null;
-            }
-            catch (Exception)
-            {
-                // Handle other exceptions like null references
-                return null;
             }
         }
 
@@ -369,13 +316,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                                     SingleTestInstanceState.GetLogger().LogTrace(skipMessage);
                                 }
 
+                                TypeMapping.AddMapping(control.Name, controlType);
+                                
                                 var controlValue = new ControlRecordValue(controlType, this, control.Name);
 
                                 controlDictionary.Add(control.Name, controlValue);
                             }
                         }
                     }
-                }
+                }               
 
                 return controlDictionary;
             }

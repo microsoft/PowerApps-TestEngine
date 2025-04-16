@@ -234,25 +234,70 @@ class PowerAppsModelDrivenCanvas {
             return value.dataSource.data.length;
         }
         else {
-            return 0;
+            var replicatedContexts = appMagic.Controls.GlobalContextManager.bindingContext.replicatedContexts;
+
+            if (itemPath.parentControl && itemPath.parentControl.index !== null) {
+                // Nested gallery - Power Apps only supports one level of nesting so we don't have to go recursively to find it
+                // Get parent replicated context
+                var parentControlContext = appMagic.AuthoringTool.Runtime.getNamedControl(itemPath.parentControl.controlName).controlContext;
+                var parentReplicatedContext = parentControlContext._replicatedContext.bindingContextAt(itemPath.parentControl.index);
+                replicatedContexts = parentReplicatedContext.replicatedContexts;
+            }
+
+            var controlContext = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName];
+            var replicatedContext = controlContext._replicatedContext;
+
+            if (!replicatedContext) {
+                // This is not a gallery
+                throw "Not a gallery, no item count available. Most likely a control";
+            }
+
+            var managerId = replicatedContext.manager.managerId;
+            return replicatedContexts[managerId].getBindingContextCount();
+        }
+    }
+
+    static getGallerySelectedRowBindingContext(itemPath) {
+        // Gallery control selected row binding context
+        var appMagic = PowerAppsModelDrivenCanvas.getAppMagic();
+        var bindingContext = appMagic.Controls?.GlobalContextManager?.bindingContext;
+        var controlContext = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName];
+        var replicatedContext = controlContext._replicatedContext;
+
+        if (replicatedContext) {
+            var managerId = replicatedContext.manager.managerId;
+            return bindingContext.replicatedContexts[managerId].getSelectedBindingContext();
+        }
+        else {
+            return bindingContext;
         }
     }
 
     static getBindingContext(itemPath) {
-        var appMagic = PowerAppsModelDrivenCanvas.getAppMagic()
+        var appMagic = PowerAppsModelDrivenCanvas.getAppMagic();        
 
         var bindingContext = appMagic.Controls?.GlobalContextManager?.bindingContext;
 
         if (itemPath.parentControl) {
-            // Control is inside a component or gallery
-            bindingContext = PowerAppsModelDrivenCanvas.getBindingContext(itemPath.parentControl);
+            // Control is inside a component or gallery  
+            if (itemPath.parentControl.index !== null) {
+                //get Bindingcontext by index number or row number
+                bindingContext = PowerAppsModelDrivenCanvas.getBindingContext(itemPath.parentControl);
+            }
+            else {
+                //get binding context by selected row
+                bindingContext = PowerAppsModelDrivenCanvas.getGallerySelectedRowBindingContext(itemPath.parentControl);
+            }           
         }
 
+        
         if (typeof itemPath.index !== 'undefined' && itemPath.index !== null) {
-            // Gallery control
-            var managerId = OpenAjax.widget.byId(itemPath.controlName).OpenAjax.getAuthoringControlContext()._replicatedContext.manager.managerId;
+            // Gallery control   
+            var controlContext = appMagic.AuthoringTool.Runtime.getGlobalBindingContext().controlContexts[itemPath.controlName];
+            var replicatedContext = controlContext._replicatedContext;
+            var managerId = replicatedContext.manager.managerId;
             return bindingContext.replicatedContexts[managerId].bindingContextAt(itemPath.index);
-        }
+        }       
 
         var componentBindingContext = appMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(itemPath.controlName);
 
@@ -487,7 +532,7 @@ class PowerAppsModelDrivenCanvas {
                     data.push(
                         {
                             Key: item.propertyName,
-                            Value: PowerAppsModelDrivenCanvas.getPropertyValueFromControl({ controlName: itemPath.controlName, propertyName: item.propertyName })?.propertyValue
+                            Value: PowerAppsModelDrivenCanvas.getPropertyValueFromControl(itemPath)?.propertyValue
                         })
                 }
 

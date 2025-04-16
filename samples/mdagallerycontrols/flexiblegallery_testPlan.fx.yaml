@@ -3,107 +3,21 @@ testSuite:
   testSuiteName: MDA Custom Page tests - Gallery Controls
   testSuiteDescription: Verify test cases for MDA Gallery Controls
   persona: User1
-  appLogicalName: NotNeeded  
-  # onTestSuiteStart: |
-#   = Preview.SimulateDataverse({
-#         Action: "Query",
-#         Entity: "cr7d6_product",
-#         Then: Table(
-#                   {
-#                       'cr7d6_category': 472770000,
-#                       'cr7d6_description': "Latest model smartphone",
-#                       'cr7d6_image': "https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg",
-#                       'cr7d6_price': 699.99,
-#                       'cr7d6_productid': "ff9d61dc-6e95-4e2f-a205-003283288c29",
-#                       'cr7d6_title': "Smartphone"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770002,
-#                       'cr7d6_description': "High-speed blender",
-#                       'cr7d6_image': "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-#                       'cr7d6_price': 29.99,
-#                       'cr7d6_productid': "35c35d2e-9b46-4b3a-843b-13ad20428853",
-#                       'cr7d6_title': "Blender"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770004,
-#                       'cr7d6_description': "Collectible action figure",
-#                       'cr7d6_image': "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-#                       'cr7d6_price': 24.99,
-#                       'cr7d6_productid': "475cce66-897f-444e-8e38-41359b179096",
-#                       'cr7d6_title': "Action Figure"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770002,
-#                       'cr7d6_description': "Automatic coffee maker",
-#                       'cr7d6_image': "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg",
-#                       'cr7d6_price': 49.99,
-#                       'cr7d6_productid': "345f813b-2852-407b-be7a-50d755f821f1",
-#                       'cr7d6_title': "Coffee Maker"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770000,
-#                       'cr7d6_description': "High-performance laptop",
-#                       'cr7d6_image': "https://fakestoreapi.com/img/61mtL65D4cL._AC_SX679_.jpg",
-#                       'cr7d6_price': 999.99,
-#                       'cr7d6_productid': "bc4e0099-85d0-4c9e-b4e5-70d8fb358bbf",
-#                       'cr7d6_title': "Laptop"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770001,
-#                       'cr7d6_description': "Cotton T-shirt",
-#                       'cr7d6_image': "https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_.jpg",
-#                       'cr7d6_price': 19.99,
-#                       'cr7d6_productid': "3237eeac-5ab9-4ce0-ac15-912e8c237746",
-#                       'cr7d6_title': "T-Shirt"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770004,
-#                       'cr7d6_description': "1000-piece puzzle",
-#                       'cr7d6_image': "http://example.com/image10.jpg",
-#                       'cr7d6_price': 19.99,
-#                       'cr7d6_productid': "065e4462-245f-4303-bea7-9689adc8775d",
-#                       'cr7d6_title': "Puzzle"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770003,
-#                       'cr7d6_description': "Bestselling novel",
-#                       'cr7d6_image': "http://example.com/image4.jpg",
-#                       'cr7d6_price': 14.99,
-#                       'cr7d6_productid': "e64f4c3d-79de-4b9a-ad1d-acd856670111",
-#                       'cr7d6_title': "Novel"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770001,
-#                       'cr7d6_description': "Denim jeans",
-#                       'cr7d6_image': "https://fakestoreapi.com/img/61pHAEJ4NML._AC_UX679_.jpg",
-#                       'cr7d6_price': 39.99,
-#                       'cr7d6_productid': "992e7869-f152-4893-af1e-b45f520dadc0",
-#                       'cr7d6_title': "Jeans"
-#                   },
-#                   {
-#                       'cr7d6_category': 472770003,
-#                       'cr7d6_description': "Delicious recipes",
-#                       'cr7d6_image': "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-#                       'cr7d6_price': 29.99,
-#                       'cr7d6_productid': "6be461da-f55a-4f0e-a82c-f4653ba8970b",
-#                       'cr7d6_title': "Cookbook"
-#                   })
-#         });      
+  appLogicalName: NotNeeded   
   testCases: 
     - testCaseName: Test Gallery Control - Validate Selection by Row Number
       testCaseDescription: Ensure that selecting an item in the Gallery control by specifying the row number updates the selected record accurately.
       testSteps: |
           Select(Gallery1, 3);
-          Assert(Index(Gallery1.AllItems, 5).Title2.Text = "Action Figure", "Verify the selected record's Title value is 'Action Figure'");
-          Assert(Index(Gallery1.AllItems, 5).Subtitle2.Text = "24.99", "Verify the selected record's Price value is '24.99'");
+          Assert(Index(Gallery1.AllItems, 3).Title2.Text = "Action Figure", "Verify the selected record's Title value is 'Action Figure'");
+          Assert(Index(Gallery1.AllItems, 3).Price2.Text = "24.99", "Verify the selected record's Price value is '24.99'");
 
     - testCaseName: Test Gallery Control - Validate Selection via Icon
       testCaseDescription: Ensure that selecting an item in the Gallery control using an icon updates the selected record accurately.
       testSteps: |
           Select(Gallery1, 5, Icon1);
           Assert(Index(Gallery1.AllItems, 5).Title2.Text = "Laptop", "Verify the selected record's Title value is 'Laptop'");
-          Assert(Index(Gallery1.AllItems, 5).Subtitle2.Text = "999.99", "Verify the selected record's Price value is '999.99'");      
+          Assert(Index(Gallery1.AllItems, 5).Price2.Text = "999.99", "Verify the selected record's Price value is '999.99'");      
 
     - testCaseName: Populate gallery with data
       testCaseDescription: Populate gallery with data and validate with count
@@ -128,6 +42,7 @@ testSuite:
     - testCaseName: Test Gallery Control - Validate ShowNavigation Property
       testCaseDescription: Verify that the ShowNavigation property of the Gallery control is set and validated correctly.
       testSteps: |
+        SetProperty(txtSearchInput.Value, ""); 
         SetProperty(Gallery1.ShowNavigation, false);
         Assert(Gallery1.ShowNavigation = false, "Verify the ShowNavigation property is set to false");    
         SetProperty(Gallery1.ShowNavigation, true);
@@ -144,25 +59,13 @@ testSuite:
     - testCaseName: Test Gallery Control - Filter and Validate Single Item
       testCaseDescription: Ensure that filtering the Gallery control by a specific title updates the displayed items correctly and validates the item count.
       testSteps: | 
-           SetProperty(Gallery1.Items, Filter(Gallery1.Items, 'cr7d6_title'="Coffee Maker"));  
+           SetProperty(Gallery1.Items, Filter(Gallery1.Items, 'cr7d6_title'="Coffee Maker"));            
            Select(Gallery1, 1);
            Assert(Title2.Text = "Coffee Maker", "Checking the Items count of the Gallery control");  
              
      # Both examples provided below are effective.
      # SetProperty(Gallery1.Items, Search(Gallery1.Items, "Action Figure", 'cr7d6_title'));     
-     # SetProperty(Gallery1.Items, Filter(Gallery1.Items, Title6.Text="SmartPhone")); 
-    # - testCaseName: Test Gallery Control - Validate Default Property
-    #   testCaseDescription: Verify that the Default property of the Gallery control is set and validated correctly.
-    #   testSteps: |
-    #       SetProperty(Gallery1.Default, First(Gallery1.Items));
-    #       Assert((Gallery1.Selected).Title6.Text = (First(Gallery1.Items)).Title6.Text, "Verify the Default property is set to the first item");
-    #       SetProperty(Gallery1.Default, Last(Gallery1.Items));
-          # Assert(Gallery1.Selected = Last(Gallery1.Items), "Verify the Default property is set to the last item");
-
-    # - testCaseName: Test Gallery Control - Validate AllItemsCount Property
-    #   testCaseDescription: Verify that the AllItemsCount property of the Gallery control is validated correctly.
-    #   testSteps: |
-    #       Assert(CountRows(Gallery1.Items) = 10, "Verify the AllItemsCount property returns the correct number of items");
+     # SetProperty(Gallery1.Items, Filter(Gallery1.Items, Title6.Text="SmartPhone"));   
 
 testSettings:
   headless: false

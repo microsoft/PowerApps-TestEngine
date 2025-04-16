@@ -30,9 +30,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             typeMappings.Add("n", FormulaType.Number);
             typeMappings.Add("Z", FormulaType.DateTimeNoTimeZone);
             typeMappings.Add("g", FormulaType.Guid);
-            typeMappings.Add("m", FormulaType.Decimal);
-            typeMappings.Add("v", FormulaType.UntypedObject);
+            typeMappings.Add("m", FormulaType.Decimal);            
             typeMappings.Add("i", FormulaType.String);
+            typeMappings.Add("$", FormulaType.Decimal);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             List<JSPropertyModel> subTypes = new List<JSPropertyModel>();
 
             // Extract the names of the types out of the string
-            var regex = new Regex(@"(?<property>\w+):(?<type>!\[[^\]]*\]|\w+)");
+            var regex = new Regex(@"(?<property>[\w\d_]+):(?<type>[a-zA-Z\$])|(?<subType>[\w\d_]+):[a-zA-Z\$]");
             var matches = regex.Matches(typeString);
             foreach (Match match in matches)
             {
@@ -99,10 +99,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                 // Either Table value - Example: *[Gallery2:v, Icon2:v, Label4:v]
                 // Or Record value - Example: ![Gallery2:v, Icon2:v, Label4:v]
                 var subTypes = GetSubTypes(typeString);
+                FormulaType subFormulaType;
 
                 foreach (var subType in subTypes)
                 {
-                    if (TryGetType(subType.PropertyType, out var subFormulaType))
+                    if (TryGetType(subType.PropertyName, out subFormulaType) || TryGetType(subType.PropertyType, out subFormulaType))
                     {
                         recordType = recordType.Add(new NamedFormulaType(subType.PropertyName, subFormulaType));
                     }
