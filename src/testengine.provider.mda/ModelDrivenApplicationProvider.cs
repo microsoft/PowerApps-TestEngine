@@ -213,6 +213,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "islogovisible":
                         case "istitlevisible":
                         case "checked":
+                        case "autostart":
+                        case "paused":
+                        case "showcontrols":
+                        case "loop":
+                        case "start":
                         case "autoplay":
                         case "showtitle":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
