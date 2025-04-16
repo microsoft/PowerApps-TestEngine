@@ -21,7 +21,7 @@ Before you start, you'll need a few tools and permissions:
 winget install Microsoft.DotNet.SDK.8
 ```
 
-2. An install of PowerShell following the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) for your operating system. For example on Windows you could us ethe following command.
+2. An install of PowerShell following the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) for your operating system. For example on Windows you could use the following command.
 
 ```cmd
 winget install --id Microsoft.PowerShell --source winget

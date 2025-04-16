@@ -1,7 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Syntax;
 
@@ -67,6 +70,83 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             return formulas;
+        }
+
+        /// <summary>
+        /// Remove any comment lines from the text
+        /// </summary>
+        /// <param name="text">The Power Fx to remove it from</param>
+        /// <returns></returns>
+        public static string RemoveComments(string text)
+        {
+            StringBuilder result = new StringBuilder();
+
+            using (var reader = new StringReader(text))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (!line.TrimStart().StartsWith("//"))
+                    {
+                        result.AppendLine(line);
+                    }
+                }
+            }
+
+            return result.ToString();
+        }
+
+
+        /// <summary>
+        /// Join Lines of text for functions
+        /// </summary>
+        /// <param name="text">The Power Fx determine if join</param>
+        /// <returns></returns>
+        public static IEnumerable<string> JoinFunctions(IEnumerable<string> text)
+        {
+            var results = new List<string>();
+            StringBuilder currentFunction = null;
+
+            foreach (var line in text)
+            {
+                if (ContainsFunction(line))
+                {
+                    if (currentFunction != null)
+                    {
+                        results.Add(currentFunction.ToString());
+                    }
+                    currentFunction = new StringBuilder();
+                }
+
+                if (currentFunction != null)
+                {
+                    if (currentFunction.Length > 0 )
+                    {
+                        currentFunction.AppendLine(";");
+                    }
+                    currentFunction.Append(line);
+                }
+            }
+
+            if (currentFunction != null)
+            {
+                results.Add(currentFunction.ToString());
+            }
+
+            return results;
+        }
+
+        public static bool ContainsFunction(string line)
+        {
+            var functionStart = line.IndexOf("(");
+            var functionEnd = line.IndexOf(")");
+            var functionType = functionEnd > -1 ? line.IndexOf(":", functionEnd) : -1;
+            var functionEqual = functionType > -1 ? line.IndexOf("=", functionType) : -1;
+
+            return functionStart > 0 &&
+                functionEnd > 0 &&
+                functionType > 0 &&
+                functionEqual > 0;
         }
     }
 }

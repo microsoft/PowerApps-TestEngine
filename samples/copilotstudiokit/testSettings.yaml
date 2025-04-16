@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 locale: "en-US"
 headless: false
 recordVideo: true
@@ -9,3 +10,41 @@ timeout: 1200000
 browserConfigurations:
   - browser: Chromium
     channel: msedge
+powerFxTestTypes:
+ - name: ControlName
+   value: |
+      {ControlName: Text} 
+ - name: Options
+   value: |
+      [{Name: Text, Value: Number}]   
+ - name: PassFailResult
+   value: |
+      {PassFail: Number} 
+testFunctions:
+ - description: Wait until control is visible using Document Object Model (DOM) selector
+   code: |
+    WaitUntilVisible(control: Text): Void = 
+      Preview.PlaywrightAction(Concatenate("//div[@data-id='", control, "']"), "wait");
+ - description: Get the options for a control using Power Fx control from Model Driven App (MDA)
+   code: |
+    GetOptions(control: ControlName): Options =
+      Preview.GetOptions(control);
+ - description: Select an option for a control using Power Fx control from MDA
+   code: |
+    SetOption(control: ControlName, option: Text): Void =
+      Preview.SetOptions(control, Table(First(Filter(GetOptions(control), Name = option))));
+ - description: Assert that the value of a control is as expected using Power Fx control from MDA
+   code: |
+    AssertValue(control: ControlName, expectedValue: Text): Void =
+      Assert(Preview.GetValue(control).Text = expectedValue);
+ - description: Get Identifier of save and close button comamnd bar item
+   code: |
+    SaveAndClose(): Text = "Save & Close";
+ - description: Save and close the form using Document Object Model (DOM) selector for command bar
+   code: |
+    CommandBarAction(name: Text): Void =
+      Preview.PlaywrightAction(Concatenate("//*[@aria-label='", name, "']"), "click");
+ - description: Check if option is in the collection
+   code: |
+    FindOptionMatch(option: Text, options: Options): Boolean =
+      CountRows(Filter(options, Name = option)) = 1

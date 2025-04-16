@@ -715,7 +715,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             var testSettings = new TestSettings()
             {
                 PowerFxTestTypes = new List<PowerFxTestType> { new PowerFxTestType { Name = "Test", Value = type } },
-                TestFunction = check
+                TestFunctions = new List<TestFunction> { new TestFunction { Code = check } }
             };
 
             MockTestState.Setup(m => m.GetTestEngineModules()).Returns(new List<ITestEngineModule>());

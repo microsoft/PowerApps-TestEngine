@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Copilot Studio Kit
   testSuiteDescription: Agent List of Copilot Studio Kit 
@@ -10,22 +11,21 @@ testSuite:
       testSteps: |
         = Assert(1=1) 
     - testCaseName: Step 2 - Assert Name
-      testCaseDescription: Check that name is expected value
+      testCaseDescription: Check that agent name is expected value
       testSteps: |
         = Assert(cat_name.Text = "TestAgent1") 
     - testCaseName: Step 3 - Options exist
-      testCaseDescription: Check the expected 
+      testCaseDescription: Check the expected options exist for configuration type
       testSteps: |
-        = Assert(CountRows(Preview.GetOptions(cat_configurationtypescodes)) = 3) 
+        = Assert(CountRows(GetOptions(cat_configurationtypescodes)) = 3);
     - testCaseName: Step 4 - Select first option
-      testCaseDescription: Can select an option
+      testCaseDescription: Can select configuration type "Test Automation" option and validate that the region code is now visible with expected value of "Default"
       testSteps: |
-        = Preview.PlaywrightAction("//div[@data-id='cat_configurationtypescodes']", "wait");
-          Preview.SetOptions(cat_configurationtypescodes,Table(First(Preview.GetOptions(cat_configurationtypescodes))));
-          Assert(First(Preview.GetValue(cat_configurationtypescodes)).Text = "Test Automation");
-          Preview.PlaywrightAction("//div[@data-id='cat_regioncode.fieldControl-pcf-container-id']", "wait");
-          Assert(First(Preview.GetValue(cat_regioncode)).Text = "Default");
-          Preview.PlaywrightAction("//*[@aria-label='Save & Close']", "click");
+        = WaitUntilVisible("cat_configurationtypescodes");
+          SetOption(cat_configurationtypescodes, "Test Automation");
+          WaitUntilVisible("cat_regioncode.fieldControl-pcf-container-id");
+          AssertValue(cat_regioncode, "Default");
+          CommandBarAction(SaveAndClose());
 
 testSettings:
   filePath: ./testSettings.yaml

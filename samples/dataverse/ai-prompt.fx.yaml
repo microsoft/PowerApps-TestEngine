@@ -55,42 +55,64 @@ testSettings:
     - name: TestCountryCollection
       value: |
         [{Name: Text, Expected: Text}]
-  testFunction: |
-    EvaluateTestQuestionPrompt(Prompt: TestQuestion): TestResult =
-      With({
-        Response: ParseJSON(
-          Preview.AIExecutePrompt("PromptEvaluator", 
-          {
-            Context: "You are a helpful agent asking about external customer service questions.",
-            Question: Prompt.Question
-          }).Text)
-      },If(
-        IsError(AssertNotError(Prompt.ExpectedRating=Response.Rating, Prompt.Question & ", Expected " & Prompt.ExpectedRating & ", Actual " & Response.Rating)),
-        {PassFail: 1, Summary: Prompt.Question & ", Expected " & Prompt.ExpectedRating & ", Actual " & Response.Rating}, {PassFail: 0, Summary: "Pass " & Prompt.Question}
-      ));
-    TestQuestion(Questions: TestQuestionCollection): Void =
-      Assert(0=Sum(ForAll(
-          Questions,
-          EvaluateTestQuestionPrompt(ThisRecord)
-        ), PassFail));
-    EvaluateTestCountry(Country: TestCountry): TestResult =
-      With({
-          Response: 
-            ParseJSON(Preview.AIExecutePrompt("Custom", 
-            {
-              Prompt: "What is the capital of "
-                       & Country.Name
-                       & ". The response MUST be valid formatted JSON format ONLY with a format like {Capital:'Name'}. The response should be in plain JSON without any markdown formatting"
-            }).Text)
-        },
-        If(
-          IsError(AssertNotError(Country.Expected = Response.Capital, Country.Name & ", Expected " & Country.Expected & ", Actual " & Response.Capital)),
-          {PassFail: 1, Summary: Country.Name & ", Expected " & Country.Expected & ", Actual " & Response.Capital},
-          {PassFail: 0, Summary: "Pass " & Country.Name}
-        )
-      );
-    TestCountry(Countries: TestCountryCollection): Void =
-      Assert(0=EvaluateTestCountry(First(Countries)).PassFail)
+  testFunctions:
+    - description: Evaluate a test question against the AI model and return the result
+      code: |
+         EvaluateTestQuestionPrompt(Prompt: TestQuestion): TestResult =
+          With({
+            Response: ParseJSON(
+              Preview.AIExecutePrompt("PromptEvaluator", 
+              {
+                Context: "You are a helpful agent asking about external customer service questions.",
+                Question: Prompt.Question
+              }).Text)
+          },If(
+            IsError(AssertNotError(Prompt.ExpectedRating=Response.Rating, Prompt.Question & ", Expected " & Prompt.ExpectedRating & ", Actual " & Response.Rating)),
+            {PassFail: 1, Summary: Prompt.Question & ", Expected " & Prompt.ExpectedRating & ", Actual " & Response.Rating}, {PassFail: 0, Summary: "Pass " & Prompt.Question}
+          ))
+    - description: Evaluate a test question against a model to score it
+      code: |
+        TestQuestion(Questions: TestQuestionCollection): Void =
+          Assert(0=Sum(ForAll(
+              Questions,
+              EvaluateTestQuestionPrompt(ThisRecord)
+            ), PassFail));
+    - description: Evaluate a test country against the AI model and return the result
+      code: |
+        EvaluateTestCountryPrompt(Prompt: TestCountry): TestResult =
+          With({
+            Response: ParseJSON(
+              Preview.AIExecutePrompt("PromptEvaluator", 
+              {
+                Context: "You are a helpful agent asking about external customer service questions.",
+                Question: Prompt.Name
+              }).Text)
+          },If(
+            IsError(AssertNotError(Prompt.Expected=Response.Rating, Prompt.Name & ", Expected " & Prompt.Expected & ", Actual " & Response.Rating)),
+            {PassFail: 1, Summary: Prompt.Name & ", Expected " & Prompt.Expected & ", Actual " & Response.Rating}, {PassFail: 0, Summary: "Pass " & Prompt.Name}
+          ))
+    - description: Evaluate a test country against the AI model and return the result
+      code: |
+        EvaluateTestCountry(Country: TestCountry): TestResult =
+          With({
+              Response: 
+                ParseJSON(Preview.AIExecutePrompt("Custom", 
+                {
+                  Prompt: "What is the capital of "
+                          & Country.Name
+                          & ". The response MUST be valid formatted JSON format ONLY with a format like {Capital:'Name'}. The response should be in plain JSON without any markdown formatting"
+                }).Text)
+            },
+            If(
+              IsError(AssertNotError(Country.Expected = Response.Capital, Country.Name & ", Expected " & Country.Expected & ", Actual " & Response.Capital)),
+              {PassFail: 1, Summary: Country.Name & ", Expected " & Country.Expected & ", Actual " & Response.Capital},
+              {PassFail: 0, Summary: "Pass " & Country.Name}
+            )
+          );
+    - description: Evaluate a test country against the AI model and return the result
+      code: |
+        TestCountry(Countries: TestCountryCollection): Void =
+          Assert(0=EvaluateTestCountry(First(Countries)).PassFail);
 environmentVariables:
   users:
     - personaName: User1

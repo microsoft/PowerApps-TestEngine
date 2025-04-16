@@ -265,29 +265,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 return;
             }
 
-            var functionPowerFx = testSettings.TestFunction;
-            if (!string.IsNullOrEmpty(functionPowerFx))
+            if (testSettings.TestFunctions.Count > 0)
             {
                 var culture = GetLocaleFromTestSettings(testSettings.Locale);
 
-                var checkResult = Engine.Check(functionPowerFx, new ParserOptions { AllowsSideEffects = true, Culture = culture }, powerFxConfig.SymbolTable);
-                var splitSteps = PowerFxHelper.ExtractFormulasSeparatedByChainingOperator(Engine, checkResult, culture);
-
-                foreach (var functionPowerFxStep in splitSteps)
+                foreach (var function in testSettings.TestFunctions)
                 {
-                    var fomattedFunctionPowerFxStep = functionPowerFxStep.Trim();
-
-                    if (string.IsNullOrWhiteSpace(fomattedFunctionPowerFxStep))
+                    var code = function.Code.TrimEnd();
+                    if (!code.EndsWith(";"))
                     {
-                        continue;
+                        code += ";";
                     }
-
-                    if (!fomattedFunctionPowerFxStep.EndsWith(";"))
-                    {
-                        fomattedFunctionPowerFxStep += ";";
-                    }
-
-                    var registerResult = Engine.AddUserDefinedFunction(fomattedFunctionPowerFxStep, culture, powerFxConfig.SymbolTable, true);
+                    var registerResult = Engine.AddUserDefinedFunction(code, culture, powerFxConfig.SymbolTable, true);
                     if (!registerResult.IsSuccess)
                     {
                         foreach (var error in registerResult.Errors)
@@ -482,6 +471,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
 
+                    
                     result = await Engine.EvalAsync(
                                       step
                                     , CancellationToken.None

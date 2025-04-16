@@ -59,9 +59,9 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public List<PowerFxTestType> PowerFxTestTypes { get; set; } = new List<PowerFxTestType>();
 
         /// <summary>
-        /// The Power Fx function to add to the Power Fx function execution context
+        /// The Power Fx function to register
         /// </summary>
-        public string TestFunction { get; set; } = "";
+        public List<TestFunction> TestFunctions { get; set; } = new List<TestFunction>();
 
         /// <summary>
         /// Define settings for Test Engine Extensions

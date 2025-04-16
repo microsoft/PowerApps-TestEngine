@@ -184,6 +184,11 @@ if ($runTests)
 
     $token = (az account get-access-token --resource $environmentUrl | ConvertFrom-Json)
 
+    if ($token -eq $null) {
+        Write-Error "Failed to obtain access token. Please check your Azure CLI context."
+        return
+    }
+
     $appId = ""
     $lookup = "$environmentUrl/api/data/v9.2/appmodules?`$filter=name eq '$appName'`&`$select=appmoduleid"
     $appResponse = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
@@ -200,7 +205,7 @@ if ($runTests)
     $appTotal = ($appDescriptor.appInfo.AppElements.Count +  ($appEntities * 2)) 
         
     if ([string]::IsNullOrEmpty($appId)) {
-        Write-Error "App id not found. Check that the Copilot Studio Kit has been installed" -ForegroundColor Red
+        Write-Error "App id not found. Check that the Copilot Studio Kit has been installed"
         return
     }
 
