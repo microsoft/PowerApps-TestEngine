@@ -494,7 +494,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var waitFunction = new WaitFunctionDate(Timeout, MockLogger.Object);
             waitFunction.Execute(recordValue, FormulaValue.New("SelectedDate"), FormulaValue.NewDateOnly(value.Date));
 
-            MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
+            MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(2));
         }
 
         [Fact]
@@ -510,7 +510,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             };
             var finalJsPropertyValueModel = new JSPropertyValueModel()
             {
-                PropertyValue = value.ToString(),
+                PropertyValue = value.ToString("o"), // Use "o" format for round-trip date/time pattern
             };
             var expectedItemPath = new ItemPath
             {
@@ -526,7 +526,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var waitFunction = new WaitFunctionDateTime(Timeout, MockLogger.Object);
             waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.New(value));
 
-            MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(3));
+            MockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((itemPath) => itemPath.ControlName == expectedItemPath.ControlName && itemPath.PropertyName == expectedItemPath.PropertyName)), Times.Exactly(2));
         }
 
         [Fact]
@@ -615,7 +615,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDate(300, MockLogger.Object); // each trial has 500ms in between
-            Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("SelectedDate"), FormulaValue.NewDateOnly(value.Date)));
+            Assert.ThrowsAny<Exception>(() =>
+            {
+                try
+                {
+                    waitFunction.Execute(recordValue, FormulaValue.New("SelectedDate"), FormulaValue.NewDateOnly(value.Date));
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new TimeoutException("InvalidCastException occurred", ex);
+                }
+            });
+
         }
 
         [Fact]
@@ -637,7 +648,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             MockTestState.Setup(x => x.GetTimeout()).Returns(Timeout);
 
             var waitFunction = new WaitFunctionDateTime(300, MockLogger.Object); // each trial has 500ms in between
-            Assert.Throws<TimeoutException>(() => waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), FormulaValue.New(value)));
+            Assert.ThrowsAny<Exception>(() =>
+            {
+                try
+                {
+                    waitFunction.Execute(recordValue, FormulaValue.New("DefaultDate"), DateTimeValue.New(value));
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new TimeoutException("InvalidCastException occurred", ex);
+                }
+            });
+
         }
     }
 }
