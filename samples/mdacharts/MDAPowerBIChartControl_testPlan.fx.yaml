@@ -8,8 +8,8 @@ testSuite:
   - testCaseName: Verify Tile URL
     testCaseDescription: Verify that the TileUrl property can be set and retrieved correctly.
     testSteps: |
-      SetProperty(PowerBI1.TileUrl, "https://app.powerbi.com/embed?dashboardId=5038859c-c804-4c50-a776-25994fa7ae65&tileId=a0a6ddeb-da27-4958-be47-c5b407c43ffd");
-      Assert(PowerBI1.TileUrl = "https://app.powerbi.com/embed?dashboardId=5038859c-c804-4c50-a776-25994fa7ae65&tileId=a0a6ddeb-da27-4958-be47-c5b407c43ffd", "Checking the TileUrl property");
+      SetProperty(PowerBI1.TileUrl, "https://www.example.com");
+      Assert(PowerBI1.TileUrl = "https://www.example.com", "Checking the TileUrl property");
 
   - testCaseName: Verify Dashboard ID
     testCaseDescription: Verify that the DashboardId property can be set and retrieved correctly.
