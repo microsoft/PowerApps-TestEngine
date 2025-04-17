@@ -192,7 +192,6 @@ extends:
           inputs:
             SearchPattern: '$(Build.SourcesDirectory)/bin/$(BuildConfiguration)/**/*.pdb'
             SymbolServerType: TeamServices
-            SymbolsPath: http://symweb/
-            CompressSymbols: true
-            IndexSources: True
+            # Unsupported source provider 'GitHub' for source indexing. Unable to index sources.
+            IndexSources: false
             SymbolsArtifactName: TestEngine_Symbols_$(Build.BuildNumber)
