@@ -120,7 +120,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
                 if (currentFunction != null)
                 {
-                    if (currentFunction.Length > 0 )
+                    if (currentFunction.Length > 0)
                     {
                         currentFunction.AppendLine(";");
                     }

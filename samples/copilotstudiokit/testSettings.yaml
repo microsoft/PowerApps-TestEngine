@@ -19,7 +19,10 @@ powerFxTestTypes:
       [{Name: Text, Value: Number}]   
  - name: PassFailResult
    value: |
-      {PassFail: Number} 
+      {PassFail: Number}
+ - name: LookupValue
+   value: |
+      [{id: Text, name: Text, entityType: Text}] 
 testFunctions:
  - description: Wait until control is visible using Document Object Model (DOM) selector
    code: |
@@ -37,7 +40,10 @@ testFunctions:
    code: |
     AssertValue(control: ControlName, expectedValue: Text): Void =
       Assert(Preview.GetValue(control).Text = expectedValue);
- - description: Get Identifier of save and close button comamnd bar item
+ - description: Get Identifier of save comamnd bar item
+   code: |
+    SaveForm(): Text = "Save (CTRL+S)";
+ - description: Get Identifier of save and close comamnd bar item
    code: |
     SaveAndClose(): Text = "Save & Close";
  - description: Save and close the form using Document Object Model (DOM) selector for command bar
@@ -48,3 +54,7 @@ testFunctions:
    code: |
     FindOptionMatch(option: Text, options: Options): Boolean =
       CountRows(Filter(options, Name = option)) = 1
+ - description: Set lookup value for a control using Power Fx control from MDA
+   code: |
+    SetLookupValue(control: ControlName, json: Text): Void =
+      Preview.SetValue(control, json);

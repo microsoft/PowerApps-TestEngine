@@ -471,7 +471,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
                     Logger.LogTrace($"Attempting:{step.Replace("\n", "").Replace("\r", "")}");
 
-                    
                     result = await Engine.EvalAsync(
                                       step
                                     , CancellationToken.None

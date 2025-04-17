@@ -752,6 +752,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             powerFxConfig.AddFunction(new GetOptionsFunction(testInfraFunctions, logger));
             powerFxConfig.AddFunction(new GetValueFunction(testInfraFunctions, logger));
             powerFxConfig.AddFunction(new SetOptionsFunction(testInfraFunctions, logger));
+            powerFxConfig.AddFunction(new SetValueJsonFunction(testInfraFunctions, logger));
         }
 
         public void ConfigurePowerFx(PowerFxConfig powerFxConfig)

@@ -36,7 +36,7 @@ false" })]
         }
 
         [Theory]
-        [InlineData( "A(): Text = true", true)]
+        [InlineData("A(): Text = true", true)]
         [InlineData("A(Name: Text): Text = true", true)]
         public void ContainsFunction(string input, bool expected)
         {
