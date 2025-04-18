@@ -201,6 +201,11 @@ code .
                 "entity": "cat_copilottestset",
                 "id": "cat_copilottestsetid"
             },
+            { 
+                "name": "agenttest",
+                "entity": "cat_copilottest",
+                "id": "cat_copilottestid"
+            },
             {
                 "name": "testruns",
                 "entity": "cat_copilottestrun",
@@ -225,16 +230,6 @@ code .
                 "name":"conversationtranscript",
                 "entity":"conversationtranscript",
                 "id":"conversationtranscriptid"              
-            },
-            {
-                "name":"botcomponents",
-                "entity":"botcomponents",
-                "id":"botcomponentid"              
-            },
-            {
-                "name":"botcomponentcollection",
-                "entity":"botcomponentcollection",
-                "id":"botcomponentcollectionid"
             }
         ]
     }

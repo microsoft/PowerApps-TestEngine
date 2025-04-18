@@ -178,7 +178,7 @@ if ($runTests)
     if ($foundEnvironment) {
         Write-Output "Found matching Environment URL: $environmentUrl"
     } else {
-        Write-Output "Environment ID not found." -ForegroundColor Red
+        Write-Error "Environment ID not found."
         return
     }
 
@@ -299,14 +299,15 @@ if ($runTests)
             $entityResponse = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
             $recordId = $entityResponse.value | Select-Object -ExpandProperty $idColumn
 
+            $testStart = Get-Date
+
             if ([string]::IsNullOrEmpty($recordId)) {
-                Write-Host "No record found for entity: $entityName" -ForegroundColor Red
-                continue
+                $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=$entityName"
+            
+            } else {
+                $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=$entityName&id=$recordId"
             }
 
-            $testStart = Get-Date
-        
-            $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=$entityName&id=$recordId"
             if ($record) {
                 # Run the tests for each user in the configuration file.
                 dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "storagestate" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"

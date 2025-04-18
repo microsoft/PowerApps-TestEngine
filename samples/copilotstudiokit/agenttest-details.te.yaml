@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Copilot Studio Kit
   testSuiteDescription: Agent Test page of Copilot Studio Kit 
@@ -9,7 +10,31 @@ testSuite:
       testCaseDescription: Verify can open the page
       testSteps: |
         = Assert(1=1)
-        
+    - testCaseName: Step 2 - Set Agent Configuration
+      testCaseDescription: Set a lookup value for the agent configuration
+      testSteps: |
+        = WaitUntilVisible("cat_copilottestsetid");
+          SetProperty(cat_name.Text, "AgentTest1");
+          With(
+              { 
+                Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
+              },
+              SetLookupValue(
+                cat_copilottestsetid, 
+                JSON(
+                  Table({ 
+                    id: Item.cat_copilottestsetid, 
+                    name: Item.cat_name, 
+                    entityType: "cat_copilottestset" 
+                  })
+                )
+              )
+            );
+          SetOption(cat_testtypecode, "Response Match");
+          SetProperty(cat_testutterance.Text, "ABC");
+          SetProperty(cat_expectedresponse.Text, "123");
+          CommandBarAction(SaveForm());
+            
 testSettings:
   filePath: ./testSettings.yaml
 

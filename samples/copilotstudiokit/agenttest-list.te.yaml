@@ -1,15 +1,21 @@
 # yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: Copilot Studio Kit
-  testSuiteDescription: TestSet List of Copilot Studio Kit 
+  testSuiteDescription: Agent Test List Copilot Studio Kit 
   persona: User1
   appLogicalName: NotNeeded
+  onTestSuiteStart: |
+    = If(
+        CountRows(cat_copilottest) > 0, 
+        ForAll(cat_copilottest, Remove(cat_copilottest, ThisRecord))
+      );
 
   testCases:
     - testCaseName: Step 1 - Start the entity details
       testCaseDescription: Verify can open the page
       testSteps: |
-        = Assert(1=1) 
+        = 
+        Assert(1=1) 
 
 testSettings:
   filePath: ./testSettings.yaml
