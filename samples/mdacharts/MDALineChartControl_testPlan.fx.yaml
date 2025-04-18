@@ -9,10 +9,10 @@ testSuite:
         testCaseDescription: Check if the line chart correctly sets and displays the items.
         testSteps: |
           SetProperty(LineChart1.Items, Table(
-            {Labels: "City", Series1: 31, Series2: 39, Series3: 12, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
-            {Labels: "Delhi", Series1: 15, Series2: 78, Series3: 18, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
-            {Labels: "Mexico City", Series1: 11, Series2: 60, Series3: 8, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
-            {Labels: "Istanbul", Series1: 22, Series2: 65, Series3: 14, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0}
+            {Labels: "Category A", Series1: 31, Series2: 39, Series3: 12, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category B", Series1: 15, Series2: 78, Series3: 18, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category C", Series1: 11, Series2: 60, Series3: 8, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category D", Series1: 22, Series2: 65, Series3: 14, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0}
           ));
           Assert(CountRows(LineChart1.Items) = 4, "Verify the chart contains 4 data points");
 
@@ -39,7 +39,7 @@ testSuite:
         testSteps: |
           SetProperty(LineChart1.Y, 65);
           Assert(LineChart1.Y = 65, "Verify chart Y position is set correctly");
-        
+
       - testCaseName: Verify Number of Series
         testCaseDescription: Ensure that the line chart number of series is set correctly.
         testSteps: |

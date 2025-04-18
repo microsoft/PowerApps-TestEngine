@@ -9,10 +9,10 @@ testSuite:
         testCaseDescription: Check if the pie chart correctly sets and displays the items.
         testSteps: |
           SetProperty(PieChart1.Items, Table(
-            {Labels: "City", Series: 31},
-            {Labels: "Delhi", Series: 15},
-            {Labels: "Mexico City", Series: 11},
-            {Labels: "Istanbul", Series: 22}
+            {Labels: "Category A", Series: 31},
+            {Labels: "Category B", Series: 15},
+            {Labels: "Category C", Series: 11},
+            {Labels: "Category D", Series: 22}
           ));
           Assert(CountRows(PieChart1.Items) = 4, "Verify the chart contains 4 data points");
 
@@ -38,9 +38,7 @@ testSuite:
         testCaseDescription: Ensure that the pie chart Y position is set correctly.
         testSteps: |
           SetProperty(PieChart1.Y, 65);
-          Assert(PieChart1.Y = 65, "Verify chart Y position is set correctly");    
-     
-
+          Assert(PieChart1.Y = 65, "Verify chart Y position is set correctly");
 testSettings:
   headless: false
   locale: "en-US"

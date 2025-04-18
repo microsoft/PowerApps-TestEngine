@@ -9,12 +9,12 @@ testSuite:
         testCaseDescription: Check if the column chart correctly sets and displays the items.
         testSteps: |
           SetProperty(ColumnChart1.Items, Table(
-            {Labels: "City", Series1: 31, Series2: 39, Series3: 12, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
-            {Labels: "Delhi", Series1: 15, Series2: 78, Series3: 18, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
-            {Labels: "Mexico City", Series1: 11, Series2: 60, Series3: 8, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
-            {Labels: "Istanbul", Series1: 22, Series2: 65, Series3: 14, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
-            {Labels: "New York", Series1: 20, Series2: 50, Series3: 10, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
-            {Labels: "Tokyo", Series1: 25, Series2: 55, Series3: 15, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0}
+            {Labels: "Category A", Series1: 31, Series2: 39, Series3: 12, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category B", Series1: 15, Series2: 78, Series3: 18, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category C", Series1: 11, Series2: 60, Series3: 8, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category D", Series1: 22, Series2: 65, Series3: 14, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category E", Series1: 20, Series2: 50, Series3: 10, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category F", Series1: 25, Series2: 55, Series3: 15, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0}
           ));
           Assert(CountRows(ColumnChart1.Items) = 6, "Verify the chart contains 6 data points");
 
