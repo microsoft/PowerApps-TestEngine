@@ -40,12 +40,3 @@ By embracing automated testing, you can enhance the quality and efficiency of yo
 
 [Power CAT](../roles-and-responsibilities/powercat.md) is an early adopter in the [Ring Deployment Model](./ring-deployment-model.md) and working closely and contributing towards he success of Engineering teams responsible for Automated Testing in the Power Platform.  
 
-## Join The Discussion
-
-We also welcome you to join community-driven discussions, add comments on discussion topics, share your insights, and collaboratively explore how testing concepts can be effectively applied to the solutions you build and maintain. 
-
-To dive deeper into these topics and join the conversation, visit <a href="/PowerApps-TestEngine/discussion/">discussions</a>.
-
-## Give Your Feedback
-
-As you engage and review the content and [we welcome your feedback](https://aka.ms/powerfuldevs/testing/feedback) on not only how we can shape the session for next year but also support the community around automated testing of the Power Platform.

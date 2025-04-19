@@ -75,5 +75,42 @@ Label2.Text", "\"Hello Now\"")]
             // Assert
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData("custom", "{text: Text}","Test1(data: custom): Text = data.text", "Test1({text: \"A\"})", "\"A\"")]
+        [InlineData("custom", "{num: Number}", "Test1(data: custom): Number = data.num", "Test1({num: 1})", "1")]
+        [InlineData("custom", "[{num: Number}]", "Test1(data: custom): Number = CountRows(data)", "Test1(Table({num: 0}))", "1")]
+        [InlineData("Controls", "[{Name: Text, IsVisible: Boolean}]", @"Validate(x:Controls):Number =
+Sum(
+    ForAll(
+        x,
+        IfError(
+            AssertNotError(Not(ThisRecord.IsVisible),""Not Visible""),
+            {Value: 1},
+            {Value: 0}
+        )
+    ),
+    Value
+)", "Validate(Table({Name: \"First1\", IsVisible: true}))", "1")]
+        public void UserDefinedFunction(string typeName, string typeDeclaration, string function, string text, string expected)
+        {
+            // Arrange
+            var value = string.Format(@"// Types:
+{0}: {1}
+
+// Function:
+{2}
+
+// Test:
+{3}
+", typeName, typeDeclaration, function, text);
+            var state = new TestState(value);
+
+            // Act 
+            var result = state.ExecuteCode();
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
     }
 }

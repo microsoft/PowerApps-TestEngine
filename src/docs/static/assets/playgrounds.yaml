@@ -22,6 +22,9 @@ playgrounds:
       - "assert-simulated-connector"
       - "assert-simulated-dataverse"
       - "localization"
+      - "functions"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
   - shortId: "collections"
     title: "Collections"
     description: "Explore common collection expresions in Power Fx that could be used in your tests"
@@ -49,6 +52,9 @@ playgrounds:
       - "assert-simulated-connector"
       - "assert-simulated-dataverse"
       - "localization"
+      - "functions"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
   - shortId: "intro-assert"
     title: "Introduction to Assert() Function"
     description: "Learn how to use the Assert() function in Power Apps Test Engine to validate conditions in your test."
@@ -84,6 +90,9 @@ playgrounds:
       - "assert-simulated-connector"
       - "assert-simulated-dataverse"
       - "localization"
+      - "functions"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
   - shortId: "assert-multiple-values"
     title: "Assert() Function with Multiple Values"
     description: "Learn how to use the Assert() function to validate multiple values in your test."
@@ -106,6 +115,9 @@ playgrounds:
       - "assert-simulated-connector"
       - "assert-simulated-dataverse"
       - "localization"
+      - "functions"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
   - shortId: "set-property"
     title: "SetProperty to change the page"
     description: "Learn how to use the SetProperty() function to update the page"
@@ -130,6 +142,9 @@ playgrounds:
       - "assert-simulated-connector"
       - "assert-simulated-dataverse"
       - "localization"
+      - "functions"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
   - shortId: "assert-simulated-connector"
     title: "Assert() Function with Simulated Connector"
     description: "Learn how to use the Assert() function with a simulated connector in your test."
@@ -159,6 +174,9 @@ playgrounds:
       - "assert-multiple-values"
       - "assert-simulated-dataverse"
       - "localization"
+      - "functions"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
   - shortId: "assert-simulated-dataverse"
     title: "Assert() Function with Simulated Dataverse"
     description: "Learn how to use the Assert() function with a simulated dataverse in your test."
@@ -182,6 +200,9 @@ playgrounds:
       - "assert-multiple-values"
       - "assert-simulated-connector"
       - "localization"
+      - "functions"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
   - shortId: "localization"
     title: "Localize your application"
     description: "Set the culture and Language() function to localize your application"
@@ -204,3 +225,82 @@ playgrounds:
       - "assert-multiple-values"
       - "assert-simulated-connector"
       - "assert-simulated-dataverse"
+      - "functions"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
+  - shortId: "functions"
+    title: "Functions"
+    description: "Explore user defined functions in Power Fx that could be used in your tests"
+    code: |
+      // Function:
+      IsEven(x: Number): Boolean = If(Mod(x,2)=0, true, false)
+      // Code:
+      Assert(IsEven(2));
+    steps: |
+      - Press "Try It!" to verify that the test run and returns a value of **true**
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "intro-assert"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"
+      - "localization"
+      - "type-and-function"
+      - "type-and-function-assertnoterror"
+  - shortId: "type-and-function"
+    title: "User Defined Type & Functions"
+    description: "Combine user defined type for collection with Sum() function to calculate total"
+    code: |
+      // Types:
+      Orders: [{ Name: Text, Amount: Number }]
+      // Function:
+      Total(x: Orders): Number = Sum(x, Amount)
+      // Code:
+      Assert(Total(Table({Name: "First", Amount: 1.2}, {Name: "Second", Amount: 1}))=2.2);
+    steps: |
+      - Press "Try It!" to verify that the test run and returns a value of **true**
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "intro-assert"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"
+      - "functions"
+      - "type-and-function-assertnoterror"
+  - shortId: "type-and-function-assertnoterror"
+    title: "Functions and AssertNotError()"
+    description: "Combine user defined type for collection with AssertNotError() function check that all controls are visible"
+    code: |
+      // Types:
+      Controls: [{ Name: Text, IsVisible: Boolean }]
+      // Function:
+      AllVisible(x: Controls): Number = 
+      Sum(
+        ForAll(
+            x,
+            IfError(
+                AssertNotError(ThisRecord.IsVisible,"Not Visible"),
+                {Value: 1},
+                {Value: 0}
+            )
+        ),
+        Value
+      )
+      // Code:
+      Assert(AllVisible(Table({Name: "First", IsVisible: true}))=0)
+    steps: |
+      - Press "Try It!" to verify that the test run and returns a value of **true**
+    relatedTasks:
+      - "boolean-expressions"
+      - "collections"
+      - "intro-assert"
+      - "set-property"
+      - "assert-multiple-values"
+      - "assert-simulated-connector"
+      - "assert-simulated-dataverse"
+      - "functions"
+      - "type-and-function"

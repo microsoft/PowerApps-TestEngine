@@ -297,9 +297,16 @@ namespace testengine.provider.mda
 
                 await foreach (var field in fields)
                 {
-                    if (field.Value.TryGetPrimitiveValue(out object value))
+                    try
                     {
-                        expandoDict.Add(field.Name, value);
+                        if (field.Value.TryGetPrimitiveValue(out object value))
+                        {
+                            expandoDict.Add(field.Name, value);
+                        }
+                    }
+                    catch
+                    {
+
                     }
                 }
 

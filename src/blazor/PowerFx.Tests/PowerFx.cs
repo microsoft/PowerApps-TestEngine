@@ -17,7 +17,7 @@ public class PowerFxTests
         // Arrange
         var function = new GetCurrentWeatherFunction();
         var defaultWeather = GetCurrentWeatherFunction.ConvertToRecordValue(function.DefaultWeather("Test"));
-        var engine = PowerFxEngine.Init(out ParserOptions options, "en-us");
+        var engine = PowerFxEngine.Init(out ParserOptions options, (config) => { }, "en-us");
         var clone = PowerFxEngine.CloneWithBlankValues(defaultWeather);
 
         // Act & Assert

@@ -108,6 +108,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
                 var propertyValueJson = _testWebProvider.GetPropertyValueFromControl<string>(itemPath);
 
+                if (fieldName.ToLower().Equals("options"))
+                {
+                    result = null;
+                    return false;
+                }
+
                 if (string.IsNullOrEmpty(propertyValueJson))
                 {
                     result = BlankValue.NewBlank(fieldType);
