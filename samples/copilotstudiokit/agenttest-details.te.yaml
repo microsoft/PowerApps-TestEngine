@@ -42,7 +42,7 @@ testSuite:
           SetSingleOption(cat_testtypecode, "Attachments (Adaptive Cards, etc.)");
           SetProperty(cat_testutterance.Text, "GHI");
           SetTextValue(cat_expectedattachmentsjson, "{}");
-          SetProperty(cat_expectedresponse.Text, "456");
+          SetProperty(cat_expectedresponse.Text, "789");
           Assert(SaveForm());
     - testCaseName: Step 5 - Generative Answers
       testCaseDescription:  Generative Answers validation
@@ -54,7 +54,7 @@ testSuite:
           SetSingleOption(cat_testtypecode, "Generative Answers");
           SetProperty(cat_testutterance.Text, "JKL");
           SetSingleOption(cat_generativeansweroutcomecode, "Answered");
-          SetProperty(cat_expectedresponse.Text, "789");
+          SetProperty(cat_expectedresponse.Text, "012");
           SaveForm();
     
 testSettings:
