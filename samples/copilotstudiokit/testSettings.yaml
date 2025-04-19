@@ -36,14 +36,31 @@ testFunctions:
    code: |
     SetOption(control: ControlName, option: Text): Void =
       Preview.SetOptions(control, Table(First(Filter(GetOptions(control), Name = option))));
+ - description: Select single option for a control using Power Fx control from MDA
+   code: |
+    SetSingleOption(control: ControlName, option: Text): Void =
+      Preview.SetValueJson(control, 
+        JSON(
+          First(
+              Filter(GetOptions(control), Name = option)
+          ).Value
+        )
+      );
+ - description: Set text value for MDA control
+   code: |
+    SetTextValue(control: ControlName, textValue: Text): Void =
+      Preview.SetValueJson(control, JSON(textValue));
  - description: Assert that the value of a control is as expected using Power Fx control from MDA
    code: |
     AssertValue(control: ControlName, expectedValue: Text): Void =
       Assert(Preview.GetValue(control).Text = expectedValue);
  - description: Get Identifier of save comamnd bar item
    code: |
-    SaveForm(): Text = "Save (CTRL+S)";
- - description: Get Identifier of save and close comamnd bar item
+    SaveForm(): Boolean = Preview.SaveForm();
+ - description: Get Identifier of New command bar item
+   code: |
+    NewRecord(): Text = "New";
+ - description: Get Identifier of save and close command bar item
    code: |
     SaveAndClose(): Text = "Save & Close";
  - description: Save and close the form using Document Object Model (DOM) selector for command bar
@@ -57,4 +74,4 @@ testFunctions:
  - description: Set lookup value for a control using Power Fx control from MDA
    code: |
     SetLookupValue(control: ControlName, json: Text): Void =
-      Preview.SetValue(control, json);
+      Preview.SetValueJson(control, json);

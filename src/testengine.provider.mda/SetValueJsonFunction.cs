@@ -23,7 +23,7 @@ namespace testengine.provider.mda
         private readonly ILogger _logger;
 
         public SetValueJsonFunction(ITestInfraFunctions testInfraFunctions, ILogger logger)
-            : base(DPath.Root.Append(new DName("Preview")), "SetValue", BlankType.Blank, RecordType.Empty(), StringType.String)
+            : base(DPath.Root.Append(new DName("Preview")), "SetValueJson", BlankType.Blank, RecordType.Empty(), StringType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _logger = logger;
@@ -53,11 +53,14 @@ namespace testengine.provider.mda
 
                 if (records.Count > 0)
                 {
-                    var function = new SetValueFunction(_testInfraFunctions, _logger);
-                    function.ExecuteAsync(item, TableValue.NewTable(records.First().Type, records)).Wait();
+                    var setValueFunction = new SetValueFunction(_testInfraFunctions, _logger);
+                    setValueFunction.ExecuteAsync(item, TableValue.NewTable(records.First().Type, records)).Wait();
                 }
-
             }
+
+            var function = new SetValueFunction(_testInfraFunctions, _logger);
+            function.ExecuteAsync(item, json.Value).Wait();
+
             return BlankValue.NewBlank();
         }
 
@@ -87,4 +90,3 @@ namespace testengine.provider.mda
         }
     }
 }
-

@@ -71,6 +71,60 @@ namespace testengine.provider.mda.tests
             Assert.Equal(expectedCount, engine.Evaluate("count"));
         }
 
+        [Fact]
+        public async Task ExecuteAsyncString()
+        {
+            // Arrange
+            var testInfraFunctionsMock = new Mock<ITestInfraFunctions>();
+            var loggerMock = new Mock<ILogger>();
+            var provider = new Mock<ITestWebProvider>();
+            var function = new SetValueFunction(testInfraFunctionsMock.Object, loggerMock.Object);
+
+            var pageMock = new Mock<IPage>();
+            var javaScript = new List<string>();
+
+            pageMock.Setup(p => p.EvaluateAsync<string>(It.IsAny<string>(), null))
+                .Callback((string expression, object? value) => { javaScript.Add(expression); });
+
+            var pages = new List<IPage> { pageMock.Object };
+
+            testInfraFunctionsMock.Setup(t => t.GetContext().Pages).Returns(pages);
+
+            var itemType = RecordType.Empty().Add("Name", FormulaType.String);
+            var recordValue = new ControlRecordValue(itemType, provider.Object, "dev_test");
+
+            // Act 
+            var result = await function.ExecuteAsync(recordValue, "1");
+
+            // Assert
+            var engine = new Jint.Engine();
+            engine.Execute(@"
+            var value = '';
+            var Xrm = {
+                Page: {
+                    ui: {
+                        formContext: {
+                            getAttribute: (name) => {
+                                return {
+                                    setValue: (newValue) => {
+                                        value = newValue;
+                                    },
+                                    fireOnChange: () => {}
+                                }
+                            },
+                        }
+                    }
+                }
+            }");
+
+            foreach (var text in javaScript)
+            {
+                engine.Execute(text);
+            }
+
+            Assert.Equal(1, engine.Evaluate("value"));
+        }
+
         public static IEnumerable<object[]> SetValueData()
         {
             yield return new object[] { TableValue.NewTable(RecordType.Empty(), new List<RecordValue>()), 0 };

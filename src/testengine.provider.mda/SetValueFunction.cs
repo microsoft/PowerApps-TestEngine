@@ -12,7 +12,6 @@ using Microsoft.PowerFx.Types;
 
 namespace testengine.provider.mda
 {
-
     /// <summary>
     /// This will allow the value of a Model Driven Application control to be assigned
     /// </summary>
@@ -62,16 +61,23 @@ namespace testengine.provider.mda
 
             var values = JsonSerializer.Serialize(items);
 
+            return await ExecuteAsync(item, values);
+        }
+
+        public async Task<BlankValue> ExecuteAsync(RecordValue item, string json)
+        {
             var page = _testInfraFunctions.GetContext().Pages.First();
 
             var timeout = 30000;
             var started = DateTime.Now;
 
+            var controlModel = (ControlRecordValue)item;
+
             while (DateTime.Now.Subtract(started).TotalMilliseconds <= timeout)
             {
                 try
                 {
-                    await page.EvaluateAsync<string>(@"Xrm.Page.ui.formContext.getAttribute('" + controlModel.Name + "').setValue(" + values + ")");
+                    await page.EvaluateAsync<string>(@"Xrm.Page.ui.formContext.getAttribute('" + controlModel.Name + "').setValue(" + json + ")");
                     await page.EvaluateAsync<string>(@"Xrm.Page.ui.formContext.getAttribute('" + controlModel.Name + "').fireOnChange()");
 
                     break;

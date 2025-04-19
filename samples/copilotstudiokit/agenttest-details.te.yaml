@@ -11,7 +11,7 @@ testSuite:
       testSteps: |
         = Assert(1=1)
     - testCaseName: Step 2 - Set Agent Configuration
-      testCaseDescription: Set a lookup value for the agent configuration
+      testCaseDescription: Response Match test
       testSteps: |
         = WaitUntilVisible("cat_copilottestsetid");
           SetProperty(cat_name.Text, "AgentTest1");
@@ -30,11 +30,89 @@ testSuite:
                 )
               )
             );
-          SetOption(cat_testtypecode, "Response Match");
+          SetSingleOption(cat_testtypecode, "Response Match");
           SetProperty(cat_testutterance.Text, "ABC");
           SetProperty(cat_expectedresponse.Text, "123");
-          CommandBarAction(SaveForm());
-            
+          Assert(SaveForm());
+    - testCaseName: Step 3 - Topic Match
+      testCaseDescription: Topic Match test
+      testSteps: |
+        = WaitUntilVisible("cat_copilottestsetid");
+          CommandBarAction(NewRecord());
+          SetProperty(cat_name.Text, "AgentTest1");
+          With(
+              { 
+                Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
+              },
+              SetLookupValue(
+                cat_copilottestsetid, 
+                JSON(
+                  Table({ 
+                    id: Item.cat_copilottestsetid, 
+                    name: Item.cat_name, 
+                    entityType: "cat_copilottestset" 
+                  })
+                )
+              )
+            );
+          SetSingleOption(cat_testtypecode, "Topic Match");
+          SetProperty(cat_testutterance.Text, "DEF");
+          SetProperty(cat_expectedtopicname.Text, "TOPIC1");
+          SetProperty(cat_expectedresponse.Text, "456");
+          Assert(SaveForm());
+    - testCaseName: Step 4 - Attachments
+      testCaseDescription: Attachments test
+      testSteps: |
+        = WaitUntilVisible("cat_copilottestsetid");
+          CommandBarAction(NewRecord());
+          SetProperty(cat_name.Text, "AgentTest1");
+          With(
+              { 
+                Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
+              },
+              SetLookupValue(
+                cat_copilottestsetid, 
+                JSON(
+                  Table({ 
+                    id: Item.cat_copilottestsetid, 
+                    name: Item.cat_name, 
+                    entityType: "cat_copilottestset" 
+                  })
+                )
+              )
+            );
+          SetSingleOption(cat_testtypecode, "Attachments (Adaptive Cards, etc.)");
+          SetProperty(cat_testutterance.Text, "GHI");
+          SetTextValue(cat_expectedattachmentsjson, "{}");
+          SetProperty(cat_expectedresponse.Text, "456");
+          Assert(SaveForm());
+    - testCaseName: Step 5 - Generative Answers
+      testCaseDescription:  Generative Answers validation
+      testSteps: |
+        = WaitUntilVisible("cat_copilottestsetid");
+          CommandBarAction(NewRecord());
+          SetProperty(cat_name.Text, "AgentTest1");
+          With(
+              { 
+                Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
+              },
+              SetLookupValue(
+                cat_copilottestsetid, 
+                JSON(
+                  Table({ 
+                    id: Item.cat_copilottestsetid, 
+                    name: Item.cat_name, 
+                    entityType: "cat_copilottestset" 
+                  })
+                )
+              )
+            );
+          SetSingleOption(cat_testtypecode, "Generative Answers");
+          SetProperty(cat_testutterance.Text, "JKL");
+          SetSingleOption(cat_generativeansweroutcomecode, "Answered");
+          SetProperty(cat_expectedresponse.Text, "789");
+          SaveForm();
+    
 testSettings:
   filePath: ./testSettings.yaml
 

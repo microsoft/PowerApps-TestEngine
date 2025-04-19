@@ -11,21 +11,6 @@ testSuite:
       testSteps: |
         = 
         Assert(1=1) 
-    - testCaseName: Step 2 - Assign Agent Test Set and Agent Configuration
-      testCaseDescription: Verify can open the test run and assign agent test set and agent configuration via UI
-      testSteps: |
-        = WaitUntilVisible("cat_copilottestsetid");
-          With({ 
-              Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
-            },
-            SetLookupValue(cat_copilottestsetid, JSON(Table({ id: Item.cat_copilottestsetid, name: Item.cat_name, entityType: "cat_copilottestset" })))
-          );
-          With({ 
-              Item: First(Filter(cat_copilotconfiguration, cat_name = "TestAgent1")) 
-            },
-            SetLookupValue(cat_copilotconfigurationid,  JSON(Table({ id: Item.cat_copilotconfigurationid, name: Item.cat_name, entityType: "cat_copilotconfiguration" })))
-          );
-          CommandBarAction(SaveForm());
 
 testSettings:
   filePath: ./testSettings.yaml

@@ -596,7 +596,7 @@ function Generate-HTMLTable {
         });
     </script>
     <h3>Calculation:</h3>
-    <p>`$`$ = \left( \frac{\text{Number of Passed Entities}}{\text{Total Entities}} \right) \times 100 `$`$</p>
+    <p>`$`$ = \left( \frac{\text{Distinct of test types with no failures}}{\text{Total Entities}} \right) \times 100 `$`$</p>
     <p>`$`$ = \left( \frac{$numerator}{$total} \right) \times 100 `$`$</p>
     <p>`$`$ = $percentage `$`$%</p>
 "@
