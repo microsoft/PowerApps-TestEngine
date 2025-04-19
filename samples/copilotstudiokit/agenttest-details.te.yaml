@@ -15,21 +15,7 @@ testSuite:
       testSteps: |
         = WaitUntilVisible("cat_copilottestsetid");
           SetProperty(cat_name.Text, "AgentTest1");
-          With(
-              { 
-                Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
-              },
-              SetLookupValue(
-                cat_copilottestsetid, 
-                JSON(
-                  Table({ 
-                    id: Item.cat_copilottestsetid, 
-                    name: Item.cat_name, 
-                    entityType: "cat_copilottestset" 
-                  })
-                )
-              )
-            );
+          SetTestSetLookupValue(cat_copilottestsetid, First(Filter(cat_copilottestset, cat_name = "TestSet1")));
           SetSingleOption(cat_testtypecode, "Response Match");
           SetProperty(cat_testutterance.Text, "ABC");
           SetProperty(cat_expectedresponse.Text, "123");
@@ -40,21 +26,7 @@ testSuite:
         = WaitUntilVisible("cat_copilottestsetid");
           CommandBarAction(NewRecord());
           SetProperty(cat_name.Text, "AgentTest1");
-          With(
-              { 
-                Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
-              },
-              SetLookupValue(
-                cat_copilottestsetid, 
-                JSON(
-                  Table({ 
-                    id: Item.cat_copilottestsetid, 
-                    name: Item.cat_name, 
-                    entityType: "cat_copilottestset" 
-                  })
-                )
-              )
-            );
+          SetTestSetLookupValue(cat_copilottestsetid, First(Filter(cat_copilottestset, cat_name = "TestSet1")));
           SetSingleOption(cat_testtypecode, "Topic Match");
           SetProperty(cat_testutterance.Text, "DEF");
           SetProperty(cat_expectedtopicname.Text, "TOPIC1");
@@ -66,21 +38,7 @@ testSuite:
         = WaitUntilVisible("cat_copilottestsetid");
           CommandBarAction(NewRecord());
           SetProperty(cat_name.Text, "AgentTest1");
-          With(
-              { 
-                Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
-              },
-              SetLookupValue(
-                cat_copilottestsetid, 
-                JSON(
-                  Table({ 
-                    id: Item.cat_copilottestsetid, 
-                    name: Item.cat_name, 
-                    entityType: "cat_copilottestset" 
-                  })
-                )
-              )
-            );
+          SetTestSetLookupValue(cat_copilottestsetid, First(Filter(cat_copilottestset, cat_name = "TestSet1")));
           SetSingleOption(cat_testtypecode, "Attachments (Adaptive Cards, etc.)");
           SetProperty(cat_testutterance.Text, "GHI");
           SetTextValue(cat_expectedattachmentsjson, "{}");
@@ -92,21 +50,7 @@ testSuite:
         = WaitUntilVisible("cat_copilottestsetid");
           CommandBarAction(NewRecord());
           SetProperty(cat_name.Text, "AgentTest1");
-          With(
-              { 
-                Item: First(Filter(cat_copilottestset, cat_name = "TestSet1")) 
-              },
-              SetLookupValue(
-                cat_copilottestsetid, 
-                JSON(
-                  Table({ 
-                    id: Item.cat_copilottestsetid, 
-                    name: Item.cat_name, 
-                    entityType: "cat_copilottestset" 
-                  })
-                )
-              )
-            );
+          SetTestSetLookupValue(cat_copilottestsetid, First(Filter(cat_copilottestset, cat_name = "TestSet1")));
           SetSingleOption(cat_testtypecode, "Generative Answers");
           SetProperty(cat_testutterance.Text, "JKL");
           SetSingleOption(cat_generativeansweroutcomecode, "Answered");

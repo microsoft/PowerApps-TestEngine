@@ -23,6 +23,9 @@ powerFxTestTypes:
  - name: LookupValue
    value: |
       [{id: Text, name: Text, entityType: Text}] 
+ - name: TestSetRecord
+   value: |
+      {cat_copilottestsetid: Text, cat_name: Text}
 testFunctions:
  - description: Wait until control is visible using Document Object Model (DOM) selector
    code: |
@@ -75,3 +78,16 @@ testFunctions:
    code: |
     SetLookupValue(control: ControlName, json: Text): Void =
       Preview.SetValueJson(control, json);
+ - description: Set lookup value for a control using Power Fx control from MDA
+   code: |
+    SetTestSetLookupValue(control: ControlName, item: TestSetRecord): Void =
+      SetLookupValue(
+        control, 
+        JSON(
+          Table({ 
+            id: item.cat_copilottestsetid, 
+            name: item.cat_name, 
+            entityType: "cat_copilottestset" 
+          })
+        )
+      )
