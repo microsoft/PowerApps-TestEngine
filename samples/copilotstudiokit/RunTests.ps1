@@ -143,65 +143,70 @@ function AddOrUpdate {
     }
 }
 
-if ($runTests)
-{
-    if ([string]::IsNullOrEmpty($environmentId)) {
-        Write-Error "Environment not configured. Please update config.json" -ForegroundColor Red
-        return
-    }
+if ([string]::IsNullOrEmpty($environmentId)) {
+    Write-Error "Environment not configured. Please update config.json" -ForegroundColor Red
+    return
+}
 
-    $azTenantId = az account show --query tenantId --output tsv
+$azTenantId = az account show --query tenantId --output tsv
 
-    if ($azTenantId -ne $tenantId) {
-        Write-Error "Tenant ID mismatch. Please check your Azure CLI context." -ForegroundColor Red
-        return
-    }
+if ($azTenantId -ne $tenantId) {
+    Write-Error "Tenant ID mismatch. Please check your Azure CLI context." -ForegroundColor Red
+    return
+}
 
-    $foundEnvironment = $false
-    $textResult = (pac env select --environment $environmentId)
-    $textResult = (pac env list)
+$foundEnvironment = $false
+$textResult = (pac env select --environment $environmentId)
+$textResult = (pac env list)
 
-    $environmentUrl = ""
+$environmentUrl = ""
 
-    Write-Host "Searching for $environmentId"
+Write-Host "Searching for $environmentId"
 
-    foreach ($line in $textResult) {
-        if ($line -match $environmentId) {
-            if ($line -match "(https://\S+/)") {
-                $environmentUrl = $matches[0].Substring(0,$matches[0].Length - 1)
-                $foundEnvironment = $true
-                break
-            }
+foreach ($line in $textResult) {
+    if ($line -match $environmentId) {
+        if ($line -match "(https://\S+/)") {
+            $environmentUrl = $matches[0].Substring(0,$matches[0].Length - 1)
+            $foundEnvironment = $true
+            break
         }
     }
+}
 
-    if ($foundEnvironment) {
-        Write-Output "Found matching Environment URL: $environmentUrl"
-    } else {
-        Write-Error "Environment ID not found."
-        return
-    }
+if ($foundEnvironment) {
+    Write-Output "Found matching Environment URL: $environmentUrl"
+} else {
+    Write-Error "Environment ID not found."
+    return
+}
 
-    $token = (az account get-access-token --resource $environmentUrl | ConvertFrom-Json)
+$token = (az account get-access-token --resource $environmentUrl | ConvertFrom-Json)
 
-    if ($token -eq $null) {
-        Write-Error "Failed to obtain access token. Please check your Azure CLI context."
-        return
-    }
+if ($token -eq $null) {
+    Write-Error "Failed to obtain access token. Please check your Azure CLI context."
+    return
+}
 
-    $appId = ""
-    $lookup = "$environmentUrl/api/data/v9.2/appmodules?`$filter=name eq '$appName'`&`$select=appmoduleid"
-    $appResponse = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
-    $appId = $appResponse.value.appmoduleid
+$appId = ""
+$lookup = "$environmentUrl/api/data/v9.2/appmodules?`$filter=name eq '$appName'`&`$select=appmoduleid"
+$appResponse = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
+$appId = $appResponse.value.appmoduleid
 
-    $lookupApp = "$environmentUrl/api/data/v9.2/appmodules($appId)"
-    $appInfo = Invoke-RestMethod -Uri $lookupApp -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
-    $appDescriptor = $appInfo.descriptor | ConvertFrom-Json
+$lookupApp = "$environmentUrl/api/data/v9.2/appmodules($appId)"
+$appInfo = Invoke-RestMethod -Uri $lookupApp -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
+$appDescriptor = $appInfo.descriptor | ConvertFrom-Json
 
-    $appEntities = $appDescriptor.appInfo.AppComponents.Entities | Measure-Object | Select-Object -ExpandProperty Count;
+$appEntities = $appDescriptor.appInfo.AppComponents.Entities | Measure-Object | Select-Object -ExpandProperty Count;
 
-    Write-Host $appEntities
+foreach ($entity in ($appDescriptor.appInfo.AppComponents.Entities | Sort-Object -Property LogicalName)) {
+    $entityName = $entity.LogicalName
+    # Add the entity in the dictionary
+    AddOrUpdate -key ($entityName + "-list") -value (New-Object TestData($entityName, "list", 0, 0))
+    AddOrUpdate -key ($entityName + "-record") -value (New-Object TestData($entityName, "record", 0, 0))
+}
 
+if ($runTests)
+{
     $appTotal = ($appDescriptor.appInfo.AppElements.Count +  ($appEntities * 2)) 
         
     if ([string]::IsNullOrEmpty($appId)) {
@@ -468,6 +473,8 @@ $preContent = @"
 <head>
     <meta charset="UTF-8">
     <title>Test Engine Summary Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/6.3.1/js/tabulator.min.js" integrity="sha512-8+qwMD/110YLl5T2bPupMbPMXlARhei2mSxerb/0UWZuvcg4NjG7FdxzuuvDs2rBr/KCNqhyBDe8W3ykKB1dzA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/6.3.1/css/tabulator.min.css" integrity="sha512-RYFH4FFdhD/FdA+OVEbFVqd5ifR+Dnx2M7eWcmkcMexlIoxNgm89ieeVyHYb8xChuYBtbrasMTlo02cLnidjtQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
@@ -558,7 +565,7 @@ function Generate-HTMLTable {
     # Initialize HTML table
     $htmlTable = @"
     <h2>Health Check Coverage</h2>
-<table>
+<table id="coverageTable">
     <tr>
         <th>Name</th>
         <th>Type</th>
@@ -569,7 +576,7 @@ function Generate-HTMLTable {
 
     $numerator = 0;
     # Iterate through the dictionary and add rows to the table
-    foreach ($key in $dictionary.Keys) {
+    foreach ($key in $dictionary.Keys | Sort-Object) {
         $value = $dictionary[$key]
         $numerator += ($value.PassCount -gt 0) -and ($value.FailCount -eq 0) ? 1 : 0
         $htmlTable += "<tr><td>$($value.EntityName)</td><td>$($value.EntityType)</td><td>$($value.PassCount)</td><td>$($value.FailCount)</td></tr>"
@@ -583,11 +590,36 @@ function Generate-HTMLTable {
     
     # Add KaTeX code to show the calculation
     $katexCode = @"
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha512-fHwaWebuwA7NSF5Qg/af4UeDx9XqUpYpOGgubo3yWu+b2IQR4UeQwbb42Ti7gVAjNtVoI/I9TEoYeu9omwcC6g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js" integrity="sha512-LQNxIMR5rXv7o+b1l8+N1EZMfhG7iFZ9HhnbJkTp4zjNr5Wvst75AqUeFDxeRUa7l5vEDyUiAip//r+EFLLCyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js" integrity="sha512-iWiuBS5nt6r60fCz26Nd0Zqe0nbk1ZTIQbl3Kv7kYsX+yKMUFHzjaH2+AnM6vp2Xs+gNmaBAVWJjSmuPw76Efg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
+        new Tabulator('#coverageTable', {
+            layout:"fitDataTable",
+            columns:[
+                {title:"Name", field:"Name"},
+                {title:"Type", field:"Type"},
+                {title:"Pass Count", field:"Pass Count", formatter: function(cell, formatterParams, onRendered) { 
+                        var value = cell.getValue();
+                        if(value > 0){
+                            cell.getElement().style.color = "white";
+                            cell.getElement().style.backgroundColor = "green";
+                        }
+                        return value;
+                    }
+                },
+                {title:"Fail Count", field:"Fail Count", formatter: function(cell, formatterParams, onRendered) { 
+                        var value = cell.getValue();
+                        if(value > 0){
+                            cell.getElement().style.color = "white";
+                            cell.getElement().style.backgroundColor = "red";
+                        }
+                        return value;
+                    }
+                }
+            ]}
+        );
         renderMathInElement(document.body, {
             delimiters: [
                 {left: "`$`$", right: "`$`$"}
