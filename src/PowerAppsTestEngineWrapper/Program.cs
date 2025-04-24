@@ -167,7 +167,6 @@ namespace PowerAppsTestEngineWrapper
                 var logLevel = LogLevel.Information; // Default log level
                 if (string.IsNullOrEmpty(inputOptions.LogLevel) || !Enum.TryParse(inputOptions.LogLevel, true, out logLevel))
                 {
-                    Console.WriteLine($"Unable to parse log level: {inputOptions.LogLevel}, using default");
                     logLevel = LogLevel.Information;
                 }
 
