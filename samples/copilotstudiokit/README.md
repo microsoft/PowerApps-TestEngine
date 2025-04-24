@@ -164,6 +164,7 @@ code .
     "appName": "Copilot Studio Kit",
     "customPage": "cat_webchatcustomizer_48d6e",
     "user1Email": "test@contoso.onmicrosoft.com",
+    "userAuth": "storagestate", 
     "runInstall": true,
     "installPlaywright": true,
     "compile": true,
