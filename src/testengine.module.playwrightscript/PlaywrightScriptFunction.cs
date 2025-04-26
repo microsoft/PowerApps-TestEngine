@@ -41,6 +41,10 @@ namespace testengine.module
             _logger.LogInformation("------------------------------\n\n" +
                 "Executing PlaywrightScript function.");
 
+#if RELEASE
+            throw NotImplementedException("PlaywrightScript function is not supported in release mode.");
+#endif
+
             // Convert relative path to path relativeto test file
             var filename = GetFullFile(_testState, file.Value);
 

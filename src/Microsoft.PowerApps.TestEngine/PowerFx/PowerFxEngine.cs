@@ -373,11 +373,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
                     _dataverseConnection = dataverse;
 
+#if DEBUG
                     if (enableAIFunctions)
                     {
                         _dataverseAIPredictHelper = new DataverseAIPredictHelper(dataverseUri, token);
                         powerFxConfig.AddFunction(new AIExecutePromptFunction(Logger, svcClient, _dataverseAIPredictHelper));
                     }
+#endif
                 }
             }
         }
