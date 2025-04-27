@@ -37,8 +37,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         private readonly IEnvironmentVariable _environmentVariable;
         private IOrganizationService _orgService;
         private DataverseConnection _dataverseConnection;
+#if DEBUG
         private DataverseAIPredictHelper _dataverseAIPredictHelper;
+#endif
         private bool enableAIFunctions = false;
+
 
         private int _retryLimit = 2;
 
@@ -373,13 +376,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
                     _dataverseConnection = dataverse;
 
-#if DEBUG
+
                     if (enableAIFunctions)
                     {
+#if DEBUG
                         _dataverseAIPredictHelper = new DataverseAIPredictHelper(dataverseUri, token);
                         powerFxConfig.AddFunction(new AIExecutePromptFunction(Logger, svcClient, _dataverseAIPredictHelper));
-                    }
 #endif
+                    }
+
                 }
             }
         }
