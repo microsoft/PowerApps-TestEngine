@@ -218,6 +218,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "showcontrols":
                         case "loop":
                         case "start":
+                        case "markers":
+                        case "powerbiinteractions":
                         case "autoplay":
                         case "showtitle":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
