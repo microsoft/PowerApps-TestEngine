@@ -277,7 +277,7 @@ To record interaction with Dataverse and generate a sample Test Engine script pe
 
 ## Context
 
-This sample is an example of a "build from source" using the open source licensed version of Test Engine. Features in the source code version can include features not yet released as part of the ```pac test run`` command in the Power Platform Command line interface action.
+This sample is an example of a "build from source" using the open source licensed version of Test Engine. Features in the source code version can include features not yet released as part of the `pac test run` command in the Power Platform Command line interface action.
 
 ## Security
 
