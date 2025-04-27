@@ -2,7 +2,7 @@
 
 The **Power CAT Copilot Studio Kit** is a comprehensive solution designed to automate the testing of custom copilots within the Power Platform. This kit primarily focuses on two main use cases: intent accuracy testing and generative answers testing.
 
-The Power CAT Copilot Studio Kit has user-friendly Model Driven Application that we want to test so that we can ensure that it verifeid the features that empower makers to configure copilots and test sets. The features that will need to be tested include various types of Copilot tests, including response exact match, attachments match, topic match (which requires Dataverse enrichment), and generative answers (which require AI Builder for response analysis and Azure Application Insights for details on why an answer was or was not generated).
+The Power CAT Copilot Studio Kit has user-friendly Model Driven Application that we want to test so that we can ensure that it verified the features that empower makers to configure copilots and test sets. The features that will need to be tested include various types of Copilot tests, including response exact match, attachments match, topic match (which requires Dataverse enrichment), and generative answers (which requires AI Builder for response analysis and Azure Application Insights for details on why an answer was or was not generated).
 
 ## What You Need
 
@@ -21,7 +21,7 @@ Before you start, you'll need a few tools and permissions:
 winget install Microsoft.DotNet.SDK.8
 ```
 
-2. An install of PowerShell following the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) for your operating system. For example on Windows you could use the following command.
+2. An install of PowerShell following the [Install Overview](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) for your operating system. For example on Windows you could use the following command
 
 ```cmd
 winget install --id Microsoft.PowerShell --source winget
@@ -55,7 +55,7 @@ winget install -e --id Microsoft.AzureCLI
 winget install -e --id Microsoft.VisualStudioCode
 ```
 
-9. You have an installed version of Creator kit in the target environment. For example change the ** 00000000-0000-0000-0000-000000000000** to your environment id
+9. You have an installed version of Creator kit in the target environment. For example change the **00000000-0000-0000-0000-000000000000** to your environment id
 
 ```pwsh
 pac application install --environment-id 00000000-0000-0000-0000-000000000000 --application-name CreatorKitCore
@@ -123,37 +123,37 @@ cd PowerApps-TestEngine
 git checkout grant-archibald-ms/copilotstudiokit-560
 ```
 
-3. Ensure logged out out of pac cli. This ensures you're logged out of any previous sessions.
+4. Ensure logged out out of pac cli. This ensures you're logged out of any previous sessions.
 
 ```pwsh
 pac auth clear
 ```
 
-4. Login to Power Platform CLI using [pac auth](https://learn.microsoft.com/power-platform/developer/cli/reference/auth#pac-auth-create)
+5. Login to Power Platform CLI using [pac auth](https://learn.microsoft.com/power-platform/developer/cli/reference/auth#pac-auth-create)
 
 ```pwsh
 pac auth create --environment <Your environment ID>
 ```
 
-5. Authenticated with Azure CLI
+6. Authenticated with Azure CLI
 
 ```pwsh
 az login --use-device-code --allow-no-subscriptions
 ```
 
-6. Change to Copilot Studio Kit sample
+7. Change to Copilot Studio Kit sample
 
 ```pwsh
 cd samples\copilotstudiokit
 ```
 
-7. Edit the sample in your editor. For example using Visual Studio Code you can open the sample folder using the following commahd
+8. Edit the sample in your editor. For example using Visual Studio Code you can open the sample folder using the following commahd
 
 ```pwsh
 code .
 ```
 
-6. Using your edit of choice add the a new file named **config.json** in the same folder as RunTests.ps1. You will need to replacing the value with your tenant and environment id. 
+9. Using your editor of choice add the a new file named **config.json** in the same folder as RunTests.ps1. You will need to replace the value with your tenant and environment id. 
 
   > TIP: You can obtain the environment and tenant information from your Power Apps portal by using **settings** from the main navigation var and selecting **Session Details** 
 
@@ -271,17 +271,17 @@ To record interaction with Dataverse and generate a sample Test Engine script pe
 
 - **Login Prompt**: You'll be asked to log in to the Power Apps Portal.
 - **Test Execution**: The Test Engine will run the steps to test your Power Apps Portal.
-- **Cached Credentials**: If you choose "Stay Signed In," future tests will use your saved credentials.
+- **Cached Credentials**: If you choose "Stay Signed In", future tests will use your saved credentials.
 - **Interactive Testing**: Commands like `Experimental.Pause()` will let you pause and inspect the test steps.
 - **Recorded Sessions**: Test Engine provides the ability to generate recorded video of the test session in the TestOutput folder.
 
 ## Context
 
-This sample is an example of a "build from source" using the open source licensed version of Test Engine. Features in the the source code version can include feature not yet release as part of the ```pac test run`` command in the Power Platform Command line interface action.
+This sample is an example of a "build from source" using the open source licensed version of Test Engine. Features in the source code version can include features not yet released as part of the ```pac test run`` command in the Power Platform Command line interface action.
 
 ## Security
 
-We you look at running this sample in your environment consider the following:
+When you look at running this sample in your environment consider the following:
 
 - Multi Factor Authentication Requirements - The initial run is likely to need an interactive logic to obtain the single sign on cookies
 - Conditional Access polices - The policies could mandate specific supported browser types and Machine Device Management policies
@@ -290,4 +290,4 @@ This sample assume the following:
 
 - Browser type will be Microsoft Edge
 - If conditional access policies require work profile you will switch to the edge work profile to obtain the single sign on cookies
-- You may need to change you config.json to set "useStaticContext": true for the login as in private browser login may not be supported by your organizations conditional access policies
+- You may need to change your **config.json** file to set  `"useStaticContext": true` for the login as in private browser login may not be supported by your organization's conditional access policies
