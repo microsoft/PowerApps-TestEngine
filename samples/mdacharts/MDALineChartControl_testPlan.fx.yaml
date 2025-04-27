@@ -1,0 +1,75 @@
+testSuite:
+  testSuiteName: Line Chart Controls
+  testSuiteDescription: Verifies that the line chart controls work correctly.
+  persona: User1
+  appLogicalName: line_chart_controls_app
+
+  testCases:
+      - testCaseName: Verify Items Property
+        testCaseDescription: Check if the line chart correctly sets and displays the items.
+        testSteps: |
+          SetProperty(LineChart1.Items, Table(
+            {Labels: "Category A", Series1: 31, Series2: 39, Series3: 12, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category B", Series1: 15, Series2: 78, Series3: 18, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category C", Series1: 11, Series2: 60, Series3: 8, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0},
+            {Labels: "Category D", Series1: 22, Series2: 65, Series3: 14, Series4: 0, Series5: 0, Series6: 0, Series7: 0, Series8: 0, Series9: 0}
+          ));
+          Assert(CountRows(LineChart1.Items) = 4, "Verify the chart contains 4 data points");
+
+      - testCaseName: Verify Chart Width
+        testCaseDescription: Ensure that the line chart width is set correctly.
+        testSteps: |
+          SetProperty(LineChart1.Width, 620);
+          Assert(LineChart1.Width = 620, "Verify chart width is set correctly");
+
+      - testCaseName: Verify Chart Height
+        testCaseDescription: Ensure that the line chart height is set correctly.
+        testSteps: |
+          SetProperty(LineChart1.Height, 400);
+          Assert(LineChart1.Height = 400, "Verify chart height is set correctly");
+
+      - testCaseName: Verify Chart X Position
+        testCaseDescription: Ensure that the line chart X position is set correctly.
+        testSteps: |
+          SetProperty(LineChart1.X, 180);
+          Assert(LineChart1.X = 180, "Verify chart X position is set correctly");
+
+      - testCaseName: Verify Chart Y Position
+        testCaseDescription: Ensure that the line chart Y position is set correctly.
+        testSteps: |
+          SetProperty(LineChart1.Y, 65);
+          Assert(LineChart1.Y = 65, "Verify chart Y position is set correctly");
+
+      - testCaseName: Verify Number of Series
+        testCaseDescription: Ensure that the line chart number of series is set correctly.
+        testSteps: |
+          SetProperty(LineChart1.NumberOfSeries, 3);
+          Assert(LineChart1.NumberOfSeries = 3, "Verify number of series is set correctly");
+
+      - testCaseName: Verify Grid Style
+        testCaseDescription: Ensure that the line chart grid style is set correctly.
+        testSteps: |
+          SetProperty(LineChart1.GridStyle, "Both");
+          Assert(LineChart1.GridStyle = "Both", "Verify grid style is set correctly");
+
+      - testCaseName: Verify Line Chart Markers
+        testCaseDescription: Ensure that the line chart markers are shown correctly for all data points when markers are enabled.
+        testSteps: |          
+          SetProperty(LineChart1.Markers, true);
+          Assert(LineChart1.Markers, "Verify markers are shown correctly");
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
