@@ -32,7 +32,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             {
                 recordValue = new ControlRecordValue(item.RecordType, _testWebProvider, RowControlName, parentItemPath: item.ItemPath);
             }
-            else 
+            else
             {
                 recordValue = new ControlRecordValue(item.RecordType, _testWebProvider, parentItemPath: item.ItemPath);
             }
