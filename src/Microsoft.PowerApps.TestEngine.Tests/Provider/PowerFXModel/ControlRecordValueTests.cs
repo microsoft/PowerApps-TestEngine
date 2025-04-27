@@ -60,7 +60,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
         }
 
         [Fact]
-        public void GalleryControlRecordValueTest()
+        public void GalleryControlRecordValueTestMDA()
         {
             var labelRecordType = RecordType.Empty().Add("Text", FormulaType.String);
             var labelName = "Label1";
@@ -70,6 +70,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var galleryName = "Gallery1";
             var labelText = Guid.NewGuid().ToString();
             var mockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
+            //case of mda provider
+            mockTestWebProvider.Setup(x => x.Name).Returns("mda");
             mockTestWebProvider.Setup(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
                 .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = labelText }));
 
@@ -126,6 +128,77 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             mockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == labelName)), Times.Exactly(itemCount));
 
         }
+
+        [Fact]
+        public void GalleryControlRecordValueTestNonMDA()
+        {
+            var labelRecordType = RecordType.Empty().Add("Text", FormulaType.String);
+            var labelName = "Label1";
+            var galleryAllItemsTableType = TableType.Empty().Add(new NamedFormulaType(labelName, labelRecordType));
+            var allItemsName = "AllItems";
+            var galleryRecordType = RecordType.Empty().Add(allItemsName, galleryAllItemsTableType);
+            var galleryName = "Gallery1";
+            var labelText = Guid.NewGuid().ToString();
+            var mockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
+            //case of mda provider
+            mockTestWebProvider.Setup(x => x.Name).Returns(string.Empty);
+            mockTestWebProvider.Setup(x => x.GetPropertyValueFromControl<string>(It.IsAny<ItemPath>()))
+                .Returns(JsonConvert.SerializeObject(new JSPropertyValueModel() { PropertyValue = labelText }));
+
+            var itemCount = 4;
+            mockTestWebProvider.Setup(x => x.GetItemCount(It.IsAny<ItemPath>())).Returns(itemCount);
+
+            var galleryRecordValue = new ControlRecordValue(galleryRecordType, mockTestWebProvider.Object, galleryName);
+            Assert.Equal(galleryName, galleryRecordValue.Name);
+            Assert.Equal(galleryRecordType, galleryRecordValue.Type);
+
+            Assert.Equal(galleryName, galleryRecordValue.GetItemPath().ControlName);
+            Assert.Null(galleryRecordValue.GetItemPath().Index);
+            Assert.Null(galleryRecordValue.GetItemPath().PropertyName);
+            Assert.Null(galleryRecordValue.GetItemPath().ParentControl);
+            Assert.Equal("Text", galleryRecordValue.GetItemPath("Text").PropertyName);
+
+            // Gallery1.AllItems
+            var allItemsTableValue = galleryRecordValue.GetField(allItemsName) as TableValue;
+            Assert.NotNull(allItemsTableValue);
+            Assert.Equal(galleryAllItemsTableType, allItemsTableValue.Type);
+
+            var rows = allItemsTableValue.Rows.ToArray();
+
+            for (var i = 0; i < itemCount; i++)
+            {
+                // Index(Gallery1.AllItems, i)
+                var row = rows[i];
+                var rowControlRecordValue = row.Value as ControlRecordValue;
+                Assert.Null(rowControlRecordValue.Name);
+                Assert.Equal(galleryAllItemsTableType.ToRecord(), rowControlRecordValue.Type);
+
+                Assert.NotNull(rowControlRecordValue.GetItemPath().ParentControl);
+                Assert.Equal(galleryName, rowControlRecordValue.GetItemPath().ParentControl.ControlName);
+                Assert.Equal(i, rowControlRecordValue.GetItemPath().ParentControl.Index);
+                Assert.Equal(allItemsName, rowControlRecordValue.GetItemPath().ParentControl.PropertyName);
+
+                // Index(Gallery1.AllItems, i).Label1
+                var labelRecordValue = rowControlRecordValue.GetField(labelName) as ControlRecordValue;
+                Assert.NotNull(labelRecordValue);
+                Assert.Equal(labelName, labelRecordValue.Name);
+                Assert.Equal(labelRecordType, labelRecordValue.Type);
+
+                Assert.Equal(labelName, labelRecordValue.GetItemPath().ControlName);
+                Assert.Null(labelRecordValue.GetItemPath().Index);
+                Assert.Null(labelRecordValue.GetItemPath().PropertyName);
+                Assert.NotNull(labelRecordValue.GetItemPath().ParentControl);
+                Assert.Equal(galleryName, labelRecordValue.GetItemPath().ParentControl.ControlName);
+                Assert.Equal(i, labelRecordValue.GetItemPath().ParentControl.Index);
+                Assert.Equal(allItemsName, labelRecordValue.GetItemPath().ParentControl.PropertyName);
+
+                // Index(Gallery1.AllItems, i).Label1.Text
+                Assert.Equal(labelText, (labelRecordValue.GetField("Text") as StringValue).Value);
+            }
+            mockTestWebProvider.Verify(x => x.GetPropertyValueFromControl<string>(It.Is<ItemPath>((x) => x.PropertyName == "Text" && x.ControlName == labelName)), Times.Exactly(itemCount));
+
+        }
+
         [Fact]
         public void ComponentsControlRecordValueTest()
         {

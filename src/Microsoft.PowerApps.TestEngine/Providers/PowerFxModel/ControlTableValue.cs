@@ -26,7 +26,16 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
         protected override DValue<RecordValue> Marshal(ControlTableRowSchema item)
         {
-            var recordValue = new ControlRecordValue(item.RecordType, _testWebProvider, RowControlName, parentItemPath: item.ItemPath);
+            ControlRecordValue recordValue = null;
+            //special casing for mda revisit for objectmodel change
+            if (string.Equals(_testWebProvider.Name ?? string.Empty, "mda", StringComparison.InvariantCultureIgnoreCase))
+            {
+                recordValue = new ControlRecordValue(item.RecordType, _testWebProvider, RowControlName, parentItemPath: item.ItemPath);
+            }
+            else 
+            {
+                recordValue = new ControlRecordValue(item.RecordType, _testWebProvider, parentItemPath: item.ItemPath);
+            }
             return DValue<RecordValue>.Of(recordValue);
         }
     }
