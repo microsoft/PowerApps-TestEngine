@@ -41,6 +41,9 @@ namespace testengine.module
             _logger.LogInformation("------------------------------\n\n" +
                 "Executing PlaywrightScript function.");
 
+#if RELEASE
+            throw new NotImplementedException("PlaywrightScript function is not supported in release mode.");
+#else
             // Convert relative path to path relativeto test file
             var filename = GetFullFile(_testState, file.Value);
 
@@ -94,6 +97,7 @@ namespace testengine.module
             _logger.LogInformation("Successfully finished executing PlaywrightScript function.");
 
             return FormulaValue.NewBlank();
+#endif
         }
 
         static string ComputeSha256Hash(string rawData)

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Globalization;
+using System.Linq;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerFx;
 using Xunit;
@@ -10,8 +11,36 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
 {
     public class PowerFxHelperTests
     {
-        public PowerFxHelperTests()
+
+        [Theory]
+        [InlineData("// Test", "")]
+        [InlineData(@"// Test
+A", @"A
+")]
+        [InlineData(@"// Test
+A
+// Other", @"A
+")]
+        public void RemoveComments(string text, string expectedText)
         {
+            Assert.Equal(expectedText, PowerFxHelper.RemoveComments(text));
+        }
+
+        [Theory]
+        [InlineData(new string[] { "A(): Text = true" }, new string[] { @"A(): Text = true" })]
+        [InlineData(new string[] { "A(): Text = true", "false" }, new string[] { @"A(): Text = true;
+false" })]
+        public void JoinFunctions(string[] input, string[] expectedText)
+        {
+            Assert.Equal(expectedText, PowerFxHelper.JoinFunctions(input));
+        }
+
+        [Theory]
+        [InlineData("A(): Text = true", true)]
+        [InlineData("A(Name: Text): Text = true", true)]
+        public void ContainsFunction(string input, bool expected)
+        {
+            Assert.Equal(expected, PowerFxHelper.ContainsFunction(input));
         }
 
         [Theory]

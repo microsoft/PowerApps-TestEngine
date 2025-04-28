@@ -1,17 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
 using System.Globalization;
-using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
-using Microsoft.PowerApps.TestEngine.Modules;
-using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 
 namespace Microsoft.PowerApps.TestEngine
 {
@@ -212,6 +207,7 @@ namespace Microsoft.PowerApps.TestEngine
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 var singleTestRunner = scope.ServiceProvider.GetRequiredService<ISingleTestRunner>();
+
                 await singleTestRunner.RunTestAsync(testRunId, testRunDirectory, testSuiteDefinition, browserConfig, domain, queryParams, locale);
             }
         }

@@ -1,0 +1,20 @@
+testSuite:
+  testSuiteName: Copilot Studio Kit
+  testSuiteDescription: Verify Prompt Advisor Studio Page of Copilot Studio Kit 
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Step 1 - Start the custom page
+      testCaseDescription: Verify can open the page
+      testSteps: |
+        = Assert(1=1)
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
