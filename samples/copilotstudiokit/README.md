@@ -147,7 +147,7 @@ az login --use-device-code --allow-no-subscriptions
 cd samples\copilotstudiokit
 ```
 
-8. Edit the sample in your editor. For example using Visual Studio Code you can open the sample folder using the following commahd
+8. Edit the sample in your editor. For example using Visual Studio Code you can open the sample folder using the following command
 
 ```pwsh
 code .
@@ -257,15 +257,15 @@ To record interaction with Dataverse and generate a sample Test Engine script pe
 .\RunTests.ps1
 ```
 
-2. If required login to the Power App
+3. If required login to the Power App
 
-3. Wait for the Playwright Inspector to be displayed
+4. Wait for the Playwright Inspector to be displayed
 
-4. Interact with the Setup and Upgrade Wizard
+5. Interact with the Setup and Upgrade Wizard
 
-5. When ready to complete the record session press play in the Playwright Inspector
+6. When ready to complete the record session press play in the Playwright Inspector
 
-6. Open the generated **recorded.te.yaml** that includes data from recorded Dataverse and Connector calls.
+7. Open the generated **recorded.te.yaml** that includes data from recorded Dataverse and Connector calls.
 
 ## What to Expect
 
