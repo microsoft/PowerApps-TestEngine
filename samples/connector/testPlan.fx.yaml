@@ -9,7 +9,7 @@ testSuite:
       method: POST
       headers:
         x-ms-request-method: GET
-      responseDataFile: response.json
+      responseDataFile: "..\\..\\..\\samples\\connector\\response.json" #Place file at base directory or provide absolute ("C:\\sample\\response.json") or relative path wrt base
 
   testCases:
     - testCaseName: Fill in a city name and do the search
