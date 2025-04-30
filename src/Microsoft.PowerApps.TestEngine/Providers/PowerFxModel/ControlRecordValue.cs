@@ -153,7 +153,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                         // Because of this, we have to manually convert it into a DateTime
                         if (long.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
                         {
-                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
+                            var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(milliseconds);
+                            DateTime trueDateTime = dateTimeOffset.LocalDateTime;
                             result = DateTimeValue.New(trueDateTime);
                         }
                         // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
