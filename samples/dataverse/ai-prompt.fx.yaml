@@ -15,7 +15,7 @@ testSuite:
       testSteps: |
         = TestCountry([
           {Name:"France", Expected:"Paris"},
-          {Name:"USA", Expected:"Washington"},
+          {Name:"USA", Expected:"Washington DC"},
           {Name:"Canada", Expected:"Ottawa"},
           {Name:"Mexico", Expected:"Mexico City"},
           {Name:"New Zealand", Expected:"Wellington"}
