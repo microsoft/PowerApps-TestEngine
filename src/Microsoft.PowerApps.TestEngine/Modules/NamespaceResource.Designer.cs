@@ -61,6 +61,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;PrivateImplementationDetails&gt;::ComputeStringHash(System.String).
+        /// </summary>
+        internal static string _PrivateImplementationDetails___ComputeStringHash_System_String_ {
+            get {
+                return ResourceManager.GetString("<PrivateImplementationDetails>::ComputeStringHash(System.String)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Microsoft.Bcl.AsyncInterfaces.
         /// </summary>
         internal static string Microsoft_Bcl_AsyncInterfaces {
@@ -138,6 +147,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules {
         internal static string Newtonsoft_Json {
             get {
                 return ResourceManager.GetString("Newtonsoft.Json", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OpenCvSharp.
+        /// </summary>
+        internal static string OpenCvSharp {
+            get {
+                return ResourceManager.GetString("OpenCvSharp", resourceCulture);
             }
         }
         
@@ -471,6 +489,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules {
         internal static string System_Linq {
             get {
                 return ResourceManager.GetString("System.Linq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System.Math.
+        /// </summary>
+        internal static string System_Math {
+            get {
+                return ResourceManager.GetString("System.Math", resourceCulture);
             }
         }
         

@@ -3,24 +3,22 @@
 
 using System.ComponentModel.Composition;
 using System.Dynamic;
+using System.Globalization;
 using System.Net;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
 using Microsoft.PowerApps.TestEngine.Providers.PowerFxModel;
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Core.Functions;
 using Microsoft.PowerFx.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using testengine.provider.mda;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -28,7 +26,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     /// Functions for interacting with a Power Apps Model Driven Application (MDA)
     /// </summary>
     [Export(typeof(ITestWebProvider))]
-    public class ModelDrivenApplicationProvider : ITestWebProvider
+    public class ModelDrivenApplicationProvider : ITestWebProvider, IExtendedPowerFxProvider
     {
         private MDATypeMapping TypeMapping = new MDATypeMapping();
 
@@ -67,6 +65,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         private string GetPropertyValueErrorMessage = "Something went wrong when Test Engine tried to get property value.";
         private string LoadObjectModelErrorMessage = "Something went wrong when Test Engine tried to load object model.";
         private string LoadPowerAppsMDAErrorMessage = "Something went wrong when Test Engine tried to load Power Apps Model Driven Application helper.";
+
+        private PowerFxConfig _config = null;
+        private RecalcEngine _recalcEngine = null;
 
         public ModelDrivenApplicationProvider()
         {
@@ -130,6 +131,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 return String.Empty;
             }
         }
+
+        public bool ProviderExecute => false;
 
         private async Task<T?> GetPropertyValueFromControlAsync<T>(ItemPath itemPath)
         {
@@ -213,6 +216,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "islogovisible":
                         case "istitlevisible":
                         case "checked":
+                        case "markers":
+                        case "powerbiinteractions":
                         case "autoplay":
                         case "showtitle":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
@@ -741,6 +746,36 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         private static string GetQueryParametersForTestUrl(string tenantId, string additionalQueryParams)
         {
             return $"?tenantId={tenantId}&source=testengine{additionalQueryParams}";
+        }
+
+        public void Setup(PowerFxConfig powerFxConfig, ITestInfraFunctions testInfraFunctions, ISingleTestInstanceState singleTestInstanceState, ITestState testState, IFileSystem fileSystem)
+        {
+            var logger = singleTestInstanceState.GetLogger();
+            powerFxConfig.AddFunction(new GetOptionsFunction(testInfraFunctions, logger));
+            powerFxConfig.AddFunction(new GetValueFunction(testInfraFunctions, logger));
+            powerFxConfig.AddFunction(new SetOptionsFunction(testInfraFunctions, logger));
+            powerFxConfig.AddFunction(new SetValueJsonFunction(testInfraFunctions, logger));
+            powerFxConfig.AddFunction(new SaveFormFunction(testInfraFunctions, _testState, logger));
+        }
+
+        public void ConfigurePowerFx(PowerFxConfig powerFxConfig)
+        {
+            _config = powerFxConfig;
+        }
+
+        public void ConfigurePowerFxEngine(RecalcEngine engine)
+        {
+            _recalcEngine = engine;
+        }
+
+        public async Task SetupContext()
+        {
+
+        }
+
+        public FormulaValue ExecutePowerFx(string steps, CultureInfo culture)
+        {
+            return _recalcEngine.EvalAsync(steps, CancellationToken.None, new ParserOptions { Culture = culture }, _config.SymbolTable).Result;
         }
     }
 }

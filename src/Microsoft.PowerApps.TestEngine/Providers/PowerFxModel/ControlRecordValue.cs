@@ -108,6 +108,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
                 var propertyValueJson = _testWebProvider.GetPropertyValueFromControl<string>(itemPath);
 
+                if (fieldName.ToLower().Equals("options"))
+                {
+                    result = null;
+                    return false;
+                }
+
                 if (string.IsNullOrEmpty(propertyValueJson))
                 {
                     result = BlankValue.NewBlank(fieldType);
@@ -144,49 +150,60 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                         result = GuidValue.New(new Guid(jsPropertyValueModel.PropertyValue));
                         return true;
                     }
-                    else if (fieldType is DateTimeType)
+                    else if (fieldType is DateTimeType || fieldType is DateType)
                     {
-                        long milliseconds;
+                        DateTime trueDateTime;
 
-                        // When converted from DateTime to a string, a value from Wait() gets roundtripped into a UTC Timestamp format
-                        // The compiler does not register this format as a valid DateTime format
-                        // Because of this, we have to manually convert it into a DateTime
-                        if (long.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
+                        // Retrieve the timezone value
+                        var isLocalTimezone = false;
+                        string timezoneValueJson = null;
+                        try
                         {
-                            var trueDateTime = new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(milliseconds);
-                            result = DateTimeValue.New(trueDateTime);
+                            var timezoneItemPath = GetItemPath("DateTimeZone");
+                            timezoneValueJson = _testWebProvider.GetPropertyValueFromControl<string>(timezoneItemPath);
+                            if (!string.IsNullOrEmpty(timezoneValueJson))
+                            {
+                                var timezoneModel = JsonConvert.DeserializeObject<JSPropertyValueModel>(timezoneValueJson);
+                                if (timezoneModel != null && timezoneModel.PropertyValue.Equals("local", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    isLocalTimezone = true;
+                                }
+                            }
                         }
-                        // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
-                        // This allows us to just parse it back into a datetime, without having to manually convert it back
-                        else
+                        catch (Exception ex)
                         {
-                            result = DateTimeValue.New(DateTime.Parse(jsPropertyValueModel.PropertyValue));
+                            // Log the exception and proceed with default behavior
+                            _testWebProvider.SingleTestInstanceState.GetLogger().LogError(ex, "Failed to retrieve DateTimeZone value.");
                         }
-
-                        return true;
-                    }
-                    else if (fieldType is DateType)
-                    {
-                        long milliseconds;
-
-                        // When converted from Date to a string, a value from Wait() gets roudntripped into a UTC Timestamp format
-                        // The compiler does not register this format as a valid DateTime format
-                        // Because of this, we have to manually convert it into a DateTime
-                        if (long.TryParse(jsPropertyValueModel.PropertyValue, out milliseconds))
+                        // Parse the Unix timestamp
+                        if (long.TryParse(jsPropertyValueModel.PropertyValue, out var milliseconds))
                         {
                             var dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(milliseconds);
-                            DateTime trueDateTime = dateTimeOffset.LocalDateTime;
-                            result = DateValue.NewDateOnly(trueDateTime.Date);
+                            trueDateTime = isLocalTimezone ? dateTimeOffset.LocalDateTime : dateTimeOffset.UtcDateTime;
                         }
-                        // When converted from DateTime to a string, a value from SetProperty() retains it's MMDDYYYY hh::mm::ss format
-                        // This allows us to just parse it back into a DateTime, without having to manually convert it back
-                        // We then use said DateTime to create the DateValue
+                        else if (DateTime.TryParse(jsPropertyValueModel.PropertyValue, out trueDateTime))
+                        {
+                            if (isLocalTimezone)
+                            {
+                                trueDateTime = trueDateTime.ToUniversalTime();
+                            }
+                        }
                         else
                         {
-                            result = DateValue.NewDateOnly(DateTime.Parse(jsPropertyValueModel.PropertyValue));
+                            result = null;
+                            return false;
                         }
 
-                        return true;
+                        if (fieldType is DateTimeType)
+                        {
+                            result = DateTimeValue.New(trueDateTime);
+                            return true;
+                        }
+                        else if (fieldType is DateType)
+                        {
+                            result = DateValue.NewDateOnly(trueDateTime.Date);
+                            return true;
+                        }
                     }
 
                     result = New(jsPropertyValueModel.PropertyValue);

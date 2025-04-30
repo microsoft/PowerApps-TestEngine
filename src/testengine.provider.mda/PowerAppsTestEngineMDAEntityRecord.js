@@ -72,6 +72,10 @@ class PowerAppsModelDrivenEntityRecord {
                     case 'standard':
                         control.Properties.push({ PropertyName: 'Text', PropertyType: 's' });
                         break;
+                    case 'multiselectoptionset':
+                        control.Properties.push({ PropertyName: 'Options', PropertyType: '*[text:s, value:n]' });
+                        control.Properties.push({ PropertyName: 'SelectedOptions', PropertyType: '*[text:s, value:n]' });
+                        break;
                 }
                 return control;
             })
@@ -84,6 +88,24 @@ class PowerAppsModelDrivenEntityRecord {
         // controlDescriptor JavaScript object is subject to change. Do not take dependencies on the object or properties returned as they could change without notice.
         var data = [];
         var controlDescriptor = Xrm.Page.ui.controls.getByName(itemPath.controlName).controlDescriptor;
+
+        var item = null;
+
+        try {
+            item = Xrm.Page.ui.formContext.getControl(itemPath.controlName);
+        } catch {
+
+        }
+        
+        switch (item != null && item.getControlType()) {
+            case 'multiselectoptionset':
+                // TODO: object -> JSON.stringify
+                data.push({ Key: "Options", Value: "*[![name:\"Test Automation\", value:1]]" });
+                data.push({ Key: "SelectedOptions", Value: "*[]" });
+                //data.push({ Key: "Options", Value: JSON.stringify(Xrm.Page.ui.formContext.getAttribute(itemPath.controlName).getOptions()) });
+                //data.push({ Key: "SelectedOptions", Value: JSON.stringify(Xrm.Page.ui.formContext.getAttribute(itemPath.controlName).getValue()) });
+                break;
+        }
 
         // Alternative: https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/controls/getdisabled
         data.push({ Key: 'Disabled', Value: controlDescriptor.Disabled.toString().toLowerCase() });

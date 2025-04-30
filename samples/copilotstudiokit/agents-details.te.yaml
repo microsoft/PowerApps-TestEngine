@@ -1,0 +1,37 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Copilot Studio Kit
+  testSuiteDescription: Agent List of Copilot Studio Kit 
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Step 1 - Start the entity details
+      testCaseDescription: Verify can open the page
+      testSteps: |
+        = Assert(1=1) 
+    - testCaseName: Step 2 - Assert Name
+      testCaseDescription: Check that agent name is expected value
+      testSteps: |
+        = Assert(cat_name.Text = "TestAgent1") 
+    - testCaseName: Step 3 - Options exist
+      testCaseDescription: Check the expected options exist for configuration type
+      testSteps: |
+        = Assert(CountRows(GetOptions(cat_configurationtypescodes)) = 3);
+    - testCaseName: Step 4 - Select first option
+      testCaseDescription: Can select configuration type "Test Automation" option and validate that the region code is now visible with expected value of "Default"
+      testSteps: |
+        = WaitUntilVisible("cat_configurationtypescodes");
+          SetOption(cat_configurationtypescodes, "Test Automation");
+          WaitUntilVisible("cat_regioncode.fieldControl-pcf-container-id");
+          AssertValue(cat_regioncode, "Default");
+          CommandBarAction(SaveAndClose());
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

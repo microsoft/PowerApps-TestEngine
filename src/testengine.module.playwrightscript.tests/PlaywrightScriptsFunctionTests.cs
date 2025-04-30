@@ -68,6 +68,11 @@ public class PlaywrightScript
 
             MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(new Mock<IBrowserContext>().Object);
 
+#if RELEASE
+            Assert.Throws<NotImplementedException>(() => function.Execute(StringValue.New(file)));
+#endif
+
+#if DEBUG
             // Act
             function.Execute(StringValue.New(file));
 
@@ -78,6 +83,7 @@ public class PlaywrightScript
             MockLogVerify(LogLevel.Debug, "Loading file");
 
             MockLogVerify(LogLevel.Information, "Successfully finished executing PlaywrightScript function.");
+#endif
         }
 
         private void MockLogVerify(LogLevel logLevel, string message)

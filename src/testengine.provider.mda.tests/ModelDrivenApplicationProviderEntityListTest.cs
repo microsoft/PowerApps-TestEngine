@@ -8,7 +8,6 @@ using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using Microsoft.PowerFx.Types;
 using Moq;
 using Newtonsoft.Json;
 
