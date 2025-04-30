@@ -1,0 +1,67 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Copilot Studio Kit
+  testSuiteDescription: Agent Test page of Copilot Studio Kit 
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Step 1 - Start the entity details
+      testCaseDescription: Verify can open the page
+      testSteps: |
+        = Assert(1=1)
+    - testCaseName: Step 2 - Set Agent Configuration
+      testCaseDescription: Response Match test
+      testSteps: |
+        = WaitUntilVisible("cat_copilottestsetid");
+          SetProperty(cat_name.Text, "AgentTest1");
+          SetTestSetLookupValue(cat_copilottestsetid, First(Filter(cat_copilottestset, cat_name = "TestSet1")));
+          SetSingleOption(cat_testtypecode, "Response Match");
+          SetProperty(cat_testutterance.Text, "ABC");
+          SetProperty(cat_expectedresponse.Text, "123");
+          Assert(SaveForm());
+    - testCaseName: Step 3 - Topic Match
+      testCaseDescription: Topic Match test
+      testSteps: |
+        = WaitUntilVisible("cat_copilottestsetid");
+          CommandBarAction(NewRecord());
+          SetProperty(cat_name.Text, "AgentTest1");
+          SetTestSetLookupValue(cat_copilottestsetid, First(Filter(cat_copilottestset, cat_name = "TestSet1")));
+          SetSingleOption(cat_testtypecode, "Topic Match");
+          SetProperty(cat_testutterance.Text, "DEF");
+          SetProperty(cat_expectedtopicname.Text, "TOPIC1");
+          SetProperty(cat_expectedresponse.Text, "456");
+          Assert(SaveForm());
+    - testCaseName: Step 4 - Attachments
+      testCaseDescription: Attachments test
+      testSteps: |
+        = WaitUntilVisible("cat_copilottestsetid");
+          CommandBarAction(NewRecord());
+          SetProperty(cat_name.Text, "AgentTest1");
+          SetTestSetLookupValue(cat_copilottestsetid, First(Filter(cat_copilottestset, cat_name = "TestSet1")));
+          SetSingleOption(cat_testtypecode, "Attachments (Adaptive Cards, etc.)");
+          SetProperty(cat_testutterance.Text, "GHI");
+          SetTextValue(cat_expectedattachmentsjson, "{}");
+          SetProperty(cat_expectedresponse.Text, "789");
+          Assert(SaveForm());
+    - testCaseName: Step 5 - Generative Answers
+      testCaseDescription:  Generative Answers validation
+      testSteps: |
+        = WaitUntilVisible("cat_copilottestsetid");
+          CommandBarAction(NewRecord());
+          SetProperty(cat_name.Text, "AgentTest1");
+          SetTestSetLookupValue(cat_copilottestsetid, First(Filter(cat_copilottestset, cat_name = "TestSet1")));
+          SetSingleOption(cat_testtypecode, "Generative Answers");
+          SetProperty(cat_testutterance.Text, "JKL");
+          SetSingleOption(cat_generativeansweroutcomecode, "Answered");
+          SetProperty(cat_expectedresponse.Text, "012");
+          SaveForm();
+    
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

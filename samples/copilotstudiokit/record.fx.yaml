@@ -1,0 +1,27 @@
+testSuite:
+  testSuiteName: CoE Starter Kit Setup Wizard Record
+  testSuiteDescription: Provide the ability to record actions
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Before Connector
+      testCaseDescription: Acions to add before the 
+      testSteps: |
+        = Assert(1=1)
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+  timeout: 480000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

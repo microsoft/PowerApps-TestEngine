@@ -1,4 +1,4 @@
-using System.Dynamic;
+﻿using System.Dynamic;
 using System.Globalization;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
@@ -14,8 +14,10 @@ using YamlDotNet.Serialization.NamingConventions;
 [SupportedOSPlatform("browser")]
 public partial class PowerFxEngine
 {
-    public static RecalcEngine Init(out ParserOptions options, string locale)
+    public static RecalcEngine Init(out ParserOptions options, Action<PowerFxConfig> symbolsUpdate,  string locale)
     {
+        var logger = new BrowserConsoleLogger("PowerFxEngine");
+
         var powerFxConfig = new PowerFxConfig(Features.PowerFxV1);
         var vals = new SymbolValues();
         var symbols = (SymbolTable)vals.SymbolTable;
@@ -30,6 +32,12 @@ public partial class PowerFxEngine
         powerFxConfig.AddFunction(simulateDataverseFunction);
 
         powerFxConfig.AddFunction(new GetCurrentWeatherFunction());
+        powerFxConfig.AddFunction(new AssertNotErrorFunction(logger));
+
+        if (symbols != null)
+        {
+            symbolsUpdate(powerFxConfig);
+        }
 
         RecalcEngine engine = new RecalcEngine(powerFxConfig);
         simulateDataverseFunction.Engine = engine;

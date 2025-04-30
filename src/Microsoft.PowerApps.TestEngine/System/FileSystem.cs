@@ -140,7 +140,21 @@ namespace Microsoft.PowerApps.TestEngine.System
             filePath = Path.GetFullPath(filePath);
             if (CanAccessFilePath(filePath))
             {
-                return File.ReadAllText(filePath);
+                switch (Path.GetExtension(filePath).ToLower())
+                {
+                    case ".jpg":
+                    case ".jpeg":
+                    case ".png":
+                    case ".gif":
+                    case ".bmp":
+                        // Read the image file as bytes
+                        byte[] imageBytes = File.ReadAllBytes(filePath);
+                        // Encode the bytes to Base64
+                        string encodedString = Convert.ToBase64String(imageBytes);
+                        return encodedString;
+                    default:
+                        return File.ReadAllText(filePath);
+                }
             }
             else
             {
@@ -439,7 +453,17 @@ namespace Microsoft.PowerApps.TestEngine.System
                 if (!baseUri.IsBaseOf(fullPathUri))
                 {
                     var ext = Path.GetExtension(fileName);
-                    if (!(ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase) || ext.Equals(".json", StringComparison.OrdinalIgnoreCase) || ext.Equals(".csx", StringComparison.OrdinalIgnoreCase)))
+                    if (
+                        !(
+                            ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase)
+                            ||
+                            ext.Equals(".json", StringComparison.OrdinalIgnoreCase)
+                            ||
+                            ext.Equals(".csx", StringComparison.OrdinalIgnoreCase)
+                            ||
+                            ext.Equals(".png", StringComparison.OrdinalIgnoreCase)
+                        )
+                    )
                     {
                         return false;
                     }
