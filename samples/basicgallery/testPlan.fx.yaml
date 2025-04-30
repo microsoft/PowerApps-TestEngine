@@ -27,8 +27,6 @@ testSuite:
 testSettings:
   locale: "en-US"
   recordVideo: true
-  extensionModules:
-    enable: true
   browserConfigurations:
     - browser: Chromium
 
