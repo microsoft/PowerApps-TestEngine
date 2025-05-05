@@ -10,6 +10,7 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx;
 using Moq;
+using System.Text.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
@@ -32,7 +33,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
-            _provider = new MCPProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            // Use StubOrganizationService for testing
+            _provider = new MCPProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object)
+            {
+                GetOrganizationService = () => new StubOrganizationService()
+            };
         }
 
         [Fact]

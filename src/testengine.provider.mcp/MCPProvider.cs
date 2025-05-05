@@ -18,6 +18,7 @@ using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using testengine.provider.mcp;
 using System.Security.Cryptography;
+using Microsoft.Xrm.Sdk;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -48,7 +49,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     [Export(typeof(ITestWebProvider))]
     public class MCPProvider : ITestWebProvider, IExtendedPowerFxProvider
     {
-        public const string NODE_APPJS_HASH = "0B4C32E9533E6DFB8854E0B6DA817031B8578E1157435FEF46DC6001C43AF184";
+        public const string NODE_APPJS_HASH = "11CC99890FFE8972B05108DBF26CAA53E19207579852CFFBAAA74DD90F5E1E01";
 
         public ITestInfraFunctions? TestInfraFunctions { get; set; }
 
@@ -69,6 +70,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         };
 
         public Func<int, IHttpServer> GetHttpServer = (int port) => new HttpListenerServer($"http://localhost:{port}/");
+
+        public Func<IOrganizationService> GetOrganizationService = () => new StubOrganizationService();
 
         public MCPProvider()
         {
@@ -317,8 +320,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// </summary>
         /// <param name="context">The HttpListenerContext representing the incoming request.</param>
         /// <remarks>
-        /// - Supports POST requests to the `/validate` endpoint.
-        /// - Reads the Power Fx expression from the request body, validates it, and returns the result as JSON.
+        /// - Supports GET and POST requests for various endpoints.
+        /// - Uses PlanDesignerService for plan-related operations.
         /// - Returns a 404 response for unsupported endpoints.
         /// - Logs errors and returns a 500 response for unexpected exceptions.
         /// </remarks>
@@ -326,20 +329,71 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             try
             {
-                if (context.Request.HttpMethod == "POST" && context.Request.Url.AbsolutePath == "/validate")
+                var request = context.Request;
+                var response = context.Response;
+
+                var planDesignerService = new PlanDesignerService(GetOrganizationService()); 
+
+                if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/plans")
                 {
-                    // Read the Power Fx expression from the request body.
-                    using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+                    // Get a list of plans
+                    var plans = await planDesignerService.GetPlansAsync();
+                    response.StatusCode = 200;
+                    response.ContentType = "application/json";
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                    {
+                        await writer.WriteAsync(JsonSerializer.Serialize(plans));
+                    }
+                }
+                else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.StartsWith("/plans/") && !request.Url.AbsolutePath.Contains("/artifacts") && !request.Url.AbsolutePath.Contains("/assets"))
+                {
+                    // Get details for a specific plan
+                    var planId = Guid.Parse(request.Url.AbsolutePath.Split('/').Last());
+                    var planDetails = await planDesignerService.GetPlanDetailsAsync(planId);
+                    response.StatusCode = 200;
+                    response.ContentType = "application/json";
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                    {
+                        await writer.WriteAsync(JsonSerializer.Serialize(planDetails));
+                    }
+                }
+                else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.Contains("/artifacts"))
+                {
+                    // Get artifacts for a specific plan
+                    var planId = Guid.Parse(request.Url.AbsolutePath.Split('/')[2]);
+                    var artifacts = await planDesignerService.GetPlanArtifactsAsync(planId);
+                    response.StatusCode = 200;
+                    response.ContentType = "application/json";
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                    {
+                        await writer.WriteAsync(JsonSerializer.Serialize(artifacts));
+                    }
+                }
+                else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.Contains("/assets"))
+                {
+                    // Get solution assets for a specific plan
+                    var planId = Guid.Parse(request.Url.AbsolutePath.Split('/')[2]);
+                    var assets = await planDesignerService.GetSolutionAssetsAsync(planId);
+                    response.StatusCode = 200;
+                    response.ContentType = "application/json";
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                    {
+                        await writer.WriteAsync(JsonSerializer.Serialize(assets));
+                    }
+                }
+                else if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/validate")
+                {
+                    // Validate Power Fx expression
+                    using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
                     {
                         var powerFx = await reader.ReadToEndAsync();
                         Console.WriteLine($"Received Power Fx: {powerFx}");
 
-                        // Validate the Power Fx expression and return the result as JSON.
                         var result = ValidatePowerFx(powerFx);
 
-                        context.Response.StatusCode = 200;
-                        context.Response.ContentType = "application/json";
-                        using (var writer = new StreamWriter(context.Response.OutputStream, Encoding.UTF8))
+                        response.StatusCode = 200;
+                        response.ContentType = "application/json";
+                        using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
                         {
                             await writer.WriteAsync(result);
                         }
@@ -347,9 +401,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 }
                 else
                 {
-                    // Return a 404 response for unsupported endpoints.
-                    context.Response.StatusCode = 404;
-                    using (var writer = new StreamWriter(context.Response.OutputStream, Encoding.UTF8))
+                    // Return a 404 response for unsupported endpoints
+                    response.StatusCode = 404;
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
                     {
                         await writer.WriteAsync("{\"error\": \"Endpoint not found\"}");
                     }
