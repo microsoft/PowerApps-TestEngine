@@ -132,7 +132,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             Engine = new RecalcEngine(powerFxConfig);
-          
+
             // Add any provider specific functions or state
             if (_testWebProvider is IExtendedPowerFxProvider extendedProviderAfter)
             {

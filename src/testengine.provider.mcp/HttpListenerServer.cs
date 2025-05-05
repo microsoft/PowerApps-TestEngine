@@ -6,7 +6,7 @@ using System.Net;
 public class HttpListenerServer : IHttpServer
 {
     private readonly HttpListener _listener;
-    
+
     public event Func<HttpListenerContext, Task>? OnRequestReceived;
 
     public HttpListenerServer(string prefix)

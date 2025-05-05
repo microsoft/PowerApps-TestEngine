@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -16,9 +17,8 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
-using testengine.provider.mcp;
-using System.Security.Cryptography;
 using Microsoft.Xrm.Sdk;
+using testengine.provider.mcp;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -261,7 +261,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         }}
     }},
     ""chat.mcp.discovery.enabled"": true
-}}", nodeApp.Replace("\\","/"), "8080");
+}}", nodeApp.Replace("\\", "/"), "8080");
 
             Console.WriteLine("Test Engine MCP Interface Ready. Press Enter to exit");
             Console.ReadLine();
@@ -305,7 +305,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 listener.OnRequestReceived += async (context) =>
                 {
                     // Handle the request in a separate task to avoid blocking the server.
-                    await HandleRequest(context);
+                    await HandleRequest(new HttpContextWrapper(context));
                 };
 #if RELEASE
                 Console.WriteError("MCP integration not enabled in Release mode");
@@ -314,6 +314,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 #endif
             });
         }
+
+        private int BUFFER_SIZE = 4096;
 
         /// <summary>
         /// Handles incoming HTTP requests to the MCPProvider's HTTP server.
@@ -325,14 +327,14 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// - Returns a 404 response for unsupported endpoints.
         /// - Logs errors and returns a 500 response for unexpected exceptions.
         /// </remarks>
-        public async Task HandleRequest(HttpListenerContext context)
+        public async Task HandleRequest(IHttpContext context)
         {
             try
             {
                 var request = context.Request;
                 var response = context.Response;
 
-                var planDesignerService = new PlanDesignerService(GetOrganizationService()); 
+                var planDesignerService = new PlanDesignerService(GetOrganizationService());
 
                 if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/plans")
                 {
@@ -340,7 +342,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var plans = await planDesignerService.GetPlansAsync();
                     response.StatusCode = 200;
                     response.ContentType = "application/json";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                     {
                         await writer.WriteAsync(JsonSerializer.Serialize(plans));
                     }
@@ -352,7 +354,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var planDetails = await planDesignerService.GetPlanDetailsAsync(planId);
                     response.StatusCode = 200;
                     response.ContentType = "application/json";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                     {
                         await writer.WriteAsync(JsonSerializer.Serialize(planDetails));
                     }
@@ -364,7 +366,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var artifacts = await planDesignerService.GetPlanArtifactsAsync(planId);
                     response.StatusCode = 200;
                     response.ContentType = "application/json";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                     {
                         await writer.WriteAsync(JsonSerializer.Serialize(artifacts));
                     }
@@ -376,7 +378,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var assets = await planDesignerService.GetSolutionAssetsAsync(planId);
                     response.StatusCode = 200;
                     response.ContentType = "application/json";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                     {
                         await writer.WriteAsync(JsonSerializer.Serialize(assets));
                     }
@@ -389,11 +391,18 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         var powerFx = await reader.ReadToEndAsync();
                         Console.WriteLine($"Received Power Fx: {powerFx}");
 
+                        switch (request.ContentType)
+                        {
+                            case "application/json":
+                                powerFx = JsonSerializer.Deserialize<string>(powerFx);
+                                break;
+                        }
+
                         var result = ValidatePowerFx(powerFx);
 
                         response.StatusCode = 200;
                         response.ContentType = "application/json";
-                        using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
+                        using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                         {
                             await writer.WriteAsync(result);
                         }
@@ -467,7 +476,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public async Task SetupContext()
         {
-            
+
         }
 
         public FormulaValue ExecutePowerFx(string steps, CultureInfo culture)
@@ -501,7 +510,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public void ConfigurePowerFx(PowerFxConfig powerFxConfig)
         {
-           
+
         }
     }
 }

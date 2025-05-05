@@ -10,7 +10,6 @@ using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
 using Microsoft.PowerFx;
 using Moq;
-using System.Text.Json;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
 {
@@ -29,7 +28,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>(MockBehavior.Strict);
             MockTestState = new Mock<ITestState>(MockBehavior.Strict);
             MockSingleTestInstanceState = new Mock<ISingleTestInstanceState>(MockBehavior.Strict);
-            MockLogger = new Mock<ILogger>(MockBehavior.Strict);
+            MockLogger = new Mock<ILogger>();
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
 
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
@@ -45,7 +44,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task CheckNamespace()
         {
             // Arrange
-            
+
 
             // Act
             var result = _provider.Namespaces;
@@ -59,7 +58,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task CheckProviderName()
         {
             // Arrange
-            
+
             // Act
             var result = _provider.Name;
 
@@ -71,7 +70,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task CheckIsIdleAsync_ReturnsTrue()
         {
             // Arrange
-            
+
             // Act
             var result = await _provider.CheckIsIdleAsync();
 
@@ -138,7 +137,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             PowerFxEngine.ConditionallyRegisterTestFunctions(settings, config, MockLogger.Object, _provider.Engine);
 
             MockTestState.Setup(m => m.GetTestSettings()).Returns(settings);
-            
+
 
             // Act
             var result = _provider.ValidatePowerFx(expression);
@@ -160,7 +159,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         public async Task SetupContext_InitializesState()
         {
             // Arrange
-            
+
             // Act
             await _provider.SetupContext();
 
@@ -175,9 +174,85 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Arrange
             string appJsFileName = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "..", "..", "..", "src", "testengine.mcp", "app.js"));
-            
+
             // Act & Asssert
             Assert.True(_provider.NodeJsHashValidator(MCPProvider.ComputeFileHash(appJsFileName)));
+        }
+
+        [Fact]
+        public async Task HandleRequest_ValidatePowerFx()
+        {
+            // Arrange
+            var mockContext = new Mock<IHttpContext>();
+            var mockRequest = new Mock<IHttpRequest>();
+            var mockResponse = new Mock<IHttpResponse>();
+            var inputStream = new MemoryStream();
+            var outputStream = new MemoryStream();
+
+            using (var wrier = new StreamWriter(inputStream, leaveOpen: true))
+            {
+                wrier.WriteLine("\"1=1\"");
+            }
+            inputStream.Position = 0;
+
+            mockRequest.Setup(r => r.HttpMethod).Returns("POST");
+            mockRequest.Setup(r => r.ContentType).Returns("application/json");
+            mockRequest.Setup(r => r.Url).Returns(new Uri("http://localhost/validate"));
+            mockRequest.Setup(r => r.InputStream).Returns(inputStream);
+            mockResponse.Setup(r => r.OutputStream).Returns(outputStream);
+
+            mockContext.Setup(c => c.Request).Returns(mockRequest.Object);
+            mockContext.Setup(c => c.Response).Returns(mockResponse.Object);
+
+            var provider = new MCPProvider
+            {
+                GetOrganizationService = () => new StubOrganizationService(),
+                Engine = new RecalcEngine(),
+                TestState = MockTestState.Object,
+                SingleTestInstanceState = MockSingleTestInstanceState.Object
+            };
+
+            MockTestState.Setup(m => m.GetTestSettings()).Returns(new TestSettings());
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+
+            // Act
+            await provider.HandleRequest(mockContext.Object);
+
+            // Assert
+            mockResponse.VerifySet(r => r.StatusCode = 200, Times.Once);
+            outputStream.Position = 0;
+            var responseBody = new StreamReader(outputStream).ReadToEnd();
+        }
+
+        [Fact]
+        public async Task HandleRequest_ReturnsPlans()
+        {
+            // Arrange
+            var mockContext = new Mock<IHttpContext>();
+            var mockRequest = new Mock<IHttpRequest>();
+            var mockResponse = new Mock<IHttpResponse>();
+            var outputStream = new MemoryStream();
+
+            mockRequest.Setup(r => r.HttpMethod).Returns("GET");
+            mockRequest.Setup(r => r.Url).Returns(new Uri("http://localhost/plans"));
+            mockResponse.Setup(r => r.OutputStream).Returns(outputStream);
+
+            mockContext.Setup(c => c.Request).Returns(mockRequest.Object);
+            mockContext.Setup(c => c.Response).Returns(mockResponse.Object);
+
+            var provider = new MCPProvider
+            {
+                GetOrganizationService = () => new StubOrganizationService()
+            };
+
+            // Act
+            await provider.HandleRequest(mockContext.Object);
+
+            // Assert
+            mockResponse.VerifySet(r => r.StatusCode = 200, Times.Once);
+            outputStream.Position = 0;
+            var responseBody = new StreamReader(outputStream).ReadToEnd();
+            Assert.Contains("Business Flight Requests", responseBody);
         }
     }
 }
