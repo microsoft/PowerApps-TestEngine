@@ -132,7 +132,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             Engine = new RecalcEngine(powerFxConfig);
-
+          
             // Add any provider specific functions or state
             if (_testWebProvider is IExtendedPowerFxProvider extendedProviderAfter)
             {
@@ -140,7 +140,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
 
             ConditionallySetupDataverse(testSettings, powerFxConfig);
-            ConditionallyRegisterTestFunctions(testSettings, powerFxConfig);
+            ConditionallyRegisterTestFunctions(testSettings, powerFxConfig, Logger, Engine);
 
             var symbolValues = new SymbolValues(powerFxConfig.SymbolTable);
 
@@ -159,7 +159,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         /// <param name="testSettings">The settings to obtain the test functions from</param>
         /// <param name="powerFxConfig">The Power Fx context that the functions should be registered with</param>
-        private void ConditionallyRegisterTestTypes(TestSettings testSettings, PowerFxConfig powerFxConfig)
+        public static void ConditionallyRegisterTestTypes(TestSettings testSettings, PowerFxConfig powerFxConfig)
         {
             if (testSettings == null || testSettings.PowerFxTestTypes == null || testSettings.PowerFxTestTypes.Count == 0)
             {
@@ -175,7 +175,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
         }
 
-        private void RegisterPowerFxType(string name, TexlNode result, PowerFxConfig powerFxConfig)
+        public static void RegisterPowerFxType(string name, TexlNode result, PowerFxConfig powerFxConfig)
         {
             switch (result.Kind)
             {
@@ -210,7 +210,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
         }
 
-        private RecordType GetRecordType(RecordNode recordNode)
+        private static RecordType GetRecordType(RecordNode recordNode)
         {
             var record = RecordType.Empty();
             int index = 0;
@@ -233,7 +233,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             return record;
         }
 
-        private FormulaType GetFormulaTypeFromNode(Identifier right)
+        private static FormulaType GetFormulaTypeFromNode(Identifier right)
         {
             switch (right.Name.Value)
             {
@@ -259,7 +259,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         /// <param name="testSettings">The settings to obtain the test functions from</param>
         /// <param name="powerFxConfig">The Power Fx context that the functions should be registered with</param>
-        private void ConditionallyRegisterTestFunctions(TestSettings testSettings, PowerFxConfig powerFxConfig)
+        public static void ConditionallyRegisterTestFunctions(TestSettings testSettings, PowerFxConfig powerFxConfig, ILogger logger, RecalcEngine engine)
         {
             if (testSettings == null)
             {
@@ -268,7 +268,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             if (testSettings.TestFunctions.Count > 0)
             {
-                var culture = GetLocaleFromTestSettings(testSettings.Locale);
+                var culture = GetLocaleFromTestSettings(testSettings.Locale, logger);
 
                 foreach (var function in testSettings.TestFunctions)
                 {
@@ -277,7 +277,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                     {
                         code += ";";
                     }
-                    var registerResult = Engine.AddUserDefinedFunction(code, culture, powerFxConfig.SymbolTable, true);
+                    var registerResult = engine.AddUserDefinedFunction(code, culture, powerFxConfig.SymbolTable, true);
                     if (!registerResult.IsSuccess)
                     {
                         foreach (var error in registerResult.Errors)
@@ -286,11 +286,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
                             if (error.IsWarning)
                             {
-                                Logger.LogWarning(msg);
+                                logger.LogWarning(msg);
                             }
                             else
                             {
-                                Logger.LogError(msg);
+                                logger.LogError(msg);
                             }
                         }
                     }
@@ -298,25 +298,25 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             }
         }
 
-        private CultureInfo GetLocaleFromTestSettings(string strLocale)
+        public static CultureInfo GetLocaleFromTestSettings(string strLocale, ILogger logger)
         {
             var locale = CultureInfo.CurrentCulture;
             try
             {
                 if (string.IsNullOrEmpty(strLocale))
                 {
-                    Logger.LogDebug($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
+                    logger.LogDebug($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
                 }
                 else
                 {
                     locale = new CultureInfo(strLocale);
-                    Logger.LogDebug($"Locale: {locale.Name}");
+                    logger.LogDebug($"Locale: {locale.Name}");
                 }
                 return locale;
             }
             catch (CultureNotFoundException)
             {
-                Logger.LogError($"Locale from test suite definition {strLocale} unrecognized.");
+                logger.LogError($"Locale from test suite definition {strLocale} unrecognized.");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
         }

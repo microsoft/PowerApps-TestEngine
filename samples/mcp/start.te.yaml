@@ -1,0 +1,25 @@
+testSuite:
+  testSuiteName: MCP Server
+  testSuiteDescription: Start MCP Server with defined test settings.
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Start MCP Server
+      testCaseDescription: Verify can open the server
+      testSteps: |
+        =  Assert(1=1) 
+
+testSettings:
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium    
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

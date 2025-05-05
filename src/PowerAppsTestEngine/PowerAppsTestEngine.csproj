@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <NoWarn>NU1605</NoWarn>
+    <NoWarn>NU1201</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -36,6 +38,7 @@
     <ProjectReference Include="..\testengine.module.simulation\testengine.module.simulation.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.module.visualcompare\testengine.module.visualcompare.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.canvas\testengine.provider.canvas.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\testengine.provider.mcp\testengine.provider.mcp.csproj" />
     <ProjectReference Include="..\testengine.provider.mda\testengine.provider.mda.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerfx\testengine.provider.powerfx.csproj" PrivateAssets="all" />
