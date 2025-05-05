@@ -227,10 +227,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// </remarks>
         public void ConfigurePowerFxEngine(RecalcEngine engine)
         {
-#if RELEASE
-            throw new NotImplementedException("MCPProvider is not implemented in release mode.");
-#endif
-
             this.Engine = engine;
 
             // Start the HTTP server to handle requests from the Node.js MCP server.
@@ -264,7 +260,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     ""chat.mcp.discovery.enabled"": true
 }}", nodeApp.Replace("\\","/"), "8080");
 
-            Console.WriteLine("Test Engine MCP Interface Ready. Press Eneter to exit");
+            Console.WriteLine("Test Engine MCP Interface Ready. Press Enter to exit");
             Console.ReadLine();
         }
 
@@ -308,7 +304,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     // Handle the request in a separate task to avoid blocking the server.
                     await HandleRequest(context);
                 };
+#if RELEASE
+                Console.WriteError("MCP integration not enabled in Release mode");
+#else
                 listener.Start();
+#endif
             });
         }
 
