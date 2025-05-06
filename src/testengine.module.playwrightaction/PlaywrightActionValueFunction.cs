@@ -74,7 +74,7 @@ namespace testengine.module
                     var testResultDirectory = _singleTestInstanceState.GetTestResultsDirectory();
                     if (!_fileSystem.Exists(testResultDirectory))
                     {
-                        _logger.LogError("Test result directory needs to be set.");
+                        _logger.LogError("Test result directory needs to be set and accessible.");
                         throw new InvalidOperationException();
                     }
 
