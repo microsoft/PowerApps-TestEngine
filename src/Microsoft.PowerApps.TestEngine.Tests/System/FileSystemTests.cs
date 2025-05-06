@@ -62,6 +62,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.System
         [InlineData(@"C:\folder\PRN.yaml", false)]
         [InlineData(@"C:\WINDOWS\system32", false)]
         [InlineData(@"C:\folder\file.com", false)]
+        [InlineData(@"C:\Users\Public\Videos\test.yaml", false)]
         public void CanAccessFilePathTest_Windows(string? filePath, bool expectedResult)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

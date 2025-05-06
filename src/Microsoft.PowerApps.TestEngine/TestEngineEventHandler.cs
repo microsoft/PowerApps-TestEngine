@@ -18,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine
         // NOTE: Any changes to these messages need to be handled in the consuming tool's console event handler, like in pac cli tool.
         // These console messages need to be considered for localization.
         public static string UserAppExceptionMessage = "   [Critical Error] Could not access Provider. For more details, check the logs.";
-        public static string UserInputExceptionInvalidFilePathMessage = "   Invalid file path. For more details, check the logs.";
+        public static string UserInputExceptionInvalidFilePathMessage = "   File path is invalid or access is not permitted. For more details, check the logs and refer https://aka.ms/pactests/fileaccessrestrictions.";
         public static string UserInputExceptionInvalidOutputPathMessage = "   [Critical Error]: The output directory provided is invalid.";
         public static string UserInputExceptionInvalidTestSettingsMessage = "   Invalid test settings specified in testconfig. For more details, check the logs.";
         public static string UserInputExceptionLoginCredentialMessage = "   Invalid login credential(s). For more details, check the logs.";
