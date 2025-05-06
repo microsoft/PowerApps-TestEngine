@@ -17,8 +17,11 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
+using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.Xrm.Sdk;
 using testengine.provider.mcp;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
@@ -61,6 +64,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ILogger? Logger { get; set; }
 
+        private readonly ISerializer _yamlSerializer;
+
         /// <summary>
         /// Validate that the calculate NodeJs hash has the expected value 
         /// </summary>
@@ -71,11 +76,14 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public Func<int, IHttpServer> GetHttpServer = (int port) => new HttpListenerServer($"http://localhost:{port}/");
 
-        public Func<IOrganizationService> GetOrganizationService = () => new StubOrganizationService();
+        public Func<IOrganizationService?> GetOrganizationService = () => null;
 
         public MCPProvider()
         {
-
+            // Initialize the YAML serializer
+            _yamlSerializer = new SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
         }
 
         public MCPProvider(ITestInfraFunctions? testInfraFunctions, ISingleTestInstanceState? singleTestInstanceState, ITestState? testState)
@@ -84,6 +92,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             this.SingleTestInstanceState = singleTestInstanceState;
             this.TestState = testState;
             this.Logger = SingleTestInstanceState.GetLogger();
+
+            // Initialize the YAML serializer
+            _yamlSerializer = new SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
         }
 
         public string Name { get { return "mcp"; } }
@@ -306,6 +319,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 {
                     // Handle the request in a separate task to avoid blocking the server.
                     await HandleRequest(new HttpContextWrapper(context));
+                    context.Response.Close();
                 };
 #if RELEASE
                 Console.WriteError("MCP integration not enabled in Release mode");
@@ -334,41 +348,49 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 var request = context.Request;
                 var response = context.Response;
 
-                var planDesignerService = new PlanDesignerService(GetOrganizationService());
+                var service = GetOrganizationService();
+                if (service == null)
+                {
+                    var domain = new Uri(TestState.GetDomain());
+                    var api = new Uri("https://" + domain.Host);
+                    service = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
+                }
+
+                var planDesignerService = new PlanDesignerService(service);
 
                 if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/plans")
                 {
                     // Get a list of plans
-                    var plans = await planDesignerService.GetPlansAsync();
+                    var plans = planDesignerService.GetPlans();
                     response.StatusCode = 200;
-                    response.ContentType = "application/json";
+                    response.ContentType = "application/x-yaml";
                     using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                     {
-                        await writer.WriteAsync(JsonSerializer.Serialize(plans));
+                        await writer.WriteAsync(_yamlSerializer.Serialize(plans));
                     }
                 }
                 else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.StartsWith("/plans/") && !request.Url.AbsolutePath.Contains("/artifacts") && !request.Url.AbsolutePath.Contains("/assets"))
                 {
                     // Get details for a specific plan
                     var planId = Guid.Parse(request.Url.AbsolutePath.Split('/').Last());
-                    var planDetails = await planDesignerService.GetPlanDetailsAsync(planId);
+                    var planDetails = planDesignerService.GetPlanDetails(planId);
                     response.StatusCode = 200;
-                    response.ContentType = "application/json";
+                    response.ContentType = "application/x-yaml";
                     using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                     {
-                        await writer.WriteAsync(JsonSerializer.Serialize(planDetails));
+                        await writer.WriteAsync(_yamlSerializer.Serialize(planDetails));
                     }
                 }
                 else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.Contains("/artifacts"))
                 {
                     // Get artifacts for a specific plan
                     var planId = Guid.Parse(request.Url.AbsolutePath.Split('/')[2]);
-                    var artifacts = await planDesignerService.GetPlanArtifactsAsync(planId);
+                    var artifacts = planDesignerService.GetPlanArtifacts(planId);
                     response.StatusCode = 200;
-                    response.ContentType = "application/json";
+                    response.ContentType = "application/x-yaml";
                     using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                     {
-                        await writer.WriteAsync(JsonSerializer.Serialize(artifacts));
+                        await writer.WriteAsync(_yamlSerializer.Serialize(artifacts));
                     }
                 }
                 else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.Contains("/assets"))
@@ -377,10 +399,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var planId = Guid.Parse(request.Url.AbsolutePath.Split('/')[2]);
                     var assets = await planDesignerService.GetSolutionAssetsAsync(planId);
                     response.StatusCode = 200;
-                    response.ContentType = "application/json";
+                    response.ContentType = "application/x-yaml";
                     using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                     {
-                        await writer.WriteAsync(JsonSerializer.Serialize(assets));
+                        await writer.WriteAsync(_yamlSerializer.Serialize(assets));
                     }
                 }
                 else if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/validate")
@@ -393,18 +415,21 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
                         switch (request.ContentType)
                         {
-                            case "application/json":
-                                powerFx = JsonSerializer.Deserialize<string>(powerFx);
+                            case "application/x-yaml":
+                                powerFx = new DeserializerBuilder()
+                                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                                    .Build()
+                                    .Deserialize<string>(powerFx);
                                 break;
                         }
 
                         var result = ValidatePowerFx(powerFx);
 
                         response.StatusCode = 200;
-                        response.ContentType = "application/json";
+                        response.ContentType = "application/x-yaml";
                         using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
                         {
-                            await writer.WriteAsync(result);
+                            await writer.WriteAsync(_yamlSerializer.Serialize(result));
                         }
                     }
                 }
@@ -414,7 +439,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     response.StatusCode = 404;
                     using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
                     {
-                        await writer.WriteAsync("{\"error\": \"Endpoint not found\"}");
+                        await writer.WriteAsync(_yamlSerializer.Serialize(new { error = "Endpoint not found" }));
                     }
                 }
             }
@@ -424,7 +449,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 context.Response.StatusCode = 500;
                 using (var writer = new StreamWriter(context.Response.OutputStream, Encoding.UTF8))
                 {
-                    await writer.WriteAsync("{\"error\": \"Internal server error\"}");
+                    await writer.WriteAsync(_yamlSerializer.Serialize(new { error = "Internal server error" }));
                 }
             }
         }
@@ -433,7 +458,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// Validates a Power Fx expression using the configured RecalcEngine.
         /// </summary>
         /// <param name="powerFx">The Power Fx expression to validate.</param>
-        /// <returns>A JSON string representing the validation result, including whether the expression is valid and any errors.</returns>
+        /// <returns>A YAML string representing the validation result, including whether the expression is valid and any errors.</returns>
         /// <remarks>
         /// - Uses the RecalcEngine to check the syntax and semantics of the Power Fx expression.
         /// - Returns an error if the engine is not configured.
@@ -443,7 +468,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             if (Engine == null)
             {
-                return "{\"valid\": false, \"errors\": [\"Engine is not configured\"]}";
+                return _yamlSerializer.Serialize(new { valid = false, errors = new[] { "Engine is not configured" } });
             }
 
             var testSettings = TestState.GetTestSettings();
@@ -456,7 +481,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             var locale = PowerFxEngine.GetLocaleFromTestSettings(testSettings.Locale, this.Logger);
 
             var parserOptions = new ParserOptions { AllowsSideEffects = true, Culture = locale };
-            var checkResult = Engine.Check(string.IsNullOrEmpty(powerFx) ? String.Empty : powerFx, options: parserOptions, Engine.Config.SymbolTable);
+            var checkResult = Engine.Check(string.IsNullOrEmpty(powerFx) ? string.Empty : powerFx, options: parserOptions, Engine.Config.SymbolTable);
 
             var validationResult = new ValidationResult
             {
@@ -471,7 +496,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 }
             }
 
-            return JsonSerializer.Serialize(validationResult);
+            return _yamlSerializer.Serialize(validationResult);
         }
 
         public async Task SetupContext()

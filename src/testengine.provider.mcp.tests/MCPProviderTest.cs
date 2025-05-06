@@ -97,13 +97,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             // Assert
             if (expectedIsValid)
             {
-                Assert.Contains("\"IsValid\":true", result);
-                Assert.Contains("\"Errors\":[]", result);
+                Assert.Contains("isValid: true", result);
+                Assert.Contains("errors: []", result);
             }
             else
             {
-                Assert.Contains("\"IsValid\":false", result);
-                Assert.DoesNotContain("\"Errors\":[]", result);
+                Assert.Contains("isValid: false", result);
+                Assert.DoesNotContain("errors: []", result);
             }
         }
 
@@ -145,13 +145,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             // Assert
             if (expectedIsValid)
             {
-                Assert.Contains("\"IsValid\":true", result);
-                Assert.Contains("\"Errors\":[]", result);
+                Assert.Contains("isValid: true", result);
+                Assert.Contains("errors: []", result);
             }
             else
             {
-                Assert.Contains("\"IsValid\":false", result);
-                Assert.DoesNotContain("\"Errors\":[]", result);
+                Assert.Contains("isValid: false", result);
+                Assert.DoesNotContain("errors: []", result);
             }
         }
 
