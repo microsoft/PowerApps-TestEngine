@@ -1,0 +1,89 @@
+testSuite:
+  testSuiteName: Entity Record Tests
+  testSuiteDescription: Verify entity record functionality in PowerApps
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: Click Save and Close Command Bar Button
+      testCaseDescription: Automate clicking the Save & Close button on the command bar.
+      testSteps: |
+        CommandBarAction("Save & Close"); // Simulates a click on the Save & Close button
+  # - testCaseName: Verify Employee Record Count
+  #   testCaseDescription: Verify that the Items control displays the correct number of employee records.
+  #   testSteps: |
+  #     Assert(CountRows(Items.Rows) = 5, "Checking if Table displays correct number of items");
+
+  # - testCaseName: Verify Employee Name Field
+  #   testCaseDescription: Verify that the Employee Name field is populated correctly.
+  #   testSteps: | 
+  #     Assert(LookUp(Items.Rows, cr693_empoyeeid = "E001").cr693_employeename = "Alice Smith", "The Employee Name for ID 'E001' should be 'John Doe'");
+
+  # - testCaseName: Insert Employee
+  #   testCaseDescription: Insert a new record into the employee table
+  #   testSteps: |
+  #     = Collect(
+  #         cr693_employee5, // Replace with the correct table name
+  #         {
+  #             cr693_employeename: "Ra Ra", // Replace with the correct column name for employee name
+  #             cr693_empoyeeid: "E006", // Replace with the correct column name for employee ID
+  #             cr693_dob: DateTime(1991,05,15,00,0,0) // Replace with the correct column name for date of birth
+  #         }
+  #       );      
+  #       Assert(CountRows(cr693_employee5) = 6, "The employee table should contain 1 record after insertion");
+  
+  # - testCaseName: Sort Employee IDs
+  #   testCaseDescription: Sort the employee list by the Employee ID column in ascending order.
+  #   testSteps: |
+  #     Sort(cr693_employee5, cr693_empoyeeid, SortOrder.Descending);     
+
+  # - testCaseName: Delete Employee with ID E006
+  #   testCaseDescription: Delete the record with employee ID "E007" from the employee table
+  #   testSteps: |
+  #     Refresh(cr693_employee5); 
+  #     Remove(
+  #       cr693_employee5, 
+  #       LookUp(cr693_employee5, cr693_empoyeeid = "E006") // Finds and deletes the record with employee ID "E007"
+  #     );      
+  #     Assert(
+  #       IsBlank(LookUp(cr693_employee5, cr693_empoyeeid = "E006")),
+  #       "The record with employee ID 'E006' should no longer exist in the employee table"
+  #     );
+
+  # - testCaseName: Update Employee
+  #   testCaseDescription: Update an existing record in the employee table
+  #   testSteps: | 
+  #     Patch(
+  #         cr693_employee5,
+  #         First(cr693_employee5),
+  #         {
+  #             cr693_employeename: "RR2" // Replace with the correct column name for employee name
+  #         }
+  #       );        
+  #       Assert(First(cr693_employee5).cr693_employeename = "RR2", "The employee name should be updated to 'Updated RR'");
+  
+  # - testCaseName: Verify Employee List Filtering by Name
+  #   testCaseDescription: Verify that the employee list can be filtered by name.
+  #   testSteps: |     
+  #     Assert(CountRows(Filter(Items.Rows, StartsWith(cr693_employeename, "Alice"))) = 1, "The employee list should contain 1 record with a name starting with 'Alice'");
+
+ 
+ 
+testSettings:
+  locale: "en-US"
+  recordVideo: true
+  headless: false
+  extensionModules:
+    enable: true
+    parameters:
+     enableDataverseFunctions: true
+    allowPowerFxNamespaces:
+    - Preview
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+ 
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email

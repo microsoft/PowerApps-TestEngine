@@ -59,6 +59,7 @@ class PowerAppsTestEngine {
     }    
 
     static getControlProperties(itemPath) {
+        debugger;
         var data = [];
 
         if (typeof itemPath === 'string') {
@@ -70,11 +71,14 @@ class PowerAppsTestEngine {
                 return PowerAppsModelDrivenCanvas.getControlProperties(itemPath);
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:
                 return PowerAppsModelDrivenEntityRecord.getControlProperties(itemPath);
+            case PowerAppsTestEngine.CONSTANTS.EntityList:
+                return PowerAppsModelDrivenEntityList.getControlProperties(itemPath);
         }
         return JSON.stringify(data);
     }
     
     static setPropertyValue(item, data) {
+        debugger;
         if (typeof item === 'string') {
             item = JSON.parse(item)
         }
@@ -83,11 +87,14 @@ class PowerAppsTestEngine {
                 return PowerAppsModelDrivenCanvas.setPropertyValueForControl(item, data);
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:
                 return PowerAppsModelDrivenEntityRecord.setPropertyValueForControl(item, data);
+            case PowerAppsTestEngine.CONSTANTS.EntityList:
+                return PowerAppsModelDrivenEntityList.getControlProperties(itemPath);
         }
         return false;
     }
     
     static getItemCount(itemPath) {
+        debugger;
         if (typeof itemPath === 'string') {
             itemPath = JSON.parse(itemPath)
         }
@@ -95,7 +102,7 @@ class PowerAppsTestEngine {
             case PowerAppsTestEngine.CONSTANTS.Custom:
                 return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
             case PowerAppsTestEngine.CONSTANTS.EntityList:
-                return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
+                return PowerAppsModelDrivenEntityList.fetchArrayItemCount(itemPath);
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:
                 // TODO - Get count of items for name
                 break;
@@ -103,6 +110,7 @@ class PowerAppsTestEngine {
     }
 
     static select(itemPath) {
+        debugger;
         if (typeof itemPath === 'string') {
             itemPath = JSON.parse(itemPath)
         }
