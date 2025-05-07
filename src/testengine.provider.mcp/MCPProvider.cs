@@ -393,18 +393,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         await writer.WriteAsync(_yamlSerializer.Serialize(artifacts));
                     }
                 }
-                else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.Contains("/assets"))
-                {
-                    // Get solution assets for a specific plan
-                    var planId = Guid.Parse(request.Url.AbsolutePath.Split('/')[2]);
-                    var assets = await planDesignerService.GetSolutionAssetsAsync(planId);
-                    response.StatusCode = 200;
-                    response.ContentType = "application/x-yaml";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
-                    {
-                        await writer.WriteAsync(_yamlSerializer.Serialize(assets));
-                    }
-                }
                 else if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/validate")
                 {
                     // Validate Power Fx expression

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Collections;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Crm.Sdk.Messages;
@@ -13,6 +12,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     public class PlanDesignerService
     {
         private readonly IOrganizationService _organizationService;
+        private readonly Dictionary<Guid, string> _attributeTypeCache = new();
 
         public PlanDesignerService(IOrganizationService organizationService)
         {
@@ -27,7 +27,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             var query = new QueryExpression("msdyn_plan")
             {
-                ColumnSet = new ColumnSet("msdyn_planid", "msdyn_name", "msdyn_description", "modifiedon")
+                ColumnSet = new ColumnSet("msdyn_planid", "msdyn_name", "msdyn_description", "modifiedon", "solutionid")
             };
 
             var plans = new List<Plan>();
@@ -40,6 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     Id = entity.GetAttributeValue<Guid>("msdyn_planid"),
                     Name = entity.GetAttributeValue<string>("msdyn_name"),
                     Description = entity.GetAttributeValue<string>("msdyn_description"),
+                    SolutionId = entity.GetAttributeValue<Guid>("solutionid").ToString(),
                     ModifiedOn = entity.GetAttributeValue<DateTime>("modifiedon")
                 });
             }
@@ -56,7 +57,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             var query = new QueryExpression("msdyn_plan")
             {
-                ColumnSet = new ColumnSet("msdyn_planid", "msdyn_name", "msdyn_description", "msdyn_prompt", "msdyn_contentschemaversion", "msdyn_languagecode", "modifiedon"),
+                ColumnSet = new ColumnSet("msdyn_planid", "msdyn_name", "msdyn_description", "msdyn_prompt", "msdyn_contentschemaversion", "msdyn_languagecode", "modifiedon", "solutionid"),
                 Criteria = new FilterExpression
                 {
                     Conditions =
@@ -81,6 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 ContentSchemaVersion = result.GetAttributeValue<string>("msdyn_contentschemaversion"),
                 LanguageCode = result.GetAttributeValue<int>("msdyn_languagecode"),
                 ModifiedOn = result.GetAttributeValue<DateTime>("modifiedon"),
+                SolutionId = result.GetAttributeValue<Guid>("solutionid").ToString(),
                 Content = DownloadJsonFileContent("msdyn_plan", planId, "msdyn_content"),
                 Artifacts = GetPlanArtifacts(planId)
             };
@@ -288,42 +290,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
             return artifacts;
         }
-
-        /// <summary>
-        /// Retrieves solution assets for a specific plan by its ID.
-        /// </summary>
-        /// <param name="planId">The ID of the plan.</param>
-        /// <returns>A list of solution assets associated with the plan.</returns>
-        public async Task<List<SolutionAsset>> GetSolutionAssetsAsync(Guid planId)
-        {
-            // Assuming solution assets are stored in a custom entity related to the plan
-            var query = new QueryExpression("solution")
-            {
-                ColumnSet = new ColumnSet("solutionid", "friendlyname", "uniquename"),
-                Criteria = new FilterExpression
-                {
-                    Conditions =
-                    {
-                        new ConditionExpression("msdyn_planid", ConditionOperator.Equal, planId)
-                    }
-                }
-            };
-
-            var assets = new List<SolutionAsset>();
-            var results = _organizationService.RetrieveMultiple(query);
-
-            foreach (var entity in results.Entities)
-            {
-                assets.Add(new SolutionAsset
-                {
-                    Id = entity.GetAttributeValue<Guid>("solutionid"),
-                    FriendlyName = entity.GetAttributeValue<string>("friendlyname"),
-                    UniqueName = entity.GetAttributeValue<string>("uniquename")
-                });
-            }
-
-            return await Task.FromResult(assets);
-        }
     }
 
     // Supporting classes for data models
@@ -333,6 +299,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public string? Name { get; set; }
         public string? Description { get; set; }
         public DateTime ModifiedOn { get; set; }
+        public string? SolutionId { get; set; }
     }
 
     public class PlanDetails : Plan
@@ -357,12 +324,5 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public object Metadata { get; set; } = new Dictionary<string, object>();
 
         public object Proposal { get; set; } = new Dictionary<string, object>();
-    }
-
-    public class SolutionAsset
-    {
-        public Guid Id { get; set; }
-        public string? FriendlyName { get; set; }
-        public string? UniqueName { get; set; }
     }
 }
