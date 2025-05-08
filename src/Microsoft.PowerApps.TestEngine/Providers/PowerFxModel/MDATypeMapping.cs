@@ -30,7 +30,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             typeMappings.Add("n", FormulaType.Number);
             typeMappings.Add("Z", FormulaType.DateTimeNoTimeZone);
             typeMappings.Add("g", FormulaType.Guid);
-            typeMappings.Add("m", FormulaType.Decimal);            
+            typeMappings.Add("m", FormulaType.Decimal);
             typeMappings.Add("i", FormulaType.String);
             typeMappings.Add("$", FormulaType.Decimal);
         }

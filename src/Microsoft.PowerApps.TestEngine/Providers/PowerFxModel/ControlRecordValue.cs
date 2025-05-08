@@ -97,7 +97,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                 else
                 {
                     // We reach here if we are referencing a child item in a component. Eg. Component1.Label1 (fieldName = Label1)
-                    result = new ControlRecordValue(recordType, _testWebProvider, Name , GetItemPath(fieldName));
+                    result = new ControlRecordValue(recordType, _testWebProvider, Name, GetItemPath(fieldName));
                     return true;
                 }
             }
