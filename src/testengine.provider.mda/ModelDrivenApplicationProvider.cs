@@ -147,7 +147,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var parentPropertiesString = (await TestInfraFunctions.RunJavascriptAsync<object>(parentControlExpression)).ToString();
 
                     if (itemPath.ParentControl.Index.HasValue)
-                    {                       
+                    {
                         // Special case we have an index
                         var parentNameValue = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(parentPropertiesString).FirstOrDefault(k => k.Key == itemPath.ParentControl.PropertyName);
 
@@ -183,8 +183,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                             // Return the value
                             return (T)(object)("{PropertyValue: " + value.ToString() + "}");
                         }
-                    }
-                    
+                    }                    
                 }
 
                 if (itemPath.PropertyName.ToLower() == "text" && (await TestInfraFunctions.RunJavascriptAsync<object>("PowerAppsTestEngine.pageType()"))?.ToString() == "entityrecord")
@@ -326,7 +325,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                             }
                         }
                     }
-                }               
+                }
 
                 return controlDictionary;
             }
@@ -469,7 +468,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         objectValue = ((GuidValue)value).Value;
                         break;
                     case (DateType):
-                        return await SetPropertyDateAsync(itemPath, (DateValue)value);                    
+                        return await SetPropertyDateAsync(itemPath, (DateValue)value);
                     case (RecordType):
                         return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
                     case (TableType):

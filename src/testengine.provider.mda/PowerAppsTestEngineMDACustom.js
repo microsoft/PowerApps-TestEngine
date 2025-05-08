@@ -274,7 +274,7 @@ class PowerAppsModelDrivenCanvas {
     }
 
     static getBindingContext(itemPath) {
-        var appMagic = PowerAppsModelDrivenCanvas.getAppMagic();        
+        var appMagic = PowerAppsModelDrivenCanvas.getAppMagic();
 
         var bindingContext = appMagic.Controls?.GlobalContextManager?.bindingContext;
 
@@ -289,7 +289,6 @@ class PowerAppsModelDrivenCanvas {
                 bindingContext = PowerAppsModelDrivenCanvas.getGallerySelectedRowBindingContext(itemPath.parentControl);
             }           
         }
-
         
         if (typeof itemPath.index !== 'undefined' && itemPath.index !== null) {
             // Gallery control   
@@ -297,7 +296,7 @@ class PowerAppsModelDrivenCanvas {
             var replicatedContext = controlContext._replicatedContext;
             var managerId = replicatedContext.manager.managerId;
             return bindingContext.replicatedContexts[managerId].bindingContextAt(itemPath.index);
-        }       
+        }
 
         var componentBindingContext = appMagic.Controls.GlobalContextManager.bindingContext.componentBindingContexts.lookup(itemPath.controlName);
 
@@ -535,8 +534,6 @@ class PowerAppsModelDrivenCanvas {
                             Value: PowerAppsModelDrivenCanvas.getPropertyValueFromControl(itemPath)?.propertyValue
                         })
                 }
-
-
             })
         }
         return JSON.stringify(data);
