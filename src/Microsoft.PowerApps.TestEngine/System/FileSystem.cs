@@ -52,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.System
             directoryName = Path.GetFullPath(directoryName);
             if (CanAccessDirectoryPath(directoryName))
             {
-                var files = Directory.GetFiles(directoryName).Where(CanAccessFilePath);
+                var files = Directory.GetFiles(directoryName, "*.*", searchOption: SearchOption.AllDirectories).Where(CanAccessFilePath);
                 return files.ToArray();
             }
             else
@@ -455,6 +455,8 @@ namespace Microsoft.PowerApps.TestEngine.System
                     var ext = Path.GetExtension(fileName);
                     if (
                         !(
+                            ext.Equals(".yml", StringComparison.OrdinalIgnoreCase)
+                            || 
                             ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase)
                             ||
                             ext.Equals(".json", StringComparison.OrdinalIgnoreCase)

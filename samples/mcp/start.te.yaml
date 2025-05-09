@@ -5,10 +5,10 @@ testSuite:
   appLogicalName: NotNeeded
 
   testCases:
-    - testCaseName: Start MCP Server
-      testCaseDescription: Verify can open the server
+    - testCaseName: POST- Include canvas apps
+      testCaseDescription: Update each discovered canvas app and include it in the MCP server response
       testSteps: |
-        =  Assert(1=1) 
+        = Set(CanvasApps, ForAll(CanvasApps, Patch(ThisRecord, {IncludeInModel: true})))
 
 testSettings:
   locale: "en-US"

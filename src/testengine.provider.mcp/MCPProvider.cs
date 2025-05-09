@@ -66,6 +66,17 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         private readonly ISerializer _yamlSerializer;
 
+        public Func<SourceCodeService> SourceCodeServiceFactory => () =>
+        {
+            var config = new PowerFxConfig();
+            config.EnableJsonFunctions();
+            config.EnableSetFunction();
+
+            var engine = new RecalcEngine(config);
+            return new SourceCodeService(engine);
+        };
+
+
         /// <summary>
         /// Validate that the calculate NodeJs hash has the expected value 
         /// </summary>
@@ -348,19 +359,46 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 var request = context.Request;
                 var response = context.Response;
 
-                var service = GetOrganizationService();
-                if (service == null)
+                if ((request.HttpMethod == "GET" || request.HttpMethod == "POST") && request.Url.AbsolutePath.StartsWith("/solution/"))
                 {
-                    var domain = new Uri(TestState.GetDomain());
-                    var api = new Uri("https://" + domain.Host);
-                    service = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
+                    // Handle /solution/<id> endpoint
+                    var solutionId = request.Url.AbsolutePath.Split('/').Last();
+
+                    string powerFx = GetPowerFxFromTestSettings();
+                    if (request.HttpMethod == "POST")
+                    {
+                        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                        {
+                            powerFx = await reader.ReadToEndAsync();
+                            Console.WriteLine($"Received Power Fx: {powerFx}");
+                        }
+                    }
+
+                    // Create a FileSystem instance and SourceCodeService
+                    var sourceCodeService = SourceCodeServiceFactory();
+                    sourceCodeService.LoadSolutionFromSourceControl(solutionId, powerFx);
+
+                    // Convert to dictionary and serialize the response
+                    var dictionaryResponse = sourceCodeService.ToDictionary();
+                    response.StatusCode = 200;
+                    response.ContentType = "application/x-yaml";
+                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
+                    {
+                        await writer.WriteAsync(_yamlSerializer.Serialize(dictionaryResponse));
+                    }
                 }
-
-                var planDesignerService = new PlanDesignerService(service);
-
-                if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/plans")
+                else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/plans")
                 {
                     // Get a list of plans
+                    var service = GetOrganizationService();
+                    if (service == null)
+                    {
+                        var domain = new Uri(TestState.GetDomain());
+                        var api = new Uri("https://" + domain.Host);
+                        service = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
+                    }
+
+                    var planDesignerService = new PlanDesignerService(service, SourceCodeServiceFactory());
                     var plans = planDesignerService.GetPlans();
                     response.StatusCode = 200;
                     response.ContentType = "application/x-yaml";
@@ -372,8 +410,18 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.StartsWith("/plans/") && !request.Url.AbsolutePath.Contains("/artifacts") && !request.Url.AbsolutePath.Contains("/assets"))
                 {
                     // Get details for a specific plan
+                    var service = GetOrganizationService();
+                    if (service == null)
+                    {
+                        var domain = new Uri(TestState.GetDomain());
+                        var api = new Uri("https://" + domain.Host);
+                        service = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
+                    }
+
+                    var planDesignerService = new PlanDesignerService(service, SourceCodeServiceFactory());
                     var planId = Guid.Parse(request.Url.AbsolutePath.Split('/').Last());
-                    var planDetails = planDesignerService.GetPlanDetails(planId);
+
+                    var planDetails = planDesignerService.GetPlanDetails(planId, GetPowerFxFromTestSettings());
                     response.StatusCode = 200;
                     response.ContentType = "application/x-yaml";
                     using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
@@ -384,6 +432,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.Contains("/artifacts"))
                 {
                     // Get artifacts for a specific plan
+                    var service = GetOrganizationService();
+                    if (service == null)
+                    {
+                        var domain = new Uri(TestState.GetDomain());
+                        var api = new Uri("https://" + domain.Host);
+                        service = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
+                    }
+
+                    var planDesignerService = new PlanDesignerService(service, SourceCodeServiceFactory());
                     var planId = Guid.Parse(request.Url.AbsolutePath.Split('/')[2]);
                     var artifacts = planDesignerService.GetPlanArtifacts(planId);
                     response.StatusCode = 200;
@@ -440,6 +497,24 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     await writer.WriteAsync(_yamlSerializer.Serialize(new { error = "Internal server error" }));
                 }
             }
+        }
+
+        private string GetPowerFxFromTestSettings()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            var testSuite = SingleTestInstanceState.GetTestSuiteDefinition();
+            foreach (var testCase in testSuite.TestCases)
+            {
+                if (testCase.TestCaseName.ToLower().StartsWith("post-"))
+                {
+                    if (stringBuilder.Length > 0)
+                    {
+                        stringBuilder.Append(";");
+                    }
+                    stringBuilder.Append(testCase.TestSteps);
+                }
+            }
+            return stringBuilder.ToString();
         }
 
         /// <summary>

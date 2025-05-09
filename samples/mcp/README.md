@@ -140,7 +140,11 @@ cd samples\mcp
 code .
 ```
 
-9. Add the a new file named **config.json** in the same folder as RunTests.ps1. You will need to replace the value with your tenant and environment id. 
+9. Optional: Configure your Power Platform for [Git integration](https://learn.microsoft.com/en-us/power-platform/alm/git-integration/overview)
+
+10. Optional: Clone your Azure DevOps repository to you local machine 
+
+11. Add the a new file named **config.json** in the same folder as RunTests.ps1. You will need to replace the value with your tenant, environment id and cloned repository information. 
 
   > TIP: You can obtain the environment and tenant information from your Power Apps portal by using **settings** from the main navigation var and selecting **Session Details** 
 
@@ -150,7 +154,8 @@ code .
     "environmentId": "12345678-1111-2222-3333-444455556666",
     "user1Email": "test@contoso.onmicrosoft.com",
     "installPlaywright": true,
-    "compile": true
+    "compile": true,
+    "repository": "c:\\users\\user1\\repo"
 }
 ```
 

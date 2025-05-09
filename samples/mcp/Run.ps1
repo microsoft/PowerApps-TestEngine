@@ -11,6 +11,7 @@ $environmentId = $config.environmentId
 $environmentUrl = $config.environmentUrl
 $user1Email = $config.user1Email
 $compile = $config.compile
+$repository = $config.repository
 
 $azTenantId = az account show --query tenantId --output tsv
 
@@ -35,6 +36,8 @@ if ($compile) {
 }
 
 Set-Location "$currentDirectory\..\..\bin\Debug\PowerAppsTestEngine"
+
+$env:TEST_ENGINE_SOLUTION_PATH = $repository
 
 # Run the tests for each user in the configuration file.
 dotnet PowerAppsTestEngine.dll -p "mcp" -i "$currentDirectory\start.te.yaml" -t $tenantId -e $environmentId -d "$environmentUrl"

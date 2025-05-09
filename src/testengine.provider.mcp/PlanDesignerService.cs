@@ -9,14 +9,28 @@ using Microsoft.Xrm.Sdk.Query;
 
 namespace Microsoft.PowerApps.TestEngine.Providers
 {
+    /// <summary>
+    /// Experimental service for handling plan designer operations.
+    /// </summary>
+    /// <remarks>
+    /// The schema for the plan designer is not yet finalized, and this service is subject to change.
+    /// </remarks>
     public class PlanDesignerService
     {
-        private readonly IOrganizationService _organizationService;
-        private readonly Dictionary<Guid, string> _attributeTypeCache = new();
+        private readonly IOrganizationService? _organizationService;
+        private readonly SourceCodeService? _sourceCodeService;
 
-        public PlanDesignerService(IOrganizationService organizationService)
+        public object? Solution { get; private set; }
+
+        public PlanDesignerService()
+        {
+
+        }
+
+        public PlanDesignerService(IOrganizationService organizationService, SourceCodeService sourceCodeService)
         {
             _organizationService = organizationService ?? throw new ArgumentNullException(nameof(organizationService));
+            _sourceCodeService = sourceCodeService ?? throw new ArgumentNullException(nameof(sourceCodeService));
         }
 
         /// <summary>
@@ -49,15 +63,15 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         }
 
         /// <summary>
-        /// Retrieves details for a specific plan by its ID.
+        /// Retrieves details for a specific plan by its ID and processes source control integration if enabled.
         /// </summary>
         /// <param name="planId">The ID of the plan.</param>
         /// <returns>Details of the specified plan.</returns>
-        public PlanDetails GetPlanDetails(Guid planId)
+        public PlanDetails GetPlanDetails(Guid planId, string powerFx = "")
         {
             var query = new QueryExpression("msdyn_plan")
             {
-                ColumnSet = new ColumnSet("msdyn_planid", "msdyn_name", "msdyn_description", "msdyn_prompt", "msdyn_contentschemaversion", "msdyn_languagecode", "modifiedon", "solutionid"),
+                ColumnSet = new ColumnSet("msdyn_planid", "msdyn_name", "msdyn_description", "solutionid", "msdyn_prompt", "msdyn_languagecode"),
                 Criteria = new FilterExpression
                 {
                     Conditions =
@@ -73,19 +87,21 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 throw new Exception($"Plan with ID {planId} not found.");
             }
 
-            return new PlanDetails
+            var planDetails = new PlanDetails
             {
                 Id = result.GetAttributeValue<Guid>("msdyn_planid"),
                 Name = result.GetAttributeValue<string>("msdyn_name"),
                 Description = result.GetAttributeValue<string>("msdyn_description"),
-                Prompt = result.GetAttributeValue<string>("msdyn_prompt"),
-                ContentSchemaVersion = result.GetAttributeValue<string>("msdyn_contentschemaversion"),
-                LanguageCode = result.GetAttributeValue<int>("msdyn_languagecode"),
-                ModifiedOn = result.GetAttributeValue<DateTime>("modifiedon"),
                 SolutionId = result.GetAttributeValue<Guid>("solutionid").ToString(),
-                Content = DownloadJsonFileContent("msdyn_plan", planId, "msdyn_content"),
-                Artifacts = GetPlanArtifacts(planId)
+                Prompt = result.GetAttributeValue<string>("msdyn_prompt"),
+                LanguageCode = result.GetAttributeValue<int>("msdyn_languagecode"),
+
             };
+
+            // Delegate source control integration handling to SourceCodeService
+            planDetails.Solution = _sourceCodeService.LoadSolutionFromSourceControl(planDetails.SolutionId, powerFx);
+
+            return planDetails;
         }
 
         public object DownloadJsonFileContent(string entity, Guid id, string column)
@@ -309,6 +325,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public int LanguageCode { get; set; }
 
         public object Content { get; set; } = new Dictionary<string, object>();
+
+        public object Solution { get; set; } = new Dictionary<string, object>();
 
         public List<Artifact> Artifacts { get; set; } = new List<Artifact>();
     }

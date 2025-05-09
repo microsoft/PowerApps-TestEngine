@@ -177,5 +177,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             throw new NotImplementedException();
         }
+
+        Xrm.Sdk.Entity IOrganizationService.Retrieve(string entityName, Guid id, ColumnSet columnSet)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
