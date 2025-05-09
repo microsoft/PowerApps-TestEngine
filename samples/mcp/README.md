@@ -9,6 +9,9 @@ Before you start, you'll need a few tools and permissions:
 - **PowerShell**: A task automation tool from Microsoft.
 - **.Net 8.0 SDK**: A software development kit needed to build and run the tests.
 - **Power Platform Environment**: A space where your Plan Designer interactions and solutions exist.
+- **GitHub Copilot**: Access to [GitHub Copilot](https://github.com/features/copilot)
+- **Visual Studio Code**: An install of [Visual Studio Code](https://code.visualstudio.com/) to host the GitHub Copilot and the edit generated test files.
+- **NodeJs**: An installation of [NodeJs](https://nodejs.org/) as the current Model Context Protocol proxy that is used to communicate with Test Engine Command Line Interface
 
 ## Prerequisites
 
@@ -50,6 +53,12 @@ winget install -e --id Microsoft.AzureCLI
 winget install -e --id Microsoft.VisualStudioCode
 ```
 
+8. NodeJs is [installed](https://nodejs.org/). For example on Windows you could use the following command
+
+```pwsh
+winget install nodejs
+```
+
 ## Verification
 
   > NOTE: If at any stage you find that a component is not installed, you may need to restart you command line session to verify that the component has been installed 
@@ -88,6 +97,12 @@ git --version
 
 ```pwsh
 code --version
+```
+
+7. Verify you have NodeJs installed
+
+```pwsh
+node --version
 ```
 
 ## Getting Started
@@ -201,7 +216,39 @@ In a version of Visual Studio Code that supports MCP Server agent with GitHub Co
 
 6. Switch to [Agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode)
 
-7. Chat with agent using the available actions. For example after consenting to `validate-power-fx` action the following should ve valid
+## Test Generation
+
+This sample can integrate with Plan designer. In an environment that you have created a [Plan](https://learn.microsoft.com/en-us/power-apps/maker/plan-designer/plan-designer) follow these steps
+
+1. Create an [empty workspace](https://code.visualstudio.com/docs/editing/workspaces/workspaces) in Visual Studio Code
+
+2. Switch to [Agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode)
+
+3. Chat with agent using the available actions. 
+
+4. For example after consenting to `get-plan-list` action the following should return plans you have access to in the environment
+
+```
+Show me available plans
+```
+
+5. Get information on the first plan. You will need to consent to the `get-plan-details` action
+
+```
+Get me details on the "Contoso Plan" plan
+```
+
+6. Generate the tests using the recommended yaml template 
+
+```
+Generate tests for my Dataverse entities
+```
+
+7. Review the [Dataverse](../dataverse/README.md) on how to use the generated test yaml to test your dataverse entities.
+
+## Power Fx Validation
+
+1. Chat with agent using the available actions. For example after consenting to `validate-power-fx` action the following should be valid
 
 ```
 If the following Power Fx valid in test engine?
