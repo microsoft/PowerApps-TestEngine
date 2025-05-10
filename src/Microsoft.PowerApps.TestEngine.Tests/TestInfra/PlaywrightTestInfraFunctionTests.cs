@@ -57,6 +57,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
             MockUserManager = new Mock<IUserManager>(MockBehavior.Strict);
             MockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
+
+            // Mock Chromium behavior
+            MockPlaywrightObject.SetupGet(x => x.Chromium).Returns(new Mock<IBrowserType>(MockBehavior.Strict).Object);
+            MockPlaywrightObject.SetupGet(x => x.Chromium.Name).Returns("chromium");
         }
 
         [Theory]
@@ -185,22 +189,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockSingleTestInstanceState.Setup(st => st.GetLogger()).Returns(MockLogger.Object);
             LoggingTestHelper.SetupMock(MockLogger);
 
-            //setting chromium separately to get strongly typed browser name
-            var chromiumBrowserMock = new Mock<IBrowserType>();
-            chromiumBrowserMock.Setup(c => c.Name).Returns("chromium");
-
             MockBrowserType.Setup(c => c.Name).Returns(browser);
             MockBrowserType.Setup(c => c.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>()))
                .ReturnsAsync(Mock.Of<IBrowser>());
-            var playwrightMock = new Mock<IPlaywright>();
-            playwrightMock.Setup(p => p[browser]).Returns(MockBrowserType.Object);
-            playwrightMock.Setup(p => p.Chromium).Returns(chromiumBrowserMock.Object);
+            MockPlaywrightObject.Setup(p => p[browser]).Returns(MockBrowserType.Object);
 
             var functions = new PlaywrightTestInfraFunctions(
                MockTestState.Object,
                MockSingleTestInstanceState.Object,
                MockFileSystem.Object,
-               playwrightMock.Object
+               MockPlaywrightObject.Object
             );
 
             // Act
