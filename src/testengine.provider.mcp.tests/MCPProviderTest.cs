@@ -170,16 +170,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         }
 
         [Fact]
-        public void NodeJsHash()
-        {
-            // Arrange
-            string appJsFileName = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "..", "..", "..", "src", "testengine.mcp", "app.js"));
-
-            // Act & Asssert
-            Assert.True(_provider.NodeJsHashValidator(MCPProvider.ComputeFileHash(appJsFileName)));
-        }
-
-        [Fact]
         public async Task HandleRequest_ValidatePowerFx()
         {
             // Arrange

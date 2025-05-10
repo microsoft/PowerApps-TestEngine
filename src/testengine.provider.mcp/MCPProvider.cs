@@ -17,6 +17,7 @@ using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.Xrm.Sdk;
+using Newtonsoft.Json;
 using testengine.provider.mcp;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -464,6 +465,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
                         switch (request.ContentType)
                         {
+                            case "application/json":
+                                powerFx = JsonConvert.DeserializeObject<string>(powerFx);
+                                break;
                             case "application/x-yaml":
                                 powerFx = new DeserializerBuilder()
                                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
