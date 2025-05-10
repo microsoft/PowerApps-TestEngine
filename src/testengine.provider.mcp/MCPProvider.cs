@@ -4,10 +4,8 @@
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Globalization;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
@@ -52,8 +50,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     [Export(typeof(ITestWebProvider))]
     public class MCPProvider : ITestWebProvider, IExtendedPowerFxProvider
     {
-        public const string NODE_APPJS_HASH = "11CC99890FFE8972B05108DBF26CAA53E19207579852CFFBAAA74DD90F5E1E01";
-
         public ITestInfraFunctions? TestInfraFunctions { get; set; }
 
         public ISingleTestInstanceState? SingleTestInstanceState { get; set; }
@@ -65,6 +61,10 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         public ILogger? Logger { get; set; }
 
         private readonly ISerializer _yamlSerializer;
+
+        public IFileSystem FileSystem { get; set; } = new FileSystem();
+
+        public Func<ILogger, MCPProxyInstaller> ProxyInstaller = (logger) => new MCPProxyInstaller(new FileSystem(), new ProcessRunner(), logger);
 
         public Func<SourceCodeService> SourceCodeServiceFactory => () =>
         {
@@ -82,7 +82,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         /// </summary>
         public Func<string, bool> NodeJsHashValidator = (string actual) =>
         {
-            return actual == NODE_APPJS_HASH;
+            return actual == MCPProxyInstaller.ComputeEmbeddedResourceHash("proxy/app.js");
         };
 
         public Func<int, IHttpServer> GetHttpServer = (int port) => new HttpListenerServer($"http://localhost:{port}/");
@@ -259,8 +259,16 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             // Start the HTTP server to handle requests from the Node.js MCP server.
             StartHttpServer();
 
-            // Get the path to the Node.js app (app.js) relative to the current assembly location.
-            var nodeApp = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.GetType().Assembly.Location), "..", "..", "..", "src", "testengine.mcp", "app.js"));
+            if (Logger == null)
+            {
+                Logger = SingleTestInstanceState.GetLogger();
+            }
+
+            // Ensure the MCP proxy is installed.
+            ProxyInstaller(Logger).EnsureMCPProxyInstalled();
+
+            // Get the path to the Node.js app (app.js) that installed
+            var nodeApp = Path.GetFullPath(Path.Combine(FileSystem.GetDefaultRootTestEngine(), "mcp", "app.js"));
 
             // Compute the hash of the Node.js app to ensure it has not been tampered with.
             var hash = ComputeFileHash(nodeApp);
@@ -332,11 +340,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     await HandleRequest(new HttpContextWrapper(context));
                     context.Response.Close();
                 };
-#if RELEASE
-                Console.WriteError("MCP integration not enabled in Release mode");
-#else
                 listener.Start();
-#endif
             });
         }
 

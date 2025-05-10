@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `testengine.mcp` NodeJS project serves as a **proxy** that bridges the gap between the **Power Apps Test Engine** and **Visual Studio Code**. It implements a **Model Context Protocol (MCP)** server over **STDIO** and connects to the Test Engine to enable the creation and validation of **Power Fx expressions** and **test cases**.
+The Test Engine MCP Server make use of NodeJS as a **proxy** that bridges the gap between the **Power Apps Test Engine** and **Visual Studio Code**. It implements a **Model Context Protocol (MCP)** server over **STDIO** and connects to the Test Engine to enable the creation and validation of **Power Fx expressions** and **test cases**.
 
 This project is designed to streamline the development and testing of Power Fx expressions by providing an interactive environment within Visual Studio Code, while leveraging the capabilities of the Power Apps Test Engine.
 
