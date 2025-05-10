@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -152,6 +153,64 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 return true;
             };
             MockBrowser.Verify(x => x.NewContextAsync(It.Is<BrowserNewContextOptions>(y => verifyBrowserContextOptions(y))), Times.Once());
+        }
+
+        [Theory]
+        [InlineData("chromium", null, true, true)]
+        [InlineData("Chromium", "msedge", true, true)]
+        [InlineData("Chromium", "chrome", true, true)]
+        [InlineData("Chromium", "msedge", false, false)]
+        [InlineData("cHromium", null, false, false)]
+        [InlineData("webkit", null, true, false)]
+        [InlineData("firefox", null, false, false)]
+        public async Task SetupAsync_HeadlessModeWithChromium_AddsNewHeadlessArgs(string browser, string? channel, bool headless, bool expectedResult)
+        {
+            // Arrange
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<Microsoft.PowerApps.TestEngine.Modules.ITestEngineModule>() { });
+
+            var testSettings = new TestSettings
+            {
+                Headless = headless,
+                Timeout = 30000
+            };
+
+            var browserConfig = new BrowserConfiguration
+            {
+                Browser = browser,
+                Channel = channel,
+            };
+
+            MockTestState.Setup(ts => ts.GetTestSettings()).Returns(testSettings);
+            MockSingleTestInstanceState.Setup(st => st.GetBrowserConfig()).Returns(browserConfig);
+            MockSingleTestInstanceState.Setup(st => st.GetLogger()).Returns(MockLogger.Object);
+            LoggingTestHelper.SetupMock(MockLogger);
+
+            //setting chromium separately to get strongly typed browser name
+            var chromiumBrowserMock = new Mock<IBrowserType>();
+            chromiumBrowserMock.Setup(c => c.Name).Returns("chromium");
+
+            MockBrowserType.Setup(c => c.Name).Returns(browser);
+            MockBrowserType.Setup(c => c.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>()))
+               .ReturnsAsync(Mock.Of<IBrowser>());
+            var playwrightMock = new Mock<IPlaywright>();
+            playwrightMock.Setup(p => p[browser]).Returns(MockBrowserType.Object);
+            playwrightMock.Setup(p => p.Chromium).Returns(chromiumBrowserMock.Object);
+
+            var functions = new PlaywrightTestInfraFunctions(
+               MockTestState.Object,
+               MockSingleTestInstanceState.Object,
+               MockFileSystem.Object,
+               playwrightMock.Object
+            );
+
+            // Act
+            await functions.SetupAsync(Mock.Of<IUserManager>());
+
+            // Assert
+            MockBrowserType.Verify(c => c.LaunchAsync(It.Is<BrowserTypeLaunchOptions>(options =>
+                options.Args != null &&
+                options.Args.Contains("--headless=new")
+            )), expectedResult ? Times.Once : Times.Never);
         }
 
         [Theory]
