@@ -1,0 +1,27 @@
+
+scan:
+  name: Dataverse Entity Scan
+  description: Scan for Dataverse Entity Definitions to give context to Model Context Protocol (MCP) genration of tests
+  version: 1.0.0
+  onFile:
+    - When: ThisNode.Name = "entity.yaml"
+      Then: |
+        AddContext(ThisNode, "Dataverse Entity Definition");
+        AddFact(ThisNode, GenerateTSQLCreate(ThisNode));
+        AddFact(ThisNode, GenerateMDAViews(ThisNode));
+        AddFact(ThisNode, GenerateMDADetails(ThisNode));
+
+  onProperty:
+    - When: IsMatch(ThisNode.Name, ".*Name")
+      Then: AddFact(ThisNode)
+    - When: IsMatch(ThisNode.Name, ".*Description")
+      Then: AddFact(ThisNode)
+    - When: IsMatch(ThisNode.Name, ".*DisplayName")
+      Then: AddFact(ThisNode)
+    - When: IsMatch(ThisNode.Name, ".*SchemaName")
+      Then: AddFact(ThisNode)
+    - When: IsMatch(ThisNode.Name, ".*Type")
+      Then: AddFact(ThisNode)
+    - When: IsMatch(ThisNode.Name, ".*RequiredLevel")
+      Then: AddFact(ThisNode)
+        

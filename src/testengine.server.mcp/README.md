@@ -68,7 +68,7 @@ dotnet pack -c Debug --output ./nupkgs
 dotnet tool install testengine.server.mcp -g --add-source ./nupkgs --version 0.1.9-preview
 ```
 
-## Upgrade
+## Uninstall
 
 Before you upgrade a version of the MCP Server ensure you stop any running Service. Once the service stopped uninstall the existing version
 

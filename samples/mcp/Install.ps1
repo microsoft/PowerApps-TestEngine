@@ -1,10 +1,15 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-$config = (Get-Content -Path .\config.json -Raw) | ConvertFrom-Json
-$uninstall = $config.uninstall
-$compile = $config.compile
-
+if (Test-Path -Path "$PSScriptRoot\config.json") {
+    $config = (Get-Content -Path .\config.json -Raw) | ConvertFrom-Json
+    $uninstall = $config.uninstall
+    $compile = $config.compile
+} else {
+    Write-Host "Config file not found, assuming default values."
+    $uninstall = $true
+    $compile = $true
+}
 
 # Get current directory so we can reset back to it after running the tests
 $currentDirectory = Get-Location

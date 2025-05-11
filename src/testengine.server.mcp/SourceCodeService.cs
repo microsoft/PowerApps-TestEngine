@@ -6,22 +6,16 @@ using System.Text;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
-using Newtonsoft.Json;
-using YamlDotNet.Core.Tokens;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 public class SourceCodeService
 {
-    public const string ENVIRONMENT_SOLUTION_PATH = "TEST_ENGINE_SOLUTION_PATH";
     private readonly RecalcEngine? _recalcEngine;
 
     public Func<IFileSystem> FileSystemFactory { get; set; } = () => new FileSystem();
 
-    public Func<IEnvironmentVariable> EnvironmentVariableFactory { get; set; } = () => new EnvironmentVariable();
-
     private IFileSystem? _fileSystem;
-    private IEnvironmentVariable? _environmentVariable;
 
     public SourceCodeService()
     {
@@ -37,20 +31,11 @@ public class SourceCodeService
     /// Loads the solution source code from the repository path defined in the environment variable.
     /// </summary>
     /// <param name="solutionId">The ID of the solution to load.</param>
+    /// <param name="workspace">The path of the solution to scan</param>
+    /// <param name="powerFx">The optional post processing Power Fx to run</param>
     /// <returns>A dictionary representation of the solution or a recommendation if source control integration is not enabled.</returns>
-    public virtual object LoadSolutionFromSourceControl(string solutionId, string powerFx)
+    public virtual object LoadSolutionFromSourceControl(string solutionId, string workspace, string powerFx = "")
     {
-        if (_environmentVariable == null)
-        {
-            _environmentVariable = EnvironmentVariableFactory();
-        }
-
-        var repoPath = _environmentVariable.GetVariable(ENVIRONMENT_SOLUTION_PATH);
-        if (string.IsNullOrWhiteSpace(repoPath))
-        {
-            return CreateRecommendation("Set the environment variable 'TEST_ENGINE_SOLUTION_PATH' to the repository path.");
-        }
-
         // Construct the solution path
 
         if (_fileSystem == null)
@@ -59,13 +44,13 @@ public class SourceCodeService
         }
 
         // Check if the solution path exists
-        if (!_fileSystem.Exists(repoPath))
+        if (!_fileSystem.Exists(workspace))
         {
-            return CreateRecommendation($"Solution not found at path {repoPath}. Ensure the repository is correctly configured.");
+            return CreateRecommendation($"Solution not found at path {workspace}. Ensure the repository is loaded in your MCP Host");
         }
 
         // Load the solution source code
-        LoadSolutionSourceCode(repoPath);
+        LoadSolutionSourceCode(workspace);
 
         if (!string.IsNullOrEmpty(powerFx))
         {

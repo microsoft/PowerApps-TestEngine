@@ -65,7 +65,7 @@ public class PlanDesignerService
     /// </summary>
     /// <param name="planId">The ID of the plan.</param>
     /// <returns>Details of the specified plan.</returns>
-    public PlanDetails GetPlanDetails(Guid planId, string powerFx = "")
+    public PlanDetails GetPlanDetails(Guid planId, string workspace = "")
     {
         var query = new QueryExpression("msdyn_plan")
         {
@@ -97,7 +97,7 @@ public class PlanDesignerService
         };
 
         // Delegate source control integration handling to SourceCodeService
-        planDetails.Solution = _sourceCodeService.LoadSolutionFromSourceControl(planDetails.SolutionId, powerFx);
+        planDetails.Solution = _sourceCodeService.LoadSolutionFromSourceControl(planDetails.SolutionId, workspace);
 
         return planDetails;
     }

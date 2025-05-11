@@ -107,10 +107,10 @@ public static class TestEngineTools
     /// </summary>
     /// <param name="planId">The ID of the plan.</param>
     /// <returns>A JSON string containing the plan details.</returns>
-    [McpServerTool, Description("Gets details for a specific plan.")]
-    public static async Task<string> GetPlanDetails(string planId)
+    [McpServerTool, Description("Gets details for a specific plan and scans the current workspace and provides facts and recommendations to help generate automated tests")]
+    public static async Task<string> GetPlanDetails(string planId, string workspacePath)
     {
-        var planDetails = await MakeRequest($"plans/{planId}", HttpMethod.Get);
+        var planDetails = await MakeRequest($"plans/{planId}", HttpMethod.Post, data: workspacePath);
         return JsonSerializer.Serialize(planDetails);
     }
 

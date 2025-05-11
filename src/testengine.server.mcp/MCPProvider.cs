@@ -127,7 +127,7 @@ public class MCPProvider
                 response.ContentType = "application/x-yaml";
                 response.Body = _yamlSerializer.Serialize(plans);
             }
-            else if (request.Method == "GET" && request.Endpoint.StartsWith("plans/"))
+            else if (request.Method == "POST" && request.Endpoint.StartsWith("plans/"))
             {
                 // Get a specific plan
                 var planId = request.Endpoint.Split('/').Last();
@@ -144,7 +144,7 @@ public class MCPProvider
                 }
 
                 var planDesignerService = new PlanDesignerService(service, SourceCodeServiceFactory());
-                var plan = planDesignerService.GetPlanDetails(new Guid(planId));
+                var plan = planDesignerService.GetPlanDetails(new Guid(planId), workspace: request.Body);
                 response.StatusCode = 200;
                 response.ContentType = "application/x-yaml";
                 response.Body = _yamlSerializer.Serialize(plan);

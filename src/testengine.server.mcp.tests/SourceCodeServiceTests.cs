@@ -23,7 +23,6 @@ namespace testengine.server.mcp.tests
             _recalcEngine = new RecalcEngine();
             _sourceCodeService = new SourceCodeService(_recalcEngine);
             _sourceCodeService.FileSystemFactory = () => _mockFileSystem.Object;
-            _sourceCodeService.EnvironmentVariableFactory = () => _mockEnvironmentVariable.Object;
         }
 
         [Fact]
@@ -39,12 +38,11 @@ namespace testengine.server.mcp.tests
             // Arrange
             var validPath = "valid/path";
             var files = new[] { "file1.json", "file2.json" };
-            _mockEnvironmentVariable.Setup(m => m.GetVariable(SourceCodeService.ENVIRONMENT_SOLUTION_PATH)).Returns(validPath);
             _mockFileSystem.Setup(fs => fs.Exists(validPath)).Returns(true);
             _mockFileSystem.Setup(fs => fs.GetFiles(validPath)).Returns(files);
 
             // Act
-            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), string.Empty);
+            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), validPath, string.Empty);
 
             // Assert
             _mockFileSystem.Verify(fs => fs.GetFiles(validPath), Times.Once);
@@ -61,7 +59,6 @@ namespace testengine.server.mcp.tests
 
             var validPath = "valid/path";
             var files = new[] { CANVAS_APP, ENTITY, FLOW };
-            _mockEnvironmentVariable.Setup(m => m.GetVariable(SourceCodeService.ENVIRONMENT_SOLUTION_PATH)).Returns(validPath);
 
             _mockFileSystem.Setup(fs => fs.Exists(validPath)).Returns(true);
             _mockFileSystem.Setup(fs => fs.GetFiles(validPath)).Returns(files);
@@ -70,7 +67,7 @@ namespace testengine.server.mcp.tests
             _mockFileSystem.Setup(fs => fs.ReadAllText(FLOW)).Returns(string.Empty);
 
             // Act
-            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), string.Empty);
+            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), validPath, string.Empty);
 
             // Assert
             var canvasApps = _recalcEngine.GetValue("CanvasApps") as TableValue;
@@ -90,14 +87,13 @@ namespace testengine.server.mcp.tests
         {
             // Arrange
             var validPath = "valid/path";
-            _mockEnvironmentVariable.Setup(m => m.GetVariable(SourceCodeService.ENVIRONMENT_SOLUTION_PATH)).Returns(validPath);
 
             var files = new[] { "unsupported.exe" };
             _mockFileSystem.Setup(fs => fs.Exists(validPath)).Returns(true);
             _mockFileSystem.Setup(fs => fs.GetFiles(validPath)).Returns(files);
 
             // Act & Assert
-            Assert.Throws<NotSupportedException>(() => _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), string.Empty));
+            Assert.Throws<NotSupportedException>(() => _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), validPath, string.Empty));
         }
 
         [Fact]
@@ -123,13 +119,12 @@ CanvasApp:
   IsCustomizable: 1
 ";
 
-            _mockEnvironmentVariable.Setup(m => m.GetVariable(SourceCodeService.ENVIRONMENT_SOLUTION_PATH)).Returns(validPath);
             _mockFileSystem.Setup(fs => fs.Exists(validPath)).Returns(true);
             _mockFileSystem.Setup(fs => fs.GetFiles(validPath)).Returns(files);
             _mockFileSystem.Setup(fs => fs.ReadAllText(CANVAS_APP)).Returns(canvasAppYaml);
 
             // Act
-            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), string.Empty);
+            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), validPath, string.Empty);
 
             // Assert
             var canvasApps = _recalcEngine.GetValue("CanvasApps") as TableValue;

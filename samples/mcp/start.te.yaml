@@ -15,6 +15,9 @@ testSettings:
   recordVideo: true
   extensionModules:
     enable: true
+    scans:
+      - canvas: canvasapp.scan.yaml
+      - entity: entity.scan.yaml
   browserConfigurations:
     - browser: Chromium    
 
