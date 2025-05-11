@@ -5,7 +5,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Moq;
 
-namespace Microsoft.PowerApps.TestEngine.Providers.Tests
+namespace testengine.server.mcp.tests
 {
     public class PlanDesignerServiceTest
     {
@@ -180,7 +180,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.Tests
                 .Setup(service => service.RetrieveMultiple(It.IsAny<QueryExpression>()))
                 .Returns(entityCollection);
 
-            
+
             _mockOrganizationService
                 .Setup(service => service.Retrieve("msdyn_planartifact", artifactId, It.Is<ColumnSet>(c => c.Columns[0] == "msdyn_artifactmetadata")))
                 .Returns(new Entity());

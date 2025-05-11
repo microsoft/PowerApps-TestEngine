@@ -286,11 +286,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
                             if (error.IsWarning)
                             {
-                                logger.LogWarning(msg);
+                                logger?.LogWarning(msg);
                             }
                             else
                             {
-                                logger.LogError(msg);
+                                logger?.LogError(msg);
                             }
                         }
                     }
@@ -305,18 +305,18 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             {
                 if (string.IsNullOrEmpty(strLocale))
                 {
-                    logger.LogDebug($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
+                    logger?.LogDebug($"Locale property not specified in testSettings. Using current system locale: {locale.Name}");
                 }
                 else
                 {
                     locale = new CultureInfo(strLocale);
-                    logger.LogDebug($"Locale: {locale.Name}");
+                    logger?.LogDebug($"Locale: {locale.Name}");
                 }
                 return locale;
             }
             catch (CultureNotFoundException)
             {
-                logger.LogError($"Locale from test suite definition {strLocale} unrecognized.");
+                logger?.LogError($"Locale from test suite definition {strLocale} unrecognized.");
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
         }
@@ -356,7 +356,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             if (!string.IsNullOrEmpty(dataverseUrl) && Uri.TryCreate(dataverseUrl, UriKind.Absolute, out Uri dataverseUri))
             {
                 // Attempt to retreive OAuath access token. Assume logged in Azure CLI session
-                string token = GetAzureCliHelper()?.GetAccessToken(dataverseUri);
+                string token = GetAzureCliHelper().GetAccessToken(dataverseUri);
                 if (!string.IsNullOrEmpty(token))
                 {
                     // Establish a collection to Dataverse

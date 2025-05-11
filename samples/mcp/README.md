@@ -11,7 +11,6 @@ Before you start, you'll need a few tools and permissions:
 - **Power Platform Environment**: A space where your Plan Designer interactions and solutions exist.
 - **GitHub Copilot**: Access to [GitHub Copilot](https://github.com/features/copilot)
 - **Visual Studio Code**: An install of [Visual Studio Code](https://code.visualstudio.com/) to host the GitHub Copilot and the edit generated test files.
-- **NodeJs**: An installation of [NodeJs](https://nodejs.org/) as the current Model Context Protocol proxy that is used to communicate with Test Engine Command Line Interface
 
 ## Prerequisites
 
@@ -53,12 +52,6 @@ winget install -e --id Microsoft.AzureCLI
 winget install -e --id Microsoft.VisualStudioCode
 ```
 
-8. NodeJs is [installed](https://nodejs.org/). For example on Windows you could use the following command
-
-```pwsh
-winget install nodejs
-```
-
 ## Verification
 
   > NOTE: If at any stage you find that a component is not installed, you may need to restart you command line session to verify that the component has been installed 
@@ -75,34 +68,22 @@ dotnet --list-sdks
 pwsh --version
 ```
 
-3. Verify that you have Power Platform command line interface (pac cli) installed
-
-```pwsh
-pac
-```
-
-4. Verify that you have Azure command line interface (az cli) installed
+3. Verify that you have Azure command line interface (az cli) installed
 
 ```pwsh
 az --version
 ```
 
-5. Verify that you have git installed
+4. Verify that you have git installed
 
 ```pwsh
 git --version
 ```
 
-6. Verify you have Visual Studio Code installed
+5. Verify you have Visual Studio Code installed
 
 ```pwsh
 code --version
-```
-
-7. Verify you have NodeJs installed
-
-```pwsh
-node --version
 ```
 
 ## Getting Started
@@ -125,97 +106,68 @@ cd PowerApps-TestEngine
 git checkout grant-archibald-ms/mcp-606
 ```
 
-4. Ensure logged out out of pac cli. This ensures you're logged out of any previous sessions.
+4. Authenticated with Azure CLI
 
 ```pwsh
-pac auth clear
+az login --allow-no-subscriptions
 ```
 
-5. Login to Power Platform CLI using [pac auth](https://learn.microsoft.com/power-platform/developer/cli/reference/auth#pac-auth-create)
-
-```pwsh
-pac auth create --environment <Your environment ID>
-```
-
-6. Authenticated with Azure CLI
-
-```pwsh
-az login --use-device-code --allow-no-subscriptions
-```
-
-7. Change to MCP sample
+5. Change to MCP sample
 
 ```pwsh
 cd samples\mcp
 ```
 
-8. Edit the sample in your editor. For example using Visual Studio Code you can open the sample folder using the following command
+6. Optional: Configure your Power Platform for [Git integration](https://learn.microsoft.com/en-us/power-platform/alm/git-integration/overview)
 
-```pwsh
-code .
-```
+   - Clone your Azure DevOps repository to you local machine 
 
-9. Optional: Configure your Power Platform for [Git integration](https://learn.microsoft.com/en-us/power-platform/alm/git-integration/overview)
+## Install the Test Engine
 
-10. Optional: Clone your Azure DevOps repository to you local machine 
-
-11. Add the a new file named **config.json** in the same folder as RunTests.ps1. You will need to replace the value with your tenant, environment id and cloned repository information. 
-
-  > TIP: You can obtain the environment and tenant information from your Power Apps portal by using **settings** from the main navigation var and selecting **Session Details** 
+1. Create config.json in the mcp sample folder.
 
 ```json
 {
-    "tenantId": "a222222-1111-2222-3333-444455556666",
-    "environmentId": "12345678-1111-2222-3333-444455556666",
-    "environmentUrl": "https://contoso.crm.dynamics.com/",
-    "user1Email": "test@contoso.onmicrosoft.com",
-    "installPlaywright": true,
-    "compile": true,
-    "repository": "c:\\users\\user1\\repo"
+    "uninstall": true,
+    "compile": true
 }
 ```
 
-## Run Test Engine
-
-To Run the sample tests from PowerShell assuming the Getting started steps have been completed
+2. Run the install following from PowerShell to compile and install the Test Engine MCP Server
 
 ```pwsh
-.\Run.ps1
+.\Install.ps1
 ```
 
 ## Start Test Engine MCP Interface
 
 In a version of Visual Studio Code that supports MCP Server agent with GitHub Copilot
 
-1. Open Visual Studio Code
+1. Open PowerShell prompt `pwsh`
 
-2. Open the project
+2. Optional set `$env:TEST_ENGINE_SOLUTION_PATH` to the path you cloned the solution you want to generate tests for that you have configured using [Dataverse Git integration setup](https://learn.microsoft.com/en-us/power-platform/alm/git-integration/connecting-to-git)
 
-3. Open Settings
+3. Change to the cloned version of Power Apps Test Engine. For example
+
+```PowerShell
+cd c:\users\<useruser>\Source\PowerApps-TestEngine
+```
+
+4. Open Visual Studio Code using 
+
+```PowerShell
+code .
+```
+
+5. Open Settings
 
    Open the settings file by navigating to File > Preferences > Settings or by pressing Ctrl + ,.
 
-4. Edit settings.json and add the following configuration to your settings.json file to register the MCP server and enable GitHub Copilot:
-
-```json
-{
-    "mcp": {
-        "inputs": [],
-        "servers": {
-            "TestEngine": {
-                "command": "node",
-                "args": [".\test-engine-mcp.js", "testengine.provider.mcp.dll"],
-            }
-        }
-    },
-    "github.copilot.enable": true,
-    "chat.mcp.discovery.enabled": true
-}
-```
+6. Edit settings.json and suggested json from the `Install.ps1` results to the settings.json file to register the MCP server and enable GitHub Copilot
 
 5. Start the GitHub Copilot
 
-6. Switch to [Agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode)
+7. Switch to [Agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode)
 
 ## Test Generation
 

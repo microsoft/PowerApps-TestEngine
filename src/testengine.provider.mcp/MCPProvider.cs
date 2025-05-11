@@ -29,9 +29,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     /// It acts as a bridge between the Node.js MCP server and the .NET Test Engine, enabling interoperability.
     /// 
     /// Key Responsibilities:
-    /// - Hosts an HTTP server to handle requests from the Node.js MCP server.
+    /// - Hosts an Static server to handle requests from MCP server.
     /// - Validates Power Fx expressions using the Test Engine.
-    /// - Provides utility functions for hashing and validating the Node.js app.
+    /// - Providea ability to query plan designer and solution and provide recommendations
     /// 
     /// Dependencies:
     /// - RecalcEngine: Used for Power Fx validation.
@@ -40,17 +40,12 @@ namespace Microsoft.PowerApps.TestEngine.Providers
     /// </summary>
     /// <remarks>
     /// This class is designed to be used in a test environment where the MCP server is running locally. It is not intended for production use and should be modified as needed for specific test scenarios.
-    /// 
-    /// NOTES:
-    /// 2. The Node.js app path is hardcoded for a local Debug Build and should be updated based on the actual deployment location as non Deub Builds are considered.
-    /// 3. The HTTP server runs on port 8080 and should be configured to avoid port conflicts.  
-    /// 4. The Node.js app hash is validated to ensure the correct version is being used.
-    /// 5. The [https://www.nuget.org/packages/ModelContextProtocol](https://github.com/modelcontextprotocol/csharp-sdk) has not been directly used as Test Engine already has a console interface that would impact stdio usage patterns.
-    /// 6. In the future, consider using the [https://www.nuget.org/packages/ModelContextProtocol.AspNetCore](https://www.nuget.org/packages/ModelContextProtocol.AspNetCore) when pac cli is moved allow .Net 8.0 remove the need for .Net Standard 2.0 backward compatibility
     /// </remarks>
     [Export(typeof(ITestWebProvider))]
     public class MCPProvider : ITestWebProvider, IExtendedPowerFxProvider
     {
+        public static MCPProvider? Server { get; set; }
+
         public ITestInfraFunctions? TestInfraFunctions { get; set; }
 
         public ISingleTestInstanceState? SingleTestInstanceState { get; set; }
@@ -61,11 +56,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
         public ILogger? Logger { get; set; }
 
+        public string? Token { get; set; }
+
         private readonly ISerializer _yamlSerializer;
 
         public IFileSystem FileSystem { get; set; } = new FileSystem();
 
-        public Func<ILogger, MCPProxyInstaller> ProxyInstaller = (logger) => new MCPProxyInstaller(new FileSystem(), new ProcessRunner(), logger);
+        public Func<ILogger, MCPProxyInstaller> ProxyInstaller = (logger) => new MCPProxyInstaller(new ProcessRunner(), logger);
 
         public Func<SourceCodeService> SourceCodeServiceFactory => () =>
         {
@@ -76,17 +73,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             var engine = new RecalcEngine(config);
             return new SourceCodeService(engine);
         };
-
-
-        /// <summary>
-        /// Validate that the calculate NodeJs hash has the expected value 
-        /// </summary>
-        public Func<string, bool> NodeJsHashValidator = (string actual) =>
-        {
-            return actual == MCPProxyInstaller.ComputeEmbeddedResourceHash("proxy/app.js");
-        };
-
-        public Func<int, IHttpServer> GetHttpServer = (int port) => new HttpListenerServer($"http://localhost:{port}/");
 
         public Func<IOrganizationService?> GetOrganizationService = () => null;
 
@@ -228,7 +214,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             {
                 // To support webplayer version without ready function 
                 // return true for this without interrupting the test run
-                return true;
+                return Server != null;
             }
             catch (Exception ex)
             {
@@ -245,138 +231,66 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         }
 
         /// <summary>
-        /// Configures the Power Fx engine for the Test Engine and starts the HTTP server.
+        /// Configures the Power Fx engine for the Test Engine and starts the static server.
         /// </summary>
-        /// <param name="engine">The RecalcEngine instance used for Power Fx validation.</param>
-        /// <remarks>
-        /// - This method initializes the HTTP server to handle requests from the Node.js MCP server.
-        /// - It validates the hash of the Node.js app to ensure its integrity.
-        /// - Outputs configuration details for integrating the MCP server into Visual Studio settings.
-        /// </remarks>
         public void ConfigurePowerFxEngine(RecalcEngine engine)
         {
             this.Engine = engine;
 
-            // Start the HTTP server to handle requests from the Node.js MCP server.
-            StartHttpServer();
+            Server = this;
 
             if (Logger == null)
             {
                 Logger = SingleTestInstanceState.GetLogger();
             }
 
-            // Ensure the MCP proxy is installed.
-            ProxyInstaller(Logger).EnsureMCPProxyInstalled();
+            Console.WriteLine("Register the Test Engine MCP provider using the following");
 
-            // Get the path to the Node.js app (app.js) that installed
-            var nodeApp = Path.GetFullPath(Path.Combine(FileSystem.GetDefaultRootTestEngine(), "mcp", "app.js"));
+            var current = Path.GetDirectoryName(GetType().Assembly.Location);
 
-            // Compute the hash of the Node.js app to ensure it has not been tampered with.
-            var hash = ComputeFileHash(nodeApp);
+            var matches = Directory.GetFiles(current, "testengine.server.mcp*.nupkg");
 
-            // Validate the computed hash against the expected hash.
-            Debug.Assert(NodeJsHashValidator(hash), "Node app hash does not match expected value.");
+            if (matches.Length == 0)
+            {
+                Console.WriteLine("No Test Engine MCP Servers NuGet install packages found");
 
-            // Output configuration details for integrating the MCP server into Visual Studio settings.
-            Console.WriteLine("You can add the following to your Visual Studio settings to enable the MCP interface.");
-            Console.WriteLine(@"
-{{
-    ""mcp"": {{
-        ""inputs"": [],
-        ""servers"": {{
-            ""TestEngine"": {{
-                ""command"": ""node"",
-                ""args"": [
-                    ""{0}"",
-                    ""{1}""
-                ]
-            }}
-        }}
-    }},
-    ""chat.mcp.discovery.enabled"": true
-}}", nodeApp.Replace("\\", "/"), "8080");
+            } else {
+                Console.WriteLine("Install these Test Engine MCP servers");
+                foreach (var match in matches.OrderByDescending(m => m))
+                {
+                    var version = Path.GetFileNameWithoutExtension(match).Replace("testengine.server.mcp.", "");
+                    Console.WriteLine($"dotnet install testengine-server-mcp --add-source {current} -version {version}");
+                }
+            }
 
-            Console.WriteLine("Test Engine MCP Interface Ready. Press Enter to exit");
+            Console.WriteLine("Press enter to contiue");
             Console.ReadLine();
         }
 
         /// <summary>
-        /// Computes the SHA-256 hash of a file.
+        /// Handles incoming MCP requests to enable MCP server to communicate with the Test Engine.
         /// </summary>
-        /// <param name="filePath">The path to the file to hash.</param>
-        /// <returns>A string representing the SHA-256 hash of the file in uppercase hexadecimal format.</returns>
-        /// <remarks>
-        /// - Used to validate the integrity of the Node.js app.
-        /// - Throws exceptions if the file cannot be read.
-        /// </remarks>
-        public static string ComputeFileHash(string filePath)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                using (var stream = File.OpenRead(filePath))
-                {
-                    byte[] hashBytes = sha256.ComputeHash(stream);
-                    return BitConverter.ToString(hashBytes).Replace("-", "").ToUpperInvariant();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Starts an HTTP server on localhost to handle requests from the Node.js MCP server.
-        /// </summary>
-        /// <remarks>
-        /// - The server listens on port 8080.
-        /// - It handles POST requests to the `/validate` endpoint for Power Fx validation.
-        /// - Runs in a background task to avoid blocking the main thread.
-        /// </remarks>
-        private void StartHttpServer()
-        {
-            // Run the HTTP server in a background task to avoid blocking the main thread.
-            Task.Run(() =>
-            {
-                var listener = GetHttpServer(8080);
-                listener.OnRequestReceived += async (context) =>
-                {
-                    // Handle the request in a separate task to avoid blocking the server.
-                    await HandleRequest(new HttpContextWrapper(context));
-                    context.Response.Close();
-                };
-                listener.Start();
-            });
-        }
-
-        private int BUFFER_SIZE = 4096;
-
-        /// <summary>
-        /// Handles incoming HTTP requests to the MCPProvider's HTTP server.
-        /// </summary>
-        /// <param name="context">The HttpListenerContext representing the incoming request.</param>
+        /// <param name="context">The MCPRequest representing the incoming request.</param>
         /// <remarks>
         /// - Supports GET and POST requests for various endpoints.
         /// - Uses PlanDesignerService for plan-related operations.
         /// - Returns a 404 response for unsupported endpoints.
         /// - Logs errors and returns a 500 response for unexpected exceptions.
         /// </remarks>
-        public async Task HandleRequest(IHttpContext context)
+        public async Task<MCPResponse> HandleRequest(MCPRequest request)
         {
+            var response = new MCPResponse();
             try
             {
-                var request = context.Request;
-                var response = context.Response;
-
-                if ((request.HttpMethod == "GET" || request.HttpMethod == "POST") && request.Url.AbsolutePath.StartsWith("/solution/"))
+                if ((request.Method == "GET" || request.Method == "POST") && request.Endpoint.StartsWith("solution/"))
                 {
                     // Handle /solution/<id> endpoint
-                    var solutionId = request.Url.AbsolutePath.Split('/').Last();
+                    var solutionId = request.Endpoint.Split('/').Last();
 
                     string powerFx = GetPowerFxFromTestSettings();
-                    if (request.HttpMethod == "POST")
+                    if (request.Method == "POST")
                     {
-                        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
-                        {
-                            powerFx = await reader.ReadToEndAsync();
-                            Console.WriteLine($"Received Power Fx: {powerFx}");
-                        }
+                        powerFx = request.Body;
                     }
 
                     // Create a FileSystem instance and SourceCodeService
@@ -387,12 +301,9 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     var dictionaryResponse = sourceCodeService.ToDictionary();
                     response.StatusCode = 200;
                     response.ContentType = "application/x-yaml";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
-                    {
-                        await writer.WriteAsync(_yamlSerializer.Serialize(dictionaryResponse));
-                    }
+                    response.Body =_yamlSerializer.Serialize(dictionaryResponse);
                 }
-                else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/plans")
+                else if (request.Method == "GET" && request.Endpoint == "plans")
                 {
                     // Get a list of plans
                     var service = GetOrganizationService();
@@ -400,111 +311,81 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                     {
                         var domain = new Uri(TestState.GetDomain());
                         var api = new Uri("https://" + domain.Host);
-                        service = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
+
+                        // Run the token retrieval in a separate thread
+                        var token = await new AzureCliHelper().GetAccessTokenAsync(api);
+
+                        service = new ServiceClient(api, (url) => Task.FromResult(token));
                     }
 
                     var planDesignerService = new PlanDesignerService(service, SourceCodeServiceFactory());
                     var plans = planDesignerService.GetPlans();
                     response.StatusCode = 200;
                     response.ContentType = "application/x-yaml";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
-                    {
-                        await writer.WriteAsync(_yamlSerializer.Serialize(plans));
-                    }
+                    response.Body =_yamlSerializer.Serialize(plans);
                 }
-                else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.StartsWith("/plans/") && !request.Url.AbsolutePath.Contains("/artifacts") && !request.Url.AbsolutePath.Contains("/assets"))
+                else if (request.Method == "GET" && request.Endpoint.StartsWith("plans/"))
                 {
-                    // Get details for a specific plan
+                    // Get a specific plan
+                    var planId = request.Endpoint.Split('/').Last();
                     var service = GetOrganizationService();
                     if (service == null)
                     {
                         var domain = new Uri(TestState.GetDomain());
                         var api = new Uri("https://" + domain.Host);
-                        service = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
+
+                        // Run the token retrieval in a separate thread
+                        var token = await new AzureCliHelper().GetAccessTokenAsync(api);
+
+                        service = new ServiceClient(api, (url) => Task.FromResult(token));
                     }
 
                     var planDesignerService = new PlanDesignerService(service, SourceCodeServiceFactory());
-                    var planId = Guid.Parse(request.Url.AbsolutePath.Split('/').Last());
-
-                    var planDetails = planDesignerService.GetPlanDetails(planId, GetPowerFxFromTestSettings());
+                    var plan = planDesignerService.GetPlanDetails(new Guid(planId));
                     response.StatusCode = 200;
                     response.ContentType = "application/x-yaml";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
-                    {
-                        await writer.WriteAsync(_yamlSerializer.Serialize(planDetails));
-                    }
+                    response.Body =_yamlSerializer.Serialize(plan);
                 }
-                else if (request.HttpMethod == "GET" && request.Url.AbsolutePath.Contains("/artifacts"))
-                {
-                    // Get artifacts for a specific plan
-                    var service = GetOrganizationService();
-                    if (service == null)
-                    {
-                        var domain = new Uri(TestState.GetDomain());
-                        var api = new Uri("https://" + domain.Host);
-                        service = new ServiceClient(api, (url) => Task.FromResult(new AzureCliHelper().GetAccessToken(api)));
-                    }
-
-                    var planDesignerService = new PlanDesignerService(service, SourceCodeServiceFactory());
-                    var planId = Guid.Parse(request.Url.AbsolutePath.Split('/')[2]);
-                    var artifacts = planDesignerService.GetPlanArtifacts(planId);
-                    response.StatusCode = 200;
-                    response.ContentType = "application/x-yaml";
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
-                    {
-                        await writer.WriteAsync(_yamlSerializer.Serialize(artifacts));
-                    }
-                }
-                else if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/validate")
+                else if (request.Method == "POST" && request.Endpoint == "validate")
                 {
                     // Validate Power Fx expression
-                    using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                    var powerFx = request.Body;
+
+                    switch (request.ContentType)
                     {
-                        var powerFx = await reader.ReadToEndAsync();
-                        Console.WriteLine($"Received Power Fx: {powerFx}");
-
-                        switch (request.ContentType)
-                        {
-                            case "application/json":
-                                powerFx = JsonConvert.DeserializeObject<string>(powerFx);
-                                break;
-                            case "application/x-yaml":
-                                powerFx = new DeserializerBuilder()
-                                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                                    .Build()
-                                    .Deserialize<string>(powerFx);
-                                break;
-                        }
-
-                        var result = ValidatePowerFx(powerFx);
-
-                        response.StatusCode = 200;
-                        response.ContentType = "application/x-yaml";
-                        using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8, BUFFER_SIZE, true))
-                        {
-                            await writer.WriteAsync(_yamlSerializer.Serialize(result));
-                        }
+                        case "application/json":
+                            powerFx = JsonConvert.DeserializeObject<string>(powerFx);
+                            break;
+                        case "application/x-yaml":
+                            powerFx = new DeserializerBuilder()
+                                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                                .Build()
+                                .Deserialize<string>(powerFx);
+                            break;
                     }
+
+                    var result = ValidatePowerFx(powerFx);
+
+                    response.StatusCode = 200;
+                    response.ContentType = "application/x-yaml";
+                    response.Body =_yamlSerializer.Serialize(result);
                 }
                 else
                 {
                     // Return a 404 response for unsupported endpoints
                     response.StatusCode = 404;
-                    using (var writer = new StreamWriter(response.OutputStream, Encoding.UTF8))
-                    {
-                        await writer.WriteAsync(_yamlSerializer.Serialize(new { error = "Endpoint not found" }));
-                    }
+                    response.ContentType = "application/x-yaml";
+                    response.Body = _yamlSerializer.Serialize(new ValidationResult { IsValid = false, Errors = new List<string>() { "Endpoint not found" } });
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error handling request: {ex}");
-                context.Response.StatusCode = 500;
-                using (var writer = new StreamWriter(context.Response.OutputStream, Encoding.UTF8))
-                {
-                    await writer.WriteAsync(_yamlSerializer.Serialize(new { error = "Internal server error" }));
-                }
+                response.StatusCode = 200;
+                response.ContentType = "application/x-yaml";
+                response.Body = _yamlSerializer.Serialize(new ValidationResult { IsValid = false, Errors = new List<string>() { "Unable to process request, check if valid", ex.Message } });
             }
+
+            return response;
         }
 
         private string GetPowerFxFromTestSettings()
@@ -539,10 +420,17 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             if (Engine == null)
             {
-                return _yamlSerializer.Serialize(new { valid = false, errors = new[] { "Engine is not configured" } });
+                Engine = new RecalcEngine(new PowerFxConfig());
+                Engine.Config.EnableJsonFunctions();
+                Engine.Config.EnableSetFunction();
             }
 
             var testSettings = TestState.GetTestSettings();
+
+            if (testSettings == null)
+            {
+                testSettings = new TestSettings();
+            }
 
             if (this.Logger == null)
             {
@@ -552,7 +440,26 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             var locale = PowerFxEngine.GetLocaleFromTestSettings(testSettings.Locale, this.Logger);
 
             var parserOptions = new ParserOptions { AllowsSideEffects = true, Culture = locale };
-            var checkResult = Engine.Check(string.IsNullOrEmpty(powerFx) ? string.Empty : powerFx, options: parserOptions, Engine.Config.SymbolTable);
+
+            CheckResult checkResult = null;
+            if (testSettings.PowerFxTestTypes.Count > 0 || testSettings.TestFunctions.Count > 0)
+            {
+                var config = new PowerFxConfig();
+                config.EnableJsonFunctions();
+                config.EnableSetFunction();
+
+                PowerFxEngine.ConditionallyRegisterTestTypes(testSettings, config);
+
+                var engine = new RecalcEngine(config);
+
+                PowerFxEngine.ConditionallyRegisterTestFunctions(testSettings, config, Logger, engine);
+
+                checkResult = engine.Check(string.IsNullOrEmpty(powerFx) ? string.Empty : powerFx, options: parserOptions, engine.Config.SymbolTable);
+            } 
+            else
+            {
+                checkResult = Engine.Check(string.IsNullOrEmpty(powerFx) ? string.Empty : powerFx, options: parserOptions, Engine.Config.SymbolTable);
+            }
 
             var validationResult = new ValidationResult
             {

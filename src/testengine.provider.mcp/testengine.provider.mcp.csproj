@@ -31,16 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="proxy\app.js" />
-    <None Remove="proxy\package.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="proxy\app.js" />
-    <EmbeddedResource Include="proxy\package.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
   </ItemGroup>
 </Project>

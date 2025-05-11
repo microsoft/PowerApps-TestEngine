@@ -456,7 +456,7 @@ namespace Microsoft.PowerApps.TestEngine.System
                     if (
                         !(
                             ext.Equals(".yml", StringComparison.OrdinalIgnoreCase)
-                            || 
+                            ||
                             ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase)
                             ||
                             ext.Equals(".json", StringComparison.OrdinalIgnoreCase)

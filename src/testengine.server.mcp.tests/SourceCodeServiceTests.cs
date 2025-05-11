@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Moq;
-using Microsoft.PowerApps.TestEngine.System;
+using testengine.server.mcp;
 
-namespace Microsoft.PowerApps.TestEngine.Providers.Tests
+namespace testengine.server.mcp.tests
 {
     public class SourceCodeServiceTests
     {
@@ -41,7 +42,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.Tests
             _mockEnvironmentVariable.Setup(m => m.GetVariable(SourceCodeService.ENVIRONMENT_SOLUTION_PATH)).Returns(validPath);
             _mockFileSystem.Setup(fs => fs.Exists(validPath)).Returns(true);
             _mockFileSystem.Setup(fs => fs.GetFiles(validPath)).Returns(files);
-            
+
             // Act
             _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), string.Empty);
 
@@ -140,7 +141,7 @@ CanvasApp:
 
             // Verify CanvasApp properties
             Assert.Equal("craff_flightrequestapp_c1d85", canvasAppRecord.GetField("Name").ToObject());
-            
+
             // Verify facts
             var facts = canvasAppRecord.GetField("Facts") as TableValue;
             Assert.NotNull(facts);

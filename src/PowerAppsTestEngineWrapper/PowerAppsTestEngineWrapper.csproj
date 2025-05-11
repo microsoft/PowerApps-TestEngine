@@ -38,8 +38,8 @@
     <PackageReference Include="YamlDotNet" Version="16.1.3" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.5.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.13.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
@@ -64,7 +64,6 @@
     <ProjectReference Include="..\testengine.module.visualcompare\testengine.module.visualcompare.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.canvas\testengine.provider.canvas.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.mda\testengine.provider.mda.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\testengine.provider.mcp\testengine.provider.mcp.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerfx\testengine.provider.powerfx.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.user.storagestate\testengine.user.storagestate.csproj" PrivateAssets="all" />
