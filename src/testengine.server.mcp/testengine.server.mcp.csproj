@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>testengine.server.mcp</PackageId>
-    <Version>0.1.9-preview</Version>
+    <Version>0.2.0-preview</Version>
     <Authors>Microsoft Corporation</Authors>
     <Owners>Microsoft Corporation</Owners>
     <Description>A .NET tool for the Test Engine MCP server.</Description>

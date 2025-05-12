@@ -282,20 +282,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             var response = new MCPResponse();
             try
             {
-                if ((request.Method == "GET" || request.Method == "POST") && request.Endpoint.StartsWith("solution/"))
+                if (request.Method == "POST") && request.Endpoint.StartsWith("workspace"))
                 {
-                    // Handle /solution/<id> endpoint
-                    var solutionId = request.Endpoint.Split('/').Last();
-
-                    string powerFx = GetPowerFxFromTestSettings();
-                    if (request.Method == "POST")
-                    {
-                        powerFx = request.Body;
-                    }
+                    var workspaceRequest = JsonConvert.DeserializeObject<WorkspaceRequest>(request.Body);
 
                     // Create a FileSystem instance and SourceCodeService
                     var sourceCodeService = SourceCodeServiceFactory();
-                    sourceCodeService.LoadSolutionFromSourceControl(solutionId, powerFx);
+                    sourceCodeService.LoadSolutionFromSourceControl(workspaceRequest);
 
                     // Convert to dictionary and serialize the response
                     var dictionaryResponse = sourceCodeService.ToDictionary();

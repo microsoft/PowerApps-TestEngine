@@ -42,7 +42,7 @@ namespace testengine.server.mcp.tests
             _mockFileSystem.Setup(fs => fs.GetFiles(validPath)).Returns(files);
 
             // Act
-            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), validPath, string.Empty);
+            _sourceCodeService.LoadSolutionFromSourceControl(new WorkspaceRequest() { Location = validPath });
 
             // Assert
             _mockFileSystem.Verify(fs => fs.GetFiles(validPath), Times.Once);
@@ -67,7 +67,7 @@ namespace testengine.server.mcp.tests
             _mockFileSystem.Setup(fs => fs.ReadAllText(FLOW)).Returns(string.Empty);
 
             // Act
-            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), validPath, string.Empty);
+            _sourceCodeService.LoadSolutionFromSourceControl(new WorkspaceRequest() { Location = validPath });
 
             // Assert
             var canvasApps = _recalcEngine.GetValue("CanvasApps") as TableValue;
@@ -93,7 +93,7 @@ namespace testengine.server.mcp.tests
             _mockFileSystem.Setup(fs => fs.GetFiles(validPath)).Returns(files);
 
             // Act & Assert
-            Assert.Throws<NotSupportedException>(() => _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), validPath, string.Empty));
+            Assert.Throws<NotSupportedException>(() => _sourceCodeService.LoadSolutionFromSourceControl(new WorkspaceRequest() { Location = validPath }));
         }
 
         [Fact]
@@ -124,7 +124,7 @@ CanvasApp:
             _mockFileSystem.Setup(fs => fs.ReadAllText(CANVAS_APP)).Returns(canvasAppYaml);
 
             // Act
-            _sourceCodeService.LoadSolutionFromSourceControl(Guid.NewGuid().ToString(), validPath, string.Empty);
+            _sourceCodeService.LoadSolutionFromSourceControl(new WorkspaceRequest() { Location = validPath });
 
             // Assert
             var canvasApps = _recalcEngine.GetValue("CanvasApps") as TableValue;

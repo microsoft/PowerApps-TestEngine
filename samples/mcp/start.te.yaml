@@ -15,9 +15,11 @@ testSettings:
   recordVideo: true
   extensionModules:
     enable: true
-    scans:
-      canvas: canvasapp.scan.yaml
-      entity: entity.scan.yaml
+  scans:
+    - name: Canvas App
+      location: canvasapp.scan.yaml
+    - name: Dataverse entity
+      location: entity.scan.yaml
   browserConfigurations:
     - browser: Chromium    
 

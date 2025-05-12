@@ -30,12 +30,19 @@ public class SourceCodeService
     /// <summary>
     /// Loads the solution source code from the repository path defined in the environment variable.
     /// </summary>
-    /// <param name="solutionId">The ID of the solution to load.</param>
-    /// <param name="workspace">The path of the solution to scan</param>
-    /// <param name="powerFx">The optional post processing Power Fx to run</param>
-    /// <returns>A dictionary representation of the solution or a recommendation if source control integration is not enabled.</returns>
-    public virtual object LoadSolutionFromSourceControl(string solutionId, string workspace, string powerFx = "")
+    /// <param name="workspaceRequest">The request to apply to workspace to get recommendations and facts to assist the Agent</param>
+    /// <returns>A dictionary representation of the workspace</returns>
+    public virtual object LoadSolutionFromSourceControl(WorkspaceRequest workspaceRequest)
     {
+        string workspace = workspaceRequest.Location;
+        string powerFx = workspaceRequest.PowerFx;
+
+        // Check if the workspace path is valid
+        if (string.IsNullOrEmpty(workspace))
+        {
+            return CreateRecommendation("Open a workspace to load the solution.");
+        }
+
         // Construct the solution path
 
         if (_fileSystem == null)

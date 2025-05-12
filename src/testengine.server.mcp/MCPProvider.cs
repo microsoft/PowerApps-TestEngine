@@ -85,10 +85,25 @@ public class MCPProvider
         var response = new MCPResponse();
         try
         {
-            if ((request.Method == "GET" || request.Method == "POST") && request.Endpoint.StartsWith("solution/"))
+            if (request.Method == "GET" && request.Endpoint.StartsWith("scans"))
             {
-                // Handle /solution/<id> endpoint
-                var solutionId = request.Endpoint.Split('/').Last();
+                var scans = new List<string>();
+
+                foreach (var scan in MCPTestSettings.Scans)
+                {
+                    scans.Add(scan.Name);
+                }
+
+                return new MCPResponse
+                {
+                    StatusCode = 200,
+                    ContentType = "application/x-yaml",
+                    Body = _yamlSerializer.Serialize(scans)
+                };
+            }
+            else if (request.Method == "POST" && request.Endpoint.StartsWith("workspace"))
+            {
+                var workspaceRequest = JsonConvert.DeserializeObject<WorkspaceRequest>(request.Body);
 
                 string powerFx = GetPowerFxFromTestSettings();
                 if (request.Method == "POST")
@@ -98,7 +113,7 @@ public class MCPProvider
 
                 // Create a FileSystem instance and SourceCodeService
                 var sourceCodeService = SourceCodeServiceFactory();
-                sourceCodeService.LoadSolutionFromSourceControl(solutionId, powerFx);
+                sourceCodeService.LoadSolutionFromSourceControl(workspaceRequest);
 
                 // Convert to dictionary and serialize the response
                 var dictionaryResponse = sourceCodeService.ToDictionary();
@@ -108,6 +123,13 @@ public class MCPProvider
             }
             else if (request.Method == "GET" && request.Endpoint == "plans")
             {
+                if (request.Target == null)
+                {
+                    response.StatusCode = 200;
+                    response.ContentType = "application/x-yaml";
+                    response.Body = _yamlSerializer.Serialize(new Recommendation {  Priority = "High", Suggestion =  "No Dataverse configured. Use the workspace to query the plan" });
+                }
+
                 // Get a list of plans
                 var service = GetOrganizationService();
                 if (service == null)
@@ -129,10 +151,16 @@ public class MCPProvider
             }
             else if (request.Method == "POST" && request.Endpoint.StartsWith("plans/"))
             {
+                if (string.IsNullOrEmpty(request.Target)) {
+                    response.StatusCode = 200;
+                    response.ContentType = "application/x-yaml";
+                    response.Body = _yamlSerializer.Serialize(new Recommendation { Priority = "High", Suggestion = "No Dataverse configured. Use the workspace to query the plan" });
+                }
+
                 // Get a specific plan
                 var planId = request.Endpoint.Split('/').Last();
                 var service = GetOrganizationService();
-                if (service == null)
+                if (service == null && !string.IsNullOrEmpty(request.Target))
                 {
                     var domain = new Uri(request.Target);
                     var api = new Uri("https://" + domain.Host);

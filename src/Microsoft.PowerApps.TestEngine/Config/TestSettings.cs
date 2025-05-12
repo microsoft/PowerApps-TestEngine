@@ -67,5 +67,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Define settings for Test Engine Extensions
         /// </summary>
         public TestSettingExtensions ExtensionModules { get; set; } = new TestSettingExtensions();
+
+        /// <summary>
+        /// Options scan definitions that allow visitor pattern to be related to the test
+        /// </summary>
+        public List<ScanReference> Scans { get; set; } = new List<ScanReference>();
     }
 }

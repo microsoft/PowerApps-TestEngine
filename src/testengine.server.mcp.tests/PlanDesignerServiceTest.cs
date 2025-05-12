@@ -128,7 +128,7 @@ namespace testengine.server.mcp.tests
                 .Setup(service => service.Retrieve("msdyn_planartifact", Guid.Empty, It.IsAny<ColumnSet>()))
                 .Returns(new Entity());
 
-            _mockSourceCodeService.Setup(m => m.LoadSolutionFromSourceControl(solutionId.ToString(), "valid/path", string.Empty)).Returns(null);
+            _mockSourceCodeService.Setup(m => m.LoadSolutionFromSourceControl(new WorkspaceRequest() { Location = "valid/path" })).Returns(null);
 
             // Act
             var planDetails = _planDesignerService.GetPlanDetails(planId, "valid/path");

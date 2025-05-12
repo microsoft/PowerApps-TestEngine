@@ -3,7 +3,6 @@
 
 using System.ComponentModel;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,8 +10,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
-using ModelContextProtocol.Protocol.Messages;
-using ModelContextProtocol.Protocol.Types;
 using ModelContextProtocol.Server;
 
 // The Test Engein MCP Server is in preview and tools are likely to change.
@@ -81,6 +78,37 @@ public static class TestEngineTools
     {
         var planDetails = await MakeRequest($"plans/{planId}", HttpMethod.Post, data: workspacePath);
         return JsonSerializer.Serialize(planDetails);
+    }
+
+    /// <summary>
+    /// Gets details for a specific plan.
+    /// </summary>
+    /// <param name="planId">The ID of the plan.</param>
+    /// <returns>A JSON string containing the plan details.</returns>
+    [McpServerTool, Description("Gets details for available scan types.")]
+    public static async Task<string> GetScanTypes()
+    {
+        var availableScans = await MakeRequest($"scans", HttpMethod.Get);
+        return JsonSerializer.Serialize(availableScans);
+    }
+
+    /// <summary>
+    /// Gets details for a specific plan.
+    /// </summary>
+    /// <param name="workspacePath">The open workspace to scan</param>
+    /// <param name="scans">Optional list of scans to apply</param>
+    /// <param name="scans">Optional post processing Power Fx statements to apply</param>
+    /// <returns>A JSON string containing the plan details.</returns>
+    [McpServerTool, Description("Gets details for workspace with optional scans and post processing Power Fx steps")]
+    public static async Task<string> Scan(string workspacePath, string[] scans, string powerFx)
+    {
+        var scanResults = await MakeRequest($"workspace", HttpMethod.Post, data: JsonSerializer.Serialize(new WorkspaceRequest
+        {
+            Location = workspacePath,
+            Scans = scans,
+            PowerFx = powerFx
+        }));
+        return JsonSerializer.Serialize(scanResults);
     }
 
     /// <summary>
