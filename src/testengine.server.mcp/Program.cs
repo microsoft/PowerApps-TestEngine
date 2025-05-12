@@ -65,41 +65,10 @@ public static class TestEngineTools
     /// </summary>
     /// <returns>A JSON string containing the list of plans.</returns>
     [McpServerTool, Description("Gets the list of Plan Designer plans.")]
-    public static async Task<string> GetPlanList(IMcpServer server,
-        RequestContext<CallToolRequestParams> requestParams,
-        int duration = 10,
-        int steps = 5)
+    public static async Task<string> GetPlanList()
     {
-        var progressToken = requestParams?.Params?.Meta?.ProgressToken;
-
-        // Run the MakeRequest call in a background task
-        var backgroundTask = Task.Run(async () =>
-        {
-            var plan = await MakeRequest("plans", HttpMethod.Get, true);
-            return JsonSerializer.Serialize(plan);
-        });
-
-        // Send progress updates every second while the task is running
-        while (!backgroundTask.IsCompleted)
-        {
-            if (progressToken is not null && server is not null)
-            {
-                await server.SendMessageAsync(new JsonRpcNotification
-                {
-                    Method = "notifications/progress",
-                    Params = new JsonObject
-                    {
-                        ["progressToken"] = progressToken.ToString(),
-                        ["status"] = "Fetching plans..."
-                    }
-                });
-            }
-
-            await Task.Delay(1000); // Wait for 1 second before sending the next progress update
-        }
-
-        // Wait for the background task to complete and return its result
-        return await backgroundTask;
+        var plan = await MakeRequest("plans", HttpMethod.Get, true);
+        return JsonSerializer.Serialize(plan);
     }
 
     /// <summary>
