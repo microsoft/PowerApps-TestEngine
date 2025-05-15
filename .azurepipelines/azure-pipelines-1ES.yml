@@ -19,12 +19,6 @@ extends:
           projectName: $(Pipeline.Project)
           areaPath: $(Pipeline.AreaPath)
           notificationAliases: $(Pipeline.NotificationAliases)
-      binskim:
-        break: true
-      policheck:
-        enabled: true
-      suppression:
-        suppressionFile: $(Build.SourcesDirectory)\.config\guardian\.gdnsuppress
       codeql:
         tsaEnabled: true
         ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch']) }}:
@@ -46,6 +40,12 @@ extends:
               BuildConfiguration: 'Release'
         templateContext:
           sdl:
+            binskim:
+              break: true
+            policheck:
+              enabled: true
+            suppression:
+              suppressionFile: $(Build.SourcesDirectory)\.config\guardian\.gdnsuppress
             ${{ if eq(variables['BuildConfiguration'], 'Release') }}:
               codeSignValidation:
                 additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
