@@ -23,6 +23,8 @@ extends:
         break: true
       policheck:
         enabled: true
+      suppression:
+        suppressionFile: $(Build.SourcesDirectory)\.config\guardian\.gdnsuppress
       codeql:
         tsaEnabled: true
         ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch']) }}:
