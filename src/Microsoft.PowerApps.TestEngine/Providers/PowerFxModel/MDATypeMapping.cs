@@ -53,7 +53,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             List<JSPropertyModel> subTypes = new List<JSPropertyModel>();
 
             // Extract the names of the types out of the string
-            var regex = new Regex(@"(?<property>\w+):(?<type>!\[[^\]]*\]|\w+)");            
+            var regex = new Regex(@"(?<property>\w+):(?<type>!\[[^\]]*\]|\w+)");
             var matches = regex.Matches(typeString);
             foreach (Match match in matches)
             {
