@@ -116,9 +116,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
                 Assert.Null(labelRecordValue.GetItemPath().Index);
                 Assert.Null(labelRecordValue.GetItemPath().PropertyName);
                 Assert.NotNull(labelRecordValue.GetItemPath().ParentControl);
-                Assert.Equal(galleryName, labelRecordValue.GetItemPath().ParentControl.ParentControl.ControlName);
-                Assert.Equal(i, labelRecordValue.GetItemPath().ParentControl.ParentControl.Index);
-                Assert.Equal(allItemsName, labelRecordValue.GetItemPath().ParentControl.ParentControl.PropertyName);
+                Assert.Equal(galleryName, labelRecordValue.GetItemPath().ParentControl.ControlName);
+                Assert.Equal(i, labelRecordValue.GetItemPath().ParentControl.Index);
+                Assert.Equal(allItemsName, labelRecordValue.GetItemPath().ParentControl.PropertyName);
 
                 // Index(Gallery1.AllItems, i).Label1.Text
                 Assert.Equal(labelText, (labelRecordValue.GetField("Text") as StringValue).Value);
