@@ -42,23 +42,17 @@ extends:
           matrix:
             Debug:
               BuildConfiguration: 'Debug'
+              CodeSignVal: false
             Release:
               BuildConfiguration: 'Release'
+              CodeSignVal: true
         templateContext:
           sdl:
-            ${{ if eq(variables['BuildConfiguration'], 'Release') }}:
-              codeSignValidation:
-                additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
-                enabled: true
-                break: true
+            codeSignValidation:
+              additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
+              enabled: $(CodeSignVal)
+              break: true
                 
-            ${{ if ne(variables['BuildConfiguration'], 'Release') }}:
-              codeSignValidation:
-                additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
-                enabled: false
-                break: true
-            
-
           outputs:
           - output: pipelineArtifact
             condition: succeeded()
