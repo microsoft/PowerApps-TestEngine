@@ -50,7 +50,7 @@ extends:
           sdl:
             codeSignValidation:
               additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
-              enabled: $(CodeSignVal)
+              enabled: ${{ eq(variables['CodeSignVal'], 'true') }}
               break: true
                 
           outputs:
