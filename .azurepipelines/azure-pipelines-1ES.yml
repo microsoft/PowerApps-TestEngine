@@ -40,17 +40,13 @@ extends:
         displayName: 'Build PowerAppsTestEngine Solution'
         strategy:
           matrix:
-            Debug:
-              BuildConfiguration: 'Debug'
-              CodeSignVal: false
             Release:
               BuildConfiguration: 'Release'
-              CodeSignVal: true
         templateContext:
           sdl:
             codeSignValidation:
               additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
-              enabled: ${{ eq(variables['CodeSignVal'], 'true') }}
+              enabled: true
               break: true
                 
           outputs:
