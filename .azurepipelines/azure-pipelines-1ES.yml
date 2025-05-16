@@ -46,10 +46,11 @@ extends:
               BuildConfiguration: 'Release'
         templateContext:
           sdl:
-            codeSignValidation:
-              additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
-              enabled: true
-              break: true
+            ${{ if eq(variables['BuildConfiguration'], 'Release') }}:
+              codeSignValidation:
+                additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
+                enabled: true
+                break: true
             
 
           outputs:
@@ -80,6 +81,7 @@ extends:
             failTaskOnFailedTests: true
         - task: EsrpCodeSigning@5
           displayName: 'ESRP sign'
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
           inputs:
             ConnectedServiceName: $(EsrpConServName)
             UseMSIAuthentication: true
@@ -177,6 +179,7 @@ extends:
                   "ToolVersion": "1.0"
                 }
               ]
+          condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
         - task: PublishSymbols@2
           displayName: 'Publish symbols'
           condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'), eq(variables['UpdateVer'], 'true'))
