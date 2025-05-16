@@ -51,6 +51,12 @@ extends:
                 additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
                 enabled: true
                 break: true
+                
+            ${{ if ne(variables['BuildConfiguration'], 'Release') }}:
+              codeSignValidation:
+                additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
+                enabled: false
+                break: true
             
 
           outputs:
