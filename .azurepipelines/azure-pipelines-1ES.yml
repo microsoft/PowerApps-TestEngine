@@ -45,7 +45,7 @@ extends:
         templateContext:
           sdl:
             codeSignValidation:
-              additionalTargetsGlobPattern: -|**\.playwright\**;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**
+              additionalTargetsGlobPattern: -|**\PowerAppsTestEngineWrapper\.playwright\**\*.js;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**\*.js
               enabled: true
               break: true
                 
