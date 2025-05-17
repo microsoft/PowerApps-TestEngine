@@ -23,6 +23,8 @@ extends:
         break: true
       policheck:
         enabled: true
+      suppression:
+        suppressionFile: $(Build.SourcesDirectory)\.config\guardian\.gdnsuppress
       codeql:
         tsaEnabled: true
         ${{ if eq(variables['Build.SourceBranch'], variables['AllowedBranch']) }}:
@@ -38,25 +40,15 @@ extends:
         displayName: 'Build PowerAppsTestEngine Solution'
         strategy:
           matrix:
-            Debug:
-              BuildConfiguration: 'Debug'
             Release:
               BuildConfiguration: 'Release'
         templateContext:
           sdl:
-            ${{ if eq(variables['BuildConfiguration'], 'Release') }}:
-              codeSignValidation:
-                additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
-                enabled: true
-                break: true
+            codeSignValidation:
+              additionalTargetsGlobPattern: -|**\PowerAppsTestEngineWrapper\.playwright\**\*.js;-|**\PowerAppsTestEngineWrapper\.playwright\**\*.exe;-|**\PowerAppsTestEngineWrapper\.playwright\**\*.ps1;-|**\PowerAppsTestEngineWrapper\playwright.ps1;-|**\PowerAppsTestEngineWrapper\JS\**\*.js
+              enabled: true
+              break: true
                 
-            ${{ if ne(variables['BuildConfiguration'], 'Release') }}:
-              codeSignValidation:
-                additionalTargetsGlobPattern: -|**\.playwright\**;-|**PowerAppsTestEngineWrapper\playwright.ps1;-|**PowerAppsTestEngineWrapper\JS\**
-                enabled: false
-                break: true
-            
-
           outputs:
           - output: pipelineArtifact
             condition: succeeded()
