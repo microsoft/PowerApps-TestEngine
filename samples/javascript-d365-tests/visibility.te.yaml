@@ -1,0 +1,64 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Visibility Tests
+  testSuiteDescription: Tests for Dynamics 365 visibility functionality using PowerFx format
+  persona: User1
+  appLogicalName: na
+
+  testCases: 
+    - testCaseName: Visibility_CustomerFieldsAndSectionsForCustomerType
+      testCaseDescription: Tests that customer fields and sections are shown for customer account type
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"visibility.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('accounttype').setValue(1)",
+            "updateAccountTypeVisibility()",
+            "Xrm.Page.getControl('customerid').getVisible() && Xrm.Page.ui.sections.get('customer_section').getVisible()"
+          ]), Expected: "true" });
+    - testCaseName: Visibility_VendorFieldsAndSectionsForVendorType
+      testCaseDescription: Tests that vendor fields and sections are shown for vendor account type
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"visibility.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('accounttype').setValue(2)",
+            "updateAccountTypeVisibility()",
+            "Xrm.Page.getControl('vendorid').getVisible() && Xrm.Page.ui.sections.get('vendor_section').getVisible()"
+          ]), Expected: "true" });
+    - testCaseName: Visibility_HideAllSectionsForDefaultType
+      testCaseDescription: Tests that all special sections are hidden for default account type
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"visibility.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('accounttype').setValue(0)",
+            "updateAccountTypeVisibility()",
+            "!Xrm.Page.getControl('customerid').getVisible() && !Xrm.Page.ui.sections.get('customer_section').getVisible() && !Xrm.Page.getControl('vendorid').getVisible() && !Xrm.Page.ui.sections.get('vendor_section').getVisible()"
+          ]), Expected: "true" });
+    - testCaseName: Visibility_FinancialTabForFinancialIndustry
+      testCaseDescription: Tests that financial tab is shown for financial industry
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"visibility.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('industrycode').setValue(1)",
+            "updateIndustryBasedVisibility()",
+            "Xrm.Page.ui.tabs.get('financial').getVisible() && Xrm.Page.ui.sections.get('compliance').getVisible()"
+          ]), Expected: "true" });
+    - testCaseName: Visibility_HideFinancialTabForNonFinancialIndustry
+      testCaseDescription: Tests that financial tab is hidden for non-financial industry
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"visibility.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('industrycode').setValue(2)",
+            "updateIndustryBasedVisibility()",
+            "!Xrm.Page.ui.tabs.get('financial').getVisible() && !Xrm.Page.ui.sections.get('compliance').getVisible()"
+          ]), Expected: "true" });
+    - testCaseName: Visibility_IndividualControlVisibility
+      testCaseDescription: Tests that individual control visibility function works
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"visibility.js", Setup:"mockXrm.js", Run: Join([
+            "showHideControl('customcontrol', true)",
+            "Xrm.Page.getControl('customcontrol').getVisible()"
+          ]), Expected: "true" });
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
