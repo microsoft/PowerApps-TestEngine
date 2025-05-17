@@ -1,3 +1,4 @@
+# yaml-embedded-languages: powerfx
 testSuite:
   testSuiteName: MCP Server
   testSuiteDescription: Start MCP Server with defined test settings.
@@ -11,7 +12,12 @@ testSuite:
         = Set(CanvasApps, ForAll(CanvasApps, Patch(ThisRecord, {IncludeInModel: true})))
 
 testSettings:
-  filePath: testSettings.yaml
+  testSettingsFile: modules/testSettings.modular.yaml
+  scans:
+    - name: Canvas App (Modular)
+      location: modules/canvasapp.modular.scan.yaml
+    - name: Dataverse entity
+      location: entity.scan.yaml
 
 environmentVariables:
   users:

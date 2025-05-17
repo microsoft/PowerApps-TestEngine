@@ -1,0 +1,105 @@
+# yaml-embedded-languages: powerfx
+# State Management Functions
+testFunctions:
+ - description: Process control properties for insights and facts
+   code: |
+    ProcessControl(control: Record): UIControl = 
+      With(
+        {
+          Name: control.Name, 
+          ControlType: control.Type ?? "Unknown", 
+          Parent: control.Parent ?? "",
+          Pattern: ""
+        } : UIControl,
+        Block(
+          // Use PowerFx UDF to identify UI pattern
+          Set(
+            Self,
+            Patch(
+              Self, 
+              {Pattern: IdentifyUIPattern(Self)}
+            )
+          ),
+          // Return the enriched control
+          Self
+        )
+      )
+
+ - description: Save control insights and add facts with standardized format
+   code: |
+    SaveControlInsight(control: UIControl, path: Text): Void = 
+      Block(
+        // Save the enriched control info
+        SaveInsight({
+          Category: "Controls", 
+          Key: control.Name, 
+          Value: control,
+          AppPath: path
+        }),
+        
+        // Add key info to facts
+        AddFact({
+          Type: "UIControl", 
+          ControlType: control.ControlType,
+          Name: control.Name,
+          Pattern: control.Pattern
+        })
+      )
+
+ - description: Track navigation pattern and save insight
+   code: |
+    TrackNavigation(formulaInfo: Record, formula: Text, controlName: Text, parentName: Text, path: Text): Void = 
+      If(
+        formulaInfo.NavigationType = "ScreenNavigation",
+        SaveInsight({
+          Category: "Navigation", 
+          Key: Concatenate(controlName, "_Navigation"), 
+          Value: {
+            Source: parentName,
+            Control: controlName,
+            Target: Replace(formula, ".*Navigate\\s*\\(\\s*[\"']([^\"']+)[\"'].*", "$1"),
+            Type: "ScreenNavigation"
+          },
+          AppPath: path
+        })
+      )
+
+ - description: Track data operation and save insight
+   code: |
+    TrackDataOperation(formulaInfo: Record, formula: Text, controlName: Text, parentName: Text, path: Text): Void = 
+      If(
+        formulaInfo.IsDataOperation,
+        SaveInsight({
+          Category: "DataOperations", 
+          Key: Concatenate(controlName, "_", formulaInfo.DataOperation), 
+          Value: {
+            Control: controlName,
+            Screen: parentName,
+            Type: formulaInfo.DataOperation,
+            Formula: formula
+          },
+          AppPath: path
+        })
+      )
+
+ - description: Saves insights to state files to avoid token limitations
+   code: |
+    SaveInsight(insight: TestInsight): Boolean = 
+      With(
+        insight,
+        If(
+          Not(IsBlank(Category)) && Not(IsBlank(Key)) && Not(IsBlank(AppPath)),
+          true,  // In real implementation, this would save to a file
+          false
+        )
+      )
+
+ - description: Generates UI map for navigation testing by consolidating insights
+   code: |
+    GenerateUIMap(appPath: Record): Boolean = 
+      true  // In real implementation, this would generate the UI map file
+
+ - description: Flushes all insights to disk at the end of scanning
+   code: |
+    FlushInsights(appPath: Record): Boolean = 
+      true  // In real implementation, this would flush all cached insights

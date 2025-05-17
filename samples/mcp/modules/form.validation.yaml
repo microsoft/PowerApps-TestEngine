@@ -1,0 +1,66 @@
+# yaml-embedded-languages: powerfx
+# Form Validation Functions
+testFunctions:
+ - description: Identifies form submission patterns
+   code: |
+    DetectFormPattern(formName: Text, properties: Table): Record = 
+      With(
+        {
+          Type: First(
+            {
+              // Determine form type from properties or name
+              FormType: If(
+                CountIf(properties, Name = "Mode" && Contains(Value, "new")) > 0,
+                "Create",
+                If(
+                  CountIf(properties, Name = "Mode" && Contains(Value, "edit")) > 0,
+                  "Edit",
+                  If(
+                    CountIf(properties, Name = "Mode" && Contains(Value, "view")) > 0,
+                    "View",
+                    If(
+                      Or(
+                        Contains(formName, "new"),
+                        Contains(formName, "create")
+                      ),
+                      "Create",
+                      If(
+                        Or(
+                          Contains(formName, "edit"),
+                          Contains(formName, "update")
+                        ),
+                        "Edit",
+                        If(
+                          Or(
+                            Contains(formName, "view"),
+                            Contains(formName, "display")
+                          ),
+                          "View",
+                          "Unknown"
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            }
+          ).FormType,
+          HasValidation: CountIf(properties, Or(Name = "Valid", Contains(Name, "Validation"))) > 0,
+          HasSubmission: CountIf(properties, Or(Name = "OnSuccess", Name = "OnSubmit")) > 0
+        },
+        {
+          FormName: formName,
+          FormType: Type,
+          HasValidation: HasValidation,
+          HasSubmission: HasSubmission,
+          TestPriority: If(
+            And(HasValidation, HasSubmission),
+            "High",
+            If(
+              Or(HasValidation, HasSubmission),
+              "Medium",
+              "Low"
+            )
+          )
+        }
+      )

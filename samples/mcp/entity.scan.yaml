@@ -1,27 +1,32 @@
 
-scan:
-  name: Dataverse Entity Scan
-  description: Scan for Dataverse Entity Definitions to give context to Model Context Protocol (MCP) genration of tests
-  version: 1.0.0
-  onFile:
-    - When: ThisNode.Name = "entity.yaml"
-      Then: |
-        AddContext(ThisNode, "Dataverse Entity Definition");
-        AddFact(ThisNode, GenerateTSQLCreate(ThisNode));
-        AddFact(ThisNode, GenerateMDAViews(ThisNode));
-        AddFact(ThisNode, GenerateMDADetails(ThisNode));
-
-  onProperty:
-    - When: IsMatch(ThisNode.Name, ".*Name")
-      Then: AddFact(ThisNode)
-    - When: IsMatch(ThisNode.Name, ".*Description")
-      Then: AddFact(ThisNode)
-    - When: IsMatch(ThisNode.Name, ".*DisplayName")
-      Then: AddFact(ThisNode)
-    - When: IsMatch(ThisNode.Name, ".*SchemaName")
-      Then: AddFact(ThisNode)
-    - When: IsMatch(ThisNode.Name, ".*Type")
-      Then: AddFact(ThisNode)
-    - When: IsMatch(ThisNode.Name, ".*RequiredLevel")
-      Then: AddFact(ThisNode)
+# yaml-embedded-languages: powerfx
+name: Dataverse Entity Scan
+description: Scan for Dataverse Entity Definitions to give context to Model Context Protocol (MCP) genration of tests
+version: 1.0.0
+onFile:
+  - when: Current.Name = "entity.yaml"
+    then: |
+      AddContext(Current, "Dataverse Entity Definition");
+      AddFact(Current, GenerateTSQLCreate(Current));
+      AddFact(Current, GenerateMDAViews(Current));
+      AddFact(Current, GenerateMDADetails(Current));
+      
+      // Generate recommendation for Dataverse test template - only happens once due to static tracking
+      With(
+        GenerateDataverseTestTemplate(),
+        AddRecommendation(Value.Type, Value.Template, Value.Priority)
+      );
+onProperty:
+  - when: IsMatch(Current.Name, ".*Name")
+    then: AddFact(Current)
+  - when: IsMatch(Current.Name, ".*Description")
+    then: AddFact(Current)
+  - when: IsMatch(Current.Name, ".*DisplayName")
+    then: AddFact(Current)
+  - when: IsMatch(Current.Name, ".*SchemaName")
+    then: AddFact(Current)
+  - when: IsMatch(Current.Name, ".*Type")
+    then: AddFact(Current)
+  - when: IsMatch(Current.Name, ".*RequiredLevel")
+    then: AddFact(Current)
         

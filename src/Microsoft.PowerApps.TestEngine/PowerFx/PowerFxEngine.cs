@@ -77,10 +77,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             symbols.EnableMutationFunctions();
 
             var testSettings = TestState.GetTestSettings();
-
             powerFxConfig.SymbolTable = symbols;
 
-            ConditionallyRegisterTestTypes(testSettings, powerFxConfig);
+            ConditionallyRegisterTestTypes(testSettings, powerFxConfig, Logger);
 
             // Enabled to allow ability to set variable and collection state that can be used with providers and as test variables
             powerFxConfig.EnableSetFunction();
@@ -159,7 +158,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         /// <param name="testSettings">The settings to obtain the test functions from</param>
         /// <param name="powerFxConfig">The Power Fx context that the functions should be registered with</param>
-        public static void ConditionallyRegisterTestTypes(TestSettings testSettings, PowerFxConfig powerFxConfig)
+        public static void ConditionallyRegisterTestTypes(TestSettings testSettings, PowerFxConfig powerFxConfig, ILogger logger = null)
         {
             if (testSettings == null || testSettings.PowerFxTestTypes == null || testSettings.PowerFxTestTypes.Count == 0)
             {
@@ -168,10 +167,36 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
 
             var engine = new RecalcEngine(new PowerFxConfig(Features.PowerFxV1));
 
+            // Track registered types to avoid duplicates from modular files
+            HashSet<string> registeredTypes = new HashSet<string>();
+
             foreach (PowerFxTestType type in testSettings.PowerFxTestTypes)
             {
-                var result = engine.Parse(type.Value);
-                RegisterPowerFxType(type.Name, result.Root, powerFxConfig);
+                try
+                {
+                    // Skip duplicate type definitions (may occur with modular files)
+                    if (registeredTypes.Contains(type.Name))
+                    {
+                        logger?.LogWarning($"Skipping duplicate type definition: {type.Name}");
+                        continue;
+                    }
+
+                    var result = engine.Parse(type.Value);
+                    if (result.IsSuccess)
+                    {
+                        RegisterPowerFxType(type.Name, result.Root, powerFxConfig);
+                        registeredTypes.Add(type.Name);
+                        logger?.LogInformation($"Registered PowerFx type: {type.Name}");
+                    }
+                    else
+                    {
+                        logger?.LogWarning($"Failed to parse PowerFx type {type.Name}: {string.Join(", ", result.Errors.Select(e => e.Message))}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger?.LogError($"Error registering PowerFx type {type.Name}: {ex.Message}");
+                }
             }
         }
 
@@ -261,7 +286,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// <param name="powerFxConfig">The Power Fx context that the functions should be registered with</param>
         public static void ConditionallyRegisterTestFunctions(TestSettings testSettings, PowerFxConfig powerFxConfig, ILogger logger, RecalcEngine engine)
         {
-            if (testSettings == null)
+            if (testSettings == null || testSettings.TestFunctions == null)
             {
                 return;
             }
@@ -269,32 +294,80 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             if (testSettings.TestFunctions.Count > 0)
             {
                 var culture = GetLocaleFromTestSettings(testSettings.Locale, logger);
+                // Track registered function names to avoid duplicates from modular files
+                HashSet<string> registeredFunctions = new HashSet<string>();
 
                 foreach (var function in testSettings.TestFunctions)
                 {
-                    var code = function.Code.TrimEnd();
-                    if (!code.EndsWith(";"))
+                    try
                     {
-                        code += ";";
-                    }
-                    var registerResult = engine.AddUserDefinedFunction(code, culture, powerFxConfig.SymbolTable, true);
-                    if (!registerResult.IsSuccess)
-                    {
-                        foreach (var error in registerResult.Errors)
-                        {
-                            var msg = error.ToString();
+                        // Extract function name from code (pattern: FunctionName(...))
+                        string functionName = ExtractFunctionName(function.Code);
 
-                            if (error.IsWarning)
+                        // Skip duplicate function definitions
+                        if (!string.IsNullOrEmpty(functionName) && registeredFunctions.Contains(functionName))
+                        {
+                            logger?.LogWarning($"Skipping duplicate function definition: {functionName}");
+                            continue;
+                        }
+
+                        var code = function.Code.TrimEnd();
+                        if (!code.EndsWith(";"))
+                        {
+                            code += ";";
+                        }
+
+                        var registerResult = engine.AddUserDefinedFunction(code, culture, powerFxConfig.SymbolTable, true);
+
+                        if (registerResult.IsSuccess)
+                        {
+                            if (!string.IsNullOrEmpty(functionName))
                             {
-                                logger?.LogWarning(msg);
+                                registeredFunctions.Add(functionName);
+                                logger?.LogInformation($"Registered PowerFx function: {functionName}");
                             }
-                            else
+                        }
+                        else
+                        {
+                            foreach (var error in registerResult.Errors)
                             {
-                                logger?.LogError(msg);
+                                var msg = error.ToString();
+
+                                if (error.IsWarning)
+                                {
+                                    logger?.LogWarning(msg);
+                                }
+                                else
+                                {
+                                    logger?.LogError(msg);
+                                }
                             }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        logger?.LogError($"Error registering PowerFx function: {ex.Message}");
+                    }
                 }
+            }
+        }
+
+        private static string ExtractFunctionName(string functionCode)
+        {
+            if (string.IsNullOrEmpty(functionCode))
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                // Match pattern like "FunctionName(params...): ReturnType = "
+                var match = Regex.Match(functionCode.Trim(), @"^([A-Za-z0-9_]+)\s*\(");
+                return match.Success ? match.Groups[1].Value : string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
 

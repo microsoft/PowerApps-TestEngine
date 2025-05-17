@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Helpers;
+using Microsoft.PowerApps.TestEngine.MCP;
 using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx;
@@ -50,14 +51,15 @@ public class MCPProvider
 
     public RecalcEngine? Engine { get; set; }
 
+    public string BasePath { get; set; } = string.Empty;
+
     public Func<SourceCodeService> SourceCodeServiceFactory => () =>
     {
         var config = new PowerFxConfig();
         config.EnableJsonFunctions();
         config.EnableSetFunction();
-
         var engine = new RecalcEngine(config);
-        return new SourceCodeService(engine);
+        return new SourceCodeService(engine, new WorkspaceVisitorFactory(new FileSystem(), Logger), Logger, MCPTestSettings, BasePath);
     };
 
     public Func<IOrganizationService?> GetOrganizationService = () => null;
@@ -106,9 +108,9 @@ public class MCPProvider
                 var workspaceRequest = JsonConvert.DeserializeObject<WorkspaceRequest>(request.Body);
 
                 string powerFx = GetPowerFxFromTestSettings();
-                if (request.Method == "POST")
+                if (string.IsNullOrEmpty(workspaceRequest.PowerFx))
                 {
-                    powerFx = request.Body;
+                    workspaceRequest.PowerFx = powerFx;
                 }
 
                 // Create a FileSystem instance and SourceCodeService
@@ -127,7 +129,7 @@ public class MCPProvider
                 {
                     response.StatusCode = 200;
                     response.ContentType = "application/x-yaml";
-                    response.Body = _yamlSerializer.Serialize(new Recommendation {  Priority = "High", Suggestion =  "No Dataverse configured. Use the workspace to query the plan" });
+                    response.Body = _yamlSerializer.Serialize(new Recommendation { Priority = "High", Suggestion = "No Dataverse configured. Use the workspace to query the plan" });
                 }
 
                 // Get a list of plans
@@ -151,7 +153,8 @@ public class MCPProvider
             }
             else if (request.Method == "POST" && request.Endpoint.StartsWith("plans/"))
             {
-                if (string.IsNullOrEmpty(request.Target)) {
+                if (string.IsNullOrEmpty(request.Target))
+                {
                     response.StatusCode = 200;
                     response.ContentType = "application/x-yaml";
                     response.Body = _yamlSerializer.Serialize(new Recommendation { Priority = "High", Suggestion = "No Dataverse configured. Use the workspace to query the plan" });

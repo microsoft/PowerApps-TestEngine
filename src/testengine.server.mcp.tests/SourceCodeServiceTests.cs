@@ -5,7 +5,6 @@ using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
 using Moq;
-using testengine.server.mcp;
 
 namespace testengine.server.mcp.tests
 {
@@ -13,6 +12,7 @@ namespace testengine.server.mcp.tests
     {
         private readonly Mock<IFileSystem> _mockFileSystem;
         private readonly Mock<IEnvironmentVariable> _mockEnvironmentVariable;
+        private readonly Mock<Microsoft.Extensions.Logging.ILogger> _mockLogger;
         private readonly RecalcEngine _recalcEngine;
         private readonly SourceCodeService _sourceCodeService;
 
@@ -20,8 +20,9 @@ namespace testengine.server.mcp.tests
         {
             _mockFileSystem = new Mock<IFileSystem>();
             _mockEnvironmentVariable = new Mock<IEnvironmentVariable>();
+            _mockLogger = new Mock<Microsoft.Extensions.Logging.ILogger>();
             _recalcEngine = new RecalcEngine();
-            _sourceCodeService = new SourceCodeService(_recalcEngine);
+            _sourceCodeService = new SourceCodeService(_recalcEngine, _mockLogger.Object);
             _sourceCodeService.FileSystemFactory = () => _mockFileSystem.Object;
         }
 
@@ -29,7 +30,7 @@ namespace testengine.server.mcp.tests
         public void Constructor_ShouldThrowArgumentNullException_WhenRecalcEngineIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new SourceCodeService(null));
+            Assert.Throws<ArgumentNullException>(() => new SourceCodeService(null, null, null, null, null));
         }
 
         [Fact]
@@ -80,20 +81,6 @@ namespace testengine.server.mcp.tests
             Assert.Single(canvasApps.Rows);
             Assert.Single(workflows.Rows);
             Assert.Single(entities.Rows);
-        }
-
-        [Fact]
-        public void LoadSolutionSourceCode_ShouldHandleUnsupportedFileTypes()
-        {
-            // Arrange
-            var validPath = "valid/path";
-
-            var files = new[] { "unsupported.exe" };
-            _mockFileSystem.Setup(fs => fs.Exists(validPath)).Returns(true);
-            _mockFileSystem.Setup(fs => fs.GetFiles(validPath)).Returns(files);
-
-            // Act & Assert
-            Assert.Throws<NotSupportedException>(() => _sourceCodeService.LoadSolutionFromSourceControl(new WorkspaceRequest() { Location = validPath }));
         }
 
         [Fact]

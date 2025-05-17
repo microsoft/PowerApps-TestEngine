@@ -140,10 +140,12 @@ public static class TestEngineTools
 
             var testState = new TestState(parser); // Replace with actual implementation of ITestState
 
+            var testSettingFile = String.Empty;
             var args = Environment.GetCommandLineArgs();
             if (args.Length > 1 && File.Exists(args[1]))
             {
                 testState.ParseAndSetTestState(args[1], logger);
+                testSettingFile = args[1];
             }
 
             string tokenValue = String.Empty;
@@ -166,7 +168,8 @@ public static class TestEngineTools
                 TestSuite = testState.GetTestSuiteDefinition(),
                 MCPTestSettings = testState.GetTestSettings(),
                 FileSystem = fileSystem,
-                Logger = logger
+                Logger = logger,
+                BasePath = Path.GetDirectoryName(testSettingFile) ?? string.Empty,
             };
 
             var response = await provider.HandleRequest(request);

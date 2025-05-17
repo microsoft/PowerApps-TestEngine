@@ -11,7 +11,20 @@ testSuite:
         = Set(CanvasApps, ForAll(CanvasApps, Patch(ThisRecord, {IncludeInModel: true})))
 
 testSettings:
-  filePath: testSettings.yaml
+  locale: "en-US"
+  headless: false
+  recordVideo: true
+  extensionModules:
+    enable: true
+    parameters:
+      enableCanvasAppFunctions: true
+  timeout: 1200000
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  scans:
+    - name: Hello
+      location: hello.scan.yaml
 
 environmentVariables:
   users:

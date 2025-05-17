@@ -1,0 +1,45 @@
+# yaml-embedded-languages: powerfx
+# Test Generation Functions
+testFunctions:
+ - description: Generates Canvas App test template with guidance for GitHub Copilot
+   code: |
+    GenerateCanvasAppTestTemplate(): Record = 
+      {
+        Type: "Canvas App Test Template",
+        Template: Concatenate(
+          "## Canvas App Test Generation Guide\n\n",
+          "This workspace contains automatically generated insight files that GitHub Copilot can use to create meaningful tests.\n\n",
+          "### Available Resources:\n",
+          "1. `*.test-insights.json` - Contains summarized test patterns and key Canvas App components\n",
+          "2. `*.ui-map.json` - Maps screen and control relationships for navigation tests\n",
+          "3. `canvasapp.scan.yaml` - Contains the scan rules that generated these insights\n\n",
+          "### Using Insights for Test Generation:\n",
+          "```powershell\n",
+          "# View all available test insights\n",
+          "Get-ChildItem -Filter *.test-insights.json -Recurse | Get-Content | ConvertFrom-Json | Format-List\n",
+          "```\n\n",
+          "### Test Template\n",
+          "Use the following YAML template as a starting point for test generation. Customize based on insights.\n\n",
+          "-----------------------\n",
+          "file: canvasapp.te.yaml\n",
+          "-----------------------\n\n",
+          "# yaml-embedded-languages: powerfx\n",
+          "testSuite:\n",
+          "  testSuiteName: Canvas App Tests\n",
+          "  testSuiteDescription: Validate Canvas App functionality with automated tests\n",
+          "  persona: User1\n",
+          "  appLogicalName: MyCanvasApp\n\n",
+          "  testCases:\n",
+          "  - testCaseName: Login Flow\n",
+          "    testCaseDescription: Validates that a user can log in to the app\n",
+          "    testSteps: |\n",
+          "      # Check test-insights.json for actual login screens and form names\n",
+          "      = Navigate(\"LoginScreen\");\n",
+          "        SetProperty(TextInput_Username, \"Text\", \"${user1Email}\");\n",
+          "        SetProperty(TextInput_Password, \"Text\", \"${user1Password}\");\n",
+          "        Select(Button_Login);\n",
+          "        Assert(App.ActiveScreen.Name = \"HomeScreen\");\n"
+        ),
+        Priority: "High",
+        Success: true
+      }

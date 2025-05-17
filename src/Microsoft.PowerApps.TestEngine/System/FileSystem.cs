@@ -37,6 +37,20 @@ namespace Microsoft.PowerApps.TestEngine.System
             return false;
         }
 
+        public string[] GetDirectories(string path)
+        {
+            path = Path.GetFullPath(path);
+            if (CanAccessDirectoryPath(path))
+            {
+                var directories = Directory.GetDirectories(path, "*.*", searchOption: SearchOption.AllDirectories).Where(CanAccessFilePath);
+                return directories.ToArray();
+            }
+            else
+            {
+                throw new InvalidOperationException(string.Format("Path invalid or read from path: '{0}' not permitted.", path));
+            }
+        }
+
         public bool FileExists(string fileName)
         {
             fileName = Path.GetFullPath(fileName);

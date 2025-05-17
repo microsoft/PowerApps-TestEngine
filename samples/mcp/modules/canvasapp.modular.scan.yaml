@@ -1,0 +1,312 @@
+# yaml-embedded-languages: powerfx
+name: Canvas App Scan
+description: Modular scan for Canvas App definitions using PowerFx UDFs and UDTs from modules
+version: 2.0.0
+      
+onStart:
+  - then: |
+      // Initialize the Facts table with metadata
+      AddFact({
+        Key: "AppInfo",
+        Value: {
+          Name: "Canvas App",
+          Version: "2.0.0",
+          ScanTime: Text(Now(), "yyyy-MM-dd HH:mm:ss")
+        }
+      }, "Metadata");
+      
+      // Save the same information to disk for large apps
+      SaveInsight({
+        Category: "Metadata",
+        Key: "AppInfo",
+        Value: {
+          Name: "Canvas App",
+          Version: "2.0.0",
+          ScanTime: Text(Now(), "yyyy-MM-dd HH:mm:ss")
+        },
+        AppPath: Current.Path
+      });
+
+onFile:
+  - when: IsMatch(Current.Name, ".*screen.*")
+    then: |
+      // Store screen file info in Facts table
+      AddFact({
+        Key: Current.Name,
+        Value: {
+          Type: "ScreenFile",
+          Path: Current.Path
+        }
+      }, "ScreenFiles");
+      
+      // Also save to disk for persistence
+      SaveInsight({
+        Category: "ScreenFiles",
+        Key: Current.Name,
+        Value: {
+          Type: "ScreenFile",
+          Path: Current.Path
+        },
+        AppPath: Current.Path
+      });
+    
+onObject:
+  - when: IsMatch(Current.Name, ".*Icon.*|.*Button.*|.*Input.*")
+    then: |
+      // Process common control types using the helper UDFs
+      AddFact({
+        Key: Current.Name,
+        Value: {
+          Type: If(
+            IsMatch(Current.Name, ".*Icon.*"), 
+            "Icon", 
+            If(
+              IsMatch(Current.Name, ".*Button.*"), 
+              "Button", 
+              "TextInput"
+            )
+          ),
+          Parent: Current.Parent.Name,
+          Path: Current.Path
+        }
+      }, "Controls");
+      
+      With(
+        ProcessControl({
+          Name: Current.Name, 
+          Type: If(
+            IsMatch(Current.Name, ".*Icon.*"), 
+            "Icon", 
+            If(
+              IsMatch(Current.Name, ".*Button.*"), 
+              "Button", 
+              "TextInput"
+            )
+          ),
+          Parent: Current.Parent
+        }),
+        SaveControlInsight(Self, Current.Path)
+      );
+  - when: IsMatch(Current.Name, ".*Screen")
+    then: |
+      // Process screen definitions
+      AddFact({
+        Key: Current.Name,
+        Value: {
+          Type: "Screen",
+          Properties: Current.Properties,
+          Path: Current.Path
+        }
+      }, "Screens");
+      
+      With(
+        {
+          Name: Current.Name, 
+          Type: "Screen", 
+          Controls: Table({Name:"", ControlType:"", Parent:"", Pattern:""}),
+          HasNavigation: false
+        } : ScreenInfo,
+        Block(
+          If(
+            DetectLoginScreen(Self),
+            SaveInsight({
+              Category: "TestPatterns", 
+              Key: Concatenate("Login_", Current.Name), 
+              Value: {
+                Type: "LoginScreen",
+                ScreenName: Current.Name,
+                TestPriority: "High"
+              },
+              AppPath: Current.Path
+            })
+          ),
+          
+          SaveInsight({
+            Category: "Screens", 
+            Key: Current.Name, 
+            Value: {
+              Type: "UIControl",
+              ControlType: "Screen",
+              Name: Current.Name,
+              Pattern: "Screen"
+            },
+            AppPath: Current.Path
+          })
+        )
+      );
+      
+onProperty:
+  - when: IsMatch(Current.Name, "OnSelect")
+    then: |
+      // Process formulas in OnSelect properties
+      AddFact({
+        Key: Concatenate(Current.Parent.Name, "_OnSelect"),
+        Value: {
+          Control: Current.Parent.Name,
+          Formula: Current.Formula,
+          Screen: Current.Parent.Parent.Name
+        }
+      }, "Events");
+      
+      With(
+        ProcessFormula(
+          Current.Formula, 
+          Current.Parent.Name, 
+          Current.Parent.Parent.Name, 
+          Current.Path
+        ),
+        Block(
+          // Use helper UDFs to track navigation and data operations
+          TrackNavigation(
+            Self,
+            Current.Formula, 
+            Current.Parent.Name, 
+            Current.Parent.Parent.Name, 
+            Current.Path
+          ),
+          
+          TrackDataOperation(
+            Self,
+            Current.Formula, 
+            Current.Parent.Name, 
+            Current.Parent.Parent.Name, 
+            Current.Path
+          )
+        )
+      );
+  - when: IsMatch(Current.Name, ".*Valid.*|.*Validation.*")
+    then: |
+      // Track form validation patterns
+      AddFact({
+        Key: Concatenate(Current.Parent.Name, "_Validation"),
+        Value: {
+          Control: Current.Parent.Name,
+          ValidationRule: Current.Formula
+        }
+      }, "Validation");
+      SaveInsight({
+        Category: "Validation", 
+        Key: Concatenate(Current.Parent.Name, "_Validation"), 
+        Value: {
+          Control: Current.Parent.Name,
+          ValidationRule: Current.Formula
+        },
+        AppPath: Current.Path
+      });
+      
+onFunction:  
+  - when: IsMatch(Current, "Navigate")
+    then: |
+      // Track navigation for test path generation
+      AddFact({
+        Key: Concatenate("Navigation_", CountRows(Filter(Facts, Category = "Navigation")) + 1),
+        Value: {
+          Type: "Navigation",
+          Formula: Current,
+          Source: Current.Parent.Parent.Name,
+          Target: Replace(Current, ".*Navigate\\s*\\(\\s*[\"']([^\"']+)[\"'].*", "$1")
+        }
+      }, "Navigation");
+      SaveInsight({
+        Category: "TestPaths", 
+        Key: Concatenate("Navigation_", CountRows(Filter(Last.Value, Value.Type = "Navigation")) + 1), 
+        Value: {
+          Type: "Navigation",
+          Formula: Current,
+          Source: Current.Parent.Parent.Name,
+          Target: Replace(Current, ".*Navigate\\s*\\(\\s*[\"']([^\"']+)[\"'].*", "$1")
+        },
+        AppPath: Current.Path
+      });
+  - when: IsMatch(Current, "SubmitForm")
+    then: |
+      // Track form submissions for test case generation
+      AddFact({
+        Key: Concatenate("FormSubmission_", CountRows(Filter(Facts, Category = "Forms")) + 1),
+        Value: {
+          Type: "FormSubmission",
+          Formula: Current,
+          Form: Replace(Current, ".*SubmitForm\\s*\\(\\s*([^,\\)]+).*", "$1")
+        }
+      }, "Forms");
+      SaveInsight({
+        Category: "Forms", 
+        Key: Concatenate("FormSubmission_", CountRows(Filter(Last.Value, Value.Type = "FormSubmission")) + 1),
+        Value: {
+          Type: "FormSubmission",
+          Formula: Current,
+          Form: Replace(Current, ".*SubmitForm\\s*\\(\\s*([^,\\)]+).*", "$1")
+        },
+        AppPath: Current.Path
+      });
+      
+  - when: IsMatch(Current, "Patch|Collect|Remove|RemoveIf|Filter|Search|LookUp")
+    then: |
+      // Unified handling of data operations
+      With(
+        If(
+          IsMatch(Current, "Patch"),
+          CreateDataSourceInsight("Update", Current, Current.Path),
+          If(
+            IsMatch(Current, "Collect"),
+            CreateDataSourceInsight("Create", Current, Current.Path),
+            If(
+              IsMatch(Current, "Remove|RemoveIf"),
+              CreateDataSourceInsight("Delete", Current, Current.Path),
+              CreateDataSourceInsight("Read", Current, Current.Path)
+            )
+          )
+        ),
+        SaveInsight(Self)
+      );
+      
+# Final operations at the end of the scan
+onEnd:
+  - when: true
+    then: |
+      // Get the app path from saved state
+      With(
+        First(Filter(Facts, Category = "Screens")),
+        Block(
+          // Get the app path
+          With(
+            { AppPath: Value.Path },
+            Block(
+              // Add a summary fact
+              AddFact({
+                Key: "ScanSummary",
+                Value: {
+                  ScreenCount: CountRows(Filter(Facts, Category = "Screens")),
+                  ControlCount: CountRows(Filter(Facts, Category = "Controls")),
+                  EventCount: CountRows(Filter(Facts, Category = "Events")),
+                  NavigationCount: CountRows(Filter(Facts, Category = "Navigation")),
+                  FormCount: CountRows(Filter(Facts, Category = "Forms")),
+                  ScanTime: Text(Now(), "yyyy-MM-dd HH:mm:ss")
+                }
+              }, "Summary"),
+              
+              // Flush all insights to disk
+              FlushInsights({AppPath: AppPath}),
+              
+              // Generate UI map for test navigation
+              GenerateUIMap({AppPath: AppPath}),
+              
+              // Save the summary as an insight
+              SaveInsight({
+                Category: "Summary",
+                Key: "ScanSummary",
+                Value: {
+                  ScreenCount: CountRows(Filter(Facts, Category = "Screens")),
+                  ControlCount: CountRows(Filter(Facts, Category = "Controls")),
+                  EventCount: CountRows(Filter(Facts, Category = "Events")),
+                  NavigationCount: CountRows(Filter(Facts, Category = "Navigation")),
+                  FormCount: CountRows(Filter(Facts, Category = "Forms")),
+                  ScanTime: Text(Now(), "yyyy-MM-dd HH:mm:ss"),
+                  Message: "Test insights saved to app-name.test-insights.json and UI map to app-name.ui-map.json"
+                },
+                AppPath: AppPath
+              })
+            )
+          )
+        )
+      );

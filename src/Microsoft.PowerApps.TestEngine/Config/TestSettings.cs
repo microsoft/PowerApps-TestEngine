@@ -54,14 +54,17 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// <summary>
         /// Location of existing browser to launch by playwright
         /// </summary>
-        public string ExecutablePath { get; set; } = "";
-
-        public List<PowerFxTestType> PowerFxTestTypes { get; set; } = new List<PowerFxTestType>();
+        public string ExecutablePath { get; set; } = ""; public List<PowerFxTestType> PowerFxTestTypes { get; set; } = new List<PowerFxTestType>();
 
         /// <summary>
         /// The Power Fx function to register
         /// </summary>
         public List<TestFunction> TestFunctions { get; set; } = new List<TestFunction>();
+
+        /// <summary>
+        /// References to external files containing PowerFx definitions (types and functions)
+        /// </summary>
+        public List<PowerFxDefinition> PowerFxDefinitions { get; set; } = new List<PowerFxDefinition>();
 
         /// <summary>
         /// Define settings for Test Engine Extensions

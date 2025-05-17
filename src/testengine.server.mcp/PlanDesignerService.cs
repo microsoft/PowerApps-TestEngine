@@ -97,7 +97,7 @@ public class PlanDesignerService
         };
 
         // Delegate source control integration handling to SourceCodeService
-        planDetails.Solution = _sourceCodeService.LoadSolutionFromSourceControl(new WorkspaceRequest {  Location = workspace });
+        planDetails.Solution = _sourceCodeService.LoadSolutionFromSourceControl(new WorkspaceRequest { Location = workspace });
 
         return planDetails;
     }

@@ -1,0 +1,12 @@
+
+# yaml-embedded-languages: powerfx
+name: Hello Scan
+description: Test scan for MCP
+version: 1.0.0
+onFile:
+  - when: true
+    then: |
+      AddFact({
+        Key: "File",
+        Value: Current.Name
+      }, "Metadata");

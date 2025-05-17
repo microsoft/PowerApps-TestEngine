@@ -5,7 +5,7 @@ public class WorkspaceRequest
 {
     public string Location { get; set; } = string.Empty;
 
-    public string[] Scans { get; set; } =  new string[] { };
+    public string[] Scans { get; set; } = new string[] { };
 
-    public string PowerFx { get; set; } =  string.Empty;
+    public string PowerFx { get; set; } = string.Empty;
 }

@@ -3,6 +3,9 @@
 
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.PowerApps.TestEngine.MCP;
+using Microsoft.PowerApps.TestEngine.MCP.PowerFx;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
@@ -12,19 +15,40 @@ using YamlDotNet.Serialization.NamingConventions;
 public class SourceCodeService
 {
     private readonly RecalcEngine? _recalcEngine;
+    private readonly WorkspaceVisitorFactory? _visitorFactory;
+    private readonly Microsoft.PowerApps.TestEngine.Config.TestSettings? _testSettings;
 
     public Func<IFileSystem> FileSystemFactory { get; set; } = () => new FileSystem();
 
     private IFileSystem? _fileSystem;
+    private Microsoft.Extensions.Logging.ILogger? _logger;
+    private string _basePath = String.Empty;
 
+    /// <summary>
+    /// Empty constructor for the SourceCodeService class for unit test 
+    /// </summary>
     public SourceCodeService()
     {
 
     }
 
-    public SourceCodeService(RecalcEngine recalcEngine)
+    public SourceCodeService(RecalcEngine recalcEngine, Microsoft.Extensions.Logging.ILogger logger) : this(recalcEngine, new WorkspaceVisitorFactory(new FileSystem(), logger), logger, null, String.Empty)
+    {
+
+    }
+
+    public SourceCodeService(RecalcEngine recalcEngine, WorkspaceVisitorFactory visitorFactory, Microsoft.Extensions.Logging.ILogger? logger)
+        : this(recalcEngine, visitorFactory, logger, null, String.Empty)
+    {
+    }
+
+    public SourceCodeService(RecalcEngine recalcEngine, WorkspaceVisitorFactory visitorFactory, Microsoft.Extensions.Logging.ILogger? logger, Microsoft.PowerApps.TestEngine.Config.TestSettings? testSettings, string basePath)
     {
         _recalcEngine = recalcEngine ?? throw new ArgumentNullException(nameof(recalcEngine));
+        _visitorFactory = visitorFactory ?? throw new ArgumentNullException(nameof(visitorFactory));
+        _logger = logger;
+        _testSettings = testSettings;
+        _basePath = basePath;
     }
 
     /// <summary>
@@ -36,6 +60,7 @@ public class SourceCodeService
     {
         string workspace = workspaceRequest.Location;
         string powerFx = workspaceRequest.PowerFx;
+        string[] scans = workspaceRequest.Scans;
 
         // Check if the workspace path is valid
         if (string.IsNullOrEmpty(workspace))
@@ -44,7 +69,6 @@ public class SourceCodeService
         }
 
         // Construct the solution path
-
         if (_fileSystem == null)
         {
             _fileSystem = FileSystemFactory();
@@ -57,7 +81,13 @@ public class SourceCodeService
         }
 
         // Load the solution source code
-        LoadSolutionSourceCode(workspace);
+        LoadSolutionSourceCode(workspace);        // Process scans if specified
+        if (_recalcEngine != null && scans != null && scans.Length > 0)
+        {
+            // Create factory if not already provided
+            var visitorFactory = _visitorFactory ?? new WorkspaceVisitorFactory(_fileSystem, _logger);
+            ProcessScans(workspace, scans, visitorFactory);
+        }
 
         if (!string.IsNullOrEmpty(powerFx))
         {
@@ -159,96 +189,51 @@ public class SourceCodeService
                     }
                     break;
                 default:
-                    throw new NotSupportedException($"Unsupported file type: {fileExtension}");
+                    if (_visitorFactory != null)
+                    {
+                        // If the factory exists, attempt to process all file types
+                        // The visitor implementations will handle what they support
+                    }
+                    else
+                    {
+                        throw new NotSupportedException($"Unsupported file type: {fileExtension}");
+                    }
+                    break;
             }
         }
 
-        // Initial starter recommendation for demonstration purposes only
-        // This will be refined this based on solution data. Add Power Fx function examples that will dynamically add recommendations
-        recommendations.Add(new Recommendation
-        {
-            Id = Guid.NewGuid().ToString(),
-            IncludeInModel = true,
-            Type = "Yaml Test Template",
-            Suggestion = @"Use the following yaml test template to generate Dataverse Tests
------------------------
-file: entity.te.yaml
------------------------
+        // Reset states for recommendation functions
+        DataverseTestTemplateFunction.Reset();
+        CanvasAppTestTemplateFunction.Reset();
+        TestPatternAnalyzer.Reset();
 
-# yaml-embedded-languages: powerfx
-testSuite:
-testSuiteName: Dataverse tests
-testSuiteDescription: Validate Power Fx can be used to run Dataverse integration tests
-persona: User1
-appLogicalName: N/A
-onTestCaseStart: |
-= ForAll(Accounts, Remove(Accounts, ThisRecord))
+        // Register custom PowerFx functions for recommendations
+        if (_recalcEngine != null)
+        {
+            // Template generation functions
+            _recalcEngine.Config.AddFunction(new DataverseTestTemplateFunction());
+            _recalcEngine.Config.AddFunction(new CanvasAppTestTemplateFunction());
 
-testCases:
-- testCaseName: No Accounts
-    testCaseDescription: Should have no accounts as onTestCaseStart removes all accounts
-    testSteps: |
-    = Assert(CountRows(Accounts)=0)
-- testCaseName: Insert Account
-    testCaseDescription: Insert a new record into account table
-    testSteps: |
-    = Collect(
-        Accounts,
-        {
-            name: ""New Account""
-        }
-        );
-        Assert(CountRows(Accounts)=1)
-- testCaseName: Insert and Remove Account
-    testCaseDescription: Insert a new record into account table and then remove
-    testSteps: |
-    = Collect(
-        Accounts,
-        {
-            name: ""New Account""
-        }
-        );
-        Assert(CountRows(Accounts)=1);
-        Remove(Accounts, First(Accounts));
-        Assert(CountRows(Accounts)=0)
-- testCaseName: Update Account
-    testCaseDescription: Update created record
-    testSteps: |
-    =  Collect(
-        Accounts,
-        {
-            name: ""New Account""
-        }
-        );
-        Patch(
-        Accounts,
-        First(Accounts),
-        {
-            name: ""Updated Account""
-        }
-        );
-        Assert(First(Accounts).name = ""Updated Account"");
-    
-testSettings:
-headless: false
-locale: ""en-US""
-recordVideo: true
-extensionModules:
-enable: true
-parameters:
-    enableDataverseFunctions: true
-    enableAIFunctions: true
-browserConfigurations:
-- browser: Chromium
+            // Helper functions for adding facts and recommendations
+            _recalcEngine.Config.AddFunction(new AddFactFunction(_recalcEngine));            // Canvas App specific analysis functions
+            _recalcEngine.Config.AddFunction(new CanvasAppScanFunctions.IdentifyUIPatternFunction());
+            _recalcEngine.Config.AddFunction(new CanvasAppScanFunctions.DetectNavigationPatternFunction());
+            _recalcEngine.Config.AddFunction(new CanvasAppScanFunctions.AnalyzeDataOperationFunction());
+            
+            // State management functions (for handling large apps)
+            _recalcEngine.Config.AddFunction(new ScanStateManager.SaveInsightFunction(_fileSystem, _logger, solutionPath));
+            _recalcEngine.Config.AddFunction(new ScanStateManager.FlushInsightsFunction(_fileSystem, _logger, solutionPath));
+            _recalcEngine.Config.AddFunction(new ScanStateManager.GenerateUIMapFunction(_fileSystem, _logger, solutionPath));
+            
+            // Enhanced insight management with the new wrapper
+            _recalcEngine.Config.AddFunction(new SaveInsightWrapper(_fileSystem, _logger, solutionPath));
 
-environmentVariables:
-users:
-- personaName: User1
-    emailKey: user1Email
-    passwordKey: NotNeeded
-",
-            Priority = "High"
-        });
+            // Test pattern analyzers
+            _recalcEngine.Config.AddFunction(new TestPatternAnalyzer.DetectLoginScreenFunction());
+            _recalcEngine.Config.AddFunction(new TestPatternAnalyzer.DetectCrudOperationsFunction());
+            _recalcEngine.Config.AddFunction(new TestPatternAnalyzer.DetectFormPatternFunction());
+            _recalcEngine.Config.AddFunction(new TestPatternAnalyzer.GenerateTestCaseRecommendationsFunction());
+        }
 
         // Load collections into the RecalcEngine context
         AddVariable("Files", files, () => new SourceFile().ToRecord().Type);
@@ -392,6 +377,186 @@ users:
             var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
             return BitConverter.ToString(hash).Replace("-", "").ToLower();
         }
+    }
+
+    /// <summary>
+    /// Processes the requested scans using the WorkspaceVisitorFactory
+    /// </summary>
+    /// <param name="workspacePath">The workspace path to scan</param>
+    /// <param name="scans">The scan configurations to apply</param>
+    /// <param name="visitorFactory">The WorkspaceVisitorFactory to use</param>
+    private void ProcessScans(string workspacePath, string[] scans, WorkspaceVisitorFactory visitorFactory)
+    {
+        if (_recalcEngine == null)
+        {
+            return;
+        }
+
+        // Reset states for recommendation functions
+        DataverseTestTemplateFunction.Reset();
+  
+
+        // Register custom PowerFx functions for recommendations
+        _recalcEngine.Config.AddFunction(new DataverseTestTemplateFunction());
+        _recalcEngine.Config.AddFunction(new AddFactFunction(_recalcEngine));
+
+        // Build a list of recommendations if needed
+        List<string> recommendations = new List<string>();
+
+        foreach (var scanConfigName in scans)
+        {
+            try
+            {
+                // Create a scan reference from the scan configuration
+                var scanReference = new Microsoft.PowerApps.TestEngine.Config.ScanReference();
+                bool scanFound = false;
+
+                // If we have test settings, try to find the requested scan by name
+                if (_testSettings != null && _testSettings.Scans.Any())
+                {
+                    // Special case: when "all" is specified, process all available scans
+                    if (string.Equals(scanConfigName, "all", StringComparison.OrdinalIgnoreCase))
+                    {
+                        _logger?.LogInformation("Processing all available scans");
+                        foreach (var scan in _testSettings.Scans)
+                        {
+                            ProcessSingleScan(workspacePath, scan, visitorFactory);
+                        }
+                        return; // Done processing all scans
+                    }
+
+                    // Look for a scan with a matching name
+                    var matchedScan = _testSettings.Scans.FirstOrDefault(s =>
+                        string.Equals(s.Name, scanConfigName, StringComparison.OrdinalIgnoreCase));
+
+                    if (matchedScan != null)
+                    {
+                        _logger?.LogInformation($"Found matching scan: {matchedScan.Name}");
+                        scanReference = matchedScan;
+                        scanFound = true;
+                    }
+                }
+
+                if (!scanFound)
+                {
+                    // No matching scan found, add a recommendation
+                    string recommendation = $"No scan configuration found for '{scanConfigName}'. ";
+
+                    if (_testSettings != null && _testSettings.Scans.Any())
+                    {
+                        recommendation += "Available scans: " + string.Join(", ", _testSettings.Scans.Select(s => s.Name));
+                    }
+                    else
+                    {
+                        recommendation += "No scans are defined in TestSettings.";
+                    }
+
+                    recommendations.Add(recommendation);
+                    _logger?.LogWarning(recommendation);
+                    continue;
+                }
+
+                ProcessSingleScan(workspacePath, scanReference, visitorFactory);
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Error processing scan '{scanConfigName}': {ex.Message}";
+                recommendations.Add(errorMessage);
+                _logger?.LogError(ex, errorMessage);
+            }
+        }
+
+        // If we have recommendations, add them to the recalc engine
+        if (recommendations.Count > 0)
+        {
+            foreach (string recommendation in recommendations)
+            {
+                _recalcEngine.Eval($"AddRecommendation(\"{recommendation.Replace("\"", "\\\"")}\")");
+            }
+        }
+    }
+
+    private void ProcessSingleScan(string workspacePath, Microsoft.PowerApps.TestEngine.Config.ScanReference scanReference, WorkspaceVisitorFactory visitorFactory)
+    {
+        if (_recalcEngine == null)
+        {
+            return;
+        }
+        _logger?.LogInformation($"Processing scan: {scanReference.Name} from location: {scanReference.Location}");
+
+        // Load scan configuration from file if a location is specified
+        Microsoft.PowerApps.TestEngine.MCP.Visitor.ScanReference visitorScanRef;        // Load scan configuration from the location if specified
+        if (!string.IsNullOrEmpty(scanReference.Location))
+        {
+            // Ensure file system is initialized
+            if (_fileSystem == null)
+            {
+                _fileSystem = FileSystemFactory();
+            }
+            // Attempt to load the scan configuration from the location
+            string configFilePath = scanReference.Location;
+            if (!Path.IsPathRooted(configFilePath))
+            {
+                // If the path is not rooted, determine the base path using TestSettings file location
+                configFilePath = Path.Combine(_basePath, configFilePath);
+                _logger?.LogInformation($"Non-rooted path detected. Using combined path: {configFilePath} with base path: {_basePath}");
+            }
+
+            // Store the original location for reference
+            scanReference.Location = configFilePath;
+
+            if (_fileSystem.FileExists(configFilePath))
+            {
+                try
+                {
+                    string configContent = _fileSystem.ReadAllText(configFilePath);
+                    // Parse the configuration content and create a visitor scan reference
+                    var deserializer = new DeserializerBuilder()
+                        .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                        .Build();
+
+                    visitorScanRef = deserializer.Deserialize<Microsoft.PowerApps.TestEngine.MCP.Visitor.ScanReference>(configContent);
+
+                    // Keep the original name if it wasn't specified in the config file
+                    if (string.IsNullOrEmpty(visitorScanRef.Name))
+                    {
+                        visitorScanRef.Name = scanReference.Name;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogError($"Failed to load scan configuration from {configFilePath}: {ex.Message}");
+                    // Create default scan reference with just the name
+                    visitorScanRef = new Microsoft.PowerApps.TestEngine.MCP.Visitor.ScanReference
+                    {
+                        Name = scanReference.Name
+                    };
+                }
+            }
+            else
+            {
+                _logger?.LogWarning($"Scan configuration file not found: {configFilePath}");
+                // Create default scan reference with just the name
+                visitorScanRef = new Microsoft.PowerApps.TestEngine.MCP.Visitor.ScanReference
+                {
+                    Name = scanReference.Name
+                };
+            }
+        }
+        else
+        {
+            // Create a new visitor scan reference with just the name
+            visitorScanRef = new Microsoft.PowerApps.TestEngine.MCP.Visitor.ScanReference
+            {
+                Name = scanReference.Name
+            };
+        }
+
+        // Create a visitor configuration based on the scan reference
+        var visitor = visitorFactory.Create(workspacePath, visitorScanRef, _recalcEngine);
+
+        // Execute the visitor to process the scan
+        visitor.Visit();
     }
 
     /// <summary>

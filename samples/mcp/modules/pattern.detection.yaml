@@ -1,0 +1,109 @@
+# yaml-embedded-languages: powerfx
+# Pattern Detection Functions
+testFunctions:
+ - description: Identifies UI patterns in Canvas Apps
+   code: |
+    IdentifyUIPattern(controlInfo: UIControl): Text = 
+      With(
+        controlInfo,
+        Switch(
+          True,
+          Or(
+            EndsWith(Name, "Screen"), 
+            Contains(Name, "Screen")
+          ), "Screen",
+          Or(
+            ControlType = "button", 
+            Contains(Name, "btn"), 
+            Contains(Name, "Button")
+          ), "Button",
+          Or(
+            Contains(ControlType, "text"), 
+            Contains(ControlType, "input"),
+            Contains(Name, "text"),
+            Contains(Name, "input")
+          ), "TextInput",
+          Or(
+            Contains(ControlType, "gallery"),
+            Contains(Name, "gallery"),
+            Contains(Name, "list")
+          ), "Gallery",
+          Or(
+            Contains(ControlType, "form"),
+            Contains(Name, "form")
+          ), "Form",
+          Or(
+            Contains(ControlType, "dropdown"),
+            Contains(Name, "dropdown"),
+            Contains(Name, "combo")
+          ), "Dropdown",
+          Or(
+            Contains(ControlType, "toggle"),
+            Contains(ControlType, "checkbox"),
+            Contains(Name, "toggle"),
+            Contains(Name, "check")
+          ), "Toggle",
+          Or(
+            Contains(ControlType, "date"),
+            Contains(Name, "date"),
+            Contains(Name, "calendar")
+          ), "DatePicker",
+          "Other"
+        )
+      )
+
+ - description: Detects navigation patterns in Canvas App formulas
+   code: |
+    DetectNavigationPattern(formula: Text): Text = 
+      If(
+        IsBlank(formula),
+        "Unknown",
+        Switch(
+          True,
+          Match(formula, "Navigate\\s*\\(\\s*[\\w\"']+\\s*,\\s*[\\w\"']+"), "ScreenNavigation",
+          Match(formula, "Back\\s*\\("), "BackNavigation",
+          Match(formula, "NewForm\\s*\\(|EditForm\\s*\\(|ViewForm\\s*\\("), "FormNavigation",
+          Match(formula, "Launch\\s*\\("), "ExternalNavigation",
+          Match(formula, "SubmitForm\\s*\\("), "FormSubmission",
+          "Other"
+        )
+      )
+
+ - description: Analyzes Canvas App formulas to detect data operations
+   code: |
+    AnalyzeDataOperation(formula: Text): Text = 
+      If(
+        IsBlank(formula),
+        "Unknown",
+        Switch(
+          True,
+          Match(formula, "Patch\\s*\\("), "Update",
+          Match(formula, "Remove\\s*\\(|RemoveIf\\s*\\("), "Delete",
+          Match(formula, "Collect\\s*\\("), "Create",
+          Match(formula, "Filter\\s*\\(|Search\\s*\\(|LookUp\\s*\\("), "Query",
+          Match(formula, "Sort\\s*\\(|SortByColumns\\s*\\("), "Sort",
+          Match(formula, "Sum\\s*\\(|Average\\s*\\(|Min\\s*\\(|Max\\s*\\(|Count\\s*\\("), "Aggregate",
+          "Other"
+        )
+      )
+
+ - description: Detects login screens based on name and controls
+   code: |
+    DetectLoginScreen(screenInfo: ScreenInfo): Boolean = 
+      With(
+        screenInfo,
+        Or(
+          // Check screen name patterns for login screens
+          Match(Name, "(?i)login|signin|sign in|log in|auth|authenticate"),
+          
+          // Check for login controls in the screen
+          And(
+            CountIf(Controls, Contains(Name, "user") || Contains(Name, "email") || Contains(Name, "login") || Contains(Name, "name")) > 0,
+            CountIf(Controls, Contains(Name, "pass") || Contains(Name, "pwd")) > 0,
+            CountIf(Controls, And(
+              Or(Contains(Name, "login"), Contains(Name, "signin"), Contains(Name, "submit")),
+              Or(Contains(Name, "button"), Contains(Name, "btn"))
+            )) > 0
+          )
+        )
+      )

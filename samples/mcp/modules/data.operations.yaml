@@ -1,0 +1,65 @@
+# yaml-embedded-languages: powerfx
+# Data Operations Functions
+testFunctions:
+ - description: Identifies CRUD operations on a data source
+   code: |
+    DetectCrudOperations(dataSource: Text, operations: Table[DataOperation]): Record = 
+      With(
+        {
+          Create: CountIf(operations, Type = "Create" && DataSource = dataSource) > 0,
+          Read: CountIf(operations, Type = "Read" && DataSource = dataSource) > 0,
+          Update: CountIf(operations, Type = "Update" && DataSource = dataSource) > 0,
+          Delete: CountIf(operations, Type = "Delete" && DataSource = dataSource) > 0
+        },
+        {
+          DataSource: dataSource,
+          HasCreate: Create,
+          HasRead: Read,
+          HasUpdate: Update,
+          HasDelete: Delete,
+          IsCrud: And(Create, Read, Update, Delete)
+        }
+      )
+
+ - description: Extract data source name from a formula
+   code: |
+    ExtractDataSource(formula: Text): Text = 
+      Replace(
+        formula, 
+        ".*(?:Patch|Collect|Filter|Search|LookUp|Remove|RemoveIf)\\s*\\(\\s*([^,\\)]+).*", 
+        "$1"
+      )
+
+ - description: Create data source insight record
+   code: |
+    CreateDataSourceInsight(operation: Text, formula: Text, path: Text): Record = 
+      With(
+        {
+          DataSource: ExtractDataSource(formula)
+        },
+        {
+          Category: "DataSources", 
+          Key: Self.DataSource,
+          Value: {
+            Type: "DataSource",
+            Operation: operation,
+            DataSource: Self.DataSource,
+            Formula: formula
+          },
+          AppPath: path
+        }
+      )
+
+ - description: Process and track formula insights
+   code: |
+    ProcessFormula(formula: Text, controlName: Text, parentName: Text, path: Text): Record = 
+      With({
+        NavigationType: DetectNavigationPattern(formula),
+        DataOperation: AnalyzeDataOperation(formula)
+      },
+      {
+        NavigationType: Self.NavigationType,
+        DataOperation: Self.DataOperation,
+        IsNavigation: Self.NavigationType <> "Unknown" && Self.NavigationType <> "Other",
+        IsDataOperation: Self.DataOperation <> "Unknown" && Self.DataOperation <> "Other"
+      })

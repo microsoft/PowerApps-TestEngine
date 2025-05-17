@@ -1,0 +1,6 @@
+# Ignore detailed state files but track summarized insights
+**/*.scan-state.json
+
+# Keep test insights and UI maps in source control
+# **/*.test-insights.json
+# **/*.ui-map.json
