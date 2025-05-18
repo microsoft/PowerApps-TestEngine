@@ -71,7 +71,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP
 
             // Process all directories and files recursively
             VisitDirectory(_workspacePath, "Root");
-            
+
             // Process OnEnd rules after all files have been processed
             OnEnd();
         }

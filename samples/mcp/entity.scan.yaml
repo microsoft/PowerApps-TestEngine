@@ -6,27 +6,7 @@ version: 1.0.0
 onFile:
   - when: Current.Name = "entity.yaml"
     then: |
-      AddContext(Current, "Dataverse Entity Definition");
-      AddFact(Current, GenerateTSQLCreate(Current));
-      AddFact(Current, GenerateMDAViews(Current));
-      AddFact(Current, GenerateMDADetails(Current));
-      
-      // Generate recommendation for Dataverse test template - only happens once due to static tracking
-      With(
-        GenerateDataverseTestTemplate(),
-        AddRecommendation(Value.Type, Value.Template, Value.Priority)
-      );
-onProperty:
-  - when: IsMatch(Current.Name, ".*Name")
-    then: AddFact(Current)
-  - when: IsMatch(Current.Name, ".*Description")
-    then: AddFact(Current)
-  - when: IsMatch(Current.Name, ".*DisplayName")
-    then: AddFact(Current)
-  - when: IsMatch(Current.Name, ".*SchemaName")
-    then: AddFact(Current)
-  - when: IsMatch(Current.Name, ".*Type")
-    then: AddFact(Current)
-  - when: IsMatch(Current.Name, ".*RequiredLevel")
-    then: AddFact(Current)
-        
+      AddFact({
+        Key: "TSQL",
+        Value: GenerateTSQLCreate(Current)
+      }, "Entity");

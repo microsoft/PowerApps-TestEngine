@@ -1,7 +1,0 @@
-powerFxDefinitions:
-  - location: modules/canvasapp.types.yaml
-  - location: modules/pattern.detection.yaml
-  - location: modules/data.operations.yaml
-  - location: modules/form.validation.yaml
-  - location: modules/test.generation.yaml
-  - location: modules/state.management.yaml

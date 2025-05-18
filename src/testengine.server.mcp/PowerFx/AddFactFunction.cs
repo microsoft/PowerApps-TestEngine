@@ -23,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
         /// Initializes a new instance of the <see cref="AddFactFunction"/> class.
         /// </summary>
         /// <param name="recalcEngine">The RecalcEngine instance to store the Facts table.</param>
-        public AddFactFunction(RecalcEngine recalcEngine) 
+        public AddFactFunction(RecalcEngine recalcEngine)
             : base(DPath.Root, "AddFact", FormulaType.Boolean, RecordType.Empty(), StringType.String)
         {
             _recalcEngine = recalcEngine ?? throw new ArgumentNullException(nameof(recalcEngine));
@@ -35,12 +35,13 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
         /// of both AddFact and AddContext.
         /// </summary>
         /// <param name="fact">The record containing fact information.</param>
+        /// <param name="category">Optional category for the fact</param>
         /// <returns>Boolean value indicating success or failure.</returns>
-        public BooleanValue Execute(RecordValue fact)
+        public BooleanValue Execute(RecordValue fact, StringValue category)
         {
-            return ExecuteWithCategory(fact, null);
+            return ExecuteWithCategory(fact, category);
         }
-        
+
         /// <summary>
         /// Executes the enhanced AddFact function with a category parameter.
         /// </summary>
@@ -55,7 +56,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
                 string factKey = GetStringValue(fact, "Key", "Unknown");
                 string factCategory = category?.Value ?? GetStringValue(fact, "Category", "General");
                 string id = GetStringValue(fact, "Id", Guid.NewGuid().ToString());
-                
+
                 // Handle value - could be a string or a complex record/object
                 string factValue = GetValueAsString(fact);
 
@@ -99,11 +100,12 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
                 var columns = RecordType.Empty().Add("Id", FormulaType.String)
                     .Add("Category", FormulaType.String)
                     .Add("Key", FormulaType.String)
-                    .Add("Value", FormulaType.String);
-                
+                    .Add("Value", FormulaType.String)
+                    .Add("IncludeInModel", BooleanType.Boolean);
+
                 // Initialize the table with our schema but no rows
                 _recalcEngine.UpdateVariable("Facts", FormulaValue.NewTable(columns));
-                
+
                 // Get the newly created table
                 existingTable = _recalcEngine.Eval("Facts") as TableValue;
             }
@@ -123,20 +125,22 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
                     new NamedValue("Id", FormulaValue.New(id)),
                     new NamedValue("Category", FormulaValue.New(category)),
                     new NamedValue("Key", FormulaValue.New(key)),
-                    new NamedValue("Value", FormulaValue.New(value))
+                    new NamedValue("Value", FormulaValue.New(value)),
+                    new NamedValue("IncludeInModel", FormulaValue.New(true))
                 );
-                
+
                 // Add the new fact row
                 rows.Add(newFact);
-                
+
                 // Update the table with all rows (existing + new)
                 var columns = RecordType.Empty().Add("Id", FormulaType.String)
                     .Add("Category", FormulaType.String)
                     .Add("Key", FormulaType.String)
-                    .Add("Value", FormulaType.String);
+                    .Add("Value", FormulaType.String)
+                    .Add("IncludeInModel", BooleanType.Boolean);
 
                 var updatedTable = TableValue.NewTable(columns, rows);
-                
+
                 _recalcEngine.UpdateVariable("Facts", updatedTable);
             }
         }
@@ -146,18 +150,21 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
         /// </summary>
         private string GetStringValue(RecordValue record, string fieldName, string defaultValue = "")
         {
-            try {
+            try
+            {
                 var value = record.GetField(fieldName);
                 if (value is StringValue strValue)
                 {
                     return strValue.Value;
                 }
-            } catch {
+            }
+            catch
+            {
                 // Ignore exceptions and return default value
             }
             return defaultValue;
         }
-        
+
         /// <summary>
         /// Extracts the Value property from a record, handling both simple values and complex records.
         /// </summary>
@@ -168,7 +175,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
             try
             {
                 var value = record.GetField("Value");
-                
+
                 // If it's a simple string value, return it directly
                 if (value is StringValue strValue)
                 {
@@ -198,18 +205,18 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
                 }
             }
         }
-        
+
         /// <summary>
         /// Serializes a RecordValue to a JSON string.
         /// </summary>
         private string SerializeRecordValue(RecordValue record)
         {
             var dict = new Dictionary<string, object>();
-            
+
             foreach (var fieldName in record.Type.FieldNames)
             {
                 var fieldValue = record.GetField(fieldName);
-                
+
                 // Extract field value based on type
                 if (fieldValue is StringValue strValue)
                 {
@@ -238,7 +245,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.PowerFx
                     dict[fieldName] = fieldValue?.ToString() ?? "";
                 }
             }
-            
+
             return JsonSerializer.Serialize(dict);
         }
     }

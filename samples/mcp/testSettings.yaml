@@ -12,10 +12,10 @@ browserConfigurations:
     channel: msedge
 
 scans:
-    - name: Canvas App
-      location: modules/canvasapp.modular.scan.yaml
-    - name: Dataverse entity
-      location: entity.scan.yaml
+  - name: Dataverse entity
+    location: entity.scan.yaml
+  - name: Screen Scan
+    location: screen.scan.yaml
 
 powerFxDefinitions:
   - location: modules/testSettings.modular.yaml

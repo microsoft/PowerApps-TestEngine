@@ -92,7 +92,7 @@ namespace testengine.server.mcp.tests
             visitor.Visit();
 
             // Assert
-            
+
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace testengine.server.mcp.tests
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "controls.yaml");
-            
+
             // Setup YAML content with button and icon controls
             string yamlContent = @"
 controls:
@@ -159,7 +159,7 @@ controls:
 
             // Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify that control facts were created
             //var controlFacts = visitor.Facts.Where(f => f.Key == "Control").ToList();
             //Assert.Contains(controlFacts, f => f.Key == "Button1");
@@ -172,7 +172,7 @@ controls:
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "button.yaml");
-            
+
             // Setup YAML content with button that has OnSelect property
             string yamlContent = @"
 screen:
@@ -210,7 +210,7 @@ screen:
 
             // Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify that property facts were created
             //var propertyFacts = visitor.Facts.Where(f => f.Key == "OnSelect").ToList();
             //Assert.NotEmpty(propertyFacts);
@@ -222,7 +222,7 @@ screen:
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "navigation.yaml");
-            
+
             // Setup YAML content with button that navigates
             string yamlContent = @"
 screen:
@@ -265,7 +265,7 @@ screen:
 
             // Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify that navigation facts were created
             //var navigationFacts = visitor.Facts.Where(f => f.Key == "Navigation").ToList();
             //Assert.NotEmpty(navigationFacts);
@@ -277,7 +277,7 @@ screen:
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "forms.yaml");
-            
+
             // Setup YAML content with form submit
             string yamlContent = @"
 screen:
@@ -324,7 +324,7 @@ screen:
 
             //// Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify that form submission facts were created
             //var formFacts = visitor.Facts.Where(f => f.Key == "FormSubmission").ToList();
             //Assert.NotEmpty(formFacts);
@@ -336,7 +336,7 @@ screen:
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "data-ops.yaml");
-            
+
             // Setup YAML content with data operations
             string yamlContent = @"
 screen:
@@ -397,7 +397,7 @@ screen:
 
             // Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify that data operation facts were created
             //var dataOpFacts = visitor.Facts.Where(f => f.Key == "DataOperation").ToList();
             //Assert.NotEmpty(dataOpFacts);
@@ -411,7 +411,7 @@ screen:
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "app.yaml");
-            
+
             // Setup simple YAML content
             string yamlContent = @"
 app:
@@ -462,7 +462,7 @@ app:
 
             // Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify that OnEnd facts were created
             //var summaryFacts = visitor.Facts.Where(f => f.Key == "ScanSummary").ToList();
             //Assert.NotEmpty(summaryFacts);
@@ -474,7 +474,7 @@ app:
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "app.yaml");
-            
+
             // Setup simple YAML content
             string yamlContent = @"
 app:
@@ -511,7 +511,7 @@ app:
 
             // Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify that OnStart facts were created
             //var initFacts = visitor.Facts.Where(f => f.Key == "InitInfo").ToList();
             //Assert.NotEmpty(initFacts);
@@ -523,7 +523,7 @@ app:
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "screens.yaml");
-            
+
             // Setup YAML with screen definition
             string yamlContent = @"
 app:
@@ -595,13 +595,13 @@ app:
 
             // Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify screen facts
             //var screenFacts = visitor.Facts.Where(f => f.Key == "Screen").ToList();
             //Assert.Equal(2, screenFacts.Count());
             //Assert.Contains(screenFacts, f => f.Key == "Screen1");
             //Assert.Contains(screenFacts, f => f.Key == "DetailsScreen");
-            
+
             //// Verify navigation
             //var navigationFacts = visitor.Facts.Where(f => f.Key == "Navigation").ToList();
             //Assert.NotEmpty(navigationFacts);
@@ -613,7 +613,7 @@ app:
         {
             // Arrange
             var yamlFilePath = Path.Combine(_workspacePath, "validation.yaml");
-            
+
             // Setup YAML with validation rules
             string yamlContent = @"
 app:
@@ -665,7 +665,7 @@ app:
 
             // Assert
             //Assert.NotEmpty(visitor.Facts);
-            
+
             //// Verify validation facts
             //var validationFacts = visitor.Facts.Where(f => f.Key == "Validation").ToList();
             //Assert.Equal(2, validationFacts.Count());
@@ -688,7 +688,7 @@ app:
 
         private class AddContextFunction : ReflectionFunction
         {
-            public AddContextFunction(): base("AddContext", BooleanType.Boolean, RecordType.Empty(), StringType.String)
+            public AddContextFunction() : base("AddContext", BooleanType.Boolean, RecordType.Empty(), StringType.String)
             {
             }
             public BooleanValue Execute(RecordValue node, StringValue context)
