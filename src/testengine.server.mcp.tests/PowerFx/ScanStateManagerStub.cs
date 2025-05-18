@@ -28,8 +28,8 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
         /// Creates a new instance of the SaveFactFunction for tests
         /// </summary>
         public static SaveFactFunctionForTests CreateSaveFactFunction(
-            IFileSystem fileSystem, 
-            ILogger logger, 
+            IFileSystem fileSystem,
+            ILogger logger,
             string workspacePath)
         {
             return new SaveFactFunctionForTests(fileSystem, logger, workspacePath);
@@ -39,14 +39,14 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
         /// Creates a new instance of the ExportFactsFunction for tests
         /// </summary>
         public static ExportFactsFunctionForTests CreateExportFactsFunction(
-            IFileSystem fileSystem, 
-            ILogger logger, 
+            IFileSystem fileSystem,
+            ILogger logger,
             string workspacePath)
         {
             return new ExportFactsFunctionForTests(fileSystem, logger, workspacePath);
         }        /// <summary>
-        /// Creates a Moq matcher for verifying file paths in tests - this prevents issues with expression trees
-        /// </summary>
+                 /// Creates a Moq matcher for verifying file paths in tests - this prevents issues with expression trees
+                 /// </summary>
         public static string FilePathMatcher(string suffix)
         {
             return Moq.Match.Create<string>(path => path != null && path.EndsWith(suffix));
@@ -198,12 +198,12 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                     {
                         metrics["ScreenCount"] = screensDict.Count;
                     }
-                    
+
                     if (appFacts.TryGetValue("Controls", out object controls) && controls is Dictionary<string, object> controlsDict)
                     {
                         metrics["ControlCount"] = controlsDict.Count;
                     }
-                    
+
                     if (appFacts.TryGetValue("DataSources", out object dataSources) && dataSources is Dictionary<string, object> dataSourcesDict)
                     {
                         metrics["DataSourceCount"] = dataSourcesDict.Count;
@@ -222,7 +222,8 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                     _fileSystem.WriteTextToFile(filePath, json, true);
 
                     return BooleanValue.New(true);
-                }                return BooleanValue.New(false);
+                }
+                return BooleanValue.New(false);
             }
             catch (Exception ex)
             {
@@ -230,12 +231,12 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                 return BooleanValue.New(false);
             }
         }
-        
+
         private Dictionary<string, object> GenerateTestRecommendations(Dictionary<string, object> facts)
         {
             var recommendations = new Dictionary<string, object>();
             var testCases = new List<Dictionary<string, string>>();
-            
+
             // Get metrics from metadata
             var metadata = facts["Metadata"] as Dictionary<string, object>;
             var metrics = metadata["Metrics"] as Dictionary<string, object>;
@@ -247,7 +248,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
 
             // Calculate basic test scope
             recommendations["MinimumTestCount"] = Math.Max(screenCount, 3);
-            
+
             // Add screen navigation tests
             if (screenCount > 0)
             {

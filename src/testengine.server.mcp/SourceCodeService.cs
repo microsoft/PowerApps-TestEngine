@@ -220,14 +220,6 @@ public class SourceCodeService
             _recalcEngine.Config.AddFunction(new CanvasAppScanFunctions.DetectNavigationPatternFunction());
             _recalcEngine.Config.AddFunction(new CanvasAppScanFunctions.AnalyzeDataOperationFunction());
 
-            // State management functions (for handling large apps)
-            _recalcEngine.Config.AddFunction(new ScanStateManager.SaveInsightFunction(_fileSystem, _logger, solutionPath));
-            _recalcEngine.Config.AddFunction(new ScanStateManager.FlushInsightsFunction(_fileSystem, _logger, solutionPath));
-            _recalcEngine.Config.AddFunction(new ScanStateManager.GenerateUIMapFunction(_fileSystem, _logger, solutionPath));
-
-            // Enhanced insight management with the new wrapper
-            _recalcEngine.Config.AddFunction(new SaveInsightWrapper(_fileSystem, _logger, solutionPath));
-
             // Test pattern analyzers
             _recalcEngine.Config.AddFunction(new TestPatternAnalyzer.DetectLoginScreenFunction());
             _recalcEngine.Config.AddFunction(new TestPatternAnalyzer.DetectCrudOperationsFunction());

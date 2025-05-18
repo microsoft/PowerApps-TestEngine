@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 using System;
@@ -47,7 +47,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP
                     var keyValue = factRecord.GetField("Key");
                     var appPathValue = factRecord.GetField("AppPath");
                     var valueValue = factRecord.GetField("Value");
-                    
+
                     if (categoryValue is StringValue stringCategoryValue &&
                         keyValue is StringValue stringKeyValue &&
                         appPathValue is StringValue stringAppPathValue)
@@ -145,7 +145,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP
 
                         // Create a consolidated facts file
                         var appFacts = new Dictionary<string, object>();
-                        
+
                         // Add all facts by category
                         foreach (var entry in _stateCache)
                         {
@@ -170,12 +170,12 @@ namespace Microsoft.PowerApps.TestEngine.MCP
                         {
                             metrics["ScreenCount"] = screensDict.Count;
                         }
-                        
+
                         if (appFacts.TryGetValue("Controls", out object controls) && controls is Dictionary<string, object> controlsDict)
                         {
                             metrics["ControlCount"] = controlsDict.Count;
                         }
-                        
+
                         if (appFacts.TryGetValue("DataSources", out object dataSources) && dataSources is Dictionary<string, object> dataSourcesDict)
                         {
                             metrics["DataSourceCount"] = dataSourcesDict.Count;
@@ -211,7 +211,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP
             {
                 var recommendations = new Dictionary<string, object>();
                 var testCases = new List<Dictionary<string, string>>();
-                
+
                 // Get metrics from metadata
                 var metadata = facts["Metadata"] as Dictionary<string, object>;
                 var metrics = metadata["Metrics"] as Dictionary<string, object>;
@@ -223,7 +223,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP
 
                 // Calculate basic test scope
                 recommendations["MinimumTestCount"] = Math.Max(screenCount, 3);
-                
+
                 // Add screen navigation tests
                 if (screenCount > 0)
                 {

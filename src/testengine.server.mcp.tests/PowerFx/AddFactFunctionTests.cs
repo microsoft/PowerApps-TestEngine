@@ -1,12 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
-using System.Linq;
 using Microsoft.PowerApps.TestEngine.MCP.PowerFx;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
-using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
 {
@@ -21,7 +18,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
             var factRecord = CreateFactRecord("TestKey", "TestValue");
 
             // Act
-            var result = addFactFunction.Execute(factRecord);
+            var result = addFactFunction.Execute(factRecord, StringValue.New("General"));
 
             // Assert
             Assert.True(result.Value);
@@ -37,13 +34,14 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                 fields.Add(field);
             }
 
-            Assert.Equal(4, fields.Count());
+            Assert.Equal(5, fields.Count());
 
             // Verify all expected fields are present, regardless of order
             Assert.Contains(fields, field => field.Name == "Id");
             Assert.Contains(fields, field => field.Name == "Category");
             Assert.Contains(fields, field => field.Name == "Key");
             Assert.Contains(fields, field => field.Name == "Value");
+            Assert.Contains(fields, field => field.Name == "IncludeInModel");
 
             // Verify the row was added
             Assert.Single(factsTable.Rows);
@@ -61,11 +59,11 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
 
             // Add first fact
             var factRecord1 = CreateFactRecord("Key1", "Value1");
-            addFactFunction.Execute(factRecord1);
+            addFactFunction.Execute(factRecord1, StringValue.New("Test"));
 
             // Act - add second fact
             var factRecord2 = CreateFactRecord("Key2", "Value2");
-            var result = addFactFunction.Execute(factRecord2);
+            var result = addFactFunction.Execute(factRecord2, StringValue.New("Test"));
 
             // Assert
             Assert.True(result.Value);
@@ -134,7 +132,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
             var factRecord = RecordValue.NewRecordFromFields(factFields);
 
             // Act
-            var result = addFactFunction.Execute(factRecord);
+            var result = addFactFunction.Execute(factRecord, StringValue.New("Test"));
 
             // Assert
             Assert.True(result.Value);
@@ -165,7 +163,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
             var factRecord = RecordValue.NewRecordFromFields(namedValues);
 
             // Act
-            var result = addFactFunction.Execute(factRecord);
+            var result = addFactFunction.Execute(factRecord, StringValue.New("Test"));
 
             // Assert
             Assert.True(result.Value);
@@ -189,7 +187,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
             var factRecord = CreateFactRecord("TestKey", "TestValue");
 
             // Act
-            var result = addFactFunction.Execute(factRecord);
+            var result = addFactFunction.Execute(factRecord, StringValue.New("Test"));
 
             // Assert
             Assert.True(result.Value);

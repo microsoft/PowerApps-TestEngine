@@ -19,16 +19,16 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
     {
         private readonly Mock<IFileSystem> _mockFileSystem;
         private readonly Mock<ILogger> _mockLogger;
-        private readonly string _testWorkspacePath;        public SaveFactFunctionTests()
+        private readonly string _testWorkspacePath; public SaveFactFunctionTests()
         {
             _mockFileSystem = new Mock<IFileSystem>();
             _mockLogger = new Mock<ILogger>();
             _testWorkspacePath = Path.Combine(Path.GetTempPath(), "TestWorkspace");
         }
-        
+
         [Fact]
         public void Execute_SavesFact_ReturnsTrue()
-        {            
+        {
             // Arrange
             var saveFactFunction = ScanStateManagerAccess.CreateSaveFactFunction(
                 _mockFileSystem.Object,
@@ -41,17 +41,17 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                 new NamedValue("AppPath", FormulaValue.New("TestApp.msapp")),
                 new NamedValue("Value", FormulaValue.New("TestValue"))
             );
-            
+
             // Act
             var result = saveFactFunction.Execute(fact);
 
             // Assert
             Assert.True(result.Value);
-        }        
-        
+        }
+
         [Fact]
         public void Execute_WithIncompleteFact_ReturnsFalse()
-        {            
+        {
             // Arrange
             var saveFactFunction = ScanStateManagerAccess.CreateSaveFactFunction(
                 _mockFileSystem.Object,
@@ -75,7 +75,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
         {
             // Arrange
             _mockFileSystem.Setup(fs => fs.WriteTextToFile(It.IsAny<string>(), It.IsAny<string>(), true));
-            
+
             var exportFactsFunction = ScanStateManagerAccess.CreateExportFactsFunction(
                 _mockFileSystem.Object,
                 _mockLogger.Object,
@@ -86,14 +86,14 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                 _mockFileSystem.Object,
                 _mockLogger.Object,
                 _testWorkspacePath);
-                
+
             var fact1 = RecordValue.NewRecordFromFields(
                 new NamedValue("Category", FormulaValue.New("Screens")),
                 new NamedValue("Key", FormulaValue.New("Screen1")),
                 new NamedValue("AppPath", FormulaValue.New("TestApp.msapp")),
-                new NamedValue("Value", new Dictionary<string, object> { 
-                    { "Name", "Screen1" }, 
-                    { "Type", "screen" } 
+                new NamedValue("Value", new Dictionary<string, object> {
+                    { "Name", "Screen1" },
+                    { "Type", "screen" }
                 }.ToFormulaValue())
             );
 
@@ -101,9 +101,9 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                 new NamedValue("Category", FormulaValue.New("Controls")),
                 new NamedValue("Key", FormulaValue.New("Button1")),
                 new NamedValue("AppPath", FormulaValue.New("TestApp.msapp")),
-                new NamedValue("Value", new Dictionary<string, object> { 
-                    { "Name", "Button1" }, 
-                    { "Type", "button" } 
+                new NamedValue("Value", new Dictionary<string, object> {
+                    { "Name", "Button1" },
+                    { "Type", "button" }
                 }.ToFormulaValue())
             );
 
@@ -113,10 +113,10 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
             var exportParams = RecordValue.NewRecordFromFields(
                 new NamedValue("AppPath", FormulaValue.New("TestApp.msapp"))
             );
-            
+
             // Act
             var result = exportFactsFunction.Execute(exportParams);
-            
+
             // Assert
             Assert.True(result.Value);
         }

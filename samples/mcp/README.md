@@ -1,5 +1,7 @@
 # Test Engine MCP Server Sample
 
+> **PREVIEW NOTICE**: This feature is in preview. Preview features aren't meant for production use and may have restricted functionality. These features are available before an official release so that customers can get early access and provide feedback.
+
 This sample explains how to set up and configure Visual Studio Code to integrate with the Test Engine Model Context Protocol (MCP) provider using stdio interface using a NodeJS proxy.
 
 ## What You Need
@@ -10,7 +12,27 @@ Before you start, you'll need a few tools and permissions:
 - **.Net 8.0 SDK**: A software development kit needed to build and run the tests.
 - **Power Platform Environment**: A space where your Plan Designer interactions and solutions exist.
 - **GitHub Copilot**: Access to [GitHub Copilot](https://github.com/features/copilot)
-- **Visual Studio Code**: An install of [Visual Studio Code](https://code.visualstudio.com/) to host the GitHub Copilot and the edit generated test files.
+- **Visual Studio Code**: An install of [Visual Studio Code](https://code.visualstudio.com/) to host the GitHub Copilot and edit generated test files.
+
+## Available MCP Server Features
+
+The Test Engine MCP Server provides the following capabilities through GitHub Copilot in Visual Studio Code:
+
+- **Workspace Scanning**: Scan directories and files to analyze your project structure
+- **Power Fx Validation**: Validate Power Fx expressions for test files
+- **App Fact Collection**: Collect app facts using the ScanStateManager pattern
+- **Plan Integration**: Retrieve and get details for specific Power Platform Plan Designer plans
+- **Test Recommendations**: Generate actionable test recommendations based on app structure
+
+### Available Commands
+
+The MCP Server implements the following commands:
+
+1. **ValidatePowerFx**: Validates a Power Fx expression for use in a test file
+2. **GetPlanList**: Retrieves a list of available Power Platform plans
+3. **GetPlanDetails**: Fetches details for a specific plan and provides facts and recommendations
+4. **GetScanTypes**: Retrieves details for available scan types
+5. **Scan**: Scans a workspace with optional scan types and post-processing Power Fx steps
 
 ## Prerequisites
 
@@ -145,33 +167,33 @@ In a version of Visual Studio Code that supports MCP Server agent with GitHub Co
 
 1. Open PowerShell prompt `pwsh`
 
-2. Optional set `$env:TEST_ENGINE_SOLUTION_PATH` to the path you cloned the solution you want to generate tests for that you have configured using [Dataverse Git integration setup](https://learn.microsoft.com/en-us/power-platform/alm/git-integration/connecting-to-git)
-
-3. Change to the cloned version of Power Apps Test Engine. For example
+2. Change to the cloned version of Power Apps Test Engine. For example
 
 ```PowerShell
 cd c:\users\<useruser>\Source\PowerApps-TestEngine
 ```
 
-4. Open Visual Studio Code using 
+3. Open Visual Studio Code using 
 
 ```PowerShell
 code .
 ```
 
-5. Open Settings
+4. Open Settings
 
    Open the settings file by navigating to File > Preferences > Settings or by pressing Ctrl + ,.
 
-6. Edit settings.json and suggested json from the `Install.ps1` results to the settings.json file to register the MCP server and enable GitHub Copilot
+5. Edit settings.json and suggested json from the `Install.ps1` results to the settings.json file to register the MCP server and enable GitHub Copilot
 
-5. Start the GitHub Copilot
+6. Start the GitHub Copilot
 
 7. Switch to [Agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode)
 
 ## Test Generation
 
-This sample can integrate with Plan designer. In an environment that you have created a [Plan](https://learn.microsoft.com/en-us/power-apps/maker/plan-designer/plan-designer) follow these steps
+> **PREVIEW NOTICE**: These test generation features are in preview. Preview features aren't meant for production use and may have restricted functionality. These features are available before an official release so that customers can get early access and provide feedback.
+
+This sample can integrate with Plan designer. In an environment that you have created a [Plan](https://learn.microsoft.com/en-us/power-apps/maker/plan-designer/plan-designer) follow these steps:
 
 1. Create an [empty workspace](https://code.visualstudio.com/docs/editing/workspaces/workspaces) in Visual Studio Code
 
@@ -197,9 +219,11 @@ Get me details on the "Contoso Plan" plan
 Generate tests for my Dataverse entities
 ```
 
-7. Review the [Dataverse](../dataverse/README.md) on how to use the generated test yaml to test your dataverse entities.
+7. Review the [Dataverse](../dataverse/README.md) documentation on how to use the generated test yaml to test your dataverse entities.
 
 ## Power Fx Validation
+
+> **PREVIEW NOTICE**: This Power Fx validation feature is in preview. Preview features aren't meant for production use and may have restricted functionality. These features are available before an official release so that customers can get early access and provide feedback.
 
 1. Chat with agent using the available actions. For example after consenting to `validate-power-fx` action the following should be valid
 
@@ -209,7 +233,7 @@ If the following Power Fx valid in test engine?
 Assert(1=2)
 ```
 
-8. Try an invalid case 
+2. Try an invalid case 
 
 ```
 If the following Power Fx valid in test engine?

@@ -43,7 +43,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                 return new List<string>();
             }
         }
-        
+
         /// <summary>
         /// Gets all table names from a RecalcEngine
         /// </summary>
@@ -54,7 +54,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
             // Get variables that are tables
             var variables = engine.GetVariableNames();
             var tableNames = new List<string>();
-            
+
             foreach (var name in variables)
             {
                 try
@@ -70,10 +70,10 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
                     // Skip variables that can't be evaluated
                 }
             }
-            
+
             return tableNames;
         }
-        
+
         /// <summary>
         /// Extension method to provide compatibility with existing code
         /// that expects a GetGlobalNames method
@@ -97,7 +97,7 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
             {
                 return tableValue;
             }
-            
+
             throw new InvalidOperationException($"Cannot convert {value.GetType().Name} to TableValue");
         }
 
@@ -109,12 +109,12 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
         public static FormulaValue ToFormulaValue(this Dictionary<string, object> dict)
         {
             var fields = new List<NamedValue>();
-            
+
             foreach (var kvp in dict)
             {
                 fields.Add(new NamedValue(kvp.Key, ConvertToFormulaValue(kvp.Value)));
             }
-            
+
             return RecordValue.NewRecordFromFields(fields.ToArray());
         }
 
@@ -150,9 +150,9 @@ namespace Microsoft.PowerApps.TestEngine.MCP.Tests.PowerFx
             else if (value is IEnumerable<object> listValue)
             {
                 // Convert to a table
-                var rows = listValue.Select(item => 
-                    item is Dictionary<string, object> dict 
-                        ? dict.ToFormulaValue() as RecordValue 
+                var rows = listValue.Select(item =>
+                    item is Dictionary<string, object> dict
+                        ? dict.ToFormulaValue() as RecordValue
                         : RecordValue.NewRecordFromFields(new NamedValue("Value", ConvertToFormulaValue(item)))
                 ).ToArray();
 
