@@ -2,17 +2,20 @@
 // Licensed under the MIT license.
 
 using System.ComponentModel;
+using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using YamlDotNet.Serialization;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using ModelContextProtocol.Server;
 
-// The Test Engein MCP Server is in preview and tools are likely to change.
+// NOTE: The Test Engine MCP Server is in preview. The tools and actions are very likely to change based on feedback and further review
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Logging.AddConsole(consoleLogOptions =>
@@ -42,6 +45,137 @@ public static class TestEngineTools
     private static readonly HttpClient HttpClient = new HttpClient();
 
     /// <summary>
+    /// Gets all available templates from the manifest.
+    /// </summary>
+    /// <returns>A JSON string containing the list of available templates.</returns>
+    [McpServerTool, Description("Gets all available templates from the manifest.")]
+    public static string GetTemplates()
+    {
+        try
+        {
+            // First list resources to ensure we can access the manifest file
+            var assembly = Assembly.GetExecutingAssembly();
+            var resources = assembly.GetManifestResourceNames();
+            var manifestResourceName = resources.FirstOrDefault(r => r.EndsWith("manifest.yaml", StringComparison.OrdinalIgnoreCase));
+
+            if (string.IsNullOrEmpty(manifestResourceName))
+            {
+                // Provide detailed error with available resources
+                return JsonSerializer.Serialize(new
+                {
+                    error = "Manifest file not found",
+                    availableResources = resources
+                });
+            }
+
+            string manifestContent = GetEmbeddedResourceContent(manifestResourceName);
+
+            // Configure YamlDotNet deserializer with optimized settings for our manifest format
+            var deserializer = new DeserializerBuilder()
+                .IgnoreUnmatchedProperties()
+                .WithNamingConvention(YamlDotNet.Serialization.NamingConventions.NullNamingConvention.Instance) // Use exact naming from YAML
+                .Build();
+
+            var templateManifest = deserializer.Deserialize<TemplateManifest>(manifestContent);
+
+            // Return the templates with full details including next steps and detailed guide
+            return JsonSerializer.Serialize(new
+            {
+                manifestFile = manifestResourceName,
+                templates = templateManifest.Templates
+            }, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
+        }
+        catch (Exception ex)
+        {
+            return JsonSerializer.Serialize(new
+            {
+                error = $"Failed to retrieve templates: {ex.Message}",
+                stackTrace = ex.StackTrace
+            });
+        }
+    }
+
+    /// <summary>
+    /// Gets a specific template by name.
+    /// </summary>
+    /// <param name="templateName">Name of the template to retrieve.</param>
+    /// <returns>The content of the requested template.</returns>
+    [McpServerTool, Description("Gets a specific template by name.")]
+    public static string GetTemplate(string templateName)
+    {
+        try
+        {
+            // First list resources to ensure we can access the manifest file
+            var assembly = Assembly.GetExecutingAssembly();
+            var resources = assembly.GetManifestResourceNames();
+            var manifestResourceName = resources.FirstOrDefault(r => r.EndsWith("manifest.yaml", StringComparison.OrdinalIgnoreCase));
+            
+            if (string.IsNullOrEmpty(manifestResourceName))
+            {
+                // Provide detailed error with available resources
+                return JsonSerializer.Serialize(new { 
+                    error = "Manifest file not found", 
+                    availableResources = resources 
+                });
+            }
+            
+            string manifestContent = GetEmbeddedResourceContent(manifestResourceName);
+            
+            // Configure YamlDotNet deserializer with optimized settings for our manifest format
+            var deserializer = new DeserializerBuilder()
+                .IgnoreUnmatchedProperties()
+                .WithNamingConvention(YamlDotNet.Serialization.NamingConventions.NullNamingConvention.Instance) // Use exact naming from YAML
+                .Build();
+            
+            var templateManifest = deserializer.Deserialize<TemplateManifest>(manifestContent);// Check if the requested template exists
+            if (!templateManifest.Templates.TryGetValue(templateName, out TemplateInfo? templateInfo))
+            {
+                return JsonSerializer.Serialize(new { 
+                    error = $"Template '{templateName}' not found in manifest.",
+                    availableTemplates = templateManifest.Templates.Keys
+                });
+            }            // Get the associated resource file - use more robust resource lookup
+            string expectedResourceName = $"testengine.server.mcp.Templates.{templateInfo.Resource}";
+            
+            // Try to find the exact resource or fallback to case-insensitive match
+            var allResources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            string actualResourceName = allResources.FirstOrDefault(r => 
+                r.Equals(expectedResourceName, StringComparison.Ordinal) || 
+                r.Equals(expectedResourceName, StringComparison.OrdinalIgnoreCase));
+            
+            if (string.IsNullOrEmpty(actualResourceName))
+            {
+                return JsonSerializer.Serialize(new { 
+                    error = $"Template resource file '{templateInfo.Resource}' not found",
+                    expectedResourceName = expectedResourceName,
+                    availableResources = allResources
+                });
+            }
+            
+            string templateContent = GetEmbeddedResourceContent(actualResourceName);
+
+            return JsonSerializer.Serialize(new
+            {
+                name = templateName,
+                description = templateInfo.Description,
+                content = templateContent,
+                action = templateInfo.Action,
+                promptResult = templateInfo.PromptResult,
+                nextSteps = templateInfo.NextSteps,
+                detailedGuide = templateInfo.DetailedGuide
+            });
+        }
+        catch (Exception ex)
+        {
+            return JsonSerializer.Serialize(new { error = $"Failed to retrieve template '{templateName}': {ex.Message}" });
+        }
+    }
+
+    /// <summary>
     /// Validates a Power Fx expression.
     /// </summary>
     /// <param name="powerFx">The Power Fx expression to validate.</param>
@@ -61,7 +195,7 @@ public static class TestEngineTools
     /// Gets the list of Plan Designer plans.
     /// </summary>
     /// <returns>A JSON string containing the list of plans.</returns>
-    [McpServerTool, Description("Gets the list of Plan Designer plans.")]
+    //[McpServerTool, Description("Gets the list of Plan Designer plans.")]
     public static async Task<string> GetPlanList()
     {
         var plan = await MakeRequest("plans", HttpMethod.Get, true);
@@ -73,24 +207,24 @@ public static class TestEngineTools
     /// </summary>
     /// <param name="planId">The ID of the plan.</param>
     /// <returns>A JSON string containing the plan details.</returns>
-    [McpServerTool, Description("Gets details for a specific plan and scans the current workspace and provides facts and recommendations to help generate automated tests")]
-    public static async Task<string> GetPlanDetails(string planId, string workspacePath)
-    {
-        var planDetails = await MakeRequest($"plans/{planId}", HttpMethod.Post, data: workspacePath);
-        return JsonSerializer.Serialize(planDetails);
-    }
+    // [McpServerTool, Description("Gets details for a specific plan and scans the current workspace and provides facts and recommendations to help generate automated tests")]
+    // public static async Task<string> GetPlanDetails(string planId, string workspacePath)
+    // {
+    //     var planDetails = await MakeRequest($"plans/{planId}", HttpMethod.Post, data: workspacePath);
+    //     return JsonSerializer.Serialize(planDetails);
+    // }
 
     /// <summary>
     /// Gets details for a specific plan.
     /// </summary>
     /// <param name="planId">The ID of the plan.</param>
     /// <returns>A JSON string containing the plan details.</returns>
-    [McpServerTool, Description("Gets details for available scan types.")]
-    public static async Task<string> GetScanTypes()
-    {
-        var availableScans = await MakeRequest($"scans", HttpMethod.Get);
-        return JsonSerializer.Serialize(availableScans);
-    }
+    // [McpServerTool, Description("Gets details for available scan types.")]
+    // public static async Task<string> GetScanTypes()
+    // {
+    //     var availableScans = await MakeRequest($"scans", HttpMethod.Get);
+    //     return JsonSerializer.Serialize(availableScans);
+    // }
 
     /// <summary>
     /// Gets details for a specific plan.
@@ -99,16 +233,42 @@ public static class TestEngineTools
     /// <param name="scans">Optional list of scans to apply</param>
     /// <param name="scans">Optional post processing Power Fx statements to apply</param>
     /// <returns>A JSON string containing the plan details.</returns>
-    [McpServerTool, Description("Gets details for workspace with optional scans and post processing Power Fx steps")]
-    public static async Task<string> Scan(string workspacePath, string[] scans, string powerFx)
+    // [McpServerTool, Description("Gets details for workspace with optional scans and post processing Power Fx steps")]
+    // public static async Task<string> Scan(string workspacePath, string[] scans, string powerFx)
+    // {
+    //     var scanResults = await MakeRequest($"workspace", HttpMethod.Post, data: JsonSerializer.Serialize(new WorkspaceRequest
+    //     {
+    //         Location = workspacePath,
+    //         Scans = scans,
+    //         PowerFx = powerFx
+    //     }));
+    //     return JsonSerializer.Serialize(scanResults);
+    // }
+
+      /// <summary>
+    /// Helper method to read content from an embedded resource.
+    /// </summary>
+    private static string GetEmbeddedResourceContent(string resourceName)
     {
-        var scanResults = await MakeRequest($"workspace", HttpMethod.Post, data: JsonSerializer.Serialize(new WorkspaceRequest
+        var assembly = Assembly.GetExecutingAssembly();
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+
+        if (stream == null)
         {
-            Location = workspacePath,
-            Scans = scans,
-            PowerFx = powerFx
-        }));
-        return JsonSerializer.Serialize(scanResults);
+            var availableResources = assembly.GetManifestResourceNames();
+            var similarResources = availableResources
+                .Where(r => r.Contains(resourceName.Split('.').LastOrDefault() ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+                
+            string suggestion = similarResources.Any() 
+                ? $" Similar resources: {string.Join(", ", similarResources)}" 
+                : string.Empty;
+                
+            throw new InvalidOperationException($"Resource '{resourceName}' not found.{suggestion}");
+        }
+
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
     }
 
     /// <summary>
@@ -182,4 +342,32 @@ public static class TestEngineTools
             return new { error = $"Failed to communicate with the .NET server at {endpoint}." };
         }
     }
+}
+
+ // Class to deserialize template manifest
+public class TemplateManifest
+{
+    [YamlMember(Alias = "template")]
+    public Dictionary<string, TemplateInfo> Templates { get; set; } = new Dictionary<string, TemplateInfo>();
+}
+
+public class TemplateInfo
+{
+    [YamlMember(Alias = "Resource")]
+    public string Resource { get; set; } = string.Empty;
+
+    [YamlMember(Alias = "Description")]
+    public string Description { get; set; } = string.Empty;
+
+    [YamlMember(Alias = "Action")]
+    public string Action { get; set; } = string.Empty;
+
+    [YamlMember(Alias = "PromptResult")]
+    public string PromptResult { get; set; } = string.Empty;
+
+    [YamlMember(Alias = "NextSteps")]
+    public List<string> NextSteps { get; set; } = new List<string>();
+
+    [YamlMember(Alias = "DetailedGuide")]
+    public string DetailedGuide { get; set; } = string.Empty;
 }

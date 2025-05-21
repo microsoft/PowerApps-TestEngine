@@ -72,8 +72,7 @@ Write-Host @"
             "TestEngine": {
                 "command": "testengine.server.mcp",
                 "args": [
-                    "$startTeYamlPath",
-                    "https://contoso.crm.dynamics.com/"
+                    "$startTeYamlPath"
                 ]
             }
         }

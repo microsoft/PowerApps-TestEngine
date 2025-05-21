@@ -36,4 +36,8 @@
     <ProjectReference Include="..\testengine.server.mcp\testengine.server.mcp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="..\testengine.server.mcp\Templates\*.md" Link="Templates\%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\testengine.server.mcp\Templates\*.yaml" Link="Templates\%(Filename)%(Extension)" />
+  </ItemGroup>
 </Project>
