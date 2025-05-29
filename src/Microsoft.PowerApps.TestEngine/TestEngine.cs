@@ -58,7 +58,7 @@ namespace Microsoft.PowerApps.TestEngine
         public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid? tenantId, DirectoryInfo outputDirectory, string domain, string queryParams)
         {
             // Set up test reporting
-            var testRunId = _testReporter.CreateTestRun("Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
+            var testRunId = _testReporter.CreateTestRun(!String.IsNullOrEmpty(_state.RunName) ? _state.RunName : "Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
             _testReporter.StartTestRun(testRunId);
 
             Logger = _loggerFactory.CreateLogger(testRunId);

@@ -40,6 +40,15 @@ namespace Microsoft.PowerApps.TestEngine
         private Exception TestException { get; set; }
         private int RunCount { get; set; } = 0;
 
+        public Func<string, string[]> GetFiles = (directoryName) =>
+        {
+            if (string.IsNullOrEmpty(directoryName))
+            {
+                return null;
+            }
+            return Directory.Exists(directoryName) ? Directory.GetFiles(directoryName) : null;
+        };
+
         public SingleTestRunner(ITestReporter testReporter,
                                 IPowerFxEngine powerFxEngine,
                                 ITestInfraFunctions testInfraFunctions,
@@ -316,7 +325,7 @@ namespace Microsoft.PowerApps.TestEngine
                             }
 
                             var additionalFiles = new List<string>();
-                            var files = _fileSystem.GetFiles(testCaseResultDirectory);
+                            var files = GetFiles(testCaseResultDirectory);
                             if (files != null)
                             {
                                 foreach (var file in files)

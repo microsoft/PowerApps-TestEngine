@@ -188,7 +188,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockSingleTestInstanceState.Verify(x => x.SetTestResultsDirectory(testResultDirectory), Times.Once());
             MockFileSystem.Verify(x => x.CreateDirectory(testResultDirectory), Times.Once());
             MockTestLogger.Verify(x => x.WriteToLogsFile(testResultDirectory, testId), Times.Once());
-            MockFileSystem.Verify(x => x.GetFiles(testResultDirectory), Times.Once());
             MockTestInfraFunctions.Verify(x => x.DisposeAsync(), Times.Once());
             var additionalFilesList = new List<string>();
             if (additionalFiles != null)
@@ -228,6 +227,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockTestWebProvider.Object,
                                                         MockUserManagerLogin.Object);
 
+            singleTestRunner.GetFiles = (string directory) =>
+            {
+                return additionalFiles;
+            };
+
             var testData = new TestDataOne();
 
             SetupMocks(testData.testRunId, testData.testSuiteId, testData.testId, testData.appUrl, testData.testSuiteDefinition, true, additionalFiles, testData.testSuiteLocale);
@@ -264,6 +268,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
                                                         MockEnvironmentVariable.Object,
                                                         MockTestWebProvider.Object,
                                                         MockUserManagerLogin.Object);
+
+            singleTestRunner.GetFiles = (string directory) => additionalFiles;
 
             var testData = new TestDataTwo();
 

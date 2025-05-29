@@ -37,7 +37,8 @@ namespace PowerAppsTestEngineWrapper
                 { "-a", "UserAuthType"},
                 { "-w", "Wait" },
                 { "-r", "Record" },
-                { "-c", "UseStaticContext" }
+                { "-c", "UseStaticContext" },
+                { "--run-name", "RunName" }
             };
 
             var inputOptions = new ConfigurationBuilder()
@@ -284,7 +285,7 @@ namespace PowerAppsTestEngineWrapper
                     var environmentId = inputOptions.EnvironmentId;
                     var domain = string.Empty;
                     var queryParams = "";
-
+ 
                     DirectoryInfo outputDirectory;
                     const string DefaultOutputDirectory = "TestOutput";
                     var _fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
@@ -324,6 +325,11 @@ namespace PowerAppsTestEngineWrapper
 
                     ITestState state = serviceProvider.GetService<ITestState>();
                     state.SetModulePath(modulePath);
+
+                    if (!string.IsNullOrEmpty(inputOptions.RunName))
+                    {
+                        state.RunName = inputOptions.RunName;
+                    }
 
                     if (!string.IsNullOrEmpty(inputOptions.Record))
                     {
