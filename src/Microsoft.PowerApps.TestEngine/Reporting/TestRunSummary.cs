@@ -294,7 +294,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                                 {
                                     testRun.ResultSummary.Output.StdOut = testRun.ResultSummary.Output.StdOut.Substring(0, testRun.ResultSummary.Output.StdOut.Length - 1);
                                 }
-                                
+
                                 // Add video paths as JSON - only if they don't already exist
                                 if (!testRun.ResultSummary.Output.StdOut.Contains("\"VideoPath\"") &&
                                     !testRun.ResultSummary.Output.StdOut.Contains("\"Videos\""))
@@ -303,7 +303,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                                     validVideos = validVideos
                                         .OrderByDescending(v => _fileSystem.GetFileSize(v))
                                         .ToArray();
-                                        
+
                                     if (testRun.ResultSummary.Output.StdOut.Length > 0)
                                     {
                                         testRun.ResultSummary.Output.StdOut += ", ";
@@ -314,7 +314,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                                     {
                                         testRun.ResultSummary.Output.StdOut += $"\"VideoPath\": \"{validVideos[0].Replace("\\", "\\\\")}\", ";
                                     }
-                                    
+
                                     // Always add Videos array regardless of the number of videos
                                     // This ensures the test has consistent access to the Videos property
                                     testRun.ResultSummary.Output.StdOut += "\"Videos\": [";
@@ -480,7 +480,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }
             // Create JSON data for the Tabulator tables and charts
             var testsData = new List<Dictionary<string, object>>();
-            
+
             // Collect coverage data grouped by page type
             var entityGroups = CollectCoverageData(testRuns);
 
@@ -524,7 +524,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                             <div class=""error-details"" style=""display:none;""><pre>{errorMessage}</pre></div>
                         </div>" :
                         errorMessage;
-                    
+
                     // Build the row with appropriate styling based on outcome - now handled by GenerateTestResultRowHtml
 
                     // Use helper methods to generate HTML for test row and video section
@@ -803,13 +803,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             return GetTemplate("TestRunSummaryTemplate");
         }        /// <summary>
-        /// Groups test results by entity name and type for better organization in the report.
-        /// This method parses the AppURL from test results to extract entity information and uses
-        /// that for grouping instead of just using test run names. This makes test results more meaningful
-        /// to users by organizing tests by the entities they act upon rather than arbitrary test run names.        /// </summary>
-        /// <param name="testRuns">List of test runs</param>
-        /// <param name="groupByPageType">When true, group by page type; when false, group by entity name</param>
-        /// <returns>Dictionary mapping entity names or page types with their results</returns>
+                 /// Groups test results by entity name and type for better organization in the report.
+                 /// This method parses the AppURL from test results to extract entity information and uses
+                 /// that for grouping instead of just using test run names. This makes test results more meaningful
+                 /// to users by organizing tests by the entities they act upon rather than arbitrary test run names.        /// </summary>
+                 /// <param name="testRuns">List of test runs</param>
+                 /// <param name="groupByPageType">When true, group by page type; when false, group by entity name</param>
+                 /// <returns>Dictionary mapping entity names or page types with their results</returns>
         public Dictionary<string, List<(UnitTestResult Result, TestRun Run)>> GroupTestsByRun(List<TestRun> testRuns, bool groupByPageType = false)
         {
             var grouped = new Dictionary<string, List<(UnitTestResult, TestRun)>>();
@@ -821,15 +821,15 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                     string appUrl = string.Empty;
                     string entityName = "Unknown";
                     string pageType = "Unknown";
-                    
+
                     if (!string.IsNullOrEmpty(testRun.ResultSummary?.Output?.StdOut))
                     {
                         // Try to parse as JSON first using the existing ExtractValueBetween method
                         appUrl = ExtractValueBetween(testRun.ResultSummary.Output.StdOut, "AppURL\": \"", "\"");
 
                         // If still empty and StdOut looks like JSON, try using JSON parsing
-                        if (string.IsNullOrEmpty(appUrl) && 
-                            testRun.ResultSummary.Output.StdOut.TrimStart().StartsWith("{") && 
+                        if (string.IsNullOrEmpty(appUrl) &&
+                            testRun.ResultSummary.Output.StdOut.TrimStart().StartsWith("{") &&
                             testRun.ResultSummary.Output.StdOut.TrimEnd().EndsWith("}"))
                         {
                             try
@@ -856,13 +856,13 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                         var appInfo = GetAppTypeAndEntityFromUrl(appUrl);
                         entityName = appInfo.entityName;
                         pageType = appInfo.pageType;
-                          // If entityName is Unknown but pageType is not, use pageType for grouping
+                        // If entityName is Unknown but pageType is not, use pageType for grouping
                         if (entityName == "Unknown" && pageType != "Unknown")
                         {
                             entityName = pageType;
                         }
                     }
-                    
+
                     // Select grouping key based on strategy
                     string groupKey;
                     if (groupByPageType && pageType != "Unknown")
@@ -875,7 +875,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                         // Otherwise group by entity name
                         groupKey = entityName;
                     }
-                    
+
                     // If we couldn't determine either page type or entity name, use the test run name as fallback
                     if (groupKey == "Unknown")
                     {
@@ -1035,7 +1035,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                             {
                                 if (match.Groups.Count > 1)
                                 {
-                                    videos.Add(match.Groups[1].Value.Replace(@"\\",@"\"));
+                                    videos.Add(match.Groups[1].Value.Replace(@"\\", @"\"));
                                 }
                             }
                         }
@@ -1070,7 +1070,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                             }
                         }
                     }
-                    
+
                     // Try parsing with JsonDocument for more reliable extraction
                     try
                     {
@@ -1078,25 +1078,25 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                         {
                             using (JsonDocument doc = JsonDocument.Parse(stdOut))
                             {
-                                if (doc.RootElement.TryGetProperty("AppURL", out JsonElement appUrlElement) && 
+                                if (doc.RootElement.TryGetProperty("AppURL", out JsonElement appUrlElement) &&
                                     appUrlElement.ValueKind == JsonValueKind.String)
                                 {
                                     appUrl = appUrlElement.GetString() ?? "";
                                 }
-                                
-                                if (doc.RootElement.TryGetProperty("TestResults", out JsonElement resultsElement) && 
+
+                                if (doc.RootElement.TryGetProperty("TestResults", out JsonElement resultsElement) &&
                                     resultsElement.ValueKind == JsonValueKind.String)
                                 {
                                     resultsPath = resultsElement.GetString() ?? "";
                                 }
-                                
-                                if (doc.RootElement.TryGetProperty("VideoPath", out JsonElement videoElement) && 
+
+                                if (doc.RootElement.TryGetProperty("VideoPath", out JsonElement videoElement) &&
                                     videoElement.ValueKind == JsonValueKind.String)
                                 {
                                     videoPath = videoElement.GetString() ?? "";
                                 }
-                                
-                                if (doc.RootElement.TryGetProperty("EntityType", out JsonElement entityElement) && 
+
+                                if (doc.RootElement.TryGetProperty("EntityType", out JsonElement entityElement) &&
                                     entityElement.ValueKind == JsonValueKind.String)
                                 {
                                     entityType = entityElement.GetString() ?? "Unknown";
@@ -1127,7 +1127,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                         }
 
                         // Update entityType based on the URL analysis if needed
-                        if ((entityType == "Unknown" || string.IsNullOrEmpty(entityType))  && appInfo.entityName != "Unknown")
+                        if ((entityType == "Unknown" || string.IsNullOrEmpty(entityType)) && appInfo.entityName != "Unknown")
                         {
                             entityType = appInfo.entityName;
                         }
@@ -1234,7 +1234,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 { "logFiles", testResult.ResultFiles?.ResultFile.Select(r => r.Path).ToList() },
                 { "videoInfo", videoInfo.Count > 0 ? videoInfo : null }
             };
-            
+
             // Add single video path for backward compatibility
             if (!string.IsNullOrEmpty(videoPath))
             {
@@ -1246,7 +1246,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             {
                 videos.Add(videoPath);
             }
-            
+
             // Always add the videos array if we have any videos
             if (videos.Count > 0)
             {
@@ -1977,25 +1977,25 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 {
                     // Create test data to extract necessary information
                     var testData = CreateTestResultData(testResult, testRun, group.Key);
-                    
+
                     string pageType = (string)testData["pageType"];
                     string entityType = (string)testData["entityType"];
                     string outcome = (string)testData["outcome"];
-                    
+
                     // If entityType is Unknown but pageType is known, use pageType as entityType
                     if (entityType == "Unknown" && pageType != "Unknown")
                     {
                         entityType = pageType;
                     }
-                    
+
                     // Use page type as the key, or entity name as fallback
                     string groupKey = pageType != "Unknown" ? pageType : (string)testData["entityName"];
-                    
+
                     if (!pageTypeGroups.ContainsKey(groupKey))
                     {
                         pageTypeGroups[groupKey] = (entityType, 0, 0);
                     }
-                    
+
                     var stats = pageTypeGroups[groupKey];
                     if (outcome == TestReporter.PassedResultOutcome)
                     {
@@ -2008,7 +2008,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                     pageTypeGroups[groupKey] = stats;
                 }
             }
-            
+
             return pageTypeGroups;
         }
     }

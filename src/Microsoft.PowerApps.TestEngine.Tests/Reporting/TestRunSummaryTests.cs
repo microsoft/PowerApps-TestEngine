@@ -68,7 +68,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
             Assert.Throws<ArgumentException>(() => testRunSummary.GenerateSummaryReport(resultsDirectory, "outputPath"));
-        }        [Fact]
+        }
+        [Fact]
         public void GenerateSummaryReportTest()
         {
             var resultsDirectory = @"C:\TestResults";
@@ -107,7 +108,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             // Verify the result
             Assert.Equal(outputPath, result);
             MockFileSystem.Verify(x => x.WriteTextToFile(outputPath, It.IsAny<string>(), true), Times.Once);
-        }        [Fact]
+        }
+        [Fact]
         public void GenerateSummaryReportHandlesInvalidTrxFilesTest()
         {
             var resultsDirectory = @"C:\TestResults";
@@ -147,7 +149,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             // Verify the result - it should still generate a report with the valid test run
             Assert.Equal(outputPath, result);
             MockFileSystem.Verify(x => x.WriteTextToFile(outputPath, It.IsAny<string>(), true), Times.Once);
-        }        [Fact]
+        }
+        [Fact]
         public void GenerateSummaryReportIncludesEnhancedStylesTest()
         {
             var resultsDirectory = @"C:\TestResults";
@@ -619,9 +622,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // Arrange
             var trxFilePath = @"C:\TestResults\empty.trx";
-            
+
             MockFileSystem.Setup(x => x.ReadAllText(trxFilePath)).Returns(string.Empty);
-            
+
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
 
             // Act
@@ -636,9 +639,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // Arrange
             var trxFilePath = @"C:\TestResults\invalid.trx";
-            
+
             MockFileSystem.Setup(x => x.ReadAllText(trxFilePath)).Returns("<invalid-xml>");
-            
+
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
 
             // Act
@@ -659,9 +662,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             MockFileSystem.Setup(x => x.ReadAllText(trxFilePath)).Returns(serializedTestRun);
             MockFileSystem.Setup(x => x.GetFileSize(videoFile)).Returns(100000); // Mock file size for videos
-            
+
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
-            
+
             // Override the video file discovery function with a mock
             testRunSummary.GetVideoFiles = (path) => new string[] { videoFile };
 
@@ -704,16 +707,16 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // Arrange
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
-            
+
             // Create test runs with different outcomes
             var testRun1 = CreateDummyTestRun("test1", true);
             var testRun2 = CreateDummyTestRun("test2", false);
-            
+
             // Set start and end times for test runs
             testRun1.Results.UnitTestResults[0].StartTime = DateTime.Now.AddMinutes(-10);
             testRun1.Results.UnitTestResults[0].EndTime = DateTime.Now.AddMinutes(-5);
             testRun1.Results.UnitTestResults[0].Duration = "00:05:00";
-            
+
             testRun2.Results.UnitTestResults[0].StartTime = DateTime.Now.AddMinutes(-5);
             testRun2.Results.UnitTestResults[0].EndTime = DateTime.Now;
             testRun2.Results.UnitTestResults[0].Duration = "00:05:00";
@@ -758,17 +761,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // Arrange
             MockFileSystem.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns("<html>{{SUMMARY_TOTAL}}{{SUMMARY_PASSED}}{{SUMMARY_FAILED}}{{TEST_RESULTS_ROWS}}</html>");
-            
+
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
-            
+
             // Create test runs with different outcomes
             var testRun1 = CreateDummyTestRun("test1", true);
             var testRun2 = CreateDummyTestRun("test2", false);
-            
+
             testRun1.Results.UnitTestResults[0].StartTime = DateTime.Now.AddMinutes(-10);
             testRun1.Results.UnitTestResults[0].EndTime = DateTime.Now.AddMinutes(-5);
             testRun1.Results.UnitTestResults[0].Duration = "00:05:00";
-            
+
             testRun2.Results.UnitTestResults[0].StartTime = DateTime.Now.AddMinutes(-5);
             testRun2.Results.UnitTestResults[0].EndTime = DateTime.Now;
             testRun2.Results.UnitTestResults[0].Duration = "00:05:00";
@@ -814,7 +817,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // This test verifies that the TestRunSummary class has all the public methods 
             // that were added during refactoring
-            
+
             // Arrange
             var mockFileSystem = new Mock<IFileSystem>();
             var testRunSummary = new TestRunSummary(mockFileSystem.Object);
@@ -825,7 +828,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var getTemplateContextMethod = type.GetMethod("GetTemplateContext");
             var generateHtmlReportMethod = type.GetMethod("GenerateHtmlReport");
             var getAppTypeAndEntityFromUrlMethod = type.GetMethod("GetAppTypeAndEntityFromUrl");
-            
+
             // Assert
             Assert.NotNull(loadTestRunMethod);
             Assert.Equal("LoadTestRunFromFile", loadTestRunMethod.Name);

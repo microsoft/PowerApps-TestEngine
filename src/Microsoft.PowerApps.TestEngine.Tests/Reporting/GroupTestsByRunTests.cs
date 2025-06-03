@@ -2,8 +2,8 @@
 // Licensed under the MIT license.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.PowerApps.TestEngine.Reporting;
 using Microsoft.PowerApps.TestEngine.Reporting.Format;
 using Microsoft.PowerApps.TestEngine.System;
@@ -23,8 +23,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             MockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
         }        /// <summary>
-        /// Helper method to create a test run with a custom app URL
-        /// </summary>
+                 /// Helper method to create a test run with a custom app URL
+                 /// </summary>
         private TestRun CreateTestRunWithAppUrl(string testName, string appUrl, bool passed = true)
         {
             var testRun = new TestRun
@@ -151,7 +151,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             Assert.True(result.ContainsKey("settings"));
             Assert.Equal(2, result["dashboard"].Count); // Two dashboard tests
             Assert.Single(result["settings"]); // One settings test
-        }        [Fact]
+        }
+        [Fact]
         public void GroupTestsByRun_MixedTestTypes_GroupsCorrectly()
         {
             // Arrange
@@ -186,11 +187,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // Arrange
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
-              // Create test runs without app URLs
+            // Create test runs without app URLs
             var testRun1 = new TestRun
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = "Account Tests", 
+                Name = "Account Tests",
                 Results = new TestResults
                 {
                     UnitTestResults = new List<UnitTestResult>
@@ -251,12 +252,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // Arrange
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
-            
+
             // Create test run with null ResultSummary
             var testRun1 = new TestRun
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = "Test Run With Null ResultSummary", 
+                Name = "Test Run With Null ResultSummary",
                 Results = new TestResults
                 {
                     UnitTestResults = new List<UnitTestResult>
@@ -276,7 +277,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testRun2 = new TestRun
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = "Test Run With Null Output", 
+                Name = "Test Run With Null Output",
                 Results = new TestResults
                 {
                     UnitTestResults = new List<UnitTestResult>
@@ -313,12 +314,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // Arrange
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
-            
+
             // Create test run with JSON AppURL in ResultSummary.Output.StdOut
             var testRun = new TestRun
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = "JSON Test Run", 
+                Name = "JSON Test Run",
                 Results = new TestResults
                 {
                     UnitTestResults = new List<UnitTestResult>
@@ -334,8 +335,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 },
                 ResultSummary = new TestResultSummary
                 {
-                    Output = new TestOutput 
-                    { 
+                    Output = new TestOutput
+                    {
                         StdOut = @"{
                             ""AppURL"": ""https://contoso.crm.dynamics.com/main.aspx?pagetype=entitylist&etn=contact"",
                             ""VideoPath"": ""C:\\path\\to\\video.mp4"",
@@ -361,12 +362,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         {
             // Arrange
             var testRunSummary = new TestRunSummary(MockFileSystem.Object);
-            
+
             // Create test run with null Output in UnitTestResult
             var testRun = new TestRun
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = "Test With Null Output", 
+                Name = "Test With Null Output",
                 Results = new TestResults
                 {
                     UnitTestResults = new List<UnitTestResult>
@@ -382,8 +383,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 },
                 ResultSummary = new TestResultSummary
                 {
-                    Output = new TestOutput 
-                    { 
+                    Output = new TestOutput
+                    {
                         StdOut = @"{ ""AppURL"": ""https://contoso.crm.dynamics.com/main.aspx?pagetype=entitylist&etn=account"" }"
                     }
                 }
