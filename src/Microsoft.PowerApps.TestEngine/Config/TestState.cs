@@ -26,8 +26,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         private TestPlanDefinition TestPlanDefinition { get; set; }
         private List<TestCase> TestCases { get; set; } = new List<TestCase>();
 
-        public string RunName { get; set; }
-
         private string EnvironmentId { get; set; }
         private string Domain { get; set; }
 

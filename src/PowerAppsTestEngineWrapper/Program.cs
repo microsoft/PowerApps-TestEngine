@@ -38,7 +38,8 @@ namespace PowerAppsTestEngineWrapper
                 { "-w", "Wait" },
                 { "-r", "Record" },
                 { "-c", "UseStaticContext" },
-                { "--run-name", "RunName" }
+                { "--run-name", "RunName" },
+                { "--output-file", "OutputFile" }
             };
 
             var inputOptions = new ConfigurationBuilder()
@@ -56,6 +57,13 @@ namespace PowerAppsTestEngineWrapper
             }
             else
             {
+                if (!string.IsNullOrEmpty(inputOptions.OutputFile) && !string.IsNullOrEmpty(inputOptions.RunName))
+                {
+                    var system = new FileSystem();
+                    var summary = new TestRunSummary(system);
+                    summary.GenerateSummaryReport(Path.Combine(system.GetDefaultRootTestEngine(), "TestOutput"), inputOptions.OutputFile, inputOptions.RunName);
+                    return;
+                }
 
                 // If an empty field is put in via commandline, it won't register as empty
                 // It will cannabalize the next flag, and then ruin the next flag's operation
@@ -285,7 +293,7 @@ namespace PowerAppsTestEngineWrapper
                     var environmentId = inputOptions.EnvironmentId;
                     var domain = string.Empty;
                     var queryParams = "";
- 
+
                     DirectoryInfo outputDirectory;
                     const string DefaultOutputDirectory = "TestOutput";
                     var _fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
@@ -326,18 +334,13 @@ namespace PowerAppsTestEngineWrapper
                     ITestState state = serviceProvider.GetService<ITestState>();
                     state.SetModulePath(modulePath);
 
-                    if (!string.IsNullOrEmpty(inputOptions.RunName))
-                    {
-                        state.RunName = inputOptions.RunName;
-                    }
-
                     if (!string.IsNullOrEmpty(inputOptions.Record))
                     {
                         state.SetRecordMode();
                     }
 
                     //setting defaults for optional parameters outside RunTestAsync
-                    var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
+                    var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams, inputOptions.RunName);
                     if (testResult != "InvalidOutputDirectory")
                     {
                         Console.WriteLine($"Test results can be found here: {testResult}");

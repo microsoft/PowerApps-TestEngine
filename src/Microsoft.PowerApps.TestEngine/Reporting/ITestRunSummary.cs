@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 namespace Microsoft.PowerApps.TestEngine.Reporting
@@ -13,14 +13,8 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         /// </summary>
         /// <param name="resultsDirectory">Directory containing the .trx files</param>
         /// <param name="outputPath">Path where the summary report will be saved</param>
+        /// <param name="runName">Optional name to filter test runs by. If specified, only includes test runs with matching names</param>
         /// <returns>Path to the generated summary report</returns>
-        string GenerateSummaryReport(string resultsDirectory, string outputPath);
-        
-        /// <summary>
-        /// Gets all TRX files from a directory
-        /// </summary>
-        /// <param name="directoryPath">Directory to search</param>
-        /// <returns>Array of file paths</returns>
-        string[] GetTrxFiles(string directoryPath);
+        string GenerateSummaryReport(string resultsDirectory, string outputPath, string runName = null);
     }
 }

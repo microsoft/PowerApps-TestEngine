@@ -55,10 +55,12 @@ namespace Microsoft.PowerApps.TestEngine
         /// <param name="queryParams">Optional query parameters that would be passed to the Player URL for optional features or parameters.</param>
         /// <returns>The full path where the test results are saved.</returns>
         /// <exception cref="ArgumentNullException">Throws ArgumentNullException if any of testConfigFile, environmentId, tenantId or domain are missing or empty.</exception>
-        public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid? tenantId, DirectoryInfo outputDirectory, string domain, string queryParams)
+        public async Task<string> RunTestAsync(FileInfo testConfigFile, string environmentId, Guid? tenantId, DirectoryInfo outputDirectory, string domain, string queryParams, string runName = null)
         {
             // Set up test reporting
-            var testRunId = _testReporter.CreateTestRun(!String.IsNullOrEmpty(_state.RunName) ? _state.RunName : "Power Fx Test Runner", "User"); // TODO: determine if there are more meaningful values we can put here
+            var testRunName = !String.IsNullOrEmpty(runName) ? runName : "Power Fx Test Runner";
+            // TODO: determine if there are more meaningful values we can put here
+            var testRunId = _testReporter.CreateTestRun(testRunName, "User");
             _testReporter.StartTestRun(testRunId);
 
             Logger = _loggerFactory.CreateLogger(testRunId);

@@ -13,8 +13,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
     /// </summary>
     public interface ITestState
     {
-        public string RunName { get; set; }
-
         /// <summary>
         /// The current test provider
         /// </summary>

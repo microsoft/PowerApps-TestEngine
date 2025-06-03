@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 using System;
@@ -27,15 +27,14 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         {
             _testRunSummary = testRunSummary;
             _fileSystem = fileSystem;
-        }
-
-        /// <summary>
-        /// Generates a test run summary report from a directory containing .trx files
-        /// </summary>
-        /// <param name="resultsDirectory">Directory containing the .trx files</param>
-        /// <param name="outputPath">Optional path where the summary report will be saved. If not specified, the report will be saved in the results directory</param>
-        /// <returns>Path to the generated summary report</returns>
-        public string GenerateSummaryReport(string resultsDirectory, string outputPath = null)
+        }        /// <summary>
+                 /// Generates a test run summary report from a directory containing .trx files
+                 /// </summary>
+                 /// <param name="resultsDirectory">Directory containing the .trx files</param>
+                 /// <param name="outputPath">Optional path where the summary report will be saved. If not specified, the report will be saved in the results directory</param>
+                 /// <param name="runName">Optional name to filter test runs by</param>
+                 /// <returns>Path to the generated summary report</returns>
+        public string GenerateSummaryReport(string resultsDirectory, string outputPath = null, string runName = null)
         {
             if (string.IsNullOrEmpty(resultsDirectory))
             {
@@ -53,7 +52,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 outputPath = Path.Combine(resultsDirectory, $"TestRunSummary_{DateTime.Now:yyyyMMdd_HHmmss}.html");
             }
 
-            return _testRunSummary.GenerateSummaryReport(resultsDirectory, outputPath);
+            return _testRunSummary.GenerateSummaryReport(resultsDirectory, outputPath, runName);
         }
     }
 }
