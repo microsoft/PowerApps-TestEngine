@@ -101,6 +101,10 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new AssertFunction(Logger));
             powerFxConfig.AddFunction(new AssertNotErrorFunction(Logger));
             powerFxConfig.AddFunction(new SetPropertyFunction(_testWebProvider, Logger));
+            powerFxConfig.AddFunction(new NavigateToRecordFunction(_testWebProvider, this, Logger));
+            powerFxConfig.AddFunction(new SetDOBFieldsFunction(_testWebProvider, Logger));
+            powerFxConfig.AddFunction(new SelectGridRowCheckboxFunction(_testWebProvider, Logger));
+
             powerFxConfig.AddFunction(new IsMatchFunction(Logger));
 
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
