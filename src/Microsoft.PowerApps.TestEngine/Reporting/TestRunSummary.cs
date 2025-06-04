@@ -423,26 +423,46 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
         public TemplateData GetTemplateContext(List<TestRun> testRuns)
         {
             // Create template data container
-            var templateData = new TemplateData();
-
-            // Prepare summary data
+            var templateData = new TemplateData();            // Prepare summary data
             int totalTests = 0;
             int passedTests = 0;
             int failedTests = 0;
             int otherTests = 0; // Not passed or failed (e.g., skipped, inconclusive)
             DateTime? minStartTime = null;
             DateTime? maxEndTime = null;
+            
+            // Track overall test run times from TestRun.Times properties
+            DateTime? runStartTime = null;
+            DateTime? runEndTime = null;
 
             // Build the test results rows for both table format and card format
             var testResultsRows = new StringBuilder();
             var testResultsCards = new StringBuilder();
 
             // Group tests by test run
-            var groupedTests = GroupTestsByRun(testRuns);
-
-            // Process all test results for statistics
+            var groupedTests = GroupTestsByRun(testRuns);            // Process all test results for statistics
             foreach (var testRun in testRuns)
             {
+                // Track overall test run times from TestRun.Times
+                if (testRun.Times != null)
+                {
+                    if (testRun.Times.Start != default)
+                    {
+                        if (runStartTime == null || testRun.Times.Start < runStartTime)
+                        {
+                            runStartTime = testRun.Times.Start;
+                        }
+                    }
+
+                    if (testRun.Times.Finish != default)
+                    {
+                        if (runEndTime == null || testRun.Times.Finish > runEndTime)
+                        {
+                            runEndTime = testRun.Times.Finish;
+                        }
+                    }
+                }
+                
                 foreach (var testResult in testRun.Results.UnitTestResults)
                 {
                     totalTests++;
@@ -460,7 +480,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                         otherTests++; // Count other outcomes (not passed or failed)
                     }
 
-                    // Track earliest start time and latest end time
+                    // Track earliest start time and latest end time for individual tests
                     if (testResult.StartTime != default)
                     {
                         if (minStartTime == null || testResult.StartTime < minStartTime)
@@ -496,6 +516,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 <tr class=""group-header"">
                     <td colspan=""8""><strong>{group.Key}</strong> ({group.Value.Count} tests)</td>
                 </tr>");
+
                 // We'll build a list of test data for this group
                 // The actual card HTML generation will happen at the end of this group's processing
                 // Add test results for this group
@@ -582,17 +603,25 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 // Generate and add the card using the template method
                 string cardHtml = GenerateTestCardHtml(group.Key, templateData.GroupedTests[group.Key]);
                 testResultsCards.Append(cardHtml);
-            }
-
-            // Calculate pass percentage and total duration
+            }            // Calculate pass percentage and total duration
             templateData.PassPercentage = totalTests > 0 ? (double)passedTests / totalTests * 100 : 0;
             templateData.TotalDuration = "N/A";
-            if (minStartTime.HasValue && maxEndTime.HasValue)
+            
+            // Prefer TestRun.Times data for start/end times if available
+            if (runStartTime.HasValue && runEndTime.HasValue)
             {
+                TimeSpan runDuration = runEndTime.Value - runStartTime.Value;
+                templateData.TotalDuration = $"{runDuration.TotalMinutes:F2} minutes";
+                templateData.StartTime = runStartTime.Value.ToString("g");
+                templateData.EndTime = runEndTime.Value.ToString("g");
+            }
+            // Fall back to individual test times if run times are not available
+            else if (minStartTime.HasValue && maxEndTime.HasValue)
+            {   
                 TimeSpan duration = maxEndTime.Value - minStartTime.Value;
                 templateData.TotalDuration = $"{duration.TotalMinutes:F2} minutes";
-                templateData.StartTime = minStartTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
-                templateData.EndTime = maxEndTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
+                templateData.StartTime = minStartTime.Value.ToString("g");
+                templateData.EndTime = maxEndTime.Value.ToString("g");
             }
 
             // Calculate health score - currently using pass percentage
@@ -634,7 +663,9 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 templateData.CoverageLabels.Add(name);
                 templateData.CoveragePassData.Add(passes);
                 templateData.CoverageFailData.Add(failures);
-            }            // Set final template data
+            }
+            
+            // Set final template data
             templateData.TestResultsRows = testResultsRows.ToString();
             templateData.TestResultsCards = testResultsCards.ToString();
 
@@ -660,9 +691,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                     { "folderPath", "" },
                     { "logFiles", new List<Dictionary<string, string>>() }
                 });
-            }
-
-            // Set environment information in TemplateData
+            }            // Set environment information in TemplateData
             templateData.Environment.TestEngineVersion = GetAssemblyVersion();
             templateData.Environment.StartTime = templateData.StartTime;
             templateData.Environment.EndTime = templateData.EndTime;
@@ -1153,12 +1182,27 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                     duration = testResult.Duration;
                 }
             }
+            // Format the start time - Use test run start time if available, otherwise use individual test start time
+            string startTime;
+            if (testRun.Times != null && testRun.Times.Start != default)
+            {
+                startTime = testRun.Times.Start.ToString("g");
+            }
+            else
+            {
+                startTime = testResult.StartTime != default ? testResult.StartTime.ToString("g") : "N/A";
+            }
 
-            // Format the start time
-            string startTime = testResult.StartTime != default ? testResult.StartTime.ToString("yyyy-MM-dd HH:mm:ss") : "N/A";
-
-            // Format end time
-            string endTime = testResult.EndTime != default ? testResult.EndTime.ToString("yyyy-MM-dd HH:mm:ss") : "N/A";
+            // Format end time - Use test run finish time if available, otherwise use individual test end time
+            string endTime;
+            if (testRun.Times != null && testRun.Times.Finish != default)
+            {
+                endTime = testRun.Times.Finish.ToString("g");
+            }
+            else
+            {
+                endTime = testResult.EndTime != default ? testResult.EndTime.ToString("g") : "N/A";
+            }
 
             // Get results directory
             string resultsDirectory = string.IsNullOrEmpty(resultsPath) ?

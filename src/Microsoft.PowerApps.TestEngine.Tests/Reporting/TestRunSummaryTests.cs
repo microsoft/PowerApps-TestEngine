@@ -511,7 +511,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
         }
 
         // Helper method to create dummy test runs
-        private TestRun CreateDummyTestRun(string testName, bool passed)
+        private TestRun CreateDummyTestRun(string testName, bool passed, DateTime? started = null, DateTime? ended = null)
         {
             var testRun = new TestRun
             {
@@ -519,10 +519,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                 Name = "Test Run",
                 Times = new TestTimes
                 {
-                    Creation = DateTime.Now,
-                    Queuing = DateTime.Now,
-                    Start = DateTime.Now,
-                    Finish = DateTime.Now.AddMinutes(1)
+                    Creation = started ?? DateTime.Now,
+                    Queuing = started ?? DateTime.Now,
+                    Start = started ?? DateTime.Now,
+                    Finish = ended ?? DateTime.Now.AddMinutes(1)
                 },
                 Results = new TestResults
                 {
@@ -533,8 +533,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
                             TestId = Guid.NewGuid().ToString(),
                             TestName = testName,
                             Outcome = passed ? TestReporter.PassedResultOutcome : TestReporter.FailedResultOutcome,
-                            StartTime = DateTime.Now,
-                            EndTime = DateTime.Now.AddSeconds(10),
+                            StartTime = started ?? DateTime.Now,
+                            EndTime = ended ?? DateTime.Now.AddSeconds(10),
                             Duration = "00:00:10"
                         }
                     }
@@ -845,6 +845,61 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             Assert.NotNull(getAppTypeAndEntityFromUrlMethod);
             Assert.Equal("GetAppTypeAndEntityFromUrl", getAppTypeAndEntityFromUrlMethod.Name);
             Assert.True(getAppTypeAndEntityFromUrlMethod.IsPublic);
+        }
+
+        [Fact]
+        public void GetTemplateContext_MultipleTestRuns_CalculatesCorrectTimespan()
+        {
+            // Arrange
+            var testRunSummary = new TestRunSummary(MockFileSystem.Object);
+            var earliestStartTime = new DateTime(2023, 1, 1, 10, 0, 0);
+            var middleStartTime = new DateTime(2023, 1, 1, 11, 0, 0);
+            var latestEndTime = new DateTime(2023, 1, 1, 12, 15, 0);
+
+            // Create test runs with chronologically spread timestamps
+            var testRun1 = CreateDummyTestRun("EarlyTest", true, earliestStartTime, earliestStartTime.AddMinutes(5));
+            var testRun2 = CreateDummyTestRun("MiddleTest", true, middleStartTime, middleStartTime.AddMinutes(10));
+            var testRun3 = CreateDummyTestRun("LateTest", true, latestEndTime, latestEndTime.AddMinutes(15));
+
+            // Set earliest start time on first test
+           
+            testRun1.Results.UnitTestResults[0].StartTime = earliestStartTime;
+            testRun1.Results.UnitTestResults[0].EndTime = earliestStartTime.AddMinutes(5);
+            testRun1.Results.UnitTestResults[0].Duration = "00:05:00";
+
+            // Set middle timestamps on second test
+           
+            testRun2.Results.UnitTestResults[0].StartTime = middleStartTime;
+            testRun2.Results.UnitTestResults[0].EndTime = middleStartTime.AddMinutes(10);
+            testRun2.Results.UnitTestResults[0].Duration = "00:10:00";
+
+            // Set latest end time on third test
+           
+            testRun3.Results.UnitTestResults[0].StartTime = latestEndTime;
+            testRun3.Results.UnitTestResults[0].EndTime = latestEndTime.AddMinutes(15);
+            testRun3.Results.UnitTestResults[0].Duration = "00:15:00";
+
+            // Create a list with the test runs (deliberately not in chronological order)
+            var testRuns = new List<TestRun> { testRun2, testRun3, testRun1 };
+
+            // Act
+            var result = testRunSummary.GetTemplateContext(testRuns);
+
+            // Assert
+            Assert.NotNull(result);
+
+            var expectedEndTime = latestEndTime.AddMinutes(15);
+
+            // Verify start time is the earliest time across all test runs
+            Assert.Equal(earliestStartTime.ToString("g"), result.StartTime);
+            
+            // Verify end time is the latest time across all test runs
+            Assert.Equal(expectedEndTime.ToString("g"), result.EndTime);
+            
+            // Verify total duration is calculated from earliest start to latest end
+            TimeSpan totalDuration = expectedEndTime - earliestStartTime;
+            Assert.Equal(totalDuration.TotalMinutes.ToString("0.00") + " minutes", result.TotalDuration);
+       
         }
     }
 }
