@@ -862,19 +862,19 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var testRun3 = CreateDummyTestRun("LateTest", true, latestEndTime, latestEndTime.AddMinutes(15));
 
             // Set earliest start time on first test
-           
+
             testRun1.Results.UnitTestResults[0].StartTime = earliestStartTime;
             testRun1.Results.UnitTestResults[0].EndTime = earliestStartTime.AddMinutes(5);
             testRun1.Results.UnitTestResults[0].Duration = "00:05:00";
 
             // Set middle timestamps on second test
-           
+
             testRun2.Results.UnitTestResults[0].StartTime = middleStartTime;
             testRun2.Results.UnitTestResults[0].EndTime = middleStartTime.AddMinutes(10);
             testRun2.Results.UnitTestResults[0].Duration = "00:10:00";
 
             // Set latest end time on third test
-           
+
             testRun3.Results.UnitTestResults[0].StartTime = latestEndTime;
             testRun3.Results.UnitTestResults[0].EndTime = latestEndTime.AddMinutes(15);
             testRun3.Results.UnitTestResults[0].Duration = "00:15:00";
@@ -892,14 +892,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
 
             // Verify start time is the earliest time across all test runs
             Assert.Equal(earliestStartTime.ToString("g"), result.StartTime);
-            
+
             // Verify end time is the latest time across all test runs
             Assert.Equal(expectedEndTime.ToString("g"), result.EndTime);
-            
+
             // Verify total duration is calculated from earliest start to latest end
             TimeSpan totalDuration = expectedEndTime - earliestStartTime;
             Assert.Equal(totalDuration.TotalMinutes.ToString("0.00") + " minutes", result.TotalDuration);
-       
+
         }
     }
 }

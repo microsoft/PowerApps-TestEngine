@@ -430,7 +430,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             int otherTests = 0; // Not passed or failed (e.g., skipped, inconclusive)
             DateTime? minStartTime = null;
             DateTime? maxEndTime = null;
-            
+
             // Track overall test run times from TestRun.Times properties
             DateTime? runStartTime = null;
             DateTime? runEndTime = null;
@@ -462,7 +462,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                         }
                     }
                 }
-                
+
                 foreach (var testResult in testRun.Results.UnitTestResults)
                 {
                     totalTests++;
@@ -606,7 +606,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }            // Calculate pass percentage and total duration
             templateData.PassPercentage = totalTests > 0 ? (double)passedTests / totalTests * 100 : 0;
             templateData.TotalDuration = "N/A";
-            
+
             // Prefer TestRun.Times data for start/end times if available
             if (runStartTime.HasValue && runEndTime.HasValue)
             {
@@ -617,7 +617,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
             }
             // Fall back to individual test times if run times are not available
             else if (minStartTime.HasValue && maxEndTime.HasValue)
-            {   
+            {
                 TimeSpan duration = maxEndTime.Value - minStartTime.Value;
                 templateData.TotalDuration = $"{duration.TotalMinutes:F2} minutes";
                 templateData.StartTime = minStartTime.Value.ToString("g");
@@ -664,7 +664,7 @@ namespace Microsoft.PowerApps.TestEngine.Reporting
                 templateData.CoveragePassData.Add(passes);
                 templateData.CoverageFailData.Add(failures);
             }
-            
+
             // Set final template data
             templateData.TestResultsRows = testResultsRows.ToString();
             templateData.TestResultsCards = testResultsCards.ToString();
