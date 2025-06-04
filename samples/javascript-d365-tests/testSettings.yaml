@@ -1,0 +1,12 @@
+locale: "en-US"
+recordVideo: true
+browserConfigurations:
+  - browser: Chromium
+powerFxTestTypes:
+ - name: TextCollection
+   value: |
+      [{Value: Text}]
+testFunctions:
+ - description: Join lines of text with a semicolon
+   code: |
+    Join(lines: TextCollection): Text = Concat(lines, Value, ";")

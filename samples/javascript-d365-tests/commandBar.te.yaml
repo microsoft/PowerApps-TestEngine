@@ -1,0 +1,59 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Command Bar Tests
+  testSuiteDescription: Tests for Dynamics 365 command bar functionality using PowerFx format
+  persona: User1
+  appLogicalName: na
+
+  testCases:
+    - testCaseName: CommandBar_NewButtonAlwaysEnabled
+      testCaseDescription: Tests that new button is always enabled
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"commandBar.js", Setup:"mockXrm.js", Run: Join([
+            "isCommandEnabled('new')"
+          ]), Expected: "true" });
+    - testCaseName: CommandBar_ActivateButtonEnabledForInactiveAccount
+      testCaseDescription: Tests that activate button is enabled for inactive accounts
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"commandBar.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('accountstatus').setValue(0)", 
+            "isCommandEnabled('activate')"
+          ]), Expected: "true" });
+    - testCaseName: CommandBar_ActivateButtonDisabledForActiveAccount
+      testCaseDescription: Tests that activate button is disabled for active accounts
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"commandBar.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('accountstatus').setValue()", 
+            "isCommandEnabled('activate')"
+          ]), Expected: "false" });
+    - testCaseName: CommandBar_DeactivateButtonEnabledForActiveAccount
+      testCaseDescription: Tests that deactivate button is enabled for active accounts
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"commandBar.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('accountstatus').setValue(1)",
+            "isCommandEnabled('deactivate')"
+          ]), Expected: "true" });
+    - testCaseName: CommandBar_DeactivateButtonDisabledForInactiveAccount
+      testCaseDescription: Tests that deactivate button is disabled for inactive accounts
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"commandBar.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('accountstatus').setValue(0)",
+            "isCommandEnabled('deactivate')"
+          ]), Expected: "false" });
+    - testCaseName: CommandBar_DeactivatePreventedWithActiveCases
+      testCaseDescription: Tests that deactivation is prevented when there are active cases
+      testSteps: |
+        = Preview.AssertJavaScript({Location:"commandBar.js", Setup:"mockXrm.js", Run: Join([
+            "Xrm.Page.getAttribute('accountstatus').setValue(1)",
+            "Xrm.Page.getAttribute('activecases_count').setValue(3)",
+            "validateBeforeDeactivate()"
+          ]), Expected: "false" });
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
