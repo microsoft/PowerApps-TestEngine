@@ -9,11 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using YamlDotNet.Serialization;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using ModelContextProtocol.Server;
+using YamlDotNet.Serialization;
 
 // NOTE: The Test Engine MCP Server is in preview. The tools and actions are very likely to change based on feedback and further review
 
@@ -113,49 +113,52 @@ public static class TestEngineTools
             var assembly = Assembly.GetExecutingAssembly();
             var resources = assembly.GetManifestResourceNames();
             var manifestResourceName = resources.FirstOrDefault(r => r.EndsWith("manifest.yaml", StringComparison.OrdinalIgnoreCase));
-            
+
             if (string.IsNullOrEmpty(manifestResourceName))
             {
                 // Provide detailed error with available resources
-                return JsonSerializer.Serialize(new { 
-                    error = "Manifest file not found", 
-                    availableResources = resources 
+                return JsonSerializer.Serialize(new
+                {
+                    error = "Manifest file not found",
+                    availableResources = resources
                 });
             }
-            
+
             string manifestContent = GetEmbeddedResourceContent(manifestResourceName);
-            
+
             // Configure YamlDotNet deserializer with optimized settings for our manifest format
             var deserializer = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(YamlDotNet.Serialization.NamingConventions.NullNamingConvention.Instance) // Use exact naming from YAML
                 .Build();
-            
+
             var templateManifest = deserializer.Deserialize<TemplateManifest>(manifestContent);// Check if the requested template exists
             if (!templateManifest.Templates.TryGetValue(templateName, out TemplateInfo? templateInfo))
             {
-                return JsonSerializer.Serialize(new { 
+                return JsonSerializer.Serialize(new
+                {
                     error = $"Template '{templateName}' not found in manifest.",
                     availableTemplates = templateManifest.Templates.Keys
                 });
             }            // Get the associated resource file - use more robust resource lookup
             string expectedResourceName = $"testengine.server.mcp.Templates.{templateInfo.Resource}";
-            
+
             // Try to find the exact resource or fallback to case-insensitive match
             var allResources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-            string actualResourceName = allResources.FirstOrDefault(r => 
-                r.Equals(expectedResourceName, StringComparison.Ordinal) || 
+            string actualResourceName = allResources.FirstOrDefault(r =>
+                r.Equals(expectedResourceName, StringComparison.Ordinal) ||
                 r.Equals(expectedResourceName, StringComparison.OrdinalIgnoreCase));
-            
+
             if (string.IsNullOrEmpty(actualResourceName))
             {
-                return JsonSerializer.Serialize(new { 
+                return JsonSerializer.Serialize(new
+                {
                     error = $"Template resource file '{templateInfo.Resource}' not found",
                     expectedResourceName = expectedResourceName,
                     availableResources = allResources
                 });
             }
-            
+
             string templateContent = GetEmbeddedResourceContent(actualResourceName);
 
             return JsonSerializer.Serialize(new
@@ -245,7 +248,7 @@ public static class TestEngineTools
     //     return JsonSerializer.Serialize(scanResults);
     // }
 
-      /// <summary>
+    /// <summary>
     /// Helper method to read content from an embedded resource.
     /// </summary>
     private static string GetEmbeddedResourceContent(string resourceName)
@@ -259,11 +262,11 @@ public static class TestEngineTools
             var similarResources = availableResources
                 .Where(r => r.Contains(resourceName.Split('.').LastOrDefault() ?? string.Empty, StringComparison.OrdinalIgnoreCase))
                 .ToList();
-                
-            string suggestion = similarResources.Any() 
-                ? $" Similar resources: {string.Join(", ", similarResources)}" 
+
+            string suggestion = similarResources.Any()
+                ? $" Similar resources: {string.Join(", ", similarResources)}"
                 : string.Empty;
-                
+
             throw new InvalidOperationException($"Resource '{resourceName}' not found.{suggestion}");
         }
 
@@ -344,7 +347,7 @@ public static class TestEngineTools
     }
 }
 
- // Class to deserialize template manifest
+// Class to deserialize template manifest
 public class TemplateManifest
 {
     [YamlMember(Alias = "template")]
