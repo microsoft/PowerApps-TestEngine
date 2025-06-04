@@ -36,7 +36,6 @@
     <ProjectReference Include="..\testengine.module.powerapps.portal\testengine.module.powerapps.portal.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.module.sample\testengine.module.sample.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.module.simulation\testengine.module.simulation.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\testengine.module.visualcompare\testengine.module.visualcompare.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.canvas\testengine.provider.canvas.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.mda\testengine.provider.mda.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj" PrivateAssets="all" />
@@ -44,6 +43,9 @@
     <ProjectReference Include="..\testengine.user.storagestate\testengine.user.storagestate.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\PowerAppsTestEngineWrapper\PowerAppsTestEngineWrapper.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\testengine.auth.environment.certificate\testengine.auth.environment.certificate.csproj" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <ProjectReference Include="..\testengine.module.visualcompare\testengine.module.visualcompare.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>

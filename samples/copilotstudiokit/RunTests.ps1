@@ -280,11 +280,11 @@ if ($runTests)
             $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entitylist&etn=$entityName&viewid=$viewId&viewType=1039"
             if ($record) {
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
             } else {
                 Write-Host "Skipped recording"
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
             }
 
             Update-TestData -folderPath $folderPath -timeThreshold $testStart -entityName $entityName -entityType "list"
@@ -325,11 +325,11 @@ if ($runTests)
 
             if ($record) {
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
             } else {
                 Write-Host "Skipped recording"
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
             }
 
             Update-TestData -folderPath $folderPath -timeThreshold $testStart -entityName $entityName -entityType "details"
@@ -390,11 +390,11 @@ if ($runTests)
             $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
             if ($record) {
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" -p "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
             } else {
                 Write-Host "Skipped recording"
                 # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" -p "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
+                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
             }
 
             Update-TestData -folderPath $folderPath -timeThreshold $testStart -entityName $customPage -entityType "custom"
