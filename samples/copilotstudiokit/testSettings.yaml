@@ -4,6 +4,8 @@ headless: false
 recordVideo: true
 extensionModules:
   enable: true
+  allowPowerFxNamespaces:
+    - Preview
   parameters:
       enableDataverseFunctions: true
 timeout: 1200000

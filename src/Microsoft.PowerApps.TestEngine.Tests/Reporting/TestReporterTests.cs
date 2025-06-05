@@ -380,6 +380,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.Reporting
             var resultDirectory = "C:\\results";
             var testReporter = new TestReporter(MockFileSystem.Object);
             var testRunId = testReporter.CreateTestRun(testRunName, testUser);
+
             testReporter.TestRunAppURL = "someAppURL";
             testReporter.TestResultsDirectory = "someResultsDirectory";
 

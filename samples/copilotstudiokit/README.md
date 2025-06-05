@@ -37,11 +37,7 @@ dotnet tool install --global Microsoft.PowerApps.CLI.Tool
 
 5. Granted System Administrator or System Customizer roles as documented in [Microsoft Learn](https://learn.microsoft.com/power-apps/maker/model-driven-apps/privileges-required-customization#system-administrator-and-system-customizer-security-roles)
 
-6. Git Client has been installed. For example using [GitHub Desktop](https://desktop.github.com/download/) or the [Git application](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). For example on Windows you could use the following command
 
-```pwsh
-winget install --id Git.Git -e --source winget
-```
 
 7. The Azure CLI has been [installed](https://learn.microsoft.com/cli/azure/install-azure-cli)
 
@@ -64,6 +60,11 @@ pac application install --environment-id 00000000-0000-0000-0000-000000000000 --
 10. You have the Copilot Studio Kit installed in the target environment. You can use [Install instructions](https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/INSTALLATION_INSTRUCTIONS.md)
 
 ## Verification
+
+To ensure your environment is ready:
+```powershell
+.\validate.ps1
+```
 
   > NOTE: If at any stage you find that a component is not installed, you may need to restart you command line session to verify that the component has been installed 
 
@@ -167,10 +168,6 @@ code .
     "userAuth": "storagestate", 
     "runInstall": true,
     "installPlaywright": true,
-    "compile": true,
-    "record": false,
-    "runTests": true,
-    "debugTests": false,
     "useStaticContext": false,
     "getLatest": false,
      "testScripts": {

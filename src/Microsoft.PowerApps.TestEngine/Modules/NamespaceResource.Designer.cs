@@ -232,7 +232,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to System.Console.
+        ///   Looks up a localized string similar to Console.
         /// </summary>
         internal static string System_Console {
             get {

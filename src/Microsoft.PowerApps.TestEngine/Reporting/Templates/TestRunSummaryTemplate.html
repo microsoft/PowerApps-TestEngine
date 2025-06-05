@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}}</title>
+    <!-- Load CSS libraries -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@5.5.2/dist/css/tabulator.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <style>
+        :root {
+            --primary-color: #0078d4;
+            --success-color: #107c10;
+            --warning-color: #ff8c00;
+            --danger-color: #e81123;
+            --light-bg: #f9f9f9;
+            --header-bg: #f0f2f5;
+            --border-color: #d0d0d0;
+        }
+
+        body {
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 50px;
+        }        .header {
+            background-color: var(--light-bg);
+            color: #333;
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .title-section {
+            display: flex;
+            flex-direction: column;
+        }        .title-section h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+            color: #333;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .main-container {
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            margin: 20px auto;
+            max-width: 1200px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .nav-tabs {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 15px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #444;
+            font-weight: 500;
+            padding: 12px 15px;
+            position: relative;
+            border-radius: 0;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-color);
+            background-color: transparent;
+            border: none;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border: none;
+            background-color: transparent;
+        }
+
+        .nav-tabs .nav-link.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .tab-content {
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .summary-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            flex: 1;
+            min-width: 230px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .summary-card .summary-value {
+            font-size: 32px;
+            font-weight: 600;
+            margin: 0;
+        }
+                .summary-card.success .summary-value { color: var(--success-color); }
+        .summary-card.danger .summary-value { color: var(--danger-color); }
+        .summary-card.warning .summary-value { color: var(--warning-color); }
+        .summary-card.info .summary-value { color: var(--primary-color); }
+
+        .progress {
+            height: 6px;
+            margin-top: 10px;
+            background-color: #e0e0e0;
+        }        .badge-result {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 12px;
+            min-width: 80px;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .badge-passed {
+            background-color: #dff6dd;
+            color: var(--success-color);
+            border: 1px solid #c2eac1;
+        }
+
+        .badge-failed {
+            background-color: #fde7e9;
+            color: var(--danger-color);
+            border: 1px solid #f9c0c5;
+        }
+        
+        /* Badge styles matching TestRunSummary.cs */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .badge-success {
+            background-color: #dff6dd;
+            color: var(--success-color);
+            border: 1px solid #c2eac1;
+        }
+        
+        .badge-danger {
+            background-color: #fde7e9;
+            color: var(--danger-color);
+            border: 1px solid #f9c0c5;
+        }
+        
+        .badge-warning {
+            background-color: #fff4ce;
+            color: var(--warning-color);
+            border: 1px solid #ffe7a0;
+        }
+        
+        /* Fix button styling to handle string attributes */
+        .btn-outline-info {
+            border-color: #17a2b8;
+            color: #17a2b8;
+        }
+        
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .log-files-btn {
+            white-space: nowrap;
+            text-wrap: none;
+        }
+
+        .badge-health {
+            background-color: #e5f1fb;
+            color: var(--primary-color);
+            border: 1px solid #c3e0f7;
+        }
+
+        .app-link {
+            color: #0078d4;
+            text-decoration: none;
+        }
+        
+        .app-link:hover {
+            text-decoration: underline;
+        }
+
+        .tabulator {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        .tabulator .tabulator-header {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tabulator .tabulator-col {
+            background-color: var(--header-bg);
+        }
+
+        .tabulator .tabulator-cell {
+            padding: 10px;
+        }
+
+        .video-link {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .video-link:hover {
+            text-decoration: underline;
+        }
+
+        .filter-bar {
+            background-color: #f8f8f8;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-item label {
+            margin-right: 8px;
+            font-size: 14px;
+            color: #555;
+        }        .test-details-container {
+            margin-top: 20px;
+        }
+
+        .test-details-card {
+            margin-bottom: 20px;
+        }
+        
+        .entity-group-title {
+            background-color: var(--header-bg);
+            padding: 10px 15px;
+            font-weight: 600;
+            border-radius: 4px 4px 0 0;
+            border: 1px solid var(--border-color);
+            margin-bottom: 0;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        
+        .results-table th {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+        
+        .results-table td {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+          .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
+        }
+        
+        .action-button {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 3px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            color: #333;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        
+        .action-button:hover {
+            background-color: #e3e3e3;
+        }
+        
+        .video-button-group {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .play-video-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            margin: 10px 0 20px 0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .video-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .status-icon {
+            margin-right: 5px;
+        }
+          .log-files-container {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 10px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .log-files-container .list-group-item {
+            padding: 6px 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .log-files-container .list-group-item a {
+            display: flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .log-files-container .list-group-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .log-files-container .list-group-item a::before {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="%230078d4" d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm160-14.1v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7l97.9 98c4.5 4.5 7 10.6 7 16.9z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+
+        .status-icon.passed {
+            color: var(--success-color);
+        }
+
+        .status-icon.failed {
+            color: var(--danger-color);
+        }
+        
+        .health-calculation {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .health-calculation h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .calculation-step {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 15px;
+        }
+        
+        .calculation-result {
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 1.2em;
+            color: var(--success-color);
+        }
+        
+        .error-container {
+            position: relative;
+        }
+        
+        .error-message-short {
+            margin-bottom: 5px;
+        }
+        
+        .error-details {
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .details-toggle {
+            cursor: pointer;
+            color: #0078d4;
+            background-color: transparent;
+            border: 1px solid #0078d4;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .group-header {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .group-header td {
+            padding: 8px 15px;
+        }
+
+        @media (max-width: 768px) {
+            .summary-cards {
+                flex-direction: column;
+            }
+            
+            .summary-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="title-section">
+                    <h1>PowerApps Test Engine Report</h1>
+                    <span class="subtitle">Report generated on: {{REPORT_DATE}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container main-container">
+        <!-- Tab navigation -->
+        <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab" aria-controls="summary" aria-selected="true">
+                    <i class="fas fa-chart-pie me-2"></i>Summary
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tests-tab" data-bs-toggle="tab" data-bs-target="#tests" type="button" role="tab" aria-controls="tests" aria-selected="false">
+                    <i class="fas fa-vial me-2"></i>Tests
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="coverage-tab" data-bs-toggle="tab" data-bs-target="#coverage" type="button" role="tab" aria-controls="coverage" aria-selected="false">
+                    <i class="fas fa-chart-bar me-2"></i>Coverage
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab" aria-controls="results" aria-selected="false">
+                    <i class="fas fa-video me-2"></i>Results
+                </button>
+            </li>
+        </ul>        
+        <!-- Tab content -->
+        <div class="tab-content" id="reportTabsContent">
+            <!-- Summary Tab -->
+            <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                <div class="summary-cards">
+                    <div class="summary-card success">
+                        <h3>Tests Passed</h3>
+                        <p class="summary-value" id="passCount">{{PASS_COUNT}}</p>
+                    </div>
+                    <div class="summary-card danger">
+                        <h3>Tests Failed</h3>
+                        <p class="summary-value" id="failCount">{{FAIL_COUNT}}</p>
+                    </div>
+                    <div class="summary-card info">
+                        <h3>Health Score</h3>
+                        <p class="summary-value" id="healthScore">{{HEALTH_PERCENT}}%</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Total Tests</h3>
+                        <p class="summary-value" id="totalCount">{{TOTAL_COUNT}}</p>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-success" id="passBar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-danger" id="failBar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Test Results Overview</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="testResultsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Environment Information</div>
+                    <div class="card-body">
+                        {{ENVIRONMENT_INFO}}
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Test Summary</div>
+                    <div class="card-body">
+                        {{SUMMARY_TABLE}}
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Health Score Summary</div>
+                    <div class="card-body">
+                        <div id="health-summary-content">
+                            {{HEALTH_CALCULATION}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tests Tab -->
+            <div class="tab-pane fade" id="tests" role="tabpanel" aria-labelledby="tests-tab">
+                <div class="filter-bar">
+                    <div class="filter-item">
+                        <label for="status-filter">Status:</label>
+                        <select id="status-filter" class="form-select form-select-sm">
+                            <option value="">All</option>
+                            <option value="Passed">Passed</option>
+                            <option value="Failed">Failed</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="page-type-filter">Page Type:</label>
+                        <select id="page-type-filter" class="form-select form-select-sm">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="search-filter">Search:</label>
+                        <input type="text" id="search-filter" class="form-control form-control-sm" placeholder="Test name...">
+                    </div>
+                </div>
+                
+                <div id="testsTable"></div>
+            </div>
+            
+            <!-- Coverage Tab -->
+            <div class="tab-pane fade" id="coverage" role="tabpanel" aria-labelledby="coverage-tab">
+                <div class="card mb-4">                    <div class="card-header">Coverage by Page Type</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="coverageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Coverage Details</div>
+                    <div class="card-body">
+                        <div id="coverageTable"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Tab -->
+            <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
+                <div class="filter-bar">
+                    <div class="filter-item">
+                        <label for="result-page-filter">Page:</label>
+                        <select id="result-page-filter" class="form-select form-select-sm">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="result-status-filter">Status:</label>
+                        <select id="result-status-filter" class="form-select form-select-sm">
+                            <option value="">All</option>
+                            <option value="Passed">Passed</option>
+                            <option value="Failed">Failed</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="resultsContainer" class="test-details-container">
+                    <!-- Results will be inserted here -->
+                    {{TEST_RESULTS_CARDS}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Health calculation details (hidden until needed) -->
+    <div id="healthCalculation" style="display:none;">
+        {{HEALTH_CALCULATION}}
+    </div>
+    
+    <footer class="text-center py-3 text-muted small">
+        <p>Powered by PowerApps Test Engine - © Microsoft Corporation. All rights reserved.</p>
+    </footer>    <!-- Load JS libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Data elements that will be replaced with JSON but kept as data attributes -->
+    <div id="test-data" data-content="{{TESTS_DATA}}" style="display:none;"></div>
+    <div id="coverage-data" data-content="{{COVERAGE_DATA}}" style="display:none;"></div>
+    <div id="coverage-labels" data-content="{{COVERAGE_CHART_LABELS}}" style="display:none;"></div>
+    <div id="coverage-pass-data" data-content="{{COVERAGE_CHART_PASS_DATA}}" style="display:none;"></div>
+    <div id="coverage-fail-data" data-content="{{COVERAGE_CHART_FAIL_DATA}}" style="display:none;"></div>      <script>
+        // Utility function to extract filename from path
+        function getFileName(filePath) {
+            if (!filePath) return '';
+            // Handle both Windows and Unix style paths
+            return filePath.split('\\').pop().split('/').pop();
+        }
+        
+        // Global variable to store test data
+        let testsData = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get test count values
+            const passCount = parseInt(document.getElementById('passCount').textContent.trim()) || 0;
+            const failCount = parseInt(document.getElementById('failCount').textContent.trim()) || 0;
+            const healthPercent = parseInt(document.getElementById('healthScore').textContent.trim()) || 0;
+            const totalCount = passCount + failCount;
+            
+            // Initialize testsData from the hidden data element
+            try {
+                const rawData = JSON.parse(document.getElementById('test-data').getAttribute('data-content'));
+                // Check if data is wrapped in a "tests" property or is a direct array
+                testsData = rawData.tests ? rawData.tests : rawData;
+            } catch (e) {
+                console.error('Error parsing test data:', e);
+                testsData = [];
+            }
+            
+            // Set total count if not set
+            if (document.getElementById('totalCount').textContent.trim() === '{{TOTAL_COUNT}}') {
+                document.getElementById('totalCount').textContent = totalCount;
+            }
+            
+            // Set progress bars
+            const passPercent = (totalCount > 0) ? (passCount / totalCount * 100) : 0;
+            const failPercent = (totalCount > 0) ? (failCount / totalCount * 100) : 0;
+            document.getElementById('passBar').style.width = passPercent + '%';
+            document.getElementById('failBar').style.width = failPercent + '%';
+            
+            // Initialize charts
+            if (typeof Chart !== 'undefined') {
+                initTestResultsChart(passCount, failCount);
+                initCoverageChart();
+            }
+            
+            // Initialize tables
+            if (typeof Tabulator !== 'undefined') {
+                initTestsTable();
+                initCoverageTable();
+            }
+            
+            // Process and group test results for the Results tab
+            processTestResultsForResultsTab();
+            
+            // Populate results tab
+            populateResultsTab();
+            
+            // Set up event listeners for filters
+            setupFilters();
+        });
+        
+        function initTestResultsChart(passCount, failCount) {
+            const ctx = document.getElementById('testResultsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Passed', 'Failed'],
+                    datasets: [{
+                        data: [passCount, failCount],
+                        backgroundColor: ['#107c10', '#e81123'],
+                        borderColor: ['#0e6a0e', '#d10e1e'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function initCoverageChart() {
+            // Use data from hidden elements
+            const ctx = document.getElementById('coverageChart').getContext('2d');
+            
+            let labels, passData, failData;
+            try {
+                labels = JSON.parse(document.getElementById('coverage-labels').getAttribute('data-content'));
+                passData = JSON.parse(document.getElementById('coverage-pass-data').getAttribute('data-content'));  
+                failData = JSON.parse(document.getElementById('coverage-fail-data').getAttribute('data-content'));
+            } catch (e) {
+                console.error('Error parsing coverage chart data:', e);
+                labels = [];
+                passData = [];
+                failData = [];
+            }
+            
+            const coverageData = {
+                labels: labels,
+                passData: passData,
+                failData: failData
+            };
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: coverageData.labels,
+                    datasets: [
+                        {
+                            label: 'Passed',
+                            data: coverageData.passData,
+                            backgroundColor: '#107c10'
+                        },
+                        {
+                            label: 'Failed',
+                            data: coverageData.failData,
+                            backgroundColor: '#e81123'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }          
+        
+        function initTestsTable() {
+            // Use the data from the hidden data element
+            let testData;
+            try {
+                testData = JSON.parse(document.getElementById('test-data').getAttribute('data-content'));
+            } catch (e) {
+                console.error('Error parsing test data:', e);
+                testData = [];
+            }
+            
+            // Extract page types for filtering
+            const pageTypes = [...new Set(testData.map(item => item.pageType))].filter(Boolean).sort();
+            
+            // Populate page type filter
+            const pageTypeFilter = document.getElementById('page-type-filter');
+            pageTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                pageTypeFilter.appendChild(option);
+            });
+            
+            // Initialize Tabulator table
+            const testsTable = new Tabulator("#testsTable", {
+                data: testData,
+                layout: "fitColumns",
+                pagination: "local",
+                paginationSize: 15,
+                height: 600,
+                columns: [
+                    { title: "Status", field: "outcome", formatter: function(cell) {
+                        const value = cell.getValue();
+                        const icon = value === 'Passed' 
+                            ? '<i class="fas fa-check-circle status-icon passed"></i>' 
+                            : '<i class="fas fa-times-circle status-icon failed"></i>';
+                        const badge = value === 'Passed' 
+                            ? '<span class="badge-result badge-passed">Passed</span>' 
+                            : '<span class="badge-result badge-failed">Failed</span>';
+                        return icon + badge;
+                    }
+                    },
+                    { title: "Test Name", field: "testName", width: 300 },
+                    { title: "Page/Entity", field: "entityName" },
+                    { title: "Type", field: "pageType" },
+                    { title: "Duration", field: "duration" },
+                    { title: "Error", field: "errorMessage" }
+                ]
+            });
+            
+            // Add filter functionality
+            document.getElementById('status-filter').addEventListener('change', function() {
+                const value = this.value;
+                testsTable.setFilter('outcome', value ? '=' : 'in', value ? value : ['Passed', 'Failed']);
+            });
+            
+            document.getElementById('page-type-filter').addEventListener('change', function() {
+                const value = this.value;
+                testsTable.setFilter('pageType', value ? '=' : 'in', value ? value : pageTypes);
+            });
+            
+            document.getElementById('search-filter').addEventListener('keyup', function() {
+                const value = this.value;
+                testsTable.setFilter('testName', 'like', value);
+            });
+        }
+        
+        function initCoverageTable() {
+            // Use data from hidden elements
+            let coverageData;
+            try {
+                coverageData = JSON.parse(document.getElementById('coverage-data').getAttribute('data-content'));
+            } catch (e) {
+                console.error('Error parsing coverage data:', e);
+                coverageData = [];
+            }
+              new Tabulator("#coverageTable", {
+                data: coverageData,
+                layout: "fitColumns",                columns: [
+                    { title: "Entity Name", field: "entityName" },
+                    { title: "Page Type", field: "pageType" },
+                    { title: "Status", field: "status", formatter: function(cell) {
+                        const value = cell.getValue();
+                        let icon, badge, className;
+                        
+                        if (value.includes('Healthy')) {
+                            icon = '<i class="fas fa-check-circle status-icon passed"></i>';
+                            className = 'badge-passed';
+                        } else if (value.includes('Mixed')) {
+                            icon = '<i class="fas fa-exclamation-triangle" style="color: var(--warning-color);"></i>';
+                            className = 'badge-result badge-warning';
+                        } else if (value.includes('Failed')) {
+                            icon = '<i class="fas fa-times-circle status-icon failed"></i>';
+                            className = 'badge-failed';
+                        } else {
+                            icon = '<i class="fas fa-minus-circle" style="color: #999;"></i>';
+                            className = 'badge-result';
+                        }
+                        
+                        badge = `<span class="${className}">${value}</span>`;
+                        return icon + ' ' + badge;
+                    }},
+                    { title: "Passes", field: "passes" },
+                    { title: "Failures", field: "failures" }
+                ]
+            });
+        }
+        
+        function processTestResultsForResultsTab() {
+            // Use the data from the hidden data element
+            let testData;
+            try {
+                const rawData = JSON.parse(document.getElementById('test-data').getAttribute('data-content'));
+                // Check if data is wrapped in a "tests" property or is a direct array
+                testData = rawData.tests ? rawData.tests : rawData;
+            } catch (e) {
+                console.error('Error parsing test data:', e);
+                testData = [];
+                return;
+            }                    // Group tests by page type when available, otherwise by entity name
+            const testsByEntityName = {};
+            
+            testData.forEach(test => {                // Use entity name for grouping
+                const pageType = test.pageType || 'Unknown';
+                const entityName = test.entityName || 'Other';
+                const entityType = test.entityType || 'Unknown';
+                const groupKey = entityName;
+                const groupDisplayName = `${entityName} (${pageType})`;
+                if (!testsByEntityName[groupKey]) {
+                    testsByEntityName[groupKey] = {
+                        displayName: groupDisplayName,
+                        tests: []
+                    };
+                }
+                
+                testsByEntityName[groupKey].tests.push(test);
+            });
+              // Generate HTML for each group and append to results container
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            // Clear existing content if it's not a template placeholder
+            if (resultsContainer.innerHTML.trim() !== `{{TEST_RESULTS_CARDS}}`) {
+                resultsContainer.innerHTML = '';
+            }
+            
+            // Create entity groups
+            Object.keys(testsByEntityName).sort().forEach(entityName => {
+                const groupInfo = testsByEntityName[entityName];
+                const tests = groupInfo.tests;
+                  // Create entity group div
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'entity-group';
+                groupDiv.setAttribute('data-entity-name', entityName);
+                groupDiv.setAttribute('data-page-type', tests[0]?.pageType || 'Unknown');
+                groupDiv.setAttribute('data-entity-type', tests[0]?.entityType || 'Unknown');
+                
+                // Create group title
+                const titleElem = document.createElement('h3');
+                titleElem.className = 'entity-group-title';
+                titleElem.textContent = groupInfo.displayName;
+                groupDiv.appendChild(titleElem);
+                
+                // Create table
+                const table = document.createElement('table');
+                table.className = 'results-table';                // Create header
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th>Test Name</th>
+                        <th>Status</th>
+                        <th>Start Time</th>
+                        <th>Duration</th>
+                        <th>App Type</th>
+                        <th>Page Type</th>
+                        <th>App URL</th>
+                        <th>Logs</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+                
+                // Create body
+                const tbody = document.createElement('tbody');
+                
+                // Add each test row
+                tests.forEach(test => {
+                    const rowId = test.id || `test-${Math.random().toString(36).substring(2, 9)}`;
+                    
+                    // Determine row class based on test outcome
+                    let rowClass, badgeClass, statusIcon;
+                    if (test.outcome === 'Passed') {
+                        rowClass = 'success';
+                        badgeClass = 'badge-success';
+                        statusIcon = 'fa-check-circle';
+                    } else if (test.outcome === 'Failed') {
+                        rowClass = 'danger';
+                        badgeClass = 'badge-danger';
+                        statusIcon = 'fa-times-circle';
+                    } else {
+                        rowClass = 'warning';
+                        badgeClass = 'badge-warning';
+                        statusIcon = 'fa-exclamation-triangle';
+                    }
+                      // Format app URL link
+                    const appUrlLink = test.appUrl 
+                        ? `<button type="button" class="btn btn-sm btn-outline-primary open-app-btn" data-url="${test.appUrl.replace(/"/g, '&quot;')}">
+                            <i class="fas fa-external-link-alt"></i> Open App
+                           </button>`
+                        : '';
+                    
+                    // Format error display
+                    const errorMessage = test.errorMessage || '';
+                    const hasError = errorMessage && errorMessage.length > 0;
+                    const errorDisplay = hasError && errorMessage.length > 100
+                        ? `<div class="error-container">
+                            <div class="error-message-short">${errorMessage.substring(0, 100)}...</div>
+                            <button class="details-toggle" onclick="toggleErrorDetails(this)">Show More</button>
+                            <div class="error-details" style="display:none;"><pre>${errorMessage}</pre></div>
+                           </div>`
+                        : errorMessage;
+                    
+                    // Handle videos (single videoPath or array of videos)
+                    let videos = [];
+                    if (test.videoPath) {
+                        videos = [{ path: test.videoPath, timecode: test.timecode || '00:00:00' }];
+                    } else if (test.videos && Array.isArray(test.videos)) {
+                        videos = test.videos.map(v => {
+                            if (typeof v === 'string') {
+                                return { path: v, timecode: test.timecode || '00:00:00' };
+                            } else {
+                                return { 
+                                    path: v.path || v.videoPath || '', 
+                                    timecode: v.timecode || test.timecode || '00:00:00',
+                                    label: v.label || 'Video'
+                                };
+                            }
+                        });
+                    }
+                    
+                    const hasVideo = videos.length > 0;
+                    const hasLogs = test.logFiles && test.logFiles.length > 0;
+                    const testDir = test.resultsPath ? test.resultsPath.replace(/\\/g, '/') : '';
+                    
+                    // Build video section
+                    const videoSection = hasVideo
+                        ? `<div class="video-actions mb-2">
+                            <div class="btn-group mb-2">
+                ${videos.map((video, idx) => `<button class="btn btn-sm btn-primary toggle-video" 
+                                    data-video-id="video-${rowId}-${idx}" 
+                                    data-video-src="${video.path.replace(/"/g, '&quot;')}" 
+                                    data-timecode="${video.timecode.replace(/"/g, '&quot;')}">
+                                    <i class="fas fa-play-circle"></i> ${videos.length > 1 ? `${video.label || `Video ${idx+1}`}` : 'Play Video'}
+                                </button>`).join('')}
+                            </div>                            
+                           </div>
+                           ${videos.map((video, idx) => `
+                           <div class="video-container" id="video-${rowId}-${idx}" style="display: none;">
+                                <video width="100%" controls class="test-video">
+                                    <source src="${video.path}" type="video/webm">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-controls mt-2">
+                                    <span class="video-time">Time: <span class="current-time">00:00:00</span></span>
+                                    <button class="btn btn-sm btn-outline-secondary copy-timecode" 
+                                            data-video-id="video-${rowId}-${idx}">
+                                        <i class="fas fa-copy"></i> Copy Timecode
+                                    </button>
+                                </div>
+                            </div>`).join('')}`
+                        : '';
+                    
+                    // Create the row
+                    const row = document.createElement('tr');
+                    row.className = rowClass;
+                    row.setAttribute('data-status', test.outcome);
+                    row.setAttribute('data-test-id', rowId);
+                      // Build row content
+                    row.innerHTML = `
+                        <td>${test.testName}</td>
+                        <td><span class="badge ${test.outcome === 'Passed' ? 'badge-success' : 'badge-danger'}"><i class="fas ${statusIcon}"></i> ${test.outcome}</span></td>
+                        <td>${test.startTime || 'N/A'}</td>
+                        <td>${test.duration || 'N/A'}</td>
+                        <td>${test.appType || 'N/A'}</td>
+                        <td>${test.pageType || 'N/A'}</td>
+                        <td>${appUrlLink}</td>
+                        <td>
+                            ${errorDisplay}
+                            ${videoSection}
+                            ${hasLogs ? `
+                                <button type="button" class="btn btn-sm btn-outline-info log-files-btn" data-test-dir="${testDir.replace(/"/g, '&quot;')}" data-test-name="${test.testName.replace(/"/g, '&quot;')}">
+                                    <i class="fas fa-file-alt"></i> Log Files
+                                </button>
+                            ` : ''}  
+                            
+                            ${hasLogs ? `<div class="log-files-container" style="display: none;">
+                                    <div class="mb-2 fw-bold">Found ${test.logFiles ? test.logFiles.length : 0} log file${test.logFiles && test.logFiles.length !== 1 ? 's' : ''}:</div>
+                                    <ul class="list-group">
+                                    ${test.logFiles ? test.logFiles.map(log => {
+                                            // Use the utility function to extract filename from the path
+                                            const logPath = log || '';
+                                            const fileName = getFileName(logPath);
+                                            return `
+                                            <li class="list-group-item">
+                                                <a href="file:///${logPath.replace(/"/g, '&quot;')}" target="_blank" class="app-link" title="${logPath.replace(/"/g, '&quot;')}">${fileName.replace(/"/g, '&quot;')}</a>
+                                            </li>
+                                            `;
+                                        }).join('') : 
+                                        '<div class="alert alert-info">No log files found in this test directory.</div>'}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                table.appendChild(tbody);
+                groupDiv.appendChild(table);
+                
+                // Add to results container
+                resultsContainer.appendChild(groupDiv);
+            });
+        }
+          function populateResultsTab() {            // Populate page filter for results tab based on cards present
+            const resultsContainer = document.getElementById('resultsContainer');
+            const pageFilter = document.getElementById('result-page-filter');
+              // Extract entity names from cards to populate filter
+            const entityNames = [];
+            document.querySelectorAll('[data-entity-name]').forEach(card => {
+                const entityName = card.dataset.entityName;
+                if (entityName && !entityNames.includes(entityName)) {
+                    entityNames.push(entityName);
+                    
+                    const option = document.createElement('option');
+                    option.value = entityName;
+                    option.textContent = card.querySelector('.entity-group-title').textContent;
+                    pageFilter.appendChild(option);
+                }
+            });
+            
+            // Set up video thumbnails if any
+            setupVideoThumbnails();
+        }
+        
+        function setupVideoThumbnails() {
+            document.querySelectorAll('video').forEach(video => {
+                // Generate thumbnail when metadata is loaded
+                video.addEventListener('loadedmetadata', function() {
+                    try {
+                        // Set a current time a few seconds in for better thumbnails
+                        if (video.duration > 3) {
+                            video.currentTime = 3;
+                        } else {
+                            video.currentTime = 0;
+                        }
+                    } catch (e) {
+                        console.error('Error setting video time:', e);
+                    }
+                });
+            });
+        }
+        
+        function setupFilters() { 
+            // Add filter functionality for results tab
+            document.getElementById('result-page-filter')?.addEventListener('change', function() {
+                const value = this.value;
+                document.querySelectorAll('#resultsContainer .entity-group').forEach(group => {
+                    if (!value || group.getAttribute('data-entity-name') === value) {
+                        group.style.display = '';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                });
+            });
+
+            document.getElementById('result-status-filter')?.addEventListener('change', function() {
+                const value = this.value;
+                
+                document.querySelectorAll('#resultsContainer .entity-group').forEach(group => {
+                    const rows = group.querySelectorAll('tbody tr');
+                    let visibleRows = 0;
+                    
+                    rows.forEach(row => {
+                        if (!value || row.getAttribute('data-status') === value) {
+                            row.style.display = '';
+                            visibleRows++;
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                    
+                    // Hide group if no visible rows
+                    group.style.display = visibleRows > 0 ? '' : 'none';
+                });
+            });
+              // Event listeners for video toggle
+            document.body.addEventListener('click', function(e) {
+                if (e.target.closest('.toggle-video')) {
+                    const button = e.target.closest('.toggle-video');
+                    const videoId = button.getAttribute('data-video-id');
+                    const videoSrc = button.getAttribute('data-video-src');
+                    const timecode = button.getAttribute('data-timecode');
+                    const videoContainer = document.getElementById(videoId);
+                    
+                    if (!videoContainer) {
+                        console.error(`Video container not found: ${videoId}`);
+                        return;
+                    }
+                    
+                    // Initialize video elements tracking if not done yet
+                    if (!window.videoElements) {
+                        window.videoElements = {};
+                        window.currentTimeElements = {};
+                    }
+                    
+                    const videoElement = videoContainer.querySelector('video');
+                    
+                    // Hide all other videos in the same test row
+                    const testRow = button.closest('tr');
+                    if (testRow) {
+                        testRow.querySelectorAll('.video-container').forEach(container => {
+                            if (container.id !== videoId) {
+                                container.style.display = 'none';
+                                const relatedBtn = testRow.querySelector(`.toggle-video[data-video-id="${container.id}"]`);
+                                if (relatedBtn) {
+                                    relatedBtn.innerHTML = `<i class="fas fa-play-circle"></i> ${relatedBtn.textContent.trim().replace('Pause Video', '').trim() || 'Play Video'}`;
+                                    relatedBtn.classList.remove('btn-secondary');
+                                    relatedBtn.classList.add('btn-primary');
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Toggle video display
+                    if (videoContainer.style.display === 'none') {
+                        videoContainer.style.display = 'block';
+                        
+                        if (videoElement) {
+                            // Cache video element
+                            window.videoElements[videoId] = videoElement;
+                            window.currentTimeElements[videoId] = videoContainer.querySelector('.current-time');
+                            
+                            // Set source if not already set
+                            const sourceElement = videoElement.querySelector('source');
+                            if (sourceElement && !sourceElement.src && videoSrc) {
+                                sourceElement.src = videoSrc;
+                                videoElement.load();
+                            }
+                            
+                            // Seek to timecode if specified
+                            if (timecode) {
+                                const timeParts = timecode.split(':');
+                                if (timeParts.length >= 3) {
+                                    const hours = parseInt(timeParts[0]) || 0;
+                                    const minutes = parseInt(timeParts[1]) || 0;
+                                    const seconds = parseFloat(timeParts[2]) || 0;
+                                    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+                                    
+                                    videoElement.currentTime = totalSeconds;
+                                }
+                            }
+                            
+                            // Set up timeupdate listener if not already set
+                            if (!videoElement.hasAttribute('data-timeupdate-set')) {
+                                videoElement.addEventListener('timeupdate', function() {
+                                    updateTimeDisplay(videoId);
+                                });
+                                videoElement.setAttribute('data-timeupdate-set', 'true');
+                            }
+                            
+                            // Update button text and icon
+                            button.innerHTML = '<i class="fas fa-pause-circle"></i> Pause Video';
+                            button.classList.remove('btn-primary');
+                            button.classList.add('btn-secondary');
+                            
+                            // Play the video
+                            videoElement.play().catch(function(err) { 
+                                console.warn('Auto-play prevented:', err);
+                                
+                                // Show play button with error indication
+                                button.innerHTML = '<i class="fas fa-play-circle"></i> Click to Play';
+                                button.classList.add('btn-warning');
+                            });
+                        }
+                    } else {
+                        videoContainer.style.display = 'none';
+                        
+                        // Update button text and icon
+                        button.innerHTML = '<i class="fas fa-play-circle"></i> Play Video';
+                        button.classList.remove('btn-secondary', 'btn-warning');
+                        button.classList.add('btn-primary');
+                        
+                        // Pause the video
+                        if (videoElement) {
+                            videoElement.pause();
+                        }
+                    }
+                }
+            });// Event listeners for log files
+            document.body.addEventListener('click', function(e) { 
+                if (e.target.closest('.log-files-btn')) {
+                    const button = e.target.closest('.log-files-btn');
+                    const testDir = button.getAttribute('data-test-dir');
+                    const testName = button.getAttribute('data-test-name');
+                    const row = button.closest('tr');
+                    const testId = row.getAttribute('data-test-id');
+                    
+                    // Check if log files container already exists
+                    let logContainer = row.querySelector('.log-files-container');
+                    
+                    console.log(`Log files button clicked. Test dir: ${testDir}, Test name: ${testName}`);
+                    
+                    if (logContainer) {
+                        // Toggle visibility if it exists
+                        if (logContainer.style.display === 'none') {
+                            logContainer.style.display = 'block';
+                            button.innerHTML = '<i class="fas fa-file-alt"></i> Hide Logs';
+                        } else {
+                            logContainer.style.display = 'none';
+                            button.innerHTML = '<i class="fas fa-file-alt"></i> Log Files';
+                        }
+                    } else {
+                        // If container doesn't exist yet, find the test in testsData and create container
+                        const test = testsData.find(t => t.id === testId);
+                        if (test && test.logFiles && test.logFiles.length > 0) {
+                            // Create container
+                            logContainer = document.createElement('div');
+                            logContainer.className = 'log-files-container';
+                            
+                            // Create list of log files
+                            const logList = document.createElement('ul');
+                            logList.className = 'list-group mt-2';
+                            
+                            // Group logs by type
+                            const logsByType = {};
+                            test.logFiles.forEach(log => {
+                                const type = log.type || 'Other';
+                                if (!logsByType[type]) {
+                                    logsByType[type] = [];
+                                }
+                                logsByType[type].push(log);
+                            });
+                            
+                            // Header with log count
+                            const header = document.createElement('div');
+                            header.className = 'mb-2 fw-bold';
+                            header.textContent = `Found ${test.logFiles.length} log file${test.logFiles.length > 1 ? 's' : ''}:`;
+                            logContainer.appendChild(header);
+                            
+                            // Add logs grouped by type
+                            Object.keys(logsByType).sort().forEach(type => {
+                                const logs = logsByType[type];
+                                
+                                if (Object.keys(logsByType).length > 1) {
+                                    // Only add type header if there are multiple types
+                                    const typeHeader = document.createElement('div');
+                                    typeHeader.className = 'mt-2 mb-1 ms-2 fw-bold text-muted';
+                                    typeHeader.style.fontSize = '0.9rem';
+                                    typeHeader.textContent = `${type} (${logs.length})`;
+                                    logContainer.appendChild(typeHeader);
+                                }
+                                  logs.forEach(log => {
+                                    const listItem = document.createElement('li');
+                                    listItem.className = 'list-group-item';
+                                    
+                                    const logLink = document.createElement('a');
+                                    logLink.href = `file:///${log.path}`;
+                                    logLink.target = '_blank';
+                                    logLink.title = log.path; // Keep full path as title for hover
+                                      // If log.name is already available, use it, otherwise extract filename from path
+                                    if (log.name) {
+                                        logLink.textContent = log.name;
+                                    } else {
+                                        // Use the utility function to extract filename from path
+                                        logLink.textContent = getFileName(log.path);
+                                    }
+                                    
+                                    listItem.appendChild(logLink);
+                                    logList.appendChild(listItem);
+                                });
+                            });
+                            
+                            logContainer.appendChild(logList);
+                            button.parentNode.appendChild(logContainer);
+                            
+                            button.innerHTML = '<i class="fas fa-file-alt"></i> Hide Logs';
+                        } else {
+                            // Show "no logs found" message
+                            logContainer = document.createElement('div');
+                            logContainer.className = 'log-files-container';
+                            logContainer.innerHTML = '<div class="alert alert-info">No log files found in this test directory.</div>';
+                            button.parentNode.appendChild(logContainer);
+                            
+                            button.innerHTML = '<i class="fas fa-file-alt"></i> Hide Logs';
+                        }
+                    }
+                }
+            });
+            
+            // Open YAML file handler
+            document.body.addEventListener('click', function(e) {
+                if (e.target.closest('.open-yaml-btn')) {
+                    const button = e.target.closest('.open-yaml-btn');
+                    const yamlPath = button.dataset.yamlPath;
+                    
+                    if (yamlPath) {
+                        // The actual opening happens through backend binding
+                        console.log(`Opening YAML file: ${yamlPath}`);
+                        // Here we would normally trigger some backend action
+                        // For demo purposes, we'll just show an alert
+                        if (typeof window.openFile === 'function') {
+                            window.openFile(yamlPath);
+                        } else {
+                            alert(`Would open YAML file: ${yamlPath}`);
+                        }
+                    }
+                }
+            });
+              // Open folder handler
+            document.body.addEventListener('click', function(e) {
+                if (e.target.closest('.open-folder-btn')) {
+                    const button = e.target.closest('.open-folder-btn');
+                    const folderPath = button.dataset.folderPath;
+                    
+                    if (folderPath) {
+                        // The actual opening happens through backend binding
+                        console.log(`Opening folder: ${folderPath}`);
+                        // Here we would normally trigger some backend action
+                        if (typeof window.openFolder === 'function') {
+                            window.openFolder(folderPath);
+                        } else {
+                            alert(`Would open folder: ${folderPath}`);
+                        }
+                    }
+                }
+            });
+            
+            // Open app URL handler
+            document.body.addEventListener('click', function(e) {
+                if (e.target.closest('.open-app-btn')) {
+                    const button = e.target.closest('.open-app-btn');
+                    const url = button.dataset.url;
+                    
+                    if (url) {
+                        // Open the URL in a new tab
+                        window.open(url, '_blank');
+                    }
+                }
+            });
+            
+            // Error details toggle
+            document.body.addEventListener('click', function(e) {
+                if (e.target.classList.contains('details-toggle')) {
+                    toggleErrorDetails(e.target);
+                }
+            });
+        }
+        
+        function toggleErrorDetails(button) {
+            const container = button.parentElement;
+            const details = container.querySelector('.error-details');
+            
+            if (details) {
+                if (details.style.display === 'block') {
+                    details.style.display = 'none';
+                    button.textContent = 'Show More';
+                } else {
+                    details.style.display = 'block';
+                    button.textContent = 'Show Less';
+                }
+            }
+        }
+        
+        // Update time display for video
+        function updateTimeDisplay(videoId) {
+            if (!window.videoElements || !window.currentTimeElements) return;
+            
+            const videoElement = window.videoElements[videoId];
+            const timeElement = window.currentTimeElements[videoId];
+            
+            if (videoElement && timeElement) {
+                timeElement.textContent = formatTime(videoElement.currentTime);
+            }
+        }
+        
+        // Format seconds to HH:MM:SS
+        function formatTime(seconds) {
+            if (!seconds && seconds !== 0) return '00:00:00';
+            
+            const hours = Math.floor(seconds / 3600);
+            seconds %= 3600;
+            const minutes = Math.floor(seconds / 60);
+            seconds = Math.floor(seconds % 60);
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Convert HH:MM:SS timecode to seconds
+        function timecodeToSeconds(timecode) {
+            if (!timecode) return 0;
+            
+            const parts = timecode.split(':');
+            if (parts.length < 3) return 0;
+            
+            const hours = parseInt(parts[0]) || 0;
+            const minutes = parseInt(parts[1]) || 0;
+            const seconds = parseFloat(parts[2]) || 0;
+            
+            return hours * 3600 + minutes * 60 + seconds;
+        }
+    </script>
+</body>
+</html>

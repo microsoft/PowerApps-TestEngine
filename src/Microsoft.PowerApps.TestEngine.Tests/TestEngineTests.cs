@@ -49,6 +49,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task TestEngineWithDefaultParamsTest()
         {
+            var testRunName = "My Test";
+
             var testSettings = new TestSettings()
             {
                 Locale = "en-US",
@@ -93,11 +95,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             testEngine.Timestamper = () => new DateTime(2024, 11, 20);
 
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "", runName: testRunName);
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunName, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         [Fact]
@@ -134,7 +136,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockTestEngineEventHandler.Setup(x => x.EncounteredException(It.IsAny<Exception>()));
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
 
-            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "", runName: "My TestRun");
             // UserInput Exception is handled within TestEngineEventHandler, and then returns the test results directory path
             MockTestEngineEventHandler.Verify(x => x.EncounteredException(exceptionToThrow), Times.Once());
             Assert.NotNull(testResultsDirectory);
@@ -143,6 +145,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests
         [Fact]
         public async Task TestEngineWithUnspecifiedLocaleShowsWarning()
         {
+            var testRunName = "My Test";
+
             var testSettings = new TestSettings()
             {
                 BrowserConfigurations = new List<BrowserConfiguration>()
@@ -171,12 +175,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             testEngine.Timestamper = () => new DateTime(2024, 11, 20);
 
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "", runName: testRunName);
 
             Assert.Equal(expectedTestReportPath, testReportPath);
             LoggingTestHelper.VerifyLogging(MockLogger, $"Locale property not specified in testSettings. Using current system locale: {CultureInfo.CurrentCulture.Name}", LogLevel.Debug, Times.Once());
 
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunName, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         [Fact]
@@ -215,11 +219,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             testEngine.Timestamper = () => new DateTime(2024, 11, 20);
 
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "", "My Test");
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory, "My Test", testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         private TestSuiteDefinition GetDefaultTestSuiteDefinition()
@@ -249,6 +253,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testConfigFile = new FileInfo("C:\\testPlan.fx.yaml");
             var environmentId = "defaultEnviroment";
             var tenantId = new Guid("a01af035-a529-4aaf-aded-011ad676f976");
+            var testRunName = "My Test";
             var testRunId = Guid.NewGuid().ToString();
 
             MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns(outputDirectory.FullName);
@@ -271,11 +276,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             testEngine.Timestamper = () => new DateTime(2024, 11, 20);
 
-            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            var testReportPath = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "", testRunName);
 
             Assert.Equal(expectedTestReportPath, testReportPath);
 
-            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory.FullName, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
+            Verify(testConfigFile.FullName, environmentId, tenantId.ToString(), domain, "", expectedOutputDirectory.FullName, testRunName, testRunId, testRunDirectory, testSuiteDefinition, testSettings);
         }
 
         private void SetupMocks(string outputDirectory, TestSettings testSettings, TestSuiteDefinition testSuiteDefinition, string testRunId, string testReportPath)
@@ -306,7 +311,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
 
 
         private void Verify(string testConfigFile, string environmentId, string tenantId, string domain, string queryParams,
-            string outputDirectory, string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, TestSettings testSettings)
+            string outputDirectory, string testRunName, string testRunId, string testRunDirectory, TestSuiteDefinition testSuiteDefinition, TestSettings testSettings)
         {
             MockState.Verify(x => x.ParseAndSetTestState(testConfigFile, MockLogger.Object), Times.Once());
             MockState.Verify(x => x.SetEnvironment(environmentId), Times.Once());
@@ -314,7 +319,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             MockState.Verify(x => x.SetDomain(domain), Times.Once());
             MockState.Verify(x => x.SetOutputDirectory(outputDirectory), Times.Once());
 
-            MockTestReporter.Verify(x => x.CreateTestRun("Power Fx Test Runner", "User"), Times.Once());
+            MockTestReporter.Verify(x => x.CreateTestRun(testRunName, "User"), Times.Once());
             MockTestReporter.Verify(x => x.StartTestRun(testRunId), Times.Once());
 
             MockFileSystem.Verify(x => x.CreateDirectory(testRunDirectory), Times.Once());
@@ -367,7 +372,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             }
             var outputDirectory = new DirectoryInfo("TestOutput");
 #if RELEASE
-            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "", "My Test");
             MockTestEngineEventHandler.Verify(x => x.EncounteredException(It.IsAny<Exception>()), Times.Once());
             Assert.Equal("InvalidOutputDirectory", testResultsDirectory);
             //adding just to have usage in release configuration
@@ -406,7 +411,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var testEngine = new TestEngine(MockState.Object, ServiceProvider, MockTestReporter.Object, MockFileSystem.Object, MockLoggerFactory.Object, MockTestEngineEventHandler.Object);
             var outputDirectory = new DirectoryInfo(outputDirLoc);
             MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns("C:\\testPath" + Path.DirectorySeparatorChar);
-            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "", "My Test");
             // UserInput Exception is handled within TestEngineEventHandler, and then returns the test results directory path
             MockTestEngineEventHandler.Verify(x => x.EncounteredException(It.IsAny<UserInputException>()), Times.Once());
         }
@@ -437,7 +442,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests
             var outputDirectory = new DirectoryInfo("TestOutput");
             MockFileSystem.Setup(x => x.GetDefaultRootTestEngine()).Returns(outputDirectory.FullName);
 
-            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "");
+            var testResultsDirectory = await testEngine.RunTestAsync(testConfigFile, environmentId, tenantId, outputDirectory, domain, "", "My Test");
             // UserInput Exception is handled within TestEngineEventHandler, and then returns the test results directory path
             MockTestEngineEventHandler.Verify(x => x.EncounteredException(exceptionToThrow), Times.Once());
             Assert.NotNull(testResultsDirectory);

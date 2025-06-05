@@ -116,5 +116,12 @@ namespace Microsoft.PowerApps.TestEngine.System
         /// </summary>
         /// <param name="directoryName">The file to delete</param>
         void DeleteDirectory(string directoryName);
+
+        /// <summary>
+        /// Gets the size of a file in bytes
+        /// </summary>
+        /// <param name="filePath">Path to the file</param>
+        /// <returns>Size of the file in bytes</returns>
+        public long GetFileSize(string filePath);
     }
 }
