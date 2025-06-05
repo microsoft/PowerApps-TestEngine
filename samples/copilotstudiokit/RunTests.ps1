@@ -1,13 +1,315 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-# Check for optional command line argument for last run time
+# Script: RunTests.ps1
+# This script runs tests for Copilot Studio Kit applications.
+# It generates an Azure DevOps style HTML report by default, with optional fallback to classic report style.
+
+# 
+# Usage examples:
+#   .\RunTests.ps1                                              # Run all tests with Azure DevOps style report
+#   .\RunTests.ps1 -entityFilter "account"                      # Run only tests related to the account entity
+#   .\RunTests.ps1 -pageTypeFilter "entitylist"                 # Run only list view tests
+#   .\RunTests.ps1 -pageTypeFilter "entityrecord"               # Run only details view tests
+#   .\RunTests.ps1 -pageTypeFilter "custom"                     # Run only custom page tests
+#   .\RunTests.ps1 -pageTypeFilter "entitylist","entityrecord"  # Run both list and details tests (no custom pages)
+#   .\RunTests.ps1 -pageTypeFilter @("entitylist","custom")     # Run list and custom page tests (no details)
+#   .\RunTests.ps1 -customPageFilter "dashboard"                # Run only custom pages with "dashboard" in the name
+#   .\RunTests.ps1 -startTime "2025-05-20 09:00"                # Run tests and show results since 2025-05-20 09:00
+#   .\RunTests.ps1 -startTime "2025-05-20 09:00" -endTime "2025-05-24 09:00"  # Generate report from existing test runs between the specified dates without executing tests
+#   .\RunTests.ps1 -testEngineBranch "feature/my-branch"        # Use a specific branch of PowerApps-TestEngine
+#   .\RunTests.ps1 -generateReportOnly                          # Generate report from existing test data without running tests
+#
+# Multiple filters can be combined:
+#   .\RunTests.ps1 -entityFilter "account" -pageTypeFilter "entityrecord"
+
+# Check for optional command line arguments
 param (
-    [string]$lastRunTime
+    [string]$startTime, # Start time for the test results to include in the report
+    [string]$endTime, # End time for the test results to include in the report (when both startTime and endTime are provided, tests are not executed)
+    [string]$entityFilter, # Filter tests by entity name
+    [string[]]$pageTypeFilter, # Filter by page type(s) (list, details, custom) - can be multiple values
+    [string]$customPageFilter, # Filter by custom page name
+    [string]$testEngineBranch = "user/grant-archibald-ms/report-594", # Optional branch to use for PowerApps-TestEngine
+    [switch]$forceRebuild, # Force rebuild of PowerApps-TestEngine even if it exists
+    [switch]$generateReportOnly, # Only generate a report without running tests
+    [switch]$useStaticContext = $false, # Use static context for test execution
+    [switch]$usePacTest = $false # Use 'pac test run' instead of direct PowerAppsTestEngine.dll execution
 )
 
+
+# Function to execute a test, either using PowerAppsTestEngine.dll directly or pac test run
+# Note: Report generation is always handled by PowerAppsTestEngine.dll regardless of execution mode
+function Execute-Test {
+    param(
+        [string]$testScriptPath,       # Path to the test script file
+        [string]$targetUrl,            # URL to test
+        [string]$logLevel = "Debug",   # Log level
+        [switch]$useStaticContextArg   # Whether to use static context
+    )
+    
+    $staticContextArgValue = if ($useStaticContextArg) { "TRUE" } else { "FALSE" }
+    $debugTestArgValue = if ($debugTests) { "TRUE" } else { "FALSE" }
+    
+    if ($usePacTest) {
+        # Use pac test run command
+        Write-Host "Running test using pac test run..." -ForegroundColor Green
+        
+        # Build the pac test run command
+        $pacArgs = @(
+            "test", "run",
+            "--test-plan-file", "$testScriptPath",
+            "--domain", "$targetUrl",
+            "--tenant", $tenantId,
+            "--environment-id", $environmentId,
+            "--provider", "mda"
+        )
+        
+        # Add optional arguments
+        if ($useStaticContextArg) {
+            $pacArgs += "--use-static-context"
+        }
+        
+        if ($debugTests) {
+            $pacArgs += "--debug"
+        }
+          # Note: We won't use --run-id with pac test, as we'll update the generated TRX files later
+        # This gives us more control over the test result processing
+        
+        # Log the command being executed
+        Write-Host "Executing: pac $($pacArgs -join ' ')" -ForegroundColor DarkGray
+        
+        # Execute pac command
+        & pac $pacArgs
+        
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Test execution failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+        }
+    }
+    else {
+        # Use PowerAppsTestEngine.dll directly
+        Write-Host "Running test using PowerAppsTestEngine.dll directly..." -ForegroundColor Green
+        
+        # Navigate to the test engine directory
+        Push-Location $testEnginePath
+        try {
+            # Execute the test using dotnet command
+            dotnet PowerAppsTestEngine.dll -c "$staticContextArgValue" -w "$debugTestArgValue" -u "$userAuth" -a "$authType" -p "mda" -a "none" -i "$testScriptPath" -t $tenantId -e $environmentId -d "$targetUrl" -l "$logLevel" --run-name $runName
+            
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "Test execution failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+            }
+        }
+        finally {
+            Pop-Location
+        }
+    }
+}
+
+$runName = [Guid]::NewGuid().Guid.ToString()
+    
 # Get current directory so we can reset back to it after running the tests
 $currentDirectory = Get-Location
+
+# Define the PowerApps Test Engine repository information
+$testEngineRepoUrl = "https://github.com/microsoft/PowerApps-TestEngine"
+$testEngineDirectory = Join-Path -Path $PSScriptRoot -ChildPath "..\PowerApps-TestEngine"
+$testEngineBuildDir = Join-Path -Path $testEngineDirectory -ChildPath "src"
+$testEngineBinDir = Join-Path -Path $testEngineDirectory -ChildPath "bin\Debug\PowerAppsTestEngine"
+
+# Function to check if current directory is part of PowerApps-TestEngine
+function Test-IsInTestEngineRepo {
+    try {
+        # Get the git root directory
+        $gitRootDir = git rev-parse --show-toplevel 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            # Not in a git repo
+            return $false
+        }
+        
+        # Check if the directory name indicates it's the PowerApps-TestEngine repo
+        $dirName = Split-Path -Path $gitRootDir -Leaf
+        if ($dirName -eq "PowerApps-TestEngine") {
+            return $true
+        }
+        
+        # Check remote URLs for PowerApps-TestEngine
+        $remotes = git remote -v 2>$null
+        foreach ($remote in $remotes) {
+            if ($remote -like "*PowerApps-TestEngine*") {
+                return $true
+            }
+        }
+        
+        return $false
+    }
+    catch {
+        return $false
+    }
+}
+
+# Function to setup the PowerApps Test Engine
+# Function to build the PowerApps Test Engine
+function Build-TestEngine {
+    param(
+        [string]$srcDir,      # Source directory containing the code to build
+        [string]$message = "Building PowerApps Test Engine..."  # Custom message for build
+    )
+    
+    Write-Host $message -ForegroundColor Green
+    
+    # Navigate to the src directory
+    Push-Location $srcDir
+    
+    try {
+        # Build the Test Engine
+        dotnet build
+        
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to build PowerApps Test Engine. Please check the build logs."
+            exit 1
+        }
+        
+        Write-Host "PowerApps Test Engine built successfully!" -ForegroundColor Green
+        return $true
+    }
+    finally {
+        Pop-Location # Return from src directory
+    }
+}
+
+# Function to verify the PowerApps Test Engine binary exists
+function Test-TestEngineBinary {
+    param(
+        [string]$binDir  # Directory where the binary should exist
+    )
+    
+    $dllPath = Join-Path -Path $binDir -ChildPath "PowerAppsTestEngine.dll"
+    if (-not (Test-Path -Path $dllPath)) {
+        Write-Error "PowerAppsTestEngine.dll not found at $dllPath. Please check the build process."
+        return $false
+    }
+    
+    Write-Host "Found PowerAppsTestEngine.dll at $dllPath" -ForegroundColor Green
+    return $true
+}
+
+# Function to setup the PowerApps Test Engine
+function Setup-TestEngine {    # Check if we're already in the PowerApps-TestEngine repository
+    $isInTestEngineRepo = Test-IsInTestEngineRepo
+      
+    if ($isInTestEngineRepo) {
+        Write-Host "Detected current directory is part of PowerApps-TestEngine repository" -ForegroundColor Green
+        
+        # Get the root directory of the repository
+        $repoRootDir = git rev-parse --show-toplevel 2>$null
+        
+        # Use paths relative to the repository root
+        $relativeSrcDir = Join-Path -Path $repoRootDir -ChildPath "src"
+        $relativeBinDir = Join-Path -Path $repoRootDir -ChildPath "bin\Debug\PowerAppsTestEngine"
+        $binDebugDir = Join-Path -Path $repoRootDir -ChildPath "bin\Debug"
+        
+        Write-Host "Using repository root directory: $repoRootDir" -ForegroundColor Green
+        
+        # Check if build is needed
+        $needsBuild = $false
+        
+        # Check if the bin\Debug directory exists
+        if (-not (Test-Path -Path $binDebugDir)) {
+            Write-Host "bin\Debug directory doesn't exist. Building the project..." -ForegroundColor Yellow
+            $needsBuild = $true
+        }
+        # Check if the PowerAppsTestEngine.dll exists
+        elseif (-not (Test-Path -Path "$relativeBinDir\PowerAppsTestEngine.dll")) {
+            Write-Host "PowerAppsTestEngine.dll not found. Building the project..." -ForegroundColor Yellow
+            $needsBuild = $true
+        }
+        # Honor forceRebuild if specified
+        elseif ($forceRebuild) {
+            Write-Host "Force rebuild requested. Building the project..." -ForegroundColor Yellow
+            $needsBuild = $true
+        }
+        else {
+            Write-Host "Using existing build in $relativeBinDir" -ForegroundColor Green
+        }
+        
+        # Build if needed
+        if ($needsBuild) {
+            Build-TestEngine -srcDir $relativeSrcDir -message "Building PowerApps Test Engine from local source..."
+        }
+          # Verify binary exists
+        if (Test-TestEngineBinary -binDir $relativeBinDir) {
+            Write-Host "Binary verified at $relativeBinDir" -ForegroundColor Green
+            return $relativeBinDir
+        } else {
+            Write-Error "Failed to verify binary at $relativeBinDir"
+            exit 1
+        }
+    }
+    else {
+        # Check if the PowerApps-TestEngine directory exists
+        if (-not (Test-Path -Path $testEngineDirectory) -or $forceRebuild) {
+            Write-Host "Setting up PowerApps Test Engine..." -ForegroundColor Cyan
+            
+            # Remove existing directory if it exists
+            if (Test-Path -Path $testEngineDirectory) {
+                Write-Host "Get latest changes..." -ForegroundColor Yellow
+                Set-Location $testEngineDirectory
+                git pull
+            } else {
+                # Clone the repository
+                Write-Host "Cloning PowerApps Test Engine repository from $testEngineRepoUrl..." -ForegroundColor Green
+                git clone "$testEngineRepoUrl" "$testEngineDirectory"
+            }
+            
+            # Navigate to the repository directory
+            Push-Location $testEngineDirectory
+            
+            try {
+                # Check if a specific branch was specified
+                if ($testEngineBranch -ne "main") {
+                    Write-Host "Switching to branch: $testEngineBranch" -ForegroundColor Green
+                    git checkout $testEngineBranch
+                    
+                    # Check if checkout was successful
+                    if ($LASTEXITCODE -ne 0) {
+                        Write-Host "Failed to switch to branch $testEngineBranch. Using main branch instead." -ForegroundColor Yellow
+                        git checkout main
+                    }
+                }
+                
+                # Build the Test Engine using shared function
+                Build-TestEngine -srcDir $testEngineBuildDir
+            }
+            finally {
+                Pop-Location # Return from repository directory
+            }
+        }
+        else {
+            Write-Host "PowerApps Test Engine directory already exists at $testEngineDirectory" -ForegroundColor Green
+        }
+          # Verify binary exists
+        if (Test-TestEngineBinary -binDir $testEngineBinDir) {
+            Write-Host "Binary verified at $testEngineBinDir" -ForegroundColor Green
+            return $testEngineBinDir
+        } else {
+            Write-Error "Failed to verify binary at $testEngineBinDir"
+            exit 1
+        }
+    }
+}
+
+# This line was redundant, as we call Setup-TestEngine below
+
+# Set up the Test Engine and get the path to the built binary
+$testEnginePath = Setup-TestEngine
+if ($testEnginePath -is [array]) {
+    Write-Host "Converting array to string for testEnginePath" -ForegroundColor Yellow
+    $testEnginePath = $testEnginePath[0]
+}
+Write-Host "Test Engine Path: $testEnginePath" -ForegroundColor Green
+
+Set-Location $currentDirectory
 
 $jsonContent = Get-Content -Path .\config.json -Raw
 $config = $jsonContent | ConvertFrom-Json
@@ -15,18 +317,25 @@ $tenantId = $config.tenantId
 $environmentId = $config.environmentId
 $user1Email = $config.user1Email
 $record = $config.record
-$compile = $config.compile
+
 # Extract pages and corresponding Test Scripts
 $customPages = $config.pages.customPages
 $entities = $config.pages.entities
 $testScripts = $config.testScripts
-$runTests = $config.runTests
-$useStaticContext = $config.useStaticContext
+
+# Initialize $runTests - default to true if not specified in config or overridden by testRunTime
+$runTests = if ([bool]::TryParse($config.runTests, [ref]$null)) { [bool]$config.runTests } else { $true }
+
+# Check if useStaticContext parameter was provided, otherwise get it from config
+if (-not $PSBoundParameters.ContainsKey('useStaticContext')) {
+    $useStaticContext = if ($null -eq $config.useStaticContext) { $false } else { $config.useStaticContext }
+}
+# Otherwise, the useStaticContext parameter value will be used (already set from param block)
 $appName = $config.appName
 $debugTests = $config.debugTests
-$getLatest = $config.getLatest
 $userAuth = $config.userAuth
 $authType = "default"
+$environmentUrl = $config.environmentUrl
 
 if ([string]::IsNullOrEmpty($userAuth)) {
     $userAuth = "storagestate"
@@ -36,16 +345,30 @@ if ($userAuth -eq "dataverse") {
     $authType = "storagestate"
 }
 
-# Define the folder path and time threshold
-$folderPath = "$env:USERPROFILE\AppData\Local\Temp\Microsoft\TestEngine\TestOutput"
+# Define the folder paths for test outputs
+$testEngineBasePath = "$env:USERPROFILE\AppData\Local\Temp\Microsoft\TestEngine"
+$folderPath = "$testEngineBasePath\TestOutput"
 
 $extraArgs = ""
 
 $debugTestValue = "FALSE"
 $staticContext = "FALSE"
 
-if ($useStaticContext) {
+# Check if useStaticContext is true and set staticContext accordingly
+if ($useStaticContext -eq $true) {
+    Write-Host "Using static context: TRUE" -ForegroundColor Green
     $staticContext = "TRUE"
+} else {
+    Write-Host "Using static context: FALSE" -ForegroundColor Green
+    $staticContext = "FALSE"
+}
+
+# Display execution mode
+if ($usePacTest) {
+    Write-Host "Test execution mode: pac test run (Power Platform CLI)" -ForegroundColor Cyan
+    Write-Host "Report generation will still use PowerAppsTestEngine.dll" -ForegroundColor Cyan
+} else {
+    Write-Host "Test execution mode: PowerAppsTestEngine.dll (direct)" -ForegroundColor Cyan
 }
 
 if ($debugTests) {
@@ -56,100 +379,84 @@ if ($getLatest) {
    git pull
 }
 
-if ($lastRunTime) {
-    try {
-        $timeThreshold = [datetime]::ParseExact($lastRunTime, "yyyy-MM-dd HH:mm", $null)
+# Define start and end times for test reporting
+$startTimeThreshold = $null
+$endTimeThreshold = $null
+
+# Process startTime parameter
+if ($startTime) {
+    try {        # Try parsing with multiple possible formats
+        try {
+            $startTimeThreshold = [DateTime]::ParseExact($startTime, "yyyy-MM-dd HH:mm", [System.Globalization.CultureInfo]::InvariantCulture)
+            # Format successfully parsed
+        } catch {
+            # Try general parsing as fallback
+            try {
+                $startTimeThreshold = [DateTime]::Parse($startTime)
+            } catch {
+                throw "Could not parse the startTime format"
+            }
+        }
+        Write-Host "Including test results from after $startTime" -ForegroundColor Yellow
     } catch {
-        Write-Error "Invalid date format. Please use 'yyyy-MM-DD HH:mm'."
+        Write-Error "Invalid startTime format. Please use 'yyyy-MM-dd HH:mm'. Error: $($_.Exception.Message)"
         return
     }
 } else {
-    $timeThreshold = Get-Date
+    # Default: use current time as the start time
+    $startTimeThreshold = Get-Date
+    Write-Host "No start time provided. Using current time: $($startTimeThreshold.ToString('yyyy-MM-dd HH:mm'))" -ForegroundColor Yellow
 }
 
-function Update-TestData {
-    param (
-        [string]$folderPath,
-        [datetime]$timeThreshold,
-        [string]$entityName,
-        [string]$entityType
-    )
-
-    AddOrUpdate -key ($entityName + "-" + $entityType) -value (New-Object TestData($entityName, $entityType, 0, 0))   
-
-    # Find all folders newer than the specified time
-    $folders = Get-ChildItem -Path $folderPath -Directory | Where-Object { $_.LastWriteTime -gt $timeThreshold }
-
-    # Initialize array to store .trx files
-    $trxFiles = @()
-
-    # Iterate through each folder and find .trx files
-    foreach ($folder in $folders) {
-        $trxFiles += Get-ChildItem -Path $folder.FullName -Filter "*.trx"
-    }
-
-    # Parse each .trx file and update pass/fail counts in TestData
-    foreach ($trxFile in $trxFiles) {
-        $xmlContent = Get-Content -Path $trxFile.FullName -Raw
-        $xml = [xml]::new()
-        $xml.LoadXml($xmlContent)
-
-        # Create a namespace manager
-        $namespaceManager = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
-        $namespaceManager.AddNamespace("ns", "http://microsoft.com/schemas/VisualStudio/TeamTest/2010")
-
-        # Find the Counters element
-        $counters = $xml.SelectSingleNode("//ns:Counters", $namespaceManager)
-
-        # Extract the counter properties and update TestData
-        if ($counters) {
-            $passCount = [int]$counters.passed
-            $failCount = [int]$counters.failed
-
-            AddOrUpdate -key ($entityName + "-" + $entityType) -value (New-Object TestData($entityName, $entityType, $passCount, $failCount))
+# Process endTime parameter
+if ($endTime) {
+    try {        # Try parsing with multiple possible formats
+        try {
+            $endTimeThreshold = [DateTime]::ParseExact($endTime, "yyyy-MM-dd HH:mm", [System.Globalization.CultureInfo]::InvariantCulture)
+            # Format successfully parsed
+        } catch {
+            # Try general parsing as fallback
+            try {
+                $endTimeThreshold = [DateTime]::Parse($endTime)
+            } catch {
+                throw "Could not parse the endTime format"
+            }
         }
+        Write-Host "Including test results until $endTime" -ForegroundColor Yellow
+    } catch {
+        Write-Error "Invalid endTime format. Please use 'yyyy-MM-dd HH:mm'. Error: $($_.Exception.Message)"
+        return
     }
+} else {
+    # Default: use current time as the end time, will be updated after tests run
+    $endTimeThreshold = Get-Date
+    # Store the original parameter state to know if it was explicitly provided
+    $endTimeProvided = $false
 }
 
-# Initialize the dictionary (hash table)
-$dictionary = @{}
-
-# Define the TestData class
-class TestData {
-    [string]$EntityName
-    [string]$EntityType  # list, record, custom
-    [int]$PassCount
-    [int]$FailCount
-
-    TestData([string]$entityName, [string]$entityType, [int]$passCount, [int]$failCount) {
-        $this.EntityName = $entityName
-        $this.EntityType = $entityType
-        $this.PassCount = $passCount
-        $this.FailCount = $failCount
-    }
-
-    # Override ToString method for better display
-    [string]ToString() {
-        return "EntityName: $($this.EntityName), EntityType: $($this.EntityType), PassCount: $($this.PassCount), FailCount: $($this.FailCount)"
-    }
-}
-
-# Function to add or update a key-value pair
-function AddOrUpdate {
-    param (
-        [string]$key,
-        [object]$value
-    )
-
-    if ($dictionary.ContainsKey($key)) {
-        # Update the pass/fail properties if the key exists
-        $dictionary[$key].PassCount += $value.PassCount
-        $dictionary[$key].FailCount += $value.FailCount
-        Write-Host "Updated key '$key' with value '$($dictionary[$key])'."
+# Decide whether to run tests or just generate a report
+if ($generateReportOnly -or ($startTime -and $endTime)) {
+    # Don't run tests if generateReportOnly is specified or both start and end times are provided
+    $runTests = $false
+    
+    if ($generateReportOnly) {
+        Write-Host "Generating report only from existing test results" -ForegroundColor Yellow
+        # If no specific time range was provided with -generateReportOnly, use a wide default range
+        if (-not $startTime) {
+            $startTimeThreshold = (Get-Date).AddDays(-7) # Default to last 7 days if no start time provided
+            Write-Host "Using default time range: last 7 days" -ForegroundColor Yellow
+        }
     } else {
-        # Add the key-value pair if the key does not exist
-        $dictionary[$key] = $value
-        Write-Host "Added key '$key' with value '$value'."
+        Write-Host "Generating report from existing test results between $startTime and $endTime" -ForegroundColor Yellow
+    }
+    
+    Write-Host "Tests will not be executed" -ForegroundColor Yellow
+} else {
+    # Keep runTests as initialized earlier (from config or default to true)
+    # Since we now default startTime to current time when not provided,
+    # we want to make it clear we're running tests from now
+    if (-not $startTime) {
+        Write-Host "Will run tests and include results from current run only" -ForegroundColor Yellow
     }
 }
 
@@ -162,31 +469,6 @@ $azTenantId = az account show --query tenantId --output tsv
 
 if ($azTenantId -ne $tenantId) {
     Write-Error "Tenant ID mismatch. Please check your Azure CLI context." -ForegroundColor Red
-    return
-}
-
-$foundEnvironment = $false
-$textResult = (pac env select --environment $environmentId)
-$textResult = (pac env list)
-
-$environmentUrl = ""
-
-Write-Host "Searching for $environmentId"
-
-foreach ($line in $textResult) {
-    if ($line -match $environmentId) {
-        if ($line -match "(https://\S+/)") {
-            $environmentUrl = $matches[0].Substring(0,$matches[0].Length - 1)
-            $foundEnvironment = $true
-            break
-        }
-    }
-}
-
-if ($foundEnvironment) {
-    Write-Output "Found matching Environment URL: $environmentUrl"
-} else {
-    Write-Error "Environment ID not found."
     return
 }
 
@@ -208,13 +490,6 @@ $appDescriptor = $appInfo.descriptor | ConvertFrom-Json
 
 $appEntities = $appDescriptor.appInfo.AppComponents.Entities | Measure-Object | Select-Object -ExpandProperty Count;
 
-foreach ($entity in ($appDescriptor.appInfo.AppComponents.Entities | Sort-Object -Property LogicalName)) {
-    $entityName = $entity.LogicalName
-    # Add the entity in the dictionary
-    AddOrUpdate -key ($entityName + "-list") -value (New-Object TestData($entityName, "list", 0, 0))
-    AddOrUpdate -key ($entityName + "-record") -value (New-Object TestData($entityName, "record", 0, 0))
-}
-
 if ($runTests)
 {
     $appTotal = ($appDescriptor.appInfo.AppElements.Count +  ($appEntities * 2)) 
@@ -223,45 +498,42 @@ if ($runTests)
         Write-Error "App id not found. Check that the Copilot Studio Kit has been installed"
         return
     }
-
-    # Build the latest debug version of Test Engine from source
-    Set-Location ..\..\src
-    if ($compile) {
-        Write-Host "Compiling the project..."
-        dotnet build
-    } else {
-        Write-Host "Skipping compilation..."
-    }
-
+    
     if ($config.installPlaywright) {
-        Start-Process -FilePath "pwsh" -ArgumentList "-Command `"..\bin\Debug\PowerAppsTestEngine\playwright.ps1 install`"" -Wait
+        # Get the absolute path to playwright.ps1
+        $playwrightScriptPath = Join-Path -Path $testEnginePath -ChildPath "playwright.ps1"
+        
+        # Check if the file exists
+        if (Test-Path -Path $playwrightScriptPath) {
+            Write-Host "Running Playwright installer from: $playwrightScriptPath" -ForegroundColor Green
+            Start-Process -FilePath "pwsh" -ArgumentList "-Command `"$playwrightScriptPath install`"" -Wait
+        } else {
+            Write-Error "Playwright script not found at: $playwrightScriptPath"
+        }
     } else {
         Write-Host "Skipped playwright install"
     }
 
-    Set-Location ..\bin\Debug\PowerAppsTestEngine
     $env:user1Email = $user1Email
-
-    if ($record) {
-        Write-Host "========================================" -ForegroundColor Blue
-        Write-Host "RECODE MODE" -ForegroundColor Blue
-        Write-Host "========================================" -ForegroundColor Blue
-    }
 
     Write-Host "========================================" -ForegroundColor Green
     Write-Host "ENTITIES" -ForegroundColor Green
-    Write-Host "========================================" -ForegroundColor Green
-
-    # Loop through Entity (List and details) and Execute Tests
+    Write-Host "========================================" -ForegroundColor Green    # Loop through Entity (List and details) and Execute Tests
     foreach ($entity in $entities) {
+        $formName = $entity.name
+        $entityName = $entity.entity
+        
+        # Skip if entity filter is specified and doesn't match current entity
+        if (-not [string]::IsNullOrEmpty($entityFilter) -and $entityName -notlike "*$entityFilter*" -and $formName -notlike "*$entityFilter*") {
+            Write-Host "Skipping $formName ($entityName) - doesn't match entity filter: $entityFilter" -ForegroundColor Gray
+            continue
+        }
+        
         Write-Host "----------------------------------------" -ForegroundColor Yellow
         Write-Host $entity.name -ForegroundColor Yellow
         Write-Host "----------------------------------------" -ForegroundColor Yellow
 
-        $formName = $entity.name
-        $entityName = $entity.entity
-
-        if ($config.pages.list) {
+        if ($config.pages.list -and ([string]::IsNullOrEmpty($pageTypeFilter) -or $pageTypeFilter -contains "entitylist")) {
             $matchingScript = "$formName-list.te.yaml"
 
             if (-not (Test-Path -Path "$currentDirectory\$matchingScript") ) {
@@ -274,25 +546,17 @@ if ($runTests)
             $response = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
 
             $viewId = $response.value.savedqueryid
-
             $testStart = Get-Date
-
             $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entitylist&etn=$entityName&viewid=$viewId&viewType=1039"
-            if ($record) {
-                # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
-            } else {
-                Write-Host "Skipped recording"
-                # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
-            }
 
-            Update-TestData -folderPath $folderPath -timeThreshold $testStart -entityName $entityName -entityType "list"
+            # Execute the test using our helper function
+            $testScriptPath = "$currentDirectory\$matchingScript"
+            Execute-Test -testScriptPath $testScriptPath -targetUrl $mdaUrl -useStaticContextArg:$useStaticContext
         } else {
             Write-Host "Skipped list test script"
         }
-
-        if ($config.pages.details) {
+        
+        if ($config.pages.details -and ([string]::IsNullOrEmpty($pageTypeFilter) -or $pageTypeFilter -contains "entityrecord")) {
             $matchingScript = "$formName-details.te.yaml"
 
             if (-not (Test-Path -Path "$currentDirectory\$matchingScript") ) {
@@ -313,38 +577,36 @@ if ($runTests)
 
             $entityResponse = Invoke-RestMethod -Uri $lookup -Method Get -Headers @{Authorization = "Bearer $($token.accessToken)"}
             $recordId = $entityResponse.value | Select-Object -ExpandProperty $idColumn
-
             $testStart = Get-Date
-
             if ([string]::IsNullOrEmpty($recordId)) {
                 $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=$entityName"
             
             } else {
                 $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=entityrecord&etn=$entityName&id=$recordId"
             }
-
-            if ($record) {
-                # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
-            } else {
-                Write-Host "Skipped recording"
-                # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug"
-            }
-
-            Update-TestData -folderPath $folderPath -timeThreshold $testStart -entityName $entityName -entityType "details"
+            
+          
+            Write-Host "Skipped recording"
+            # Run the tests for each user in the configuration file.
+            $testScriptPath = "$currentDirectory\$matchingScript"
+            Execute-Test -testScriptPath $testScriptPath -targetUrl $mdaUrl -useStaticContextArg:$useStaticContext
         } else {
             Write-Host "Skipped details test script"
         }
     }
-
-    if ($config.pages.customPage) {
+    
+    if ($config.pages.customPage -and ([string]::IsNullOrEmpty($pageTypeFilter) -or $pageTypeFilter -contains "custom")) {
         Write-Host "========================================" -ForegroundColor Green
         Write-Host "CUSTOM PAGES" -ForegroundColor Green
         Write-Host "========================================" -ForegroundColor Green
 
         # Loop through Custom Pages and Execute Tests
         foreach ($customPage in $customPages) {
+            # Skip if custom page filter is specified and doesn't match current custom page
+            if (-not [string]::IsNullOrEmpty($customPageFilter) -and $customPage -notlike "*$customPageFilter*") {
+                Write-Host "Skipping custom page $customPage - doesn't match filter: $customPageFilter" -ForegroundColor Gray
+                continue
+            }
 
             # Ensure testScripts is an array
             $testScriptList = @($testScripts.customPageTestScripts)  # Extract values explicitly
@@ -383,286 +645,154 @@ if ($runTests)
 
             Write-Host "----------------------------------------" -ForegroundColor Yellow
             Write-Host $matchingScript -ForegroundColor Yellow
-            Write-Host "----------------------------------------" -ForegroundColor Yellow
-
-            $testStart = Get-Date
+            Write-Host "----------------------------------------" -ForegroundColor Yellow            $testStart = Get-Date
 
             $mdaUrl = "$environmentUrl/main.aspx?appid=$appId&pagetype=custom&name=$customPage"
-            if ($record) {
-                # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none"  -r "True" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
-            } else {
-                Write-Host "Skipped recording"
-                # Run the tests for each user in the configuration file.
-                dotnet PowerAppsTestEngine.dll -c "$staticContext" -w "$debugTestValue" -u "$userAuth" -a "$authType" --provider "mda" -a "none" -i "$currentDirectory\$matchingScript" -t $tenantId -e $environmentId -d "$mdaUrl" -l "Debug" 
-            }
+            
+            Write-Host "Skipped recording"
 
-            Update-TestData -folderPath $folderPath -timeThreshold $testStart -entityName $customPage -entityType "custom"
+            # Run the tests for each user in the configuration file.
+            $testScriptPath = "$currentDirectory\$matchingScript"
+            Execute-Test -testScriptPath $testScriptPath -targetUrl $mdaUrl -useStaticContextArg:$useStaticContext
         } 
 
         Write-Host "All custompages executed"
-    }
-    # Reset the location back to the original directory.
+    }    # Reset the location back to the original directory.
     Set-Location $currentDirectory
-}
-
-$global:healthPercentage = ""
-
-# Find all folders newer than the specified time
-$folders = Get-ChildItem -Path $folderPath -Directory | Where-Object { $_.LastWriteTime -gt $timeThreshold }
-
-# Initialize arrays to store .trx files and test results
-$trxFiles = @()
-$testResults = @()
-
-# Iterate through each folder and find .trx files
-foreach ($folder in $folders) {
-    $trxFiles += Get-ChildItem -Path $folder.FullName -Filter "*.trx"
-}
-
-# Parse each .trx file and count pass and fail tests
-foreach ($trxFile in $trxFiles) {
-    $xmlContent = Get-Content -Path $trxFile.FullName -Raw
-    $xml = [xml]::new()
-    $xml.LoadXml($xmlContent)
-
-    # Create a namespace manager
-    $namespaceManager = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
-    $namespaceManager.AddNamespace("ns", "http://microsoft.com/schemas/VisualStudio/TeamTest/2010")
-
-    # Find the Counters element
-    $counters = $xml.SelectSingleNode("//ns:Counters", $namespaceManager)
-
-    # Extract the counter properties
-    $total = [int]$counters.total
-    $executed = [int]$counters.executed
-    $passed = [int]$counters.passed
-    $failed = [int]$counters.failed
-    $error = [int]$counters.error
-    $timeout = [int]$counters.timeout
-    $aborted = [int]$counters.aborted
-    $inconclusive = [int]$counters.inconclusive
-    $passedButRunAborted = [int]$counters.passedButRunAborted
-    $notRunnable = [int]$counters.notRunnable
-    $notExecuted = [int]$counters.notExecuted
-    $disconnected = [int]$counters.disconnected
-    $warning = [int]$counters.warning
-    $completed = [int]$counters.completed
-    $inProgress = [int]$counters.inProgress
-    $pending = [int]$counters.pending
-
-    $testResults += [PSCustomObject]@{
-        File = $trxFile.FullName
-        Total = $total
-        Executed = $executed
-        Passed = $passed
-        Failed = $failed
-        Error = $error
-        Timeout = $timeout
-        Aborted = $aborted
-        Inconclusive = $inconclusive
-        PassedButRunAborted = $passedButRunAborted
-        NotRunnable = $notRunnable
-        NotExecuted = $notExecuted
-        Disconnected = $disconnected
-        Warning = $warning
-        Completed = $completed
-        InProgress = $inProgress
-        Pending = $pending
+    
+    # Update the endTimeThreshold to current time after tests have run
+    # Only do this if endTime wasn't explicitly provided
+    if (-not $endTime) {
+        $endTimeThreshold = Get-Date
     }
 }
 
-# Generate HTML summary report with timestamp
-$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-$reportPath = "$folderPath\summary_report_$timestamp.html"
-
-# Define PreContent with injected JavaScript for badges
-$preContent = @"
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Test Engine Summary Report</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/6.3.1/js/tabulator.min.js" integrity="sha512-8+qwMD/110YLl5T2bPupMbPMXlARhei2mSxerb/0UWZuvcg4NjG7FdxzuuvDs2rBr/KCNqhyBDe8W3ykKB1dzA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/6.3.1/css/tabulator.min.css" integrity="sha512-RYFH4FFdhD/FdA+OVEbFVqd5ifR+Dnx2M7eWcmkcMexlIoxNgm89ieeVyHYb8xChuYBtbrasMTlo02cLnidjtQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <style>
-        .badge {
-            display: inline-block;
-            padding: 0.5em 1em;
-            font-size: 1em;
-            font-weight: bold;
-            color: #fff;
-            border-radius: 0.25em;
-        }
-        .badge-pass {
-            background-color: #28a745;
-        }
-        .badge-fail {
-            background-color: #dc3545;
-        }
-    </style>
-</head>
-<body>
-    <h1>Test Summary Report</h1>
-    <div id="chart-container" style="width: 50%; margin: auto;">
-        <canvas id="test-summary-chart"></canvas>
-    </div>
-    #Coverage#
-    <style>
-        .badge-pass {
-            background-color: #28a745;
-            color: white;
-        }
-        .badge-fail {
-            background-color: #dc3545;
-            color: white;
-        }
-        .badge-health {
-            background-color: grey;
-            color: white;
-        }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var ctx = document.getElementById('test-summary-chart').getContext('2d');
-            var testSummaryChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Passed', 'Failed'],
-                    datasets: [{
-                        label: 'Test Results',
-                        data: [#PassCount#, #FailCount# ],
-                        backgroundColor: ['#28a745', '#dc3545'],
-                        borderColor: ['#28a745', '#dc3545'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Generate badges
-            var passCount = #PassCount#;
-            var failCount = #FailCount#;
-            var healthPercentage = #HealthPercent#;
-            var badgeContainer = document.createElement('div');
-            badgeContainer.innerHTML = ``
-                <span class="badge badge-pass">Passed: `${passCount}</span>
-                <span class="badge badge-fail">Failed: `${failCount}</span>
-                <span class="badge badge-health">Health: `${healthPercentage}%</span>
-            ``;
-            document.body.insertBefore(badgeContainer, document.getElementById('chart-container'));
-        });
-    </script>
-</body>
-</html>
-"@
-
-# Function to generate HTML table representation of the TestData dictionary
-function Generate-HTMLTable {
-    param (
-        [hashtable]$dictionary,
-        [int] $total
+# Function to update the run name in TRX files to make them compatible with PowerAppsTestEngine.dll report generation
+function Update-TrxFilesRunName {
+    param(
+        [string]$searchPath,        # Path to search for TRX files
+        [DateTime]$startTime,       # Only process files created after this time
+        [string]$newRunName         # The run name to insert into the TRX files
     )
-
-    # Initialize HTML table
-    $htmlTable = @"
-    <h2>Health Check Coverage</h2>
-<table id="coverageTable">
-    <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Pass Count</th>
-        <th>Fail Count</th>
-    </tr>
-"@
-
-    $numerator = 0;
-    # Iterate through the dictionary and add rows to the table
-    foreach ($key in $dictionary.Keys | Sort-Object) {
-        $value = $dictionary[$key]
-        $numerator += ($value.PassCount -gt 0) -and ($value.FailCount -eq 0) ? 1 : 0
-        $htmlTable += "<tr><td>$($value.EntityName)</td><td>$($value.EntityType)</td><td>$($value.PassCount)</td><td>$($value.FailCount)</td></tr>"
+    
+    Write-Host "Searching for TRX files in $searchPath created after $($startTime.ToString('yyyy-MM-dd HH:mm:ss'))..." -ForegroundColor Cyan
+    
+    # Get all TRX files created after the start time
+    $trxFiles = Get-ChildItem -Path $searchPath -Filter "*.trx" -Recurse | 
+                Where-Object { $_.CreationTime -ge $startTime }
+    
+    if ($trxFiles.Count -eq 0) {
+        Write-Host "No TRX files found matching the criteria." -ForegroundColor Yellow
+        return
     }
-
-    # Close the table
-    $htmlTable += "</table>"
     
-    $global:healthPercentage = $total -eq 0 ? "0" : ($numerator / $total * 100).ToString("0") 
-    $percentage = $global:healthPercentage + "%"
+    Write-Host "Found $($trxFiles.Count) TRX file(s) to process." -ForegroundColor Green
     
-    # Add KaTeX code to show the calculation
-    $katexCode = @"
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha512-fHwaWebuwA7NSF5Qg/af4UeDx9XqUpYpOGgubo3yWu+b2IQR4UeQwbb42Ti7gVAjNtVoI/I9TEoYeu9omwcC6g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js" integrity="sha512-LQNxIMR5rXv7o+b1l8+N1EZMfhG7iFZ9HhnbJkTp4zjNr5Wvst75AqUeFDxeRUa7l5vEDyUiAip//r+EFLLCyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js" integrity="sha512-iWiuBS5nt6r60fCz26Nd0Zqe0nbk1ZTIQbl3Kv7kYsX+yKMUFHzjaH2+AnM6vp2Xs+gNmaBAVWJjSmuPw76Efg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        new Tabulator('#coverageTable', {
-            layout:"fitDataTable",
-            columns:[
-                {title:"Name", field:"Name"},
-                {title:"Type", field:"Type"},
-                {title:"Pass Count", field:"Pass Count", formatter: function(cell, formatterParams, onRendered) { 
-                        var value = cell.getValue();
-                        if(value > 0){
-                            cell.getElement().style.color = "white";
-                            cell.getElement().style.backgroundColor = "green";
-                        }
-                        return value;
-                    }
-                },
-                {title:"Fail Count", field:"Fail Count", formatter: function(cell, formatterParams, onRendered) { 
-                        var value = cell.getValue();
-                        if(value > 0){
-                            cell.getElement().style.color = "white";
-                            cell.getElement().style.backgroundColor = "red";
-                        }
-                        return value;
-                    }
+    foreach ($file in $trxFiles) {
+        Write-Host "Processing $($file.FullName)..." -ForegroundColor Cyan
+        
+        try {
+            # Load the TRX file as XML
+            [xml]$trxXml = Get-Content -Path $file.FullName
+            
+            # Create a namespace manager to handle the XML namespaces
+            $nsManager = New-Object System.Xml.XmlNamespaceManager($trxXml.NameTable)
+            
+            # Check if the document has a default namespace
+            $defaultNs = $trxXml.DocumentElement.NamespaceURI
+            if (-not [string]::IsNullOrEmpty($defaultNs)) {
+                # Add the default namespace with a prefix to use in XPath queries
+                $nsManager.AddNamespace("ns", $defaultNs)
+                Write-Host "  Document has namespace: $defaultNs" -ForegroundColor DarkGray
+                # Use the namespace prefix in our XPath
+                $testRun = $trxXml.SelectSingleNode("//ns:TestRun", $nsManager)
+            } else {
+                # No namespace, use regular XPath
+                $testRun = $trxXml.SelectSingleNode("//TestRun")
+            }
+            
+            if ($testRun -ne $null) {
+                $oldRunId = $testRun.id
+                $oldRunName = $testRun.name
+                
+                Write-Host "  Original Run ID: $oldRunId" -ForegroundColor DarkGray
+                Write-Host "  Original Run Name: $oldRunName" -ForegroundColor DarkGray
+                
+                # Update the run ID and name
+                $testRun.id = $newRunName
+                $testRun.name = "TestEngine Test Run $newRunName"
+                
+                Write-Host "  New Run ID: $newRunName" -ForegroundColor DarkGray
+                Write-Host "  New Run Name: TestEngine Test Run $newRunName" -ForegroundColor DarkGray
+                
+                # Also update any TestRunConfiguration element that might contain the run ID
+                if (-not [string]::IsNullOrEmpty($defaultNs)) {
+                    $testRunConfig = $trxXml.SelectSingleNode("//ns:TestRunConfiguration", $nsManager)
+                } else {
+                    $testRunConfig = $trxXml.SelectSingleNode("//TestRunConfiguration")
                 }
-            ]}
-        );
-        renderMathInElement(document.body, {
-            delimiters: [
-                {left: "`$`$", right: "`$`$"}
-            ]
-            });
-        });
-    </script>
-    <h3>Calculation:</h3>
-    <p>`$`$ = \left( \frac{\text{Distinct of test types with no failures}}{\text{Total Entities}} \right) \times 100 `$`$</p>
-    <p>`$`$ = \left( \frac{$numerator}{$total} \right) \times 100 `$`$</p>
-    <p>`$`$ = $percentage `$`$%</p>
-"@
-
-    $htmlTable += $katexCode
-
-    return $htmlTable
+                
+                if ($testRunConfig -ne $null -and $testRunConfig.HasAttribute("id")) {
+                    $testRunConfig.SetAttribute("id", $newRunName)
+                }
+                
+                # Save the modified TRX file
+                $trxXml.Save($file.FullName)
+                Write-Host "  Updated TRX file saved successfully." -ForegroundColor Green
+            }
+            else {                Write-Host "  Warning: TestRun element not found in TRX file." -ForegroundColor Yellow
+            }
+        }
+        catch {
+            Write-Host "  Error processing TRX file: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "  Exception details: $($_.Exception.GetType().FullName)" -ForegroundColor Red
+            Write-Host "  Error processing TRX file: $_" -ForegroundColor Red
+        }
+    }
 }
 
-# Replace placeholders with actual values
-$passCount = ($testResults | Measure-Object -Property Passed -Sum).Sum
-$failCount = ($testResults | Measure-Object -Property Failed -Sum).Sum
-$preContent = $preContent -replace "#PassCount#", $passCount
-$preContent = $preContent -replace "#FailCount#", $failCount
-$preContent = $preContent -replace "#Coverage#", (Generate-HTMLTable -dictionary $dictionary -total $appTotal)
-$preContent = $preContent -replace "#HealthPercent#", $global:healthPercentage
+if ($usePacTest) {
+    # When using pac test, we need to update the runName in all TRX files
+    # to ensure they're identified by the PowerAppsTestEngine.dll report generator
+    Write-Host "Processing test results from pac test run..." -ForegroundColor Cyan
+    
+    # Get the start time of this script execution as a reference point
+    # Only process TRX files created after this script started running
+    $scriptStartTime = $startTimeThreshold
+    
+    # Update the TRX files to use our runName - search in the entire TestEngine directory
+    Update-TrxFilesRunName -searchPath $testEngineBasePath -startTime $scriptStartTime -newRunName $runName
+}
 
-# Generate HTML report
-$reportHtml = $testResults | ConvertTo-Html -Property File, Total, Executed, Passed, Failed, Error, Timeout, Aborted, Inconclusive, PassedButRunAborted, NotRunnable, NotExecuted, Disconnected, Warning, Completed, InProgress, Pending -Title "Test Summary Report" -PreContent $preContent
-$reportHtml | Out-File -FilePath $reportPath
+$reportPath = [System.IO.Path]::Combine($folderPath, "test_summary_$runName.html")
 
-Write-Host "HTML summary report generated successfully at $folderPath."
+# Generate report using PowerAppsTestEngine.dll directly, regardless of test execution mode
+Write-Host "Generating report using PowerAppsTestEngine.dll..." -ForegroundColor Green
 
-Write-Host "Opening report in browser..."
-Write-Host $reportPath
+Push-Location $testEnginePath
+try {
+    dotnet PowerAppsTestEngine.dll --run-name $runName --output-file $reportPath --start-time $startTimeThreshold
+}
+finally {
+    Pop-Location
+}
 
-Invoke-Item $reportPath
+# Report was successfully generated (either Azure DevOps style or classic)
+Write-Host "HTML summary report available at $reportPath." -ForegroundColor Green
+
+# Open the report in the default browser
+Write-Host "Opening report in browser..." -ForegroundColor Green
+Start-Process $reportPath
+# Add information about how to regenerate this report using the startTime and endTime parameters
+# Always use the most current timestamp as the end time
+$currentTime = (Get-Date).ToString("yyyy-MM-dd HH:mm")
+
+# Format the start time that was used - this is either the provided startTime or the current time when the script started
+$formattedStartTime = $startTimeThreshold.ToString("yyyy-MM-dd HH:mm")
+
+Write-Host "=============================================" -ForegroundColor Magenta
+Write-Host "REPORT REGENERATION INFORMATION" -ForegroundColor Magenta
+Write-Host "=============================================" -ForegroundColor Magenta
+Write-Host "To regenerate this exact report without running tests again, use:" -ForegroundColor Magenta
+Write-Host "./RunTests.ps1 -runName `"$runName`"" -ForegroundColor Yellow
+Write-Host "=============================================" -ForegroundColor Magenta
