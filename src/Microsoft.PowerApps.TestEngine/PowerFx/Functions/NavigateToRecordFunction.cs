@@ -18,15 +18,15 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     public class NavigateToRecordFunction : ReflectionFunction
     {
         private readonly ITestWebProvider _testWebProvider;
-        private readonly IPowerFxEngine _powerFxEngine;
+        private readonly Func<Task> _updateModelFunction;
         private readonly ILogger _logger;
 
        
-        public NavigateToRecordFunction(ITestWebProvider testWebProvider, IPowerFxEngine powerFxEngine, ILogger logger)
+        public NavigateToRecordFunction(ITestWebProvider testWebProvider, Func<Task> updateModelFunction, ILogger logger)
             : base("NavigateToRecord", FormulaType.Boolean, FormulaType.String, FormulaType.String, FormulaType.Number)
         {
             _testWebProvider = testWebProvider;
-            _powerFxEngine = powerFxEngine;
+            _updateModelFunction = updateModelFunction;
             _logger = logger;
         }
 
@@ -96,8 +96,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _logger.LogInformation($"Navigation result: {navResult}");
 
             // Ensure Power Fx model is updated after navigation
-            await _powerFxEngine.UpdatePowerFxModelAsync();
-      
+            await _updateModelFunction();
+
             return FormulaValue.New(navResult);
         }
     }
