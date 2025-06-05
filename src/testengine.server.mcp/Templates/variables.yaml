@@ -1,0 +1,10 @@
+# This file contains sample test cases for the PowerApps Test Engine.
+# Note: Access to these samples may be restricted based on your organization or environment based on GitHub rate limits.
+# If you are unable to access the files, clone the files locally and specify you samples.yaml file in your tests folder
+
+values:
+  Environment: "https://your-environment.crm.dynamics.com"
+  TestYamlSample: "https://github.com/microsoft/PowerApps-TestEngine/blob/user/grant-archibald-ms/js-621/samples/javascript-d365-tests/formScripts.te.yaml"
+  MockJsSample: "https://github.com/microsoft/PowerApps-TestEngine/blob/user/grant-archibald-ms/js-621/samples/javascript-d365-tests/mockXrm.js"
+  MDAListSample: "https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/copilotstudiokit/agenttest-list.te.yaml"
+  MDADetailSample: "https://github.com/microsoft/PowerApps-TestEngine/blob/main/samples/copilotstudiokit/agents-details.te.yaml"

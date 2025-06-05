@@ -360,17 +360,17 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps.PowerFXModel
             var dateUnixValue = new DateTimeOffset(dateValue).ToUnixTimeMilliseconds();
 
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", StringType.String)), "{PropertyValue: 'A'}", "[{'Test': \"A\"}]", "mda" };
-            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", NumberType.Number)), "{PropertyValue: 1}", "[{'Test': 1}]" , "mda"};
-            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", NumberType.Decimal)), "{PropertyValue: 1.1}", "[{'Test': 1.1}]" , "mda" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", NumberType.Number)), "{PropertyValue: 1}", "[{'Test': 1}]", "mda" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", NumberType.Decimal)), "{PropertyValue: 1.1}", "[{'Test': 1.1}]", "mda" };
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: true}", "[{'Test': true}]", "mda" };
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: 'true'}", "[{'Test': true}]", "mda" };
-            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: false}", "[{'Test': false}]" , "mda" };
-            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: 'false'}", "[{'Test': false}]" , "mda" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: false}", "[{'Test': false}]", "mda" };
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: 'false'}", "[{'Test': false}]", "mda" };
 
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", DateTimeType.DateTime)), $"{{PropertyValue: {dateTimeValue}}}", $"[{{'Test': \"{dateTime.ToString("o")}\"}}]", "mda" };
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", DateTimeType.Date)), $"{{PropertyValue: {dateUnixValue}}}", $"[{{'Test': \"{dateValue.ToString("o")}\"}}]", "mda" };
 
-            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", StringType.String)), "{PropertyValue: 'A'}", "[{'Test': \"A\"}]", string.Empty};
+            yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", StringType.String)), "{PropertyValue: 'A'}", "[{'Test': \"A\"}]", string.Empty };
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", NumberType.Number)), "{PropertyValue: 1}", "[{'Test': 1}]", string.Empty };
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", NumberType.Decimal)), "{PropertyValue: 1.1}", "[{'Test': 1.1}]", string.Empty };
             yield return new object[] { TableType.Empty().Add(new NamedFormulaType("Test", BooleanType.Boolean)), "{PropertyValue: true}", "[{'Test': true}]", "canvas" };

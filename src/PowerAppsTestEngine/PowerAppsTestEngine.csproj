@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <NoWarn>NU1605</NoWarn>
+    <NoWarn>NU1201</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

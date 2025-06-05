@@ -1,0 +1,33 @@
+testSuite:
+  testSuiteName: MCP Server
+  testSuiteDescription: Start MCP Server with defined test settings.
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: POST- Include canvas apps
+      testCaseDescription: Update each discovered canvas app and include it in the MCP server response
+      testSteps: |
+        = Set(CanvasApps, ForAll(CanvasApps, Patch(ThisRecord, {IncludeInModel: true})))
+
+testSettings:
+  locale: "en-US"
+  headless: false
+  recordVideo: true
+  extensionModules:
+    enable: true
+    parameters:
+      enableCanvasAppFunctions: true
+  timeout: 1200000
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  scans:
+    - name: Hello
+      location: hello.scan.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

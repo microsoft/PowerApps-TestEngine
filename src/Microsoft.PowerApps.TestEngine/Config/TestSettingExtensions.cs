@@ -64,5 +64,10 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Additional optional parameters for extension modules
         /// </summary>
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Optional list of scans that can be run on the workspace
+        /// </summary>
+        public Dictionary<string, string> Scans { get; set; } = new Dictionary<string, string>();
     }
 }
