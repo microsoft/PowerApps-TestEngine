@@ -1,0 +1,59 @@
+testSuite:
+  testSuiteName: Employee Entity Form Automation
+  testSuiteDescription: Verifies that the Employee Entity controls work correctly.
+  persona: User1
+  appLogicalName: Entity_controls_app
+
+  testCases:
+    # 1. Go to List and Show Records
+    - testCaseName: Verify Employee Record Count
+      testCaseDescription: Verify that the Items control displays the correct number of employee records.
+      testSteps: |
+          Assert(CountRows(Items.Rows) = 1, "Checking if Table displays correct number of items");
+    
+  
+    # 2. Add (Create) Record
+    - testCaseName: Click New Record button on the Command Bar Button
+      testCaseDescription: Automate clicking the New Record button on the command bar.
+      testSteps: |
+          Assert(NavigateToRecord("cr693_employee5", "entityrecord", 1));
+          SetProperty(cr693_employeename.Text, "John 22");
+          SetProperty(cr693_empoyeeid.Text, "E022");
+          SetDOBFields("04/09/2025");          
+          CommandBarAction(SaveAndClose());
+          Assert(NavigateToRecord("cr693_employee5", "entitylist", 1));
+         
+
+    # 3. Show/Select Record (Read)
+    - testCaseName: Test SelectGridRowCheckbox
+      testCaseDescription: Should select the checkbox of the first grid row.
+      testSteps: |
+          SelectGridRowCheckbox(1);
+         
+
+    # 4. Edit (Update) Record
+    - testCaseName: Click Edit Record button on the Command Bar Button
+      testCaseDescription: Automate clicking the Edit Record button on the command bar and entering all fields.
+      testSteps: |
+          Assert(NavigateToRecord("cr693_employee5", "entityrecord", 1));
+          SetProperty(cr693_employeename.Text, "John 19 Updated");
+          SetProperty(cr693_empoyeeid.Text, "E019 Updated");
+          SetDOBFields("04/09/2025");
+          CommandBarAction(SaveAndClose());
+          Assert(NavigateToRecord("cr693_employee5", "entitylist", 1));
+
+    # 5. (Optional) Delete Record
+    - testCaseName: Delete Record
+      testCaseDescription: Automate deleting a record from the list.
+      testSteps: |
+        SelectGridRowCheckbox(1);
+        Assert(NavigateToRecord("cr693_employee5", "entityrecord", 1));
+        DeleteRecord();
+      
+
+testSettings:
+  filePath: ./testSettings.yaml
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
