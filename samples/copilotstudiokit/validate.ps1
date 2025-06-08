@@ -3,15 +3,94 @@
 
 # Script: validate.ps1
 # This script validates that all required tools and dependencies are installed for the Copilot Studio Kit testing
+#
+# Parameters:
+#   -Fix: Automatically attempt to fix missing dependencies (not yet implemented)
+#   -Verbose: Enable verbose output
+#   -ShowSensitiveValues: Show actual values for sensitive data like email, tenant ID, environment ID
+#                        (by default these are masked with ***)
 
 param(
     [switch]$Fix = $false,
-    [switch]$Verbose = $false
+    [switch]$Verbose = $false,
+    [switch]$ShowSensitiveValues = $false
 )
 
 # If -Verbose is specified, enable verbose output system-wide
 if ($Verbose) {
     $VerbosePreference = "Continue"
+}
+
+# Helper function to mask sensitive values for screen recording safety
+function Hide-SensitiveValue {
+    param(
+        [string]$Value,
+        [int]$VisibleChars = 4
+    )
+    
+    if ([string]::IsNullOrEmpty($Value)) {
+        return $Value
+    }
+    
+    # If ShowSensitiveValues is enabled, return the value as-is
+    if ($ShowSensitiveValues) {
+        return $Value
+    }    # For URLs, show protocol and domain structure but mask the subdomain
+    if ($Value -match '^(https?://)([^\.]+)\.(.+)$') {
+        $protocol = $matches[1]  # e.g., "https://"
+        $subdomain = $matches[2]  # the subdomain part to mask
+        $domain = $matches[3]     # e.g., "dynamics.crm.com"
+        
+        return "$protocol****.$domain"
+    }
+    
+    # For file paths containing Users\username, mask the username
+    if ($Value -match '([A-Za-z]:\\Users\\)([^\\]+)(\\.*)?') {
+        $prefix = $matches[1]  # e.g., "C:\Users\"
+        $username = $matches[2]  # the username part
+        $suffix = $matches[3]   # the rest of the path (if any)
+        
+        if ([string]::IsNullOrEmpty($suffix)) {
+            $suffix = ""
+        }
+        
+        return "$prefix***$suffix"
+    }
+    
+    # For emails, show first few chars and domain
+    if ($Value -match '^[^@]+@[^@]+$') {
+        $parts = $Value.Split('@')
+        $username = $parts[0]
+        $domain = $parts[1]
+        
+        if ($username.Length -le $VisibleChars) {
+            return "***@$domain"
+        } else {
+            return "$($username.Substring(0, $VisibleChars))***@$domain"
+        }
+    }
+      # Check if it's a GUID format (8-4-4-4-12 characters separated by hyphens)
+    if ($Value -match '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$') {
+        # For GUIDs, show the first section and mask the rest
+        $parts = $Value.Split('-')
+        $firstSection = $parts[0]
+        $maskedParts = @($firstSection)
+        
+        # Mask remaining sections by replacing each alphanumeric character with *
+        for ($i = 1; $i -lt $parts.Length; $i++) {
+            $maskedSection = $parts[$i] -replace '[0-9a-fA-F]', '*'
+            $maskedParts += $maskedSection
+        }
+        
+        return $maskedParts -join '-'
+    }
+    
+    # For other long values, show first few chars
+    if ($Value.Length -le $VisibleChars) {
+        return "***"
+    } else {
+        return "$($Value.Substring(0, $VisibleChars))***"
+    }
 }
 
 # Helper function to format text tables
@@ -228,9 +307,8 @@ function Format-ValidationOutput {
         [string]$Version = $null,
         [string]$MinVersion = $null
     )
-    
-    $status = if ($IsInstalled) { 
-        "[✓] Installed" 
+      $status = if ($IsInstalled) { 
+        "[OK] Installed" 
     } elseif ($IsOptional) { 
         "[!] Not installed (Optional)" 
     } elseif ($Version -and $MinVersion) { 
@@ -362,53 +440,104 @@ if ($allRequirementsMet) {
     }
 }
 
-# Check for Power Platform Test Engine
-$testEnginePath = Join-Path -Path $PSScriptRoot -ChildPath "PowerApps-TestEngine"
+# Function to check if current directory is part of PowerApps-TestEngine
+function Test-IsInTestEngineRepo {
+    try {
+        # Get the git root directory
+        $gitRootDir = git rev-parse --show-toplevel 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            # Not in a git repo
+            return $false
+        }
+        
+        # Check if the directory name indicates it's the PowerApps-TestEngine repo
+        $dirName = Split-Path -Path $gitRootDir -Leaf
+        if ($dirName -eq "PowerApps-TestEngine") {
+            return $true
+        }
+        
+        # Check remote URLs for PowerApps-TestEngine
+        $remotes = git remote -v 2>$null
+        foreach ($remote in $remotes) {
+            if ($remote -like "*PowerApps-TestEngine*") {
+                return $true
+            }
+        }
+        
+        return $false
+    }
+    catch {
+        return $false
+    }
+}
 
+# Check for Power Platform Test Engine
 Write-Host ""
 Write-Host "==================================================" -ForegroundColor Cyan
 Write-Host "Power Platform Test Engine Status" -ForegroundColor Cyan
 Write-Host "==================================================" -ForegroundColor Cyan
 
-if (Test-Path $testEnginePath) {
-    Write-Host "Power Platform Test Engine is available at: $testEnginePath" -ForegroundColor Green
+# Check if we're already in the PowerApps-TestEngine repository
+$isInTestEngineRepo = Test-IsInTestEngineRepo
+
+if ($isInTestEngineRepo) {
+    Write-Host "Detected current directory is part of PowerApps-TestEngine repository" -ForegroundColor Green
+    
+    # Get the root directory of the repository
+    $repoRootDir = git rev-parse --show-toplevel 2>$null
     
     # Check if it's properly built
-    $binPath = Join-Path -Path $testEnginePath -ChildPath "bin\Debug\PowerAppsTestEngine\PowerAppsTestEngine.dll"
+    $binPath = Join-Path -Path $repoRootDir -ChildPath "bin\Debug\PowerAppsTestEngine\PowerAppsTestEngine.dll"
     if (Test-Path $binPath) {
-        Write-Host "PowerAppsTestEngine.dll is available." -ForegroundColor Green
+        $maskedBinPath = Hide-SensitiveValue -Value $binPath
+        Write-Host "PowerAppsTestEngine.dll is available at: $maskedBinPath" -ForegroundColor Green
     } else {
-        Write-Host "PowerAppsTestEngine.dll is not built yet. Run RunTests.ps1 to clone and build it." -ForegroundColor Yellow
+        Write-Host "PowerAppsTestEngine.dll is not built yet. Run 'dotnet build' in the src directory to build it." -ForegroundColor Yellow
     }
 } else {
-    Write-Host "Power Platform Test Engine is not cloned yet. Run RunTests.ps1 to clone and build it." -ForegroundColor Yellow
+    # Check for local PowerApps-TestEngine subdirectory
+    $testEnginePath = Join-Path -Path $PSScriptRoot -ChildPath "PowerApps-TestEngine"
+      if (Test-Path $testEnginePath) {
+        $maskedTestEnginePath = Hide-SensitiveValue -Value $testEnginePath
+        Write-Host "Power Platform Test Engine is available at: $maskedTestEnginePath" -ForegroundColor Green
+        
+        # Check if it's properly built
+        $binPath = Join-Path -Path $testEnginePath -ChildPath "bin\Debug\PowerAppsTestEngine\PowerAppsTestEngine.dll"
+        if (Test-Path $binPath) {
+            Write-Host "PowerAppsTestEngine.dll is available." -ForegroundColor Green
+        } else {
+            Write-Host "PowerAppsTestEngine.dll is not built yet. Run RunTests.ps1 to clone and build it." -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "Power Platform Test Engine is not cloned yet. Run RunTests.ps1 to clone and build it." -ForegroundColor Yellow
+    }
 }
 
 # Check for environment configuration
 $configPath = Join-Path -Path $PSScriptRoot -ChildPath ".\config.json"
 if (Test-Path $configPath) {
-    Write-Host ""
     Write-Host "==================================================" -ForegroundColor Cyan
     Write-Host "Environment Configuration Status" -ForegroundColor Cyan
     Write-Host "==================================================" -ForegroundColor Cyan
-    Write-Host "Configuration file found at: $configPath" -ForegroundColor Green
+    $maskedConfigPath = Hide-SensitiveValue -Value $configPath
+    Write-Host "Configuration file found at: $maskedConfigPath" -ForegroundColor Green
     
     try {
         $config = Get-Content -Path $configPath -Raw | ConvertFrom-Json
         $envId = $config.environmentId
         $envUrl = $config.environmentUrl
         $tenantId = $config.tenantId
-        
-        if ([string]::IsNullOrEmpty($envId) -or $envId -eq "00000000-0000-0000-0000-000000000000") {
+          if ([string]::IsNullOrEmpty($envId) -or $envId -eq "00000000-0000-0000-0000-000000000000") {
             Write-Host "Environment ID is not properly configured." -ForegroundColor Red
         } else {
-            Write-Host "Environment ID is configured: $envId" -ForegroundColor Green
+            $maskedEnvId = Hide-SensitiveValue -Value $envId
+            Write-Host "Environment ID is configured: $maskedEnvId" -ForegroundColor Green
         }
-        
-        if ([string]::IsNullOrEmpty($tenantId) -or $tenantId -eq "00000000-0000-0000-0000-000000000000") {
+          if ([string]::IsNullOrEmpty($tenantId) -or $tenantId -eq "00000000-0000-0000-0000-000000000000") {
             Write-Host "Tenant ID is not properly configured." -ForegroundColor Red
         } else {
-            Write-Host "Tenant ID is configured: $tenantId" -ForegroundColor Green
+            $maskedTenantId = Hide-SensitiveValue -Value $tenantId
+            Write-Host "Tenant ID is configured: $maskedTenantId" -ForegroundColor Green
             
             # Check if Azure CLI is installed and check if tenant ID matches
             $azCliResult = Test-Command -Command "az --version"
@@ -420,8 +549,10 @@ if (Test-Path $configPath) {
                         # Join all output lines and trim whitespace
                         $azureTenantId = ($azAccountOutput -join "").Trim()
                         
-                        if (-not [string]::IsNullOrEmpty($azureTenantId)) {
-                            if ($tenantId -eq $azureTenantId) {
+                        if (-not [string]::IsNullOrEmpty($azureTenantId))
+                        {
+                            if ($tenantId -eq $azureTenantId) 
+                            {
                                 Write-Host "Tenant ID in config.json matches Azure account tenant ID." -ForegroundColor Green
                                 
                                 # Now validate the environment ID using Power Platform API
@@ -448,32 +579,49 @@ if (Test-Path $configPath) {
                                                 Write-Verbose "Comparing with PAC Environment URL: $($_.EnvironmentUrl) (Normalized: $pacEnvUrl)"
                                                 $pacEnvUrl -eq $normalizedEnvUrl 
                                             }
-                                            
-                                            if ($environmentMatch -and $environmentMatch.Count -eq 1 ) {
-                                                Write-Host "Environment Match found: $envUrl $($environmentMatch[0].FriendlyName)" -ForegroundColor Green
+                                            if ($environmentMatch -and $environmentMatch.Count -eq 1 ) 
+                                            {
+                                                $maskedEnvUrl = Hide-SensitiveValue -Value $envUrl
+                                                Write-Host "Environment Match found: $maskedEnvUrl $($environmentMatch[0].FriendlyName)" -ForegroundColor Green
                                                 if (-not ($environmentMatch[0].EnvironmentIdentifier.Id -eq $envId)) {
-                                                    Write-Host "WARNING: Environment ID in config.json ($envId) does not match PAC environment ID ($($environmentMatch[0].EnvironmentIdentifier.Id))!" -ForegroundColor Yellow
-                                                } else {
-                                                    Write-Host "Environment ID matches: $envId" -ForegroundColor Green
+                                                    $maskedConfigEnvId = Hide-SensitiveValue -Value $envId
+                                                    $maskedPacEnvId = Hide-SensitiveValue -Value $environmentMatch[0].EnvironmentIdentifier.Id
+                                                    Write-Host "WARNING: Environment ID in config.json ($maskedConfigEnvId) does not match PAC environment ID ($maskedPacEnvId)!" -ForegroundColor Yellow
                                                 }
-                                            } else {
+                                                else {
+                                                    $maskedEnvId = Hide-SensitiveValue -Value $envId
+                                                    Write-Host "Environment ID matches: $maskedEnvId" -ForegroundColor Green
+                                                }
+                                            } 
+                                            else
+                                            {
                                                 Write-Host "Error validating environment ID" -ForegroundColor Red
                                                 foreach ($env in $data) {
-                                                    Write-Host "Environment: $($env.EnvironmentUrl) - $($env.FriendlyName) (ID: $($env.EnvironmentIdentifier.Id))"
+                                                    $maskedEnvironmentUrl = Hide-SensitiveValue -Value $env.EnvironmentUrl
+                                                    $maskedEnvironmentId = Hide-SensitiveValue -Value $env.EnvironmentIdentifier.Id
+                                                    Write-Host "Environment: $maskedEnvironmentUrl - $($env.FriendlyName) (ID: $maskedEnvironmentId)"
                                                 }
                                             }
-                                        } else {
+                                        } 
+                                        else
+                                        {
                                             Write-Host "Could not parse environment data from PAC command." -ForegroundColor Yellow
                                         }
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         Write-Host "Failed to retrieve environments from PAC command" -ForegroundColor Yellow
                                     }
                                 }
                                 catch {
                                     Write-Host "Error validating environment ID: $_" -ForegroundColor Red
                                 }
-                            } else {
-                                Write-Host "WARNING: Tenant ID in config.json ($tenantId) does not match Azure account tenant ID ($azureTenantId)!" -ForegroundColor Red
+                            }    
+                            else 
+                            {
+                                $maskedConfigTenantId = Hide-SensitiveValue -Value $tenantId
+                                $maskedAzureTenantId = Hide-SensitiveValue -Value $azureTenantId
+                                Write-Host "WARNING: Tenant ID in config.json ($maskedConfigTenantId) does not match Azure account tenant ID ($maskedAzureTenantId)!" -ForegroundColor Red
                                 Write-Host "         You may need to run 'az login' with the correct account or update your config.json." -ForegroundColor Yellow
                             }
                         } else {
@@ -511,27 +659,29 @@ if (Test-Path $configPath) {
         # Check if user1Email is specified in config.json
         if ($config.user1Email) {
             $user1Email = $config.user1Email
-            Write-Host "User email found: $user1Email" -ForegroundColor Green
+            $maskedUser1Email = Hide-SensitiveValue -Value $user1Email
+            Write-Host "User email found: $maskedUser1Email" -ForegroundColor Green
             
             # Extract username without domain for storage state file naming
             $userNameOnly = $user1Email.Split('@')[0]
-            Write-Host "Username for storage state: $userNameOnly" -ForegroundColor Green
+            $maskedUserNameOnly = Hide-SensitiveValue -Value $userNameOnly
+            Write-Host "Username for storage state: $maskedUserNameOnly" -ForegroundColor Green
             
             # Define the path to TestEngine temp directory
             $testEngineStorageDir = "$env:USERPROFILE\AppData\Local\Temp\Microsoft\TestEngine"
-            
-            # Check if TestEngine directory exists
+              # Check if TestEngine directory exists
             if (Test-Path -Path $testEngineStorageDir) {
-                Write-Host "TestEngine directory found: $testEngineStorageDir" -ForegroundColor Green
+                $maskedTestEngineStorageDir = Hide-SensitiveValue -Value $testEngineStorageDir
+                Write-Host "TestEngine directory found: $maskedTestEngineStorageDir" -ForegroundColor Green
                 
                 # Look for storage state file matching the username
                 $storageFiles = Get-ChildItem -Path $testEngineStorageDir -Filter ".storage-state-$userNameOnly*" -ErrorAction SilentlyContinue
-                
-                if ($storageFiles.Count -gt 0) {
-                    Write-Host "Found $($storageFiles.Count) storage state file(s) for $($userNameOnly):" -ForegroundColor Green
+                  if ($storageFiles.Count -gt 0) {
+                    Write-Host "Found $($storageFiles.Count) storage state file(s) for $($maskedUserNameOnly):" -ForegroundColor Green
                     
                     foreach ($file in $storageFiles) {
-                        Write-Host "  - $($file.FullName)" -ForegroundColor Green
+                        $maskedFilePath = Hide-SensitiveValue -Value $file.FullName
+                        Write-Host "  - $maskedFilePath" -ForegroundColor Green
                         
                         # Check state.json file
                         $stateJsonPath = Join-Path -Path $file.FullName -ChildPath "state.json"
@@ -568,14 +718,13 @@ if (Test-Path $configPath) {
                             Write-Host "    - state.json file not found" -ForegroundColor Red
                         }
                     }
-                }
-                else {
-                    Write-Host "No storage state files found for $userNameOnly" -ForegroundColor Yellow
+                }                else {
+                    Write-Host "No storage state files found for $maskedUserNameOnly" -ForegroundColor Yellow
                     Write-Host "Run RunTests.ps1 first to create credentials or check if user email is correct" -ForegroundColor Yellow
-                }
-            }
+                }}
             else {
-                Write-Host "TestEngine directory not found: $testEngineStorageDir" -ForegroundColor Yellow
+                $maskedTestEngineStorageDir = Hide-SensitiveValue -Value $testEngineStorageDir
+                Write-Host "TestEngine directory not found: $maskedTestEngineStorageDir" -ForegroundColor Yellow
                 Write-Host "Run RunTests.ps1 first to create the directory and credentials" -ForegroundColor Yellow
             }
         }

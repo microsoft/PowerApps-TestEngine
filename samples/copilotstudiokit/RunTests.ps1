@@ -3,7 +3,7 @@
 
 # Script: RunTests.ps1
 # This script runs tests for Copilot Studio Kit applications.
-# It generates an Azure DevOps style HTML report by default, with optional fallback to classic report style.
+# It generates an Azure DevOps style HTML report by default
 
 # 
 # Usage examples:
