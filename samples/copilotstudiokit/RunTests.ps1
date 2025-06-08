@@ -34,9 +34,99 @@ param (
     [switch]$forceRebuild, # Force rebuild of PowerApps-TestEngine even if it exists
     [switch]$generateReportOnly, # Only generate a report without running tests
     [switch]$useStaticContext = $false, # Use static context for test execution
-    [switch]$usePacTest = $false # Use 'pac test run' instead of direct PowerAppsTestEngine.dll execution
+    [switch]$usePacTest = $true, # Use 'pac test run' instead of direct PowerAppsTestEngine.dll execution
+    [switch]$ShowSensitiveValues = $false # Show actual values for sensitive data like email, tenant ID, environment ID
+                                         # (by default these are masked with ***)
 )
 
+# Helper function to mask sensitive values for screen recording safety
+function Hide-SensitiveValue {
+    param(
+        [string]$Value,
+        [int]$VisibleChars = 4
+    )
+    
+    if ([string]::IsNullOrEmpty($Value)) {
+        return $Value
+    }
+    
+    # If ShowSensitiveValues is enabled, return the value as-is
+    if ($ShowSensitiveValues) {
+        return $Value
+    }
+    
+    # For URLs, show protocol and domain structure but mask the subdomain
+    if ($Value -match '^(https?://)([^\.]+)\.(.+)$') {
+        $protocol = $matches[1]  # e.g., "https://"
+        $subdomain = $matches[2]  # the subdomain part to mask
+        $domain = $matches[3]     # e.g., "dynamics.crm.com"
+        
+        return "$protocol****.$domain"
+    }
+    
+    # For file paths containing Users\username, mask the username
+    if ($Value -match '([A-Za-z]:\\Users\\)([^\\]+)(\\.*)?') {
+        $prefix = $matches[1]  # e.g., "C:\Users\"
+        $username = $matches[2]  # the username part
+        $suffix = $matches[3]   # the rest of the path (if any)
+        
+        if ([string]::IsNullOrEmpty($suffix)) {
+            $suffix = ""
+        }
+        
+        return "$prefix***$suffix"
+    }
+    
+    # For emails, show first few chars and domain
+    if ($Value -match '^[^@]+@[^@]+$') {
+        $parts = $Value.Split('@')
+        $username = $parts[0]
+        $domain = $parts[1]
+        
+        if ($username.Length -le $VisibleChars) {
+            return "***@$domain"
+        } else {
+            return "$($username.Substring(0, $VisibleChars))***@$domain"
+        }
+    }
+      # Check if it's a GUID format (8-4-4-4-12 characters separated by hyphens)
+    if ($Value -match '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$') {
+        # For GUIDs, show the first section and mask the rest
+        $parts = $Value.Split('-')
+        $firstSection = $parts[0]
+        $maskedParts = @($firstSection)
+        
+        # Mask remaining sections by replacing each alphanumeric character with *
+        for ($i = 1; $i -lt $parts.Length; $i++) {
+            $maskedSection = $parts[$i] -replace '[0-9a-fA-F]', '*'
+            $maskedParts += $maskedSection
+        }
+        
+        return $maskedParts -join '-'
+    }
+    
+    # Check if the value is a username (like from $env:username)
+    # This handles cases where the username appears directly as a value
+    if (-not [string]::IsNullOrEmpty($env:username) -and $Value -eq $env:username) {
+        return "***"
+    }
+    
+    # Also check for common username patterns (alphanumeric, possibly with dots, hyphens, underscores)
+    # but exclude obvious non-usernames like GUIDs, URLs, file extensions
+    if ($Value -match '^[a-zA-Z][a-zA-Z0-9\.\-_]{2,19}$' -and 
+        $Value -notmatch '\.' -and  # Exclude things that look like file extensions or domains
+        $Value -notmatch '^https?:' -and  # Exclude URLs
+        $Value -notmatch '[0-9a-fA-F]{8,}') {  # Exclude long hex strings
+        return "***"
+    }
+    
+    # For other long values, show first few chars
+    if ($Value.Length -le $VisibleChars) {
+        return "***"
+    } else {
+        return "$($Value.Substring(0, $VisibleChars))***"
+    }
+}
 
 # Function to execute a test, either using PowerAppsTestEngine.dll directly or pac test run
 # Note: Report generation is always handled by PowerAppsTestEngine.dll regardless of execution mode
@@ -72,12 +162,33 @@ function Execute-Test {
         
         if ($debugTests) {
             $pacArgs += "--debug"
-        }
-          # Note: We won't use --run-id with pac test, as we'll update the generated TRX files later
+        }        # Note: We won't use --run-id with pac test, as we'll update the generated TRX files later
         # This gives us more control over the test result processing
+          # Create masked versions for logging
+        $maskedTenantId = Hide-SensitiveValue -Value $tenantId
+        $maskedEnvironmentId = Hide-SensitiveValue -Value $environmentId
+        $maskedTargetUrl = Hide-SensitiveValue -Value $targetUrl
+        $maskedTestScriptPath = Hide-SensitiveValue -Value $testScriptPath
         
-        # Log the command being executed
-        Write-Host "Executing: pac $($pacArgs -join ' ')" -ForegroundColor DarkGray
+        # Log the command being executed (with masked sensitive values)
+        $maskedPacArgs = @(
+            "test", "run",
+            "--test-plan-file", "$maskedTestScriptPath",
+            "--domain", "$maskedTargetUrl",
+            "--tenant", $maskedTenantId,
+            "--environment-id", $maskedEnvironmentId,
+            "--provider", "mda"
+        )
+        
+        if ($useStaticContextArg) {
+            $maskedPacArgs += "--use-static-context"
+        }
+        
+        if ($debugTests) {
+            $maskedPacArgs += "--debug"
+        }
+        
+        Write-Host "Executing: pac $($maskedPacArgs -join ' ')" -ForegroundColor DarkGray
         
         # Execute pac command
         & pac $pacArgs
@@ -89,10 +200,18 @@ function Execute-Test {
     else {
         # Use PowerAppsTestEngine.dll directly
         Write-Host "Running test using PowerAppsTestEngine.dll directly..." -ForegroundColor Green
-        
-        # Navigate to the test engine directory
+          # Navigate to the test engine directory
         Push-Location $testEnginePath
         try {
+            # Create masked versions for logging
+            $maskedTenantId = Hide-SensitiveValue -Value $tenantId
+            $maskedEnvironmentId = Hide-SensitiveValue -Value $environmentId
+            $maskedTargetUrl = Hide-SensitiveValue -Value $targetUrl
+            $maskedTestScriptPath = Hide-SensitiveValue -Value $testScriptPath
+            
+            # Log the command being executed (with masked sensitive values)
+            Write-Host "Executing: dotnet PowerAppsTestEngine.dll -c `"$staticContextArgValue`" -w `"$debugTestArgValue`" -u `"$userAuth`" -a `"$authType`" -p `"mda`" -a `"none`" -i `"$maskedTestScriptPath`" -t $maskedTenantId -e $maskedEnvironmentId -d `"$maskedTargetUrl`" -l `"$logLevel`" --run-name $runName" -ForegroundColor DarkGray
+            
             # Execute the test using dotnet command
             dotnet PowerAppsTestEngine.dll -c "$staticContextArgValue" -w "$debugTestArgValue" -u "$userAuth" -a "$authType" -p "mda" -a "none" -i "$testScriptPath" -t $tenantId -e $environmentId -d "$targetUrl" -l "$logLevel" --run-name $runName
             
@@ -190,12 +309,14 @@ function Test-TestEngineBinary {
         return $false
     }
     
-    Write-Host "Found PowerAppsTestEngine.dll at $dllPath" -ForegroundColor Green
+    $maskedDllPath = Hide-SensitiveValue -Value $dllPath
+    Write-Host "Found PowerAppsTestEngine.dll at $maskedDllPath" -ForegroundColor Green
     return $true
 }
 
 # Function to setup the PowerApps Test Engine
-function Setup-TestEngine {    # Check if we're already in the PowerApps-TestEngine repository
+function Setup-TestEngine {
+    # Check if we're already in the PowerApps-TestEngine repository
     $isInTestEngineRepo = Test-IsInTestEngineRepo
       
     if ($isInTestEngineRepo) {
@@ -209,7 +330,7 @@ function Setup-TestEngine {    # Check if we're already in the PowerApps-TestEng
         $relativeBinDir = Join-Path -Path $repoRootDir -ChildPath "bin\Debug\PowerAppsTestEngine"
         $binDebugDir = Join-Path -Path $repoRootDir -ChildPath "bin\Debug"
         
-        Write-Host "Using repository root directory: $repoRootDir" -ForegroundColor Green
+        Write-Host "Using repository root directory: $(Hide-SensitiveValue $repoRootDir)" -ForegroundColor Green
         
         # Check if build is needed
         $needsBuild = $false
@@ -228,18 +349,16 @@ function Setup-TestEngine {    # Check if we're already in the PowerApps-TestEng
         elseif ($forceRebuild) {
             Write-Host "Force rebuild requested. Building the project..." -ForegroundColor Yellow
             $needsBuild = $true
-        }
-        else {
-            Write-Host "Using existing build in $relativeBinDir" -ForegroundColor Green
+        }        else {
+            Write-Host "Using existing build in $(Hide-SensitiveValue $relativeBinDir)" -ForegroundColor Green
         }
         
         # Build if needed
         if ($needsBuild) {
             Build-TestEngine -srcDir $relativeSrcDir -message "Building PowerApps Test Engine from local source..."
-        }
-          # Verify binary exists
+        }          # Verify binary exists
         if (Test-TestEngineBinary -binDir $relativeBinDir) {
-            Write-Host "Binary verified at $relativeBinDir" -ForegroundColor Green
+            Write-Host "Binary verified at $(Hide-SensitiveValue $relativeBinDir)" -ForegroundColor Green
             return $relativeBinDir
         } else {
             Write-Error "Failed to verify binary at $relativeBinDir"
@@ -256,9 +375,8 @@ function Setup-TestEngine {    # Check if we're already in the PowerApps-TestEng
                 Write-Host "Get latest changes..." -ForegroundColor Yellow
                 Set-Location $testEngineDirectory
                 git pull
-            } else {
-                # Clone the repository
-                Write-Host "Cloning PowerApps Test Engine repository from $testEngineRepoUrl..." -ForegroundColor Green
+            } else {                # Clone the repository
+                Write-Host "Cloning PowerApps Test Engine repository from $(Hide-SensitiveValue $testEngineRepoUrl)..." -ForegroundColor Green
                 git clone "$testEngineRepoUrl" "$testEngineDirectory"
             }
             
@@ -284,13 +402,11 @@ function Setup-TestEngine {    # Check if we're already in the PowerApps-TestEng
             finally {
                 Pop-Location # Return from repository directory
             }
-        }
-        else {
-            Write-Host "PowerApps Test Engine directory already exists at $testEngineDirectory" -ForegroundColor Green
-        }
-          # Verify binary exists
+        }        else {
+            Write-Host "PowerApps Test Engine directory already exists at $(Hide-SensitiveValue $testEngineDirectory)" -ForegroundColor Green
+        }          # Verify binary exists
         if (Test-TestEngineBinary -binDir $testEngineBinDir) {
-            Write-Host "Binary verified at $testEngineBinDir" -ForegroundColor Green
+            Write-Host "Binary verified at $(Hide-SensitiveValue $testEngineBinDir)" -ForegroundColor Green
             return $testEngineBinDir
         } else {
             Write-Error "Failed to verify binary at $testEngineBinDir"
@@ -307,7 +423,7 @@ if ($testEnginePath -is [array]) {
     Write-Host "Converting array to string for testEnginePath" -ForegroundColor Yellow
     $testEnginePath = $testEnginePath[0]
 }
-Write-Host "Test Engine Path: $testEnginePath" -ForegroundColor Green
+Write-Host "Test Engine Path: $(Hide-SensitiveValue $testEnginePath)" -ForegroundColor Green
 
 Set-Location $currentDirectory
 
@@ -502,13 +618,12 @@ if ($runTests)
     if ($config.installPlaywright) {
         # Get the absolute path to playwright.ps1
         $playwrightScriptPath = Join-Path -Path $testEnginePath -ChildPath "playwright.ps1"
-        
-        # Check if the file exists
+          # Check if the file exists
         if (Test-Path -Path $playwrightScriptPath) {
-            Write-Host "Running Playwright installer from: $playwrightScriptPath" -ForegroundColor Green
+            Write-Host "Running Playwright installer from: $(Hide-SensitiveValue $playwrightScriptPath)" -ForegroundColor Green
             Start-Process -FilePath "pwsh" -ArgumentList "-Command `"$playwrightScriptPath install`"" -Wait
         } else {
-            Write-Error "Playwright script not found at: $playwrightScriptPath"
+            Write-Error "Playwright script not found at: $(Hide-SensitiveValue $playwrightScriptPath)"
         }
     } else {
         Write-Host "Skipped playwright install"
@@ -771,6 +886,12 @@ Write-Host "Generating report using PowerAppsTestEngine.dll..." -ForegroundColor
 
 Push-Location $testEnginePath
 try {
+    # Create masked versions for logging
+    $maskedReportPath = Hide-SensitiveValue -Value $reportPath
+    
+    # Log the command being executed (with masked sensitive values)
+    Write-Host "Executing: dotnet PowerAppsTestEngine.dll --run-name $runName --output-file `"$maskedReportPath`" --start-time $startTimeThreshold" -ForegroundColor DarkGray
+    
     dotnet PowerAppsTestEngine.dll --run-name $runName --output-file $reportPath --start-time $startTimeThreshold
 }
 finally {
@@ -778,7 +899,8 @@ finally {
 }
 
 # Report was successfully generated (either Azure DevOps style or classic)
-Write-Host "HTML summary report available at $reportPath." -ForegroundColor Green
+$maskedReportPath = Hide-SensitiveValue -Value $reportPath
+Write-Host "HTML summary report available at $maskedReportPath." -ForegroundColor Green
 
 # Open the report in the default browser
 Write-Host "Opening report in browser..." -ForegroundColor Green
