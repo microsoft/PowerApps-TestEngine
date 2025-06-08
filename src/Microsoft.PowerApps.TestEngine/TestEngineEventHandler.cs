@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
@@ -37,12 +39,12 @@ namespace Microsoft.PowerApps.TestEngine
             _casesTotal = numCases;
             _casesPassed = 0;
         }
-
         public void EncounteredException(Exception ex)
         {
             // Print assertion if exception is the result of an Assert failure
             if (ex is AssertionFailureException)
             {
+                Debug.WriteLine($"   Assertion failed: {ex.InnerException.InnerException.Message}");
                 Console.WriteLine($"   Assertion failed: {ex.InnerException.InnerException.Message}");
             }
             else if (ex is UserInputException)
@@ -50,68 +52,86 @@ namespace Microsoft.PowerApps.TestEngine
                 switch (ex.Message)
                 {
                     case nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings):
+                        Debug.WriteLine(UserInputExceptionInvalidTestSettingsMessage);
                         Console.WriteLine(UserInputExceptionInvalidTestSettingsMessage);
                         break;
                     case nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath):
+                        Debug.WriteLine(UserInputExceptionInvalidFilePathMessage);
                         Console.WriteLine(UserInputExceptionInvalidFilePathMessage);
                         break;
                     case nameof(UserInputException.ErrorMapping.UserInputExceptionLoginCredential):
+                        Debug.WriteLine(UserInputExceptionLoginCredentialMessage);
                         Console.WriteLine(UserInputExceptionLoginCredentialMessage);
                         break;
                     case nameof(UserInputException.ErrorMapping.UserInputExceptionTestConfig):
+                        Debug.WriteLine(UserInputExceptionTestConfigMessage);
                         Console.WriteLine(UserInputExceptionTestConfigMessage);
                         break;
                     case nameof(UserInputException.ErrorMapping.UserInputExceptionYAMLFormat):
+                        Debug.WriteLine(UserInputExceptionYAMLFormatMessage);
                         Console.WriteLine(UserInputExceptionYAMLFormatMessage);
                         break;
                     case nameof(UserInputException.ErrorMapping.UserInputExceptionInvalidOutputPath):
+                        Debug.WriteLine(UserInputExceptionInvalidOutputPathMessage);
                         Console.WriteLine(UserInputExceptionInvalidOutputPathMessage);
                         break;
                     default:
+                        Debug.WriteLine($"   {ex.Message}");
                         Console.WriteLine($"   {ex.Message}");
                         break;
                 }
             }
             else if (ex is UserAppException)
             {
+                Debug.WriteLine(UserAppExceptionMessage);
                 Console.WriteLine(UserAppExceptionMessage);
             }
             else
             {
+                Debug.WriteLine($"   {ex.Message}");
                 Console.WriteLine($"   {ex.Message}");
             }
         }
-
         public void SuiteBegin(string suiteName, string directory, string browserName, string url)
         {
+            Debug.WriteLine($"Running test suite: {suiteName}");
+            Debug.WriteLine($"   Test results will be stored in: {directory}");
+            Debug.WriteLine($"   Browser: {browserName}");
+            Debug.WriteLine($"   App URL: {url}");
+
             Console.WriteLine($"Running test suite: {suiteName}");
             Console.WriteLine($"   Test results will be stored in: {directory}");
             Console.WriteLine($"   Browser: {browserName}");
             Console.WriteLine($"   App URL: {url}");
         }
-
         public void SuiteEnd()
         {
+            Debug.WriteLine("\nTest suite summary");
+            Debug.WriteLine($"Total cases: {_casesTotal}");
+            Debug.WriteLine($"Cases passed: {_casesPassed}");
+            Debug.WriteLine($"Cases failed: {(_casesTotal - _casesPassed)}");
+
             Console.WriteLine("\nTest suite summary");
             Console.WriteLine($"Total cases: {_casesTotal}");
             Console.WriteLine($"Cases passed: {_casesPassed}");
             Console.WriteLine($"Cases failed: {(_casesTotal - _casesPassed)}");
         }
-
         public void TestCaseBegin(string name)
         {
+            Debug.WriteLine($"Test case: {name}");
             Console.WriteLine($"Test case: {name}");
         }
-
         public void TestCaseEnd(bool result)
         {
             if (result)
             {
                 _casesPassed++;
+                Debug.WriteLine("   Result: Passed");
                 Console.WriteLine("   Result: Passed");
             }
             else
             {
+                Debug.WriteLine("   Result: Failed");
                 Console.WriteLine("   Result: Failed");
             }
         }

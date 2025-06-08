@@ -37,7 +37,9 @@ namespace PowerAppsTestEngineWrapper
                 { "-a", "UserAuthType"},
                 { "-w", "Wait" },
                 { "-r", "Record" },
-                { "-c", "UseStaticContext" }
+                { "-c", "UseStaticContext" },
+                { "--run-name", "RunName" },
+                { "--output-file", "OutputFile" }
             };
 
             var inputOptions = new ConfigurationBuilder()
@@ -55,6 +57,13 @@ namespace PowerAppsTestEngineWrapper
             }
             else
             {
+                if (!string.IsNullOrEmpty(inputOptions.OutputFile) && !string.IsNullOrEmpty(inputOptions.RunName))
+                {
+                    var system = new FileSystem();
+                    var summary = new TestRunSummary(system);
+                    summary.GenerateSummaryReport(Path.Combine(system.GetDefaultRootTestEngine(), "TestOutput"), inputOptions.OutputFile, inputOptions.RunName);
+                    return;
+                }
 
                 // If an empty field is put in via commandline, it won't register as empty
                 // It will cannabalize the next flag, and then ruin the next flag's operation
@@ -331,7 +340,7 @@ namespace PowerAppsTestEngineWrapper
                     }
 
                     //setting defaults for optional parameters outside RunTestAsync
-                    var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams);
+                    var testResult = await testEngine.RunTestAsync(testPlanFile, environmentId, tenantId, outputDirectory, domain, queryParams, inputOptions.RunName);
                     if (testResult != "InvalidOutputDirectory")
                     {
                         Console.WriteLine($"Test results can be found here: {testResult}");

@@ -579,5 +579,23 @@ namespace Microsoft.PowerApps.TestEngine.System
             }
             throw new InvalidOperationException(string.Format("Path invalid or write to path: '{0}' not permitted.", directoryName));
         }
+
+        public long GetFileSize(string filePath)
+        {
+            filePath = Path.GetFullPath(filePath);
+            if (CanAccessFilePath(filePath))
+            {
+                var fileInfo = new FileInfo(filePath);
+                if (fileInfo.Exists)
+                {
+                    return fileInfo.Length;
+                }
+                return 0;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Invalid file path '{filePath}'.");
+            }
+        }
     }
 }

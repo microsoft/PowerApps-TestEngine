@@ -5,6 +5,8 @@ namespace PowerAppsTestEngineWrapper
 {
     public class InputOptions
     {
+        public string? OutputFile { get; set; }
+        public string? RunName { get; set; }
         public string? EnvironmentId { get; set; }
         public string? TenantId { get; set; }
         public string? TestPlanFile { get; set; }
