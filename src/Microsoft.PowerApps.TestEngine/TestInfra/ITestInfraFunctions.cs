@@ -107,5 +107,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="filePath">The physical file path for image file</param>
         /// <returns></returns>
         public Task<bool> TriggerControlClickEvent(string controlName, string filePath);
+
+        /// <summary>
+        /// Selects a department option in the user interface.
+        /// </summary>
+        /// <param name="value">The department value to select.</param>
+        /// <returns>True if the department option was successfully selected; otherwise, false.</returns>
+        public Task<bool> SelectDepartmentOptionsAsync(string value);
     }
 }

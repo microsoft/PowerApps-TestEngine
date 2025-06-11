@@ -1,0 +1,34 @@
+locale: "en-US"
+headless: false
+recordVideo: true
+extensionModules:
+  enable: true
+  parameters:
+    enableDataverseFunctions: true
+  allowPowerFxNamespaces:
+  - Preview
+timeout: 1200000
+browserConfigurations:
+  - browser: Chromium
+    channel: msedge
+
+testFunctions:
+ - description: Get Identifier of save comamnd bar item
+   code: |
+    SaveForm(): Boolean = Preview.SaveForm();
+ - description: Get Identifier of New command bar item
+   code: |
+    NewRecord(): Text = "New";
+ - description: Get Identifier of save and close command bar item
+   code: |
+    SaveAndClose(): Text = "Save & Close";
+ - description: Save and close the form using Document Object Model (DOM) selector for command bar
+   code: |
+    CommandBarAction(name: Text): Void =
+      Preview.PlaywrightAction(Concatenate("//*[@aria-label='", name, "']"), "click");
+
+ - description: Delete the current record using Power Fx control from MDA
+   code: |
+    DeleteRecord(): Boolean = Preview.DeleteRecord();
+
+  

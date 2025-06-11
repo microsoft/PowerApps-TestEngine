@@ -70,6 +70,8 @@ class PowerAppsTestEngine {
                 return PowerAppsModelDrivenCanvas.getControlProperties(itemPath);
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:
                 return PowerAppsModelDrivenEntityRecord.getControlProperties(itemPath);
+            case PowerAppsTestEngine.CONSTANTS.EntityList:
+                return PowerAppsModelDrivenEntityList.getControlProperties(itemPath);
         }
         return JSON.stringify(data);
     }
@@ -83,6 +85,8 @@ class PowerAppsTestEngine {
                 return PowerAppsModelDrivenCanvas.setPropertyValueForControl(item, data);
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:
                 return PowerAppsModelDrivenEntityRecord.setPropertyValueForControl(item, data);
+            case PowerAppsTestEngine.CONSTANTS.EntityList:
+                return PowerAppsModelDrivenEntityList.setPropertyValueForControl(itemPath);
         }
         return false;
     }
@@ -95,7 +99,7 @@ class PowerAppsTestEngine {
             case PowerAppsTestEngine.CONSTANTS.Custom:
                 return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
             case PowerAppsTestEngine.CONSTANTS.EntityList:
-                return PowerAppsModelDrivenCanvas.fetchArrayItemCount(itemPath);
+                return PowerAppsModelDrivenEntityList.fetchArrayItemCount(itemPath);
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:
                 // TODO - Get count of items for name
                 break;
@@ -109,6 +113,8 @@ class PowerAppsTestEngine {
         switch (PowerAppsTestEngine.pageType()) {
             case PowerAppsTestEngine.CONSTANTS.Custom:
                 return PowerAppsModelDrivenCanvas.selectControl(itemPath);
+            case PowerAppsTestEngine.CONSTANTS.EntityList:
+                return PowerAppsModelDrivenEntityList.selectControl(itemPath);
             case PowerAppsTestEngine.CONSTANTS.EntityRecord:
                 // TODO - Selectitem
                 break;
