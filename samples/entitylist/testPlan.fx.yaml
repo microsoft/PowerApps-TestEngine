@@ -1,0 +1,118 @@
+testSuite:
+  testSuiteName: Employee Entity Form Automation
+  testSuiteDescription: Verifies that the Employee Entity controls work correctly.
+  persona: User1
+  appLogicalName: Entity_controls_app
+
+  testCases:
+
+    # 1. Insert Employee
+    - testCaseName: Insert Employee
+      testCaseDescription: Inserts a new employee record and asserts the table contains 4 records after insertion.
+      testSteps: |
+        Collect(
+          cr693_employee5,
+          {
+            cr693_employeename: "Ra Ra",
+            cr693_empoyeeid: "E006",
+            cr693_dob: DateTime(1991,05,15,00,0,0)           
+          }
+        );
+        Assert(CountRows(cr693_employee5) = 4, "The employee table should contain 4 records after insertion");
+
+    # 2. Sort Employee IDs
+    - testCaseName: Sort Employee IDs
+      testCaseDescription: Sorts the employee list by Employee ID in descending order.
+      testSteps: |
+        Sort(cr693_employee5, cr693_empoyeeid, SortOrder.Descending);
+
+    # 3. Delete Employee with ID E006
+    - testCaseName: Delete Employee with ID E006
+      testCaseDescription: Deletes the employee record with ID 'E006' and asserts it no longer exists.
+      testSteps: |
+        Refresh(cr693_employee5);
+        Remove(
+          cr693_employee5,
+          LookUp(cr693_employee5, cr693_empoyeeid = "E007")
+        );
+        Assert(
+          IsBlank(LookUp(cr693_employee5, cr693_empoyeeid = "E007")),
+          "The record with employee ID 'E006' should no longer exist in the employee table"
+        );
+
+    # 4. Update Employee
+    - testCaseName: Update Employee
+      testCaseDescription: Updates the name of the first employee record and asserts the update.
+      testSteps: |
+        Patch(
+          cr693_employee5,
+          First(cr693_employee5),
+          {
+            cr693_employeename: "RR2"
+          }
+        );
+        Assert(First(cr693_employee5).cr693_employeename = "RR2", "The employee name should be updated to 'RR2'");
+
+    # 5. Verify Employee Record Count
+    - testCaseName: Verify Employee Record Count
+      testCaseDescription: Asserts that the employee table displays exactly 3 employee records.
+      testSteps: |
+        Assert(CountRows(cr693_employee5) = 3, "Checking if Table displays correct number of items");
+
+    # 6. Verify Employee List Filtering by Name
+    - testCaseName: Verify Employee List Filtering by Name
+      testCaseDescription: Asserts that filtering the employee list by name returns 1 record starting with 'uu'.
+      testSteps: |
+        Assert(CountRows(Filter(cr693_employee5, StartsWith(cr693_employeename, "uu"))) = 1, "The employee list should contain 1 record with a name starting with 'Test'");
+
+    # 7. Verify Employee Name Field
+    - testCaseName: Verify Employee Name Field
+      testCaseDescription: Asserts that the Employee Name for ID 'E001' is 'Alice Smith'.
+      testSteps: |
+        Assert(LookUp(cr693_employee5, cr693_empoyeeid = "E001").cr693_employeename = "RR2", "The Employee Name for ID 'E001' should be 'RR2'");
+
+    # 8. Click New Record button on the Command Bar Button
+    - testCaseName: Click New Record button on the Command Bar Button
+      testCaseDescription: Automates clicking the New Record button, entering details, and saving the new employee.
+      testSteps: |
+        Assert(NavigateToRecord("cr693_employee5", "entityrecord", 1));
+        SetProperty(cr693_empoyeeid.Text, "E007");
+        SetProperty(cr693_employeename.Text, "RR Test_Create");
+        SetDOBFields("04/09/1976", "11:30 PM");
+        SelectDepartmentOptions("IT");
+        CommandBarAction(SaveAndClose());
+        Assert(NavigateToRecord("cr693_employee5", "entitylist", 1));
+
+    # 9. Test SelectGridRowCheckbox
+    - testCaseName: Test SelectGridRowCheckbox
+      testCaseDescription: Selects the checkbox of the first grid row.
+      testSteps: |
+        SelectGridRowCheckbox(1);
+
+    # 10. Click Edit Record button on the Command Bar Button
+    - testCaseName: Click Edit Record button on the Command Bar Button
+      testCaseDescription: Automates editing the first record, updating all fields, and saving.
+      testSteps: |
+        Assert(NavigateToRecord("cr693_employee5", "entityrecord", 1));
+        SetProperty(cr693_employeename.Text, "John 20 Updated");
+        SetProperty(cr693_empoyeeid.Text, "E020 Updated");
+        SetDOBFields("04/09/1976", "12:30 PM");
+        SelectDepartmentOptions("Finance");
+        CommandBarAction(SaveAndClose());
+        Assert(NavigateToRecord("cr693_employee5", "entitylist", 1));
+
+    # 11. Delete Record
+    - testCaseName: Delete Record
+      testCaseDescription: Automates deleting the first record from the list and verifies navigation.
+      testSteps: |
+        SelectGridRowCheckbox(1);
+        Assert(NavigateToRecord("cr693_employee5", "entityrecord", 1));
+        DeleteRecord();
+        Assert(NavigateToRecord("cr693_employee5", "entitylist", 1));
+
+testSettings:
+  filePath: ./testSettings.yaml
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email

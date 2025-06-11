@@ -513,5 +513,36 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
             return false;
         }
+        /// <summary>
+        /// Selects a single department option in the Department dropdown by its name.
+        /// Only one department can be selected at a time.
+        /// </summary>
+        /// <param name="departmentName">The name of the department to select.</param>
+        /// <returns>True if the option was successfully selected, otherwise false.</returns>
+        public async Task<bool> SelectDepartmentOptionsAsync(string departmentName)
+        {
+            if (string.IsNullOrEmpty(departmentName))
+            {
+                _singleTestInstanceState.GetLogger().LogError("Department name cannot be null or empty.");
+                throw new ArgumentException("Department name must be provided.", nameof(departmentName));
+            }
+
+            try
+            {
+                ValidatePage();
+
+                // Open the Department dropdown
+                await Page.GetByLabel("Department", new() { Exact = true }).ClickAsync();
+                // Select the specified department
+                await Page.GetByRole(AriaRole.Option, new() { Name = departmentName }).ClickAsync();
+
+                return true; // Indicate success
+            }
+            catch (Exception ex)
+            {
+                _singleTestInstanceState.GetLogger().LogError($"Error occurred while selecting Department option: {departmentName}. Exception: {ex.Message}");
+                return false; // Indicate failure
+            }
+        }
     }
 }
