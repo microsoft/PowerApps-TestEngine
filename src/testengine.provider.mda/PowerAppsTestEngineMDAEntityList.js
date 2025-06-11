@@ -13,6 +13,7 @@ class PowerAppsModelDrivenEntityList {
     });
 
     static getMainGridControls() {
+        debugger;
         //TODO: set property types other than columns and individual column properties also
         // Warning: control object population for the main grid is only for rows currently
         var propertyTypeString = "*["
@@ -31,7 +32,8 @@ class PowerAppsModelDrivenEntityList {
         return JSON.stringify({ Controls: [{ Name: PowerAppsModelDrivenEntityList.CONSTANTS.MainGrid, Properties: [{ PropertyName: PowerAppsModelDrivenEntityList.CONSTANTS.MainGridRowsRecordName, PropertyType: propertyTypeString }] }] });
     }
 
-    static fetchArrayItemCount(itemPath) {        
+    static fetchArrayItemCount(itemPath) {  
+        debugger;
         if (itemPath.controlName == PowerAppsModelDrivenEntityList.CONSTANTS.MainGrid && itemPath.propertyName == PowerAppsModelDrivenEntityList.CONSTANTS.MainGridRowsRecordName) {
             var rowCount = getCurrentXrmStatus().mainGrid.getGrid().getRows().getLength();
             return rowCount;
@@ -49,6 +51,7 @@ class PowerAppsModelDrivenEntityList {
 
 
     static getControlProperties(itemPath) {
+        debugger;
         var data = [];
         // Handle grid row properties
         if (
@@ -191,14 +194,7 @@ class PowerAppsModelDrivenEntityList {
         return false;
     }
 
-    //static selectControl(itemPath) {
-    //    debugger;
-    //    var currentGridRow = getCurrentXrmStatus().mainGrid.getGrid().getRows().get(itemPath.index);
-    //    var currentRowData = currentGridRow.getData();            
-    //    data.push({ Key: "row", Value: currentRowData });
-    //    return JSON.stringify(data);
 
-    //}
 
     static selectControl(itemPath) {
         debugger;

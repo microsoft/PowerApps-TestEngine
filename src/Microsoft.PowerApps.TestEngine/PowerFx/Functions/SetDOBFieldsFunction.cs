@@ -129,7 +129,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                         }}
 
                         // Step 6: Set time
-                        await new Promise(r => setTimeout(r, 400));
+                        await new Promise(r => setTimeout(r, 600));
                         const timeInput = await waitForElement(""[aria-label='Time of DOB']"");
                         timeInput.focus();
                         timeInput.value = timeStr;

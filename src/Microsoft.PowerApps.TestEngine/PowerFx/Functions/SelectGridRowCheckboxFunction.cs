@@ -35,8 +35,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             var js = $@"
                 (function() {{
                     var checkboxes = document.querySelectorAll(""input[type='checkbox'][aria-label='select or deselect the row']"");
-                    var idx = {rowIndex.Value};
-                    if (checkboxes.length > idx) {{
+                    var idx = {rowIndex.Value} - 1;
+                    if (idx >= 0 && checkboxes.length > idx) {{
                         checkboxes[idx].click();
                         console.log('Checkbox in row ' + (idx + 1) + ' clicked.');
                     }} else {{
