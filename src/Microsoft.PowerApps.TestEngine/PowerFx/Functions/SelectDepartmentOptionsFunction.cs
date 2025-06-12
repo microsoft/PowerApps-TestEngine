@@ -34,6 +34,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         /// </summary>
         public async Task<BooleanValue> ExecuteAsync(StringValue department)
         {
+            if (department == null)
+                throw new ArgumentNullException(nameof(department));
+
             _logger.LogInformation($"Executing SelectDepartmentOptionsFunction for department '{department.Value}'.");
             await _testWebProvider.TestInfraFunctions.SelectDepartmentOptionsAsync(department.Value);
             _logger.LogInformation("SelectDepartmentOptionsFunction execution completed.");
