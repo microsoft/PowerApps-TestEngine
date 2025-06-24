@@ -184,7 +184,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             var monitor = new MicrosoftEntraNetworkMonitor(MockLogger.Object, MockBrowserContext.Object, MockTestState.Object);
 
             MockTestState.Setup(m => m.GetDomain()).Returns(url);
-            MockBrowserContext.Setup(m => m.CookiesAsync(It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult((IReadOnlyList<BrowserContextCookiesResult>)null));
+            MockBrowserContext.Setup(m => m.CookiesAsync()).Returns(Task.FromResult((IReadOnlyList<BrowserContextCookiesResult>)null));
 
             // Act & Assert
             await monitor.LogCookies("");
