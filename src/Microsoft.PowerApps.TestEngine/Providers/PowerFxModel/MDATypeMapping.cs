@@ -33,6 +33,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             typeMappings.Add("m", FormulaType.Decimal);
             typeMappings.Add("v", FormulaType.UntypedObject);
             typeMappings.Add("i", FormulaType.String);
+            typeMappings.Add("p", FormulaType.Unknown);
         }
 
         /// <summary>
