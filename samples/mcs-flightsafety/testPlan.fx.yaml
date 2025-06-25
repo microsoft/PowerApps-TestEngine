@@ -11,8 +11,9 @@ testSuite:
       testCaseDescription: Action examples
       testSteps: |
         = Preview.WaitUntilConnected();
+          Preview.WaitUntilMessage("Hello");
           Preview.CopilotSendMessage("Is it safe to travel to Paris?");
-          Preview.Pause()
+          Assert(Preview.WaitUntilMessage("Is there anything else I can help you with?"));
           
 testSettings:
   headless: false

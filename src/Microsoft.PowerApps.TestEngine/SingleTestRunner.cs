@@ -132,6 +132,11 @@ namespace Microsoft.PowerApps.TestEngine
                 desiredUrl = _testWebProvider.GenerateTestUrl(domain, queryParams);
                 Logger.LogInformation($"Desired URL: {desiredUrl}");
 
+                if (_testWebProvider is IExtendedPowerFxProvider extendedProvider)
+                {
+                    await extendedProvider.SetupContext();
+                }
+
                 _eventHandler.SuiteBegin(testSuiteName, testRunDirectory, browserConfigName, desiredUrl);
 
                 MicrosoftEntraNetworkMonitor monitor = null;

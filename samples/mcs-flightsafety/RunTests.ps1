@@ -98,7 +98,7 @@ foreach ($yamlFile in $yamlFiles) {
     $testStart = Get-Date
 
     # Run the test using copilot provider
-    dotnet PowerAppsTestEngine.dll -c "$staticContext" -u "$userAuth" -a "$authType" --provider "copilot.portal" -i "$($yamlFile.FullName)" -t $tenantId -e $environmentId -d "$environmentUrl" -l "Debug" -w "TRUE" -c "TRUE"
+    dotnet PowerAppsTestEngine.dll -c "$staticContext" -u "$userAuth" -a "$authType" --provider "copilot.portal" -i "$($yamlFile.FullName)" -t $tenantId -e $environmentId -d "$environmentUrl" -l "Debug" -w "TRUE"
 }
 
 # Reset the location back to the original directory.

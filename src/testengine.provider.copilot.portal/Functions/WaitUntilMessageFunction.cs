@@ -21,7 +21,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.Functions
         private readonly CopilotPortalProvider _provider;
 
         public WaitUntilMessageFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger, CopilotPortalProvider provider)
-            : base(DPath.Root.Append(new DName("Preview")), "WaitUntilMessage", FormulaType.Boolean, RecordType.Empty(), FormulaType.String)
+            : base(DPath.Root.Append(new DName("Preview")), "WaitUntilMessage", FormulaType.Boolean, FormulaType.String)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
@@ -33,29 +33,26 @@ namespace Microsoft.PowerApps.TestEngine.Providers.Functions
         {
             _logger.LogInformation($"Waiting for message: {expectedMessage.Value}");
 
+           return ExecuteAsync(expectedMessage).GetAwaiter().GetResult();
+        }
+
+        public async Task<BooleanValue> ExecuteAsync(StringValue expectedMessage)
+        {
+            _logger.LogInformation($"Waiting for message: {expectedMessage.Value}");
+
+            var page = _testInfraFunctions.Page;
+
             try
             {
-                var timeout = _testState.GetTestSettings().Timeout;
-                var startTime = DateTime.Now;
+                string sectionSelector = "section[aria-roledescription='chat history']";
 
-                while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
+                // Wait until the expected text appears in any <article> inside the section
+                await page.Locator($"{sectionSelector} article").Filter(new()
                 {
-                    // Check if the expected message appears in the messages queue
-                    var messages = _provider.Messages.ToArray();
-                      foreach (var message in messages)
-                    {
-                        if (message.IndexOf(expectedMessage.Value, StringComparison.OrdinalIgnoreCase) >= 0)
-                        {
-                            _logger.LogInformation($"Found expected message: {expectedMessage.Value}");
-                            return FormulaValue.New(true);
-                        }
-                    }
+                    HasTextString = expectedMessage.Value
+                }).WaitForAsync();
 
-                    Thread.Sleep(500); // Wait 500ms before checking again
-                }
-
-                _logger.LogWarning($"Timeout waiting for message: {expectedMessage.Value}");
-                return FormulaValue.New(false);
+                return FormulaValue.New(true);
             }
             catch (Exception ex)
             {
