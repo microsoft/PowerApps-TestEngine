@@ -1,17 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
-using Microsoft.PowerApps.TestEngine.TestInfra;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
@@ -30,11 +24,30 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             _eventHandler = eventHandler;
         }
 
+
+        public static ExpandoObject ToExpando(Dictionary<string, object> dict)
+        {
+            var expando = new ExpandoObject();
+            var expandoDict = (IDictionary<string, object>)expando;
+            foreach (var kvp in dict)
+            {
+                expandoDict.Add(kvp.Key, kvp.Value);
+            }
+            return expando;
+        }
+
+
         public async void DebugInfo()
         {
             try
             {
-                ExpandoObject debugInfo = (ExpandoObject)await _testWebProvider.GetDebugInfo();
+                ExpandoObject debugInfo = null;
+                var results = await _testWebProvider.GetDebugInfo();
+                if (results is Dictionary<string, object> dictionaryData)
+                {
+                    debugInfo = ToExpando(dictionaryData);
+                }
+
                 if (debugInfo != null && debugInfo.ToString() != "undefined")
                 {
                     Logger.LogInformation($"------------------------------\n Debug Info \n------------------------------");

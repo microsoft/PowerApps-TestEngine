@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>    <NoWarn>$(NoWarn);NU1605;NU1701;NU1608;NETSDK1023;CS1705;SYSLIB0013;MSB3277</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>NU1605;CS1705</WarningsNotAsErrors>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>    <SkipConflictResolution>true</SkipConflictResolution>
+    <ContinueOnError>true</ContinueOnError>
+    <NoWarn>$(NoWarn);CS1705</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CscCommandLineArgs>$(CscCommandLineArgs) -nowarn:1705</CscCommandLineArgs>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <SignAssembly>true</SignAssembly>
+    <PublicSign>true</PublicSign>
+    <AssemblyOriginatorKeyFile>../../35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="JS\**" />
+    <EmbeddedResource Remove="JS\**" />
+    <None Remove="JS\**" />
+  </ItemGroup>  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="9.0.2" />    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.1" />    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.6" PrivateAssets="none" />
+    <PackageReference Include="Microsoft.Agents.Core" Version="1.1.125-beta" PrivateAssets="none" />
+    <PackageReference Include="Microsoft.Agents.CopilotStudio.Client" Version="1.1.125-beta" PrivateAssets="none" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.70.0" />
+    <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.70.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
+  </ItemGroup>
+</Project>

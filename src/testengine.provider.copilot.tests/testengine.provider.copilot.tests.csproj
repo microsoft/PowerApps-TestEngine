@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -22,7 +22,6 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.2" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.6" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -34,9 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
-    <ProjectReference Include="..\testengine.module.playwrightaction\testengine.module.playwrightaction.csproj" />
-    <ProjectReference Include="..\testengine.module.tests.common\testengine.module.tests.common.csproj" />
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine.Tests\Microsoft.PowerApps.TestEngine.Tests.csproj" />
+    <ProjectReference Include="..\testengine.provider.copilot\testengine.provider.copilot.csproj" />
   </ItemGroup>
 
 </Project>

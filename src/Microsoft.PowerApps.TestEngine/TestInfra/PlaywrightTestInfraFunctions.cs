@@ -248,6 +248,7 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 {
                     staticContext.Channel = browserConfig.Channel;
                 }
+
                 BrowserContext = await browser.LaunchPersistentContextAsync(location, staticContext);
             }
             else

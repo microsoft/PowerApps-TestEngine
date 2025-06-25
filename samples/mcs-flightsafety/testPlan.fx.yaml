@@ -1,0 +1,31 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Common test
+  testSuiteDescription: Microsoft Compliance Safety Flights example
+  persona: User1
+  appLogicalName: Safe Travels
+
+
+  testCases:
+    - testCaseName: Run Script
+      testCaseDescription: Action examples
+      testSteps: |
+        = Preview.WaitUntilConnected();
+          Preview.CopilotSendMessage("Is it safe to travel to Paris?");
+          Preview.Pause()
+          
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
