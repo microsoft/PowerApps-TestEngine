@@ -1,0 +1,113 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "PowerApps Test Engine Schema",
+    "description": "JSON Schema for validating test files (*.te.yaml)",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "testSuite"
+    ],
+    "properties": {
+        "testSuite": {
+            "type": "object",
+            "description": "The top-level container for a test suite",
+            "required": [
+                "testSuiteName",
+                "testCases"
+            ],
+            "properties": {
+                "testSuiteName": {
+                    "type": "string",
+                    "description": "The name of the test suite"
+                },
+                "testSuiteDescription": {
+                    "type": "string",
+                    "description": "A description of the purpose of the test suite"
+                },
+                "persona": {
+                    "type": "string",
+                    "description": "The persona under which tests will run"
+                },
+                "appLogicalName": {
+                    "type": "string",
+                    "description": "The logical name of the application being tested"
+                },
+                "testCases": {
+                    "type": "array",
+                    "description": "The collection of test cases in the suite",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "testCaseName",
+                            "testSteps"
+                        ],
+                        "properties": {
+                            "testCaseName": {
+                                "type": "string",
+                                "description": "The name of the test case"
+                            },
+                            "testCaseDescription": {
+                                "type": "string",
+                                "description": "A description of the test case"
+                            },
+                            "testSteps": {
+                                "type": "string",
+                                "description": "PowerFx steps to execute for the test case",
+                                "pattern": "^=|\\n="
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "testSettings": {
+            "type": "object",
+            "description": "Test settings configuration",
+            "required": [
+                "filePath"
+            ],
+            "properties": {
+                "filePath": {
+                    "type": "string",
+                    "description": "Path to an external test settings file",
+                    "pattern": "^\\./.*\\.yaml$"
+                }
+            }
+        },
+        "environmentVariables": {
+            "type": "object",
+            "description": "Environment variables for the test",
+            "required": [
+                "users"
+            ],
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "description": "User configurations",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "personaName",
+                            "emailKey",
+                            "passwordKey"
+                        ],
+                        "properties": {
+                            "personaName": {
+                                "type": "string",
+                                "description": "Name of the persona"
+                            },
+                            "emailKey": {
+                                "type": "string",
+                                "description": "Key for the email in environment variables"
+                            },
+                            "passwordKey": {
+                                "type": "string",
+                                "description": "Key for the password in environment variables"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

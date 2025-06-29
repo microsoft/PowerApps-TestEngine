@@ -37,6 +37,20 @@ namespace Microsoft.PowerApps.TestEngine.System
             return false;
         }
 
+        public string[] GetDirectories(string path)
+        {
+            path = Path.GetFullPath(path);
+            if (CanAccessDirectoryPath(path))
+            {
+                var directories = Directory.GetDirectories(path, "*.*", searchOption: SearchOption.AllDirectories).Where(CanAccessFilePath);
+                return directories.ToArray();
+            }
+            else
+            {
+                throw new InvalidOperationException(string.Format("Path invalid or read from path: '{0}' not permitted.", path));
+            }
+        }
+
         public bool FileExists(string fileName)
         {
             fileName = Path.GetFullPath(fileName);
@@ -52,7 +66,7 @@ namespace Microsoft.PowerApps.TestEngine.System
             directoryName = Path.GetFullPath(directoryName);
             if (CanAccessDirectoryPath(directoryName))
             {
-                var files = Directory.GetFiles(directoryName).Where(CanAccessFilePath);
+                var files = Directory.GetFiles(directoryName, "*.*", searchOption: SearchOption.AllDirectories).Where(CanAccessFilePath);
                 return files.ToArray();
             }
             else
@@ -475,6 +489,8 @@ namespace Microsoft.PowerApps.TestEngine.System
                     var ext = Path.GetExtension(fileName);
                     if (
                         !(
+                            ext.Equals(".yml", StringComparison.OrdinalIgnoreCase)
+                            ||
                             ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase)
                             ||
                             ext.Equals(".json", StringComparison.OrdinalIgnoreCase)
