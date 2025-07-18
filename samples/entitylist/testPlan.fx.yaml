@@ -79,7 +79,7 @@ testSuite:
         SetProperty(cr693_empoyeeid.Text, "E007");
         SetProperty(cr693_employeename.Text, "RR Test_Create");
         SetDOBFields("04/09/1976", "11:30 PM");
-        SelectDepartmentOptions("IT");
+        SelectDropdownOption("IT");
         CommandBarAction(SaveAndClose());
         Assert(NavigateToRecord("cr693_employee5", "entitylist", 1));
 
@@ -97,7 +97,7 @@ testSuite:
         SetProperty(cr693_employeename.Text, "John 20 Updated");
         SetProperty(cr693_empoyeeid.Text, "E020 Updated");
         SetDOBFields("04/09/1976", "12:30 PM");
-        SelectDepartmentOptions("Finance");
+        SelectDropdownOption("Finance");
         CommandBarAction(SaveAndClose());
         Assert(NavigateToRecord("cr693_employee5", "entitylist", 1));
 

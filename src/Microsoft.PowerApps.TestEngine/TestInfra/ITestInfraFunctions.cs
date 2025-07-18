@@ -109,10 +109,10 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task<bool> TriggerControlClickEvent(string controlName, string filePath);
 
         /// <summary>
-        /// Selects a department option in the user interface.
+        /// Selects a dropdown option in the user interface.
         /// </summary>
-        /// <param name="value">The department value to select.</param>
-        /// <returns>True if the department option was successfully selected; otherwise, false.</returns>
-        public Task<bool> SelectDepartmentOptionsAsync(string value);
+        /// <param name="value">The dropdown value to select.</param>
+        /// <returns>True if the dropdown option was successfully selected; otherwise, false.</returns>
+        public Task<bool> SelectDropdownOptionAsync(string value);
     }
 }

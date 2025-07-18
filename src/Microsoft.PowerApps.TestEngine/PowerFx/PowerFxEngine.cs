@@ -105,7 +105,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new NavigateToRecordFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SetDOBFieldsFunction(_testWebProvider, Logger));
             powerFxConfig.AddFunction(new SelectGridRowCheckboxFunction(_testWebProvider, Logger));
-            powerFxConfig.AddFunction(new SelectDepartmentOptionsFunction(_testWebProvider, Logger));
+            powerFxConfig.AddFunction(new SelectDropdownOptionFunction(_testWebProvider, Logger));
 
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {

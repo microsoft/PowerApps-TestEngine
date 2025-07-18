@@ -10,10 +10,10 @@ using Xunit;
 
 namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 {
-    public class SelectDepartmentOptionsFunctionTests
+    public class SelectDropdownOptionFunctionTests
     {
         [Fact]
-        public async Task ExecuteAsync_ValidDepartment_CallsSelectDepartmentOptionsAsyncAndLogs()
+        public async Task ExecuteAsync_ValidDropdown_CallsOptionAsyncAndLogs()
         {
             // Arrange
             var mockWebProvider = new Mock<ITestWebProvider>();
@@ -21,23 +21,23 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var mockLogger = new Mock<ILogger>();
 
             mockWebProvider.SetupGet(x => x.TestInfraFunctions).Returns(mockTestInfra.Object);
-            mockTestInfra.Setup(x => x.SelectDepartmentOptionsAsync(It.IsAny<string>()))
+            mockTestInfra.Setup(x => x.SelectDropdownOptionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
 
-            var func = new SelectDepartmentOptionsFunction(mockWebProvider.Object, mockLogger.Object);
-            var department = StringValue.New("HR");
+            var func = new SelectDropdownOptionFunction(mockWebProvider.Object, mockLogger.Object);
+            var dropdownOption = StringValue.New("HR");
 
             // Act
-            var result = await func.ExecuteAsync(department);
+            var result = await func.ExecuteAsync(dropdownOption);
 
             // Assert
             Assert.True(result.Value);
-            mockTestInfra.Verify(x => x.SelectDepartmentOptionsAsync("HR"), Times.Once);
+            mockTestInfra.Verify(x => x.SelectDropdownOptionAsync("HR"), Times.Once);
             mockLogger.Verify(
                 l => l.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Executing SelectDepartmentOptionsFunction for department 'HR'.")),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Executing SelectDropdownOptionFunction for dropdown 'HR'.")),
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
@@ -45,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 l => l.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("SelectDepartmentOptionsFunction execution completed.")),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("SelectDropdownOptionFunction execution completed.")),
                     null,
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
@@ -60,18 +60,18 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var mockLogger = new Mock<ILogger>();
 
             mockWebProvider.SetupGet(x => x.TestInfraFunctions).Returns(mockTestInfra.Object);
-            mockTestInfra.Setup(x => x.SelectDepartmentOptionsAsync(It.IsAny<string>()))
+            mockTestInfra.Setup(x => x.SelectDropdownOptionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
 
-            var func = new SelectDepartmentOptionsFunction(mockWebProvider.Object, mockLogger.Object);
-            var department = StringValue.New("Finance");
+            var func = new SelectDropdownOptionFunction(mockWebProvider.Object, mockLogger.Object);
+            var dropdownOption = StringValue.New("Finance");
 
             // Act
-            var result = func.Execute(department);
+            var result = func.Execute(dropdownOption);
 
             // Assert
             Assert.True(result.Value);
-            mockTestInfra.Verify(x => x.SelectDepartmentOptionsAsync("Finance"), Times.Once);
+            mockTestInfra.Verify(x => x.SelectDropdownOptionAsync("Finance"), Times.Once);
         }
 
         [Fact]
@@ -82,15 +82,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var mockLogger = new Mock<ILogger>();
             mockWebProvider.SetupGet(x => x.TestInfraFunctions).Returns((ITestInfraFunctions)null);
 
-            var func = new SelectDepartmentOptionsFunction(mockWebProvider.Object, mockLogger.Object);
-            var department = StringValue.New("IT");
+            var func = new SelectDropdownOptionFunction(mockWebProvider.Object, mockLogger.Object);
+            var dropdownOption = StringValue.New("IT");
 
             // Act & Assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => func.ExecuteAsync(department));
+            await Assert.ThrowsAsync<NullReferenceException>(() => func.ExecuteAsync(dropdownOption));
         }
 
         [Fact]
-        public async Task ExecuteAsync_EmptyDepartment_CallsSelectDepartmentOptionsAsyncWithEmptyString()
+        public async Task ExecuteAsync_EmptyDropdown_CallsSelectDropdownOptionAsyncWithEmptyString()
         {
             // Arrange
             var mockWebProvider = new Mock<ITestWebProvider>();
@@ -98,22 +98,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var mockLogger = new Mock<ILogger>();
 
             mockWebProvider.SetupGet(x => x.TestInfraFunctions).Returns(mockTestInfra.Object);
-            mockTestInfra.Setup(x => x.SelectDepartmentOptionsAsync(It.IsAny<string>()))
+            mockTestInfra.Setup(x => x.SelectDropdownOptionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
 
-            var func = new SelectDepartmentOptionsFunction(mockWebProvider.Object, mockLogger.Object);
-            var department = StringValue.New(string.Empty);
+            var func = new SelectDropdownOptionFunction(mockWebProvider.Object, mockLogger.Object);
+            var dropdownOption = StringValue.New(string.Empty);
 
             // Act
-            var result = await func.ExecuteAsync(department);
+            var result = await func.ExecuteAsync(dropdownOption);
 
             // Assert
             Assert.True(result.Value);
-            mockTestInfra.Verify(x => x.SelectDepartmentOptionsAsync(string.Empty), Times.Once);
+            mockTestInfra.Verify(x => x.SelectDropdownOptionAsync(string.Empty), Times.Once);
         }
 
         [Fact]
-        public async Task ExecuteAsync_WhitespaceDepartment_CallsSelectDepartmentOptionsAsyncWithWhitespace()
+        public async Task ExecuteAsync_WhitespaceDropdown_CallsSelectDropdownOptionAsyncWithWhitespace()
         {
             // Arrange
             var mockWebProvider = new Mock<ITestWebProvider>();
@@ -121,22 +121,22 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var mockLogger = new Mock<ILogger>();
 
             mockWebProvider.SetupGet(x => x.TestInfraFunctions).Returns(mockTestInfra.Object);
-            mockTestInfra.Setup(x => x.SelectDepartmentOptionsAsync(It.IsAny<string>()))
+            mockTestInfra.Setup(x => x.SelectDropdownOptionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
 
-            var func = new SelectDepartmentOptionsFunction(mockWebProvider.Object, mockLogger.Object);
-            var department = StringValue.New("   ");
+            var func = new SelectDropdownOptionFunction(mockWebProvider.Object, mockLogger.Object);
+            var dropdownOption = StringValue.New("   ");
 
             // Act
-            var result = await func.ExecuteAsync(department);
+            var result = await func.ExecuteAsync(dropdownOption);
 
             // Assert
             Assert.True(result.Value);
-            mockTestInfra.Verify(x => x.SelectDepartmentOptionsAsync("   "), Times.Once);
+            mockTestInfra.Verify(x => x.SelectDropdownOptionAsync("   "), Times.Once);
         }
 
         [Fact]
-        public async Task ExecuteAsync_NullDepartment_ThrowsArgumentNullException()
+        public async Task ExecuteAsync_NullDropdown_ThrowsArgumentNullException()
         {
             // Arrange
             var mockWebProvider = new Mock<ITestWebProvider>();
@@ -145,14 +145,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             mockWebProvider.SetupGet(x => x.TestInfraFunctions).Returns(mockTestInfra.Object);
 
-            var func = new SelectDepartmentOptionsFunction(mockWebProvider.Object, mockLogger.Object);
+            var func = new SelectDropdownOptionFunction(mockWebProvider.Object, mockLogger.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() => func.ExecuteAsync(null));
         }
 
         [Fact]
-        public async Task ExecuteAsync_SelectDepartmentOptionsAsyncReturnsFalse_ReturnsTrue()
+        public async Task ExecuteAsync_SelectDropdownOptionAsyncReturnsFalse_ReturnsTrue()
         {
             // Arrange
             var mockWebProvider = new Mock<ITestWebProvider>();
@@ -160,23 +160,23 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var mockLogger = new Mock<ILogger>();
 
             mockWebProvider.SetupGet(x => x.TestInfraFunctions).Returns(mockTestInfra.Object);
-            mockTestInfra.Setup(x => x.SelectDepartmentOptionsAsync(It.IsAny<string>()))
+            mockTestInfra.Setup(x => x.SelectDropdownOptionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
-            var func = new SelectDepartmentOptionsFunction(mockWebProvider.Object, mockLogger.Object);
-            var department = StringValue.New("Legal");
+            var func = new SelectDropdownOptionFunction(mockWebProvider.Object, mockLogger.Object);
+            var dropdownOption = StringValue.New("Legal");
 
             // Act
-            var result = await func.ExecuteAsync(department);
+            var result = await func.ExecuteAsync(dropdownOption);
 
             // Assert
             // The function always returns true, regardless of the async result
             Assert.True(result.Value);
-            mockTestInfra.Verify(x => x.SelectDepartmentOptionsAsync("Legal"), Times.Once);
+            mockTestInfra.Verify(x => x.SelectDropdownOptionAsync("Legal"), Times.Once);
         }
 
         [Fact]
-        public async Task ExecuteAsync_SelectDepartmentOptionsAsyncThrows_PropagatesException()
+        public async Task ExecuteAsync_SelectDropdownOptionAsyncThrows_PropagatesException()
         {
             // Arrange
             var mockWebProvider = new Mock<ITestWebProvider>();
@@ -184,14 +184,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var mockLogger = new Mock<ILogger>();
 
             mockWebProvider.SetupGet(x => x.TestInfraFunctions).Returns(mockTestInfra.Object);
-            mockTestInfra.Setup(x => x.SelectDepartmentOptionsAsync(It.IsAny<string>()))
+            mockTestInfra.Setup(x => x.SelectDropdownOptionAsync(It.IsAny<string>()))
                 .ThrowsAsync(new InvalidOperationException("Test exception"));
 
-            var func = new SelectDepartmentOptionsFunction(mockWebProvider.Object, mockLogger.Object);
-            var department = StringValue.New("Admin");
+            var func = new SelectDropdownOptionFunction(mockWebProvider.Object, mockLogger.Object);
+            var dropdownOption = StringValue.New("Admin");
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => func.ExecuteAsync(department));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => func.ExecuteAsync(dropdownOption));
         }
     }
 }

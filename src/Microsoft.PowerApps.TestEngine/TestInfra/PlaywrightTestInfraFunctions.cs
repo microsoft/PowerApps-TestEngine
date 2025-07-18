@@ -515,33 +515,32 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         }
 
         /// <summary>
-        /// Selects a single department option in the Department dropdown by its name.
-        /// Only one department can be selected at a time.
+        /// Selects an option in the given dropdown by its name.
         /// </summary>
-        /// <param name="departmentName">The name of the department to select.</param>
-        /// <returns>True if the option was successfully selected, otherwise false.</returns>
-        public async Task<bool> SelectDepartmentOptionsAsync(string departmentName)
+        /// <param name="value">The name of the dropdown option to select.</param>
+        /// <returns>True if the option was successfully selected, otherwise false.</returns>   
+        public async Task<bool> SelectDropdownOptionAsync(string value)
         {
-            if (string.IsNullOrEmpty(departmentName))
+            if (string.IsNullOrEmpty(value))
             {
-                _singleTestInstanceState.GetLogger().LogError("Department name cannot be null or empty.");
-                throw new ArgumentException("Department name must be provided.", nameof(departmentName));
+                _singleTestInstanceState.GetLogger().LogError("Dropdown option value cannot be null or empty.");
+                throw new ArgumentException("Dropdown option value must be provided.", nameof(value));
             }
 
             try
             {
                 ValidatePage();
 
-                // Open the Department dropdown
+                // Open the dropdown
                 await Page.GetByLabel("Department", new() { Exact = true }).ClickAsync();
-                // Select the specified department
-                await Page.GetByRole(AriaRole.Option, new() { Name = departmentName }).ClickAsync();
+                // Select the specified option
+                await Page.GetByRole(AriaRole.Option, new() { Name = value }).ClickAsync();
 
                 return true; // Indicate success
             }
             catch (Exception ex)
             {
-                _singleTestInstanceState.GetLogger().LogError($"Error occurred while selecting Department option: {departmentName}. Exception: {ex.Message}");
+                _singleTestInstanceState.GetLogger().LogError($"Error occurred while selecting dropdown option: {value}. Exception: {ex.Message}");
                 return false; // Indicate failure
             }
         }
