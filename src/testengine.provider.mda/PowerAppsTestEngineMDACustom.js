@@ -270,8 +270,7 @@ class PowerAppsModelDrivenCanvas {
             if (controlContext.modelProperties[itemPath.propertyName]) {
                 propertyValue = controlContext.modelProperties[itemPath.propertyName]?.getValue();
 
-                if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) {
-                    // TODO: Transform data to display data
+                if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) {                   
                     propertyValue = propertyValue.dataSource.data;
                 }
             }
@@ -283,8 +282,7 @@ class PowerAppsModelDrivenCanvas {
                     if (childControlContext.modelProperties[itemPath.propertyName]) {
                         propertyValue = childControlContext.modelProperties[itemPath.propertyName]?.getValue();
 
-                        if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) {
-                            // TODO: Transform data to display data
+                        if ((typeof propertyValue !== "undefined") && (propertyValue !== null) && (typeof propertyValue.dataSource !== "undefined") && (typeof propertyValue.dataSource.data !== "undefined")) {                            
                             propertyValue = propertyValue.dataSource.data;
                         }
                     }

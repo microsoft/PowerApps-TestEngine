@@ -526,9 +526,6 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
                 var recordValue = value.GetConvertedValue(null);
 
-                // TODO - Set the Xrm SDK Value and update state for any JS to run
-
-                // Date.parse() parses the date to unix timestamp
                 var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},Date.parse(\"{recordValue}\"))";
 
                 return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
