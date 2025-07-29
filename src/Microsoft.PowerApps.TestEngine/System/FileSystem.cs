@@ -482,6 +482,8 @@ namespace Microsoft.PowerApps.TestEngine.System
                             ext.Equals(".csx", StringComparison.OrdinalIgnoreCase)
                             ||
                             ext.Equals(".png", StringComparison.OrdinalIgnoreCase)
+                             ||
+                            ext.Equals(".js", StringComparison.OrdinalIgnoreCase)
                         )
                     )
                     {

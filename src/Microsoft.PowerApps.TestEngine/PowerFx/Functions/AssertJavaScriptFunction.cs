@@ -120,29 +120,33 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         /// <summary>
         /// Reads JavaScript content from a local file
         /// </summary>
-        /// <param name="filePath">Path to the file</param>
+        /// <param name="filePath">Path to the .js file</param>
         /// <returns>The file content as string</returns>
         private async Task<string> ReadJavaScriptFileAsync(string filePath)
         {
             try
             {
-                // Resolve the file path relative to the test config file if needed
                 filePath = ResolveFilePath(filePath);
-
                 _logger.LogInformation($"Reading JavaScript file from '{filePath}'");
 
                 if (string.IsNullOrEmpty(filePath))
                 {
+                    _logger.LogWarning("File path is empty after resolution.");
                     return string.Empty;
                 }
+
+                _logger.LogDebug($"Resolved file path: '{filePath}'");
 
                 if (!_fileSystem.FileExists(filePath))
                 {
                     _logger.LogWarning($"File not found: '{filePath}'");
+                    _logger.LogDebug($"Current directory: '{Directory.GetCurrentDirectory()}'");
                     return string.Empty;
                 }
 
-                return await Task.Run(() => _fileSystem.ReadAllText(filePath));
+                var content = await Task.Run(() => _fileSystem.ReadAllText(filePath));
+                _logger.LogInformation($"Successfully read JavaScript file: '{filePath}'");
+                return content;
             }
             catch (Exception ex)
             {
@@ -158,23 +162,47 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         /// <returns>The resolved absolute file path</returns>
         private string ResolveFilePath(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath) || Path.IsPathRooted(filePath) || _testState == null)
+            if (string.IsNullOrEmpty(filePath))
             {
-                return filePath;
+                _logger.LogWarning("File path is null or empty.");
+                return string.Empty;
             }
 
-            try
+            // Check for invalid characters in the file path
+            if (filePath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
             {
-                var testConfigFile = _testState.GetTestConfigFile();
-                if (testConfigFile != null)
-                {
-                    var testResultDirectory = Path.GetDirectoryName(testConfigFile.FullName);
-                    return Path.Combine(testResultDirectory, filePath);
-                }
+                _logger.LogWarning($"File path contains invalid characters: '{filePath}'");
+                return string.Empty;
             }
-            catch (Exception ex)
+
+            // Prevent malformed paths like ".C:/..."
+            if (filePath.StartsWith(".") && filePath.Contains(":"))
             {
-                _logger.LogWarning(ex, $"Unable to resolve file path relative to test config: '{filePath}'");
+                _logger.LogWarning($"File path is malformed: '{filePath}'");
+                return string.Empty;
+            }
+
+            // If the path is already absolute, return it
+            if (Path.IsPathRooted(filePath))
+            {
+                return Path.GetFullPath(filePath);
+            }
+
+            // Resolve relative paths based on the test configuration
+            if (_testState != null)
+            {
+                try
+                {
+                    var baseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../../samples/javascript-d365-tests");
+                    var resolvedPath = Path.Combine(baseDirectory, filePath);
+
+                    _logger.LogDebug($"Resolved file path: '{resolvedPath}'");
+                    return Path.GetFullPath(resolvedPath);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, $"Unable to resolve file path relative to test config: '{filePath}'");
+                }
             }
 
             return filePath;
@@ -260,6 +288,26 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
             try
             {
+                // Mock the `window` object
+                jsEngine.SetValue("window", new
+                {
+                    showDialogResponse = true,
+                    showModalDialog = new Func<string, object, object, bool>((url, args, options) =>
+                    {
+                        _logger.LogInformation($"[JS WINDOW] showModalDialog called with URL: {url}, Args: {args}, Options: {options}");
+                        return true; // Simulate a successful dialog response
+                    })
+                });
+
+                // Mock the `console` object
+                jsEngine.SetValue("console", new
+                {
+                    log = new Action<object>(message => _logger.LogInformation($"[JS LOG] {message}")),
+                    error = new Action<object>(message => _logger.LogError($"[JS ERROR] {message}")),
+                    warn = new Action<object>(message => _logger.LogWarning($"[JS WARN] {message}")),
+                    debug = new Action<object>(message => _logger.LogDebug($"[JS DEBUG] {message}"))
+                });
+
                 // Execute web resource content if it was retrieved
                 if (!string.IsNullOrEmpty(webResourceContent))
                 {
