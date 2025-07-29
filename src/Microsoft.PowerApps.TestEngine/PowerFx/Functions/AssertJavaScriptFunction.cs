@@ -117,8 +117,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             }
         }
 
-        // In ReadJavaScriptFileAsync, add more diagnostics to help debug file existence issues
-
+        /// <summary>
+        /// Reads JavaScript content from a local file
+        /// </summary>
+        /// <param name="filePath">Path to the .js file</param>
+        /// <returns>The file content as string</returns>
         private async Task<string> ReadJavaScriptFileAsync(string filePath)
         {
             try
@@ -134,12 +137,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
                 _logger.LogDebug($"Resolved file path: '{filePath}'");
 
-                // Additional diagnostics
-                bool fileExists = _fileSystem.FileExists(filePath);
-                bool canAccess = _fileSystem.CanAccessFilePath(filePath);
-                _logger.LogDebug($"FileExists: {fileExists}, CanAccessFilePath: {canAccess}");
-
-                if (!fileExists)
+                if (!_fileSystem.FileExists(filePath))
                 {
                     _logger.LogWarning($"File not found: '{filePath}'");
                     _logger.LogDebug($"Current directory: '{Directory.GetCurrentDirectory()}'");
