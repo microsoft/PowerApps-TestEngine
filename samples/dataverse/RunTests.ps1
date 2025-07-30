@@ -44,13 +44,13 @@ Write-Host "------------------------------------------------------------" -Foreg
 Write-Host "Dateverse Tests (Account Entity)" -ForegroundColor Green
 Write-Host "------------------------------------------------------------" -ForegroundColor Green
 
-dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "powerfx" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d $environmentUrl
+dotnet PowerAppsTestEngine.dll -u "storagestate" -p "powerfx" -a "none" -i "$currentDirectory\testPlan.fx.yaml" -t $tenantId -e $environmentId -d $environmentUrl
 
 Write-Host "------------------------------------------------------------" -ForegroundColor Green
 Write-Host "Dateverse AI Tests (AI Builder)" -ForegroundColor Green
 Write-Host "------------------------------------------------------------" -ForegroundColor Green
 
-dotnet PowerAppsTestEngine.dll -u "storagestate" --provider "powerfx" -a "none" -i "$currentDirectory\ai-prompt.fx.yaml" -t $tenantId -e $environmentId -d $environmentUrl 
+dotnet PowerAppsTestEngine.dll -u "storagestate" -p "powerfx" -a "none" -i "$currentDirectory\ai-prompt.fx.yaml" -t $tenantId -e $environmentId -d $environmentUrl 
 
 # Reset the location back to the original directory.
 Set-Location $currentDirectory

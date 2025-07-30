@@ -381,7 +381,7 @@ enablePowerFxOverlay: false";
             var ex = Assert.Throws<UserInputException>(() => parser.ParseTestConfig<TestSettings>("some invalid file path", MockLogger.Object));
             Assert.Equal(ex.Message, UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
             // Verify the message is logged in this case
-            LoggingTestHelper.VerifyLogging(MockLogger, "Test config file path is invalid or access is not permitted. For more details, check the logs and refer https://aka.ms/pactests/fileaccessrestrictions.", LogLevel.Error, Times.Once());
+            LoggingTestHelper.VerifyLogging(MockLogger, "Invalid file path: TestSettings in test config file.", LogLevel.Error, Times.Once());
         }
 
         [Fact]

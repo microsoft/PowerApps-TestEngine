@@ -31,7 +31,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 
                 if (!_fileSystem.FileExists(testConfigFilePath))
                 {
-                    logger.LogError($"Test config file path is invalid or access is not permitted. For more details, check the logs and refer https://aka.ms/pactests/fileaccessrestrictions.");
+                    logger.LogError($"Invalid file path: {typeof(T).Name} in test config file.");
                     throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidFilePath.ToString());
                 }
 

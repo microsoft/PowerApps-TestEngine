@@ -107,14 +107,6 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             staticContext.Headless = launchOptions.Headless;
             staticContext.Timeout = launchOptions.Timeout;
 
-            //this is added for the new headless mode in chromium
-            if (testSettings.Headless && PlaywrightObject?.Chromium?.Name != null && string.Equals(browserConfig.Browser, PlaywrightObject.Chromium.Name, StringComparison.OrdinalIgnoreCase))
-            {
-                var headlessArgs = new[] { "--headless=new" };
-                launchOptions.Args = (launchOptions.Args ?? Array.Empty<string>()).Concat(headlessArgs).ToArray();
-                staticContext.Args = (staticContext.Args ?? Array.Empty<string>()).Concat(headlessArgs).ToArray();
-            }
-
             var browser = PlaywrightObject[browserConfig.Browser];
             if (browser == null)
             {

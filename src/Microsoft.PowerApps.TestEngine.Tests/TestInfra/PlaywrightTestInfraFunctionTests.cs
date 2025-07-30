@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -57,10 +56,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
             MockElementHandle = new Mock<IElementHandle>(MockBehavior.Strict);
             MockUserManager = new Mock<IUserManager>(MockBehavior.Strict);
             MockTestWebProvider = new Mock<ITestWebProvider>(MockBehavior.Strict);
-
-            // Mock Chromium behavior
-            MockPlaywrightObject.SetupGet(x => x.Chromium).Returns(new Mock<IBrowserType>(MockBehavior.Strict).Object);
-            MockPlaywrightObject.SetupGet(x => x.Chromium.Name).Returns("chromium");
         }
 
         [Theory]
@@ -157,58 +152,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
                 return true;
             };
             MockBrowser.Verify(x => x.NewContextAsync(It.Is<BrowserNewContextOptions>(y => verifyBrowserContextOptions(y))), Times.Once());
-        }
-
-        [Theory]
-        [InlineData("chromium", null, true, true)]
-        [InlineData("Chromium", "msedge", true, true)]
-        [InlineData("Chromium", "chrome", true, true)]
-        [InlineData("Chromium", "msedge", false, false)]
-        [InlineData("cHromium", null, false, false)]
-        [InlineData("webkit", null, true, false)]
-        [InlineData("firefox", null, false, false)]
-        public async Task SetupAsync_HeadlessModeWithChromium_AddsNewHeadlessArgs(string browser, string? channel, bool headless, bool expectedResult)
-        {
-            // Arrange
-            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<Microsoft.PowerApps.TestEngine.Modules.ITestEngineModule>() { });
-
-            var testSettings = new TestSettings
-            {
-                Headless = headless,
-                Timeout = 30000
-            };
-
-            var browserConfig = new BrowserConfiguration
-            {
-                Browser = browser,
-                Channel = channel,
-            };
-
-            MockTestState.Setup(ts => ts.GetTestSettings()).Returns(testSettings);
-            MockSingleTestInstanceState.Setup(st => st.GetBrowserConfig()).Returns(browserConfig);
-            MockSingleTestInstanceState.Setup(st => st.GetLogger()).Returns(MockLogger.Object);
-            LoggingTestHelper.SetupMock(MockLogger);
-
-            MockBrowserType.Setup(c => c.Name).Returns(browser);
-            MockBrowserType.Setup(c => c.LaunchAsync(It.IsAny<BrowserTypeLaunchOptions>()))
-               .ReturnsAsync(Mock.Of<IBrowser>());
-            MockPlaywrightObject.Setup(p => p[browser]).Returns(MockBrowserType.Object);
-
-            var functions = new PlaywrightTestInfraFunctions(
-               MockTestState.Object,
-               MockSingleTestInstanceState.Object,
-               MockFileSystem.Object,
-               MockPlaywrightObject.Object
-            );
-
-            // Act
-            await functions.SetupAsync(Mock.Of<IUserManager>());
-
-            // Assert
-            MockBrowserType.Verify(c => c.LaunchAsync(It.Is<BrowserTypeLaunchOptions>(options =>
-                options.Args != null &&
-                options.Args.Contains("--headless=new")
-            )), expectedResult ? Times.Once : Times.Never);
         }
 
         [Theory]

@@ -110,6 +110,11 @@ namespace testengine.user.storagestate
                 throw new InvalidDataException($"Certificate {dataProtectionCertificate} not found");
             }
 
+            if (!PlatformHelper.IsWindows())
+            {
+                throw new ApplicationException();
+            }
+
             serviceCollection.AddDataProtection()
                 .SetApplicationName("TestEngine")
                 .ProtectKeysWithCertificate(cert)

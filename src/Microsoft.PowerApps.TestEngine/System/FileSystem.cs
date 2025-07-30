@@ -233,11 +233,6 @@ namespace Microsoft.PowerApps.TestEngine.System
             {
                 return true;
             }
-            // Ensure the path ends with a directory separator
-            if (!fullPath.EndsWith(Path.DirectorySeparatorChar.ToString()) && !fullPath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
-            {
-                fullPathUri = new Uri(fullPathUri.ToString().TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar, UriKind.Absolute);
-            }
 
             //check if any of reserved base locations referred then fail
             IEnumerable<Uri> windowsRestrictedPaths = new List<Uri>
@@ -309,11 +304,6 @@ namespace Microsoft.PowerApps.TestEngine.System
             {
                 return true;
             }
-            // Ensure the path ends with a directory separator
-            if (!fullPath.EndsWith(Path.DirectorySeparatorChar.ToString()) && !fullPath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
-            {
-                fullPathUri = new Uri(fullPathUri.ToString().TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar, UriKind.Absolute);
-            }
 
             IEnumerable<Uri> LinuxRestrictedPaths = new List<Uri>
             {
@@ -364,21 +354,11 @@ namespace Microsoft.PowerApps.TestEngine.System
         public bool OsxReservedLocationExistsInPath(string fullPath)
         {
             fullPath = Path.GetFullPath(fullPath);
-
-            if (fullPath.Equals("/"))
-            {
-                return true;
-            }
             //check if its a network path if so fail
             var fullPathUri = new Uri(fullPath.StartsWith(@"\\?\") ? fullPath.Replace(@"\\?\", "") : fullPath, UriKind.Absolute);
             if (fullPathUri.IsUnc)
             {
                 return true;
-            }
-            // Ensure the path ends with a directory separator
-            if (!fullPath.EndsWith(Path.DirectorySeparatorChar.ToString()) && !fullPath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
-            {
-                fullPathUri = new Uri(fullPathUri.ToString().TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar, UriKind.Absolute);
             }
 
             IEnumerable<Uri> OsxRestrictedPaths = new List<Uri>
