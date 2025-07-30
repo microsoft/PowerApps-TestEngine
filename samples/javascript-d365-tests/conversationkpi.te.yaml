@@ -1,0 +1,70 @@
+testSuite:  
+  testSuiteName: Conversation KPI View Navigation Tests  
+  testSuiteDescription: Automated tests for navigating to the Conversation KPI view and error handling  
+  persona: "User1"  
+  appLogicalName: na
+
+  testCases:
+
+    - testCaseName: Open Inline View Success
+      testCaseDescription: Verifies that openInlineView calls navigateTo with correct parameters.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\conversationkpi_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "let called = false",
+              "Xrm.Navigation.navigateTo = function(pageInput, navigationOptions) {",
+              "  called = pageInput.entityName === 'cat_copilotkpi' && pageInput.viewId === '7bc21b4b-8836-4b08-9d52-7436fddc49f9' && navigationOptions.target === 1; return Promise.resolve(); }",
+              "openInlineView()",
+              "called"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Open Inline View Error Handling
+      testCaseDescription: Verifies that openInlineView handles navigation errors and calls showErrorDialog.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\conversationkpi_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "let errorCalled = false",
+              "const originalShowErrorDialog = showErrorDialog",
+              "showErrorDialog = function(message, details) { errorCalled = message.includes('unexpected error'); originalShowErrorDialog(message, details); }",
+              "Xrm.Navigation.navigateTo = function() { throw new Error('Navigation failed'); }",
+              "openInlineView()",
+              "errorCalled"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Show Error Dialog Displays Message
+      testCaseDescription: Verifies that showErrorDialog passes correct message and details to openErrorDialog.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\conversationkpi_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "var dialogCalled = false",
+              "var receivedMessage = null",
+              "var receivedDetails = null",
+              "Xrm.Navigation.openErrorDialog = function(options) {",
+              "  dialogCalled = true",
+              "  receivedMessage = options.message",
+              "  receivedDetails = options.details",
+              "}",
+              "showErrorDialog('Test Error', 'Details here')",
+              "dialogCalled && receivedMessage === 'Test Error' && receivedDetails === 'Details here'"
+            ]),
+            Expected: "true"
+          })
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

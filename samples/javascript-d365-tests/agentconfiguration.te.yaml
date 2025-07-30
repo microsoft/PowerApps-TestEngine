@@ -1,0 +1,125 @@
+testSuite:  
+  testSuiteName: Agent Configuration Form Business Logic Tests  
+  testSuiteDescription: Automated tests for Copilot configuration form logic  
+  persona: "User1"  
+  appLogicalName: na
+
+  testCases:
+
+    - testCaseName: File Load Test
+      testCaseDescription: Checks if copilotconfiguration_main.js loads
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\copilotconfiguration_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: "true",
+            Expected: "true"
+          })
+
+    - testCaseName: Hide KPI Section When Not Selected
+      testCaseDescription: KPI section should be hidden when 'Conversation KPIs' is not selected.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\copilotconfiguration_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_configurationtypescodes').setValue([1])",
+              "hideAndShowConversationKPISettings({ getFormContext: () => Xrm.Page })",
+              "!Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_kpisettings').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Show Conversation Analyzer Section
+      testCaseDescription: Conversation Analyzer section is visible when 'Conversation Analyzer' is selected.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\copilotconfiguration_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_configurationtypescodes').setValue([4])",
+              "hideAndShowConversationKPISettings({ getFormContext: () => Xrm.Page })",
+              "Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_conversationanalyzer').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Required Level for CopilotID and DataverseURL
+      testCaseDescription: Sets required level for cat_copilotid and cat_dataverseurl when 'Conversation KPIs' is selected.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\copilotconfiguration_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_configurationtypescodes').setValue([2])",
+              "hideAndShowConversationKPISettings({ getFormContext: () => Xrm.Page })",
+              "Xrm.Page.getAttribute('cat_copilotid').getRequiredLevel() === 'required' && Xrm.Page.getAttribute('cat_dataverseurl').getRequiredLevel() === 'required'"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: setFieldRequirements sets required and none
+      testCaseDescription: setFieldRequirements sets required and none as expected.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\copilotconfiguration_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "setFieldRequirements(Xrm.Page, ['cat_copilotid'], 'required')",
+              "Xrm.Page.getAttribute('cat_copilotid').getRequiredLevel() === 'required'",
+              "setFieldRequirements(Xrm.Page, ['cat_copilotid'], 'none')",
+              "Xrm.Page.getAttribute('cat_copilotid').getRequiredLevel() === 'none'"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: clearAndHideFields hides and clears fields
+      testCaseDescription: clearAndHideFields hides and clears fields as expected.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\copilotconfiguration_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testfield').setValue('test')",
+              "clearAndHideFields(Xrm.Page, ['cat_testfield'])",
+              "Xrm.Page.getAttribute('cat_testfield').getValue() === null && Xrm.Page.getAttribute('cat_testfield').getRequiredLevel() === 'none' && Xrm.Page.getControl('cat_testfield').getVisible() === false"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: toggleSectionVisibility hides sections
+      testCaseDescription: toggleSectionVisibility hides multiple sections.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\copilotconfiguration_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "const tab = Xrm.Page.ui.tabs.get('tab_general')",
+              "toggleSectionVisibility(tab, ['tab_general_section_directlinesettings', 'tab_general_section_userauthentication'], false)",
+              "!tab.sections.get('tab_general_section_directlinesettings').getVisible() && !tab.sections.get('tab_general_section_userauthentication').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: toggleSectionVisibility shows sections
+      testCaseDescription: toggleSectionVisibility shows multiple sections.
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\copilotconfiguration_main.js",
+            Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
+            Run: Join([
+              "const tab = Xrm.Page.ui.tabs.get('tab_general')",
+              "toggleSectionVisibility(tab, ['tab_general_section_directlinesettings', 'tab_general_section_userauthentication'], true)",
+              "tab.sections.get('tab_general_section_directlinesettings').getVisible() && tab.sections.get('tab_general_section_userauthentication').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
