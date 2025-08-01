@@ -109,7 +109,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             else
             {
                 // Register with null organization service, will handle gracefully
-                powerFxConfig.AddFunction(new AssertJavaScriptFunction(Logger, null, _fileSystem));
+                powerFxConfig.AddFunction(new AssertJavaScriptFunction(Logger, null, _fileSystem, TestState));
             }
 
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)

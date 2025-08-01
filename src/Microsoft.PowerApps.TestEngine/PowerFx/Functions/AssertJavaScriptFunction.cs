@@ -120,33 +120,29 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         /// <summary>
         /// Reads JavaScript content from a local file
         /// </summary>
-        /// <param name="filePath">Path to the .js file</param>
+        /// <param name="filePath">Path to the file</param>
         /// <returns>The file content as string</returns>
         private async Task<string> ReadJavaScriptFileAsync(string filePath)
         {
             try
             {
+                // Resolve the file path relative to the test config file if needed
                 filePath = ResolveFilePath(filePath);
+
                 _logger.LogInformation($"Reading JavaScript file from '{filePath}'");
 
                 if (string.IsNullOrEmpty(filePath))
                 {
-                    _logger.LogWarning("File path is empty after resolution.");
                     return string.Empty;
                 }
-
-                _logger.LogDebug($"Resolved file path: '{filePath}'");
 
                 if (!_fileSystem.FileExists(filePath))
-                  {
+                {
                     _logger.LogWarning($"File not found: '{filePath}'");
-                    _logger.LogDebug($"Current directory: '{Directory.GetCurrentDirectory()}'");
                     return string.Empty;
                 }
 
-                var content = await Task.Run(() => _fileSystem.ReadAllText(filePath));
-                _logger.LogInformation($"Successfully read JavaScript file: '{filePath}'");
-                return content;
+                return await Task.Run(() => _fileSystem.ReadAllText(filePath));
             }
             catch (Exception ex)
             {
@@ -162,47 +158,23 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         /// <returns>The resolved absolute file path</returns>
         private string ResolveFilePath(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(filePath) || Path.IsPathRooted(filePath) || _testState == null)
             {
-                _logger.LogWarning("File path is null or empty.");
-                return string.Empty;
+                return filePath;
             }
 
-            // Check for invalid characters in the file path
-            if (filePath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
+            try
             {
-                _logger.LogWarning($"File path contains invalid characters: '{filePath}'");
-                return string.Empty;
-            }
-
-            // Prevent malformed paths like ".C:/..."
-            if (filePath.StartsWith(".") && filePath.Contains(":"))
-            {
-                _logger.LogWarning($"File path is malformed: '{filePath}'");
-                return string.Empty;
-            }
-
-            // If the path is already absolute, return it
-            if (Path.IsPathRooted(filePath))
-            {
-                return Path.GetFullPath(filePath);
-            }
-
-            // Resolve relative paths based on the test configuration
-            if (_testState != null)
-            {
-                try
+                var testConfigFile = _testState.GetTestConfigFile();
+                if (testConfigFile != null)
                 {
-                    var baseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../../samples/javascript-d365-tests");
-                    var resolvedPath = Path.Combine(baseDirectory, filePath);
-
-                    _logger.LogDebug($"Resolved file path: '{resolvedPath}'");
-                    return Path.GetFullPath(resolvedPath);
+                    var testResultDirectory = Path.GetDirectoryName(testConfigFile.FullName);
+                    return Path.Combine(testResultDirectory, filePath);
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, $"Unable to resolve file path relative to test config: '{filePath}'");
-                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, $"Unable to resolve file path relative to test config: '{filePath}'");
             }
 
             return filePath;
