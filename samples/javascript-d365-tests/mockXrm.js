@@ -151,6 +151,7 @@ Xrm.Page.getAttribute("industrycode").setValue(0); // Default to no specific ind
 Xrm.Page.getAttribute("creditlimit").setValue(5000); // Default credit limit
 Xrm.Page.getAttribute("creditscore").setValue(650); // Default credit score
 Xrm.Page.getAttribute("customertype").setValue(0); // Default customer type
+Xrm.Page.getAttribute("cat_testtypecode").setValue(null); // Default test type code for copilot tests
 
 // Create mock implementation for dialog display used in recommendations
 window.showDialogResponse = true;
@@ -169,8 +170,13 @@ function resetMockXrm() {
     Xrm.Page.getAttribute("creditlimit").setValue(5000);
     Xrm.Page.getAttribute("creditscore").setValue(650);
     Xrm.Page.getAttribute("customertype").setValue(0);
+    Xrm.Page.getAttribute("cat_testtypecode").setValue(null);
     window.showDialogResponse = true;
 }
+
+// Pre-initialize the sections that our test will use
+Xrm.Page.ui.tabs.get("tab_general").sections.get("tab_general_section_multiturntestresults");
+Xrm.Page.ui.tabs.get("tab_general").sections.get("tab_general_section_enrichedresults");
 
 // Add support for form context rather than just global form
 Xrm.Page.context = {

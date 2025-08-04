@@ -1,0 +1,146 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Copilot Test Result Form Business Logic Tests
+  testSuiteDescription: Automated tests for copilot test result form visibility logic using PowerFx format
+  persona: User1
+  appLogicalName: na
+
+  testCases:
+    - testCaseName: FileLoadTest
+      testCaseDescription: Checks if copilottestresult_main.js loads successfully
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: "true",
+            Expected: "true"
+          })
+
+    - testCaseName: MultiTurnSectionVisibleWhenTestTypeIs5
+      testCaseDescription: MultiTurn Results section should be visible when test type code is 5
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(5)",
+              "setMultiTurnResultsGridVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntestresults').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: MultiTurnSectionHiddenWhenTestTypeIsNot5
+      testCaseDescription: MultiTurn Results section should be hidden when test type code is not 5
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "setMultiTurnResultsGridVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "!Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntestresults').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: EnrichedResultsSectionHiddenWhenTestTypeIs5
+      testCaseDescription: Enriched Results section should be hidden when test type code is 5
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(5)",
+              "setMultiTurnResultsGridVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "!Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_enrichedresults').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: EnrichedResultsSectionVisibleWhenTestTypeIsNot5
+      testCaseDescription: Enriched Results section should be visible when test type code is not 5
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "setMultiTurnResultsGridVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_enrichedresults').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: HandleNullTestTypeValue
+      testCaseDescription: Function should handle null test type values gracefully
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(null)",
+              "setMultiTurnResultsGridVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "var multiTurnHidden = !Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntestresults').getVisible()",
+              "var enrichedVisible = Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_enrichedresults').getVisible()",
+              "multiTurnHidden && enrichedVisible"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: HandleUndefinedTestTypeValue
+      testCaseDescription: Function should handle undefined test type values gracefully
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(undefined)",
+              "setMultiTurnResultsGridVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "var multiTurnHidden = !Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntestresults').getVisible()",
+              "var enrichedVisible = Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_enrichedresults').getVisible()",
+              "multiTurnHidden && enrichedVisible"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: HandleZeroTestTypeValue
+      testCaseDescription: Function should handle zero test type value (should show enriched, hide multiturn)
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(0)",
+              "setMultiTurnResultsGridVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "var multiTurnHidden = !Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntestresults').getVisible()",
+              "var enrichedVisible = Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_enrichedresults').getVisible()",
+              "multiTurnHidden && enrichedVisible"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: HandleLargeTestTypeValue
+      testCaseDescription: Function should handle large test type values (should show enriched, hide multiturn)
+      testSteps: |
+        = Preview.AssertJavaScript({
+            Location: "copilottestresult_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(999)",
+              "setMultiTurnResultsGridVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "var multiTurnHidden = !Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntestresults').getVisible()",
+              "var enrichedVisible = Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_enrichedresults').getVisible()",
+              "multiTurnHidden && enrichedVisible"
+            ]),
+            Expected: "true"
+          })
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
