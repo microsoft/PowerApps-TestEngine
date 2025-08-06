@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: Open Inline View Success
       testCaseDescription: Verifies that openInlineView calls navigateTo with correct parameters.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\conversationkpi_main.js",
             Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
             Run: Join([
@@ -25,7 +25,7 @@ testSuite:
     - testCaseName: Open Inline View Error Handling
       testCaseDescription: Verifies that openInlineView handles navigation errors and calls showErrorDialog.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\conversationkpi_main.js",
             Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
             Run: Join([
@@ -42,7 +42,7 @@ testSuite:
     - testCaseName: Show Error Dialog Displays Message
       testCaseDescription: Verifies that showErrorDialog passes correct message and details to openErrorDialog.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\conversationkpi_main.js",
             Setup: "C:\\RR\\TestEngine_RR\\PowerApps-TestEngine\\samples\\javascript-d365-tests\\mockXrm.js",
             Run: Join([

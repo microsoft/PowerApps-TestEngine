@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: File Load Test
       testCaseDescription: Checks if copilotconfiguration_main.js loads
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilotconfiguration_main.js",
             Setup: "mockXrm.js",
             Run: "true",
@@ -19,7 +19,7 @@ testSuite:
     - testCaseName: Hide KPI Section When Not Selected
       testCaseDescription: KPI section should be hidden when 'Conversation KPIs' is not selected.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilotconfiguration_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -33,7 +33,7 @@ testSuite:
     - testCaseName: Show Conversation Analyzer Section
       testCaseDescription: Conversation Analyzer section is visible when 'Conversation Analyzer' is selected.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilotconfiguration_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -47,7 +47,7 @@ testSuite:
     - testCaseName: Required Level for CopilotID and DataverseURL
       testCaseDescription: Sets required level for cat_copilotid and cat_dataverseurl when 'Conversation KPIs' is selected.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilotconfiguration_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -61,7 +61,7 @@ testSuite:
     - testCaseName: setFieldRequirements sets required and none
       testCaseDescription: setFieldRequirements sets required and none as expected.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilotconfiguration_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -76,7 +76,7 @@ testSuite:
     - testCaseName: clearAndHideFields hides and clears fields
       testCaseDescription: clearAndHideFields hides and clears fields as expected.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilotconfiguration_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -90,7 +90,7 @@ testSuite:
     - testCaseName: toggleSectionVisibility hides sections
       testCaseDescription: toggleSectionVisibility hides multiple sections.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilotconfiguration_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -104,7 +104,7 @@ testSuite:
     - testCaseName: toggleSectionVisibility shows sections
       testCaseDescription: toggleSectionVisibility shows multiple sections.
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilotconfiguration_main.js",
             Setup: "mockXrm.js",
             Run: Join([

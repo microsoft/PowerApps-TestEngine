@@ -3,6 +3,11 @@
  * These functions would be called directly from command bar buttons.
  */
 
+// Initialize CommandBar namespace if it doesn't exist
+if (typeof CommandBar === 'undefined') {
+    var CommandBar = {};
+}
+
 /**
  * Determines if the specified command should be enabled based on the current entity state
  * @param {string} commandName - Name of the command

@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: FormScripts_DefaultCountryForNewForms
       testCaseDescription: Tests that default country is set for new forms
       testSteps: |
-        = Preview.AssertJavaScript({Location:"formScripts.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"formScripts.js", Setup:"mockXrm.js", Run: Join([
             "Xrm.Page.ui.formType = 1",
             "onLoad()",
             "Xrm.Page.getAttribute('address1_country').getValue() === 'United States'"
@@ -17,7 +17,7 @@ testSuite:
     - testCaseName: FormScripts_UnchangedCountryForExistingForms
       testCaseDescription: Tests that country is not changed for existing forms
       testSteps: |
-        = Preview.AssertJavaScript({Location:"formScripts.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"formScripts.js", Setup:"mockXrm.js", Run: Join([
             "Xrm.Page.ui.formType = 2",
             "Xrm.Page.getAttribute('address1_country').setValue('Canada')",
             "onLoad()",
@@ -26,7 +26,7 @@ testSuite:
     - testCaseName: FormScripts_CreditLimitRequiresScoreForHighLimit
       testCaseDescription: Tests that credit score is required for high credit limits
       testSteps: |
-        = Preview.AssertJavaScript({Location:"formScripts.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"formScripts.js", Setup:"mockXrm.js", Run: Join([
             "Xrm.Page.getAttribute('creditlimit').setValue(100000)",
             "creditLimitOnChange()",
             "Xrm.Page.getControl('creditscore').getRequiredLevel() === 'required'"
@@ -34,7 +34,7 @@ testSuite:
     - testCaseName: FormScripts_CustomerTypeShowsPartnerTab
       testCaseDescription: Tests that partner tab is shown for partner customer type
       testSteps: |
-        = Preview.AssertJavaScript({Location:"formScripts.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"formScripts.js", Setup:"mockXrm.js", Run: Join([
             "Xrm.Page.getAttribute('customertype').setValue(2)",
             "customerTypeOnChange()",
             "Xrm.Page.ui.tabs.get('partnertab').getVisible()"

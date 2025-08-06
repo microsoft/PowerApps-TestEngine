@@ -9,7 +9,7 @@ testSuite:
     - testCaseName: FileLoadTest
       testCaseDescription: Checks if copilottestresult_main.js loads successfully
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: "true",
@@ -19,7 +19,7 @@ testSuite:
     - testCaseName: MultiTurnSectionVisibleWhenTestTypeIs5
       testCaseDescription: MultiTurn Results section should be visible when test type code is 5
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -33,7 +33,7 @@ testSuite:
     - testCaseName: MultiTurnSectionHiddenWhenTestTypeIsNot5
       testCaseDescription: MultiTurn Results section should be hidden when test type code is not 5
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -47,7 +47,7 @@ testSuite:
     - testCaseName: EnrichedResultsSectionHiddenWhenTestTypeIs5
       testCaseDescription: Enriched Results section should be hidden when test type code is 5
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -61,7 +61,7 @@ testSuite:
     - testCaseName: EnrichedResultsSectionVisibleWhenTestTypeIsNot5
       testCaseDescription: Enriched Results section should be visible when test type code is not 5
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -75,7 +75,7 @@ testSuite:
     - testCaseName: HandleNullTestTypeValue
       testCaseDescription: Function should handle null test type values gracefully
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -91,7 +91,7 @@ testSuite:
     - testCaseName: HandleUndefinedTestTypeValue
       testCaseDescription: Function should handle undefined test type values gracefully
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -107,7 +107,7 @@ testSuite:
     - testCaseName: HandleZeroTestTypeValue
       testCaseDescription: Function should handle zero test type value (should show enriched, hide multiturn)
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: Join([
@@ -123,7 +123,7 @@ testSuite:
     - testCaseName: HandleLargeTestTypeValue
       testCaseDescription: Function should handle large test type values (should show enriched, hide multiturn)
       testSteps: |
-        = Preview.AssertJavaScript({
+        = AssertJavaScript({
             Location: "copilottestresult_main.js",
             Setup: "mockXrm.js",
             Run: Join([

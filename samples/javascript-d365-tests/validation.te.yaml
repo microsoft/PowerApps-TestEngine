@@ -9,43 +9,43 @@ testSuite:
     - testCaseName: Validation_PhoneNumberAcceptsValidFormats
       testCaseDescription: Tests that phone validation passes for valid formats
       testSteps: |
-        = Preview.AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
             "validatePhoneNumber('(555) 123-4567')"
           ]), Expected: "true" });
     - testCaseName: Validation_PhoneNumberRejectsInvalidFormats
       testCaseDescription: Tests that phone validation fails for invalid formats
       testSteps: |
-        = Preview.AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
             "validatePhoneNumber('not-a-phone')"
           ]), Expected: "false" });
     - testCaseName: Validation_EmailValidationWithValidEmails
       testCaseDescription: Tests that email validation passes for valid emails
       testSteps: |
-        = Preview.AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
             "validateEmail('test@example.com')"
           ]), Expected: "true" });
     - testCaseName: Validation_EmailValidationWithInvalidEmails
       testCaseDescription: Tests that email validation fails for invalid emails
       testSteps: |
-        = Preview.AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
             "validateEmail('invalid-email')"
           ]), Expected: "false" });
     - testCaseName: Validation_CreditLimitValidationBasedOnScore
       testCaseDescription: Tests that credit limit validation is based on credit score
       testSteps: |
-        = Preview.AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
             "validateCreditLimit(3000, 550)"
           ]), Expected: "true" });
     - testCaseName: Validation_CreditLimitValidationFailsWhenTooHigh
       testCaseDescription: Tests that credit limit validation fails when limit is too high for score
       testSteps: |
-        = Preview.AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
             "validateCreditLimit(10000, 450)"
           ]), Expected: "false" });
     - testCaseName: Validation_FormValidationSetsNotifications
       testCaseDescription: Tests that form validation sets notifications for invalid fields
       testSteps: |
-        = Preview.AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
+        = AssertJavaScript({Location:"validation.js", Setup:"mockXrm.js", Run: Join([
           "Xrm.Page.getAttribute('emailaddress1').setValue('invalid-email')",
           "Xrm.Page.getAttribute('telephone1').setValue('invalid-phone')",
           "validateAccountForm()",

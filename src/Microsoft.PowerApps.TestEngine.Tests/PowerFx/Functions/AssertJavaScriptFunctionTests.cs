@@ -26,7 +26,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         private readonly Mock<IFileSystem> _mockFileSystem;
         private readonly Mock<ITestState> _mockTestState;
         private readonly string _testFilePath;
-        private readonly string _testFileContent; public AssertJavaScriptFunctionTests()
+        private readonly string _testFileContent;
+        public AssertJavaScriptFunctionTests()
         {
             _mockLogger = new Mock<ILogger>(MockBehavior.Strict);
             _mockOrgService = new Mock<IOrganizationService>(MockBehavior.Strict);
@@ -37,7 +38,24 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             _testFilePath = Path.GetTempFileName() + ".js";
             _testFileContent = "// Test JavaScript file\nfunction testFunction() { return 'hello'; }";
             File.WriteAllText(_testFilePath, _testFileContent);
+
+            // Setup the test state with Preview namespace enabled for all tests
+            SetupTestStateWithPreviewNamespace();
         }
+
+        private void SetupTestStateWithPreviewNamespace()
+        {
+            var testSettings = new TestSettings
+            {
+                ExtensionModules = new TestSettingExtensions
+                {
+                    AllowPowerFxNamespaces = new HashSet<string> { "Preview" }
+                }
+            };
+
+            _mockTestState.Setup(s => s.GetTestSettings()).Returns(testSettings);
+        }
+
         [Fact]
         public async Task ExecuteAsync_WithValidRunAndExpected_ReturnsSuccess()
         {
@@ -54,13 +72,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             // Act
             var result = await function.ExecuteAsync(record);
             // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.True(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("Assertion passed", GetStringFieldValue(result, "Message"));
-            Assert.Equal(string.Empty, GetStringFieldValue(result, "Details"));
+            Assert.IsAssignableFrom<BlankValue>(result);
         }
+
         [Fact]
-        public async Task ExecuteAsync_WithMissingRunParameter_ReturnsError()
+        public async Task ExecuteAsync_WithMissingRunParameter_ThrowsException()
         {
             // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
@@ -72,15 +88,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var record = RecordValue.NewRecordFromFields(recordFields.Select(kv =>
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
-            // Act
-            var result = await function.ExecuteAsync(record);            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.False(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("Missing required parameter", GetStringFieldValue(result, "Message"));
-            Assert.Contains("Run", GetStringFieldValue(result, "Details"));
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<AssertionFailureException>(async () =>
+                await function.ExecuteAsync(record));
+            Assert.Contains("Run", exception.Message);
         }
+
         [Fact]
-        public async Task ExecuteAsync_WithMissingExpectedParameter_ReturnsError()
+        public async Task ExecuteAsync_WithMissingExpectedParameter_ThrowsException()
         {
             // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
@@ -93,17 +108,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var record = RecordValue.NewRecordFromFields(recordFields.Select(kv =>
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
-            // Act
-            var result = await function.ExecuteAsync(record);
-
-            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.False(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("Missing required parameter", GetStringFieldValue(result, "Message"));
-            Assert.Contains("Expected", GetStringFieldValue(result, "Details"));
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<AssertionFailureException>(async () =>
+                await function.ExecuteAsync(record));
+            Assert.Contains("Expected", exception.Message);
         }
+
         [Fact]
-        public async Task ExecuteAsync_WithInvalidRunCode_ReturnsError()
+        public async Task ExecuteAsync_WithInvalidRunCode_ThrowsException()
         {
             // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
@@ -117,14 +129,12 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var record = RecordValue.NewRecordFromFields(recordFields.Select(kv =>
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
-            // Act
-            var result = await function.ExecuteAsync(record);
-            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.False(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("Test code execution failed", GetStringFieldValue(result, "Message"));
-            Assert.Contains("Error", GetStringFieldValue(result, "Details"));
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<AssertionFailureException>(async () =>
+                await function.ExecuteAsync(record));
+            Assert.Contains("JavaScript test code execution failed", exception.Message);
         }
+
         [Fact]
         public async Task ExecuteAsync_WithSetupCode_ExecutesCorrectly()
         {
@@ -144,11 +154,11 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var result = await function.ExecuteAsync(record);
 
             // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.True(GetBooleanFieldValue(result, "Success"));
+            Assert.IsAssignableFrom<BlankValue>(result);
         }
+
         [Fact]
-        public async Task ExecuteAsync_WithInvalidSetupCode_ReturnsError()
+        public async Task ExecuteAsync_WithInvalidSetupCode_ThrowsException()
         {
             // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
@@ -163,12 +173,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var record = RecordValue.NewRecordFromFields(recordFields.Select(kv =>
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
-            // Act
-            var result = await function.ExecuteAsync(record);
-            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.False(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("Setup code execution failed", GetStringFieldValue(result, "Message"));
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<AssertionFailureException>(async () =>
+                await function.ExecuteAsync(record));
+            Assert.Contains("Setup code execution failed", exception.Message);
         }
 
         [Fact]
@@ -178,7 +186,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             LoggingTestHelper.SetupMock(_mockLogger);
 
             // Setup mock file system
-            _mockFileSystem.Setup(fs => fs.FileExists(_testFilePath)).Returns(true); _mockFileSystem.Setup(fs => fs.ReadAllText(_testFilePath)).Returns(_testFileContent);
+            _mockFileSystem.Setup(fs => fs.FileExists(_testFilePath)).Returns(true);
+            _mockFileSystem.Setup(fs => fs.ReadAllText(_testFilePath)).Returns(_testFileContent);
 
             var function = new AssertJavaScriptFunction(_mockLogger.Object, null, _mockFileSystem.Object, _mockTestState.Object);
 
@@ -193,9 +202,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Act
             var result = await function.ExecuteAsync(record);
+
             // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.True(GetBooleanFieldValue(result, "Success"));
+            Assert.IsAssignableFrom<BlankValue>(result);
 
             // Verify file system was called
             _mockFileSystem.Verify(fs => fs.FileExists(_testFilePath), Times.Once);
@@ -203,7 +212,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithNonExistentFile_ReturnsError()
+        public async Task ExecuteAsync_WithNonExistentFile_ThrowsException()
         {
             // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
@@ -223,12 +232,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var record = RecordValue.NewRecordFromFields(recordFields.Select(kv =>
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
-            // Act
-            var result = await function.ExecuteAsync(record);
-            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.False(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("File error", GetStringFieldValue(result, "Message"));
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<AssertionFailureException>(async () =>
+                await function.ExecuteAsync(record));
+            Assert.Contains("Could not read JavaScript file", exception.Message);
 
             // Verify file system was called
             _mockFileSystem.Verify(fs => fs.FileExists(nonExistentPath), Times.Once);
@@ -237,7 +244,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
         [Fact]
         public async Task ExecuteAsync_WithWebResource_ExecutesCorrectly()
-        {            // Arrange
+        {
+            // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
             // Setup mock org service to return a web resource
             var webResourceContent = Convert.ToBase64String(global::System.Text.Encoding.UTF8.GetBytes(
@@ -246,7 +254,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var mockEntity = new Entity("webresource");
             mockEntity["content"] = webResourceContent;
             var mockEntityCollection = new EntityCollection();
-            mockEntityCollection.Entities.Add(mockEntity);            // Create query expression variable for Moq setup
+            mockEntityCollection.Entities.Add(mockEntity);
+
+            // Create query expression variable for Moq setup
             _mockOrgService.Setup(s => s.RetrieveMultiple(It.Is<QueryExpression>(q =>
                 q.EntityName == "webresource" &&
                 q.ColumnSet.Columns.Contains("content") && q.ColumnSet.Columns.Contains("name"))))
@@ -264,9 +274,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
             // Act
-            var result = await function.ExecuteAsync(record);            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.True(GetBooleanFieldValue(result, "Success"));
+            var result = await function.ExecuteAsync(record);
+
+            // Assert
+            Assert.IsAssignableFrom<BlankValue>(result);
 
             // Verify service was called with the proper query expression
             _mockOrgService.Verify(s => s.RetrieveMultiple(It.Is<QueryExpression>(q =>
@@ -276,8 +287,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithNonExistentWebResource_ReturnsError()
-        {            // Arrange
+        public async Task ExecuteAsync_WithNonExistentWebResource_ThrowsException()
+        {
+            // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
 
             // Setup mock org service to return empty collection
@@ -297,15 +309,14 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var record = RecordValue.NewRecordFromFields(recordFields.Select(kv =>
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
-            // Act
-            var result = await function.ExecuteAsync(record);
-            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.False(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("Web resource error", GetStringFieldValue(result, "Message"));
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<AssertionFailureException>(async () =>
+                await function.ExecuteAsync(record));
+            Assert.Contains("Could not retrieve web resource", exception.Message);
         }
+
         [Fact]
-        public async Task ExecuteAsync_WithFailingAssertion_ReturnsFailure()
+        public async Task ExecuteAsync_WithFailingAssertion_ThrowsException()
         {
             // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
@@ -319,14 +330,13 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var record = RecordValue.NewRecordFromFields(recordFields.Select(kv =>
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
-            // Act
-            var result = await function.ExecuteAsync(record);
-            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.False(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("Assertion failed", GetStringFieldValue(result, "Message"));
-            Assert.Contains("Expected 'expected', got 'actual'", GetStringFieldValue(result, "Details"));
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<AssertionFailureException>(async () =>
+                await function.ExecuteAsync(record));
+            Assert.Contains("JavaScript assertion failed", exception.Message);
+            Assert.Contains("Expected 'expected', got 'actual'", exception.Message);
         }
+
         [Fact]
         public async Task ExecuteAsync_WithComplexJavaScript_ExecutesCorrectly()
         {
@@ -352,8 +362,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var result = await function.ExecuteAsync(record);
 
             // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.True(GetBooleanFieldValue(result, "Success"));
+            Assert.IsAssignableFrom<BlankValue>(result);
         }
 
         [Fact]
@@ -383,9 +392,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
 
             // Act
             var result = await function.ExecuteAsync(record);
+
             // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.True(GetBooleanFieldValue(result, "Success"));
+            Assert.IsAssignableFrom<BlankValue>(result);
 
             // Verify that file system methods were called with expected parameters
             _mockFileSystem.Verify(fs => fs.FileExists(testPath), Times.Once);
@@ -398,7 +407,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithFileSystemError_HandlesGracefully()
+        public async Task ExecuteAsync_WithFileSystemError_ThrowsException()
         {
             // Arrange
             LoggingTestHelper.SetupMock(_mockLogger);
@@ -420,12 +429,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
             var record = RecordValue.NewRecordFromFields(recordFields.Select(kv =>
                 new NamedValue(kv.Key, kv.Value)).ToArray());
 
-            // Act
-            var result = await function.ExecuteAsync(record);
-            // Assert
-            Assert.IsAssignableFrom<RecordValue>(result);
-            Assert.False(GetBooleanFieldValue(result, "Success"));
-            Assert.Equal("File error", GetStringFieldValue(result, "Message"));
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<AssertionFailureException>(async () =>
+                await function.ExecuteAsync(record));
+            Assert.Contains("Could not read JavaScript file", exception.Message);
 
             // Verify that methods were called correctly
             _mockFileSystem.Verify(fs => fs.FileExists(testPath), Times.Once);
@@ -470,8 +477,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 var result = await function.ExecuteAsync(record);
 
                 // Assert
-                Assert.IsAssignableFrom<RecordValue>(result);
-                Assert.True(GetBooleanFieldValue(result, "Success"));
+                Assert.IsAssignableFrom<BlankValue>(result);
 
                 // Verify file system was called with the correct full path
                 _mockFileSystem.Verify(fs => fs.FileExists(fullJsFilePath), Times.Once);
@@ -519,8 +525,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                 var result = await function.ExecuteAsync(record);
 
                 // Assert
-                Assert.IsAssignableFrom<RecordValue>(result);
-                Assert.True(GetBooleanFieldValue(result, "Success"));
+                Assert.IsAssignableFrom<BlankValue>(result);
 
                 // Verify file system was called with the correct path
                 _mockFileSystem.Verify(fs => fs.FileExists(setupFilePath), Times.Once);
@@ -534,31 +539,6 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx.Functions
                     File.Delete(setupFilePath);
                 }
             }
-        }
-
-        // Helper methods to extract values from the record
-        private bool GetBooleanFieldValue(RecordValue record, string fieldName)
-        {
-            foreach (var field in record.Fields)
-            {
-                if (field.Name == fieldName && field.Value is BooleanValue boolVal)
-                {
-                    return boolVal.Value;
-                }
-            }
-            throw new ArgumentException($"Field {fieldName} not found or not a boolean value");
-        }
-
-        private string GetStringFieldValue(RecordValue record, string fieldName)
-        {
-            foreach (var field in record.Fields)
-            {
-                if (field.Name == fieldName && field.Value is StringValue strVal)
-                {
-                    return strVal.Value;
-                }
-            }
-            throw new ArgumentException($"Field {fieldName} not found or not a string value");
         }
 
         // Cleanup temp file after tests

@@ -29,11 +29,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         private readonly IFileSystem _fileSystem;
         private readonly ITestState _testState;
 
-        // Define record type for results
-        private static readonly RecordType _result = RecordType.Empty()
-            .Add(new NamedFormulaType("Success", BooleanType.Boolean))
-            .Add(new NamedFormulaType("Message", StringType.String))
-            .Add(new NamedFormulaType("Details", StringType.String));
+        // Preview namespace property for this function
+        private static readonly string PREVIEW_NAMESPACE = "Preview";
 
         // Define record type for parameters
         private static readonly RecordType _parameters = RecordType.Empty()
@@ -41,7 +38,9 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             .Add(new NamedFormulaType("Location", StringType.String))
             .Add(new NamedFormulaType("Setup", StringType.String))
             .Add(new NamedFormulaType("Run", StringType.String))
-            .Add(new NamedFormulaType("Expected", StringType.String)); public AssertJavaScriptFunction(ILogger logger, IOrganizationService client, IFileSystem fileSystem = null, ITestState testState = null) : base(DPath.Root.Append(new DName("Preview")), "AssertJavaScript", _result, _parameters)
+            .Add(new NamedFormulaType("Expected", StringType.String));
+        public AssertJavaScriptFunction(ILogger logger, IOrganizationService client, IFileSystem fileSystem = null, ITestState testState = null)
+            : base("AssertJavaScript", FormulaType.Blank, _parameters)
         {
             _logger = logger;
             _client = client;
@@ -49,14 +48,22 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             _testState = testState;
         }
 
-        /// <summary>
-        /// Executes JavaScript code and assertions to validate test conditions
-        /// </summary>
-        /// <param name="record">A record containing test parameters</param>
-        /// <returns>A record with test results</returns>
-        public RecordValue Execute(RecordValue record)
+        public BlankValue Execute(RecordValue record)
         {
-            return ExecuteAsync(record).Result;
+            try
+            {
+                return ExecuteAsync(record).Result;
+            }
+            catch (AggregateException aex) when (aex.InnerException is AssertionFailureException afe)
+            {
+                // Re-throw the AssertionFailureException from async method
+                throw afe;
+            }
+            catch (AssertionFailureException)
+            {
+                // Re-throw AssertionFailureException as-is
+                throw;
+            }
         }
 
         /// <summary>
@@ -180,9 +187,35 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             return filePath;
         }
 
-        public async Task<RecordValue> ExecuteAsync(RecordValue record)
+        /// <summary>
+        /// Checks if the required namespace is enabled in testSettings
+        /// </summary>
+        /// <returns>True if the required namespace is enabled, false otherwise</returns>
+        private bool IsPreviewEnabled()
         {
-            _logger.LogInformation("Starting JavaScript assertion execution");
+            var testSettings = _testState?.GetTestSettings();
+
+            // Check if Preview namespace is allowed in allowPowerFxNamespaces
+            if (testSettings?.ExtensionModules?.AllowPowerFxNamespaces != null &&
+                testSettings.ExtensionModules.AllowPowerFxNamespaces.Contains(PREVIEW_NAMESPACE))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<BlankValue> ExecuteAsync(RecordValue record)
+        {
+            // Check if Preview namespace is enabled - this function requires it
+            if (!IsPreviewEnabled())
+            {
+                var errorMessage = $"AssertJavaScript function requires '{PREVIEW_NAMESPACE}' namespace to be enabled. Please add '{PREVIEW_NAMESPACE}' to 'allowPowerFxNamespaces' in testSettings.yaml extensionModules.";
+                _logger.LogError(errorMessage);
+                throw new AssertionFailureException(errorMessage);
+            }
+
+            _logger.LogInformation($"Starting JavaScript assertion execution with '{PREVIEW_NAMESPACE}' namespace enabled");
 
             // Extract parameters from the record
             string webResource = string.Empty;
@@ -219,12 +252,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
             // Validate required parameters
             if (string.IsNullOrEmpty(runCode))
             {
-                return CreateErrorResult(false, "Missing required parameter", "The 'Run' parameter is required.");
+                _logger.LogError("Missing required parameter: Run");
+                throw new AssertionFailureException("Missing required parameter: Run");
             }
 
             if (string.IsNullOrEmpty(expectedResult))
             {
-                return CreateErrorResult(false, "Missing required parameter", "The 'Expected' parameter is required.");
+                _logger.LogError("Missing required parameter: Expected");
+                throw new AssertionFailureException("Missing required parameter: Expected");
             }
 
             // Retrieve web resource content from Dataverse if specified
@@ -234,7 +269,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 webResourceContent = await RetrieveWebResourceContentAsync(webResource);
                 if (string.IsNullOrEmpty(webResourceContent))
                 {
-                    return CreateErrorResult(false, "Web resource error", $"Could not retrieve web resource '{webResource}'");
+                    _logger.LogError($"Could not retrieve web resource '{webResource}'");
+                    throw new AssertionFailureException($"Could not retrieve web resource '{webResource}'");
                 }
             }
 
@@ -245,7 +281,8 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 locationContent = await ReadJavaScriptFileAsync(location);
                 if (string.IsNullOrEmpty(locationContent))
                 {
-                    return CreateErrorResult(false, "File error", $"Could not read JavaScript file from '{location}'");
+                    _logger.LogError($"Could not read JavaScript file from '{location}'");
+                    throw new AssertionFailureException($"Could not read JavaScript file from '{location}'");
                 }
             }
 
@@ -280,38 +317,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                     debug = new Action<object>(message => _logger.LogDebug($"[JS DEBUG] {message}"))
                 });
 
-                // Execute web resource content if it was retrieved
-                if (!string.IsNullOrEmpty(webResourceContent))
-                {
-                    _logger.LogInformation("Executing web resource script");
-                    try
-                    {
-                        await Task.Run(() => jsEngine.Execute(webResourceContent));
-                    }
-                    catch (JavaScriptException jex)
-                    {
-                        _logger.LogError($"Error in web resource script: {jex.Message}");
-                        return CreateErrorResult(false, "Web resource execution failed",
-                            $"Error: {jex.Error}");
-                    }
-                }
-
-                // Execute local file content if it was read
-                if (!string.IsNullOrEmpty(locationContent))
-                {
-                    _logger.LogInformation("Executing JavaScript file");
-                    try
-                    {
-                        await Task.Run(() => jsEngine.Execute(locationContent));
-                    }
-                    catch (JavaScriptException jex)
-                    {
-                        _logger.LogError($"Error in JavaScript file: {jex.Message}");
-                        return CreateErrorResult(false, "JavaScript file execution failed",
-                            $"Error: {jex.Error}");
-                    }
-                }
-                // Execute setup code if provided
+                // Execute setup code if provided (should run first to initialize environment)
                 if (!string.IsNullOrEmpty(setupCode))
                 {
                     _logger.LogInformation("Executing setup code");
@@ -332,8 +338,37 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                     catch (JavaScriptException jex)
                     {
                         _logger.LogError($"Error in setup code: {jex.Message}");
-                        return CreateErrorResult(false, "Setup code execution failed",
-                            $"Error: {jex.Error}");
+                        throw new AssertionFailureException($"Setup code execution failed: {jex.Error}");
+                    }
+                }
+
+                // Execute web resource content if it was retrieved
+                if (!string.IsNullOrEmpty(webResourceContent))
+                {
+                    _logger.LogInformation("Executing web resource script");
+                    try
+                    {
+                        await Task.Run(() => jsEngine.Execute(webResourceContent));
+                    }
+                    catch (JavaScriptException jex)
+                    {
+                        _logger.LogError($"Error in web resource script: {jex.Message}");
+                        throw new AssertionFailureException($"Web resource script execution failed: {jex.Error}");
+                    }
+                }
+
+                // Execute local file content if it was read
+                if (!string.IsNullOrEmpty(locationContent))
+                {
+                    _logger.LogInformation("Executing JavaScript file");
+                    try
+                    {
+                        await Task.Run(() => jsEngine.Execute(locationContent));
+                    }
+                    catch (JavaScriptException jex)
+                    {
+                        _logger.LogError($"Error in JavaScript file: {jex.Message}");
+                        throw new AssertionFailureException($"JavaScript file execution failed: {jex.Error}");
                     }
                 }
 
@@ -348,13 +383,12 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
                 catch (JavaScriptException jex)
                 {
                     _logger.LogError($"Error in test code: {jex.Message}");
-                    return CreateErrorResult(false, "Test code execution failed",
-                        $"Error: {jex.Error}");
+                    throw new AssertionFailureException($"JavaScript test code execution failed: {jex.Error}");
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError($"Unexpected error: {ex.Message}");
-                    return CreateErrorResult(false, "Unexpected error during execution", ex.ToString());
+                    throw new AssertionFailureException($"Unexpected error during JavaScript execution: {ex.Message}");
                 }
 
                 // Compare the result with expected value
@@ -363,45 +397,25 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
                 if (testPassed)
                 {
-                    _logger.LogInformation("Assertion passed");
-                    return CreateSuccessResult();
+                    _logger.LogInformation("JavaScript assertion passed");
+                    return FormulaValue.NewBlank();
                 }
                 else
                 {
-                    _logger.LogWarning($"Assertion failed: Expected '{expectedResult}', got '{actualResult}'");
-                    return CreateErrorResult(false, "Assertion failed",
-                        $"Expected '{expectedResult}', got '{actualResult}'");
+                    _logger.LogError($"JavaScript assertion failed: Expected '{expectedResult}', got '{actualResult}'");
+                    throw new AssertionFailureException($"JavaScript assertion failed: Expected '{expectedResult}', got '{actualResult}'");
                 }
+            }
+            catch (AssertionFailureException)
+            {
+                // Re-throw AssertionFailureException as-is
+                throw;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Exception occurred during JavaScript assertion execution");
-                return CreateErrorResult(false, "Execution error", ex.ToString());
+                throw new AssertionFailureException($"JavaScript execution error: {ex.Message}");
             }
-        }
-
-        /// <summary>
-        /// Creates a success result record
-        /// </summary>
-        private RecordValue CreateSuccessResult()
-        {
-            var success = new NamedValue("Success", FormulaValue.New(true));
-            var message = new NamedValue("Message", FormulaValue.New("Assertion passed"));
-            var details = new NamedValue("Details", FormulaValue.New(string.Empty));
-
-            return RecordValue.NewRecordFromFields(_result, new[] { success, message, details });
-        }
-
-        /// <summary>
-        /// Creates an error result record
-        /// </summary>
-        private RecordValue CreateErrorResult(bool success, string message, string details)
-        {
-            var successValue = new NamedValue("Success", FormulaValue.New(success));
-            var messageValue = new NamedValue("Message", FormulaValue.New(message));
-            var detailsValue = new NamedValue("Details", FormulaValue.New(details));
-
-            return RecordValue.NewRecordFromFields(_result, new[] { successValue, messageValue, detailsValue });
         }
     }
 }

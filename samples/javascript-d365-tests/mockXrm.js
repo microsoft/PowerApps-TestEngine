@@ -37,6 +37,18 @@ var Xrm = {
                     return tabStore[tabName];
                 }
             },
+            sections: {
+                get: function (sectionName) {
+                    if (!sectionStore[sectionName]) {
+                        sectionStore[sectionName] = {
+                            visible: true,
+                            setVisible: function (visible) { this.visible = visible; },
+                            getVisible: function () { return this.visible; }
+                        };
+                    }
+                    return sectionStore[sectionName];
+                }
+            },
             controls: {}, // Not used, see getControl below
             getFormType: function () { return this.formType; },
             setFormType: function (type) { this.formType = type; }
@@ -71,6 +83,8 @@ var Xrm = {
         getControl: function (controlName) {
             // Use persistent store
             if (!controlStore[controlName]) {
+                // Get corresponding attribute to link control required level
+                var attr = this.getAttribute(controlName);
                 controlStore[controlName] = {
                     visible: true,
                     notification: null,
@@ -82,7 +96,9 @@ var Xrm = {
                             this.notification = null;
                         }
                     },
-                    getNotification: function () { return this.notification; }
+                    getNotification: function () { return this.notification; },
+                    getRequiredLevel: function () { return attr ? attr.getRequiredLevel() : "none"; },
+                    setRequiredLevel: function (level) { if (attr) attr.setRequiredLevel(level); }
                 };
             }
             return controlStore[controlName];

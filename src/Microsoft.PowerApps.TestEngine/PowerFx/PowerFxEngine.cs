@@ -95,22 +95,14 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new SelectOneParamFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
             powerFxConfig.AddFunction(new SelectThreeParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger));
-            powerFxConfig.AddFunction(new SelectFileTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger)); powerFxConfig.AddFunction(new ScreenshotFunction(TestInfraFunctions, SingleTestInstanceState, _fileSystem, Logger));
+            powerFxConfig.AddFunction(new SelectFileTwoParamsFunction(_testWebProvider, async () => await UpdatePowerFxModelAsync(), Logger)); 
+            powerFxConfig.AddFunction(new ScreenshotFunction(TestInfraFunctions, SingleTestInstanceState, _fileSystem, Logger));
             powerFxConfig.AddFunction(new AssertWithoutMessageFunction(Logger));
             powerFxConfig.AddFunction(new AssertFunction(Logger));
+            powerFxConfig.AddFunction(new AssertJavaScriptFunction(Logger, _orgService, _fileSystem, TestState));
             powerFxConfig.AddFunction(new AssertNotErrorFunction(Logger));
             powerFxConfig.AddFunction(new SetPropertyFunction(_testWebProvider, Logger));
             powerFxConfig.AddFunction(new IsMatchFunction(Logger));
-            // If organization service is available, register AssertJavaScript function with access to it
-            if (_orgService != null)
-            {
-                powerFxConfig.AddFunction(new AssertJavaScriptFunction(Logger, _orgService, _fileSystem));
-            }
-            else
-            {
-                // Register with null organization service, will handle gracefully
-                powerFxConfig.AddFunction(new AssertJavaScriptFunction(Logger, null, _fileSystem, TestState));
-            }
 
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {
