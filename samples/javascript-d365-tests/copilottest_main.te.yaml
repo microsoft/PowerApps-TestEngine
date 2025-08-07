@@ -1,0 +1,404 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: Copilot Test Main Form Business Logic Tests
+  testSuiteDescription: Automated tests for copilot test main form JavaScript functions using PowerFx format
+  persona: User1
+  appLogicalName: na
+
+  testCases:
+    # Basic file loading test
+    - testCaseName: FileLoadTest
+      testCaseDescription: Checks if copilottest_main.js loads successfully
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: "true",
+            Expected: "true"
+          })
+
+    # Tests for setMultiTurnControlsVisibility function
+    - testCaseName: MultiTurnSectionVisibleWhenTestTypeIs5
+      testCaseDescription: MultiTurn section should be visible when test type code is 5
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(5)",
+              "setMultiTurnControlsVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntests').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: MultiTurnSectionHiddenWhenTestTypeIsNot5
+      testCaseDescription: MultiTurn section should be hidden when test type code is not 5
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "setMultiTurnControlsVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "!Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntests').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: MultiTurnSectionHandlesNullTestType
+      testCaseDescription: MultiTurn section should be hidden when test type is null
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(null)",
+              "setMultiTurnControlsVisibility({ getFormContext: function() { return Xrm.Page; } })",
+              "!Xrm.Page.ui.tabs.get('tab_general').sections.get('tab_general_section_multiturntests').getVisible()"
+            ]),
+            Expected: "true"
+          })
+
+    # Tests for setTestOrder function - Create form scenarios
+    - testCaseName: SetTestOrderOnCreateFormWithParent
+      testCaseDescription: Should set critical to true and remove option 5 on create form with parent
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.ui.formType = 1",
+              "var parentLookup = [{id: '{12345678-1234-1234-1234-123456789012}', name: 'Parent Test', entityType: 'cat_copilottest'}]",
+              "Xrm.Page.getAttribute('cat_parent').setValue(parentLookup)",
+              "var testTypeControl = { removeOption: function(value) { this.removedOption = value; return true; } }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_testtypecode') return testTypeControl; return null; }",
+              "setTestOrder({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.getAttribute('cat_critical').getValue() === true"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: SetTestOrderSkipsOnUpdateForm
+      testCaseDescription: Should not execute on update forms (form type != 1)
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.ui.formType = 2",
+              "var parentLookup = [{id: '{12345678-1234-1234-1234-123456789012}', name: 'Parent Test', entityType: 'cat_copilottest'}]",
+              "Xrm.Page.getAttribute('cat_parent').setValue(parentLookup)",
+              "var criticalBefore = Xrm.Page.getAttribute('cat_critical').getValue()",
+              "setTestOrder({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.getAttribute('cat_critical').getValue() === criticalBefore"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: SetTestOrderSkipsWhenNoParent
+      testCaseDescription: Should not execute when no parent is set
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.ui.formType = 1",
+              "Xrm.Page.getAttribute('cat_parent').setValue(null)",
+              "var criticalBefore = Xrm.Page.getAttribute('cat_critical').getValue()",
+              "setTestOrder({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.getAttribute('cat_critical').getValue() === criticalBefore"
+            ]),
+            Expected: "true"
+          })
+
+    # Tests for setChoicesForComparisonOperator function
+    - testCaseName: ComparisonOperatorFilteringForResponseType
+      testCaseDescription: Should show all options except last one for response type (1)
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Equals', value: 1}, {text: 'Not Equals', value: 2}, {text: 'Contains', value: 3}, {text: 'Not Contains', value: 4}, {text: 'AI Validation', value: 9}]",
+              "var control = { clearOptions: function() { this.options = []; }, addOption: function(opt) { if (!this.options) this.options = []; this.options.push(opt); }, options: [] }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_comparisonoperator') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(1)",
+              "setChoicesForComparisonOperator({ getFormContext: function() { return Xrm.Page; } })",
+              "control.options.length === 4"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: ComparisonOperatorFilteringForAttachmentsType
+      testCaseDescription: Should show first 4 options plus AI Validation for attachments type (3)
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Equals', value: 1}, {text: 'Not Equals', value: 2}, {text: 'Contains', value: 3}, {text: 'Not Contains', value: 4}, {text: 'Greater Than', value: 5}, {text: 'AI Validation', value: 9}]",
+              "var control = { clearOptions: function() { this.options = []; }, addOption: function(opt) { if (!this.options) this.options = []; this.options.push(opt); }, options: [] }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_comparisonoperator') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "setChoicesForComparisonOperator({ getFormContext: function() { return Xrm.Page; } })",
+              "control.options.length === 5 && control.options[4].value === 9"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: ComparisonOperatorDefaultsToFirstOption
+      testCaseDescription: Should set to first option if current value is not valid
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Equals', value: 1}, {text: 'Not Equals', value: 2}, {text: 'Contains', value: 3}, {text: 'Not Contains', value: 4}, {text: 'AI Validation', value: 9}]",
+              "var control = { clearOptions: function() { this.options = []; }, addOption: function(opt) { if (!this.options) this.options = []; this.options.push(opt); }, options: [] }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_comparisonoperator') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').setValue(5)",
+              "setChoicesForComparisonOperator({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').getValue() === 1"
+            ]),
+            Expected: "true"
+          })
+
+    # Tests for setChoicesForComparisonOperatorOnFormLoad function
+    - testCaseName: FormLoadCachesOptions
+      testCaseDescription: Should cache full comparison options on form load
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = []",
+              "var mockOptions = [{text: 'Equals', value: 1}, {text: 'Not Equals', value: 2}]",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').getOptions = function() { return mockOptions; }",
+              "var control = { clearOptions: function() {}, addOption: function(opt) {} }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_comparisonoperator') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(1)",
+              "setChoicesForComparisonOperatorOnFormLoad({ getFormContext: function() { return Xrm.Page; } })",
+              "fullComparisonOptions.length === 2"
+            ]),
+            Expected: "true"
+          })
+
+    # Tests for updateValidationInstructionField function
+    - testCaseName: UpdateLabelToExpectedTextForContains
+      testCaseDescription: Should update label to 'Expected Text' for Contains operator
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Equals', value: 1}, {text: 'Contains', value: 3}, {text: 'Not Contains', value: 4}, {text: 'AI Validation', value: 9}]",
+              "isInitialLoad = true",
+              "var control = { setLabel: function(label) { this.label = label; }, label: 'Validation Instructions' }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_validationinstructions') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').setValue(3)",
+              "updateValidationInstructionField({ getFormContext: function() { return Xrm.Page; } })",
+              "control.label === 'Expected Text'"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: UpdateLabelToValidationInstructionsForAI
+      testCaseDescription: Should update label to 'Validation Instructions' for AI Validation operator
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Equals', value: 1}, {text: 'Contains', value: 3}, {text: 'AI Validation', value: 9}]",
+              "isInitialLoad = true",
+              "var control = { setLabel: function(label) { this.label = label; }, label: 'Expected Text' }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_validationinstructions') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').setValue(9)",
+              "updateValidationInstructionField({ getFormContext: function() { return Xrm.Page; } })",
+              "control.label === 'Validation Instructions'"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: ClearFieldWhenSwitchingFromAIToContains
+      testCaseDescription: Should clear field when switching from AI Validation to Contains
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Contains', value: 3}, {text: 'AI Validation', value: 9}]",
+              "previousComparisonOperator = 9",
+              "isInitialLoad = false",
+              "var control = { setLabel: function(label) { this.label = label; } }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_validationinstructions') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').setValue(3)",
+              "Xrm.Page.getAttribute('cat_validationinstructions').setValue('Some text')",
+              "updateValidationInstructionField({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.getAttribute('cat_validationinstructions').getValue() === null"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: ClearFieldWhenSwitchingFromContainsToAI
+      testCaseDescription: Should clear field when switching from Contains to AI Validation
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Contains', value: 3}, {text: 'AI Validation', value: 9}]",
+              "previousComparisonOperator = 3",
+              "isInitialLoad = false",
+              "var control = { setLabel: function(label) { this.label = label; } }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_validationinstructions') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').setValue(9)",
+              "Xrm.Page.getAttribute('cat_validationinstructions').setValue('Some text')",
+              "updateValidationInstructionField({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.getAttribute('cat_validationinstructions').getValue() === null"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: DoNotClearFieldOnInitialLoad
+      testCaseDescription: Should not clear field on initial load
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Contains', value: 3}, {text: 'AI Validation', value: 9}]",
+              "previousComparisonOperator = 9",
+              "isInitialLoad = true",
+              "var control = { setLabel: function(label) { this.label = label; } }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_validationinstructions') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').setValue(3)",
+              "Xrm.Page.getAttribute('cat_validationinstructions').setValue('Some text')",
+              "updateValidationInstructionField({ getFormContext: function() { return Xrm.Page; } })",
+              "Xrm.Page.getAttribute('cat_validationinstructions').getValue() === 'Some text'"
+            ]),
+            Expected: "true"
+          })
+
+    # Tests for global variable handling
+    - testCaseName: InitialLoadFlagHandling
+      testCaseDescription: Should properly handle isInitialLoad flag
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "fullComparisonOptions = [{text: 'Contains', value: 3}]",
+              "isInitialLoad = true",
+              "previousComparisonOperator = null",
+              "var control = { setLabel: function(label) { this.label = label; } }",
+              "Xrm.Page.getControl = function(name) { if (name === 'cat_validationinstructions') return control; return null; }",
+              "Xrm.Page.getAttribute('cat_testtypecode').setValue(3)",
+              "Xrm.Page.getAttribute('cat_comparisonoperator').setValue(3)",
+              "updateValidationInstructionField({ getFormContext: function() { return Xrm.Page; } })",
+              "isInitialLoad === false && previousComparisonOperator === 3"
+            ]),
+            Expected: "true"
+          })
+
+    # Edge case tests
+    - testCaseName: HandleMissingControls
+      testCaseDescription: Should handle gracefully when controls are missing
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.getControl = function(name) { return null; }",
+              "try { setChoicesForComparisonOperator({ getFormContext: function() { return Xrm.Page; } }); return true; } catch(e) { return false; }"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: HandleMissingAttributes
+      testCaseDescription: Should handle gracefully when attributes are missing
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "var originalGetAttribute = Xrm.Page.getAttribute",
+              "Xrm.Page.getAttribute = function(name) { if (name === 'cat_testtypecode') return null; return originalGetAttribute(name); }",
+              "try { updateValidationInstructionField({ getFormContext: function() { return Xrm.Page; } }); return true; } catch(e) { return false; }"
+            ]),
+            Expected: "true"
+          })
+
+    # Test WebApi functionality - Test that the function exists and can be called
+    - testCaseName: GetMaxOrderValueWebApiExists
+      testCaseDescription: Should verify that getMaxOrderValueWebApi function exists and returns a Promise-like object
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "typeof getMaxOrderValueWebApi === 'function' && typeof getMaxOrderValueWebApi('test-id').then === 'function'"
+            ]),
+            Expected: "true"
+          })
+
+    # Test WebApi URL construction for getMaxOrderValueWebApi
+    - testCaseName: GetMaxOrderValueWebApiConstructsCorrectUrl
+      testCaseDescription: Should construct correct FetchXML query URL
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "var capturedUrl = ''",
+              "Xrm.WebApi.retrieveMultipleRecords = function(entityName, options) { capturedUrl = options; return { then: function() { return { catch: function() {} }; } }; }",
+              "getMaxOrderValueWebApi('test-parent-id')",
+              "capturedUrl.includes('fetchXml') && capturedUrl.includes('test-parent-id') && capturedUrl.includes('aggregate')"
+            ]),
+            Expected: "true"
+          })
+
+    # Test getParentTestSet functionality - Test that the function exists
+    - testCaseName: GetParentTestSetExists
+      testCaseDescription: Should verify that getParentTestSet function exists and returns a Promise-like object
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "typeof getParentTestSet === 'function' && typeof getParentTestSet('test-id').then === 'function'"
+            ]),
+            Expected: "true"
+          })
+
+    # Test getParentTestSet URL construction
+    - testCaseName: GetParentTestSetConstructsCorrectUrl
+      testCaseDescription: Should construct correct WebApi query with proper select statement
+      testSteps: |
+        = AssertJavaScript({
+            Location: "copilottest_main.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "var capturedOptions = ''",
+              "Xrm.WebApi.retrieveRecord = function(entityName, id, options) { capturedOptions = options; return { then: function() { return { catch: function() {} }; } }; }",
+              "getParentTestSet('test-parent-id')",
+              "capturedOptions.includes('_cat_copilottestsetid_value')"
+            ]),
+            Expected: "true"
+          })
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
