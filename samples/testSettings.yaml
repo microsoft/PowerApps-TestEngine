@@ -3,8 +3,6 @@ headless: false
 recordVideo: true
 extensionModules:
   enable: true
-  allowPowerFxNamespaces:
-    - "Preview"  # Required for AssertJavaScript function
 browserConfigurations:
   - browser: Chromium
     channel: msedge
