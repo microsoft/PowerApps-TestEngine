@@ -1,0 +1,311 @@
+testSuite:  
+  testSuiteName: TestRunExecutorService Essential Tests  
+  testSuiteDescription: Essential test cases for TestRunExecutorService core functionality  
+  persona: "User1"
+  appLogicalName: na
+
+  testCases:
+
+    # Core Constants Validation
+    - testCaseName: Essential Constants Validation
+      testCaseDescription: Validates critical constants are properly defined
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "typeof AUTH_CONSTANTS === 'object'",
+              "typeof NOTIFICATION_CONSTANTS === 'object'",
+              "typeof TIMING_CONSTANTS === 'object'",
+              "AUTH_CONSTANTS.STATE_KEY === 'agent_auth_state'",
+              "AUTH_CONSTANTS.POSSIBLE_CHARS.length === 62",
+              "TIMING_CONSTANTS.WAIT_TIMEOUT > 0"
+            ]),
+            Expected: "true"
+          })
+
+    # AuthenticationService Core Tests
+    - testCaseName: AuthenticationService Constructor
+      testCaseDescription: Tests AuthenticationService initialization
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const auth = new AuthenticationService('test_client', 'test_tenant', 'test_scope', 'https://test.com')",
+              "auth.clientId === 'test_client'",
+              "auth.tenantId === 'test_tenant'",
+              "auth.scopes[0] === 'test_scope'",
+              "auth.clientUrl === 'https://test.com'"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Code Verifier Generation
+      testCaseDescription: Tests PKCE code verifier generation
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const auth = new AuthenticationService('client', 'tenant', 'scope', 'url')",
+              "const verifier = auth.generateCodeVerifier()",
+              "verifier.length === 64 && /^[A-Za-z0-9]*$/.test(verifier)"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: State Generation
+      testCaseDescription: Tests OAuth state parameter generation
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const auth = new AuthenticationService('client', 'tenant', 'scope', 'url')",
+              "const state1 = auth.generateState()",
+              "const state2 = auth.generateState()",
+              "state1.length === 32 && state2.length === 32 && state1 !== state2"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Authorization Flow Initialization
+      testCaseDescription: Tests OAuth2 authorization flow initialization
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const auth = new AuthenticationService('test_client', 'test_tenant', 'test_scope', 'https://callback.test')",
+              "const urlPromise = auth.initializeAuthFlow()",
+              "urlPromise instanceof Promise"
+            ]),
+            Expected: "true"
+          })
+
+    # NotificationService Core Tests
+    - testCaseName: NotificationService Constructor
+      testCaseDescription: Tests NotificationService initialization
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const service = new NotificationService(Xrm.Page)",
+              "service.formContext === Xrm.Page"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Basic Notification Display
+      testCaseDescription: Tests basic notification display functionality
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const service = new NotificationService(Xrm.Page)",
+              "const notificationId = service.showNotification('Test message', 'INFO', 'TEST_ID')",
+              "notificationId === 'TEST_ID'"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Warning Notification
+      testCaseDescription: Tests warning notification functionality
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const service = new NotificationService(Xrm.Page)",
+              "const warningId = service.showWarningNotification('Warning message')",
+              "warningId === NOTIFICATION_CONSTANTS.WARNING.id"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Error Notification
+      testCaseDescription: Tests error notification functionality
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const service = new NotificationService(Xrm.Page)",
+              "const errorId = service.showErrorNotification('Error message')",
+              "errorId === NOTIFICATION_CONSTANTS.ERROR.id"
+            ]),
+            Expected: "true"
+          })
+
+    # TestRunManager Core Tests
+    - testCaseName: TestRunManager Constructor
+      testCaseDescription: Tests TestRunManager initialization with configuration
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const config = { clientId: 'test', tenantId: 'test', scope: 'test', clientUrl: 'https://test.com' }",
+              "const manager = new TestRunManager(config, Xrm.Page)",
+              "manager.testRunExecutorService instanceof AuthenticationService",
+              "manager.notificationService instanceof NotificationService"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Test Execution Trigger
+      testCaseDescription: Tests test execution triggering functionality
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const config = { clientId: 'test', tenantId: 'test', scope: 'test', clientUrl: 'https://test.com' }",
+              "const manager = new TestRunManager(config, Xrm.Page)",
+              "typeof manager.executeTestRun === 'function'"
+            ]),
+            Expected: "true"
+          })
+
+    # TestRunExecutorService Core Tests
+    - testCaseName: TestRunExecutorService Constructor
+      testCaseDescription: Tests TestRunExecutorService initialization
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const service = new TestRunExecutorService('client', 'tenant', 'scope', 'https://test.com', Xrm.Page)",
+              "service.clientId === 'client'",
+              "service.tenantId === 'tenant'",
+              "service.scopes[0] === 'scope'",
+              "service.clientUrl === 'https://test.com'",
+              "service.isTestRunning === false"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Record ID Waiting Functionality
+      testCaseDescription: Tests waiting for record ID functionality
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.data.entity.setId('{12345678-1234-1234-1234-123456789012}')",
+              "const service = new TestRunExecutorService('client', 'tenant', 'scope', 'url', Xrm.Page)",
+              "service.formContext = Xrm.Page",
+              "const promise = service.waitForRecordId(1000, 100)",
+              "promise instanceof Promise"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Form Save Handler
+      testCaseDescription: Tests onSave form event handler
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "Xrm.Page.ui.setFormType(1)",
+              "const mockContext = { getFormContext: () => Xrm.Page }",
+              "typeof TestRunExecutorService.onSave === 'function'",
+              "TestRunExecutorService.onSave !== undefined"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Test Execution Method
+      testCaseDescription: Tests core test execution functionality
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const service = new TestRunExecutorService('client', 'tenant', 'scope', 'url', Xrm.Page)",
+              "typeof service.invokeDataverseAction === 'function'"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Authentication Integration
+      testCaseDescription: Tests authentication integration in main service
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const service = new TestRunExecutorService('client', 'tenant', 'scope', 'url', Xrm.Page)",
+              "typeof service.authenticate === 'function'"
+            ]),
+            Expected: "true"
+          })
+
+    # Integration Tests
+    - testCaseName: Service Stack Integration
+      testCaseDescription: Tests integration between all service components
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const config = { clientId: 'integration_test', tenantId: 'test_tenant', scope: 'test_scope', clientUrl: 'https://integration.test' }",
+              "const manager = new TestRunManager(config, Xrm.Page)",
+              "manager.testRunExecutorService.clientId === config.clientId",
+              "manager.notificationService.formContext === Xrm.Page"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Global Function Registration
+      testCaseDescription: Tests global onSave function registration
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "typeof window.onSave === 'function'"
+            ]),
+            Expected: "true"
+          })
+
+    # Form Context Tests
+    - testCaseName: Form Attribute Access
+      testCaseDescription: Tests access to required form attributes
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const testSetAttr = Xrm.Page.getAttribute('cat_copilottestsetid')",
+              "const configAttr = Xrm.Page.getAttribute('cat_copilotconfigurationid')",
+              "testSetAttr !== null && configAttr !== null"
+            ]),
+            Expected: "true"
+          })
+
+    - testCaseName: Entity Information Access
+      testCaseDescription: Tests access to entity name and ID
+      testSteps: |
+        = AssertJavaScript({
+            Location: "testrunexecutorservice.js",
+            Setup: "mockXrm.js",
+            Run: Join([
+              "const entityName = Xrm.Page.data.entity.getEntityName()",
+              "entityName === 'cat_copilottestrun'"
+            ]),
+            Expected: "true"
+          })
+
+testSettings:
+  filePath: ./testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
