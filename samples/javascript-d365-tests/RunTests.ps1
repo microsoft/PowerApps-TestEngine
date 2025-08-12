@@ -303,7 +303,7 @@ foreach ($trxFile in $trxFiles) {
     $executed = [int]$counters.executed
     $passed = [int]$counters.passed
     $failed = [int]$counters.failed
-    $error = [int]$counters.error
+    $errorCount = [int]$counters.error
     $timeout = [int]$counters.timeout
     $aborted = [int]$counters.aborted
     $inconclusive = [int]$counters.inconclusive
@@ -322,7 +322,7 @@ foreach ($trxFile in $trxFiles) {
         Executed = $executed
         Passed = $passed
         Failed = $failed
-        Error = $error
+        Error = $errorCount
         Timeout = $timeout
         Aborted = $aborted
         Inconclusive = $inconclusive
