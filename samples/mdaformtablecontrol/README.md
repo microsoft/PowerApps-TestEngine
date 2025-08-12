@@ -32,7 +32,7 @@ This Power Apps Test Engine sample demonstrates how to assert and interact with 
    **Command for Form and Table Controls:**
    ```pwsh
    cd bin\Debug\PowerAppsEngine
-   dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mdaformtablecontrol\formtablecontroltestplan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u browser -p mda -d "https://orgfc708206.crm.dynamics.com/main.aspx?appid=706281e3-b1ed-ef11-be20-7c1e526718b6&pagetype=custom&name=cr693_employeedetails_7f620"
+   dotnet PowerAppsTestEngine.dll -i ..\..\..\samples\mdaformtablecontrol\formtablecontroltestplan.fx.yaml -e 00000000-0000-0000-0000-11112223333 -t 11112222-3333-4444-5555-666677778888 -u browser -provider mda -d "https://orgfc708206.crm.dynamics.com/main.aspx?appid=706281e3-b1ed-ef11-be20-7c1e526718b6&pagetype=custom&name=cr693_employeedetails_7f620"
    ```
 
    **Command for Classic Form and Table Controls:**
