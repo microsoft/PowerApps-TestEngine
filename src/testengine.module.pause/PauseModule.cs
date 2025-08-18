@@ -23,9 +23,8 @@ namespace testengine.module
 
         public void RegisterPowerFxFunction(PowerFxConfig config, ITestInfraFunctions testInfraFunctions, ITestWebProvider testWebProvider, ISingleTestInstanceState singleTestInstanceState, ITestState testState, IFileSystem fileSystem)
         {
-            ILogger logger = singleTestInstanceState.GetLogger();
-            config.AddFunction(new PauseFunction(testInfraFunctions, testState, logger));
-            logger.LogInformation("Registered Pause()");
+            // Function is now registered as a core function in PowerFxEngine
+            // No longer needed here
         }
 
         public async Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)
