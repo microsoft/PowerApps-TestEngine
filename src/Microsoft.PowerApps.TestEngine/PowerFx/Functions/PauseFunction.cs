@@ -1,7 +1,7 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Linq; // ADD THIS LINE - Required for .First() method
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
@@ -25,7 +25,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
         public bool IsPreview => true;
 
         public PauseFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base("Pause", FormulaType.Blank)  // Core function - no namespace needed
+            : base("Pause", FormulaType.Blank)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
