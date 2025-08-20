@@ -102,7 +102,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new AssertNotErrorFunction(Logger));
             powerFxConfig.AddFunction(new SetPropertyFunction(_testWebProvider, Logger));
             powerFxConfig.AddFunction(new IsMatchFunction(Logger));
-            powerFxConfig.AddFunction(new PauseFunction(TestInfraFunctions, TestState, Logger));
 
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {
