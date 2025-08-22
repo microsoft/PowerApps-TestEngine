@@ -102,6 +102,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
             powerFxConfig.AddFunction(new AssertNotErrorFunction(Logger));
             powerFxConfig.AddFunction(new SetPropertyFunction(_testWebProvider, Logger));
             powerFxConfig.AddFunction(new IsMatchFunction(Logger));
+            powerFxConfig.AddFunction(new PauseFunction(TestInfraFunctions, TestState, Logger));
 
             if (settings != null && settings.ExtensionModules != null && settings.ExtensionModules.Enable)
             {
@@ -112,6 +113,11 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 }
                 foreach (var module in modules)
                 {
+                    if (module.GetType().Name.Contains("Pause"))
+                    {
+                        Logger.LogInformation("Skipping pause module as core Pause function is enabled");
+                        continue;
+                    }
                     module.RegisterPowerFxFunction(powerFxConfig, TestInfraFunctions, _testWebProvider, SingleTestInstanceState, TestState, _fileSystem);
                 }
             }
