@@ -21,8 +21,8 @@ testSettings:
       channel: msedge
   extensionModules:
     enable: true
-    parameters:
-      enableCorePause: true  
+    allowPowerFxNamespaces:
+      - Preview
 
 environmentVariables:
   users:

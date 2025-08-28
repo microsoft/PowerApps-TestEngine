@@ -55,8 +55,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
 
         private bool IsPreviewEnabledInOriginalConfig(TestSettings testSettings)
         {
-            return testSettings?.ExtensionModules?.Parameters?.ContainsKey("enableCorePause") == true &&
-                   testSettings.ExtensionModules.Parameters["enableCorePause"]?.ToString().ToLower() == "true";
+            return testSettings?.ExtensionModules?.AllowPowerFxNamespaces?.Contains("Preview") == true;
         }
     }
 }
