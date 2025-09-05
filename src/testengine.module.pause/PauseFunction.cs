@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
-using Microsoft.PowerFx.Core.Utils;
 using Microsoft.PowerFx.Types;
 
 namespace testengine.module
@@ -18,19 +17,28 @@ namespace testengine.module
         private readonly ITestInfraFunctions _testInfraFunctions;
         private readonly ITestState _testState;
         private readonly ILogger _logger;
+        private readonly PauseModule _pauseModule;
 
-        public PauseFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger)
-            : base(DPath.Root.Append(new DName("Preview")), "Pause", FormulaType.Blank)
+        // Register in root (no Preview namespace)
+        public PauseFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger, PauseModule pauseModule = null)
+            : base("Pause", FormulaType.Blank)
         {
             _testInfraFunctions = testInfraFunctions;
             _testState = testState;
             _logger = logger;
+            _pauseModule = pauseModule;
         }
 
         public BlankValue Execute()
         {
-            _logger.LogInformation("------------------------------\n\n" +
-                 "Executing Pause function.");
+            _logger.LogInformation("------------------------------\n\nExecuting Pause function.");
+
+            // Check if PauseModule's IsPreviewNamespaceEnabled property allows execution
+            if (_pauseModule != null && !_pauseModule.IsPreviewNamespaceEnabled)
+            {
+                _logger.LogInformation("Pause function is disabled - Preview namespace not enabled in PauseModule configuration.");
+                return FormulaValue.NewBlank();
+            }
 
             if (!_testState.GetTestSettings().Headless)
             {

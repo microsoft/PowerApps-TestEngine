@@ -334,6 +334,21 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 stream.Position = 0;
                 ModuleDefinition module = ModuleDefinition.ReadModule(stream);
 
+                // Check if PauseModule exists and inspect its IsPreviewNamespaceEnabled property
+                var pauseModule = module.Types.FirstOrDefault(t => t.Name == "PauseModule");
+                if (pauseModule != null)
+                {
+                    // Check if the PauseModule has IsPreviewNamespaceEnabled property
+                    var previewProperty = pauseModule.Properties.FirstOrDefault(p => p.Name == "IsPreviewNamespaceEnabled");
+                    if (previewProperty != null)
+                    {
+                        // If PauseModule has IsPreviewNamespaceEnabled property, enable Preview namespace
+                        // The property's value will be determined at runtime based on YAML settings
+                        settings.AllowPowerFxNamespaces.Add(NAMESPACE_PREVIEW);
+                        Logger?.LogInformation("Auto-enabled Preview namespace due to PauseModule.IsPreviewNamespaceEnabled property.");
+                    }
+                }
+
                 // Get the source code of the assembly as will be used to check Power FX Namespaces
                 var code = DecompileModuleToCSharp(assembly);
 
@@ -382,6 +397,13 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     // Extension Module Check are based on constructor
                     if (type.BaseType != null && type.BaseType.Name == "ReflectionFunction")
                     {
+                        // Special handling for PauseFunction - allow root namespace when PauseModule is present
+                        if (type.Name == "PauseFunction" && pauseModule != null)
+                        {
+                            Logger?.LogInformation($"Allowing PauseFunction in root namespace due to PauseModule presence.");
+                            continue; // Skip namespace validation for PauseFunction
+                        }
+
                         var constructors = type.GetConstructors();
 
                         if (constructors.Count() == 0)
