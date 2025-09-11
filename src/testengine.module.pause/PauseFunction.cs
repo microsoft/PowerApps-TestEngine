@@ -19,7 +19,7 @@ namespace testengine.module
         private readonly ILogger _logger;
         private readonly PauseModule _pauseModule;
 
-        // Register in root (no Preview namespace)
+        // Register in root (no Preview namespace) - always available as Pause()
         public PauseFunction(ITestInfraFunctions testInfraFunctions, ITestState testState, ILogger logger, PauseModule pauseModule = null)
             : base("Pause", FormulaType.Blank)
         {
@@ -33,11 +33,27 @@ namespace testengine.module
         {
             _logger.LogInformation("------------------------------\n\nExecuting Pause function.");
 
-            // Check if PauseModule's IsPreviewNamespaceEnabled property allows execution
-            if (_pauseModule != null && !_pauseModule.IsPreviewNamespaceEnabled)
+            // Determine whether Preview is enabled in YAML via TestSettings
+            var testSettings = _testState?.GetTestSettings();
+            var previewEnabledInYaml = false;
+            if (testSettings?.ExtensionModules?.AllowPowerFxNamespaces != null)
             {
-                _logger.LogInformation("Pause function is disabled - Preview namespace not enabled in PauseModule configuration.");
-                return FormulaValue.NewBlank();
+                previewEnabledInYaml = testSettings.ExtensionModules.AllowPowerFxNamespaces.Contains("Preview");
+            }
+
+            // Require Preview namespace to be enabled in YAML for Pause to proceed
+            // Allow Pause to proceed if either YAML enables Preview or PauseModule reports it is enabled (for tests/compatibility)
+            if (!previewEnabledInYaml && (_pauseModule == null || !_pauseModule.IsPreviewNamespaceEnabled))
+            {
+                var errorMsg = "Pause() requires the Preview namespace to be enabled in YAML (extensionModules.allowPowerFxNamespaces) or PauseModule.IsPreviewNamespaceEnabled must be true. Preview is not enabled.";
+                _logger.LogError(errorMsg);
+                throw new InvalidOperationException(errorMsg);
+            }
+
+            // Log current PauseModule tracking if present
+            if (_pauseModule != null)
+            {
+                _logger.LogInformation($"Preview namespace enabled in configuration: {_pauseModule.IsPreviewNamespaceEnabled}");
             }
 
             if (!_testState.GetTestSettings().Headless)

@@ -68,10 +68,10 @@ namespace testengine.module.browserlocale.tests
             // Act
             module.RegisterPowerFxFunction(TestConfig, MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
 
-            // Assert
+            // Assert - Updated expected message to reflect new logging format
             MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Registered Pause()"),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Registered Pause() function")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
         }
