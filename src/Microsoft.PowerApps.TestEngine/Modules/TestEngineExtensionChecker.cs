@@ -426,60 +426,6 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                             return false;
                         }
                     }
-
-                    if (type.BaseType != null && type.BaseType.Name == "ReflectionAction")
-                    {
-                        var constructors = type.GetConstructors();
-                        if (constructors.Count() == 0)
-                        {
-                            Logger.LogInformation($"No constructor defined for {type.Name}.");
-                            return false;
-                        }
-                        var constructor = constructors.FirstOrDefault(c => c.HasBody);
-                        if (constructor == null || !constructor.HasBody)
-                        {
-                            Logger.LogInformation($"No constructor with body for {type.Name}.");
-                            return false;
-                        }
-                        var baseCall = constructor.Body.Instructions?.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference mr && mr.Name == ".ctor");
-                        if (baseCall == null)
-                        {
-                            Logger.LogInformation($"No base constructor call for {type.Name}.");
-                            return false;
-                        }
-                        var baseCtor = (MethodReference)baseCall.Operand;
-                        if (baseCtor.Parameters?.Count() < 2 || baseCtor.Parameters[0].ParameterType.FullName != "Microsoft.PowerFx.Core.Utils.DPath")
-                        {
-                            Logger.LogInformation($"Invalid constructor signature for {type.Name}.");
-                            return false;
-                        }
-                        var fxNamespace = GetPowerFxNamespace(type.Name, code);
-                        if (string.IsNullOrEmpty(fxNamespace))
-                        {
-                            Logger.LogInformation($"No Power FX Namespace found for {type.Name}.");
-                            return false;
-                        }
-                        var allowList = settings.AllowPowerFxNamespaces.ToList();
-                        if (assemblyHasProvider && !allowList.Contains(NAMESPACE_PREVIEW))
-                        {
-                            allowList.Add(NAMESPACE_PREVIEW);
-                        }
-                        if (settings.DenyPowerFxNamespaces.Contains(fxNamespace))
-                        {
-                            Logger.LogInformation($"Deny Power FX Namespace {fxNamespace} for {type.Name}.");
-                            return false;
-                        }
-                        if (settings.DenyPowerFxNamespaces.Contains("*") && !allowList.Contains(fxNamespace) && fxNamespace != NAMESPACE_TEST_ENGINE)
-                        {
-                            Logger.LogInformation($"Wildcard deny blocks {fxNamespace} for {type.Name}.");
-                            return false;
-                        }
-                        if (!allowList.Contains(fxNamespace) && fxNamespace != NAMESPACE_TEST_ENGINE)
-                        {
-                            Logger.LogInformation($"Namespace {fxNamespace} not allowed for {type.Name}.");
-                            return false;
-                        }
-                    }
                 }
             }
             return isValid;
