@@ -331,22 +331,40 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     t.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName)
                 );
 
-                // Get the source code of the assembly as will be used to check Power FX Namespaces
                 var code = DecompileModuleToCSharp(assembly);
 
                 foreach (TypeDefinition type in module.GetAllTypes())
                 {
-                    // Provider types: pass-through (no namespace validation). Keep existing behavior.
-                    if (type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName)
+                    bool isProviderLike =
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName)
                         || type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Users.IUserManager).FullName)
-                        || type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName))
+                        || type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName);
+
+                    if (isProviderLike)
                     {
+                        if (CheckPropertyArrayContainsValue(type, "Namespaces", out var declaredNamespaces) && declaredNamespaces?.Length > 0)
+                        {
+                            foreach (var ns in declaredNamespaces)
+                            {
+                                // Inline IsNamespaceAllowed logic
+                                var effectiveAllows = settings.AllowPowerFxNamespaces.Where(a => !string.IsNullOrEmpty(a)).ToList();
+                                var effectiveDenies = settings.DenyPowerFxNamespaces.Where(d => !string.IsNullOrEmpty(d)).ToList();
+
+                                bool denied = effectiveDenies.Any(d => Regex.IsMatch(ns, WildcardToRegex(d)));
+                                bool allowed = (effectiveAllows.Count == 0) || effectiveAllows.Any(a => Regex.IsMatch(ns, WildcardToRegex(a))) || ns == NAMESPACE_TEST_ENGINE;
+
+                                if (denied || !allowed)
+                                {
+                                    Logger?.LogInformation($"Namespace {ns} not permitted for provider/user/auth type {type.Name}.");
+                                    return false;
+                                }
+                            }
+                        }
                         continue;
                     }
 
                     if (type.BaseType != null && type.BaseType.Name == "ReflectionFunction")
                     {
-                        // Always allow PauseFunction (legacy behavior). It will register at root.
                         if (type.Name == "PauseFunction")
                         {
                             Logger?.LogInformation("Skipping namespace validation for PauseFunction (explicitly allowed).");
@@ -389,7 +407,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         var allowList = settings.AllowPowerFxNamespaces.ToList();
                         if (assemblyHasProvider && !allowList.Contains(NAMESPACE_PREVIEW))
                         {
-                            allowList.Add(NAMESPACE_PREVIEW); // preserve previous provider behavior
+                            allowList.Add(NAMESPACE_PREVIEW);
                         }
 
                         if (settings.DenyPowerFxNamespaces.Contains(fxNamespace))
@@ -411,7 +429,6 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 
                     if (type.BaseType != null && type.BaseType.Name == "ReflectionAction")
                     {
-                        // Actions now use same namespace validation as functions (AllowActionsInRoot removed).
                         var constructors = type.GetConstructors();
                         if (constructors.Count() == 0)
                         {
