@@ -59,12 +59,6 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         public HashSet<string> DenyPowerFxNamespaces { get; set; } = new HashSet<string>();
 
-
-        // <summary>
-        // List of action class names (or wildcard patterns) that are allowed to be registered in the root namespace
-        // </summary>
-        public HashSet<string> AllowActionsInRoot { get; set; } = new HashSet<string>() { "PauseFunction" };
-
         /// <summary>
         /// Additional optional parameters for extension modules
         /// </summary>
