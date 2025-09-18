@@ -112,7 +112,6 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
                 }
                 foreach (var module in modules)
                 {
-                    // Register all modules including pause module
                     module.RegisterPowerFxFunction(powerFxConfig, TestInfraFunctions, _testWebProvider, SingleTestInstanceState, TestState, _fileSystem);
                 }
             }

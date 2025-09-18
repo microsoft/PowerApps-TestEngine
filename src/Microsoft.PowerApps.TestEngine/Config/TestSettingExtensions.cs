@@ -59,6 +59,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// </summary>
         public HashSet<string> DenyPowerFxNamespaces { get; set; } = new HashSet<string>();
 
+
         /// <summary>
         /// Additional optional parameters for extension modules
         /// </summary>
