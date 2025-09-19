@@ -313,7 +313,16 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         {
             var isValid = true;
 
+#if DEBUG
+            // Add Experimenal namespaces in Debug compile if it has not been added in allow list
+            if (!settings.AllowPowerFxNamespaces.Contains(NAMESPACE_PREVIEW))
+            {
+                settings.AllowPowerFxNamespaces.Add(NAMESPACE_PREVIEW);
+            }
+#endif
+
 #if RELEASE
+            // Add Deprecated namespaces in Release compile if it has not been added in deny list
             if (!settings.DenyPowerFxNamespaces.Contains(NAMESPACE_DEPRECATED))
             {
                 settings.DenyPowerFxNamespaces.Add(NAMESPACE_DEPRECATED);
@@ -325,104 +334,140 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 stream.Position = 0;
                 ModuleDefinition module = ModuleDefinition.ReadModule(stream);
 
-                var assemblyHasProvider = module.GetAllTypes().Any(t =>
+                // Detect if this assembly contains a provider/user/auth implementation
+                bool assemblyHasProvider = module.GetAllTypes().Any(t =>
                     t.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName) ||
                     t.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Users.IUserManager).FullName) ||
-                    t.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName)
-                );
+                    t.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName));
 
+                // Get the source code of the assembly as will be used to check Power FX Namespaces
                 var code = DecompileModuleToCSharp(assembly);
 
                 foreach (TypeDefinition type in module.GetAllTypes())
                 {
-                    bool isProviderLike =
+                    // Provider checks are based on Namespaces string[] property
+                    if (
                         type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName)
-                        || type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Users.IUserManager).FullName)
-                        || type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName);
-
-                    if (isProviderLike)
+                        ||
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Users.IUserManager).FullName)
+                        ||
+                        type.Interfaces.Any(i => i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName)
+                        )
                     {
-                        if (CheckPropertyArrayContainsValue(type, "Namespaces", out var declaredNamespaces) && declaredNamespaces?.Length > 0)
+                        if (CheckPropertyArrayContainsValue(type, "Namespaces", out var values))
                         {
-                            foreach (var ns in declaredNamespaces)
+                            foreach (var name in values)
                             {
-                                // Inline IsNamespaceAllowed logic
-                                var effectiveAllows = settings.AllowPowerFxNamespaces.Where(a => !string.IsNullOrEmpty(a)).ToList();
-                                var effectiveDenies = settings.DenyPowerFxNamespaces.Where(d => !string.IsNullOrEmpty(d)).ToList();
-
-                                bool denied = effectiveDenies.Any(d => Regex.IsMatch(ns, WildcardToRegex(d)));
-                                bool allowed = (effectiveAllows.Count == 0) || effectiveAllows.Any(a => Regex.IsMatch(ns, WildcardToRegex(a))) || ns == NAMESPACE_TEST_ENGINE;
-
-                                if (denied || !allowed)
+                                // Ignore Preview namespace for provider loading if not explicitly allowed to avoid blocking provider registration in Release builds.
+                                if (name == NAMESPACE_PREVIEW && !settings.AllowPowerFxNamespaces.Contains(NAMESPACE_PREVIEW))
                                 {
-                                    Logger?.LogInformation($"Namespace {ns} not permitted for provider/user/auth type {type.Name}.");
+                                    Logger.LogInformation($"Ignoring Preview namespace on provider {type.Name} (not enabled in allow list).");
+                                    continue;
+                                }
+                                // Check against deny list using regular expressions
+                                if (settings.DenyPowerFxNamespaces.Any(pattern => Regex.IsMatch(name, WildcardToRegex(pattern))))
+                                {
+                                    Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
+                                    return false;
+                                }
+
+                                // Check against deny wildcard and allow list using regular expressions
+                                if (settings.DenyPowerFxNamespaces.Any(pattern => pattern == "*") &&
+                                    (!settings.AllowPowerFxNamespaces.Any(pattern => Regex.IsMatch(name, WildcardToRegex(pattern))) &&
+                                     name != NAMESPACE_TEST_ENGINE))
+                                {
+                                    Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
+                                    return false;
+                                }
+
+                                // Check against allow list using regular expressions
+                                if (!settings.AllowPowerFxNamespaces.Any(pattern => Regex.IsMatch(name, WildcardToRegex(pattern))) &&
+                                    name != NAMESPACE_TEST_ENGINE)
+                                {
+                                    Logger.LogInformation($"Not allow Power FX Namespace {name} for {type.Name}");
                                     return false;
                                 }
                             }
                         }
-                        continue;
                     }
 
+                    // Extension Module Check are based on constructor
                     if (type.BaseType != null && type.BaseType.Name == "ReflectionFunction")
                     {
-                        if (type.Name == "PauseFunction")
-                        {
-                            Logger?.LogInformation("Skipping namespace validation for PauseFunction (explicitly allowed).");
-                            continue;
-                        }
-
                         var constructors = type.GetConstructors();
                         if (constructors.Count() == 0)
                         {
-                            Logger.LogInformation($"No constructor defined for {type.Name}.");
+                            Logger.LogInformation($"No constructor defined for {type.Name}. Found {constructors.Count()} expected 1 or more");
                             return false;
                         }
                         var constructor = constructors.FirstOrDefault(c => c.HasBody);
                         if (constructor == null || !constructor.HasBody)
                         {
-                            Logger.LogInformation($"No constructor with body for {type.Name}.");
+                            Logger.LogInformation($"No constructor with a body for {type.Name}");
                             return false;
                         }
-
                         var baseCall = constructor.Body.Instructions?.FirstOrDefault(i => i.OpCode == OpCodes.Call && i.Operand is MethodReference mr && mr.Name == ".ctor");
                         if (baseCall == null)
                         {
-                            Logger.LogInformation($"No base constructor call for {type.Name}.");
+                            Logger.LogInformation($"No base constructor defined for {type.Name}");
                             return false;
                         }
-                        var baseCtor = (MethodReference)baseCall.Operand;
-                        if (baseCtor.Parameters?.Count() < 2 || baseCtor.Parameters[0].ParameterType.FullName != "Microsoft.PowerFx.Core.Utils.DPath")
+                        var baseConstructor = (MethodReference)baseCall.Operand;
+                        if (baseConstructor.Parameters?.Count() < 2)
                         {
-                            Logger.LogInformation($"Invalid constructor signature for {type.Name}.");
-                            return false;
-                        }
-
-                        var fxNamespace = GetPowerFxNamespace(type.Name, code);
-                        if (string.IsNullOrEmpty(fxNamespace))
-                        {
-                            Logger.LogInformation($"No Power FX Namespace found for {type.Name}.");
+                            Logger.LogInformation($"No not enough parameters for {type.Name}");
                             return false;
                         }
 
-                        var allowList = settings.AllowPowerFxNamespaces.ToList();
-                        if (assemblyHasProvider && !allowList.Contains(NAMESPACE_PREVIEW))
+                        string name;
+                        var hasNamespaceParam = baseConstructor.Parameters[0].ParameterType.FullName == "Microsoft.PowerFx.Core.Utils.DPath";
+                        if (hasNamespaceParam)
                         {
-                            allowList.Add(NAMESPACE_PREVIEW);
+                            name = GetPowerFxNamespace(type.Name, code);
+                            if (string.IsNullOrEmpty(name))
+                            {
+                                Logger.LogInformation($"No Power FX Namespace found for {type.Name}");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            // Root/global function (e.g. Pause). Infer via attribute if needed.
+                            bool isPreview = false, isDeprecated = false;
+                            foreach (var ca in type.CustomAttributes)
+                            {
+                                if (ca.AttributeType.FullName == "Microsoft.PowerApps.TestEngine.Modules.TestEngineFunctionAttribute")
+                                {
+                                    foreach (var p in ca.Properties)
+                                    {
+                                        if (p.Name == "IsPreview" && p.Argument.Value is bool pv) isPreview = pv;
+                                        if (p.Name == "IsDeprecated" && p.Argument.Value is bool dp) isDeprecated = dp;
+                                    }
+                                }
+                            }
+                            name = isPreview ? NAMESPACE_PREVIEW : isDeprecated ? NAMESPACE_DEPRECATED : NAMESPACE_TEST_ENGINE;
                         }
 
-                        if (settings.DenyPowerFxNamespaces.Contains(fxNamespace))
+                        // Simple optimization: if this is a provider assembly and Preview not enabled, silently skip Preview functions.
+                        if (assemblyHasProvider && name == NAMESPACE_PREVIEW && !settings.AllowPowerFxNamespaces.Contains(NAMESPACE_PREVIEW))
                         {
-                            Logger.LogInformation($"Deny Power FX Namespace {fxNamespace} for {type.Name}.");
+                            Logger.LogInformation($"Skipping Preview validation for provider function {type.Name} (Preview not enabled).");
+                            continue;
+                        }
+
+                        if (settings.DenyPowerFxNamespaces.Contains(name))
+                        {
+                            Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
                             return false;
                         }
-                        if (settings.DenyPowerFxNamespaces.Contains("*") && !allowList.Contains(fxNamespace) && fxNamespace != NAMESPACE_TEST_ENGINE)
+                        if (settings.DenyPowerFxNamespaces.Contains("*") && !settings.AllowPowerFxNamespaces.Contains(name) && name != NAMESPACE_TEST_ENGINE)
                         {
-                            Logger.LogInformation($"Wildcard deny blocks {fxNamespace} for {type.Name}.");
+                            Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
                             return false;
                         }
-                        if (!allowList.Contains(fxNamespace) && fxNamespace != NAMESPACE_TEST_ENGINE)
+                        if (!settings.AllowPowerFxNamespaces.Contains(name) && name != NAMESPACE_TEST_ENGINE)
                         {
-                            Logger.LogInformation($"Namespace {fxNamespace} not allowed for {type.Name}.");
+                            Logger.LogInformation($"Do not allow Power FX Namespace {name} for {type.Name}");
                             return false;
                         }
                     }
