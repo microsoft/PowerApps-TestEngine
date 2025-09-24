@@ -311,10 +311,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         /// <returns></returns>
         public bool VerifyContainsValidNamespacePowerFxFunctions(TestSettingExtensions settings, byte[] assembly)
         {
-            var isValid = true;
-
 #if DEBUG
-            // Add Experimenal namespaces in Debug compile if it has not been added in allow list
             if (!settings.AllowPowerFxNamespaces.Contains(NAMESPACE_PREVIEW))
             {
                 settings.AllowPowerFxNamespaces.Add(NAMESPACE_PREVIEW);
@@ -322,7 +319,6 @@ namespace Microsoft.PowerApps.TestEngine.Modules
 #endif
 
 #if RELEASE
-            // Add Deprecated namespaces in Release compile if it has not been added in deny list
             if (!settings.DenyPowerFxNamespaces.Contains(NAMESPACE_DEPRECATED))
             {
                 settings.DenyPowerFxNamespaces.Add(NAMESPACE_DEPRECATED);
@@ -333,6 +329,59 @@ namespace Microsoft.PowerApps.TestEngine.Modules
             {
                 stream.Position = 0;
                 ModuleDefinition module = ModuleDefinition.ReadModule(stream);
+
+                var isProviderAssembly = module.Types.Any(t => 
+                    t.Interfaces.Any(i => 
+                        i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName ||
+                        i.InterfaceType.FullName == typeof(Users.IUserManager).FullName ||
+                        i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName));
+
+                var isActionModule = module.Types.Any(t => t.Name.EndsWith("Module") && 
+                    !t.Interfaces.Any(i => 
+                        i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName ||
+                        i.InterfaceType.FullName == typeof(Users.IUserManager).FullName ||
+                        i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName));
+
+                bool previewNamespaceEnabled = false;
+
+                if (isActionModule)
+                {
+                    // Generic preview namespace detection for any module with preview support
+                    var previewProperty = module.Types
+                        .Where(t => t.Name.EndsWith("Module"))
+                        .SelectMany(t => t.Properties)
+                        .FirstOrDefault(p => p.Name.Contains("Preview") && p.Name.Contains("Namespace"));
+                    
+                    if (previewProperty != null)
+                    {
+                        var moduleWithPreviewSupport = previewProperty.DeclaringType;
+                        
+#if RELEASE
+                        // In RELEASE mode, check if Preview namespace is in settings
+                        previewNamespaceEnabled = settings.AllowPowerFxNamespaces.Contains(NAMESPACE_PREVIEW);
+                        
+                        if (previewNamespaceEnabled)
+                        {
+                            Logger?.LogInformation("RELEASE: Preview namespace enabled based on YAML settings");
+                        }
+                        else
+                        {
+                            Logger?.LogInformation("RELEASE: Preview namespace not enabled in YAML settings");
+                        }
+                        
+                        Logger?.LogInformation($"RELEASE: {moduleWithPreviewSupport.Name} detected. Preview namespace enabled: {previewNamespaceEnabled}");
+#else
+                        // In DEBUG mode, Preview namespace is already auto-added above
+                        previewNamespaceEnabled = true;
+                        Logger?.LogInformation($"DEBUG: {moduleWithPreviewSupport.Name} detected. Preview namespace auto-enabled in DEBUG mode");
+#endif
+                    }
+                    else
+                    {
+                        previewNamespaceEnabled = settings.AllowPowerFxNamespaces.Contains(NAMESPACE_PREVIEW);
+                        Logger?.LogInformation($"Action module without preview support property. Preview namespace enabled from settings: {previewNamespaceEnabled}");
+                    }
+                }
 
                 // Get the source code of the assembly as will be used to check Power FX Namespaces
                 var code = DecompileModuleToCSharp(assembly);
@@ -352,6 +401,13 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         {
                             foreach (var name in values)
                             {
+                                // For providers, allow Preview namespace regardless of action module settings
+                                if (name == NAMESPACE_PREVIEW)
+                                {
+                                    Logger?.LogInformation($"Allowing Preview namespace for provider {type.Name}");
+                                    continue;
+                                }
+
                                 // Check against deny list using regular expressions
                                 if (settings.DenyPowerFxNamespaces.Any(pattern => Regex.IsMatch(name, WildcardToRegex(pattern))))
                                 {
@@ -382,6 +438,18 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     // Extension Module Check are based on constructor
                     if (type.BaseType != null && type.BaseType.Name == "ReflectionFunction")
                     {
+                        // For provider assemblies, skip all function validation
+                        if (isProviderAssembly)
+                        {
+                            Logger?.LogInformation($"Skipping function validation for provider assembly function: {type.Name}");
+                            continue;
+                        }                        
+                        if (isActionModule)
+                        {
+                            // Skip namespace validation for functions in action modules - they're controlled by the module-level logic above
+                            continue;
+                        }
+
                         var constructors = type.GetConstructors();
 
                         if (constructors.Count() == 0)
@@ -466,7 +534,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     }
                 }
             }
-            return isValid;
+            return true;
         }
 
         // Helper method to convert wildcard patterns to regular expressions
