@@ -39,6 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         public const string NAMESPACE_DEPRECATED = "Deprecated";
         public const string SELFREFERENCE_NAMESPACE = "<module>";
         private static readonly HashSet<string> AllowedNamespaces = InitializeAllowedNamespaces();
+
         private static HashSet<string> InitializeAllowedNamespaces()
         {
             var allowedNamespaces = new HashSet<string>();
@@ -394,6 +395,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     if (type.BaseType != null && type.BaseType.Name == "ReflectionFunction")
                     {
                         var constructors = type.GetConstructors();
+
                         if (constructors.Count() == 0)
                         {
                             Logger.LogInformation($"No constructor defined for {type.Name}. Found {constructors.Count()} expected 1 or more");
@@ -419,6 +421,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         var baseConstructor = (MethodReference)baseCall.Operand;
                         if (baseConstructor.Parameters?.Count() < 2)
                         {
+                            // Not enough parameters
                             Logger.LogInformation($"No not enough parameters for {type.Name}");
                             return false;
                         }
@@ -466,12 +469,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         }
                         if (settings.DenyPowerFxNamespaces.Contains("*") && !settings.AllowPowerFxNamespaces.Contains(name) && name != NAMESPACE_TEST_ENGINE)
                         {
+                            // Deny wildcard exists only. Could not find match in allow list and name was not reserved name TestEngine
                             Logger.LogInformation($"Deny Power FX Namespace {name} for {type.Name}");
                             return false;
                         }
+
                         if (!settings.AllowPowerFxNamespaces.Contains(name) && name != NAMESPACE_TEST_ENGINE)
                         {
                             Logger.LogInformation($"Do not allow Power FX Namespace {name} for {type.Name}");
+                            // Not in allow list or the Reserved TestEngine namespace
                             return false;
                         }
                     }

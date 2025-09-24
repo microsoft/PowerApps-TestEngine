@@ -41,6 +41,7 @@ namespace testengine.module.browserlocale.tests
         public void PauseExecute()
         {
             // Arrange
+
             var module = new PauseFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
             var settings = new TestSettings() { Headless = false };
             var mockContext = new Mock<IBrowserContext>(MockBehavior.Strict);
@@ -73,6 +74,7 @@ namespace testengine.module.browserlocale.tests
         public void SkipExecute()
         {
             // Arrange
+
             var module = new PauseFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object);
             var settings = new TestSettings() { Headless = true };
             var mockContext = new Mock<IBrowserContext>(MockBehavior.Strict);
