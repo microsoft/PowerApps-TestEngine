@@ -443,7 +443,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         {
                             Logger?.LogInformation($"Skipping function validation for provider assembly function: {type.Name}");
                             continue;
-                        }                        
+                        }
                         if (isActionModule)
                         {
                             // Skip namespace validation for functions in action modules - they're controlled by the module-level logic above
