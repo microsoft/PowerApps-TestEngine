@@ -330,14 +330,14 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                 stream.Position = 0;
                 ModuleDefinition module = ModuleDefinition.ReadModule(stream);
 
-                var isProviderAssembly = module.Types.Any(t => 
-                    t.Interfaces.Any(i => 
+                var isProviderAssembly = module.Types.Any(t =>
+                    t.Interfaces.Any(i =>
                         i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName ||
                         i.InterfaceType.FullName == typeof(Users.IUserManager).FullName ||
                         i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName));
 
-                var isActionModule = module.Types.Any(t => t.Name.EndsWith("Module") && 
-                    !t.Interfaces.Any(i => 
+                var isActionModule = module.Types.Any(t => t.Name.EndsWith("Module") &&
+                    !t.Interfaces.Any(i =>
                         i.InterfaceType.FullName == typeof(Providers.ITestWebProvider).FullName ||
                         i.InterfaceType.FullName == typeof(Users.IUserManager).FullName ||
                         i.InterfaceType.FullName == typeof(Config.IUserCertificateProvider).FullName));
@@ -351,15 +351,15 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         .Where(t => t.Name.EndsWith("Module"))
                         .SelectMany(t => t.Properties)
                         .FirstOrDefault(p => p.Name.Contains("Preview") && p.Name.Contains("Namespace"));
-                    
+
                     if (previewProperty != null)
                     {
                         var moduleWithPreviewSupport = previewProperty.DeclaringType;
-                        
+
 #if RELEASE
                         // In RELEASE mode, check if Preview namespace is in settings
                         previewNamespaceEnabled = settings.AllowPowerFxNamespaces.Contains(NAMESPACE_PREVIEW);
-                        
+
                         if (previewNamespaceEnabled)
                         {
                             Logger?.LogInformation("RELEASE: Preview namespace enabled based on YAML settings");
@@ -368,7 +368,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         {
                             Logger?.LogInformation("RELEASE: Preview namespace not enabled in YAML settings");
                         }
-                        
+
                         Logger?.LogInformation($"RELEASE: {moduleWithPreviewSupport.Name} detected. Preview namespace enabled: {previewNamespaceEnabled}");
 #else
                         // In DEBUG mode, Preview namespace is already auto-added above
