@@ -39,20 +39,6 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         public const string NAMESPACE_DEPRECATED = "Deprecated";
         public const string SELFREFERENCE_NAMESPACE = "<module>";
 
-        private static readonly HashSet<string> AllowedNamespaces = InitializeAllowedNamespaces();
-        private static HashSet<string> InitializeAllowedNamespaces()
-        {
-            var allowedNamespaces = new HashSet<string>();
-            var resourceManager = new ResourceManager(typeof(NamespaceResource));
-            var resourceSet = resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true);
-
-            foreach (DictionaryEntry entry in resourceSet)
-            {
-                allowedNamespaces.Add(entry.Value.ToString());
-            }
-            return allowedNamespaces;
-        }
-
         public TestEngineExtensionChecker()
         {
 
@@ -263,7 +249,14 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         {
             var allowList = new HashSet<string>(settings.AllowNamespaces);
 
-            allowList.UnionWith(AllowedNamespaces);
+            // Instead of using the static AllowedNamespaces HashSet, access the resource data directly
+            // This demonstrates removing the HashSet dependency while maintaining the same functionality
+            var resourceManager = new ResourceManager(typeof(NamespaceResource));
+            var resourceSet = resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true);
+            foreach (DictionaryEntry entry in resourceSet)
+            {
+                allowList.Add(entry.Value.ToString());
+            }
 
             var denyList = new HashSet<string>(settings.DenyNamespaces)
             {
