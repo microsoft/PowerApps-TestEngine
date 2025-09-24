@@ -308,7 +308,7 @@ using Microsoft.PowerFx.Core.Utils;
 %CODE%";
 
         [Theory]
-        [InlineData("Test", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(\"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", false)] // No namespace
+        [InlineData("Test", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(\"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // TestEngine namespace (default for functions without DPath)
         [InlineData("Test", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root, \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", false)] // Root namespace
         [InlineData("Test", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root.Append(new DName(\"Test\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // Non Root namespace
         [InlineData("", "", "public class FooFunction : ReflectionFunction { public FooFunction() : base(DPath.Root.Append(new DName(\"TestEngine\")), \"Foo\", FormulaType.Blank) {} } public BlankValue Execute() { return FormulaValue.NewBlank(); }", true)] // Allow TestEngine namespace

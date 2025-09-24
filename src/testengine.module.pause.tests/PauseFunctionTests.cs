@@ -58,26 +58,15 @@ namespace testengine.module.browserlocale.tests
                It.IsAny<Exception>(),
                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
 
-            // Act & Assert
-            try
-            {
-                module.Execute();
-                // If no exception, verify success log
-                MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString() == "Successfully finished executing Pause function."),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
-            }
-            catch (InvalidOperationException)
-            {
-                // If exception, verify error log and pass test
-                MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Error),
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Pause() requires the Preview namespace")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
-            }
+            // Act
+            module.Execute();
+
+            // Assert - Should execute successfully
+            MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Successfully finished executing Pause function."),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -100,58 +89,13 @@ namespace testengine.module.browserlocale.tests
                It.IsAny<Exception>(),
                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
 
-            // Act & Assert
-            try
-            {
-                module.Execute();
-                MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString() == "Skip Pause function as in headless mode."),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
-            }
-            catch (InvalidOperationException)
-            {
-                // If exception, verify error log and pass test
-                MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Error),
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Pause() requires the Preview namespace")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
-            }
-        }
-
-        [Fact]
-        public void PauseExecuteWithPreviewNamespaceTracking()
-        {
-            // Arrange - Test that Preview namespace tracking works correctly
-            var pauseModuleMock = new Mock<PauseModule>();
-            pauseModuleMock.SetupGet(p => p.IsPreviewNamespaceEnabled).Returns(true);
-            
-            var module = new PauseFunction(MockTestInfraFunctions.Object, MockTestState.Object, MockLogger.Object, pauseModuleMock.Object);
-            var settings = new TestSettings() { Headless = false };
-            var mockContext = new Mock<IBrowserContext>(MockBehavior.Strict);
-            var mockPage = new Mock<IPage>(MockBehavior.Strict);
-
-            MockTestState.Setup(x => x.GetTestSettings()).Returns(settings);
-            MockTestInfraFunctions.Setup(x => x.GetContext()).Returns(mockContext.Object);
-            mockContext.Setup(x => x.Pages).Returns(new List<IPage>() { mockPage.Object });
-            mockPage.Setup(x => x.PauseAsync()).Returns(Task.CompletedTask);
-
-            MockLogger.Setup(x => x.Log(
-               It.IsAny<LogLevel>(),
-               It.IsAny<EventId>(),
-               It.IsAny<It.IsAnyType>(),
-               It.IsAny<Exception>(),
-               (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
-
             // Act
             module.Execute();
 
-            // Assert - Function should still work and log Preview tracking information
+            // Assert - Should skip in headless mode
             MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Preview namespace enabled in configuration: True")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Skip Pause function as in headless mode."),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
         }

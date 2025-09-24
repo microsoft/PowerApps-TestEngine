@@ -44,11 +44,16 @@ namespace testengine.module
 
             ILogger logger = singleTestInstanceState.GetLogger();
 
-            // Register Pause() (root namespace)
-            config.AddFunction(new PauseFunction(testInfraFunctions, testState, logger, this));
-
-            // Log exactly what the unit test expects
-            logger.LogInformation("Registered Pause()");
+            // Only register Pause() function if Preview namespace is enabled
+            if (IsPreviewNamespaceEnabled)
+            {
+                config.AddFunction(new PauseFunction(testInfraFunctions, testState, logger));
+                logger.LogInformation("Registered Pause()");
+            }
+            else
+            {
+                logger.LogInformation("Skip registering Pause() - Preview namespace not enabled");
+            }
         }
 
         public async Task RegisterNetworkRoute(ITestState state, ISingleTestInstanceState singleTestInstanceState, IFileSystem fileSystem, IPage Page, NetworkRequestMock mock)
@@ -58,19 +63,7 @@ namespace testengine.module
 
         private void UpdatePreviewNamespaceProperty(TestSettings settings)
         {
-            if (settings?.ExtensionModules?.AllowPowerFxNamespaces != null)
-            {
-                bool wasEnabled = IsPreviewNamespaceEnabled;
-                IsPreviewNamespaceEnabled = settings.ExtensionModules.AllowPowerFxNamespaces.Contains("Preview");
-                if (wasEnabled != IsPreviewNamespaceEnabled)
-                {
-                    Console.WriteLine($"PauseModule: IsPreviewNamespaceEnabled changed from {wasEnabled} to {IsPreviewNamespaceEnabled}");
-                }
-            }
-            else
-            {
-                IsPreviewNamespaceEnabled = false;
-            }
+            IsPreviewNamespaceEnabled = settings?.ExtensionModules?.AllowPowerFxNamespaces?.Contains("Preview") ?? false;
         }
     }
 }

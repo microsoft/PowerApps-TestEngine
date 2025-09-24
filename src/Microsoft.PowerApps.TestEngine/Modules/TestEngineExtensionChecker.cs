@@ -37,22 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         public const string NAMESPACE_PREVIEW = "Preview";
         public const string NAMESPACE_TEST_ENGINE = "TestEngine";
         public const string NAMESPACE_DEPRECATED = "Deprecated";
-        public const string SELFREFERENCE_NAMESPACE = "<module>";
-
-        // Root/global ReflectionFunctions allowed to omit an explicit DPath namespace
-        private static readonly HashSet<string> AllowedRootFunctions = new HashSet<string>
-        {
-            // Core built-in functions that intentionally live in the root/TestEngine space
-            "PauseFunction",
-            "AssertFunction",
-            "AssertNotErrorFunction",
-            "AssertWithoutMessageFunction",
-            "WaitFunction",
-            "SelectOneParamFunction",
-            "SelectTwoParamsFunction",
-            "SelectThreeParamsFunction"
-        };
-
+        public const string SELFREFERENCE_NAMESPACE = "<module>";            
         private static readonly HashSet<string> AllowedNamespaces = InitializeAllowedNamespaces();
         private static HashSet<string> InitializeAllowedNamespaces()
         {
@@ -451,13 +436,6 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                         }
                         else
                         {
-                            // Reject root/global unless explicitly allowed
-                            if (!AllowedRootFunctions.Contains(type.Name))
-                            {
-                                Logger.LogInformation($"No Power FX Namespace (DPath) specified for {type.Name} and not in allowed root list.");
-                                return false;
-                            }
-
                             // Root/global function (e.g. Pause). Infer via attribute if needed.
                             bool isPreview = false, isDeprecated = false;
                             foreach (var ca in type.CustomAttributes)

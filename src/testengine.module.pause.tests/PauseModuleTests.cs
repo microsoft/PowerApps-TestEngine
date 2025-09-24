@@ -68,7 +68,41 @@ namespace testengine.module.browserlocale.tests
             // Act
             module.RegisterPowerFxFunction(TestConfig, MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
 
-            // Assert
+            // Assert - Should skip registration since Preview is not enabled by default
+            MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Skip registering Pause() - Preview namespace not enabled"),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
+        }
+
+        [Fact]
+        public void RegisterPowerFxFunctionWithPreviewEnabled()
+        {
+            // Arrange
+            var module = new PauseModule();
+            var settings = new TestSettings()
+            {
+                ExtensionModules = new TestSettingExtensions()
+                {
+                    AllowPowerFxNamespaces = new HashSet<string> { "Preview" }
+                }
+            };
+
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(settings);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+
+            MockLogger.Setup(x => x.Log(
+               It.IsAny<LogLevel>(),
+               It.IsAny<EventId>(),
+               It.IsAny<It.IsAnyType>(),
+               It.IsAny<Exception>(),
+               (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
+
+            // Act
+            module.RegisterPowerFxFunction(TestConfig, MockTestInfraFunctions.Object, MockTestWebProvider.Object, MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object);
+
+            // Assert - Should register since Preview is enabled
             MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString() == "Registered Pause()"),
