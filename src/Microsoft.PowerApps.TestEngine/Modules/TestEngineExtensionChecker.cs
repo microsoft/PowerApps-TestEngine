@@ -37,7 +37,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
         public const string NAMESPACE_PREVIEW = "Preview";
         public const string NAMESPACE_TEST_ENGINE = "TestEngine";
         public const string NAMESPACE_DEPRECATED = "Deprecated";
-        public const string SELFREFERENCE_NAMESPACE = "<module>";            
+        public const string SELFREFERENCE_NAMESPACE = "<module>";
         private static readonly HashSet<string> AllowedNamespaces = InitializeAllowedNamespaces();
         private static HashSet<string> InitializeAllowedNamespaces()
         {
