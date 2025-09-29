@@ -42,6 +42,12 @@ Test Engine will search the same folder as the Test Engine executables for the f
 - **[ITestWebProvider](..\..\src\Microsoft.PowerApps.TestEngine\Providers\ITestWebProvider.cs)** allow extensions to build on the authenticated Playwright session to present the object model of the provider to and from the Power Fx test state.
 - **[ITestEngineModule](..\..\src\Microsoft.PowerApps.TestEngine\Modules\ITestEngineModule.cs)** allow extensions to interact with network calls and define Power Fx functions used in a test
 
+### Provider reference guides
+
+- [Model-driven app provider](./ModelDrivenApplicationProvider/README.md)
+- [Power Apps portal provider](./PowerAppsPortal.md)
+- [Dynamics 365 Finance & Operations portal provider](./FnoPortal.md)
+
 ## No Cliffs Extensibility
 
 The MEF extensibility model provides a method of extending the range of scenarios that Test Engine can cover. By implementing the defined MEF interfaces .Net assemblies can be implemented that provide alternative user authentication and web based tests.

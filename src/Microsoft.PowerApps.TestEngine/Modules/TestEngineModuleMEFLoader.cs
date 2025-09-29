@@ -116,7 +116,7 @@ namespace Microsoft.PowerApps.TestEngine.Modules
                     var possibleWebProviderModule = DirectoryGetFiles(location, "testengine.provider.*.dll");
 #if RELEASE
                     //temporarily limiting to a fixed set of providers, move to allow deny list later #410
-                    var allowedProviderManager = new string[] { Path.Combine(location, "testengine.provider.canvas.dll"), Path.Combine(location, "testengine.provider.mda.dll"), Path.Combine(location, "testengine.provider.powerapps.portal.dll"), Path.Combine(location, "testengine.provider.powerfx.dll") };
+                    var allowedProviderManager = new string[] { Path.Combine(location, "testengine.provider.canvas.dll"), Path.Combine(location, "testengine.provider.mda.dll"), Path.Combine(location, "testengine.provider.powerapps.portal.dll"), Path.Combine(location, "testengine.provider.powerfx.dll"), Path.Combine(location, "testengine.provider.fno.portal.dll") };
                     possibleWebProviderModule = possibleWebProviderModule.Where(file => allowedProviderManager.Contains(file)).ToArray();
 #endif
                     foreach (var possibleModule in possibleWebProviderModule)

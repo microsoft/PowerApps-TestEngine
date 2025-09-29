@@ -61,6 +61,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.powerap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.powerapps,portal.tests", "testengine.provider.powerapps.portal.tests\testengine.provider.powerapps,portal.tests.csproj", "{23F04078-3BAB-477B-8E59-50BB590128E1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.fno.portal", "testengine.provider.fno.portal\testengine.provider.fno.portal.csproj", "{01E32C3D-DFD8-41A7-8C35-60BF66A68F8C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.fno.portal.tests", "testengine.provider.fno.portal.tests\testengine.provider.fno.portal.tests.csproj", "{E6A97E7C-49D6-45F1-9672-58503E25350B}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.powerapps.portal", "testengine.module.powerapps.portal\testengine.module.powerapps.portal.csproj", "{82661F2D-122C-4D23-A017-2CE4E82CAFAE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.powerapps.portal.tests", "testengine.module.powerapps.portal.tests\testengine.module.powerapps.portal.tests.csproj", "{D2CAF259-9D4A-4076-95F0-12E69152767F}"
@@ -175,6 +179,14 @@ Global
 		{23F04078-3BAB-477B-8E59-50BB590128E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23F04078-3BAB-477B-8E59-50BB590128E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23F04078-3BAB-477B-8E59-50BB590128E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01E32C3D-DFD8-41A7-8C35-60BF66A68F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01E32C3D-DFD8-41A7-8C35-60BF66A68F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01E32C3D-DFD8-41A7-8C35-60BF66A68F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01E32C3D-DFD8-41A7-8C35-60BF66A68F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6A97E7C-49D6-45F1-9672-58503E25350B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6A97E7C-49D6-45F1-9672-58503E25350B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6A97E7C-49D6-45F1-9672-58503E25350B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6A97E7C-49D6-45F1-9672-58503E25350B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{82661F2D-122C-4D23-A017-2CE4E82CAFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{82661F2D-122C-4D23-A017-2CE4E82CAFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82661F2D-122C-4D23-A017-2CE4E82CAFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -265,6 +277,8 @@ Global
 		{38351C2A-18F7-44AC-84F8-07FC3B49FE85} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
 		{DD06597F-F023-48A9-B971-A43006A39AFA} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
 		{23F04078-3BAB-477B-8E59-50BB590128E1} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
+		{01E32C3D-DFD8-41A7-8C35-60BF66A68F8C} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
+		{E6A97E7C-49D6-45F1-9672-58503E25350B} = {D53FFBF2-F4D0-4139-9FD3-47C8216E4448}
 		{82661F2D-122C-4D23-A017-2CE4E82CAFAE} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 		{D2CAF259-9D4A-4076-95F0-12E69152767F} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
 		{AAAA3EE0-8A3E-443F-ADD6-32477A2297F8} = {ACAB614B-304F-48C0-B8B1-8D95F3A9FBC4}
