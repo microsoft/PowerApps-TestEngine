@@ -59,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.mda.tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.powerapps.portal", "testengine.provider.powerapps.portal\testengine.provider.powerapps.portal.csproj", "{DD06597F-F023-48A9-B971-A43006A39AFA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.powerapps,portal.tests", "testengine.provider.powerapps.portal.tests\testengine.provider.powerapps,portal.tests.csproj", "{23F04078-3BAB-477B-8E59-50BB590128E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.provider.powerapps.portal.tests", "testengine.provider.powerapps.portal.tests\testengine.provider.powerapps.portal.tests.csproj", "{23F04078-3BAB-477B-8E59-50BB590128E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testengine.module.powerapps.portal", "testengine.module.powerapps.portal\testengine.module.powerapps.portal.csproj", "{82661F2D-122C-4D23-A017-2CE4E82CAFAE}"
 EndProject
