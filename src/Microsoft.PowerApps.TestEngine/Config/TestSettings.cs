@@ -67,5 +67,12 @@ namespace Microsoft.PowerApps.TestEngine.Config
         /// Define settings for Test Engine Extensions
         /// </summary>
         public TestSettingExtensions ExtensionModules { get; set; } = new TestSettingExtensions();
+
+        /// <summary>
+        /// Gets or sets whether preview functions are enabled.
+        /// Default is false.
+        /// If set to true, preview functions like Pause() are available for use.
+        /// </summary>
+        public bool Preview { get; set; } = true;
     }
 }
