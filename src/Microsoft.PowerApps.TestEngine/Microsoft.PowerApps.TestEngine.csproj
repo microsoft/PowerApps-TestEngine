@@ -45,7 +45,7 @@
     <PackageReference Include="Microsoft.Data.OData" Version="5.8.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Playwright" Version="1.52.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.55.0" />
     <PackageReference Include="Microsoft.PowerFx.Interpreter" Version="$(PowerFxVersion)" />
     <PackageReference Include="Microsoft.PowerFx.Json" Version="$(PowerFxVersion)" />
     <PackageReference Include="Microsoft.PowerFx.Dataverse.Eval" Version="$(PowerFxVersion)" />
