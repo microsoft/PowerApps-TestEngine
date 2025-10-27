@@ -115,10 +115,22 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
                 staticContext.Args = (staticContext.Args ?? Array.Empty<string>()).Concat(headlessArgs).ToArray();
             }
 
-            var browser = PlaywrightObject[browserConfig.Browser];
+            // Use indexer for valid browser (tests assert this), translate null or ArgumentException to UserInputException
+            IBrowserType browser = null;
+            try
+            {
+                browser = PlaywrightObject[browserConfig.Browser];
+            }
+            catch (ArgumentException)
+            {
+                // Ensure we map any Playwright internal invalid browser exceptions to UserInputException
+                _singleTestInstanceState.GetLogger().LogError(BrowserNotSupportedErrorMessage);
+                throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
+            }
+
             if (browser == null)
             {
-                _singleTestInstanceState.GetLogger().LogError("Browser not supported by Playwright, for more details check https://playwright.dev/dotnet/docs/browsers");
+                _singleTestInstanceState.GetLogger().LogError(BrowserNotSupportedErrorMessage);
                 throw new UserInputException(UserInputException.ErrorMapping.UserInputExceptionInvalidTestSettings.ToString());
             }
 
