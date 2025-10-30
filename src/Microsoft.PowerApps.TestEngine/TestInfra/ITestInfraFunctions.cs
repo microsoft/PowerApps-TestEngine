@@ -107,5 +107,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         /// <param name="filePath">The physical file path for image file</param>
         /// <returns></returns>
         public Task<bool> TriggerControlClickEvent(string controlName, string filePath);
+
+        /// <summary>
+        /// Selects a dropdown option in the user interface.
+        /// </summary>
+        /// <param name="value">The dropdown value to select.</param>
+        /// <returns>True if the dropdown option was successfully selected; otherwise, false.</returns>
+        public Task<bool> SelectDropdownOptionAsync(string value);
     }
 }
