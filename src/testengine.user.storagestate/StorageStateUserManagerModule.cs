@@ -237,31 +237,158 @@ namespace testengine.user.storagestate
                         var present = context.Pages.First(p => p == matchPage);
                         if (present != null)
                         {
+                            logger.LogDebug($"Redirecting to desired URL: {desiredUrl}");
                             var resp = await present.GotoAsync(desiredUrl);
                             if (resp?.Ok == true)
                             {
+                                logger.LogDebug($"Successfully navigated to desired URL, waiting for NetworkIdle");
                                 await present.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                                logger.LogDebug($"NetworkIdle state reached");
+                            }
+                            else
+                            {
+                                logger.LogWarning($"Navigation to {desiredUrl} returned status: {resp?.Status}");
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        logger.LogError(ex, $"Error during redirect to desired URL: {desiredUrl}");
                     }
                 },
                 Module = this
             };
 
-            logger.LogDebug($"Waiting for {timeout} milliseconds for desired url");
+            // Create a custom PowerPlatformLogin with FnO-compatible idle check
+            var loginHelper = new PowerPlatformLogin();
+            
+            // Override the LoginIsComplete check for FnO portals
+            // FnO doesn't have O365_MainLink_NavMenu, so check for document ready state and common FnO elements
+            loginHelper.LoginIsComplete = async (page) =>
+            {
+                try
+                {
+                    // Check if page is fully loaded
+                    var readyState = await page.EvaluateAsync<string>("document.readyState");
+                    logger.LogTrace($"Document ready state: {readyState}");
+                    
+                    if (readyState != "complete")
+                    {
+                        return false;
+                    }
+                    
+                    // For FnO portals, check if we're on the actual portal (not login page)
+                    var url = page.Url.ToLowerInvariant();
+                    
+                    // If we're still on Microsoft login pages, not ready
+                    if (url.Contains("login.microsoftonline.com") || 
+                        url.Contains("login.microsoft.com") ||
+                        url.Contains("login.live.com"))
+                    {
+                        logger.LogTrace($"Still on login page: {url}");
+                        return false;
+                    }
+                    
+                    // Check for common FnO portal elements or lack of login elements
+                    var hasFnOElements = await page.EvaluateAsync<bool>(@"
+                        () => {
+                            // Check if we have FnO specific elements or at least not login elements
+                            var hasLoginEmail = document.querySelector('input[type=""email""]') !== null;
+                            var hasLoginPassword = document.querySelector('input[type=""password""]') !== null;
+                            var hasSubmitButton = document.querySelector('input[type=""submit""]') !== null;
+                            
+                            // If we have login elements, we're not ready
+                            if (hasLoginEmail || hasLoginPassword || hasSubmitButton) {
+                                return false;
+                            }
+                            
+                            // Otherwise, assume we're on the portal
+                            return true;
+                        }
+                    ");
+                    
+                    logger.LogTrace($"FnO elements check passed: {hasFnOElements}");
+                    return hasFnOElements;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogDebug(ex, "Error during idle check");
+                    return false;
+                }
+            };
+
+            logger.LogDebug($"Waiting for {timeout} milliseconds for desired url: {desiredUrl}");
+            
+            // Parse the desired URL to get base URL for flexible matching
+            Uri desiredUri;
+            string desiredBaseUrl = desiredUrl;
+            string desiredHost = "";
+            try
+            {
+                desiredUri = new Uri(desiredUrl);
+                desiredHost = desiredUri.Host;
+                desiredBaseUrl = $"{desiredUri.Scheme}://{desiredUri.Host}{desiredUri.AbsolutePath}".TrimEnd('/');
+                logger.LogDebug($"Parsed desired URL - Host: {desiredHost}, Base URL: {desiredBaseUrl}");
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, $"Could not parse desired URL: {desiredUrl}");
+            }
+            
             while (DateTime.Now.Subtract(started).TotalMilliseconds < timeout && !state.FoundMatch && !state.IsError)
             {
                 try
                 {
                     foreach (var page in context.Pages)
                     {
-                        var loginHelper = new PowerPlatformLogin();
-                        state.Page = page;
-
-                        await loginHelper.HandleCommonLoginState(state);
+                        var currentUrl = page.Url;
+                        
+                        // Log current page URL to help diagnose matching issues
+                        logger.LogDebug($"Checking page: {currentUrl}");
+                        
+                        // Try flexible URL matching: compare hosts and paths without query parameters
+                        try
+                        {
+                            var currentUri = new Uri(currentUrl.Replace(".mcas.ms", ""));
+                            var currentHost = currentUri.Host;
+                            var currentBaseUrl = $"{currentUri.Scheme}://{currentUri.Host}{currentUri.AbsolutePath}".TrimEnd('/');
+                            
+                            logger.LogTrace($"Current URL - Host: {currentHost}, Base URL: {currentBaseUrl}");
+                            
+                            // Check if we're on the right domain and path (ignore query parameters)
+                            if (currentHost.Equals(desiredHost, StringComparison.OrdinalIgnoreCase) &&
+                                await loginHelper.LoginIsComplete(page))
+                            {
+                                logger.LogInformation($"Found matching host and page is idle");
+                                
+                                if (!state.FoundMatch)
+                                {
+                                    if (state.CallbackDesiredUrlFound != null && !state.CallbackDesired)
+                                    {
+                                        await state.CallbackDesiredUrlFound(currentUrl);
+                                        state.CallbackDesired = true;
+                                    }
+                                    
+                                    state.FoundMatch = true;
+                                    state.MatchHost = currentHost;
+                                    logger.LogInformation($"Successfully matched desired URL on host: {state.MatchHost}");
+                                }
+                            }
+                        }
+                        catch (Exception urlEx)
+                        {
+                            logger.LogTrace(urlEx, $"Could not parse URL for flexible matching: {currentUrl}");
+                        }
+                        
+                        // Fall back to original HandleCommonLoginState logic
+                        if (!state.FoundMatch)
+                        {
+                            state.Page = page;
+                            await loginHelper.HandleCommonLoginState(state);
+                        }
+                        
+                        // Log state after handling
+                        logger.LogDebug($"After processing page - FoundMatch: {state.FoundMatch}, IsError: {state.IsError}, MatchHost: {state.MatchHost}");
                     }
                 }
                 catch (Exception ex)
@@ -269,14 +396,15 @@ namespace testengine.user.storagestate
                     logger.LogError(ex, "Error waiting for login");
                 }
 
-                if (!state.FoundMatch || !state.IsError)
+                if (!state.FoundMatch && !state.IsError)
                 {
-                    logger.LogDebug($"Desired page not found, waiting {DateTime.Now.Subtract(started).TotalSeconds}");
+                    logger.LogDebug($"Desired page not found, elapsed time: {DateTime.Now.Subtract(started).TotalSeconds:F1} seconds");
                     System.Threading.Thread.Sleep(1000);
                 }
                 else
                 {
-                    logger.LogInformation($"Test page found");
+                    logger.LogInformation($"Test page found after {DateTime.Now.Subtract(started).TotalSeconds:F1} seconds");
+                    break;
                 }
             }
 

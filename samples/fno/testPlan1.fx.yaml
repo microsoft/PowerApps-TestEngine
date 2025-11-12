@@ -1,0 +1,29 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: F&O Basic Control Test
+  testSuiteDescription: Basic F&O navigation and control interaction test
+  persona: User1
+  appLogicalName: fno-portal
+
+  testCases:
+    - testCaseName: Basic Navigation Test
+      testCaseDescription: Test basic F&O navigation and page load
+      testSteps: |
+        = Assert(true, "F&O application loaded successfully")
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  timeout: 600000
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user2Email
+      passwordKey: NotNeeded  
