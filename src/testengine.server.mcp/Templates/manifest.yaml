@@ -1,0 +1,59 @@
+template:
+  AIBuilderPrompt:
+    Resource: AIBuilderPrompt.md
+    Description: "Provides a template for MCP Client to allow generation of Automation test, configuration and documentation for specific AI Builder model"
+    Action: "PromptTemplate"
+    PromptResult: "Automated test plan and code for AI Builder model"
+    NextSteps:
+      - "Follow the steps of the template to generate tests for your AI Builder model from the `AIBuilderQuery` template"
+      - "Review the generated test plan and code for your AI Builder model"
+      - "Customize test scenarios based on your specific model requirements"
+      - "Implement the test code in your environment and execute tests"
+      - "Analyze test results and make necessary adjustments to your AI Builder model"
+    DetailedGuide: "This template helps you create comprehensive test plans for specific AI Builder models. After providing the model name and details, it will generate tests that validate your AI model's predictions, performance under various conditions, and error handling capabilities. The tests will follow best practices for AI validation including various input scenarios and edge cases."
+  AIBuilderQuery:
+    Resource: AIBuilderQuery.md
+    Description: "Provides a PowerShell template to directly query AI Builder models using the msdyn_aimodels entity filtered by solution ID"
+    Action: "PromptTemplate"
+    PromptResult: "List of AI Builder models and their details"
+    NextSteps:
+      - "Review the list of AI Builder models returned by the query"
+      - "Select a specific AI model you want to test or analyze"
+      - "Use the AIBuilderPrompt template with your selected model for test generation"
+      - "Create a quick sumamry of the script"
+      - "Prompt the user to create script file"
+      - "Review the script file for any missing information. Use CLI tools like `pac env list` to help "
+    DetailedGuide: "This template helps you discover and analyze all AI Builder models in your solution. After running this query, you'll see a list of models with their details, which you can then use with the AIBuilderPrompt template to generate specific tests for your chosen model."
+  JavaScriptWebResource:
+    Resource: JavaScriptWebResource.md
+    Description: "Provides a template for MCP Client to allow generation of Automation test, configuration and documentation for specific JavaScript WebResource"
+    Action: "PromptTemplate"
+    PromptResult: "Automated test plan and code for JavaScript WebResource"
+    NextSteps:
+      - "Review the generated JavaScript WebResource test code and plan"
+      - "Set up the test environment with required dependencies"
+      - "Execute tests and verify WebResource functionality"
+      - "Integrate tests into your CI/CD pipeline for continuous validation"
+    DetailedGuide: "This template analyzes your JavaScript WebResource and generates comprehensive tests to validate its behavior. The tests cover function calls, event handling, DOM interactions, and error conditions. After generating the tests, you can execute them against your WebResource to ensure it works as expected across different browsers and scenarios."
+  ModelDrivenApplication:
+    Resource: ModelDrivenApplication.md
+    Description: "Provides a template for MCP Client to allow generation of Automation test, configuration and documentation for specific Model Driven Application"
+    Action: "PromptTemplate"
+    PromptResult: "Automated test plan and code for Model Driven Application"
+    NextSteps:
+      - "Review the generated Model-Driven App test scenarios and code"
+      - "Configure test environments with appropriate access permissions"
+      - "Execute tests to validate form behavior, business rules, and workflows"
+      - "Analyze test results and update your Model-Driven App as needed"
+    DetailedGuide: "This template helps you create end-to-end tests for your Model-Driven Apps. It analyzes your app's components including forms, views, business rules, and workflows to generate comprehensive test scenarios. The tests validate user interactions, data operations, navigation flows, and business logic implementation to ensure your app works as expected across different scenarios and user roles."
+  Variables:
+    Resource: Variables.yaml
+    Description: "Provides a template for environment variables and locations to read sample templates to allow for generation of Automated tests"
+    Action: "VariableDefinitions"
+    PromptResult: "Environment variable values for template execution"
+    NextSteps:
+      - "Review the provided environment variables and ensure they match your environment"
+      - "Modify any variables as needed to align with your test environment configuration"
+      - "Use these variables in combination with other templates for test generation"
+      - "Keep these environment variables updated as your environment changes"
+    DetailedGuide: "This template defines the environment variables required for test execution across different templates. It provides standardized values for connection strings, authentication details, environment URLs, and other configuration settings. These variables are used by other templates to ensure consistent test execution across different environments. Before using other templates, make sure these variables accurately reflect your Power Platform environment."

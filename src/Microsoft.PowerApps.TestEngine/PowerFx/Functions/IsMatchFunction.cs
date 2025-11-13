@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Text.RegularExpressions;
-using ICSharpCode.Decompiler.CSharp.Syntax.PatternMatching;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerFx;
 using Microsoft.PowerFx.Types;
@@ -17,7 +16,7 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx.Functions
     {
         private readonly ILogger _logger;
 
-        public IsMatchFunction(ILogger logger) : base("IsMatch", FormulaType.Number, FormulaType.String, FormulaType.String)
+        public IsMatchFunction(ILogger logger) : base("IsMatch", FormulaType.Boolean, FormulaType.String, FormulaType.String)
         {
             _logger = logger;
         }
