@@ -2,7 +2,7 @@
   "profiles": {
     "PowerAppsTestEngine": {
       "commandName": "Project",
-      "commandLineArgs": "-i ..\\..\\..\\samples\\mda\\testPlan.fx.yaml -e a1234567-1111-2222-3333-444444444444 -t b1234567-1111-2222-3333-444444444444 --provider mda -d \"https://contso.crm.dynamics.com/main.aspx?appid=d5c0321b-a2b7-4207-889f-f0af833f2309&pagetype=custom&name=sample_custom_cf8e6\""
+      "commandLineArgs": "  -i ..\\..\\..\\samples\\mdaclassicinputcontrols\\ClassicInputControls_testPlan.fx.yaml -e fd1a868e-5b14-ef06-b342-3568544a24d9 -t 72f988bf-86f1-41af-91ab-2d7cd011db47 -u storagestate -p mda -c true -d  \"https://org5dd0482b.crm8.dynamics.com/main.aspx?appid=af00782e-127f-4e12-8a19-5c2e257eda3e&pagetype=custom&name=cr693_calssicinputcontrolspage_2bb1e\""
     }
   }
 }
