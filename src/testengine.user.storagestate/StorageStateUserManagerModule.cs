@@ -220,15 +220,43 @@ namespace testengine.user.storagestate
                 CallbackErrorFound = async () =>
                 {
                     var stateFile = Path.Combine(Location, "state.json");
-                    await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = stateFile });
-                    Protect(fileSystem, stateFile);
+                    try
+                    {
+                        await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = stateFile });
+                        Protect(fileSystem, stateFile);
+                        logger.LogInformation("Storage state saved saved successfully");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Failed to save storage state after error");
+                        // Ensure cleanup happens even if storage state save fails
+                        if (fileSystem.FileExists(stateFile))
+                        {
+                            fileSystem.Delete(stateFile);
+                            logger.LogDebug($"Deleted unprotected state file: {stateFile}");
+                        }
+                    }
                 },
                 CallbackDesiredUrlFound = async (match) =>
                 {
-
                     var stateFile = Path.Combine(Location, "state.json");
-                    await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = stateFile });
-                    Protect(fileSystem, stateFile);
+                    try
+                    {
+                        await context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = stateFile });
+                        Protect(fileSystem, stateFile);
+                        logger.LogInformation("Storage state saved successfully");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Failed to save storage state after successful login");
+                        // Ensure cleanup happens even if storage state save fails
+                        if (fileSystem.FileExists(stateFile))
+                        {
+                            fileSystem.Delete(stateFile);
+                            logger.LogDebug($"Deleted unprotected state file: {stateFile}");
+                        }
+                        throw;
+                    }
                 },
                 CallbackRedirectRequiredFound = !UseStaticContext ? null : async (matchPage) =>
                 {
@@ -244,8 +272,9 @@ namespace testengine.user.storagestate
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        logger.LogWarning(ex, "Failed to redirect to desired URL");
                     }
                 },
                 Module = this
@@ -269,7 +298,7 @@ namespace testengine.user.storagestate
                     logger.LogError(ex, "Error waiting for login");
                 }
 
-                if (!state.FoundMatch || !state.IsError)
+                if (!state.FoundMatch && !state.IsError)
                 {
                     logger.LogDebug($"Desired page not found, waiting {DateTime.Now.Subtract(started).TotalSeconds}");
                     System.Threading.Thread.Sleep(1000);
