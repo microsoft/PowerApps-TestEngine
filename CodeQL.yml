@@ -1,0 +1,6 @@
+# https://eng.ms/docs/coreai/devdiv/one-engineering-system-1es/1es-docs/codeql/github-codeql
+path_classifiers:
+  library:
+    # Exclude external Playwright files from scan to avoid false positives as these files include non-security uses of SHA1 for non-cryptosecure guids
+    - "**/.playwright/package/lib/vite/traceViewer/assets/defaultSettingsView-DkkRvn5X.js"
+    - "**/.playwright/package/lib/utilsBundleImpl/index.js"
