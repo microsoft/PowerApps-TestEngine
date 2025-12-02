@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -13,7 +13,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
         public AppStructure AnalyzeMsApp(string msappFilePath)
         {
             var tempExtractPath = Path.Combine(Path.GetTempPath(), $"msapp_{Guid.NewGuid()}");
-            
+
             try
             {
                 Console.WriteLine($"DEBUG: Extracting msapp to: {tempExtractPath}");
@@ -36,7 +36,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                     Console.WriteLine("DEBUG: Found Src folder - parsing YAML files");
                     ParseSrcFolder(srcPath, appStructure);
                 }
-                
+
                 // If no controls found, try CanvasManifest + Controls folder
                 if (appStructure.Screens.Sum(s => s.Controls.Count) == 0)
                 {
@@ -98,7 +98,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                         {
                             var name = screenName.GetString();
                             Console.WriteLine($"DEBUG: Processing screen: {name}");
-                            
+
                             var screenInfo = new ScreenInfo
                             {
                                 Name = name,
@@ -118,7 +118,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
         private void ParseControlsFolder(string extractPath, AppStructure appStructure)
         {
             var controlsPath = Path.Combine(extractPath, "Controls");
-            
+
             if (!Directory.Exists(controlsPath))
             {
                 Console.WriteLine("DEBUG: Controls folder not found");
@@ -126,7 +126,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
             }
 
             Console.WriteLine($"DEBUG: Parsing Controls folder");
-            
+
             // Get all JSON files in Controls folder
             var jsonFiles = Directory.GetFiles(controlsPath, "*.json", SearchOption.AllDirectories);
             Console.WriteLine($"DEBUG: Found {jsonFiles.Length} control definition files");
@@ -135,11 +135,11 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
             {
                 var screenName = Path.GetFileNameWithoutExtension(jsonFile).Replace(".json", "");
                 Console.WriteLine($"DEBUG: Parsing controls for: {screenName}");
-                
+
                 // Find the corresponding screen
-                var screen = appStructure.Screens.FirstOrDefault(s => 
+                var screen = appStructure.Screens.FirstOrDefault(s =>
                     s.Name.Equals(screenName, StringComparison.OrdinalIgnoreCase));
-                
+
                 if (screen == null)
                 {
                     // Create screen if not found
@@ -153,7 +153,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
 
                 // Parse the JSON to extract controls
                 ParseControlJson(jsonFile, screen.Controls);
-                
+
                 Console.WriteLine($"DEBUG:   Found {screen.Controls.Count} controls in {screenName}");
             }
         }
@@ -164,7 +164,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
             {
                 var json = File.ReadAllText(jsonFilePath);
                 var doc = JsonDocument.Parse(json);
-                
+
                 // Parse the root element
                 ParseJsonControl(doc.RootElement, controls);
             }
@@ -223,7 +223,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
             }
 
             // Look for .fx.yaml, .pa.yaml, or .yaml files
-            var yamlFiles = allFiles.Where(f => 
+            var yamlFiles = allFiles.Where(f =>
                 f.EndsWith(".fx.yaml", StringComparison.OrdinalIgnoreCase) ||
                 f.EndsWith(".pa.yaml", StringComparison.OrdinalIgnoreCase) ||
                 f.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
@@ -234,7 +234,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
             foreach (var yamlFile in yamlFiles)
             {
                 var fileName = Path.GetFileNameWithoutExtension(yamlFile);
-                
+
                 // Skip App files
                 if (fileName.Equals("App", StringComparison.OrdinalIgnoreCase) ||
                     fileName.StartsWith("App.", StringComparison.OrdinalIgnoreCase))
@@ -260,9 +260,9 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                 var content = File.ReadAllText(filePath);
                 var fileName = Path.GetFileNameWithoutExtension(filePath);
                 fileName = fileName.Replace(".fx", "").Replace(".pa", "");
-                
+
                 Console.WriteLine($"DEBUG: ========== Parsing {fileName} ==========");
-                
+
                 var screenInfo = new ScreenInfo
                 {
                     Name = fileName,
@@ -270,14 +270,14 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                 };
 
                 var lines = content.Split(new[] { '\r', '\n' }, StringSplitOptions.None);
-                
+
                 // Parse the new YAML format where controls are under Children
                 bool inChildrenSection = false;
-                
+
                 for (int i = 0; i < lines.Length; i++)
                 {
                     var line = lines[i];
-                    
+
                     // Check if we're entering Children section
                     if (line.Trim() == "Children:")
                     {
@@ -285,7 +285,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                         Console.WriteLine($"DEBUG: Found Children section at line {i}");
                         continue;
                     }
-                    
+
                     // If we're in Children section, look for control definitions
                     if (inChildrenSection)
                     {
@@ -294,7 +294,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                         if (match.Success)
                         {
                             var controlName = match.Groups[1].Value;
-                            
+
                             // Look ahead for Control type in next lines
                             string controlType = "Unknown";
                             for (int j = i + 1; j < Math.Min(i + 5, lines.Length); j++)
@@ -319,9 +319,9 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                                     break;
                                 }
                             }
-                            
+
                             Console.WriteLine($"DEBUG:   [FOUND] Control: {controlName} | Type: {controlType}");
-                            
+
                             screenInfo.Controls.Add(new ControlInfo
                             {
                                 Name = controlName,
@@ -329,7 +329,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                                 Properties = new Dictionary<string, string>()
                             });
                         }
-                        
+
                         // Exit Children section if indentation decreases significantly
                         if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("  "))
                         {
@@ -346,7 +346,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
                     Console.WriteLine($"DEBUG:   - {ctrl.Name} ({ctrl.Type})");
                 }
                 Console.WriteLine($"DEBUG: ==========================================");
-                
+
                 return screenInfo;
             }
             catch (Exception ex)

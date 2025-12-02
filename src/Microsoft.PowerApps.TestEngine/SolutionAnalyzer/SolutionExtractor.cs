@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
 
             if (Directory.Exists(extractionPath))
                 Directory.Delete(extractionPath, true);
-                
+
             Directory.CreateDirectory(extractionPath);
             ZipFile.ExtractToDirectory(solutionZipPath, extractionPath);
 
@@ -25,12 +25,12 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
         public string FindMsAppFile(string extractedSolutionPath)
         {
             var canvasAppsPath = Path.Combine(extractedSolutionPath, "CanvasApps");
-            
+
             if (!Directory.Exists(canvasAppsPath))
                 throw new DirectoryNotFoundException("CanvasApps folder not found in solution");
 
             var msappFiles = Directory.GetFiles(canvasAppsPath, "*.msapp", SearchOption.AllDirectories);
-            
+
             if (msappFiles.Length == 0)
                 throw new FileNotFoundException("No .msapp files found in solution");
 
@@ -40,7 +40,7 @@ namespace Microsoft.PowerApps.TestEngine.SolutionAnalyzer
         public string GetAppLogicalName(string extractedSolutionPath, string msappFileName)
         {
             var customizationsPath = Path.Combine(extractedSolutionPath, "customizations.xml");
-            
+
             if (!File.Exists(customizationsPath))
                 return Path.GetFileNameWithoutExtension(msappFileName);
 

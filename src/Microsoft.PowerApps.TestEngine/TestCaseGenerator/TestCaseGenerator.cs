@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
         public string GenerateTestPlan(AppStructure appStructure, string appLogicalName, string environmentId, string tenantId)
         {
             var sb = new StringBuilder();
-            
+
             // Test Suite
             sb.AppendLine("testSuite:");
             sb.AppendLine($"  testSuiteName: {appStructure.AppName} Complete Tests");
@@ -39,7 +39,7 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
             sb.AppendLine("    - browser: Chromium");
             sb.AppendLine("      channel: msedge");
             sb.AppendLine();
-            
+
             // Environment Variables
             sb.AppendLine("environmentVariables:");
             sb.AppendLine("  users:");
@@ -55,9 +55,9 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
             foreach (var control in screen.Controls)
             {
                 var controlType = control.Type.ToLower();
-                
+
                 sb.AppendLine($"    # {control.Name} Test Cases");
-                
+
                 if (controlType.Contains("label"))
                 {
                     GenerateComprehensiveLabelTestCases(sb, control, screen.Name);
