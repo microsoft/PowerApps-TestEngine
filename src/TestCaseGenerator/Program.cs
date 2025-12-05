@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using Microsoft.PowerApps.TestEngine.SolutionAnalyzer;
 using Microsoft.PowerApps.TestEngine.TestCaseGenerator;
@@ -108,7 +108,6 @@ namespace TestCaseGeneratorTool
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("✓");
             Console.ResetColor();
-            
             Console.WriteLine($"      Screens found: {appStructure.Screens.Count}");
             int totalControls = 0;
             foreach (var screen in appStructure.Screens)
@@ -171,13 +170,14 @@ namespace TestCaseGeneratorTool
                 foreach (var control in screen.Controls)
                 {
                     var type = control.Type.ToLower();
-                    if (type.Contains("label")) count += 5;
-                    else if (type.Contains("textinput")) count += 5;
+                    if (type.Contains("label")) count += 8;
+                    else if (type.Contains("richtexteditor") || type.Contains("richtext")) count += 8;
+                    else if (type.Contains("textinput") || type.Contains("textbox")) count += 8;
                     else if (type.Contains("button")) count += 2;
-                    else if (type.Contains("checkbox")) count += 2;
-                    else if (type.Contains("combobox") || type.Contains("dropdown")) count += 1;
+                    else if (type.Contains("checkbox")) count += 1;
+                    else if (type.Contains("combobox") || type.Contains("dropdown")) count += 11;
                     else if (type.Contains("datepicker")) count += 1;
-                    else if (type.Contains("radio")) count += 3;
+                    else if (type.Contains("radio")) count += 1;
                     else if (type.Contains("slider")) count += 1;
                     else if (type.Contains("toggle")) count += 1;
                     else if (type.Contains("gallery")) count += 1;

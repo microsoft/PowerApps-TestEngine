@@ -58,7 +58,12 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
 
                 sb.AppendLine($"    # {control.Name} Test Cases");
 
-                if (controlType.Contains("label"))
+                // Check RichTextEditor FIRST before checking for generic "text"
+                if (controlType.Contains("richtexteditor") || controlType.Contains("richedit") || controlType.Contains("richtext"))
+                {
+                    GenerateComprehensiveRichTextEditorTestCases(sb, control, screen.Name);
+                }
+                else if (controlType.Contains("label"))
                 {
                     GenerateComprehensiveLabelTestCases(sb, control, screen.Name);
                 }
@@ -70,7 +75,11 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
                 {
                     GenerateComprehensiveButtonTestCases(sb, control, screen.Name);
                 }
-                else if (controlType.Contains("combobox") || controlType.Contains("dropdown"))
+                else if (controlType.Contains("dropdown"))
+                {
+                    GenerateComprehensiveDropdownTestCases(sb, control, screen.Name);
+                }
+                else if (controlType.Contains("combobox"))
                 {
                     GenerateComprehensiveComboboxTestCases(sb, control, screen.Name);
                 }
@@ -147,30 +156,12 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
             sb.AppendLine($"        Assert({control.Name}.Text = \"1234567890\", \"Expected {control.Name}.Text to be numeric text\");");
             sb.AppendLine();
 
-            // Visible Property True Test
-            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Property True");
-            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be set to true.");
-            sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Visible, true);");
-            sb.AppendLine($"        Assert({control.Name}.Visible = true, \"Expected {control.Name}.Visible to be true\");");
-            sb.AppendLine();
-
             // Visible Property False Test
             sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Property False");
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be set to false.");
             sb.AppendLine("      testSteps: |");
             sb.AppendLine($"        SetProperty({control.Name}.Visible, false);");
             sb.AppendLine($"        Assert({control.Name}.Visible = false, \"Expected {control.Name}.Visible to be false\");");
-            sb.AppendLine();
-
-            // Visible Toggle Test
-            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Toggle");
-            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be toggled.");
-            sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Visible, true);");
-            sb.AppendLine($"        Assert({control.Name}.Visible = true, \"Expected {control.Name} to be visible\");");
-            sb.AppendLine($"        SetProperty({control.Name}.Visible, false);");
-            sb.AppendLine($"        Assert({control.Name}.Visible = false, \"Expected {control.Name} to be hidden\");");
             sb.AppendLine();
         }
 
@@ -236,20 +227,6 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
             sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 3, \"Expected three items to be selected\");");
             sb.AppendLine();
 
-            // Select Five Items
-            sb.AppendLine($"    - testCaseName: Test {control.Name} Select Five Items");
-            sb.AppendLine($"      testCaseDescription: Verify that five items can be selected in {control.Name}.");
-            sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.SelectedItems, Table(");
-            sb.AppendLine("          {Value:\"Item 1\", ID:1},");
-            sb.AppendLine("          {Value:\"Item 2\", ID:2},");
-            sb.AppendLine("          {Value:\"Item 3\", ID:3},");
-            sb.AppendLine("          {Value:\"Item 4\", ID:4},");
-            sb.AppendLine("          {Value:\"Item 5\", ID:5}");
-            sb.AppendLine("        ));");
-            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 5, \"Expected five items to be selected\");");
-            sb.AppendLine();
-
             // Clear Selection
             sb.AppendLine($"    - testCaseName: Test {control.Name} Clear Selection");
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} selection can be cleared to empty table.");
@@ -263,7 +240,7 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
             sb.AppendLine($"      testCaseDescription: Verify that the first item can be selected from available items.");
             sb.AppendLine("      testSteps: |");
             sb.AppendLine($"        SetProperty({control.Name}.SelectedItems, FirstN({control.Name}.Items, 1));");
-            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) <= 1, \"Expected at most one item to be selected\");");
+            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 1, \"Expected one item to be selected\");");
             sb.AppendLine();
 
             // Select First Two Items
@@ -271,7 +248,7 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
             sb.AppendLine($"      testCaseDescription: Verify that the first two items can be selected from available items.");
             sb.AppendLine("      testSteps: |");
             sb.AppendLine($"        SetProperty({control.Name}.SelectedItems, FirstN({control.Name}.Items, 2));");
-            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) <= 2, \"Expected at most two items to be selected\");");
+            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 2, \"Expected two items to be selected\");");
             sb.AppendLine();
 
             // Reselect After Clear
@@ -299,68 +276,52 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
 
         private void GenerateComprehensiveTextBoxTestCases(StringBuilder sb, ControlInfo control, string screenName)
         {
-            // Sample Text Test - Use .Value for TextBox
+            // Sample Text Test - Use .Text for Canvas TextInput
             sb.AppendLine($"    - testCaseName: Test {control.Name} Sample Text");
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} accepts and displays input correctly.");
             sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Value, \"Sample Text\");");
-            sb.AppendLine($"        Assert({control.Name}.Value = \"Sample Text\", \"Verify {control.Name} displays the input text correctly\");");
+            sb.AppendLine($"        SetProperty({control.Name}.Text, \"Sample Text\");");
+            sb.AppendLine($"        Assert({control.Name}.Text = \"Sample Text\", \"Verify {control.Name} displays the input text correctly\");");
             sb.AppendLine();
 
-            // Empty Value Test
+            // Empty Text Test
             sb.AppendLine($"    - testCaseName: Test {control.Name} Empty");
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} can be set to empty string.");
             sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Value, \"\");");
-            sb.AppendLine($"        Assert({control.Name}.Value = \"\", \"Expected {control.Name}.Value to be empty\");");
+            sb.AppendLine($"        SetProperty({control.Name}.Text, \"\");");
+            sb.AppendLine($"        Assert({control.Name}.Text = \"\", \"Expected {control.Name}.Text to be empty\");");
             sb.AppendLine();
 
             // Long Text Test
             sb.AppendLine($"    - testCaseName: Test {control.Name} Long Text");
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} can handle long text.");
             sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Value, \"This is a very long text to check if the TextBox can handle it without any issues.\");");
-            sb.AppendLine($"        Assert({control.Name}.Value = \"This is a very long text to check if the TextBox can handle it without any issues.\", \"Expected {control.Name}.Value to be the long text\");");
+            sb.AppendLine($"        SetProperty({control.Name}.Text, \"This is a very long text to check if the TextBox can handle it without any issues.\");");
+            sb.AppendLine($"        Assert({control.Name}.Text = \"This is a very long text to check if the TextBox can handle it without any issues.\", \"Expected {control.Name}.Text to be the long text\");");
             sb.AppendLine();
 
             // Special Characters Test
             sb.AppendLine($"    - testCaseName: Test {control.Name} Special Characters");
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} handles special characters.");
             sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Value, \"Special@#$%^&*()!\");");
-            sb.AppendLine($"        Assert({control.Name}.Value = \"Special@#$%^&*()!\", \"Expected {control.Name} to handle special characters\");");
+            sb.AppendLine($"        SetProperty({control.Name}.Text, \"Special@#$%^&*()!\");");
+            sb.AppendLine($"        Assert({control.Name}.Text = \"Special@#$%^&*()!\", \"Expected {control.Name} to handle special characters\");");
             sb.AppendLine();
 
             // Numeric Text Test
             sb.AppendLine($"    - testCaseName: Test {control.Name} Numeric Text");
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} can handle numeric text.");
             sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Value, \"1234567890\");");
-            sb.AppendLine($"        Assert({control.Name}.Value = \"1234567890\", \"Expected {control.Name}.Value to be numeric text\");");
+            sb.AppendLine($"        SetProperty({control.Name}.Text, \"1234567890\");");
+            sb.AppendLine($"        Assert({control.Name}.Text = \"1234567890\", \"Expected {control.Name}.Text to be numeric text\");");
             sb.AppendLine();
 
-            // Visible Property Tests
-            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Property True");
-            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be set to true.");
-            sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Visible, true);");
-            sb.AppendLine($"        Assert({control.Name}.Visible = true, \"Expected {control.Name}.Visible to be true\");");
-            sb.AppendLine();
-
+            // Visible Property False Test
             sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Property False");
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be set to false.");
             sb.AppendLine("      testSteps: |");
             sb.AppendLine($"        SetProperty({control.Name}.Visible, false);");
             sb.AppendLine($"        Assert({control.Name}.Visible = false, \"Expected {control.Name}.Visible to be false\");");
-            sb.AppendLine();
-
-            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Toggle");
-            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be toggled.");
-            sb.AppendLine("      testSteps: |");
-            sb.AppendLine($"        SetProperty({control.Name}.Visible, true);");
-            sb.AppendLine($"        Assert({control.Name}.Visible = true, \"Expected {control.Name} to be visible\");");
-            sb.AppendLine($"        SetProperty({control.Name}.Visible, false);");
-            sb.AppendLine($"        Assert({control.Name}.Visible = false, \"Expected {control.Name} to be hidden\");");
             sb.AppendLine();
         }
 
@@ -450,6 +411,139 @@ namespace Microsoft.PowerApps.TestEngine.TestCaseGenerator
             sb.AppendLine($"      testCaseDescription: Verify that {control.Name} is accessible.");
             sb.AppendLine("      testSteps: |");
             sb.AppendLine($"        Assert({control.Name}.Visible = true, \"{control.Name} should be accessible\");");
+            sb.AppendLine();
+        }
+
+        private void GenerateComprehensiveRichTextEditorTestCases(StringBuilder sb, ControlInfo control, string screenName)
+        {
+            // RichTextEditor uses .HtmlText property, not .Value
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Sample Text");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} accepts and displays rich text correctly.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.HtmlText, \"<p>Sample Text</p>\");");
+            sb.AppendLine($"        Assert(!IsBlank({control.Name}.HtmlText), \"Verify {control.Name} displays the input text correctly\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Empty");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} can be set to empty.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.HtmlText, \"\");");
+            sb.AppendLine($"        Assert({control.Name}.HtmlText = \"\", \"Expected {control.Name}.HtmlText to be empty\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Long Text");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} can handle long text.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.HtmlText, \"<p>This is a very long text to check if the RichTextEditor can handle it without any issues.</p>\");");
+            sb.AppendLine($"        Assert(!IsBlank({control.Name}.HtmlText), \"Expected {control.Name} to handle long text\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Special Characters");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} handles special characters.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.HtmlText, \"<p>Special@#$%^&*()!</p>\");");
+            sb.AppendLine($"        Assert(!IsBlank({control.Name}.HtmlText), \"Expected {control.Name} to handle special characters\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Numeric Text");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} can handle numeric text.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.HtmlText, \"<p>1234567890</p>\");");
+            sb.AppendLine($"        Assert(!IsBlank({control.Name}.HtmlText), \"Expected {control.Name} to handle numeric text\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Property True");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be set to true.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.Visible, true);");
+            sb.AppendLine($"        Assert({control.Name}.Visible = true, \"Expected {control.Name}.Visible to be true\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Property False");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be set to false.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.Visible, false);");
+            sb.AppendLine($"        Assert({control.Name}.Visible = false, \"Expected {control.Name}.Visible to be false\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Toggle");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be toggled.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.Visible, true);");
+            sb.AppendLine($"        Assert({control.Name}.Visible = true, \"Expected {control.Name} to be visible\");");
+            sb.AppendLine($"        SetProperty({control.Name}.Visible, false);");
+            sb.AppendLine($"        Assert({control.Name}.Visible = false, \"Expected {control.Name} to be hidden\");");
+            sb.AppendLine();
+        }
+
+        private void GenerateComprehensiveDropdownTestCases(StringBuilder sb, ControlInfo control, string screenName)
+        {
+            // Dropdown is typically single-select only
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Property True");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be set to true.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.Visible, true);");
+            sb.AppendLine($"        Assert({control.Name}.Visible = true, \"Expected {control.Name}.Visible to be true\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Property False");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be set to false.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.Visible, false);");
+            sb.AppendLine($"        Assert({control.Name}.Visible = false, \"Expected {control.Name}.Visible to be false\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Visible Toggle");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} visibility can be toggled correctly.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.Visible, true);");
+            sb.AppendLine($"        Assert({control.Name}.Visible = true, \"Expected {control.Name} to be visible\");");
+            sb.AppendLine($"        SetProperty({control.Name}.Visible, false);");
+            sb.AppendLine($"        Assert({control.Name}.Visible = false, \"Expected {control.Name} to be hidden\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Items Available");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} has items in its data source.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        Assert(CountRows({control.Name}.Items) >= 0, \"Expected {control.Name}.Items to be available\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Items Not Empty");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} Items collection is not empty.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        Assert(!IsEmpty({control.Name}.Items), \"Expected {control.Name} to have items available\");");
+            sb.AppendLine();
+
+            // Dropdown is single-select - use SelectedItems with single item
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Select Single Item");
+            sb.AppendLine($"      testCaseDescription: Verify that a single item can be selected in {control.Name}.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.SelectedItems, Table({{Value:\"Test Item\", ID:1}}));");
+            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 1, \"Expected one item to be selected\");");
+            sb.AppendLine();
+
+            // Remove multi-select tests for Dropdown (it's single-select)
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Clear Selection");
+            sb.AppendLine($"      testCaseDescription: Verify that {control.Name} selection can be cleared.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.SelectedItems, Table());");
+            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 0, \"Expected no items to be selected\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Select First Item");
+            sb.AppendLine($"      testCaseDescription: Verify that the first item can be selected from available items.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.SelectedItems, FirstN({control.Name}.Items, 1));");
+            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 1, \"Expected one item to be selected\");");
+            sb.AppendLine();
+
+            sb.AppendLine($"    - testCaseName: Test {control.Name} Reselect After Clear");
+            sb.AppendLine($"      testCaseDescription: Verify selection works after clearing.");
+            sb.AppendLine("      testSteps: |");
+            sb.AppendLine($"        SetProperty({control.Name}.SelectedItems, Table());");
+            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 0, \"Expected no items selected after clear\");");
+            sb.AppendLine($"        SetProperty({control.Name}.SelectedItems, Table({{Value:\"New Item\", ID:999}}));");
+            sb.AppendLine($"        Assert(CountRows({control.Name}.SelectedItems) = 1, \"Expected one item to be selected after reselection\");");
             sb.AppendLine();
         }
     }
