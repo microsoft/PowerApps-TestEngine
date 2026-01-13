@@ -1,0 +1,94 @@
+# yaml-embedded-languages: powerfx
+name: Canvas App Insight Collection Example
+description: Sample script showing how to use both AddFact and SaveInsight functions together
+version: 1.0.0
+      
+onStart:
+  - then: |
+      // Initialize the Facts table
+      AddFact({
+        Key: "AppInfo",
+        Value: {
+          Name: "Example App",
+          Version: "1.0",
+          ScanTime: Text(Now(), "yyyy-MM-dd HH:mm:ss")
+        }
+      }, "Metadata");
+      
+      // Save the same information to disk for large apps
+      SaveInsight({
+        Category: "Metadata",
+        Key: "AppInfo",
+        Value: {
+          Name: "Example App",
+          Version: "1.0",
+          ScanTime: Text(Now(), "yyyy-MM-dd HH:mm:ss")
+        },
+        AppPath: Current.Path
+      });
+      
+onFile: 
+  - when: IsMatch(Current.Name, ".*screen.*")
+    then: |
+      // Process screen file and store information in both Facts table and on disk
+      AddFact({
+        Key: Current.Name,
+        Value: {
+          Type: "Screen",
+          Path: Current.Path
+        }
+      }, "Screens");
+      
+      // For large apps, save the same info to disk
+      SaveInsight({
+        Category: "Screens",
+        Key: Current.Name,
+        Value: {
+          Type: "Screen",
+          Path: Current.Path
+        },
+        AppPath: Current.Path
+      });
+    
+onObject:
+  - when: IsMatch(Current.Name, ".*Button.*|.*Input.*")
+    then: |
+      // Store in Facts table (in-memory)
+      AddFact({
+        Key: Current.Name,
+        Value: {
+          Type: If(IsMatch(Current.Name, ".*Button.*"), "Button", "Input"),
+          Properties: Current.Properties,
+          Path: Current.Path
+        }
+      }, "Controls");
+      
+      // Store on disk for large apps
+      SaveInsight({
+        Category: "Controls",
+        Key: Current.Name,
+        Value: {
+          Type: If(IsMatch(Current.Name, ".*Button.*"), "Button", "Input"),
+          Properties: Current.Properties,
+          Path: Current.Path
+        },
+        AppPath: Current.Path
+      });
+
+onEnd:
+  - then: |
+      // At the end of the scan, flush any remaining insights to disk
+      FlushInsights({ AppPath: Current.Path });
+      
+      // For automated test generation, generate a UI map
+      GenerateUIMap({ AppPath: Current.Path });
+      
+      // Return a summary of findings
+      Collect(
+        Summary,
+        {
+          ScreenCount: CountRows(Filter(Facts, Category = "Screens")),
+          ControlCount: CountRows(Filter(Facts, Category = "Controls")),
+          InsightsSaved: true
+        }
+      );

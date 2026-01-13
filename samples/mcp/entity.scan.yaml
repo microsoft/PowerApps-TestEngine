@@ -1,0 +1,12 @@
+
+# yaml-embedded-languages: powerfx
+name: Dataverse Entity Scan
+description: Scan for Dataverse Entity Definitions to give context to Model Context Protocol (MCP) genration of tests
+version: 1.0.0
+onFile:
+  - when: Current.Name = "entity.yaml"
+    then: |
+      AddFact({
+        Key: "TSQL",
+        Value: GenerateTSQLCreate(Current)
+      }, "Entity");

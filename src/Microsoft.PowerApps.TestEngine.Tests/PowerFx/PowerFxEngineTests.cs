@@ -707,6 +707,44 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerFx
             await powerFxEngine.ExecuteAsync(powerFxExpression, CultureInfo.CurrentCulture);
         }
 
+        [Fact]
+        public async Task ExecuteWithModularPowerFxDefinitions()
+        {
+            // Arrange
+            var settings = new TestSettings
+            {
+                PowerFxTestTypes = new List<PowerFxTestType>
+                {
+                    new PowerFxTestType { Name = "Person", Value = "{Name: Text, Age: Number}" }
+                },
+                TestFunctions = new List<TestFunction>
+                {
+                    new TestFunction { Code = "GetPersonName(p: Person): Text = p.Name;" }
+                }
+            };
+
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(settings);
+            MockTestState.Setup(x => x.GetTestEngineModules()).Returns(new List<ITestEngineModule>());
+            MockTestState.SetupGet(x => x.ExecuteStepByStep).Returns(false);
+            MockTestState.Setup(x => x.OnBeforeTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.OnAfterTestStepExecuted(It.IsAny<TestStepEventArgs>()));
+            MockTestState.Setup(x => x.GetDomain()).Returns("https://contoso.crm.dynamics.com");
+
+            var powerFxEngine = new PowerFxEngine(MockTestInfraFunctions.Object, MockTestWebProvider.Object,
+                MockSingleTestInstanceState.Object, MockTestState.Object, MockFileSystem.Object, MockEnvironmentVariable.Object);
+
+            powerFxEngine.GetAzureCliHelper = () => null;
+            powerFxEngine.Setup(settings);
+
+            // Act - Execute a formula that uses the custom type and function
+            var formula = "GetPersonName({Name: \"John Doe\", Age: 30})";
+            var result = await powerFxEngine.ExecuteAsync(formula, CultureInfo.CurrentCulture);
+
+            // Assert
+            Assert.IsType<Microsoft.PowerFx.Types.StringValue>(result);
+            Assert.Equal("John Doe", ((Microsoft.PowerFx.Types.StringValue)result).Value);
+        }
+
         [Theory]
         [MemberData(nameof(PowerFxTypeTest))]
         public async Task SetupPowerFxType(string type, string sample, string check, int expected)

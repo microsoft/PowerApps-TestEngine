@@ -1,0 +1,501 @@
+# yaml-embedded-languages: powerfx
+powerFxTestTypes:
+ - name: UIControl
+   value: |
+      {
+        Name: Text,
+        ControlType: Text,
+        Parent: Text,
+        Pattern: Text
+      }
+ - name: ScreenInfo
+   value: |
+      {
+        Name: Text,
+        Type: Text,
+        Controls: Table[UIControl],
+        HasNavigation: Boolean
+      }
+ - name: NavigationFlow
+   value: |
+      {
+        Source: Text,
+        Target: Text,
+        Control: Text,
+        Type: Text
+      }
+ - name: ValidationRule
+   value: |
+      {
+        Control: Text,
+        Rule: Text,
+        ErrorMessage: Text
+      }
+ - name: DataOperation
+   value: |
+      {
+        Type: Text, 
+        DataSource: Text,
+        Control: Text
+      }
+ - name: TestPattern
+   value: |
+      {
+        Type: Text,
+        Priority: Text,
+        Description: Text
+      }
+ - name: TestInsight
+   value: |
+      {
+        Category: Text,
+        Key: Text,
+        Value: Any,
+        AppPath: Text
+      }
+ - name: TestTemplate
+   value: |
+      {
+        Type: Text,
+        Template: Text,
+        Priority: Text,
+        Success: Boolean
+      }
+
+testFunctions:
+ - description: Identifies UI patterns in Canvas Apps
+   code: |
+    IdentifyUIPattern(controlInfo: UIControl): Text = 
+      With(
+        controlInfo,
+        Switch(
+          True,
+          Or(
+            EndsWith(Name, "Screen"), 
+            Contains(Name, "Screen")
+          ), "Screen",
+          Or(
+            ControlType = "button", 
+            Contains(Name, "btn"), 
+            Contains(Name, "Button")
+          ), "Button",
+          Or(
+            Contains(ControlType, "text"), 
+            Contains(ControlType, "input"),
+            Contains(Name, "text"),
+            Contains(Name, "input")
+          ), "TextInput",
+          Or(
+            Contains(ControlType, "gallery"),
+            Contains(Name, "gallery"),
+            Contains(Name, "list")
+          ), "Gallery",
+          Or(
+            Contains(ControlType, "form"),
+            Contains(Name, "form")
+          ), "Form",
+          Or(
+            Contains(ControlType, "dropdown"),
+            Contains(Name, "dropdown"),
+            Contains(Name, "combo")
+          ), "Dropdown",
+          Or(
+            Contains(ControlType, "toggle"),
+            Contains(ControlType, "checkbox"),
+            Contains(Name, "toggle"),
+            Contains(Name, "check")
+          ), "Toggle",
+          Or(
+            Contains(ControlType, "date"),
+            Contains(Name, "date"),
+            Contains(Name, "calendar")
+          ), "DatePicker",
+          "Other"
+        )
+      )
+
+ - description: Detects navigation patterns in Canvas App formulas
+   code: |
+    DetectNavigationPattern(formula: Text): Text = 
+      If(
+        IsBlank(formula),
+        "Unknown",
+        Switch(
+          True,
+          Match(formula, "Navigate\\s*\\(\\s*[\\w\"']+\\s*,\\s*[\\w\"']+"), "ScreenNavigation",
+          Match(formula, "Back\\s*\\("), "BackNavigation",
+          Match(formula, "NewForm\\s*\\(|EditForm\\s*\\(|ViewForm\\s*\\("), "FormNavigation",
+          Match(formula, "Launch\\s*\\("), "ExternalNavigation",
+          Match(formula, "SubmitForm\\s*\\("), "FormSubmission",
+          "Other"
+        )
+      )
+
+ - description: Analyzes Canvas App formulas to detect data operations
+   code: |
+    AnalyzeDataOperation(formula: Text): Text = 
+      If(
+        IsBlank(formula),
+        "Unknown",
+        Switch(
+          True,
+          Match(formula, "Patch\\s*\\("), "Update",
+          Match(formula, "Remove\\s*\\(|RemoveIf\\s*\\("), "Delete",
+          Match(formula, "Collect\\s*\\("), "Create",
+          Match(formula, "Filter\\s*\\(|Search\\s*\\(|LookUp\\s*\\("), "Query",
+          Match(formula, "Sort\\s*\\(|SortByColumns\\s*\\("), "Sort",
+          Match(formula, "Sum\\s*\\(|Average\\s*\\(|Min\\s*\\(|Max\\s*\\(|Count\\s*\\("), "Aggregate",
+          "Other"
+        )
+      )
+
+ - description: Detects login screens based on name and controls
+   code: |
+    DetectLoginScreen(screenInfo: ScreenInfo): Boolean = 
+      With(
+        screenInfo,
+        Or(
+          // Check screen name patterns for login screens
+          Match(Name, "(?i)login|signin|sign in|log in|auth|authenticate"),
+          
+          // Check for login controls in the screen
+          And(
+            CountIf(Controls, Contains(Name, "user") || Contains(Name, "email") || Contains(Name, "login") || Contains(Name, "name")) > 0,
+            CountIf(Controls, Contains(Name, "pass") || Contains(Name, "pwd")) > 0,
+            CountIf(Controls, And(
+              Or(Contains(Name, "login"), Contains(Name, "signin"), Contains(Name, "submit")),
+              Or(Contains(Name, "button"), Contains(Name, "btn"))
+            )) > 0
+          )
+        )
+      )
+
+ - description: Identifies CRUD operations on a data source
+   code: |
+    DetectCrudOperations(dataSource: Text, operations: Table[DataOperation]): Record = 
+      With(
+        {
+          Create: CountIf(operations, Type = "Create" && DataSource = dataSource) > 0,
+          Read: CountIf(operations, Type = "Read" && DataSource = dataSource) > 0,
+          Update: CountIf(operations, Type = "Update" && DataSource = dataSource) > 0,
+          Delete: CountIf(operations, Type = "Delete" && DataSource = dataSource) > 0
+        },
+        {
+          DataSource: dataSource,
+          HasCreate: Create,
+          HasRead: Read,
+          HasUpdate: Update,
+          HasDelete: Delete,
+          IsCrud: And(Create, Read, Update, Delete)
+        }
+      )
+
+ - description: Identifies form submission patterns
+   code: |
+    DetectFormPattern(formName: Text, properties: Table): Record = 
+      With(
+        {
+          Type: First(
+            {
+              // Determine form type from properties or name
+              FormType: If(
+                CountIf(properties, Name = "Mode" && Contains(Value, "new")) > 0,
+                "Create",
+                If(
+                  CountIf(properties, Name = "Mode" && Contains(Value, "edit")) > 0,
+                  "Edit",
+                  If(
+                    CountIf(properties, Name = "Mode" && Contains(Value, "view")) > 0,
+                    "View",
+                    If(
+                      Or(
+                        Contains(formName, "new"),
+                        Contains(formName, "create")
+                      ),
+                      "Create",
+                      If(
+                        Or(
+                          Contains(formName, "edit"),
+                          Contains(formName, "update")
+                        ),
+                        "Edit",
+                        If(
+                          Or(
+                            Contains(formName, "view"),
+                            Contains(formName, "display")
+                          ),
+                          "View",
+                          "Unknown"
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            }
+          ).FormType,
+          HasValidation: CountIf(properties, Or(Name = "Valid", Contains(Name, "Validation"))) > 0,
+          HasSubmission: CountIf(properties, Or(Name = "OnSuccess", Name = "OnSubmit")) > 0
+        },
+        {
+          FormName: formName,
+          FormType: Type,
+          HasValidation: HasValidation,
+          HasSubmission: HasSubmission,
+          TestPriority: If(
+            And(HasValidation, HasSubmission),
+            "High",
+            If(
+              Or(HasValidation, HasSubmission),
+              "Medium",
+              "Low"
+            )
+          )
+        }
+      )
+
+ - description: Generates Canvas App test template with guidance for GitHub Copilot
+   code: |
+    GenerateCanvasAppTestTemplate(): TestTemplate = 
+      {
+        Type: "Canvas App Test Template",
+        Template: Concatenate(
+          "## Canvas App Test Generation Guide\n\n",
+          "This workspace contains automatically generated insight files that GitHub Copilot can use to create meaningful tests.\n\n",
+          "### Available Resources:\n",
+          "1. `*.test-insights.json` - Contains summarized test patterns and key Canvas App components\n",
+          "2. `*.ui-map.json` - Maps screen and control relationships for navigation tests\n",
+          "3. `canvasapp.scan.yaml` - Contains the scan rules that generated these insights\n\n",
+          "### Using Insights for Test Generation:\n",
+          "```powershell\n",
+          "# View all available test insights\n",
+          "Get-ChildItem -Filter *.test-insights.json -Recurse | Get-Content | ConvertFrom-Json | Format-List\n",
+          "```\n\n",
+          "### Test Template\n",
+          "Use the following YAML template as a starting point for test generation. Customize based on insights.\n\n",
+          "-----------------------\n",
+          "file: canvasapp.te.yaml\n",
+          "-----------------------\n\n",
+          "# yaml-embedded-languages: powerfx\n",
+          "testSuite:\n",
+          "  testSuiteName: Canvas App Tests\n",
+          "  testSuiteDescription: Validate Canvas App functionality with automated tests\n",
+          "  persona: User1\n",
+          "  appLogicalName: MyCanvasApp\n\n",
+          "  testCases:\n",
+          "  - testCaseName: Login Flow\n",
+          "    testCaseDescription: Validates that a user can log in to the app\n",
+          "    testSteps: |\n",
+          "      # Check test-insights.json for actual login screens and form names\n",
+          "      = Navigate(\"LoginScreen\");\n",
+          "        SetProperty(TextInput_Username, \"Text\", \"${user1Email}\");\n",
+          "        SetProperty(TextInput_Password, \"Text\", \"${user1Password}\");\n",
+          "        Select(Button_Login);\n",
+          "        Assert(App.ActiveScreen.Name = \"HomeScreen\");\n",
+          "        \n",
+          "  - testCaseName: Navigation Test\n",
+          "    testCaseDescription: Tests the navigation between main screens\n",
+          "    testSteps: |\n",
+          "      # Check ui-map.json for screen navigation flows\n",
+          "      = Navigate(\"HomeScreen\");\n",
+          "        Assert(IsVisible(Button_Settings));\n",
+          "        Select(Button_Settings);\n",
+          "        Assert(App.ActiveScreen.Name = \"SettingsScreen\");\n",
+          "        Select(Button_Back);\n",
+          "        Assert(App.ActiveScreen.Name = \"HomeScreen\");\n",
+          "        \n",
+          "  - testCaseName: Data Entry Test\n",
+          "    testCaseDescription: Tests form submission with validation\n",
+          "    testSteps: |\n",
+          "      # Check test-insights.json for form patterns and validation rules\n",
+          "      = Navigate(\"NewItemScreen\");\n",
+          "        SetProperty(TextInput_Name, \"Text\", \"Test Item\");\n",
+          "        SetProperty(TextInput_Description, \"Text\", \"This is a test item created by automation\");\n",
+          "        SetProperty(DatePicker_DueDate, \"SelectedDate\", Today() + 7);\n",
+          "        \n",
+          "        # For validation testing, add error cases from validation patterns\n",
+          "        SetProperty(TextInput_Required, \"Text\", \"\"); # Trigger validation error\n",
+          "        Select(Button_Submit);\n",
+          "        Assert(IsVisible(Label_ValidationError));\n",
+          "        \n",
+          "        # Fix validation error and submit\n",
+          "        SetProperty(TextInput_Required, \"Text\", \"Required Value\");\n",
+          "        Select(Button_Submit);\n",
+          "        Assert(IsVisible(Label_SuccessMessage));\n",
+          "        \n",
+          "  - testCaseName: Search Functionality\n",
+          "    testCaseDescription: Tests the search feature\n",
+          "    testSteps: |\n",
+          "      # Check test-insights.json for search patterns\n",
+          "      = Navigate(\"SearchScreen\");\n",
+          "        SetProperty(TextInput_Search, \"Text\", \"test\");\n",
+          "        Select(Button_Search);\n",
+          "        Assert(CountRows(Gallery_Results.AllItems) > 0);\n",
+          "        \n",
+          "        # Add edge cases for search\n",
+          "        SetProperty(TextInput_Search, \"Text\", \"\");\n",
+          "        Select(Button_Search);\n",
+          "        Assert(IsVisible(Label_EmptySearchWarning));\n",
+          "  \n",
+          "  testSettings:\n",
+          "    headless: false\n",
+          "    locale: \"en-US\"\n",
+          "    recordVideo: true\n",
+          "    extensionModules:\n",
+          "      enable: true\n",
+          "    browserConfigurations:\n",
+          "    - browser: Chromium\n\n",
+          "  environmentVariables:\n",
+          "  users:\n",
+          "  - personaName: User1\n",
+          "    emailKey: user1Email\n",
+          "    passwordKey: user1Password\n"
+        ),
+        Priority: "High",
+        Success: true
+      }
+
+ - description: Saves insights to state files to avoid token limitations
+   code: |
+    SaveInsight(insight: TestInsight): Boolean = 
+      With(
+        insight,
+        If(
+          Not(IsBlank(Category)) && Not(IsBlank(Key)) && Not(IsBlank(AppPath)),
+          true,  // In real implementation, this would save to a file
+          false
+        )
+      )
+
+ - description: Generates UI map for navigation testing by consolidating insights
+   code: |
+    GenerateUIMap(appPath: Record): Boolean = 
+      true  // In real implementation, this would generate the UI map file
+ - description: Flushes all insights to disk at the end of scanning
+   code: |
+    FlushInsights(appPath: Record): Boolean = 
+      true  // In real implementation, this would flush all cached insights
+
+ - description: Process control properties for insights and facts
+   code: |
+    ProcessControl(control: Record): UIControl = 
+      With(
+        {
+          Name: control.Name, 
+          ControlType: control.Type ?? "Unknown", 
+          Parent: control.Parent ?? "",
+          Pattern: ""
+        } : UIControl,
+        Block(
+          // Use PowerFx UDF to identify UI pattern
+          Set(
+            Self,
+            Patch(
+              Self, 
+              {Pattern: IdentifyUIPattern(Self)}
+            )
+          ),
+          // Return the enriched control
+          Self
+        )
+      )
+
+ - description: Save control insights and add facts with standardized format
+   code: |
+    SaveControlInsight(control: UIControl, path: Text): Void = 
+      Block(
+        // Save the enriched control info
+        SaveInsight({
+          Category: "Controls", 
+          Key: control.Name, 
+          Value: control,
+          AppPath: path
+        }),
+        
+        // Add key info to facts
+        AddFact({
+          Type: "UIControl", 
+          ControlType: control.ControlType,
+          Name: control.Name,
+          Pattern: control.Pattern
+        })
+      )
+
+ - description: Extract data source name from a formula
+   code: |
+    ExtractDataSource(formula: Text): Text = 
+      Replace(
+        formula, 
+        ".*(?:Patch|Collect|Filter|Search|LookUp|Remove|RemoveIf)\\s*\\(\\s*([^,\\)]+).*", 
+        "$1"
+      )
+
+ - description: Process and track formula insights
+   code: |
+    ProcessFormula(formula: Text, controlName: Text, parentName: Text, path: Text): Record = 
+      With({
+        NavigationType: DetectNavigationPattern(formula),
+        DataOperation: AnalyzeDataOperation(formula)
+      },
+      {
+        NavigationType: Self.NavigationType,
+        DataOperation: Self.DataOperation,
+        IsNavigation: Self.NavigationType <> "Unknown" && Self.NavigationType <> "Other",
+        IsDataOperation: Self.DataOperation <> "Unknown" && Self.DataOperation <> "Other"
+      })
+
+ - description: Track navigation pattern and save insight
+   code: |
+    TrackNavigation(formulaInfo: Record, formula: Text, controlName: Text, parentName: Text, path: Text): Void = 
+      If(
+        formulaInfo.NavigationType = "ScreenNavigation",
+        SaveInsight({
+          Category: "Navigation", 
+          Key: Concatenate(controlName, "_Navigation"), 
+          Value: {
+            Source: parentName,
+            Control: controlName,
+            Target: Replace(formula, ".*Navigate\\s*\\(\\s*[\"']([^\"']+)[\"'].*", "$1"),
+            Type: "ScreenNavigation"
+          },
+          AppPath: path
+        })
+      )
+
+ - description: Track data operation and save insight
+   code: |
+    TrackDataOperation(formulaInfo: Record, formula: Text, controlName: Text, parentName: Text, path: Text): Void = 
+      If(
+        formulaInfo.IsDataOperation,
+        SaveInsight({
+          Category: "DataOperations", 
+          Key: Concatenate(controlName, "_", formulaInfo.DataOperation), 
+          Value: {
+            Control: controlName,
+            Screen: parentName,
+            Type: formulaInfo.DataOperation,
+            Formula: formula
+          },
+          AppPath: path
+        })
+      )
+
+ - description: Create data source insight record
+   code: |
+    CreateDataSourceInsight(operation: Text, formula: Text, path: Text): Record = 
+      With(
+        {
+          DataSource: ExtractDataSource(formula)
+        },
+        {
+          Category: "DataSources", 
+          Key: Self.DataSource,
+          Value: {
+            Type: "DataSource",
+            Operation: operation,
+            DataSource: Self.DataSource,
+            Formula: formula
+          },
+          AppPath: path
+        }
+      )

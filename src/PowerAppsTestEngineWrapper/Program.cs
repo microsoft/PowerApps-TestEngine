@@ -270,10 +270,10 @@ namespace PowerAppsTestEngineWrapper
                     .AddScoped<ITestInfraFunctions, PlaywrightTestInfraFunctions>()
                     .AddSingleton<IEnvironmentVariable, EnvironmentVariable>()
                     .AddSingleton<IUserManagerLogin, UserManagerLogin>()
-                    .AddSingleton<TestEngine>()
+                    .AddSingleton<Microsoft.PowerApps.TestEngine.TestEngine>()
                     .BuildServiceProvider();
 
-                    TestEngine testEngine = serviceProvider.GetRequiredService<TestEngine>();
+                    Microsoft.PowerApps.TestEngine.TestEngine testEngine = serviceProvider.GetRequiredService<Microsoft.PowerApps.TestEngine.TestEngine>();
 
                     // Default value for optional arguments is set before the class library is invoked.
                     // The class library expects actual types in its input arguments, so optional arguments
