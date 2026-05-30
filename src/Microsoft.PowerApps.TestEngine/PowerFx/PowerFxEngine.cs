@@ -326,13 +326,13 @@ namespace Microsoft.PowerApps.TestEngine.PowerFx
         /// </summary>
         private void ConditionallySetupDataverse(TestSettings testSettings, PowerFxConfig powerFxConfig)
         {
-            if (testSettings == null || !testSettings.ExtensionModules.Parameters.ContainsKey(ENABLE_DATAVERSE_FUNCTIONS) || (testSettings != null && testSettings.ExtensionModules.Parameters[ENABLE_DATAVERSE_FUNCTIONS].ToString().ToLower() != "true"))
+            if (testSettings == null || !testSettings.ExtensionModules.Parameters.ContainsKey(ENABLE_DATAVERSE_FUNCTIONS) || testSettings.ExtensionModules.Parameters[ENABLE_DATAVERSE_FUNCTIONS].ToString().ToLower() != "true")
             {
                 return;
             }
 
             // Must have dataverse enabled to enable AI Functions
-            if (testSettings != null && testSettings.ExtensionModules.Parameters.ContainsKey(ENABLE_AI_FUNCTIONS) && testSettings.ExtensionModules.Parameters[ENABLE_AI_FUNCTIONS].ToString().ToLower() == "true")
+            if (testSettings.ExtensionModules.Parameters.ContainsKey(ENABLE_AI_FUNCTIONS) && testSettings.ExtensionModules.Parameters[ENABLE_AI_FUNCTIONS].ToString().ToLower() == "true")
             {
                 enableAIFunctions = true;
             }
