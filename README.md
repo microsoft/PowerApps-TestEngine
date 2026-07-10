@@ -3,7 +3,7 @@
 [![CI Build](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml/badge.svg)](https://github.com/microsoft/PowerApps-TestEngine/actions/workflows/build-test.yml)
 
 > [!IMPORTANT]
-> Test Engine is **deprecated** and will be removed in the near future. Use [Power Platform Playwright samples](https://learn.microsoft.com/power-platform/developer/playwright-samples/overview) for test automation capabilities in Power Platform and Dynamics 365 services. See [Migrate from Power Apps Test Engine](https://learn.microsoft.com/power-platform/developer/playwright-samples/migration-guide)
+> Test Engine is **deprecated** and this repository will be removed on November 1, 2026. Use [Power Platform Playwright samples](https://learn.microsoft.com/power-platform/developer/playwright-samples/overview) for test automation capabilities in Power Platform and Dynamics 365 services. See [Migrate from Power Apps Test Engine](https://learn.microsoft.com/power-platform/developer/playwright-samples/migration-guide)
 
 ## Overview
 
