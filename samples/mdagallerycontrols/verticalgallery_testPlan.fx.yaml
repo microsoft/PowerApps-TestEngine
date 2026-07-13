@@ -1,0 +1,104 @@
+# yaml-embedded-languages: powerfx
+testSuite:
+  testSuiteName: MDA Custom Page tests - Gallery Controls
+  testSuiteDescription: Verify test cases for MDA Gallery Controls
+  persona: User1
+  appLogicalName: NotNeeded
+  testCases: 
+    - testCaseName: Test Gallery Control - Validate Selection by Row Number
+      testCaseDescription: Ensure that selecting an item in the Gallery control by specifying the row number updates the selected record accurately.
+      testSteps: |
+          Select(Gallery1, 3);
+          Assert(DataCardValue9.Value = "Action Figure", "Verify the selected record's Title value is 'Action Figure'");
+          Assert(DataCardValue6.Value = "24.99", "Verify the selected record's Price value is '24.99'");
+
+    - testCaseName: Test Gallery Control - Validate Selection via Icon
+      testCaseDescription: Ensure that selecting an item in the Gallery control using an icon updates the selected record accurately.
+      testSteps: |
+          Select(Gallery1, 5, Icon1);
+          Assert(DataCardValue9.Value = "Laptop", "Verify the selected record's Title value is 'Laptop'");
+          Assert(DataCardValue6.Value = "999.99", "Verify the selected record's Price value is '999.99'");  
+
+    - testCaseName: Populate gallery with data
+      testCaseDescription: Populate gallery with data and validate with count
+      testSteps: |
+        = 
+          Assert(CountRows(Gallery1.Items) = 10, "Checking the Items count of the Gallery control");     
+
+    - testCaseName: Test Gallery Control - Search and Validate Result Count
+      testCaseDescription: Verify that searching the Gallery control using input from the text box updates the displayed items correctly.
+      testSteps: |
+          SetProperty(txtSearchInput.Value, "Jeans");
+          Select(icnSearch); 
+          Wait(Gallery1,"AllItemsCount", 1);
+          Assert(Gallery1.AllItemsCount = 1, "Checking if the Gallery displays the correct number of items after search");
+          SetProperty(txtSearchInput.Value, "");          
+          SetProperty(txtSearchInput.Value, "e");
+          Select(icnSearch);
+          Wait(Gallery1,"AllItemsCount", 7);
+          Assert(Gallery1.AllItemsCount = 7, "Checking if the Gallery displays the correct number of items after search");          
+
+    - testCaseName: Test Gallery Control - Search, Update Field Value, and Validate Result
+      testCaseDescription: Verify that searching the Gallery control using input from the text box updates the displayed items correctly, allows updating a field value, and validates the updated result.
+      testSteps: |
+          SetProperty(txtSearchInput.Value, "");
+          Wait(Gallery1,"AllItemsCount", 10);
+          SetProperty(txtSearchInput.Value, "Puzzle");
+          Select(icnSearch);
+          Wait(Gallery1,"AllItemsCount", 1);    
+          Select(Gallery1, 1);
+          Wait(DataCardValue9,"Value", "Puzzle");
+          SetProperty(DataCardValue6.Value, "20.00");
+          Select(btnSubmit);
+          SetProperty(txtSearchInput.Value, "");
+          SetProperty(txtSearchInput.Value, "Puzzle");
+          Select(icnSearch); 
+          Wait(Gallery1,"AllItemsCount", 1); 
+          Select(Gallery1, 1);
+          Wait(DataCardValue9,"Value", "Puzzle");
+          Assert(DataCardValue6.Value = "20.00", "Checking if the Gallery displays the correct number of items after search");
+          SetProperty(txtSearchInput.Value, "");
+          Select(icnSearch);
+      
+    - testCaseName: Test Gallery Control - Validate ShowNavigation Property
+      testCaseDescription: Verify that the ShowNavigation property of the Gallery control is set and validated correctly.
+      testSteps: |
+        SetProperty(Gallery1.ShowNavigation, false);
+        Assert(Gallery1.ShowNavigation = false, "Verify the ShowNavigation property is set to false");    
+        SetProperty(Gallery1.ShowNavigation, true);
+        Assert(Gallery1.ShowNavigation = true, "Verify the ShowNavigation property is set to true");          
+
+    - testCaseName: Test Gallery Control - Validate Selectable Property
+      testCaseDescription: Verify that the Selectable property of the Gallery control is set and validated correctly.
+      testSteps: |
+          SetProperty(Gallery1.Selectable, true);
+          Assert(Gallery1.Selectable = true, "Verify the Selectable property is set to true");
+          SetProperty(Gallery1.Selectable, false);
+          Assert(Gallery1.Selectable = false, "Verify the Selectable property is set to false");
+
+    - testCaseName: Test Gallery Control - Filter and Validate Single Item
+      testCaseDescription: Ensure that filtering the Gallery control by a specific title updates the displayed items correctly and validates the item count.
+      testSteps: | 
+           SetProperty(Gallery1.Items, Filter(Gallery1.Items, 'cr7d6_title'="Coffee Maker"));  
+           Select(Gallery1, 1);
+           Assert(Title6.Text = "Coffee Maker", "Checking the Items count of the Gallery control");  
+             
+     # Both examples provided below are effective.
+     # SetProperty(Gallery1.Items, Search(Gallery1.Items, "Action Figure", 'cr7d6_title'));     
+     # SetProperty(Gallery1.Items, Filter(Gallery1.Items, Title6.Text="SmartPhone"));  
+
+testSettings:
+  headless: false
+  locale: "en-US"
+  recordVideo: true
+  extensionModules:
+    enable: true
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

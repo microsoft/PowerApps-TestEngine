@@ -88,7 +88,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             else if (fieldType is RecordType)
             {
                 var recordType = fieldType as RecordType;
-                if (string.IsNullOrEmpty(_name))
+                if (_parentItemPath != null)
                 {
                     // We reach here if we are referencing a child item in a Gallery. Eg. Index(Gallery1.AllItems).Label1 (fieldName = Label1)
                     result = new ControlRecordValue(recordType, _testWebProvider, fieldName, _parentItemPath);
