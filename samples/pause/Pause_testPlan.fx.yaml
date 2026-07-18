@@ -1,0 +1,30 @@
+testSuite:
+  testSuiteName: Pause Function Tests
+  testSuiteDescription: Verifies that the Pause function works correctly
+  persona: User1
+  appLogicalName: mda_input_controls_app
+
+  testCases:   
+    - testCaseName: Test Pause Function - Non-Headless Mode
+      testCaseDescription: Tests that Pause function works when headless is false
+      testSteps: |
+        = 
+        Screenshot("before_pause.png");
+        Pause();
+        Screenshot("after_pause.png");
+        Assert(true, "Test continued after Pause function");
+
+testSettings:
+  headless: false  
+  browserConfigurations:
+    - browser: Chromium
+      channel: msedge
+  extensionModules:
+    enable: true
+    allowPowerFxNamespaces:
+      - Preview
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded
