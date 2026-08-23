@@ -10,7 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
       - name: Integration Test
         env:
             user1Email: '${{ secrets.POWER_PLATFORM_USER }}'
@@ -24,14 +24,14 @@ jobs:
           chmod +x yaml-integration-tests.sh
           ./yaml-integration-tests.sh "${{ inputs.parameters }}"       # run the script with the parameter, contains logic to run the tests
       - name: Sample Test Report
-        uses: dorny/test-reporter@v1.5.0
+        uses: dorny/test-reporter@0d00bb14cb0cc2c9b8985df6e81dd333188224e1 # v1.5.0
         if: success() || failure()    # run this step even if previous step failed
         with:
           name: Sample Tests          # Name of the check run which will be created
           path: '**/*.trx'            
           reporter: dotnet-trx        # Format of test results      
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2.3.1
         if: ${{always()}}
         with:
             name: 'Test Run'

@@ -25,15 +25,15 @@ jobs:
         dotnet-version: ['8.0.x']
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
       
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@871f041373faaad213a635d9afb62905ec029bbb # v1.10.1
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@42947a340483f03ba47bb1a039b2c519aab3df85 # v3.37.8
         with:
           languages: csharp, javascript
       
@@ -53,12 +53,12 @@ jobs:
           dotnet test --configuration Release --no-restore --verbosity normal --logger:trx --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@42947a340483f03ba47bb1a039b2c519aab3df85 # v3.37.8
         with:
           category: 'dotnet-version-${{ matrix.dotnet-version }}-analysis'  
       
       - name: Test Report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@d61b558e8df85cb60d09ca3e5b09653b4477cea7 # v1
         if: success() || failure()    # run this step even if previous step failed
         with:
           name: DotNet Tests          # Name of the check run which will be created
@@ -67,7 +67,7 @@ jobs:
           reporter: dotnet-trx        # Format of test results
       
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: test-results-coverage-report
           path: src/TestResults/**/coverage.cobertura.xml
