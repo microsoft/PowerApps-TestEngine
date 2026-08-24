@@ -72,6 +72,8 @@ extends:
             command: 'run'
             projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
             arguments: '-- ci -c $(BuildConfiguration)'
+          env:
+            RestoreConfigFile: '$(Build.SourcesDirectory)\.config\NuGet.CFS.config'
         - task: PublishTestResults@2
           inputs:
             testResultsFormat: 'VSTest'
