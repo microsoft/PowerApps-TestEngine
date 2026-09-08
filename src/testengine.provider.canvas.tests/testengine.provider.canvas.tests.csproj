@@ -19,6 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Jint" Version="4.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.2" />
@@ -35,6 +36,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.PowerApps.TestEngine.Tests\Microsoft.PowerApps.TestEngine.Tests.csproj" />
     <ProjectReference Include="..\testengine.provider.canvas\testengine.provider.canvas.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Linked so the injection tests assert against the shipped script rather than a copy -->
+    <EmbeddedResource Include="..\testengine.provider.canvas\JS\CanvasAppSdk.js" Link="CanvasAppSdk.js" LogicalName="testengine.provider.canvas.tests.CanvasAppSdk.js" />
   </ItemGroup>
 
 </Project>
