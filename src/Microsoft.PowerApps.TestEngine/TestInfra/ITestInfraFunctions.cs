@@ -101,6 +101,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
 
         /// <summary>
+        /// Runs javascript on the page with a structured argument.
+        /// </summary>
+        /// <typeparam name="T">Expected return type</typeparam>
+        /// <param name="jsExpression">Javascript function to run</param>
+        /// <param name="argument">Argument serialized by Playwright</param>
+        /// <returns>Return value of javascript</returns>
+        public Task<T> RunJavascriptAsync<T>(string jsExpression, object argument);
+
+        /// <summary>
         /// Triggers a click event on a control
         /// </summary>
         /// <param name="controlName">Control name to trigger event</param>

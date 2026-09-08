@@ -805,6 +805,30 @@ namespace Microsoft.PowerApps.TestEngine.Tests.TestInfra
         }
 
         [Fact]
+        public async Task RunJavascriptWithArgumentSuccessfulTest()
+        {
+            var jsExpression = "(value) => value.text";
+            var argument = new { text = "hello" };
+            var expectedResponse = "hello";
+
+            LoggingTestHelper.SetupMock(MockLogger);
+            MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockPage.Setup(x => x.EvaluateAsync<string>(jsExpression, argument)).ReturnsAsync(expectedResponse);
+
+            var playwrightTestInfraFunctions = new PlaywrightTestInfraFunctions(
+                MockTestState.Object,
+                MockSingleTestInstanceState.Object,
+                MockFileSystem.Object,
+                page: MockPage.Object,
+                testWebProvider: MockTestWebProvider.Object);
+
+            var result = await playwrightTestInfraFunctions.RunJavascriptAsync<string>(jsExpression, argument);
+
+            Assert.Equal(expectedResponse, result);
+            MockPage.Verify(x => x.EvaluateAsync<string>(jsExpression, argument), Times.Once());
+        }
+
+        [Fact]
         public async Task RouteNetworkRequestTest()
         {
             var requestHeader = new Dictionary<string, string>();

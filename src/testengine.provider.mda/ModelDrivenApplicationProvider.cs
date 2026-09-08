@@ -451,37 +451,25 @@ namespace Microsoft.PowerApps.TestEngine.Providers
         {
             try
             {
-                Object objectValue = null;
-
                 switch (value.Type)
                 {
-                    case (NumberType):
-                        objectValue = ((NumberValue)value).Value;
-                        break;
-                    case (StringType):
-                        objectValue = ((StringValue)value).Value;
-                        break;
-                    case (BooleanType):
-                        objectValue = ((BooleanValue)value).Value;
-                        break;
-                    case (GuidType):
-                        objectValue = ((GuidValue)value).Value;
-                        break;
-                    case (DateType):
+                    case DateType:
                         return await SetPropertyDateAsync(itemPath, (DateValue)value);
-                    case (RecordType):
+                    case RecordType:
                         return await SetPropertyRecordAsync(itemPath, (RecordValue)value);
-                    case (TableType):
+                    case TableType:
                         return await SetPropertyTableAsync(itemPath, (TableValue)value);
+                    case NumberType:
+                    case StringType:
+                    case BooleanType:
+                    case GuidType:
+                        break;
                     default:
                         throw new ArgumentException("SetProperty must be a valid type.");
                 }
 
                 ValidateItemPath(itemPath, false);
-
-                var expression = $"PowerAppsTestEngine.setPropertyValue({JsonConvert.SerializeObject(itemPath)}, {JsonConvert.SerializeObject(objectValue)})";
-                await TestInfraFunctions.RunJavascriptAsync<object>(expression);
-                return true;
+                return await SetPropertyValueAsync(itemPath, ConvertFormulaValue(value));
             }
             catch (Exception ex)
             {
@@ -496,16 +484,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             {
                 ValidateItemPath(itemPath, false);
 
-                var itemPathString = JsonConvert.SerializeObject(itemPath);
-                var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
                 var recordValue = value.GetConvertedValue(null);
 
                 // TODO - Set the Xrm SDK Value and update state for any JS to run
 
                 // Date.parse() parses the date to unix timestamp
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},Date.parse(\"{recordValue}\"))";
-
-                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                const string expression = "(args) => PowerAppsTestEngine.setPropertyValue(args.itemPath, Date.parse(args.value))";
+                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression, CreateSetPropertyArguments(itemPath, recordValue.ToString("o")));
             }
             catch (Exception ex)
             {
@@ -519,18 +504,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             try
             {
                 ValidateItemPath(itemPath, false);
-
-                var itemPathString = JsonConvert.SerializeObject(itemPath);
-                var propertyNameString = JsonConvert.SerializeObject(itemPath.PropertyName);
-                string checkVal = "null";
-                if (value != null)
-                {
-                    checkVal = FormatValue(value);
-                }
-
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{checkVal})";
-
-                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                return await SetPropertyValueAsync(itemPath, ConvertFormulaValue(value));
             }
             catch (Exception ex)
             {
@@ -539,51 +513,48 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             }
         }
 
-        /// <summary>
-        /// Convert Power Fx formula value to the string representation
-        /// </summary>
-        /// <param name="value">The vaue to convert</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        private string FormatValue(FormulaValue value)
+        private static object? ConvertFormulaValue(FormulaValue value)
         {
-            //TODO: Handle special case of DateTime As unix time to DateTime
             return value switch
             {
-                BlankValue blankValue => "null",
-                StringValue stringValue => $"\"{stringValue.Value}\"",
-                NumberValue numberValue => numberValue.Value.ToString(),
-                DecimalValue decimalValue => decimalValue.Value.ToString(),
-                BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
-                // Assume all dates should be in UTC
-                DateValue dateValue => $"\"{dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
-                DateTimeValue dateTimeValue => $"\"{dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
-                RecordValue recordValue => FormatRecordValue(recordValue),
-                TableValue tableValue => FormatTableValue(tableValue),
+                BlankValue => null,
+                StringValue stringValue => stringValue.Value,
+                NumberValue numberValue => numberValue.Value,
+                DecimalValue decimalValue => decimalValue.Value,
+                BooleanValue booleanValue => booleanValue.Value,
+                GuidValue guidValue => guidValue.Value,
+                DateValue dateValue => dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"),
+                DateTimeValue dateTimeValue => dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"),
+                RecordValue recordValue => recordValue.Fields.ToDictionary(field => field.Name, field => ConvertFormulaValue(field.Value)),
+                TableValue tableValue => tableValue.Rows.Select(row => ConvertFormulaValue(row.Value)).ToList(),
                 _ => throw new ArgumentException("Unsupported FormulaValue type")
             };
         }
 
-        /// <summary>
-        /// Convert a Power Fx object to String Representation of the Record
-        /// </summary>
-        /// <param name="recordValue">The record to be converted</param>
-        /// <returns>Power Fx representation</returns>
-        private string FormatRecordValue(RecordValue recordValue)
+        private static Dictionary<string, object?> CreateSetPropertyArguments(ItemPath itemPath, object? value)
         {
-            var fields = recordValue.Fields.Select(field => $"'{field.Name}': {FormatValue(field.Value)}");
-            return $"{{{string.Join(", ", fields)}}}";
+            return new Dictionary<string, object?>
+            {
+                ["itemPath"] = ConvertItemPath(itemPath),
+                ["value"] = value
+            };
         }
 
-        /// <summary>
-        /// Convert the Power Fx table into string representation
-        /// </summary>
-        /// <param name="tableValue">The table to be converted</param>
-        /// <returns>The string representation of all rows of the table</returns>
-        private string FormatTableValue(TableValue tableValue)
+        private static Dictionary<string, object?> ConvertItemPath(ItemPath itemPath)
         {
-            var rows = tableValue.Rows.Select(row => FormatValue(row.Value));
-            return $"[{string.Join(", ", rows)}]";
+            return new Dictionary<string, object?>
+            {
+                ["controlName"] = itemPath.ControlName,
+                ["index"] = itemPath.Index,
+                ["parentControl"] = itemPath.ParentControl == null ? null : ConvertItemPath(itemPath.ParentControl),
+                ["propertyName"] = itemPath.PropertyName
+            };
+        }
+
+        private Task<bool> SetPropertyValueAsync(ItemPath itemPath, object? value)
+        {
+            const string expression = "(args) => PowerAppsTestEngine.setPropertyValue(args.itemPath, args.value)";
+            return TestInfraFunctions.RunJavascriptAsync<bool>(expression, CreateSetPropertyArguments(itemPath, value));
         }
 
         public async Task<bool> SetPropertyTableAsync(ItemPath itemPath, TableValue tableValue)
@@ -591,37 +562,13 @@ namespace Microsoft.PowerApps.TestEngine.Providers
             try
             {
                 ValidateItemPath(itemPath, false);
-
-                var itemPathString = JsonConvert.SerializeObject(itemPath);
-
-                var tabelValue = ConvertTableValueToJson(tableValue);
-
-                var expression = $"PowerAppsTestEngine.setPropertyValue({itemPathString},{tabelValue})";
-
-                return await TestInfraFunctions.RunJavascriptAsync<bool>(expression);
+                return await SetPropertyValueAsync(itemPath, ConvertFormulaValue(tableValue));
             }
             catch (Exception ex)
             {
                 ExceptionHandlingHelper.CheckIfOutDatedPublishedApp(ex, SingleTestInstanceState.GetLogger());
                 throw;
             }
-        }
-
-        private string ConvertTableValueToJson(TableValue tableValue)
-        {
-            var list = new List<Dictionary<string, object>>();
-
-            foreach (var record in tableValue.Rows)
-            {
-                var dict = new Dictionary<string, object>();
-                foreach (var field in record.Value.Fields)
-                {
-                    dict[field.Name] = field.Value.ToObject();
-                }
-                list.Add(dict);
-            }
-
-            return JsonConvert.SerializeObject(list, Formatting.Indented);
         }
 
         private void ValidateItemPath(ItemPath itemPath, bool requirePropertyName)

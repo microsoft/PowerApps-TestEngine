@@ -388,6 +388,10 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             .Returns(
                 async (string query) => engine.Evaluate(query).AsBoolean()
             );
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>(), It.IsAny<object>()))
+            .Returns(
+                async (string query, object argument) => engine.Evaluate($"({query})({JsonConvert.SerializeObject(argument)})").AsBoolean()
+            );
 
             FormulaValue providerValue = null;
             if (value is string)
@@ -420,6 +424,38 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             }
 
             Assert.Equal(value, controlValue);
+        }
+
+        [Fact]
+        public async Task SetRecordValuePassesUntrustedDataAsStructuredArgument()
+        {
+            const string payload = "a\"});globalThis.__injected=true;({\"b";
+            const string expression = "(args) => PowerAppsTestEngine.setPropertyValue(args.itemPath, args.value)";
+            object capturedArgument = null;
+
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions
+                .Setup(m => m.RunJavascriptAsync<bool>(expression, It.IsAny<object>()))
+                .Callback((string _, object argument) => capturedArgument = argument)
+                .ReturnsAsync(true);
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var record = RecordValue.NewRecordFromFields(new NamedValue(payload, StringValue.New(payload)));
+
+            var result = await provider.SetPropertyAsync(
+                new ItemPath { ControlName = "Dropdown1", PropertyName = payload },
+                record);
+
+            Assert.True(result);
+            Assert.DoesNotContain(payload, expression);
+            var arguments = Assert.IsType<Dictionary<string, object?>>(capturedArgument);
+            var itemPath = Assert.IsType<Dictionary<string, object?>>(arguments["itemPath"]);
+            var value = Assert.IsType<Dictionary<string, object?>>(arguments["value"]);
+            Assert.Equal(payload, itemPath["propertyName"]);
+            Assert.Equal(payload, value[payload]);
+            MockTestInfraFunctions.Verify(
+                m => m.RunJavascriptAsync<bool>(expression, It.IsAny<object>()),
+                Times.Once());
         }
 
         /// <summary>
@@ -780,7 +816,7 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             // Arrange
             MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
             MockTestInfraFunctions = new Mock<ITestInfraFunctions>();
-            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<string>(It.IsAny<string>()));
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>(), It.IsAny<object>())).ReturnsAsync(true);
 
             var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
 

@@ -258,6 +258,8 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             .Returns(
                 async (string query) => engine.Evaluate(query).AsBoolean()
             );
+            MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>(), It.IsAny<object>()))
+            .ReturnsAsync(true);
 
             FormulaValue providerValue = null;
             if (value is string)

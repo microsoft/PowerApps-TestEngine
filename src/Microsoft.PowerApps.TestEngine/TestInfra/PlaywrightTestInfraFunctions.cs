@@ -493,6 +493,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             return await Page.EvaluateAsync<T>(jsExpression);
         }
 
+        public async Task<T> RunJavascriptAsync<T>(string jsExpression, object argument)
+        {
+            ValidatePage();
+
+            _singleTestInstanceState.GetLogger().LogDebug("Run Javascript: " + jsExpression);
+
+            return await Page.EvaluateAsync<T>(jsExpression, argument);
+        }
+
         public async Task AddScriptContentAsync(string content)
         {
             ValidatePage();

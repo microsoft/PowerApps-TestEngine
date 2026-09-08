@@ -16,68 +16,12 @@ class PowerAppsModelDrivenCanvas {
         return AppDependencyHandler.containers[key[0]].AppMagic;
     }
 
-    static executePublishedAppScript(scriptToExecute) {
-        var promise = new Promise((resolve) => {
-            var result = eval(scriptToExecute);
-            resolve(result)
-        });
-
-        return promise;
-    }
-
     static getOngoingActionsInPublishedApp() {
-        return PowerAppsModelDrivenCanvas.executePublishedAppScript("AppDependencyHandler.containers[Object.keys(AppDependencyHandler.containers).filter(k => k != AppDependencyHandler.prebuiltContainerId)[0]].AppMagic.AuthoringTool.Runtime.existsOngoingAsync()");
+        return PowerAppsModelDrivenCanvas.getAppMagic().AuthoringTool.Runtime.existsOngoingAsync();
     }
 
     static getControlObjectModel() {
-        return PowerAppsModelDrivenCanvas.executePublishedAppScript("PowerAppsTestEngine.buildControlObjectModel()");
-    }
-
-    static getPropertyValueFromPublishedApp(itemPath) {
-        var script = `PowerAppsModelDrivenCanvas.getPropertyValueFromControl(${JSON.stringify(itemPath)})`;
-        return PowerAppsModelDrivenCanvas.executePublishedAppScript(script);
-    }
-
-    static getPropertyValueFromPublishedApp(itemPath) {
-        var script = `PowerAppsModelDrivenCanvas.getPropertyValueFromControl(${JSON.stringify(itemPath)})`;
-        return PowerAppsModelDrivenCanvas.executePublishedAppScript(script);
-    }
-
-    static selectControl(itemPath) {
-        var script = `PowerAppsModelDrivenCanvas.selectControl(${JSON.stringify(itemPath)})`;
-        return PowerAppsModelDrivenCanvas.executePublishedAppScript(script);
-    }
-
-    static interactWithControl(itemPath, value) {
-        var script = "";
-        if (isArray(Object.values(value))) {
-            var valuesJsonArr = [];
-            var values = Object.values(value);
-            for (var index in values) {
-                valuesJsonArr[`${index}`] = `${JSON.stringify(values[index])}`;
-            }
-            var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
-            script = `PowerAppsModelDrivenCanvas.interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
-        } else {
-            var valueJson = `{"${itemPath.propertyName}":${value}}`;
-            script = `PowerAppsModelDrivenCanvas.interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
-        }
-        return PowerAppsModelDrivenCanvas.executePublishedAppScript(script);
-    }
-
-    static setPropertyValueForControl(itemPath, value) {
-        if (typeof value == "object") {
-            return PowerAppsModelDrivenCanvas.interactWithControl(itemPath, value);
-        } else if (typeof value == "string") {
-            value = JSON.stringify(value);
-        }
-        var script = `PowerAppsModelDrivenCanvas.setPropertyValueForControl(${JSON.stringify(itemPath)}, ${value})`;
-        return PowerAppsModelDrivenCanvas.executePublishedAppScript(script);
-    }
-
-    static fetchArrayItemCount(itemPath) {
-        var script = `PowerAppsModelDrivenCanvas.fetchArrayItemCount(${JSON.stringify(itemPath)})`;
-        return PowerAppsModelDrivenCanvas.executePublishedAppScript(script);
+        return PowerAppsModelDrivenCanvas.buildControlObjectModel();
     }
 
     static isArray(obj) {
