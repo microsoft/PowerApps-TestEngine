@@ -525,10 +525,23 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 GuidValue guidValue => guidValue.Value,
                 DateValue dateValue => dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"),
                 DateTimeValue dateTimeValue => dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o"),
-                RecordValue recordValue => recordValue.Fields.ToDictionary(field => field.Name, field => ConvertFormulaValue(field.Value)),
+                RecordValue recordValue => ConvertRecordValue(recordValue),
                 TableValue tableValue => tableValue.Rows.Select(row => ConvertFormulaValue(row.Value)).ToList(),
                 _ => throw new ArgumentException("Unsupported FormulaValue type")
             };
+        }
+
+        private static ExpandoObject ConvertRecordValue(RecordValue recordValue)
+        {
+            var result = new ExpandoObject();
+            var fields = (IDictionary<string, object?>)result;
+
+            foreach (var field in recordValue.Fields)
+            {
+                fields[field.Name] = ConvertFormulaValue(field.Value);
+            }
+
+            return result;
         }
 
         private static Dictionary<string, object?> CreateSetPropertyArguments(ItemPath itemPath, object? value)

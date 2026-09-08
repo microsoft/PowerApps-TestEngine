@@ -128,6 +128,11 @@ var mockCanvasControl = class {
             static getValue() {
                 return mockValue;
             }
+
+            static setValue(data) {
+                mockValue = data;
+                return true;
+            }
         }
     }
 
@@ -168,6 +173,14 @@ var mockAppMagic = class {
                         return undefined;
                     }
                 }
+
+                static replicatedContexts = class {
+                    static gallery = class {
+                        static bindingContextAt(index) {
+                            return mockAppMagic.Controls.GlobalContextManager.bindingContext;
+                        }
+                    }
+                }
             }
         }
     }
@@ -189,7 +202,11 @@ var OpenAjaxClass = class {
 
     static getAuthoringControlContext() {
         return class {
-            static _replicatedContext = null;
+            static _replicatedContext = class {
+                static manager = class {
+                    static managerId = 'gallery';
+                }
+            };
         }
     }
 

@@ -259,7 +259,9 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
                 async (string query) => engine.Evaluate(query).AsBoolean()
             );
             MockTestInfraFunctions.Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>(), It.IsAny<object>()))
-            .ReturnsAsync(true);
+            .Returns(
+                async (string query, object argument) => engine.Evaluate($"({query})({JsonConvert.SerializeObject(argument)})").AsBoolean()
+            );
 
             FormulaValue providerValue = null;
             if (value is string)
@@ -278,7 +280,15 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             var result = await provider.SetPropertyAsync(new ItemPath { ControlName = controlName, PropertyName = propertyName }, providerValue);
 
             // Assert
-
+            Assert.True(result);
+            if (value is string)
+            {
+                Assert.Equal(value, engine.Evaluate("mockValue").AsString());
+            }
+            else if (value is bool)
+            {
+                Assert.Equal(value, engine.Evaluate("mockValue").AsBoolean());
+            }
         }
 
         /// <summary>
@@ -289,11 +299,68 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
         {
             // Default Values
             yield return new object[] {
-                   Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Hello'", "custom"),
+                   Common.MockJavaScript("mockPageType = 'custom';mockValue = 'Initial'", "custom", interfaceResourceNames: new List<string> { "testengine.provider.mda.PowerAppsTestEngineMDA.js", "testengine.provider.mda.PowerAppsTestEngineMDACustom.js" }),
                     "TextInput1",
                     "Text",
                     "Hello"
             };
+        }
+
+        [Fact]
+        public async Task SetStructuredValuesThroughCustomPage()
+        {
+            const string payload = "a\"});globalThis.__injected=true;({\"b";
+            var engine = new Engine();
+            engine.Execute(Common.MockJavaScript(
+                "mockPageType = 'custom';mockValue = null",
+                "custom",
+                interfaceResourceNames: new List<string>
+                {
+                    "testengine.provider.mda.PowerAppsTestEngineMDA.js",
+                    "testengine.provider.mda.PowerAppsTestEngineMDACustom.js"
+                }));
+
+            MockTestState.Setup(m => m.GetTimeout()).Returns(1000);
+            MockTestState.Setup(m => m.GetDomain()).Returns(String.Empty);
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions = new Mock<ITestInfraFunctions>();
+            MockTestInfraFunctions
+                .Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>(), It.IsAny<object>()))
+                .Returns(
+                    async (string query, object argument) =>
+                        engine.Evaluate($"({query})({JsonConvert.SerializeObject(argument)})").AsBoolean());
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var galleryPath = new ItemPath
+            {
+                ControlName = "TextInput1",
+                PropertyName = "Text",
+                ParentControl = new ItemPath
+                {
+                    ControlName = "Gallery",
+                    PropertyName = "Items",
+                    Index = 0
+                }
+            };
+            var record = RecordValue.NewRecordFromFields(new NamedValue("Text", StringValue.New(payload)));
+            var tableType = RecordType.Empty().Add("Text", FormulaType.String);
+            var table = TableValue.NewTable(tableType, record);
+            var guid = Guid.NewGuid();
+            var date = new DateTime(2026, 9, 8);
+
+            Assert.True(await provider.SetPropertyAsync(galleryPath, record));
+            Assert.Equal($"{{\"Text\":{JsonConvert.SerializeObject(payload)}}}", engine.Evaluate("JSON.stringify(mockValue)").AsString());
+
+            Assert.True(await provider.SetPropertyAsync(galleryPath, table));
+            Assert.Equal($"[{{\"Text\":{JsonConvert.SerializeObject(payload)}}}]", engine.Evaluate("JSON.stringify(mockValue)").AsString());
+
+            Assert.True(await provider.SetPropertyAsync(galleryPath, GuidValue.New(guid)));
+            Assert.Equal(guid.ToString(), engine.Evaluate("mockValue").AsString());
+
+            Assert.True(await provider.SetPropertyAsync(galleryPath, DateValue.NewDateOnly(date)));
+            Assert.True(engine.Evaluate("typeof mockValue === 'number' && !Number.isNaN(mockValue)").AsBoolean());
+
+            Assert.False(engine.Evaluate("globalThis.__injected === true").AsBoolean());
         }
 
         [Theory]

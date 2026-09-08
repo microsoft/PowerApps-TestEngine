@@ -450,12 +450,111 @@ namespace Microsoft.PowerApps.TestEngine.Tests.PowerApps
             Assert.DoesNotContain(payload, expression);
             var arguments = Assert.IsType<Dictionary<string, object?>>(capturedArgument);
             var itemPath = Assert.IsType<Dictionary<string, object?>>(arguments["itemPath"]);
-            var value = Assert.IsType<Dictionary<string, object?>>(arguments["value"]);
+            var value = Assert.IsAssignableFrom<IDictionary<string, object?>>(arguments["value"]);
             Assert.Equal(payload, itemPath["propertyName"]);
             Assert.Equal(payload, value[payload]);
             MockTestInfraFunctions.Verify(
                 m => m.RunJavascriptAsync<bool>(expression, It.IsAny<object>()),
                 Times.Once());
+        }
+
+        [Fact]
+        public async Task SetEmptyRecordSerializesAsJavaScriptObject()
+        {
+            const string expression = "(args) => PowerAppsTestEngine.setPropertyValue(args.itemPath, args.value)";
+            object capturedArgument = null;
+
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions
+                .Setup(m => m.RunJavascriptAsync<bool>(expression, It.IsAny<object>()))
+                .Callback((string _, object argument) => capturedArgument = argument)
+                .ReturnsAsync(true);
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+            var emptyRecord = RecordValue.NewRecordFromFields(Array.Empty<NamedValue>());
+
+            await provider.SetPropertyAsync(
+                new ItemPath { ControlName = "Dropdown1", PropertyName = "Selected" },
+                emptyRecord);
+
+            var arguments = Assert.IsType<Dictionary<string, object?>>(capturedArgument);
+            Assert.IsType<ExpandoObject>(arguments["value"]);
+
+            var serializedArgument = SerializePlaywrightArgument(capturedArgument);
+            Assert.Contains("\"k\":\"value\",\"v\":{\"o\":[]", serializedArgument);
+            Assert.DoesNotContain("\"k\":\"value\",\"v\":{\"a\":[]", serializedArgument);
+        }
+
+        [Fact]
+        public async Task SetPropertyPreservesStructuredValueShapes()
+        {
+            const string standardExpression = "(args) => PowerAppsTestEngine.setPropertyValue(args.itemPath, args.value)";
+            const string dateExpression = "(args) => PowerAppsTestEngine.setPropertyValue(args.itemPath, Date.parse(args.value))";
+            const string payload = "a\"});globalThis.__injected=true;({\"b";
+            var guid = Guid.NewGuid();
+            var nestedPath = new ItemPath
+            {
+                ControlName = "TableRow",
+                PropertyName = payload,
+                ParentControl = new ItemPath
+                {
+                    ControlName = "Gallery",
+                    PropertyName = "Items",
+                    Index = 0
+                }
+            };
+            var record = RecordValue.NewRecordFromFields(new NamedValue("Text", StringValue.New(payload)));
+            var tableType = RecordType.Empty().Add("Text", FormulaType.String);
+            var table = TableValue.NewTable(tableType, record);
+            var calls = new List<(string Expression, object Argument)>();
+
+            MockSingleTestInstanceState.Setup(m => m.GetLogger()).Returns(MockLogger.Object);
+            MockTestInfraFunctions
+                .Setup(m => m.RunJavascriptAsync<bool>(It.IsAny<string>(), It.IsAny<object>()))
+                .Callback((string expression, object argument) => calls.Add((expression, argument)))
+                .ReturnsAsync(true);
+
+            var provider = new ModelDrivenApplicationProvider(MockTestInfraFunctions.Object, MockSingleTestInstanceState.Object, MockTestState.Object);
+
+            await provider.SetPropertyAsync(nestedPath, StringValue.New(payload));
+            await provider.SetPropertyAsync(nestedPath, GuidValue.New(guid));
+            await provider.SetPropertyAsync(nestedPath, record);
+            await provider.SetPropertyAsync(nestedPath, table);
+            await provider.SetPropertyAsync(nestedPath, DateValue.NewDateOnly(new DateTime(2026, 9, 8)));
+
+            Assert.Equal(5, calls.Count);
+            Assert.Equal(4, calls.Count(call => call.Expression == standardExpression));
+            Assert.Single(calls, call => call.Expression == dateExpression);
+            Assert.All(calls, call =>
+            {
+                Assert.DoesNotContain(payload, call.Expression);
+                var serializedArgument = SerializePlaywrightArgument(call.Argument);
+                Assert.Contains(payload.Replace("\"", "\\u0022"), serializedArgument);
+                Assert.Contains("\"k\":\"parentControl\"", serializedArgument);
+            });
+
+            var standardArguments = calls
+                .Where(call => call.Expression == standardExpression)
+                .Select(call => Assert.IsType<Dictionary<string, object?>>(call.Argument))
+                .ToList();
+            Assert.Equal(payload, standardArguments[0]["value"]);
+            Assert.Equal(guid, standardArguments[1]["value"]);
+            Assert.IsType<ExpandoObject>(standardArguments[2]["value"]);
+            Assert.IsType<List<object?>>(standardArguments[3]["value"]);
+        }
+
+        private static string SerializePlaywrightArgument(object argument)
+        {
+            var assembly = typeof(IPage).Assembly;
+            var converterType = assembly.GetType("Microsoft.Playwright.Transport.Converters.EvaluateArgumentValueConverter");
+            var visitorType = assembly.GetType("Microsoft.Playwright.Transport.Converters.EvaluateArgumentValueConverter+VisitorInfo");
+            var handleType = assembly.GetType("Microsoft.Playwright.Core.EvaluateArgumentGuidElement");
+            var serializeMethod = converterType.GetMethod("Serialize", BindingFlags.NonPublic | BindingFlags.Static);
+            var handles = Activator.CreateInstance(typeof(List<>).MakeGenericType(handleType));
+            var visitor = Activator.CreateInstance(visitorType, nonPublic: true);
+            var serialized = serializeMethod.Invoke(null, new[] { argument, handles, visitor });
+
+            return global::System.Text.Json.JsonSerializer.Serialize(serialized, serialized.GetType());
         }
 
         /// <summary>
