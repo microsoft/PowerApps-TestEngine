@@ -56,10 +56,10 @@ class PowerAppsModelDrivenCanvas {
             for (var index in values) {
                 valuesJsonArr[`${index}`] = `${JSON.stringify(values[index])}`;
             }
-            var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
+            var valueJson = `{${JSON.stringify(itemPath.propertyName)}:${valuesJsonArr}}`;
             script = `PowerAppsModelDrivenCanvas.interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
         } else {
-            var valueJson = `{"${itemPath.propertyName}":${value}}`;
+            var valueJson = `{${JSON.stringify(itemPath.propertyName)}:${value}}`;
             script = `PowerAppsModelDrivenCanvas.interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
         }
         return PowerAppsModelDrivenCanvas.executePublishedAppScript(script);
