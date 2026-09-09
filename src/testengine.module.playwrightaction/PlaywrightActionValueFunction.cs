@@ -70,6 +70,22 @@ namespace testengine.module
                 case "fill":
                     _testInfraFunctions.FillAsync(locator.Value, value.Value).Wait();
                     break;
+                case "press-in-iframe":
+                    foreach (var frame in page.Frames)
+                    {
+                        if (frame.Locator(locator.Value).IsVisibleAsync().Result)
+                        {
+                            var key = string.IsNullOrEmpty(value.Value) ? "Enter" : value.Value;
+                            frame.Locator(locator.Value).PressAsync(key).Wait();
+                        }
+                    }
+                    break;
+                case "press":
+                    {
+                        var key = string.IsNullOrEmpty(value.Value) ? "Enter" : value.Value;
+                        _testInfraFunctions.PressAsync(locator.Value, key).Wait();
+                    }
+                    break;
                 case "screenshot":
                     var testResultDirectory = _singleTestInstanceState.GetTestResultsDirectory();
                     if (!_fileSystem.Exists(testResultDirectory))

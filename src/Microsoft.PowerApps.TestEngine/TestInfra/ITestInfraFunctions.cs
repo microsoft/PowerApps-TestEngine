@@ -71,6 +71,14 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task FillAsync(string selector, string value);
 
         /// <summary>
+        /// Presses a key on an element
+        /// </summary>
+        /// <param name="selector">Selector to find element</param>
+        /// <param name="key">Key to press (e.g., 'Enter', 'Tab', etc.)</param>
+        /// <returns>Task</returns>
+        public Task PressAsync(string selector, string key);
+
+        /// <summary>
         /// Clicks an element
         /// </summary>
         /// <param name="selector">Selector to find element</param>
