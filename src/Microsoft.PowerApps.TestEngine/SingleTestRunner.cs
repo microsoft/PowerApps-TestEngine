@@ -194,13 +194,13 @@ namespace Microsoft.PowerApps.TestEngine
                     }
                     catch (Exception ex)
                     {
-                        // That failed warn that faild but allow to continue so that can perform negative tests
+                        // That failed warn that failed but allow to continue so that can perform negative tests
                         // For example the test could fail because the user is Unlicensed or the app is not shared with test user persona
 
                         // In the example of a canvas application Power Fx test steps like the following could be added for error dialog
                         // Assert(ErrorDialogTitle="Start a Power Apps trial?")
                         Logger.LogError(ex, "Found error setting up initial provider state");
-                        Logger.LogInformation("Error found during login, proceeding wuth test");
+                        Logger.LogInformation("Error found during login, proceeding with test");
                     }
                 }
                 else

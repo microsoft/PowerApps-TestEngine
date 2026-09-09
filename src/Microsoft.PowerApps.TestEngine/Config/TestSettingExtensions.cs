@@ -45,7 +45,7 @@ namespace Microsoft.PowerApps.TestEngine.Config
 #endif
 
         /// <summary>
-        /// List of allowed .Net Namespaces that deney load unless explict allow is defined
+        /// List of allowed .Net Namespaces that deny load unless explicit allow is defined
         /// </summary>
         public HashSet<string> DenyNamespaces { get; set; } = new HashSet<string>();
 
