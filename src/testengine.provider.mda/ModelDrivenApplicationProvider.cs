@@ -216,6 +216,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "islogovisible":
                         case "istitlevisible":
                         case "checked":
+                        case "autostart":
+                        case "paused":
+                        case "showcontrols":
+                        case "loop":
+                        case "start":
                         case "markers":
                         case "powerbiinteractions":
                         case "autoplay":
