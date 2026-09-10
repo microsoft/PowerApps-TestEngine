@@ -3,9 +3,9 @@
 
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerApps.TestEngine.Modules;
+using Microsoft.PowerApps.TestEngine.PowerFx;
 using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.Users;
@@ -18,6 +18,8 @@ namespace Microsoft.PowerApps.TestEngine.Config
     public class TestState : ITestState
     {
         private readonly ITestConfigParser _testConfigParser;
+        private readonly IFileSystem _fileSystem;
+        private ILogger _logger;
         private bool _recordMode = false;
 
         public event EventHandler<TestStepEventArgs> BeforeTestStepExecuted;
@@ -50,10 +52,16 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public bool ExecuteStepByStep { get; set; } = false;
 
         public ITestWebProvider TestProvider { get; set; }
-
         public TestState(ITestConfigParser testConfigParser)
         {
             _testConfigParser = testConfigParser;
+            _fileSystem = new FileSystem();
+        }
+
+        public TestState(ITestConfigParser testConfigParser, IFileSystem fileSystem)
+        {
+            _testConfigParser = testConfigParser;
+            _fileSystem = fileSystem;
         }
 
         public TestSuiteDefinition GetTestSuiteDefinition()
@@ -76,13 +84,14 @@ namespace Microsoft.PowerApps.TestEngine.Config
         {
             return TestCases;
         }
-
         public void ParseAndSetTestState(string testConfigFile, ILogger logger)
         {
             if (string.IsNullOrEmpty(testConfigFile))
             {
                 throw new ArgumentNullException(nameof(testConfigFile));
             }
+
+            _logger = logger;
 
             List<string> userInputExceptionMessages = new List<string>();
             try
@@ -300,7 +309,135 @@ namespace Microsoft.PowerApps.TestEngine.Config
         }
         public TestSettings GetTestSettings()
         {
-            return TestPlanDefinition?.TestSettings;
+            var settings = TestPlanDefinition?.TestSettings;
+
+            if (settings != null)
+            {
+                // If there's a test settings file specified, load and merge it
+                if (!string.IsNullOrEmpty(settings.FilePath))
+                {
+                    LoadTestSettingsFile(settings.FilePath, settings);
+                }
+
+                // Process any PowerFx definition files
+                ProcessPowerFxDefinitions(settings);
+            }
+
+            return settings;
+        }
+        private void LoadTestSettingsFile(string filePath, TestSettings parentSettings)
+        {
+            try
+            {
+                // If _logger is not set, we might be in a scenario where ParseAndSetTestState hasn't been called
+                // In this case, we use a NullLogger to avoid null reference exceptions
+                var logger = _logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+
+                if (_fileSystem.FileExists(filePath))
+                {
+                    var fileSettings = _testConfigParser.ParseTestConfig<TestSettings>(filePath, logger);
+                    MergeTestSettings(fileSettings, parentSettings);
+                }
+                else
+                {
+                    logger.LogWarning($"Test settings file not found: {filePath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Similarly, use NullLogger if _logger is not set
+                var logger = _logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+                logger.LogError($"Error loading test settings file: {ex.Message}");
+            }
+        }
+
+        private void MergeTestSettings(TestSettings source, TestSettings destination)
+        {
+            // Merge properties from source to destination, only if they're not already set
+            if (!string.IsNullOrEmpty(source.Locale) && string.IsNullOrEmpty(destination.Locale))
+            {
+                destination.Locale = source.Locale;
+            }
+
+            if (source.Timeout != 30000 && destination.Timeout == 30000) // Default value check
+            {
+                destination.Timeout = source.Timeout;
+            }
+
+            if (source.RecordVideo && !destination.RecordVideo)
+            {
+                destination.RecordVideo = source.RecordVideo;
+            }
+
+            if (source.Headless != true && destination.Headless == true) // Default is true
+            {
+                destination.Headless = source.Headless;
+            }
+
+            // Merge browser configurations if not already set
+            if ((destination.BrowserConfigurations == null || destination.BrowserConfigurations.Count == 0) &&
+                source.BrowserConfigurations != null && source.BrowserConfigurations.Count > 0)
+            {
+                destination.BrowserConfigurations = source.BrowserConfigurations;
+            }
+
+            // Always merge PowerFx types and functions
+            if (source.PowerFxTestTypes != null)
+            {
+                destination.PowerFxTestTypes.AddRange(source.PowerFxTestTypes);
+            }
+
+            if (source.TestFunctions != null)
+            {
+                destination.TestFunctions.AddRange(source.TestFunctions);
+            }
+
+            // Add any PowerFx definition files from the source
+            if (source.PowerFxDefinitions != null)
+            {
+                if (destination.PowerFxDefinitions == null)
+                {
+                    destination.PowerFxDefinitions = new List<PowerFxDefinition>();
+                }
+
+                destination.PowerFxDefinitions.AddRange(source.PowerFxDefinitions);
+            }
+        }
+
+        private void ProcessPowerFxDefinitions(TestSettings settings)
+        {
+            if (settings.PowerFxDefinitions == null || settings.PowerFxDefinitions.Count == 0)
+            {
+                return;
+            }
+
+            // If _logger is not set, use NullLogger to avoid null reference exceptions
+            var logger = _logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+            var loader = new PowerFxDefinitionLoader(_fileSystem, logger);
+            string baseDirectory = TestConfigFile != null ?
+                Path.GetDirectoryName(TestConfigFile.FullName) :
+                Directory.GetCurrentDirectory();
+
+            foreach (var definition in settings.PowerFxDefinitions)
+            {
+                if (string.IsNullOrEmpty(definition.Location))
+                {
+                    continue;
+                }
+
+                // Resolve path relative to the test file
+                string resolvedPath;
+                if (Path.IsPathRooted(definition.Location))
+                {
+                    resolvedPath = definition.Location;
+                }
+                else
+                {
+                    resolvedPath = Path.GetFullPath(Path.Combine(baseDirectory, definition.Location));
+                }
+
+                loader.LoadPowerFxDefinitionsFromFile(resolvedPath, settings);
+            }
         }
 
         public int GetTimeout()
@@ -401,6 +538,36 @@ namespace Microsoft.PowerApps.TestEngine.Config
         public void SetRecordMode()
         {
             _recordMode = true;
+        }
+
+        public TestSettings GetTestSettingsFromFile(string filePath, ILogger logger)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentNullException(nameof(filePath));
+            }
+
+            _logger = logger;
+
+            try
+            {
+                if (_fileSystem.FileExists(filePath))
+                {
+                    var settings = _testConfigParser.ParseTestConfig<TestSettings>(filePath, logger);
+                    ProcessPowerFxDefinitions(settings);
+                    return settings;
+                }
+                else
+                {
+                    logger.LogWarning($"Test settings file not found: {filePath}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error loading test settings file: {ex.Message}");
+                throw;
+            }
         }
     }
 }

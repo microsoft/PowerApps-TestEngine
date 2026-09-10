@@ -1,0 +1,18 @@
+
+# yaml-embedded-languages: powerfx
+name: Hello Scan
+description: Test scan for MCP
+version: 1.0.0
+onFile:
+  - when: IsMatch(Current.Name, ".*screen.*")
+    then: |
+      AddFact({
+        Key: "Screen",
+        Value: Current.FullPath
+      }, "Metadata");
+onObject:
+  - when: true
+    then: |
+      AddFact({
+        Key: Current.Name,
+        Value: ""}, "Object")

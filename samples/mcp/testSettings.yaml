@@ -1,0 +1,174 @@
+# yaml-embedded-languages: powerfx
+locale: "en-US"
+headless: false
+recordVideo: true
+extensionModules:
+  enable: true
+  parameters:
+    enableCanvasAppFunctions: true
+timeout: 1200000
+browserConfigurations:
+  - browser: Chromium
+    channel: msedge
+
+scans:
+  - name: Dataverse entity
+    location: entity.scan.yaml
+  - name: Screen Scan
+    location: screen.scan.yaml
+
+powerFxDefinitions:
+  - location: modules/testSettings.modular.yaml
+
+# Include the PowerFx types and functions directly so they can be shared in a single file
+powerFxTestTypes:
+ - name: UIControl
+   value: |
+      {
+        Name: Text,
+        ControlType: Text,
+        Parent: Text,
+        Pattern: Text
+      }
+ - name: ScreenInfo
+   value: |
+      {
+        Name: Text,
+        Type: Text,
+        Controls: Table[UIControl],
+        HasNavigation: Boolean
+      }
+ - name: NavigationFlow
+   value: |
+      {
+        Source: Text,
+        Target: Text,
+        Control: Text,
+        Type: Text
+      }
+ - name: ValidationRule
+   value: |
+      {
+        Control: Text,
+        Rule: Text,
+        ErrorMessage: Text
+      }
+ - name: DataOperation
+   value: |
+      {
+        Type: Text, 
+        DataSource: Text,
+        Control: Text
+      }
+ - name: TestPattern
+   value: |
+      {
+        Type: Text,
+        Priority: Text,
+        Description: Text
+      }
+ - name: TestInsight
+   value: |
+      {
+        Category: Text,
+        Key: Text,
+        Value: Any,
+        AppPath: Text
+      }
+ - name: TestTemplate
+   value: |
+      {
+        Type: Text,
+        Template: Text,
+        Priority: Text,
+        Success: Boolean
+      }
+
+testFunctions:
+ - description: Identifies UI patterns in Canvas Apps
+   code: |
+    IdentifyUIPattern(controlInfo: UIControl): Text = 
+      With(
+        controlInfo,
+        Switch(
+          True,
+          Or(
+            EndsWith(Name, "Screen"), 
+            Contains(Name, "Screen")
+          ), "Screen",
+          Or(
+            ControlType = "button", 
+            Contains(Name, "btn"), 
+            Contains(Name, "Button")
+          ), "Button",
+          Or(
+            Contains(ControlType, "text"), 
+            Contains(ControlType, "input"),
+            Contains(Name, "text"),
+            Contains(Name, "input")
+          ), "TextInput",
+          Or(
+            Contains(ControlType, "gallery"),
+            Contains(Name, "gallery"),
+            Contains(Name, "list")
+          ), "Gallery",
+          Or(
+            Contains(ControlType, "form"),
+            Contains(Name, "form")
+          ), "Form",
+          Or(
+            Contains(ControlType, "dropdown"),
+            Contains(Name, "dropdown"),
+            Contains(Name, "combo")
+          ), "Dropdown",
+          Or(
+            Contains(ControlType, "toggle"),
+            Contains(ControlType, "checkbox"),
+            Contains(Name, "toggle"),
+            Contains(Name, "check")
+          ), "Toggle",
+          Or(
+            Contains(ControlType, "date"),
+            Contains(Name, "date"),
+            Contains(Name, "calendar")
+          ), "DatePicker",
+          "Other"
+        )
+      )
+
+ - description: Detects navigation patterns in Canvas App formulas
+   code: |
+    DetectNavigationPattern(formula: Text): Text = 
+      If(
+        IsBlank(formula),
+        "Unknown",
+        Switch(
+          True,
+          Match(formula, "Navigate\\s*\\(\\s*[\\w\"']+\\s*,\\s*[\\w\"']+"), "ScreenNavigation",
+          Match(formula, "Back\\s*\\("), "BackNavigation",
+          Match(formula, "NewForm\\s*\\(|EditForm\\s*\\(|ViewForm\\s*\\("), "FormNavigation",
+          Match(formula, "Launch\\s*\\("), "ExternalNavigation",
+          Match(formula, "SubmitForm\\s*\\("), "FormSubmission",
+          "Other"
+        )
+      )
+
+ - description: Detects CRUD operations on a data source
+   code: |
+    DetectCrudOperations(dataSource: Text, operations: Table[DataOperation]): Record = 
+      With(
+        {
+          Create: CountIf(operations, Type = "Create" && DataSource = dataSource) > 0,
+          Read: CountIf(operations, Type = "Read" && DataSource = dataSource) > 0,
+          Update: CountIf(operations, Type = "Update" && DataSource = dataSource) > 0,
+          Delete: CountIf(operations, Type = "Delete" && DataSource = dataSource) > 0
+        },
+        {
+          DataSource: dataSource,
+          HasCreate: Create,
+          HasRead: Read,
+          HasUpdate: Update,
+          HasDelete: Delete,
+          IsCrud: And(Create, Read, Update, Delete)
+        }
+      )

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "testengine.server.mcp": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:/Users/grarchib/Source/GitHub-TestEngine-MCP/PowerApps-TestEngine/samples/mcp/start.te.yaml\""
+    }
+  }
+}

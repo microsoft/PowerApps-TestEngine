@@ -1,0 +1,20 @@
+testSuite:
+  testSuiteName: MCP Server
+  testSuiteDescription: Start MCP Server with defined test settings.
+  persona: User1
+  appLogicalName: NotNeeded
+
+  testCases:
+    - testCaseName: POST- Include canvas apps
+      testCaseDescription: Update each discovered canvas app and include it in the MCP server response
+      testSteps: |
+        = Set(CanvasApps, ForAll(CanvasApps, Patch(ThisRecord, {IncludeInModel: true})))
+
+testSettings:
+  filePath: testSettings.yaml
+
+environmentVariables:
+  users:
+    - personaName: User1
+      emailKey: user1Email
+      passwordKey: NotNeeded

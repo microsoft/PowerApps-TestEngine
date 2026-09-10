@@ -9,6 +9,11 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
     {
         private readonly Process _process;
 
+        public Process Process
+        {
+            get { return _process; }
+        }
+
         public ProcessWrapper(Process process)
         {
             _process = process;
@@ -18,7 +23,7 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
         {
             get
             {
-                using (var reader = _process.StandardOutput)
+                using (var reader = Process.StandardOutput)
                 {
                     return reader.ReadToEnd();
                 }
@@ -27,12 +32,12 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
 
         public void WaitForExit()
         {
-            _process.WaitForExit();
+            Process.WaitForExit();
         }
 
         public void Dispose()
         {
-            _process?.Dispose();
+            Process.Dispose();
         }
     }
 }
