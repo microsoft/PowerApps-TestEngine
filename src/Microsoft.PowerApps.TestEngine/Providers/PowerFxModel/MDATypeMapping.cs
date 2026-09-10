@@ -31,8 +31,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
             typeMappings.Add("Z", FormulaType.DateTimeNoTimeZone);
             typeMappings.Add("g", FormulaType.Guid);
             typeMappings.Add("m", FormulaType.Decimal);
-            typeMappings.Add("v", FormulaType.UntypedObject);
             typeMappings.Add("i", FormulaType.String);
+            typeMappings.Add("$", FormulaType.Decimal);
         }
 
         /// <summary>
@@ -99,10 +99,11 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
                 // Either Table value - Example: *[Gallery2:v, Icon2:v, Label4:v]
                 // Or Record value - Example: ![Gallery2:v, Icon2:v, Label4:v]
                 var subTypes = GetSubTypes(typeString);
+                FormulaType subFormulaType;
 
                 foreach (var subType in subTypes)
                 {
-                    if (TryGetType(subType.PropertyType, out var subFormulaType))
+                    if (TryGetType(subType.PropertyName, out subFormulaType) || TryGetType(subType.PropertyType, out subFormulaType))
                     {
                         recordType = recordType.Add(new NamedFormulaType(subType.PropertyName, subFormulaType));
                     }

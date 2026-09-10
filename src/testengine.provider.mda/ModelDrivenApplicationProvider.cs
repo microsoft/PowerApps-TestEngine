@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Microsoft.PowerApps.TestEngine.Config;
@@ -185,7 +186,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                             // Return the value
                             return (T)(object)("{PropertyValue: " + value.ToString() + "}");
                         }
-                    }
+                    }                    
                 }
 
                 if (itemPath.PropertyName.ToLower() == "text" && (await TestInfraFunctions.RunJavascriptAsync<object>("PowerAppsTestEngine.pageType()"))?.ToString() == "entityrecord")
@@ -220,6 +221,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                         case "powerbiinteractions":
                         case "autoplay":
                         case "showtitle":
+                        case "shownavigation":
+                        case "selectable":
                             return (T)(object)("{PropertyValue: " + value.ToString().ToLower() + "}");
                         default:
                             switch (value.GetType().ToString())
@@ -319,6 +322,8 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                                     SingleTestInstanceState.GetLogger().LogTrace(skipMessage);
                                 }
 
+                                TypeMapping.AddMapping(control.Name, controlType);
+                                
                                 var controlValue = new ControlRecordValue(controlType, this, control.Name);
 
                                 controlDictionary.Add(control.Name, controlValue);
@@ -513,7 +518,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 throw;
             }
         }
-
+        
         public async Task<bool> SetPropertyRecordAsync(ItemPath itemPath, RecordValue value)
         {
             try
@@ -555,6 +560,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers
                 NumberValue numberValue => numberValue.Value.ToString(),
                 DecimalValue decimalValue => decimalValue.Value.ToString(),
                 BooleanValue booleanValue => booleanValue.Value.ToString().ToLower(),
+                GuidValue guidValue => $"\"{guidValue.Value}\"",
                 // Assume all dates should be in UTC
                 DateValue dateValue => $"\"{dateValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
                 DateTimeValue dateTimeValue => $"\"{dateTimeValue.GetConvertedValue(TimeZoneInfo.Utc).ToString("o")}\"", // ISO 8601 format
