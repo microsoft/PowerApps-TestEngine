@@ -7,7 +7,11 @@ using Microsoft.PowerApps.TestEngine.Config;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerApps.TestEngine.Tests.Helpers;
+using Microsoft.PowerApps.TestEngine.Users;
 using Moq;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace testengine.user.storagestate.tests
@@ -236,6 +240,50 @@ namespace testengine.user.storagestate.tests
                 // Assert
                 Assert.Equal(DATA, unprotected);
             }
+        }
+
+        [Fact]
+        public void Protect_Should_Delete_File_When_Encryption_Fails()
+        {
+            // Arrange
+            var testFile = "test-state.json";
+            var testContent = "{\"cookies\":[{\"name\":\"test\",\"value\":\"data\"}]}\"";
+
+            MockFileSystem.Setup(f => f.ReadAllText(testFile)).Returns(testContent);
+            MockFileSystem.Setup(f => f.WriteTextToFile(testFile, It.IsAny<string>(), true))
+                .Throws(new System.Security.Cryptography.CryptographicException("Encryption failed"));
+            MockFileSystem.Setup(f => f.Delete(testFile));
+
+            var userManager = new StorageStateUserManagerModule();
+
+            // Act & Assert
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() =>
+                userManager.Protect(MockFileSystem.Object, testFile));
+
+            // Verify file was deleted in finally block
+            MockFileSystem.Verify(f => f.Delete(testFile), Times.Once,
+                "File should be deleted when encryption fails");
+        }
+
+        [Fact]
+        public void Protect_Should_Delete_File_When_ReadAllText_Fails()
+        {
+            // Arrange
+            var testFile = "test-state.json";
+
+            MockFileSystem.Setup(f => f.ReadAllText(testFile))
+                .Throws(new IOException("Failed to read file"));
+            MockFileSystem.Setup(f => f.Delete(testFile));
+
+            var userManager = new StorageStateUserManagerModule();
+
+            // Act & Assert
+            Assert.Throws<IOException>(() =>
+                userManager.Protect(MockFileSystem.Object, testFile));
+
+            // Verify file was deleted in finally block
+            MockFileSystem.Verify(f => f.Delete(testFile), Times.Once,
+                "File should be deleted when read fails");
         }
     }
 }
