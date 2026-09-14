@@ -59,7 +59,7 @@ jobs:
       
       - name: Test Report
         uses: dorny/test-reporter@d61b558e8df85cb60d09ca3e5b09653b4477cea7 # v1
-        if: success() || failure()    # run this step even if previous step failed
+        if: ${{ (success() || failure()) && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}    # run when check creation is permitted
         with:
           name: DotNet Tests          # Name of the check run which will be created
           path: |
