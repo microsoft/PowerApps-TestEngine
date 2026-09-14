@@ -66,10 +66,10 @@ function interactWithControl(itemPath, value) {
         for (var index in values) {
             valuesJsonArr[`${index}`] = `${JSON.stringify(values[index])}`;
         }
-        var valueJson = `{"${itemPath.propertyName}":${valuesJsonArr}}`;
+        var valueJson = `{${JSON.stringify(itemPath.propertyName)}:${valuesJsonArr}}`;
         script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
     } else {
-        var valueJson = `{"${itemPath.propertyName}":${value}}`;
+        var valueJson = `{${JSON.stringify(itemPath.propertyName)}:${value}}`;
         script = `interactWithControl(${JSON.stringify(itemPath)}, ${valueJson})`;
     }
     return executePublishedAppScript(script);

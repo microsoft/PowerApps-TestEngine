@@ -9,6 +9,8 @@ resources:
 extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
+    settings:
+      networkIsolationPolicy: Permissive,CFSClean
     sdl:
       tsa:
         enabled: true
@@ -62,12 +64,16 @@ extends:
           inputs:
             version: 8.0.x
             installationPath: '$(Agent.ToolsDirectory)/dotnet'
+        - task: NuGetAuthenticate@1
+          displayName: 'Authenticate NuGet feeds'
         - task: DotNetCoreCLI@2
           displayName: 'Build and test'
           inputs:
             command: 'run'
             projects: '$(Build.SourcesDirectory)/targets/targets.csproj'
             arguments: '-- ci -c $(BuildConfiguration)'
+          env:
+            RestoreConfigFile: '$(Build.SourcesDirectory)\.config\NuGet.CFS.config'
         - task: PublishTestResults@2
           inputs:
             testResultsFormat: 'VSTest'
