@@ -31,9 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@55ec9447dda3d1cf6bd587150f3262f30ee10815 # v3.4.2
         with:
           dotnet-version: '9.0.x'
       - name: Publish .NET project
@@ -42,7 +42,7 @@ jobs:
           dotnet workload install wasm-tools
           dotnet publish -c Release
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: peaceiris/actions-hugo@16361eb4acea8698b220b76c0d4e84e1fd22c61d # v2.6.0
         with:
           hugo-version: 'latest'
       - name: Build with Hugo
@@ -51,7 +51,7 @@ jobs:
           hugo --minify
       - name: Upload artifact
         # Automatically uploads an artifact from the './public' directory by default
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: src/docs/site
 
@@ -66,4 +66,4 @@ jobs:
       - name: Deploy to GitHub Pages
         if: ${{ github.ref == vars.SourceBranch }}
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
