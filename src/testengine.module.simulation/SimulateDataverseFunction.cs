@@ -345,7 +345,7 @@ OData-Version: 4.0
                     if (line.StartsWith("GET "))
                     {
                         var text = line.Replace("GET ", "");
-                        text = text.Replace(" HTTPS/1.1", "");
+                        text = text.Replace(" HTTP/1.1", "");
                         return new Uri(text, UriKind.Relative);
                     }
                 }
