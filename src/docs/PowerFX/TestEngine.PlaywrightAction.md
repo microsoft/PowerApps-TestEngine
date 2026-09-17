@@ -24,6 +24,7 @@ The following actions are supported
 | exists   | Returns True or False is locator exist |
 | navigate | Navigate to the url                    |
 | wait     | Wait for locator items to exist        |
+| press    | Send a keyboard press to the locator (use via PlaywrightActionValue) |
 
 ## Examples
 
@@ -34,3 +35,10 @@ The following actions are supported
 ` Preview.PlaywrightAction("https://www.microsoft.com", "navigate")`
 
 ` Preview.PlaywrightAction("//button", "wait")`
+
+## Sending keyboard keys (Enter, Tab, etc.)
+
+Use `Preview.PlaywrightActionValue` when you need to send keyboard keys to an element. The third parameter is the key name (for example "Enter"). If empty, the default key is "Enter".
+
+` Preview.PlaywrightActionValue("//input[@id='search']", "press", "Enter")`
+

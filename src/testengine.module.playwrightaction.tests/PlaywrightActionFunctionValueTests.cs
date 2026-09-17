@@ -65,6 +65,17 @@ namespace testengine.module.browserlocale.tests
                 case "fill":
                     MockTestInfraFunctions.Setup(x => x.FillAsync("//foo", "xyz")).Returns(Task.CompletedTask);
                     break;
+                case "press-in-iframe":
+                    var mockPressFrame = new Mock<IFrame>();
+                    MockPage.SetupGet(x => x.Frames).Returns(new List<IFrame>() { mockPressFrame.Object });
+                    mockPressFrame.Setup(x => x.Locator("//foo", null)).Returns(MockLocator.Object);
+
+                    MockLocator.Setup(x => x.IsVisibleAsync(null)).Returns(Task.FromResult(true));
+                    MockLocator.Setup(x => x.PressAsync("Enter", It.IsAny<LocatorPressOptions>())).Returns(Task.CompletedTask);
+                    break;
+                case "press":
+                    MockTestInfraFunctions.Setup(x => x.PressAsync("//foo", "Enter")).Returns(Task.CompletedTask);
+                    break;
                 case "screenshot":
                     MockSingleTestInstanceState.Setup(x => x.GetTestResultsDirectory()).Returns(@"c:\");
                     MockFileSystem.Setup(x => x.Exists(@"c:\")).Returns(true);
@@ -85,6 +96,9 @@ namespace testengine.module.browserlocale.tests
                 case "fill-in-iframe":
                     MockLocator.Verify(x => x.PressSequentiallyAsync("xyz", It.Is<LocatorPressSequentiallyOptions>(o => o.Delay >= 100)));
                     break;
+                case "press-in-iframe":
+                    MockLocator.Verify(x => x.PressAsync("Enter", It.IsAny<LocatorPressOptions>()));
+                    break;
             }
         }
 
@@ -92,6 +106,8 @@ namespace testengine.module.browserlocale.tests
         [InlineData("//foo", "click-in-iframe", "", null, new string[] { }, true)]
         [InlineData("//foo", "fill-in-iframe", "xyz", null, new string[] { }, true)]
         [InlineData("//foo", "fill", "xyz", null, new string[] { }, true)]
+        [InlineData("//foo", "press", "Enter", null, new string[] { }, true)]
+        [InlineData("//foo", "press-in-iframe", "Enter", null, new string[] { }, true)]
         [InlineData("//foo", "screenshot", @"test.jpg", null, new string[] { }, true)]
         public void PlaywrightExecute(string locator, string action, string value, string? scenario, string[] messages, bool standardEnd)
         {

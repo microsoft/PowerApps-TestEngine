@@ -462,6 +462,12 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             await Page.FillAsync(selector, value);
         }
 
+        public async Task PressAsync(string selector, string value)
+        {
+            ValidatePage();
+            await Page.PressAsync(selector, value);
+        }
+
         public async Task ClickAsync(string selector)
         {
             ValidatePage();
