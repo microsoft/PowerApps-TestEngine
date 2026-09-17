@@ -5,6 +5,7 @@ function parseControl(controlName, controlObject) {
     var propertiesList = [];
     var properties = Object.keys(controlObject.modelProperties);
     var controls = [];
+    var galleryChildNames = [];
     if (controlObject.controlWidget.replicatedContextManager) {
         var childrenControlContext = controlObject.controlWidget.replicatedContextManager.authoringAreaBindingContext.controlContexts;
         var childControlNames = Object.keys(childrenControlContext);
@@ -12,6 +13,7 @@ function parseControl(controlName, controlObject) {
             var childControlObject = childrenControlContext[childControlName];
             var childControlsList = parseControl(childControlName, childControlObject);
             controls = controls.concat(childControlsList);
+            galleryChildNames.push(childControlName);
         });
     }
 
@@ -31,6 +33,18 @@ function parseControl(controlName, controlObject) {
 
     properties.forEach((propertyName) => {
         var propertyType = controlObject.controlWidget.controlProperties[propertyName].propertyType;
+
+        // Power Apps runtime returns *[] / ![] for gallery AllItems/Items/Selected/Default
+        // regardless of the bound data source. Rebuild the type from the template child
+        // controls extracted above so that Index(Gallery.AllItems, N).ControlName.Prop works.
+        if (galleryChildNames.length > 0) {
+            var childTypeStr = galleryChildNames.map(function(n) { return n + ':v'; }).join(', ');
+            if (propertyType === '*[]' && (propertyName === 'AllItems' || propertyName === 'Items')) {
+                propertyType = '*[' + childTypeStr + ']';
+            } else if (propertyType === '![]' && (propertyName === 'Selected' || propertyName === 'Default')) {
+                propertyType = '![' + childTypeStr + ']';
+            }
+        }
 
         propertiesList.push({ propertyName: propertyName, propertyType: propertyType });
     })

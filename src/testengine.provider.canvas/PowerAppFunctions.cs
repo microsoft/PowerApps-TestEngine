@@ -127,6 +127,42 @@ namespace Microsoft.PowerApps.TestEngine.Providers
 
                     if (jsObjectModel != null && jsObjectModel.Controls != null)
                     {
+                        // Patch gallery AllItems/*Selected types: Power Apps runtime reports *[] for
+                        // these regardless of the bound data source. Query child control names directly
+                        // from the app frame (Playwright bypasses cross-origin restrictions via CDP).
+                        foreach (var control in jsObjectModel.Controls)
+                        {
+                            var hasEmptyAllItems = control.Properties.Any(p => p.PropertyName == "AllItems" && p.PropertyType == "*[]");
+                            if (!hasEmptyAllItems) continue;
+                            try
+                            {
+                                var childNamesJson = await TestInfraFunctions.RunJavascriptInFrameAsync<string>(
+                                    $@"(function() {{
+                                        try {{
+                                            var ctx = AppMagic.Controls.GlobalContextManager.bindingContext.controlContexts['{control.Name}'];
+                                            if (!ctx || !ctx.controlWidget || !ctx.controlWidget.replicatedContextManager) return '[]';
+                                            return JSON.stringify(Object.keys(ctx.controlWidget.replicatedContextManager.authoringAreaBindingContext.controlContexts));
+                                        }} catch(e) {{ return '[]'; }}
+                                    }})()",
+                                    PublishedAppIframeName);
+                                var childNames = JsonConvert.DeserializeObject<List<string>>(childNamesJson ?? "[]");
+                                if (childNames == null || childNames.Count == 0) continue;
+                                var childTypeStr = string.Join(", ", childNames.Select(n => $"{n}:v"));
+                                SingleTestInstanceState.GetLogger().LogTrace($"Gallery '{control.Name}' children: {childTypeStr}");
+                                foreach (var prop in control.Properties)
+                                {
+                                    if (prop.PropertyType == "*[]" && (prop.PropertyName == "AllItems" || prop.PropertyName == "Items"))
+                                        prop.PropertyType = $"*[{childTypeStr}]";
+                                    else if (prop.PropertyType == "![]" && (prop.PropertyName == "Selected" || prop.PropertyName == "Default"))
+                                        prop.PropertyType = $"![{childTypeStr}]";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                SingleTestInstanceState.GetLogger().LogTrace($"Gallery '{control.Name}' child lookup failed: {ex.Message}");
+                            }
+                        }
+
                         SingleTestInstanceState.GetLogger().LogTrace("Listing all skipped properties for each control.");
 
                         foreach (var control in jsObjectModel.Controls)

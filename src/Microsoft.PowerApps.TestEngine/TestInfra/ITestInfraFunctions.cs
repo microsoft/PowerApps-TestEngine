@@ -101,6 +101,15 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
         public Task<T> RunJavascriptAsync<T>(string jsExpression);
 
         /// <summary>
+        /// Runs javascript inside a named frame (bypasses cross-origin restrictions via CDP)
+        /// </summary>
+        /// <typeparam name="T">Expected return type</typeparam>
+        /// <param name="jsExpression">Javascript expression to run</param>
+        /// <param name="frameName">Name of the frame to evaluate in</param>
+        /// <returns>Return value of javascript</returns>
+        public Task<T> RunJavascriptInFrameAsync<T>(string jsExpression, string frameName);
+
+        /// <summary>
         /// Triggers a click event on a control
         /// </summary>
         /// <param name="controlName">Control name to trigger event</param>
