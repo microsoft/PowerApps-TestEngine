@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>TestCaseGenerator</AssemblyName>
+    <RootNamespace>TestCaseGeneratorTool</RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.PowerApps.TestEngine\Microsoft.PowerApps.TestEngine.csproj" />
+  </ItemGroup>
+
+</Project>
