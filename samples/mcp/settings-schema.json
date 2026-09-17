@@ -1,0 +1,129 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "PowerApps Test Engine Test Settings Schema",
+    "description": "JSON Schema for validating testSettings.yaml files",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "locale": {
+            "type": "string",
+            "description": "The locale to use for testing",
+            "pattern": "^[a-z]{2}-[A-Z]{2}$"
+        },
+        "headless": {
+            "type": "boolean",
+            "description": "Whether to run tests in headless mode"
+        },
+        "recordVideo": {
+            "type": "boolean",
+            "description": "Whether to record video of test execution"
+        },
+        "browserConfigurations": {
+            "type": "array",
+            "description": "Browser configurations for the test",
+            "items": {
+                "type": "object",
+                "required": [
+                    "browser"
+                ],
+                "properties": {
+                    "browser": {
+                        "type": "string",
+                        "description": "Browser to use",
+                        "enum": [
+                            "Chromium",
+                            "Firefox",
+                            "Webkit"
+                        ]
+                    },
+                    "channel": {
+                        "type": "string",
+                        "description": "Browser channel",
+                        "enum": [
+                            "msedge",
+                            "chrome",
+                            "firefox",
+                            "safari"
+                        ]
+                    },
+                    "device": {
+                        "type": "string",
+                        "description": "Device emulation"
+                    }
+                }
+            }
+        },
+        "timeoutInMilliseconds": {
+            "type": "integer",
+            "description": "Timeout in milliseconds"
+        },
+        "timeout": {
+            "type": "integer",
+            "description": "Timeout in milliseconds"
+        },
+        "enablePowerFxOverlay": {
+            "type": "boolean",
+            "description": "Whether to enable PowerFx overlay"
+        },
+        "extensionModules": {
+            "type": "object",
+            "properties": {
+                "enable": {
+                    "type": "boolean",
+                    "description": "Whether to enable extension modules"
+                },
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "enableDataverseFunctions": {
+                            "type": "boolean",
+                            "description": "Whether to enable Dataverse functions"
+                        }
+                    }
+                }
+            }
+        },
+        "powerFxTestTypes": {
+            "type": "array",
+            "description": "Custom PowerFx types for tests",
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "value"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the type"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "PowerFx type definition"
+                    }
+                }
+            }
+        },
+        "testFunctions": {
+            "type": "array",
+            "description": "Custom PowerFx functions for tests",
+            "items": {
+                "type": "object",
+                "required": [
+                    "description",
+                    "code"
+                ],
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "description": "Description of the function"
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "PowerFx function code"
+                    }
+                }
+            }
+        }
+    }
+}

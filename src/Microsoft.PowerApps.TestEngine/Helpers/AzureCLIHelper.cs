@@ -1,7 +1,9 @@
 ﻿// Copyright(c) Microsoft Corporation.
 // Licensed under the MIT license.using Microsoft.Extensions.Log
 
+using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace Microsoft.PowerApps.TestEngine.Helpers
 {
@@ -23,22 +25,67 @@ namespace Microsoft.PowerApps.TestEngine.Helpers
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = azPath + ExecutableSuffix(),
-                Arguments = $"account get-access-token --resource {location.ToString()}",
+                Arguments = $"account get-access-token --resource {location.ToString()} --query \"accessToken\" --output tsv",
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
 
             using (var process = ProcessStart(processStartInfo))
             {
-
-                process.WaitForExit();
-                var result = process.StandardOutput;
-
-                // Parse the access token from the result
-                var token = ParseAccessToken(result);
+                string token = ReadOutputForAccessTokenAsync(process).Result;
                 return token;
             }
+        }
+
+        public async Task<string> GetAccessTokenAsync(Uri location)
+        {
+            var azPath = FindAzureCli();
+            if (string.IsNullOrEmpty(azPath))
+            {
+                throw new InvalidOperationException("Azure CLI not found.");
+            }
+
+            // Create a temporary file to store the output
+            var tempFilePath = Path.GetTempFileName();
+
+            try
+            {
+                var azApp = azPath + ExecutableSuffix();
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "pwsh",
+                    Arguments = $"-WindowStyle Hidden -Command \"az account get-access-token --resource {location.ToString()} --query \\\"accessToken\\\" --output tsv > \\\"{tempFilePath}\\\"\"",
+                    UseShellExecute = true,        // Required for file redirection
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process { StartInfo = processStartInfo })
+                {
+                    process.Start();
+
+                    // Wait for the process to complete
+                    process.WaitForExit();
+
+                    // Monitor the file for the access token
+                    var token = File.ReadAllText(tempFilePath);
+                    return token;
+                }
+            }
+            finally
+            {
+                // Clean up the temporary file
+                if (File.Exists(tempFilePath))
+                {
+                    File.Delete(tempFilePath);
+                }
+            }
+        }
+
+        private async Task<string> ReadOutputForAccessTokenAsync(IProcessWrapper process)
+        {
+            return ParseAccessToken(process.StandardOutput);
         }
 
         public string FindAzureCli()

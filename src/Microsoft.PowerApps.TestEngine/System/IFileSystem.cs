@@ -27,6 +27,13 @@ namespace Microsoft.PowerApps.TestEngine.System
         public bool FileExists(string fileName);
 
         /// <summary>
+        /// Gets directories in path
+        /// </summary>
+        /// <param name="path">Path name</param>
+        /// <returns>Array of directories within the path</returns>
+        public string[] GetDirectories(string path);
+
+        /// <summary>
         /// Gets files in a directory
         /// </summary>
         /// <param name="directoryName">Directory name</param>
