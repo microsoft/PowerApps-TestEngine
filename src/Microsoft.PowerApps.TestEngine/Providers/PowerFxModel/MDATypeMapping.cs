@@ -72,7 +72,7 @@ namespace Microsoft.PowerApps.TestEngine.Providers.PowerFxModel
 
         private bool IsRecord(string typeString)
         {
-            return typeString.StartsWith("!");
+            return typeString.StartsWith("!") || typeString.StartsWith("l");
         }
 
         /// <summary>
