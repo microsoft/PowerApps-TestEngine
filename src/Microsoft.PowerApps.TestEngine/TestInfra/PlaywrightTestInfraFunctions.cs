@@ -525,5 +525,36 @@ namespace Microsoft.PowerApps.TestEngine.TestInfra
             }
             return false;
         }
+
+        /// <summary>
+        /// Selects an option in the given dropdown by its name.
+        /// </summary>
+        /// <param name="value">The name of the dropdown option to select.</param>
+        /// <returns>True if the option was successfully selected, otherwise false.</returns>   
+        public async Task<bool> SelectDropdownOptionAsync(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                _singleTestInstanceState.GetLogger().LogError("Dropdown option value cannot be null or empty.");
+                throw new ArgumentException("Dropdown option value must be provided.", nameof(value));
+            }
+
+            try
+            {
+                ValidatePage();
+
+                // Open the dropdown
+                await Page.GetByLabel("Department", new() { Exact = true }).ClickAsync();
+                // Select the specified option
+                await Page.GetByRole(AriaRole.Option, new() { Name = value }).ClickAsync();
+
+                return true; // Indicate success
+            }
+            catch (Exception ex)
+            {
+                _singleTestInstanceState.GetLogger().LogError($"Error occurred while selecting dropdown option: {value}. Exception: {ex.Message}");
+                return false; // Indicate failure
+            }
+        }
     }
 }
