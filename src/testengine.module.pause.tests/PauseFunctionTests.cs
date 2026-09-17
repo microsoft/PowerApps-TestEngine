@@ -8,6 +8,7 @@ using Microsoft.PowerApps.TestEngine.Providers;
 using Microsoft.PowerApps.TestEngine.System;
 using Microsoft.PowerApps.TestEngine.TestInfra;
 using Microsoft.PowerFx;
+using Microsoft.PowerApps.TestEngine.PowerFx.Functions;
 using Moq;
 
 namespace testengine.module.browserlocale.tests
