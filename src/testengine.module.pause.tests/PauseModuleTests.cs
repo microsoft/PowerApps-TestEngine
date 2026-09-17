@@ -54,8 +54,18 @@ namespace testengine.module.browserlocale.tests
         {
             // Arrange
             var module = new PauseModule();
+            
+            // Create test settings with Preview namespace enabled
+            var testSettings = new TestSettings()
+            {
+                ExtensionModules = new TestSettingExtensions()
+                {
+                    AllowPowerFxNamespaces = new HashSet<string> { "Preview" }
+                }
+            };
 
             MockSingleTestInstanceState.Setup(x => x.GetLogger()).Returns(MockLogger.Object);
+            MockTestState.Setup(x => x.GetTestSettings()).Returns(testSettings);
 
             MockLogger.Setup(x => x.Log(
                It.IsAny<LogLevel>(),
@@ -71,7 +81,7 @@ namespace testengine.module.browserlocale.tests
             // Assert
             MockLogger.Verify(l => l.Log(It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Registered Pause()"),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Registered Pause() - Preview namespace enabled"),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
         }
